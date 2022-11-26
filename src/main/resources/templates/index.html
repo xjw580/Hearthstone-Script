@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>dashboard</title>
+    <style>
+        body{
+            background-color: #ebedee;
+        }
+        #outer{
+            width: 100%;
+            height: 100%;
+            display: flex;
+        }
+        #left{
+            width: 40vw;
+            height: 100%;
+        }
+        #right{
+            height: 100%;
+            margin-left: 5%;
+        }
+        #start{
+            width: 60px;
+            height: 30px;
+            font-size: 15px;
+            background-color: #66a6ff;
+            color: white;
+            cursor: pointer;
+            border: none;
+            border-radius: 0.3rem;
+        }
+        #log{
+            margin-top: 2%;
+            border: 2px solid black;
+            height: calc(100px + 70vh);
+            border-radius: 1rem;
+            padding: 10px;
+        }
+        .content{
+            margin-top: 5%;
+            margin-left: 32px;
+            font-size: 15px;
+            display: flex;
+            flex-direction: column;
+            height: calc(40px + 70vh);
+            overflow-y: hidden;
+        }
+        .content:hover{
+            overflow-y: scroll;
+        }
+        #msg{
+            margin-top: 5px;
+            border: 2px solid black;
+            height: calc(60px + 70vh);
+            border-radius: 1rem;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div id="outer">
+        <div id="left">
+            <center>
+                <button id="start">开始</button>
+                <div style="font-size: 13px;color: dimgray;margin-top: 10px">脚本状态：<font style="color: black">暂停中</font></div>
+                <div style="font-size: 13px;color: dimgray;margin-top: 10px">目前模式：<font style="color: black">休闲</font></div>
+                <div style="font-size: 13px;color: dimgray;margin-top: 10px">已挂时长：<font style="color: black">24h</font></div>
+            </center>
+            <div id="log">
+                <strong>脚本日志：</strong>
+                <div class="content">
+                    <div>我方出牌我方出牌我方出牌我方出牌</div>
+
+                </div>
+            </div>
+        </div>
+        <div id="right">
+            <div>
+                挂机时间：
+                <div style="margin-top: 10px">
+                    <input type="checkbox" name="date" checked>每天
+                    <span class="date">
+                        <input type="checkbox" name="date">周一
+                        <input type="checkbox" name="date">周二
+                        <input type="checkbox" name="date">周三
+                        <input type="checkbox" name="date">周四
+                        <input type="checkbox" name="date">周五
+                        <input type="checkbox" name="date">周六
+                        <input type="checkbox" name="date">周日
+                    </span>
+                </div>
+                <div style="margin-top: 10px">
+                    <input type="checkbox" name="time" checked>全天
+                    <span class="time">
+                        <div>
+                        时间段1（可选）
+                        <input type="time">开始
+                        <input type="time">结束
+                    </div>
+                    <div>
+                        时间段2（可选）
+                        <input type="time">开始
+                        <input type="time">结束
+                    </div>
+                    <div>
+                        时间段3（可选）
+                        <input type="time">开始
+                        <input type="time">结束
+                    </div>
+                    </span>
+                </div>
+            </div>
+            <div id="msg">
+                <strong>战局详情：</strong>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+
+</script>
+</html>

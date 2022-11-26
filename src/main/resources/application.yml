@@ -1,0 +1,24 @@
+server:
+  port: 8888
+
+spring:
+  datasource:
+    driver-class-name: org.sqlite.JDBC
+    url: jdbc:sqlite::resource:static/sqlite/hearthstone.sqlite
+mybatis:
+  mapper-locations: classpath:static/mapper/*.xml
+
+game:
+  name: "炉石传说"
+  properties:
+    path: static/game.properties
+  log:
+    path:
+      screen: /Logs/LoadingScreen.log
+      power: /Logs/Power.log
+command:
+  title: "Get-Process |where {$_.mainWindowTitle} |format-table id, name,mainwindowtitle -AutoSize"
+platform:
+  name: "战网"
+script:
+  name: "炉石传说脚本"
