@@ -17,14 +17,18 @@ public class RandomUtil {
     }
 
     public static int getLongRandom(){
-        return getRandom(1800, 2200);
+        return getRandom(1600, 2400);
     }
     public static int getMediumRandom(){
         return getRandom(800, 1200);
     }
 
     public static int getShortRandom(){
-        return getRandom(200, 600);
+        return getRandom(200, 400);
+    }
+
+    public static int getTinyRandom(){
+        return getRandom(100, 200);
     }
 
     public static int getHumanRandom(){

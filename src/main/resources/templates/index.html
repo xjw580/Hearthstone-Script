@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <title>dashboard</title>
+    <script th:src="@{js/jquery.js}"></script>
     <style>
         body{
             background-color: #ebedee;
@@ -13,14 +14,15 @@
             display: flex;
         }
         #left{
-            width: 40vw;
+            width: 45vw;
             height: 100%;
         }
         #right{
             height: 100%;
             margin-left: 5%;
+            width: 45vw;
         }
-        #start{
+        #status{
             width: 60px;
             height: 30px;
             font-size: 15px;
@@ -37,7 +39,7 @@
             border-radius: 1rem;
             padding: 10px;
         }
-        .content{
+        #content{
             margin-top: 5%;
             margin-left: 32px;
             font-size: 15px;
@@ -46,7 +48,7 @@
             height: calc(40px + 70vh);
             overflow-y: hidden;
         }
-        .content:hover{
+        #content:hover{
             overflow-y: scroll;
         }
         #msg{
@@ -56,28 +58,46 @@
             border-radius: 1rem;
             padding: 10px;
         }
+        .scriptInfo{
+            margin-bottom: 5px;
+        }
+        .chooseFile{
+            margin-top: 5px;
+            font-size: 13px;
+            color: gray;
+        }
+        .input{
+            height: 20px;
+            border-radius: 0.2rem;
+        }
     </style>
 </head>
 <body>
     <div id="outer">
         <div id="left">
             <center>
-                <button id="start">开始</button>
-                <div style="font-size: 13px;color: dimgray;margin-top: 10px">脚本状态：<font style="color: black">暂停中</font></div>
-                <div style="font-size: 13px;color: dimgray;margin-top: 10px">目前模式：<font style="color: black">休闲</font></div>
-                <div style="font-size: 13px;color: dimgray;margin-top: 10px">已挂时长：<font style="color: black">24h</font></div>
+                <button id="status" onclick="changeStatus()">启动</button>
+                <div style="font-size: 13px;color: dimgray;margin-top: 10px">目前套牌：<font style="color: black" id="deckType"></font></div>
+                <div class="chooseFile">
+                    输入炉石传说文件夹路径：<input id="gamePath" class="input" type="text" placeholder="初次使用需填写">
+                    <button onclick="changeGamePath()">确定</button>
+                    (例：S:/Hearthstone)
+                </div>
+                <div class="chooseFile">
+                    输入战网程序路径：<input id="platformPath" class="input" type="text" placeholder="初次使用需填写">
+                    <button onclick="changePlatformPath()">确定</button>
+                    (例：S:/Battle.net/Battle.net.exe)
+                </div>
             </center>
             <div id="log">
                 <strong>脚本日志：</strong>
-                <div class="content">
-                    <div>我方出牌我方出牌我方出牌我方出牌</div>
-
+                <div id="content">
                 </div>
             </div>
         </div>
         <div id="right">
             <div>
-                挂机时间：
+                挂机时间：（暂未上线）
                 <div style="margin-top: 10px">
                     <input type="checkbox" name="date" checked>每天
                     <span class="date">
@@ -112,12 +132,83 @@
                 </div>
             </div>
             <div id="msg">
-                <strong>战局详情：</strong>
+                <strong>战局详情：（暂未上线）</strong>
             </div>
         </div>
     </div>
 </body>
 <script>
+    const ws = new WebSocket("ws://localhost:8888/info");
+    $(
+        function (){
+            ws.onopen = function(){
+                console.log("websocket连接成功");
+            }
+            ws.onmessage = function(e){
+                const data = JSON.parse(e.data);
+                if (data.wsResultType === "SCRIPT_LOG"){
+                    $("#content").append(`<div class="scriptInfo">${data.msg}</div>`)
+                    document.getElementById('content').scrollTop = document.getElementById('content').scrollHeight
+                }else if (data.wsResultType === "DECK_TYPE"){
+                    $("#deckType").text(data.msg)
+                }
+            }
+            ws.onclose = function(e){
+                console.log("websocket已断开", e);
+            }
+            ws.onerror = function(e){
+                console.log("websocket发生错误", 2);
+            }
+            $.get("/dashboard/getRunningTime").then(data => {
+                if (data.resultStatus === "SUCCESS"){
+                    console.log(data)
+                }
+            })
+            $.get("/dashboard/getCurrentDeck").then(data => {
+                if (data.resultStatus === "SUCCESS"){
+                    $("#deckType").text(data.data)
+                }
+            })
+        }
+    )
+    function changeStatus(){
+        const $status = $("#status");
+        if ($status.text() === "关闭"){
+            $.get("/dashboard/shutdown")
+            $status.text("已关")
+        }else {
+            $.get("/dashboard/start").then(data => {
+                if (data.resultStatus === "SUCCESS"){
+                    $status.text("关闭")
+                }
+            })
+        }
+    }
+
+    function changeGamePath(){
+        let val = $("#gamePath").val();
+        $.get('/dashboard/setGamePath',
+            {path: val},
+            data => {
+                if (data.resultStatus === "SUCCESS"){
+                    alert("保存成功")
+                }
+            }
+        )
+    }
+
+    function changePlatformPath(){
+        let val = $("#platformPath").val();
+        $.get('/dashboard/setPlatformPath',
+            {path: val},
+            data => {
+                if (data.resultStatus === "SUCCESS"){
+                    alert("保存成功")
+                }
+            }
+        )
+    }
+
 
 </script>
 </html>

@@ -12,7 +12,7 @@ import java.io.Serializable;
  */
 @ToString
 @Slf4j
-public class Mode implements Serializable {
+public class Mode{
 
     private static ModeEnum currMode;
 
@@ -29,6 +29,11 @@ public class Mode implements Serializable {
 
     public static ModeEnum getPrevMode() {
         return prevMode;
+    }
+
+    public static void reset(){
+        currMode = null;
+        prevMode = null;
     }
 
 }

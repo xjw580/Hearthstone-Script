@@ -1,5 +1,6 @@
 package club.xiaojiawei.hearthstone.utils;
 
+import club.xiaojiawei.hearthstone.run.Core;
 import com.sun.jna.platform.win32.User32;
 import com.sun.jna.platform.win32.WinDef;
 import lombok.extern.slf4j.Slf4j;
@@ -7,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.awt.*;
 
 import static club.xiaojiawei.hearthstone.constant.SystemConst.ROBOT;
+import static club.xiaojiawei.hearthstone.constant.SystemConst.SCREEN_HEIGHT;
 
 /**
  * @author 肖嘉威
@@ -14,6 +16,8 @@ import static club.xiaojiawei.hearthstone.constant.SystemConst.ROBOT;
  */
 @Slf4j
 public class SystemUtil {
+
+
 
     /**
      * 调用系统通知
@@ -24,12 +28,10 @@ public class SystemUtil {
     public static void notice(String title, String context){
         //Obtain only one instance of the SystemTray object
         SystemTray tray = SystemTray.getSystemTray();
-
         //If the icon is a file
         Image image = Toolkit.getDefaultToolkit().createImage("icon.png");
         //Alternative (if the icon is on the classpath):
         //Image image = Toolkit.getDefaultToolkit().createImage(getClass().getResource("icon.png"));
-
         TrayIcon trayIcon = new TrayIcon(image, "Tray Demo");
         //Let the system resize the image if needed
         trayIcon.setImageAutoSize(true);
@@ -43,14 +45,21 @@ public class SystemUtil {
         trayIcon.displayMessage(title, context, TrayIcon.MessageType.INFO);
     }
 
+    public static void notice(String context){
+        notice(Core.getScriptName(), context);
+    }
+
     /**
-     * 获取窗口尺寸信息
+     * 获取窗口信息
      * @param hwnd
      * @return
      */
     public static WinDef.RECT getRect(WinDef.HWND hwnd) {
         WinDef.RECT winRect = new WinDef.RECT();
         User32.INSTANCE.GetWindowRect(hwnd, winRect);
+        if ((winRect.bottom - winRect.top) != SCREEN_HEIGHT){
+            winRect.top += 33;
+        }
         return winRect;
     }
 
@@ -72,7 +81,7 @@ public class SystemUtil {
         for (int i = 0; i < 2; i++) {
             User32.INSTANCE.ShowWindow(hwnd, 9 );        // 显示窗口
             User32.INSTANCE.SetForegroundWindow(hwnd);   // 前置窗口
-            ROBOT.delay(300);
+            ROBOT.delay(200);
         }
     }
 
@@ -86,6 +95,13 @@ public class SystemUtil {
 
     public static void delayLong(){
         ROBOT.delay(RandomUtil.getLongRandom());
+    }
+
+    public static void killProgram(){
+        ROBOT.keyPress(18);
+        ROBOT.keyPress(115);
+        ROBOT.keyRelease(115);
+        ROBOT.keyRelease(18);
     }
 
 }

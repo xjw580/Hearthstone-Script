@@ -1,8 +1,12 @@
 package club.xiaojiawei.hearthstone;
 
+import club.xiaojiawei.hearthstone.entity.WsResult;
 import club.xiaojiawei.hearthstone.run.Core;
 import club.xiaojiawei.hearthstone.utils.InitUtil;
+import club.xiaojiawei.hearthstone.utils.SystemUtil;
+import club.xiaojiawei.hearthstone.ws.WebSocketServer;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -21,38 +25,28 @@ import static club.xiaojiawei.hearthstone.constant.SystemConst.PROPERTIES;
 @Slf4j
 public class HearthstoneApplication {
 
-
     public static void main(String[] args) {
+        InitUtil.init();
         SpringApplicationBuilder builder = new SpringApplicationBuilder(HearthstoneApplication.class);
         builder.headless(false).run(args);
-
-        if ("true".equals(PROPERTIES.getProperty("switch"))){
-            String date = PROPERTIES.getProperty("date");
-            String s = String.valueOf(LocalDate.now().getDayOfWeek().getValue());
-            String[] dates = date.split(",");
-            for (String w : dates) {
-                if (w.equals(s)){
-                    String time = PROPERTIES.getProperty("time");
-                    int hour = LocalTime.now().getHour();
-                    String[] times = time.split(",");
-                    for (String time1 : times) {
-                        String[] split = time1.split("-");
-                        int start = Integer.parseInt(split[0]), end = Integer.parseInt(split[1]);
-                        if (hour >= start && hour < end){
-                            InitUtil.openPowerLog();
-                            log.info("脚本准备运行中");
-                            Core.openGame();
-                            return;
-                        }
-                    }
-                    break;
+        if(java.awt.Desktop.isDesktopSupported()){
+            try{
+                //创建一个URI实例,注意不是URL
+                java.net.URI uri=java.net.URI.create("http://localhost:8888");
+                //获取当前系统桌面扩展
+                java.awt.Desktop dp=java.awt.Desktop.getDesktop();
+                //判断系统桌面是否支持要执行的功能
+                if(dp.isSupported(java.awt.Desktop.Action.BROWSE)){
+                    //获取系统默认浏览器打开链接
+                    dp.browse(uri);
                 }
+            }catch(java.lang.NullPointerException e){
+                log.error("uri为空", e);
+            }catch(java.io.IOException e){
+                //此为无法获取系统默认浏览器
+                log.error("无法获取系统默认浏览器", e);
             }
-            log.info("未到指定时间，脚本暂停中");
-        }else {
-            log.info("脚本暂停中");
         }
-
     }
 
 }

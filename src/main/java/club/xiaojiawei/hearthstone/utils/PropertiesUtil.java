@@ -1,8 +1,9 @@
 package club.xiaojiawei.hearthstone.utils;
 
 
-import java.io.IOException;
-import java.io.InputStream;
+import lombok.SneakyThrows;
+
+import java.io.*;
 import java.util.Properties;
 
 /**
@@ -11,13 +12,12 @@ import java.util.Properties;
  */
 public class PropertiesUtil {
 
-    public static Properties getProperties(String path){
+    @SneakyThrows
+    public static Properties getProperties(String path, String name){
         Properties properties = new Properties();
-        try(InputStream inputStream = PropertiesUtil.class.getClassLoader().getResourceAsStream(path);
-        ){
-            properties.load(inputStream);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        File file = new File(path + name);
+        try(FileInputStream fileInputStream = new FileInputStream(file)){
+            properties.load(fileInputStream);
         }
         return properties;
     }

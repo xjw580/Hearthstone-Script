@@ -1,5 +1,6 @@
 package club.xiaojiawei.hearthstone.utils;
 
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.*;
@@ -11,44 +12,83 @@ import java.io.*;
 @Slf4j
 public class InitUtil {
 
-    private static final String CONFIGURATION_PATH = System.getenv().get("LOCALAPPDATA") + "/Blizzard/Hearthstone/log.config";
+    private static final String GAME_CONFIGURATION_PATH = System.getenv().get("LOCALAPPDATA") + "/Blizzard/Hearthstone/log.config";
+    private static final String SCRIPT_CONFIGURATION_PATH = "C:/ProgramData/hs_script/";
+    private static final String SCRIPT_CONFIGURATION_NAME= "game.properties";
 
-    private static final String[] CONFIGURATION_ADDITION = {"[Power]", "LogLevel=1", "FilePrinting=True", "ConsolePrinting=False", "ScreenPrinting=False", "Verbose=True"};
+    public static void init(){
+        openPowerLog();
+        generateMainPath();
+    }
 
-    private static int index = 0;
+    @SneakyThrows
+    public static void generateMainPath(){
+        File file = new File(SCRIPT_CONFIGURATION_PATH);
+        if (!file.exists()){
+            file.mkdir();
+            try(FileWriter fileWriter = new FileWriter(SCRIPT_CONFIGURATION_PATH + SCRIPT_CONFIGURATION_NAME)){
+                fileWriter.write("""
+                            date=1,2,3,4,5,6,7
+                            time=0-24,0-0,0-0
+                            gamepath=C:/ProgramData
+                            platformpath=C:/ProgramData
+                            mode=TOURNAMENT
+                            ranked=CLASSIC
+                            deck=ZOO
+                            """);
+            }
+        }
+    }
 
     /**
      * 打开炉石传说对局日志功能
      */
     public static void openPowerLog(){
-        try(BufferedReader reader = new BufferedReader(new FileReader(CONFIGURATION_PATH))) {
-            if (!isExist(reader)){
-                log.info("炉石传说对局日志未打开");
-                try(BufferedWriter writer = new BufferedWriter(new FileWriter(CONFIGURATION_PATH, true))){
-                    for (String s : CONFIGURATION_ADDITION) {
-                        writer.write(s + "\n");
-                    }
-                }
-                log.info("炉石传说对局日志已打开");
-            }
-            index = 0;
+        File file = new File(GAME_CONFIGURATION_PATH);
+        try(BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(file))){
+            bufferedWriter.write("""
+                    [LoadingScreen]
+                    LogLevel=1
+                    FilePrinting=True
+                    ConsolePrinting=False
+                    ScreenPrinting=False
+                    Verbose=False
+                    [Arena]
+                    LogLevel=1
+                    FilePrinting=True
+                    ConsolePrinting=False
+                    ScreenPrinting=False
+                    Verbose=False
+                    [Decks]
+                    LogLevel=1
+                    FilePrinting=True
+                    ConsolePrinting=False
+                    ScreenPrinting=False
+                    Verbose=False
+                    [Achievements]
+                    LogLevel=1
+                    FilePrinting=True
+                    ConsolePrinting=False
+                    ScreenPrinting=False
+                    Verbose=False
+                    [FullScreenFX]
+                    LogLevel=1
+                    FilePrinting=True
+                    ConsolePrinting=False
+                    ScreenPrinting=False
+                    Verbose=False
+                    [Power]
+                    LogLevel=1
+                    FilePrinting=True
+                    ConsolePrinting=False
+                    ScreenPrinting=False
+                    Verbose=True
+                                 
+                    """);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    private static boolean isExist(BufferedReader reader) throws IOException {
-        String s;
-        while ((s = reader.readLine()) != null){
-            if (s.strip().equals(CONFIGURATION_ADDITION[index])){
-                return CONFIGURATION_ADDITION[++index].equals(reader.readLine()) &&
-                        CONFIGURATION_ADDITION[++index].equals(reader.readLine()) &&
-                        CONFIGURATION_ADDITION[++index].equals(reader.readLine()) &&
-                        CONFIGURATION_ADDITION[++index].equals(reader.readLine()) &&
-                        CONFIGURATION_ADDITION[++index].equals(reader.readLine());
-            }
-        }
-        return false;
+        log.info("log.config重写完成，已打开日志功能");
     }
 
 }

@@ -1,9 +1,13 @@
 package club.xiaojiawei.hearthstone.status;
 
-import lombok.Data;
+import club.xiaojiawei.hearthstone.entity.Card;
+import club.xiaojiawei.hearthstone.entity.ExtraEntity;
+import club.xiaojiawei.hearthstone.entity.Player;
+import club.xiaojiawei.hearthstone.entity.area.Area;
+import club.xiaojiawei.hearthstone.enums.WarPhaseEnum;
+import lombok.extern.slf4j.Slf4j;
 
-import java.io.Serializable;
-import java.util.List;
+import static club.xiaojiawei.hearthstone.constant.GameConst.CARD_AREA_MAP;
 
 /**
  * @author 肖嘉威
@@ -11,199 +15,89 @@ import java.util.List;
  * 对局状态
  */
 @SuppressWarnings("all")
-public record War(Player me, Player rival) implements Serializable {
+@Slf4j
+public class War {
 
+    public static int warCount;
+    private static WarPhaseEnum currentPhase;
+    private static Player me;
+    private static Player rival;
 
+    private static Player player1;
 
+    private static Player player2;
 
-    @Data
-    public static class Player implements Serializable{
-
-        private String playerId;
-
-        private HandArea handArea;
-
-        private PlayArea playArea;
-
-        private BuffArea buffArea;
-
-        private byte maxResources = 10;
-
-        private byte currentResources;
-
-        private byte availableResources;
+    public static WarPhaseEnum getCurrentPhase() {
+        return currentPhase;
     }
 
-    /**
-     * 手牌区
-     */
-    @Data
-    public static class HandArea implements Serializable{
-
-        private List<Card> cards;
-
-        public byte maxCard = 10;
-
+    public static void setCurrentPhase(WarPhaseEnum currentPhase) {
+        War.currentPhase = currentPhase;
     }
 
-    /**
-     * 牌库区
-     */
-    @Data
-    public static class DeckArea implements Serializable{
-
-
+    public static Player getMe() {
+        return me;
     }
 
-    /**
-     * 战场区
-     */
-    @Data
-    public static class PlayArea implements Serializable{
-
-        private List<Card> cards;
-
-        public static final byte maxCard = 7;
-
+    public static Player getRival() {
+        return rival;
     }
 
-    /**
-     * 墓地区
-     */
-    @Data
-    public static class GraveyardArea implements Serializable{
-
+    public static void setMe(Player me) {
+        War.me = me;
     }
 
-    /**
-     * 奥秘区
-     */
-    @Data
-    public static class SecretArea implements Serializable{
-
+    public static void setRival(Player rival) {
+        War.rival = rival;
     }
 
-    /**
-     * 除外区
-     */
-    @Data
-    public static class SetasideArea implements Serializable{
-        private String entityId;
+    static {
+        reset();
     }
 
-    /**
-     * 光环区
-     */
-    @Data
-    public static class BuffArea implements Serializable{
-
-        private byte spellDamage;
-
-        private byte spellCost;
-
-        private byte battleShoutCost;
-
+    public static void reset(){
+        currentPhase = null;
+        player1 = new Player();
+        player1.setPlayerId("1");
+        player2 = new Player();
+        player2.setPlayerId("2");
+        me = null;
+        rival = null;
+        CARD_AREA_MAP.clear();
+        log.info("已重置游戏");
     }
 
-    /**
-     * 英雄
-     */
-    @Data
-    public static class Hero implements Serializable{
-        private String cardId;
-
-        private byte health;
-
-        private byte armor;
+    public static Card exchangeAreaOfCard(ExtraEntity extraEntity){
+        Area sourceArea = CARD_AREA_MAP.get(extraEntity.getEntityId());
+        Area targetArea = War.getPlayer(extraEntity.getPlayerId()).getArea(extraEntity.getExtraCard().getZone());
+        Card sourceCard = sourceArea.removeByEntityId(extraEntity.getEntityId());
+        targetArea.add(sourceCard, extraEntity.getExtraCard().getZonePos());
+        return sourceCard;
     }
 
-    /**
-     * 技能
-     */
-    @Data
-    public static class Power implements Serializable{
-
-        private String cardId;
-
-        private byte cost;
-
-        private byte directDamage;
-
-        private byte indirectDamage;
-
+    public static Player getPlayer1(){
+        return player1;
     }
 
-
-    /**
-     * 卡牌
-     */
-    @Data
-    public static class Card implements Serializable{
-
-        private String cardId;
-
-        private String entityId;
-
-        private byte cost;
-
-        private byte atc;
-
-        private byte health;
-
-        private byte lastCost;
-
-        private byte lastAtc;
-
-        private byte lastHealth;
-
+    public static Player getPlayer2(){
+        return player2;
     }
 
-    /**
-     * 随从
-     */
-    @Data
-    public static class Minion extends Card implements Serializable{
-
-        private byte directDamage;
-
-        private byte indirectDamage;
-
-        private byte atcCount;
-
-        private byte isBattleShout;
-
-        private List<Race> race;
-
+    public static Player getPlayer(String playerId){
+        return player1.getPlayerId().equals(playerId)? player1 : player2;
     }
 
-    /**
-     * 种族
-     */
-    public static enum Race implements Serializable{
-
-        ;
-
+    public static Player testArea(Area area){
+        if (area == player1.getPlayArea()
+                || area == player1.getHandArea()
+                || area == player1.getDeckArea()
+                || area == player1.getGraveyardArea()
+                || area == player1.getRemovedfromgameArea()
+                || area == player1.getSecretArea()
+                || area == player1.getSetasideArea()
+        ){
+            return player1;
+        }
+        return player2;
     }
-
-    /**
-     * 法术
-     */
-    @Data
-    public static class Spell extends Card implements Serializable{
-
-        private byte directDamage;
-
-        private byte indirectDamage;
-
-    }
-
-    /**
-     * 武器
-     */
-    @Data
-    public static class Weapon extends Card implements Serializable{
-
-        private byte atcCount;
-    }
-
 }

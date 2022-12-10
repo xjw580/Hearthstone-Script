@@ -1,0 +1,44 @@
+<assembly xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2 http://maven.apache.org/xsd/assembly-1.1.2.xsd">
+
+    <id>distribution</id>
+
+    <!--最终输出生成zip文件 -->
+    <formats>
+        <format>zip</format>
+    </formats>
+
+    <includeBaseDirectory>false</includeBaseDirectory>
+
+    <!--设置需要分离的文件-->
+    <fileSets>
+        <fileSet>
+            <directory>src/main/resources/static</directory>
+            <includes>
+                <include>*.bat</include>
+                <include>*.sh</include>
+                <include>jdk-17.0.5/**</include>
+            </includes>
+            <outputDirectory>/</outputDirectory>
+        </fileSet>
+    </fileSets>
+
+    <dependencySets>
+        <dependencySet>
+            <!--依赖包的输出目录-->
+            <outputDirectory>/lib</outputDirectory>
+            <scope>runtime</scope>
+            <excludes>
+                <exclude>${project.groupId}:${project.artifactId}</exclude>
+            </excludes>
+        </dependencySet>
+        <dependencySet>
+            <!--jar包的输出目录-->
+            <outputDirectory>/</outputDirectory>
+            <includes>
+                <include>${project.groupId}:${project.artifactId}</include>
+            </includes>
+        </dependencySet>
+    </dependencySets>
+</assembly>
