@@ -1,6 +1,6 @@
 set curdir=%cd%
 for /f "delims=\" %%a in ('dir /b /a-d /o-d "%curdir%\*.jar"') do (
-    start jdk-17.0.5\bin\javaw -jar %%a
+    start javaw -jar %%a
 )
 
 echo .

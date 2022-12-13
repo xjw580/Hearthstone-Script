@@ -17,7 +17,6 @@
             <directory>src/main/resources/static</directory>
             <includes>
                 <include>*.bat</include>
-                <include>jdk-17.0.5/**</include>
             </includes>
             <outputDirectory>/</outputDirectory>
         </fileSet>

@@ -107,7 +107,6 @@
                 <configuration>
                     <excludes>
                         <exclude>**/static/*.bat</exclude>
-                        <exclude>**/static/jdk-17.0.5/**</exclude>
                     </excludes>
                     <archive>
                         <manifest>
