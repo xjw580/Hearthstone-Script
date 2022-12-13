@@ -12,12 +12,15 @@ import java.util.ArrayList;
 public class FilterPowerLogExtraUtil {
 
     public static void main(String[] args) {
-        filter();
+        filter("C:\\Users\\zerg\\Desktop\\wild.txt");
     }
 
+    /**
+     * 过滤官方的Power.log，只保留需要读取的信息
+     * @param path
+     */
     @SneakyThrows
-    public static void filter(){
-        String path = "C:\\Users\\zerg\\Desktop\\wild.txt";
+    public static void filter(String path){
         File file = new File(path);
         ArrayList<String> lists = new ArrayList<>();
         try(BufferedReader bufferedReader = new BufferedReader(new FileReader(file));

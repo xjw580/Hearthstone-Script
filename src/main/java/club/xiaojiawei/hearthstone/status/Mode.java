@@ -9,6 +9,7 @@ import java.io.Serializable;
 /**
  * @author 肖嘉威
  * @date 2022/11/25 0:09
+ * 当前模式
  */
 @ToString
 @Slf4j

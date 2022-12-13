@@ -7,7 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.*;
 
-import static club.xiaojiawei.hearthstone.constant.GameConst.CARD_AREA_MAP;
+import static club.xiaojiawei.hearthstone.constant.GameMapConst.CARD_AREA_MAP;
 
 /**
  * @author 肖嘉威
@@ -35,7 +35,9 @@ public abstract class Area {
     public void putZeroAreaCard(Card card){
         addZone(card);
         Player player = War.testArea(this);
-//        log.info("向玩家 " + (player == War.getPlayer1()? 1 : 2) + "-" + player.getGameId() + "的" + this.getClass().getSimpleName() + " 的zeroArea 添加卡牌， entityId:" + card.getEntityId());
+        if (log.isDebugEnabled()){
+            log.debug("向玩家 " + (player == War.getPlayer1()? 1 : 2) + "-" + player.getGameId() + "的" + this.getClass().getSimpleName() + " 的zeroArea 添加卡牌， entityId:" + card.getEntityId());
+        }
         zeroArea.put(card.getEntityId(), card);
     }
 
@@ -60,7 +62,7 @@ public abstract class Area {
             return false;
         }
         Player player = War.testArea(this);
-        log.info("向玩家 " + (player == War.getPlayer1()? 1 : 2) + "-" + player.getGameId() + "的" + this.getClass().getSimpleName() + " 添加卡牌， entityId:" + card.getEntityId());
+        log.info("向玩家" + (player == War.getPlayer1()? 1 : 2) + " - " + player.getGameId() + "的" + this.getClass().getSimpleName() + " 添加卡牌， entityId:" + card.getEntityId());
         cards.add(card);
         addZone(card);
         return true;
@@ -78,7 +80,7 @@ public abstract class Area {
             return false;
         }
         Player player = War.testArea(this);
-        log.info("向玩家 " + (player == War.getPlayer1()? 1 : 2) + "-" + player.getGameId() + "的" + this.getClass().getSimpleName() + " 添加卡牌， entityId:" + card.getEntityId());
+        log.info("向玩家" + (player == War.getPlayer1()? 1 : 2) + " - " + player.getGameId() + "的" + this.getClass().getSimpleName() + " 添加卡牌， entityId:" + card.getEntityId());
         if (cards.size() <= pos){
             cards.add(card);
         }else {

@@ -5,6 +5,7 @@ import club.xiaojiawei.hearthstone.enums.DeckEnum;
 /**
  * @author 肖嘉威
  * @date 2022/11/29 17:11
+ * 当前套牌
  */
 public class Deck {
 

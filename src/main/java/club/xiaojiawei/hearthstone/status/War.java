@@ -7,7 +7,7 @@ import club.xiaojiawei.hearthstone.entity.area.Area;
 import club.xiaojiawei.hearthstone.enums.WarPhaseEnum;
 import lombok.extern.slf4j.Slf4j;
 
-import static club.xiaojiawei.hearthstone.constant.GameConst.CARD_AREA_MAP;
+import static club.xiaojiawei.hearthstone.constant.GameMapConst.CARD_AREA_MAP;
 
 /**
  * @author 肖嘉威

@@ -1,17 +1,14 @@
-start jdk-17.0.5\bin\javaw -jar hearthstone-0.0.1-SNAPSHOT.jar
+set curdir=%cd%
+for /f "delims=\" %%a in ('dir /b /a-d /o-d "%curdir%\*.jar"') do (
+    start jdk-17.0.5\bin\javaw -jar %%a
+)
+
 echo .
 echo ------------ Start successfully --------------
 echo .
 echo ------------ Start successfully --------------
 echo .
 echo ------------ Start successfully --------------
-echo .
-echo ------------ 启动成功 --------------
-echo .
-echo ------------ 启动成功 --------------
-echo .
-echo ------------ 启动成功 --------------
-echo .
 
 timeout /t 5
 

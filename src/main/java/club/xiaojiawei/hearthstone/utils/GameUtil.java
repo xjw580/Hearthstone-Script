@@ -1,8 +1,10 @@
 package club.xiaojiawei.hearthstone.utils;
 
+import club.xiaojiawei.hearthstone.run.Core;
 import com.sun.jna.platform.win32.WinDef;
 
-import static club.xiaojiawei.hearthstone.constant.GameConst.*;
+import static club.xiaojiawei.hearthstone.constant.GameRatioConst.*;
+import static club.xiaojiawei.hearthstone.constant.SystemConst.ROBOT;
 
 /**
  * @author 肖嘉威
@@ -16,4 +18,17 @@ public class GameUtil {
                 (int) (gameRECT.bottom - (gameRECT.bottom - gameRECT.top) * BACK_BUTTON_VERTICAL_TO_BOTTOM_RATION) + RandomUtil.getRandom(-2, 2)
         );
     }
+
+    public static void surrender(){
+        ROBOT.keyPress(27);
+        ROBOT.keyRelease(27);
+        ROBOT.delay(2000);
+        WinDef.RECT rect = SystemUtil.getRect(Core.getGameHWND());
+        MouseUtil.leftButtonClick(
+                rect.right + rect.left >> 1,
+                (int) (rect.bottom - (rect.bottom - rect.top) * SURRENDER_BUTTON_VERTICAL_TO_BOTTOM_RATION)
+        );
+    }
+
+    public static final float SURRENDER_BUTTON_VERTICAL_TO_BOTTOM_RATION = (float) 0.652;
 }

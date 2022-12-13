@@ -18,25 +18,28 @@ spring:
 #    url: jdbc:sqlite::resource:static/sqlite/hearthstone.sqlite
 #mybatis:
 #  mapper-locations: classpath:static/mapper/*.xml
-logging:
-  config: classpath:config/logback-spring.xml
-log:
-  level: info
-  path: C:/ProgramData/hs_script/log
 
 game:
   name: "炉石传说"
-  properties:
-    path: C:/ProgramData/hs_script
-    name: /game.properties
   log:
     path:
       screen: /Logs/LoadingScreen.log
       power: /Logs/Power.log
-#      获取程序标题的命令
-command:
-  title: "Get-Process |where {$_.mainWindowTitle} |format-table id, name,mainwindowtitle -AutoSize"
+  config:
+    path: /Blizzard/Hearthstone/log.config
 platform:
   name: "战网"
 script:
   name: "炉石传说脚本"
+  main:
+    path: &path C:/ProgramData/hs_script/
+    name: game.properties
+log:
+  level: info
+  path: *path
+logging:
+  config: classpath:config/logback-spring.xml
+
+#      获取程序标题的命令
+command:
+  title: "Get-Process |where {$_.mainWindowTitle} |format-table id, name,mainwindowtitle -AutoSize"

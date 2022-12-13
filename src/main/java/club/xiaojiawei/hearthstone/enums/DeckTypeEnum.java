@@ -6,15 +6,22 @@ package club.xiaojiawei.hearthstone.enums;
  */
 public enum DeckTypeEnum {
 
-    STANDARD("标准"),
-    WILD("狂野"),
-    CLASSIC("经典"),
-    ROOKIE("新手")
+    STANDARD("STANDARD", "标准"),
+    WILD("WILD", "狂野"),
+    CLASSIC("CLASSIC", "经典"),
+    ROOKIE("ROOKIE", "新手"),
+    GENERAL("GENERAL", "通用")
     ;
+    private final String value;
     private final String comment;
 
-    DeckTypeEnum(String comment) {
+    DeckTypeEnum(String value, String comment) {
+        this.value = value;
         this.comment = comment;
+    }
+
+    public String getValue() {
+        return value;
     }
 
     public String getComment() {

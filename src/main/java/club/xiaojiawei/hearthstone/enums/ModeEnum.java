@@ -1,6 +1,6 @@
 package club.xiaojiawei.hearthstone.enums;
 
-import club.xiaojiawei.hearthstone.strategy.ModeStrategy;
+import club.xiaojiawei.hearthstone.strategy.AbstractModeStrategy;
 import club.xiaojiawei.hearthstone.strategy.mode.*;
 
 import java.util.function.Supplier;
@@ -12,24 +12,25 @@ import java.util.function.Supplier;
 public enum ModeEnum {
 
     STARTUP("STARTUP", "准备界面", null),
-    LOGIN("LOGIN", "登录界面", LoginModeStrategy::new),
-    HUB("HUB", "主界面", HubModeStrategy::new),
-    TOURNAMENT("TOURNAMENT", "传统对战界面", TournamentModeStrategy::new),
-    PACKOPENING("PACKOPENING", "开包界面", PackopeningModeStrategy::new),
-    COLLECTIONMANAGER("COLLECTIONMANAGER", "我的收藏界面", CollectionmanagerModeStrategy::new),
-    ADVENTURE("ADVENTURE", "冒险模式界面", AdventureModeStrategy::new),
-    LETTUCE_MAP("LETTUCE_MAP", "佣兵战纪界面", LettuceMapModeStrategy::new),
-    BACON("BACON", "酒馆战棋界面", BaconModeStrategy::new),
-    GAMEPLAY("GAMEPLAY", "游戏界面", GameplayModeStrategy::new),
-    GAME_MODE("GAME_MODE", "其他模式", GameModeStrategy::new),
-    UNKNOWN("UNKNOWN", "未知模式", UnknownModeStrategy::new)
+    LOGIN("LOGIN", "登录界面", LoginAbstractModeStrategy::new),
+    HUB("HUB", "主界面", HubAbstractModeStrategy::new),
+    TOURNAMENT("TOURNAMENT", "传统对战界面", TournamentAbstractModeStrategy::new),
+    PACKOPENING("PACKOPENING", "开包界面", PackopeningAbstractModeStrategy::new),
+    COLLECTIONMANAGER("COLLECTIONMANAGER", "我的收藏界面", CollectionmanagerAbstractModeStrategy::new),
+    ADVENTURE("ADVENTURE", "冒险模式界面", AdventureAbstractModeStrategy::new),
+    LETTUCE_MAP("LETTUCE_MAP", "佣兵战纪界面", LettuceMapAbstractModeStrategy::new),
+    BACON("BACON", "酒馆战棋界面", BaconAbstractModeStrategy::new),
+    GAMEPLAY("GAMEPLAY", "游戏界面", GameplayAbstractModeStrategy::new),
+    GAME_MODE("GAME_MODE", "其他模式", GameAbstractModeStrategy::new),
+    FATAL_ERROR("FATAL_ERROR", "致命错误", FatalErrorAbstractModeStrategy::new),
+    UNKNOWN("UNKNOWN", "未知模式", UnknownAbstractModeStrategy::new)
     ;
     private final String value;
 
     private final String comment;
 
-    private final Supplier<ModeStrategy> modeStrategy;
-    ModeEnum(String value, String comment, Supplier<ModeStrategy> modeStrategy) {
+    private final Supplier<AbstractModeStrategy> modeStrategy;
+    ModeEnum(String value, String comment, Supplier<AbstractModeStrategy> modeStrategy) {
         this.value = value;
         this.comment = comment;
         this.modeStrategy = modeStrategy;
@@ -43,7 +44,7 @@ public enum ModeEnum {
         return comment;
     }
 
-    public Supplier<ModeStrategy> getModeStrategy() {
+    public Supplier<AbstractModeStrategy> getModeStrategy() {
         return modeStrategy;
     }
 

@@ -10,7 +10,7 @@ import club.xiaojiawei.hearthstone.ws.WebSocketServer;
  * @author 肖嘉威
  * @version 1.0
  * @date 2022/9/28 上午10:11
- * @description 向mongo中存储日志
+ * @description 向ws客户端发送消息
  */
 public class WsAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
 

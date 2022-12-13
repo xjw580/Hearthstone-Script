@@ -101,10 +101,4 @@ public class CircleUtil {
         return r;
     }
 
-    public static void main(String[] args) {
-        double k, x1 = 0, y1 = 0, x2 = 0, y2 = 800, R = 400;
-        if (x2 - x1 == 0){
-        }
-
-    }
 }

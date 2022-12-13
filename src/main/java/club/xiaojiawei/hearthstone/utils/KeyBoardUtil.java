@@ -11,7 +11,7 @@ import com.sun.jna.platform.win32.WinUser;
  */
 public class KeyBoardUtil {
 
-    static WinUser.INPUT input = new WinUser.INPUT();
+    private final static WinUser.INPUT INPUT = new WinUser.INPUT();
 
     /**
      * 输入
@@ -19,22 +19,22 @@ public class KeyBoardUtil {
      */
     public static void  sendChar(char ch){
 
-        input.type = new WinDef.DWORD( WinUser.INPUT.INPUT_KEYBOARD );
-        input.input.setType("ki"); // Because setting INPUT_INPUT_KEYBOARD is not enough: https://groups.google.com/d/msg/jna-users/NDBGwC1VZbU/cjYCQ1CjBwAJ
-        input.input.ki.wScan = new WinDef.WORD( 0 );
-        input.input.ki.time = new WinDef.DWORD( 0 );
-        input.input.ki.dwExtraInfo = new BaseTSD.ULONG_PTR( 0 );
+        INPUT.type = new WinDef.DWORD( WinUser.INPUT.INPUT_KEYBOARD );
+        INPUT.input.setType("ki"); // Because setting INPUT_INPUT_KEYBOARD is not enough: https://groups.google.com/d/msg/jna-users/NDBGwC1VZbU/cjYCQ1CjBwAJ
+        INPUT.input.ki.wScan = new WinDef.WORD( 0 );
+        INPUT.input.ki.time = new WinDef.DWORD( 0 );
+        INPUT.input.ki.dwExtraInfo = new BaseTSD.ULONG_PTR( 0 );
         // Press
-        input.input.ki.wVk = new WinDef.WORD( Character.toUpperCase(ch) ); // 0x41
-        input.input.ki.dwFlags = new WinDef.DWORD( 0 );  // keydown
+        INPUT.input.ki.wVk = new WinDef.WORD( Character.toUpperCase(ch) ); // 0x41
+        INPUT.input.ki.dwFlags = new WinDef.DWORD( 0 );  // keydown
 
-        User32.INSTANCE.SendInput( new WinDef.DWORD( 1 ), ( WinUser.INPUT[] ) input.toArray( 1 ), input.size() );
+        User32.INSTANCE.SendInput( new WinDef.DWORD( 1 ), ( WinUser.INPUT[] ) INPUT.toArray( 1 ), INPUT.size() );
 
         // Release
-        input.input.ki.wVk = new WinDef.WORD( Character.toUpperCase(ch) ); // 0x41
-        input.input.ki.dwFlags = new WinDef.DWORD( 2 );  // keyup
+        INPUT.input.ki.wVk = new WinDef.WORD( Character.toUpperCase(ch) ); // 0x41
+        INPUT.input.ki.dwFlags = new WinDef.DWORD( 2 );  // keyup
 
-        User32.INSTANCE.SendInput( new WinDef.DWORD( 1 ), ( WinUser.INPUT[] ) input.toArray( 1 ), input.size() );
+        User32.INSTANCE.SendInput( new WinDef.DWORD( 1 ), ( WinUser.INPUT[] ) INPUT.toArray( 1 ), INPUT.size() );
 
     }
 

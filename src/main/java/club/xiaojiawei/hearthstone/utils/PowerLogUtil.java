@@ -3,18 +3,20 @@ package club.xiaojiawei.hearthstone.utils;
 import club.xiaojiawei.hearthstone.entity.*;
 import club.xiaojiawei.hearthstone.entity.area.Area;
 import club.xiaojiawei.hearthstone.status.War;
-import club.xiaojiawei.hearthstone.strategy.phase.GameTurnPhaseStrategy;
+import club.xiaojiawei.hearthstone.strategy.phase.GameTurnAbstractPhaseStrategy;
 import club.xiaojiawei.hearthstone.ws.WebSocketServer;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
 
+import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Objects;
 
-import static club.xiaojiawei.hearthstone.constant.GameConst.*;
+import static club.xiaojiawei.hearthstone.constant.GameMapConst.*;
+import static club.xiaojiawei.hearthstone.constant.GameKeyWordConst.*;
 import static club.xiaojiawei.hearthstone.constant.SystemConst.ROBOT;
 import static club.xiaojiawei.hearthstone.enums.TagEnum.*;
 
@@ -46,20 +48,6 @@ public class PowerLogUtil {
         area.add(card, extraEntity.getExtraCard().getZonePos());
     }
 
-    public static TagChangeEntity parseTagChange(String l){
-        int tagIndex = l.lastIndexOf("tag");
-        int valueIndex = l.lastIndexOf(VALUE);
-        int index = l.lastIndexOf("]");
-        TagChangeEntity tagChangeEntity = new TagChangeEntity();
-        tagChangeEntity.setTag(TAG_MAP.getOrDefault(l.substring(tagIndex + 4, valueIndex).strip(), UNKNOWN));
-        tagChangeEntity.setValue(l.substring(valueIndex + 6).strip());
-        if (index == -1){
-            tagChangeEntity.setEntity(l.substring(l.indexOf("Entity") + 7, tagIndex).strip());
-        }else {
-            parseCommonEntity(tagChangeEntity, l);
-        }
-        return tagChangeEntity;
-    }
     public static boolean dealTagChange(TagChangeEntity tagChangeEntity){
         if (tagChangeEntity.getTag() == UNKNOWN){
             return false;
@@ -68,6 +56,9 @@ public class PowerLogUtil {
         if (tagChangeEntity.getEntity() == null){
             Player player = War.getPlayer(tagChangeEntity.getPlayerId());
             Area area = CARD_AREA_MAP.get(tagChangeEntity.getEntityId());
+            if (area == null){
+                return false;
+            }
             Card card = area.getByEntityId(tagChangeEntity.getEntityId());
             switch (tagChangeEntity.getTag()){
                 case ZONE_POSITION -> {
@@ -95,24 +86,18 @@ public class PowerLogUtil {
         }else {
 //            处理简单
             switch (tagChangeEntity.getTag()){
-                case RESOURCES_USED -> {
-                    GameTurnPhaseStrategy.getCurrentPlayer().setUsedResources(Integer.parseInt(tagChangeEntity.getValue()));
-                }
-                case RESOURCES -> {
-                    GameTurnPhaseStrategy.getCurrentPlayer().setResources(Integer.parseInt(tagChangeEntity.getValue()));
-                }
-                case TEMP_RESOURCES -> {
-                    GameTurnPhaseStrategy.getCurrentPlayer().setTempResources(Integer.parseInt(tagChangeEntity.getValue()));
-                }
+                case RESOURCES_USED -> GameTurnAbstractPhaseStrategy.getCurrentPlayer().setUsedResources(Integer.parseInt(tagChangeEntity.getValue()));
+                case RESOURCES -> GameTurnAbstractPhaseStrategy.getCurrentPlayer().setResources(Integer.parseInt(tagChangeEntity.getValue()));
+                case TEMP_RESOURCES -> GameTurnAbstractPhaseStrategy.getCurrentPlayer().setTempResources(Integer.parseInt(tagChangeEntity.getValue()));
                 case PLAYSTATE -> {
                     String info;
-                    if (Objects.equals(tagChangeEntity.getValue(), "WON")){
+                    if (Objects.equals(tagChangeEntity.getValue(), WON)){
                         log.info(info = "本局游戏胜者：" + new String(tagChangeEntity.getEntity().getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8));
                         WebSocketServer.sendAllMessage(WsResult.ofScriptLog(info));
-                    }else if (Objects.equals(tagChangeEntity.getValue(), "LOST")){
+                    }else if (Objects.equals(tagChangeEntity.getValue(), LOST)){
                         log.info(info = "本局游戏败者：" + new String(tagChangeEntity.getEntity().getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8));
                         WebSocketServer.sendAllMessage(WsResult.ofScriptLog(info));
-                    }else if (Objects.equals(tagChangeEntity.getValue(), "CONCEDED")){
+                    }else if (Objects.equals(tagChangeEntity.getValue(), CONCEDED)){
                         log.info(info = "本局游戏投降者：" + new String(tagChangeEntity.getEntity().getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8));
                         WebSocketServer.sendAllMessage(WsResult.ofScriptLog(info));
                     }
@@ -123,6 +108,21 @@ public class PowerLogUtil {
             }
         }
         return true;
+    }
+
+    public static TagChangeEntity parseTagChange(String l){
+        int tagIndex = l.lastIndexOf("tag");
+        int valueIndex = l.lastIndexOf(VALUE);
+        int index = l.lastIndexOf("]");
+        TagChangeEntity tagChangeEntity = new TagChangeEntity();
+        tagChangeEntity.setTag(TAG_MAP.getOrDefault(l.substring(tagIndex + 4, valueIndex).strip(), UNKNOWN));
+        tagChangeEntity.setValue(l.substring(valueIndex + 6).strip());
+        if (index == -1){
+            tagChangeEntity.setEntity(l.substring(l.indexOf("Entity") + 7, tagIndex).strip());
+        }else {
+            parseCommonEntity(tagChangeEntity, l);
+        }
+        return tagChangeEntity;
     }
 
     public static Block parseBlock(String l){
@@ -136,7 +136,7 @@ public class PowerLogUtil {
         return block;
     }
 
-    private static final boolean[] sigh = new boolean[16];
+    private static final boolean[] SIGH = new boolean[16];
 
     /**
      * 处理只有tag和value的日志
@@ -145,7 +145,7 @@ public class PowerLogUtil {
      * @param accessFile
      * @return
      */
-    @SneakyThrows
+    @SneakyThrows(value = {IOException.class})
     public static ExtraEntity parseExtraEntity(String l, RandomAccessFile accessFile){
         ExtraEntity extraEntity = new ExtraEntity();
         parseCommonEntity(extraEntity, l);
@@ -155,56 +155,56 @@ public class PowerLogUtil {
                 ROBOT.delay(1000);
             }else if (l.lastIndexOf("    tag=") == -1){
                 accessFile.seek(mark);
-                Arrays.fill(sigh, false);
+                Arrays.fill(SIGH, false);
                 break;
-            }else if (!sigh[0] && l.lastIndexOf("CARDTYPE") != -1){
+            }else if (!SIGH[0] && l.lastIndexOf("CARDTYPE") != -1){
                 extraEntity.getExtraCard().setCardType(CARD_TYPE_MAP.get(parseValue(l)));
-                sigh[0] = true;
-            }else if (!sigh[1] && l.lastIndexOf(COST.getValue()) != -1){
+                SIGH[0] = true;
+            }else if (!SIGH[1] && l.lastIndexOf(COST.getValue()) != -1){
                 extraEntity.getExtraCard().setCost(Integer.parseInt(parseValue(l)));
-                sigh[1] = true;
-            }else if (!sigh[2] && l.lastIndexOf(ATK.getValue()) != -1){
+                SIGH[1] = true;
+            }else if (!SIGH[2] && l.lastIndexOf(ATK.getValue()) != -1){
                 extraEntity.getExtraCard().setAtc(Integer.parseInt(parseValue(l)));
-                sigh[2] = true;
-            }else if (!sigh[3] && l.lastIndexOf(HEALTH.getValue()) != -1){
+                SIGH[2] = true;
+            }else if (!SIGH[3] && l.lastIndexOf(HEALTH.getValue()) != -1){
                 extraEntity.getExtraCard().setHealth(Integer.parseInt(parseValue(l)));
-                sigh[3] = true;
-            }else if (!sigh[4] && l.lastIndexOf(ZONE.getValue()) != -1){
+                SIGH[3] = true;
+            }else if (!SIGH[4] && l.lastIndexOf(ZONE.getValue()) != -1){
                 extraEntity.getExtraCard().setZone(ZONE_MAP.get(parseValue(l)));
-                sigh[4] = true;
-            }else if (!sigh[5] && l.lastIndexOf(ZONE_POSITION.getValue()) != -1){
+                SIGH[4] = true;
+            }else if (!SIGH[5] && l.lastIndexOf(ZONE_POSITION.getValue()) != -1){
                 extraEntity.getExtraCard().setZonePos(Integer.parseInt(parseValue(l)));
-                sigh[5] = true;
-            }else if (!sigh[6] && l.lastIndexOf("ADJACENT_BUFF") != -1){
+                SIGH[5] = true;
+            }else if (!SIGH[6] && l.lastIndexOf("ADJACENT_BUFF") != -1){
                 extraEntity.getExtraCard().setAdjacentBuff("1".equals(parseValue(l)));
-                sigh[6] = true;
-            }else if (!sigh[7] && l.lastIndexOf(POISONOUS.getValue()) != -1){
+                SIGH[6] = true;
+            }else if (!SIGH[7] && l.lastIndexOf(POISONOUS.getValue()) != -1){
                 extraEntity.getExtraCard().setPoisonous("1".equals(parseValue(l)));
-                sigh[7] = true;
-            }else if (!sigh[8] && l.lastIndexOf(DEATHRATTLE.getValue()) != -1){
+                SIGH[7] = true;
+            }else if (!SIGH[8] && l.lastIndexOf(DEATHRATTLE.getValue()) != -1){
                 extraEntity.getExtraCard().setDeathRattle("1".equals(parseValue(l)));
-                sigh[8] = true;
-            }else if (!sigh[9] && l.lastIndexOf(EXHAUSTED.getValue()) != -1){
+                SIGH[8] = true;
+            }else if (!SIGH[9] && l.lastIndexOf(EXHAUSTED.getValue()) != -1){
                 extraEntity.getExtraCard().setExhausted("1".equals(parseValue(l)));
-                sigh[9] = true;
-            }else if (!sigh[10] && l.lastIndexOf(FROZEN.getValue()) != -1){
+                SIGH[9] = true;
+            }else if (!SIGH[10] && l.lastIndexOf(FROZEN.getValue()) != -1){
                 extraEntity.getExtraCard().setFrozen("1".equals(parseValue(l)));
-                sigh[10] = true;
-            }else if (!sigh[11] && l.lastIndexOf(TAUNT.getValue()) != -1){
+                SIGH[10] = true;
+            }else if (!SIGH[11] && l.lastIndexOf(TAUNT.getValue()) != -1){
                 extraEntity.getExtraCard().setTaunt("1".equals(parseValue(l)));
-                sigh[11] = true;
-            }else if (!sigh[12] && l.lastIndexOf(ARMOR.getValue()) != -1){
+                SIGH[11] = true;
+            }else if (!SIGH[12] && l.lastIndexOf(ARMOR.getValue()) != -1){
                 extraEntity.getExtraCard().setArmor(Integer.parseInt(parseValue(l)));
-                sigh[12] = true;
-            }else if (!sigh[13] && l.lastIndexOf(DIVINE_SHIELD.getValue()) != -1){
+                SIGH[12] = true;
+            }else if (!SIGH[13] && l.lastIndexOf(DIVINE_SHIELD.getValue()) != -1){
                 extraEntity.getExtraCard().setDivineShield("1".equals(parseValue(l)));
-                sigh[13] = true;
-            }else if (!sigh[14] && l.lastIndexOf(AURA.getValue()) != -1){
+                SIGH[13] = true;
+            }else if (!SIGH[14] && l.lastIndexOf(AURA.getValue()) != -1){
                 extraEntity.getExtraCard().setAura("1".equals(parseValue(l)));
-                sigh[14] = true;
-            }else if (!sigh[15] && l.lastIndexOf(STEALTH.getValue()) != -1){
+                SIGH[14] = true;
+            }else if (!SIGH[15] && l.lastIndexOf(STEALTH.getValue()) != -1){
                 extraEntity.getExtraCard().setStealth("1".equals(parseValue(l)));
-                sigh[15] = true;
+                SIGH[15] = true;
             }
             mark = accessFile.getFilePointer();
         }
@@ -221,13 +221,14 @@ public class PowerLogUtil {
         int entityNameIndex = l.lastIndexOf("entityName", entityIdIndex);
         commonEntity.setCardId(l.substring(cardIdIndex + 7, playerIndex).strip());
         if (Strings.isBlank(commonEntity.getCardId())){
+            //noinspection AlibabaLowerCamelCaseVariableNaming
             int cardIDIndex = l.lastIndexOf("CardID");
             if (cardIDIndex != -1){
                 commonEntity.setCardId(l.substring(cardIDIndex + 7).strip());
             }
         }
-        if (Strings.isNotBlank(commonEntity.getCardId()) && commonEntity.getCardId().contains("COIN")){
-            commonEntity.setCardId("COIN");
+        if (Strings.isNotBlank(commonEntity.getCardId()) && commonEntity.getCardId().contains(COIN)){
+            commonEntity.setCardId(COIN);
         }
         commonEntity.setPlayerId(l.substring(playerIndex + 7, index).strip());
         commonEntity.setZone(ZONE_MAP.get(l.substring(zoneIndex + 5, zonePosIndex).strip()));

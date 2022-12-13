@@ -1,13 +1,16 @@
 package club.xiaojiawei.hearthstone.ws;
 
+import club.xiaojiawei.hearthstone.constant.SystemConst;
 import club.xiaojiawei.hearthstone.entity.WsResult;
 import com.alibaba.fastjson.JSON;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import javax.websocket.*;
 import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
+import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 /**
@@ -28,6 +31,7 @@ public class WebSocketServer {
      * 建立WebSocket连接
      * @param session
      */
+    @SneakyThrows
     @OnOpen
     public void onOpen(Session session) {
         log.info("WS建立连接中,连接用户ID：{}", session.getId());
@@ -35,6 +39,7 @@ public class WebSocketServer {
         this.session = session;
         webSocketSet.add(this);
         log.info("WS建立连接完成,当前在线人数为：{}", webSocketSet.size());
+        session.getBasicRemote().sendText(JSON.toJSONString(WsResult.ofScriptLog("WS连接成功，按 Alt+P 关闭脚本，按 Ctrl+P 暂停脚本" + SystemConst.REST_TIME + "s")));
     }
 
     /**
@@ -80,5 +85,17 @@ public class WebSocketServer {
         }
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        WebSocketServer that = (WebSocketServer) o;
+        return Objects.equals(session, that.session);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(session);
+    }
 }
 

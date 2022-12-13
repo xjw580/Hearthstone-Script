@@ -1,8 +1,7 @@
 package club.xiaojiawei.hearthstone.run;
 
 import club.xiaojiawei.hearthstone.enums.ModeEnum;
-import club.xiaojiawei.hearthstone.listen.ScreenFileListen;
-import club.xiaojiawei.hearthstone.utils.InitUtil;
+import club.xiaojiawei.hearthstone.listener.ScreenFileListener;
 import club.xiaojiawei.hearthstone.utils.MouseUtil;
 import club.xiaojiawei.hearthstone.utils.RandomUtil;
 import club.xiaojiawei.hearthstone.utils.SystemUtil;
@@ -13,13 +12,12 @@ import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import static club.xiaojiawei.hearthstone.constant.GameConst.MODE_MAP;
+import static club.xiaojiawei.hearthstone.constant.GameMapConst.MODE_MAP;
 import static club.xiaojiawei.hearthstone.constant.SystemConst.PROPERTIES;
 
 /**
@@ -30,7 +28,7 @@ import static club.xiaojiawei.hearthstone.constant.SystemConst.PROPERTIES;
 @Component
 public class Core {
 
-    private static boolean pause = true;
+    private volatile static boolean pause = true;
     private static String gameName;
     private static String platformName;
     private static String scriptName;
@@ -78,6 +76,7 @@ public class Core {
                             new ProcessBuilder(platformPath).start();
                         }
                     } else {
+                        log.info(platformName + "正在运行");
                         platformTimer.cancel();
                         log.info("开始检查" + gameName);
 //                    判断脚本和炉石谁先启动
@@ -102,7 +101,7 @@ public class Core {
                         } else {
                             log.info(gameName + "正在运行");
                             gameHWND = SystemUtil.getHWND(gameName);
-                            ScreenFileListen.initReadScreenLog();
+                            ScreenFileListener.initReadScreenLog();
                         }
                     }
                 }

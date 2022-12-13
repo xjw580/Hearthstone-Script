@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
-    <title>dashboard</title>
+    <title>炉石传说脚本控制台</title>
+    <link rel="shortcut icon" th:href="@{ico/favicon.ico}" type="image/x-icon"/>
     <script th:src="@{js/jquery.js}"></script>
     <style>
         body{
@@ -155,10 +156,21 @@
             }
             ws.onclose = function(e){
                 console.log("websocket已断开", e);
+                window.close()
             }
             ws.onerror = function(e){
-                console.log("websocket发生错误", 2);
+                console.log("websocket发生错误", e);
             }
+            window.onbeforeunload = function() {
+                ws.close();
+            };
+            $.get("/dashboard/getStatus").then(data => {
+                if (data.resultStatus === "SUCCESS"){
+                    if (!data.data){
+                        $("#status").text("关闭")
+                    }
+                }
+            })
             $.get("/dashboard/getRunningTime").then(data => {
                 if (data.resultStatus === "SUCCESS"){
                     console.log(data)
@@ -191,7 +203,9 @@
             {path: val},
             data => {
                 if (data.resultStatus === "SUCCESS"){
-                    alert("保存成功")
+                    alert("保存成功，" + data.data)
+                }else if (data.resultStatus === "FAIL"){
+                    alert("保存失败，" + data.data)
                 }
             }
         )
@@ -203,7 +217,9 @@
             {path: val},
             data => {
                 if (data.resultStatus === "SUCCESS"){
-                    alert("保存成功")
+                    alert("保存成功，" + data.data)
+                }else if (data.resultStatus === "FAIL"){
+                    alert("保存失败，" + data.data)
                 }
             }
         )
