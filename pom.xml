@@ -10,7 +10,7 @@
     </parent>
     <groupId>club.xiaojiawei</groupId>
     <artifactId>hearthstone</artifactId>
-    <version>v1.0.0-GA</version>
+    <version>v1.0.2-GA</version>
     <name>hearthstone</name>
     <description>hearthstone</description>
     <properties>
