@@ -1,24 +1,3 @@
-server:
-  port: 8888
-
-spring:
-  thymeleaf:
-    #关闭模板缓存(默认为true)
-    cache: false
-    #模板编码
-    encoding: utf-8
-    #在构建URL时添加到视图名称前的前缀（默认值：classpath:/templates/）
-    prefix: classpath:/templates/
-    #在构建URL时添加到视图名称后的后缀（默认值：.html）
-    suffix: .html
-    mode: HTML5
-    check-template-location: true
-#  datasource:
-#    driver-class-name: org.sqlite.JDBC
-#    url: jdbc:sqlite::resource:static/sqlite/hearthstone.sqlite
-#mybatis:
-#  mapper-locations: classpath:static/mapper/*.xml
-
 game:
   name: "炉石传说"
   log:

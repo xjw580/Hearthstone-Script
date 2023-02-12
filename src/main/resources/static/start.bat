@@ -10,6 +10,6 @@ echo ------------ Start successfully --------------
 echo .
 echo ------------ Start successfully --------------
 
-timeout /t 5
+timeout /t 3
 
 exit

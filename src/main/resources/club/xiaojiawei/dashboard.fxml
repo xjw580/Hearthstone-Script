@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import club.xiaojiawei.customize.MyToolTip?>
+<?import javafx.collections.FXCollections?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.xiaojiawei.Switch?>
+<?import java.lang.*?>
+<?import javafx.geometry.Insets?>
+<Accordion xmlns:fx="http://javafx.com/fxml"
+           expandedPane="$titledPaneControl"
+           fx:id="accordion"
+           fx:controller="club.xiaojiawei.controller.DashboardController">
+    <panes>
+        <TitledPane text="控制" fx:id="titledPaneControl">
+            <GridPane>
+                <columnConstraints>
+                    <ColumnConstraints hgrow="SOMETIMES" />
+                    <ColumnConstraints hgrow="SOMETIMES" />
+                </columnConstraints>
+                <fx:define>
+                    <Double fx:value="40" fx:id="space"/>
+                    <Double fx:value="18" fx:id="imageSize"/>
+                </fx:define>
+                <rowConstraints>
+                    <RowConstraints minHeight="$space"   />
+                    <RowConstraints minHeight="$space"   />
+                    <RowConstraints minHeight="$space"   />
+                    <RowConstraints minHeight="$space"   />
+                </rowConstraints>
+                <children>
+                    <Button fx:id="startButton" text="开始" styleClass="btn, btn-xs, btn-success" onAction="#start">
+                        <tooltip>
+                            <MyToolTip text="开始游戏"/>
+                        </tooltip>
+                        <graphic>
+                            <ImageView fitHeight="$imageSize" fitWidth="$imageSize" translateX="-5">
+                                <Image url="@images/start.png"/>
+                            </ImageView>
+                        </graphic>
+                    </Button>
+                    <Button fx:id="pauseButton" disable="true" text="暂停" GridPane.columnIndex="1" styleClass="btn, btn-xs, btn-danger" onAction="#pause">
+                        <tooltip>
+                            <MyToolTip text="暂停程序"/>
+                        </tooltip>
+                        <graphic>
+                            <ImageView fitHeight="$imageSize" fitWidth="$imageSize" translateX="-5">
+                                <Image url="@images/pause.png"/>
+                            </ImageView>
+                        </graphic>
+                    </Button>
+                    <Label text="脚本卡组：" GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.columnSpan="2" contentDisplay="RIGHT">
+                        <graphic>
+                            <ComboBox editable="true" prefWidth="100" value="动物园" styleClass="split-menu-btn-info">
+                                <items>
+                                    <FXCollections fx:factory="observableArrayList">
+                                        <String fx:value="动物园"/>
+                                    </FXCollections>
+                                </items>
+                            </ComboBox>
+                        </graphic>
+                    </Label>
+
+                    <Label text="游戏局数：" GridPane.columnIndex="0" GridPane.rowIndex="2" GridPane.columnSpan="2" contentDisplay="RIGHT">
+                        <graphic>
+                            <Text text="0" fx:id="gameCount"/>
+                        </graphic>
+                    </Label>
+                    <Button onAction="#settings" text="设置" GridPane.columnIndex="0" GridPane.rowIndex="3" styleClass="btn, btn-xs, btn-info">
+                        <graphic>
+                            <ImageView fitHeight="$imageSize" fitWidth="$imageSize" translateX="-5">
+                                <Image url="@images/settings.png"/>
+                            </ImageView>
+                        </graphic>
+                    </Button>
+                </children>
+            </GridPane>
+        </TitledPane>
+        <TitledPane text="日志" fx:id="titledPaneLog">
+            <ScrollPane fx:id="logScrollPane" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED">
+                <VBox spacing="15">
+                    <padding>
+                        <Insets left="5" right="5" top="10" bottom="20"/>
+                    </padding>
+                    <Label contentDisplay="RIGHT" text="日志输出：" style="-fx-border-width: 3;-fx-font-size: 16">
+                        <graphic>
+                            <Switch fx:id="logSwitch"/>
+                        </graphic>
+                    </Label>
+                    <VBox maxWidth="${accordion.width}" spacing="6" fx:id="logVBox">
+                    </VBox>
+                </VBox>
+            </ScrollPane>
+        </TitledPane>
+    </panes>
+
+</Accordion>

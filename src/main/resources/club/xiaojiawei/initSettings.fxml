@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.text.Text?>
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:id="anchor"
+            fx:controller="club.xiaojiawei.controller.InitSettingsController"
+      >
+    <VBox spacing="15">
+        <padding>
+            <Insets top="10" left="10" bottom="10" right="10"/>
+        </padding>
+        <Label text="炉石传说安装路径：" contentDisplay="RIGHT" style="-fx-font-size: 13">
+            <graphic>
+                <Label fx:id="game" translateX="5" contentDisplay="RIGHT" underline="true" >
+                    <graphic>
+                        <Button translateX="10" onAction="#gameClicked" text="设置"/>
+                    </graphic>
+                </Label>
+            </graphic>
+        </Label>
+        <Label text="战网程序路径：" contentDisplay="RIGHT" style="-fx-font-size: 13">
+            <graphic>
+                <Label fx:id="platform" translateX="5" contentDisplay="RIGHT" underline="true" >
+                    <graphic>
+                        <Button translateX="10" onAction="#platformClicked" text="设置"/>
+                    </graphic>
+                </Label>
+            </graphic>
+        </Label>
+        <Text fx:id="tip"/>
+    </VBox>
+    <Button fx:id="apply" text="应用" styleClass="btn, btn-info, btn-sm" onAction="#apply"/>
+    <Button fx:id="save" text="保存" styleClass="btn, btn-success, btn-sm" onAction="#save"/>
+</AnchorPane>

@@ -44,10 +44,11 @@
     <appender name="file_async" class="ch.qos.logback.classic.AsyncAppender">
         <appender-ref ref="file"/>
     </appender>
-    <!--websocket-->
-    <appender name="ws" class="club.xiaojiawei.hearthstone.appender.WsAppender"/>
-    <logger name="club.xiaojiawei.hearthstone" level="info">
-        <appender-ref ref="ws"/>
+    <!--gui-->
+    <appender name="gui" class="club.xiaojiawei.appender.GuiAppender"/>
+    <!--输出到guiAppender-->
+    <logger name="club.xiaojiawei" level="info">
+        <appender-ref ref="gui"/>
     </logger>
     <root level="${logLevel}">
 <!--        todo 生产环境时关闭-->

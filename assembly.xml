@@ -14,15 +14,36 @@
     <!--设置需要分离的文件-->
     <fileSets>
         <fileSet>
+            <directory>${ project.basedir}</directory>
+            <outputDirectory></outputDirectory>
+            <includes>
+                <include>README*</include>
+                <include>LICENSE*</include>
+                <include>NOTICE*</include>
+            </includes>
+        </fileSet>
+        <fileSet>
             <directory>src/main/resources/static</directory>
             <includes>
                 <include>*.bat</include>
             </includes>
             <outputDirectory>/</outputDirectory>
         </fileSet>
+        <fileSet>
+            <directory>${ project.basedir}/src/main/resources</directory>
+            <outputDirectory>config</outputDirectory>
+        </fileSet>
+        <fileSet>
+            <directory></directory>
+            <outputDirectory></outputDirectory>
+            <includes>
+                <include>*.jar</include>
+            </includes>
+        </fileSet>
     </fileSets>
 
     <dependencySets>
+
         <dependencySet>
             <!--依赖包的输出目录-->
             <outputDirectory>/lib</outputDirectory>

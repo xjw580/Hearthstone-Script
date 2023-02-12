@@ -10,11 +10,12 @@
     </parent>
     <groupId>club.xiaojiawei</groupId>
     <artifactId>hearthstone</artifactId>
-    <version>v1.0.2-GA</version>
+    <version>v2.0.0-GA</version>
     <name>hearthstone</name>
     <description>hearthstone</description>
     <properties>
         <java.version>17</java.version>
+        <javafx-version>17.0.2</javafx-version>
     </properties>
     <dependencies>
         <!-- 监听全局键鼠包 -->
@@ -23,20 +24,12 @@
             <artifactId>jintellitype</artifactId>
             <version>1.4.1</version>
         </dependency>
-
         <!-- fastjson2 -->
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
             <version>2.0.20</version>
         </dependency>
-
-        <!--websocket-->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-websocket</artifactId>
-        </dependency>
-
         <!--访问系统本地库依赖-->
         <dependency>
             <groupId>net.java.dev.jna</groupId>
@@ -49,14 +42,6 @@
             <artifactId>jna-platform</artifactId>
             <version>5.12.1</version>
         </dependency>
-
-        <!--thymeleaf-->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-thymeleaf</artifactId>
-            <version>2.7.5</version>
-        </dependency>
-
         <!--lombok-->
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -64,13 +49,45 @@
             <version>1.18.24</version>
             <scope>provided</scope>
         </dependency>
-
-
+        <!--springboot-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
+            <artifactId>spring-boot-starter</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-tomcat</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
-
+        <!--javafx-->
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-swing</artifactId>
+            <version>${javafx-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-controls</artifactId>
+            <version>${javafx-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-fxml</artifactId>
+            <version>${javafx-version}</version>
+        </dependency>
+        <!--bootstrapfx UI库-->
+        <dependency>
+            <groupId>org.kordamp.bootstrapfx</groupId>
+            <artifactId>bootstrapfx-core</artifactId>
+            <version>0.4.0</version>
+        </dependency>
+        <!--组件补充库-->
+        <dependency>
+            <groupId>club.xiaojiawei</groupId>
+            <artifactId>javafx-controls</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -98,7 +115,13 @@
                     </execution>
                 </executions>
             </plugin>
-
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <skipTests>true</skipTests>
+                </configuration>
+            </plugin>
             <!-- 打包成jar包，并指定lib和resources文件夹位置 -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -111,7 +134,7 @@
                     <archive>
                         <manifest>
                             <!-- 入口Main Class -->
-                            <mainClass>club.xiaojiawei.hearthstone.HearthstoneApplication</mainClass>
+                            <mainClass>club.xiaojiawei.SpringApplication</mainClass>
                             <!-- 依赖的lib -->
                             <classpathPrefix>lib/</classpathPrefix>
                             <addClasspath>true</addClasspath>
