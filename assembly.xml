@@ -2,62 +2,57 @@
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2 http://maven.apache.org/xsd/assembly-1.1.2.xsd">
 
-    <id>distribution</id>
+    <id>app</id>
 
-    <!--最终输出生成zip文件 -->
+    <!--最终输出生成zip和tar.gz文件 -->
     <formats>
+<!--        <format>tar.gz</format>-->
         <format>zip</format>
     </formats>
 
     <includeBaseDirectory>false</includeBaseDirectory>
 
+    <dependencySets>
+        <dependencySet>
+            <!--依赖包的输出目录-->
+            <useProjectArtifact>false</useProjectArtifact>
+            <outputDirectory>lib</outputDirectory>
+            <unpack>false</unpack>
+        </dependencySet>
+    </dependencySets>
+
     <!--设置需要分离的文件-->
     <fileSets>
         <fileSet>
-            <directory>${ project.basedir}</directory>
-            <outputDirectory></outputDirectory>
+            <directory>${project.basedir}</directory>
+            <outputDirectory/>
             <includes>
                 <include>README*</include>
                 <include>LICENSE*</include>
+                <include>logback-spring.xml</include>
                 <include>NOTICE*</include>
             </includes>
         </fileSet>
         <fileSet>
-            <directory>src/main/resources/static</directory>
+            <directory>${project.basedir}/src/main/resources</directory>
+            <includes>
+                <include>application.yml</include>
+            </includes>
+            <outputDirectory/>
+        </fileSet>
+        <fileSet>
+            <directory>${project.basedir}/src/main/resources/bat</directory>
             <includes>
                 <include>*.bat</include>
             </includes>
-            <outputDirectory>/</outputDirectory>
+            <outputDirectory/>
         </fileSet>
         <fileSet>
-            <directory>${ project.basedir}/src/main/resources</directory>
-            <outputDirectory>config</outputDirectory>
-        </fileSet>
-        <fileSet>
-            <directory></directory>
-            <outputDirectory></outputDirectory>
+            <directory>${project.build.directory}</directory>
+            <outputDirectory/>
             <includes>
                 <include>*.jar</include>
             </includes>
         </fileSet>
     </fileSets>
-
-    <dependencySets>
-
-        <dependencySet>
-            <!--依赖包的输出目录-->
-            <outputDirectory>/lib</outputDirectory>
-            <scope>runtime</scope>
-            <excludes>
-                <exclude>${project.groupId}:${project.artifactId}</exclude>
-            </excludes>
-        </dependencySet>
-        <dependencySet>
-            <!--jar包的输出目录-->
-            <outputDirectory>/</outputDirectory>
-            <includes>
-                <include>${project.groupId}:${project.artifactId}</include>
-            </includes>
-        </dependencySet>
-    </dependencySets>
 </assembly>

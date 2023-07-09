@@ -8,11 +8,9 @@ import club.xiaojiawei.entity.Card;
  */
 public class GraveyardArea extends Area {
 
-
     public GraveyardArea() {
         super(Integer.MAX_VALUE);
     }
-
 
     @Override
     public void putZeroAreaCard(Card card) {

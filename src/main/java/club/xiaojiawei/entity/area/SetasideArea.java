@@ -10,7 +10,6 @@ public class SetasideArea extends Area{
     public SetasideArea() {
         super(Integer.MAX_VALUE);
     }
-
     @Override
     public void putZeroAreaCard(Card card) {
         add(card);

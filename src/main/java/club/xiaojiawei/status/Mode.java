@@ -14,12 +14,18 @@ import lombok.extern.slf4j.Slf4j;
 public class Mode{
 
     private static ModeEnum currMode;
-
     private static ModeEnum prevMode;
 
     public static void setCurrMode(ModeEnum currMode) {
+        if (currMode == null){
+            return;
+        }
+        if (Mode.currMode != null){
+            Mode.currMode.getAbstractModeStrategy().afterLeave();
+        }
         Mode.prevMode = Mode.currMode;
         Mode.currMode = currMode;
+        Mode.currMode.getAbstractModeStrategy().entering();
     }
 
     public static ModeEnum getCurrMode() {
@@ -33,6 +39,7 @@ public class Mode{
     public static void reset(){
         currMode = null;
         prevMode = null;
+        log.info("已重置模式状态");
     }
 
 }

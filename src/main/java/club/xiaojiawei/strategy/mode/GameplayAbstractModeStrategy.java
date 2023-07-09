@@ -2,40 +2,29 @@ package club.xiaojiawei.strategy.mode;
 
 import club.xiaojiawei.enums.ModeEnum;
 import club.xiaojiawei.status.Mode;
-import club.xiaojiawei.status.War;
 import club.xiaojiawei.strategy.AbstractModeStrategy;
-import club.xiaojiawei.strategy.AbstractPhaseStrategy;
-import club.xiaojiawei.utils.GameUtil;
 import lombok.extern.slf4j.Slf4j;
-
-import static club.xiaojiawei.constant.SystemConst.ROBOT;
+import org.springframework.stereotype.Component;
 
 /**
  * @author 肖嘉威
  * @date 2022/11/25 12:43
  */
 @Slf4j
-public class GameplayAbstractModeStrategy extends AbstractModeStrategy {
+@Component
+public class GameplayAbstractModeStrategy extends AbstractModeStrategy<Object> {
 
     @Override
-    public void intoMode() {
+    public void wantEnter() {
     }
 
     @Override
-    protected void log() {
-        Mode.setCurrMode(ModeEnum.GAMEPLAY);
-        log.info("切換到" + ModeEnum.GAMEPLAY.getComment());
-    }
-
-    @Override
-    protected void nextStep() {
-        if (Mode.getPrevMode() == ModeEnum.LOGIN || War.getCurrentPhase() != null){
+    protected void afterEnter(Object o) {
+        if (Mode.getPrevMode() == ModeEnum.LOGIN || Mode.getPrevMode() == null){
 //            投降
-            log.info("当前对局不完整，直接投降");
-            ROBOT.delay(3000);
-            GameUtil.surrender();
+            log.info("当前对局不完整，准备投降");
+            gameUtil.surrender();
         }
-        AbstractPhaseStrategy.dealing = false;
     }
 
 }

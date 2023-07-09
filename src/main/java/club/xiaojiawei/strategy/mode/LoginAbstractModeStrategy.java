@@ -1,18 +1,14 @@
 package club.xiaojiawei.strategy.mode;
 
-import club.xiaojiawei.enums.ModeEnum;
-import club.xiaojiawei.run.Core;
-import club.xiaojiawei.status.Mode;
+import club.xiaojiawei.custom.LogRunnable;
+import club.xiaojiawei.data.ScriptStaticData;
 import club.xiaojiawei.strategy.AbstractModeStrategy;
-import club.xiaojiawei.utils.MouseUtil;
-import club.xiaojiawei.utils.SystemUtil;
-import com.sun.jna.platform.win32.WinDef;
+import club.xiaojiawei.data.GameStaticData;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
-import java.util.Timer;
-import java.util.TimerTask;
-
-import static club.xiaojiawei.constant.GameRatioConst.CONFIRM_OR_CLOSE_BUTTON_VERTICAL_TO_BOTTOM_RATION;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -20,44 +16,33 @@ import static club.xiaojiawei.constant.GameRatioConst.CONFIRM_OR_CLOSE_BUTTON_VE
  * @date 2022/11/25 12:27
  */
 @Slf4j
-public class LoginAbstractModeStrategy extends AbstractModeStrategy {
+@Component
+public class LoginAbstractModeStrategy extends AbstractModeStrategy<Object> {
+    private static ScheduledFuture<?> scheduledFuture;
 
-    private static Timer timer;
-
-    public static void cancelTimer(){
-        if (timer != null){
-            timer.cancel();
-            timer = null;
+    public static void cancelTask(){
+        if (scheduledFuture != null && !scheduledFuture.isDone()){
+            scheduledFuture.cancel(true);
         }
     }
-
     @Override
-    public void intoMode() {
+    public void wantEnter() {
 
     }
-
     @Override
-    protected void log() {
-        Mode.setCurrMode(ModeEnum.LOGIN);
-        log.info("切換到" + ModeEnum.LOGIN.getComment());
-    }
-
-    @Override
-    protected void nextStep() {
-        timer = new Timer();
+    protected void afterEnter(Object o) {
 //        去除国服登陆时恼人的点击开始
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                if (!Core.getPause()){
-                    SystemUtil.frontWindow(Core.getGameHWND());
-                    WinDef.RECT rect = SystemUtil.getRect(Core.getGameHWND());
-                    MouseUtil.leftButtonClick(
-                            (rect.right + rect.left) >> 1,
-                            (int) (rect.bottom - (rect.bottom - rect.top) * CONFIRM_OR_CLOSE_BUTTON_VERTICAL_TO_BOTTOM_RATION)
-                    );
-                }
+        scheduledFuture = extraThreadPool.scheduleWithFixedDelay(new LogRunnable(() -> {
+            if (!isPause.get().get()){
+                systemUtil.frontWindow(ScriptStaticData.getGameHWND());
+                systemUtil.updateRect(ScriptStaticData.getGameHWND(), ScriptStaticData.GAME_RECT);
+                mouseUtil.leftButtonClick(
+                        (ScriptStaticData.GAME_RECT.right + ScriptStaticData.GAME_RECT.left) >> 1,
+                        (int) (ScriptStaticData.GAME_RECT.bottom - (ScriptStaticData.GAME_RECT.bottom - ScriptStaticData.GAME_RECT.top) * GameStaticData.CONFIRM_OR_CLOSE_BUTTON_VERTICAL_TO_BOTTOM_RATION)
+                );
+            }else {
+                cancelTask();
             }
-        }, 3000, 2000);
+        }), 3000, 2000, TimeUnit.MILLISECONDS);
     }
 }

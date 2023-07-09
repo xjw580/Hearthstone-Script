@@ -1,20 +1,30 @@
 package club.xiaojiawei.utils;
 
-import club.xiaojiawei.run.Core;
+import club.xiaojiawei.data.ScriptStaticData;
+import javafx.beans.property.BooleanProperty;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
-import static club.xiaojiawei.constant.SystemConst.*;
-import static java.awt.event.InputEvent.BUTTON1_DOWN_MASK;
+import javax.annotation.Resource;
+
+import java.util.concurrent.atomic.AtomicReference;
+
+import static java.awt.event.InputEvent.*;
 
 /**
  * @author 肖嘉威
  * @date 2022/11/24 110:18
  */
 @Slf4j
+@Component
 public class MouseUtil {
 
-    private static final int MOVE_INTERVAL = 6;
+    private static final int MOVE_INTERVAL = 7;
     private static final int MOVE_DISTANCE = 10;
+    @Resource
+    private AtomicReference<BooleanProperty> isPause;
+    @Resource
+    private SystemUtil systemUtil;
 
     /**
      * 鼠标左键从指定处拖拽到指定处
@@ -23,39 +33,41 @@ public class MouseUtil {
      * @param endX
      * @param endY
      */
-    public synchronized static void leftButtonDrag(int startX, int startY, int endX, int endY) {
-        if (Core.getPause()){
+    public void leftButtonDrag(int startX, int startY, int endX, int endY) {
+        if (isPause.get().get()){
             return;
         }
-        startX = pixelToPosX(startX);
-        startY = pixelToPosY(startY);
-        endX = pixelToPosX(endX);
-        endY = pixelToPosY(endY);
-        ROBOT.mouseMove(startX, startY);
-        ROBOT.delay(100);
-        ROBOT.mousePress(BUTTON1_DOWN_MASK);
-        SystemUtil.delayShort();
-        for (int i = 0; i < 50; i++) {
-            ROBOT.mouseMove(startX, --startY);
-            ROBOT.delay(MOVE_INTERVAL);
-        }
-        SystemUtil.delayShort();
-        if (startX == endX){
-            for (startY -= MOVE_DISTANCE; startY >= endY; startY -= MOVE_DISTANCE){
-                ROBOT.mouseMove(startX, startY);
-                ROBOT.delay(MOVE_INTERVAL);
+        synchronized (MouseUtil.class){
+            startX = pixelToPosX(startX);
+            startY = pixelToPosY(startY);
+            endX = pixelToPosX(endX);
+            endY = pixelToPosY(endY);
+            ScriptStaticData.ROBOT.mouseMove(startX, startY);
+            ScriptStaticData.ROBOT.delay(100);
+            ScriptStaticData.ROBOT.mousePress(BUTTON1_DOWN_MASK);
+            systemUtil.delayShort();
+            for (int i = 0; i < 50; i++) {
+                ScriptStaticData.ROBOT.mouseMove(startX, --startY);
+                ScriptStaticData.ROBOT.delay(MOVE_INTERVAL);
             }
-        }else {
-            double k = (double)(startY - endY) / (startX - endX);
-            double b = startY - k * startX;
-            for (startY -= MOVE_DISTANCE; startY >= endY; startY -= MOVE_DISTANCE){
-                ROBOT.mouseMove((int) ((startY - b) / k), startY);
-                ROBOT.delay(MOVE_INTERVAL);
+            systemUtil.delayShort();
+            if (startX == endX){
+                for (startY -= MOVE_DISTANCE; startY >= endY; startY -= MOVE_DISTANCE){
+                    ScriptStaticData.ROBOT.mouseMove(startX, startY);
+                    ScriptStaticData.ROBOT.delay(MOVE_INTERVAL);
+                }
+            }else {
+                double k = (double)(startY - endY) / (startX - endX);
+                double b = startY - k * startX;
+                for (startY -= MOVE_DISTANCE; startY >= endY; startY -= MOVE_DISTANCE){
+                    ScriptStaticData.ROBOT.mouseMove((int) ((startY - b) / k), startY);
+                    ScriptStaticData.ROBOT.delay(MOVE_INTERVAL);
+                }
             }
+            ScriptStaticData.ROBOT.delay(200);
+            ScriptStaticData.ROBOT.mouseRelease(BUTTON1_DOWN_MASK);
+            ScriptStaticData.ROBOT.delay(100);
         }
-        ROBOT.delay(100);
-        ROBOT.mouseRelease(BUTTON1_DOWN_MASK);
-        ROBOT.delay(300);
     }
 
     /**
@@ -65,34 +77,36 @@ public class MouseUtil {
      * @param endX
      * @param endY
      */
-    public synchronized static void leftButtonMoveThenClick(int startX, int startY, int endX, int endY){
-        if (Core.getPause()){
+    public void leftButtonMoveThenClick(int startX, int startY, int endX, int endY){
+        if (isPause.get().get()){
             return;
         }
-        startX = pixelToPosX(startX);
-        startY = pixelToPosY(startY);
-        endX = pixelToPosX(endX);
-        endY = pixelToPosY(endY);
-        ROBOT.mouseMove(startX, startY);
-        ROBOT.delay(100);
-        if (Math.abs(startY - endY) < 20){
-            for (startX -= MOVE_DISTANCE; startX >= endX; startX -= MOVE_DISTANCE){
-                ROBOT.mouseMove(startX, startY);
-                ROBOT.delay(MOVE_INTERVAL);
+        synchronized (MouseUtil.class){
+            startX = pixelToPosX(startX);
+            startY = pixelToPosY(startY);
+            endX = pixelToPosX(endX);
+            endY = pixelToPosY(endY);
+            ScriptStaticData.ROBOT.mouseMove(startX, startY);
+            ScriptStaticData.ROBOT.delay(100);
+            if (Math.abs(startY - endY) < 20){
+                for (startX -= MOVE_DISTANCE; startX >= endX; startX -= MOVE_DISTANCE){
+                    ScriptStaticData.ROBOT.mouseMove(startX, startY);
+                    ScriptStaticData.ROBOT.delay(MOVE_INTERVAL);
+                }
+            }else {
+                double k = (double)(startY - endY) / (startX - endX);
+                double b = startY - k * startX;
+                for (startY -= MOVE_DISTANCE; startY >= endY; startY -= MOVE_DISTANCE){
+                    ScriptStaticData.ROBOT.mouseMove((int) ((startY - b) / k), startY);
+                    ScriptStaticData.ROBOT.delay(MOVE_INTERVAL);
+                }
             }
-        }else {
-            double k = (double)(startY - endY) / (startX - endX);
-            double b = startY - k * startX;
-            for (startY -= MOVE_DISTANCE; startY >= endY; startY -= MOVE_DISTANCE){
-                ROBOT.mouseMove((int) ((startY - b) / k), startY);
-                ROBOT.delay(MOVE_INTERVAL);
-            }
+            systemUtil.delayShort();
+            ScriptStaticData.ROBOT.mousePress(BUTTON1_DOWN_MASK);
+            ScriptStaticData.ROBOT.delay(100);
+            ScriptStaticData.ROBOT.mouseRelease(BUTTON1_DOWN_MASK);
+            ScriptStaticData.ROBOT.delay(300);
         }
-        SystemUtil.delayShort();
-        ROBOT.mousePress(BUTTON1_DOWN_MASK);
-        ROBOT.delay(100);
-        ROBOT.mouseRelease(BUTTON1_DOWN_MASK);
-        ROBOT.delay(300);
     }
 
     /**
@@ -100,24 +114,33 @@ public class MouseUtil {
      * @param x
      * @param y
      */
-    public synchronized static void leftButtonClick(int x, int y){
-        if (Core.getPause()){
+    public void leftButtonClick(int x, int y){
+        if (isPause.get().get()){
             return;
         }
-        x = pixelToPosX(x);
-        y = pixelToPosY(y);
-        ROBOT.mouseMove(x, y);
-        ROBOT.delay(100);
-        ROBOT.mousePress(BUTTON1_DOWN_MASK);
-        ROBOT.delay(100);
-        ROBOT.mouseRelease(BUTTON1_DOWN_MASK);
-        ROBOT.delay(200);
+        synchronized (MouseUtil.class){
+            x = pixelToPosX(x);
+            y = pixelToPosY(y);
+            ScriptStaticData.ROBOT.mouseMove(x, y);
+            ScriptStaticData.ROBOT.delay(100);
+            ScriptStaticData.ROBOT.mousePress(BUTTON1_DOWN_MASK);
+            ScriptStaticData.ROBOT.delay(100);
+            ScriptStaticData.ROBOT.mouseRelease(BUTTON1_DOWN_MASK);
+            ScriptStaticData.ROBOT.delay(200);
+        }
     }
 
-    public static int pixelToPosX(int pixelX){
-        return (int) (pixelX / UI_SCALE_X);
+    private int pixelToPosX(int pixelX){
+        return (int) (pixelX / ScriptStaticData.DISPLAY_SCALE_X);
     }
-    public static int pixelToPosY(int pixelY){
-        return (int) (pixelY / UI_SCALE_Y);
+    private int pixelToPosY(int pixelY){
+        return (int) (pixelY / ScriptStaticData.DISPLAY_SCALE_Y);
+    }
+    public void cancel(){
+        systemUtil.delayMedium();
+//        点击右键
+        ScriptStaticData.ROBOT.mousePress(BUTTON3_DOWN_MASK);
+        ScriptStaticData.ROBOT.delay(200);
+        ScriptStaticData.ROBOT.mouseRelease(BUTTON3_DOWN_MASK);
     }
 }

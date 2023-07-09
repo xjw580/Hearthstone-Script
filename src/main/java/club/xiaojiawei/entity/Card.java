@@ -2,22 +2,22 @@ package club.xiaojiawei.entity;
 
 import club.xiaojiawei.enums.CardTypeEnum;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 /**
+ * 属性来源于{@link club.xiaojiawei.enums.TagEnum}
  * @author 肖嘉威
  * @date 2022/11/27 14:56
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
 @ToString(callSuper = true)
 public class Card extends Entity{
 
     private CardTypeEnum cardType;
-
-    private int cost;
-
+    private volatile int cost;
     private int atc;
-
     private int health;
     private int armor;
     private int damage;
@@ -44,11 +44,11 @@ public class Card extends Entity{
     /**
      * 嘲讽
      */
-    private boolean taunt;
+    private volatile boolean taunt;
     /**
      * 圣盾
      */
-    private boolean divineShield;
+    private volatile boolean divineShield;
     /**
      * 光环
      */
@@ -56,13 +56,36 @@ public class Card extends Entity{
     /**
      * 潜行
      */
-    private boolean stealth;
+    private volatile boolean stealth;
     /**
      * 冰冻
      */
-    private boolean frozen;
+    private volatile boolean frozen;
 
-    private boolean exhausted;
+    private volatile boolean exhausted;
+    /**
+     * 风怒
+     */
+    private volatile boolean windFury;
+    /**
+     * 战吼
+     */
+    private boolean battlecry;
+
+    /**
+     * 不能被法术指向
+     */
+    private boolean cantBeTargetedBySpells;
+
+    /**
+     * 不能被英雄技能指向
+     */
+    private boolean cantBeTargetedByHeroPowers;
+
+    /**
+     * 休眠
+     */
+    private boolean spawnTimeCount;
 
     public Card() {
     }
@@ -91,6 +114,13 @@ public class Card extends Entity{
         divineShield = extraEntity.getExtraCard().isDivineShield();
         aura = extraEntity.getExtraCard().isAura();
         stealth = extraEntity.getExtraCard().isStealth();
+        frozen = extraEntity.getExtraCard().isFrozen();
+        exhausted = extraEntity.getExtraCard().isExhausted();
+        windFury = extraEntity.getExtraCard().isWindFury();
+        battlecry = extraEntity.getExtraCard().isBattlecry();
+        cantBeTargetedBySpells = extraEntity.getExtraCard().isCantBeTargetedBySpells();
+        cantBeTargetedByHeroPowers = extraEntity.getExtraCard().isCantBeTargetedByHeroPowers();
+        spawnTimeCount = extraEntity.getExtraCard().isSpawnTimeCount();
     }
 
 }

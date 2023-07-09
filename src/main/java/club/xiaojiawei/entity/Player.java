@@ -3,7 +3,9 @@ package club.xiaojiawei.entity;
 import club.xiaojiawei.entity.area.*;
 import club.xiaojiawei.enums.ZoneEnum;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.SneakyThrows;
+import lombok.ToString;
 
 import java.nio.charset.StandardCharsets;
 
@@ -11,7 +13,9 @@ import java.nio.charset.StandardCharsets;
  * @author 肖嘉威
  * @date 2022/11/27 15:03
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
+@ToString(callSuper = true)
 public class Player extends Entity{
 
     private String playerId;
@@ -27,19 +31,20 @@ public class Player extends Entity{
     private final GraveyardArea graveyardArea;
 
     private final DeckArea deckArea;
+
     private final SetasideArea setasideArea;
 
     private final RemovedfromgameArea removedfromgameArea;
 
-    private int maxResources = 10;
+    private volatile int maxResources = 10;
 
-    private int resources;
+    private volatile int resources;
 
-    private int usedResources;
+    private volatile int usedResources;
 
-    private int tempResources;
+    private volatile int tempResources;
 
-    private int usedTempResources;
+    private volatile int usedTempResources;
 
     public Player() {
         this.handArea = new HandArea();

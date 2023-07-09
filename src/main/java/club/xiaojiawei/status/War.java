@@ -1,14 +1,16 @@
 package club.xiaojiawei.status;
 
+import club.xiaojiawei.data.GameStaticData;
 import club.xiaojiawei.entity.Card;
 import club.xiaojiawei.entity.ExtraEntity;
 import club.xiaojiawei.entity.Player;
 import club.xiaojiawei.entity.area.Area;
 import club.xiaojiawei.enums.WarPhaseEnum;
+import club.xiaojiawei.strategy.AbstractDeckStrategy;
+import club.xiaojiawei.strategy.AbstractPhaseStrategy;
+import club.xiaojiawei.strategy.phase.GameTurnAbstractPhaseStrategy;
 import javafx.beans.property.SimpleIntegerProperty;
 import lombok.extern.slf4j.Slf4j;
-
-import static club.xiaojiawei.constant.GameMapConst.CARD_AREA_MAP;
 
 /**
  * @author 肖嘉威
@@ -19,21 +21,29 @@ import static club.xiaojiawei.constant.GameMapConst.CARD_AREA_MAP;
 @Slf4j
 public class War {
 
-    public static SimpleIntegerProperty warCount = new SimpleIntegerProperty();
-    private static WarPhaseEnum currentPhase;
-    private static Player me;
-    private static Player rival;
+    public final static SimpleIntegerProperty warCount = new SimpleIntegerProperty();
+    private volatile static WarPhaseEnum currentPhase;
+    private volatile static Player me;
+    private volatile static Player rival;
 
-    private static Player player1;
+    private volatile static Player player1;
 
-    private static Player player2;
+    private volatile static Player player2;
 
     public static WarPhaseEnum getCurrentPhase() {
         return currentPhase;
     }
 
+    public static synchronized void increaseWarCount(){
+        warCount.set(warCount.get() + 1);
+    }
+
     public static void setCurrentPhase(WarPhaseEnum currentPhase) {
+        setCurrentPhase(currentPhase, null);
+    }
+    public static void setCurrentPhase(WarPhaseEnum currentPhase, String l) {
         War.currentPhase = currentPhase;
+        currentPhase.getAbstractPhaseStrategy().dealing(l);
     }
 
     public static Player getMe() {
@@ -57,19 +67,22 @@ public class War {
     }
 
     public static void reset(){
-        currentPhase = null;
+        AbstractDeckStrategy.setMyTurn(false);
         player1 = new Player();
         player1.setPlayerId("1");
         player2 = new Player();
         player2.setPlayerId("2");
+        AbstractPhaseStrategy.setDealing(false);
+        GameStaticData.CARD_AREA_MAP.clear();
+        GameTurnAbstractPhaseStrategy.reset();
         me = null;
         rival = null;
-        CARD_AREA_MAP.clear();
-        log.info("已重置游戏");
+        currentPhase = null;
+        log.info("已重置游戏状态");
     }
 
     public static Card exchangeAreaOfCard(ExtraEntity extraEntity){
-        Area sourceArea = CARD_AREA_MAP.get(extraEntity.getEntityId());
+        Area sourceArea = GameStaticData.CARD_AREA_MAP.get(extraEntity.getEntityId());
         Area targetArea = War.getPlayer(extraEntity.getPlayerId()).getArea(extraEntity.getExtraCard().getZone());
         Card sourceCard = sourceArea.removeByEntityId(extraEntity.getEntityId());
         targetArea.add(sourceCard, extraEntity.getExtraCard().getZonePos());

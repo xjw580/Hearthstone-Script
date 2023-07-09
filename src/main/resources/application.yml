@@ -1,24 +1,22 @@
 game:
-  name: "炉石传说"
   log:
-    path:
-      screen: /Logs/LoadingScreen.log
-      power: /Logs/Power.log
-  config:
-    path: /Blizzard/Hearthstone/log.config
-platform:
-  name: "战网"
+    configuration:
+      path: ${LOCALAPPDATA:}/Blizzard/Hearthstone/log.config
+    out:
+      path: /Logs/
+      file:
+        screen: /LoadingScreen.log
+        power: /Power.log
 script:
-  name: "炉石传说脚本"
-  main:
-    path: &path C:/ProgramData/hs_script/
-    name: game.properties
+  path: ${PROGRAMDATA:C:\ProgramData}/hs_script/
+  configuration:
+    file: ${script.path}/script.properties
 log:
   level: info
-  path: *path
+  path: ${script.path}
 logging:
-  config: classpath:config/logback-spring.xml
-
-#      获取程序标题的命令
-command:
-  title: "Get-Process |where {$_.mainWindowTitle} |format-table id, name,mainwindowtitle -AutoSize"
+  config: logback-spring.xml
+#  禁用web容器
+spring:
+  main:
+    web-application-type: none

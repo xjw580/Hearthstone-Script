@@ -1,52 +1,47 @@
 package club.xiaojiawei.strategy.phase;
 
-import club.xiaojiawei.enums.WarPhaseEnum;
 import club.xiaojiawei.listener.PowerFileListener;
-import club.xiaojiawei.status.War;
 import club.xiaojiawei.strategy.AbstractPhaseStrategy;
 import club.xiaojiawei.utils.PowerLogUtil;
+import club.xiaojiawei.data.GameStaticData;
+import club.xiaojiawei.data.ScriptStaticData;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
 import java.io.RandomAccessFile;
-
-import static club.xiaojiawei.constant.GameKeyWordConst.*;
-import static club.xiaojiawei.constant.SystemConst.ROBOT;
 
 /**
  * @author 肖嘉威
  * @date 2022/11/26 17:23
  */
 @Slf4j
-public class SpecialEffectTriggerAbstractPhaseStrategy extends AbstractPhaseStrategy {
+@Component
+public class SpecialEffectTriggerAbstractPhaseStrategy extends AbstractPhaseStrategy<String> {
 
     @SneakyThrows
     @Override
-    public void dealing(String l) {
-        War.setCurrentPhase(WarPhaseEnum.SPECIAL_EFFECT_TRIGGER_PHASE);
-        log.info("当前处于：" + War.getCurrentPhase().getComment());
-        RandomAccessFile accessFile = PowerFileListener.getAccessFile();
+    protected void execute(String l, RandomAccessFile accessFile) {
         long mark = accessFile.getFilePointer();
-        while (true) {
+        while (!isPause.get().get()) {
             if ((l = accessFile.readLine()) == null) {
-                if (accessFile.getFilePointer() > accessFile.length()){
+                if (accessFile.getFilePointer() > accessFile.length()) {
                     accessFile.seek(0);
-                }else {
-                    ROBOT.delay(1000);
+                } else {
+                    ScriptStaticData.ROBOT.delay(1000);
                 }
-            }else if (PowerFileListener.isRelevance(l)){
+            } else if (powerFileListener.isRelevance(l)) {
                 PowerFileListener.setMark(System.currentTimeMillis());
-               if (l.contains("MAIN_READY")){
+                if (l.contains("MAIN_READY")) {
                     accessFile.seek(mark);
-                   log.info(War.getCurrentPhase().getComment() + " -> 结束");
                     break;
-                }else if (l.contains(SHOW_ENTITY)){
-                   PowerLogUtil.dealShowEntity(l, accessFile);
-               }else if (l.contains(FULL_ENTITY)){
-                   PowerLogUtil.dealFullEntity(l, accessFile);
-               }else if (l.contains(TAG_CHANGE)){
-                   PowerLogUtil.dealTagChange(PowerLogUtil.parseTagChange(l));
-               }
+                } else if (l.contains(GameStaticData.SHOW_ENTITY)) {
+                    PowerLogUtil.dealShowEntity(l, accessFile);
+                } else if (l.contains(GameStaticData.FULL_ENTITY)) {
+                    PowerLogUtil.dealFullEntity(l, accessFile);
+                } else if (l.contains(GameStaticData.TAG_CHANGE)) {
+                    PowerLogUtil.dealTagChange(PowerLogUtil.parseTagChange(l));
+                }
             }
             mark = accessFile.getFilePointer();
         }

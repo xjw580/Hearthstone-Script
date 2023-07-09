@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
@@ -21,7 +18,7 @@
             <graphic>
                 <Label fx:id="game" translateX="5" contentDisplay="RIGHT" underline="true" >
                     <graphic>
-                        <Button translateX="10" onAction="#gameClicked" text="设置"/>
+                        <Button translateX="10" onAction="#gameClicked" text="选择"/>
                     </graphic>
                 </Label>
             </graphic>
@@ -30,7 +27,7 @@
             <graphic>
                 <Label fx:id="platform" translateX="5" contentDisplay="RIGHT" underline="true" >
                     <graphic>
-                        <Button translateX="10" onAction="#platformClicked" text="设置"/>
+                        <Button translateX="10" onAction="#platformClicked" text="选择"/>
                     </graphic>
                 </Label>
             </graphic>

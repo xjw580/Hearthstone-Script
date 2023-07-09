@@ -1,59 +1,51 @@
 package club.xiaojiawei.strategy.mode;
 
-import club.xiaojiawei.enums.ModeEnum;
-import club.xiaojiawei.run.Core;
+import club.xiaojiawei.custom.LogRunnable;
+import club.xiaojiawei.data.ScriptStaticData;
 import club.xiaojiawei.status.Mode;
 import club.xiaojiawei.strategy.AbstractModeStrategy;
-import club.xiaojiawei.utils.MouseUtil;
 import club.xiaojiawei.utils.RandomUtil;
-import club.xiaojiawei.utils.SystemUtil;
-import com.sun.jna.platform.win32.WinDef;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
-import java.util.Timer;
-import java.util.TimerTask;
+import javax.annotation.Resource;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
-import static club.xiaojiawei.constant.GameMapConst.MODE_MAP;
-import static club.xiaojiawei.constant.SystemConst.PROPERTIES;
+import static club.xiaojiawei.enums.ModeEnum.GAME_MODE;
 
 /**
  * @author 肖嘉威
  * @date 2022/11/26 21:44
  */
 @Slf4j
-public class GameAbstractModeStrategy extends AbstractModeStrategy {
+@Component
+public class GameAbstractModeStrategy extends AbstractModeStrategy<Object> {
 
     public static final float GAME_MODE_BUTTON_VERTICAL_TO_BOTTOM_RATIO = (float) 0.475;
-
+    @Resource
+    private ScheduledThreadPoolExecutor extraThreadPool;
+    ScheduledFuture<?> scheduledFuture;
     @Override
-    public void intoMode() {
-        Timer timer = new Timer();
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                if (Mode.getCurrMode() != ModeEnum.GAME_MODE){
-                    SystemUtil.frontWindow(Core.getGameHWND());
-                    WinDef.RECT gameRECT = SystemUtil.getRect(Core.getGameHWND());
-                    MouseUtil.leftButtonClick(
-                            ((gameRECT.right + gameRECT.left) >> 1) + RandomUtil.getRandom(-15, 15),
-                            (int) (gameRECT.bottom - (gameRECT.bottom - gameRECT.top) * GAME_MODE_BUTTON_VERTICAL_TO_BOTTOM_RATIO) + RandomUtil.getRandom(-5, 5)
-                    );
-                }else {
-                    timer.cancel();
-                }
+    public void wantEnter() {
+        scheduledFuture = extraThreadPool.scheduleWithFixedDelay(new LogRunnable(() -> {
+            if (isPause.get().get()){
+                scheduledFuture.cancel(true);
+            }else if (Mode.getCurrMode() != GAME_MODE){
+                systemUtil.frontWindow(ScriptStaticData.getGameHWND());
+                systemUtil.updateRect(ScriptStaticData.getGameHWND(), ScriptStaticData.GAME_RECT);
+                mouseUtil.leftButtonClick(
+                        ((ScriptStaticData.GAME_RECT.right + ScriptStaticData.GAME_RECT.left) >> 1) + RandomUtil.getRandom(-15, 15),
+                        (int) (ScriptStaticData.GAME_RECT.bottom - (ScriptStaticData.GAME_RECT.bottom - ScriptStaticData.GAME_RECT.top) * GAME_MODE_BUTTON_VERTICAL_TO_BOTTOM_RATIO) + RandomUtil.getRandom(-5, 5)
+                );
+            }else {
+                scheduledFuture.cancel(true);
             }
-        }, delayTime, intervalTime);
+        }), DELAY_TIME, INTERVAL_TIME, TimeUnit.MILLISECONDS);
     }
-
     @Override
-    protected void log() {
-        Mode.setCurrMode(ModeEnum.GAME_MODE);
-        log.info("切換到" + ModeEnum.GAME_MODE.getComment());
-        MODE_MAP.getOrDefault(PROPERTIES.getProperty("mode"), ModeEnum.UNKNOWN).getModeStrategy().get().intoMode();
-    }
-
-    @Override
-    protected void nextStep() {
+    protected void afterEnter(Object o) {
 
     }
 }

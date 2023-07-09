@@ -1,30 +1,21 @@
 package club.xiaojiawei.strategy.mode;
 
-import club.xiaojiawei.enums.ModeEnum;
-import club.xiaojiawei.status.Mode;
 import club.xiaojiawei.strategy.AbstractModeStrategy;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
 /**
  * @author 肖嘉威
  * @date 2022/11/25 12:42
  */
 @Slf4j
-public class LettuceMapAbstractModeStrategy extends AbstractModeStrategy {
-
+@Component
+public class LettuceMapAbstractModeStrategy extends AbstractModeStrategy<Object> {
     @Override
-    public void intoMode() {
-
+    public void wantEnter() {
     }
-
     @Override
-    protected void log() {
-        Mode.setCurrMode(ModeEnum.LETTUCE_MAP);
-        log.info("切換到" + ModeEnum.LETTUCE_MAP.getComment());
-    }
-
-    @Override
-    protected void nextStep() {
+    protected void afterEnter(Object o) {
 
     }
 }

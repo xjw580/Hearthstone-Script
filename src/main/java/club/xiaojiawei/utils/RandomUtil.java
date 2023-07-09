@@ -5,6 +5,7 @@ import java.util.Random;
 /**
  * @author 肖嘉威
  * @date 2022/11/24 19:41
+ * @msg 随机数生成工具
  */
 public class RandomUtil {
 
@@ -15,14 +16,14 @@ public class RandomUtil {
     }
 
     public static int getLongRandom(){
-        return getRandom(1600, 2400);
+        return getRandom(2000, 2500);
     }
     public static int getMediumRandom(){
-        return getRandom(800, 1200);
+        return getRandom(1000, 1500);
     }
 
     public static int getShortRandom(){
-        return getRandom(200, 400);
+        return getRandom(250, 500);
     }
 
     public static int getTinyRandom(){

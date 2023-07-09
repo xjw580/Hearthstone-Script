@@ -3,11 +3,9 @@ package club.xiaojiawei.strategy.phase;
 import club.xiaojiawei.entity.Block;
 import club.xiaojiawei.entity.Player;
 import club.xiaojiawei.entity.TagChangeEntity;
+import club.xiaojiawei.enums.DeckEnum;
 import club.xiaojiawei.enums.StepEnum;
-import club.xiaojiawei.enums.WarPhaseEnum;
 import club.xiaojiawei.listener.PowerFileListener;
-import club.xiaojiawei.pool.MyThreadPool;
-import club.xiaojiawei.status.Deck;
 import club.xiaojiawei.status.War;
 import club.xiaojiawei.strategy.AbstractDeckStrategy;
 import club.xiaojiawei.strategy.AbstractPhaseStrategy;
@@ -15,17 +13,20 @@ import club.xiaojiawei.utils.PowerLogUtil;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
+import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import java.io.RandomAccessFile;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
+import java.util.Properties;
 
-import static club.xiaojiawei.constant.GameKeyWordConst.*;
-import static club.xiaojiawei.constant.SystemConst.ROBOT;
+import static club.xiaojiawei.data.GameStaticData.*;
+import static club.xiaojiawei.data.ScriptStaticData.ROBOT;
 import static club.xiaojiawei.enums.BlockTypeEnum.TRIGGER;
+import static club.xiaojiawei.enums.ConfigurationKeyEnum.DECK_KEY;
 import static club.xiaojiawei.enums.StepEnum.*;
-import static club.xiaojiawei.enums.TagEnum.CURRENT_PLAYER;
-import static club.xiaojiawei.enums.TagEnum.STEP;
+import static club.xiaojiawei.enums.TagEnum.*;
 import static club.xiaojiawei.enums.WarPhaseEnum.GAME_OVER_PHASE;
 
 /**
@@ -33,31 +34,47 @@ import static club.xiaojiawei.enums.WarPhaseEnum.GAME_OVER_PHASE;
  * @date 2022/11/26 17:24
  */
 @Slf4j
-public class GameTurnAbstractPhaseStrategy extends AbstractPhaseStrategy {
-
-    private StepEnum currentStep = MAIN_READY;
-
+@Component
+public class GameTurnAbstractPhaseStrategy extends AbstractPhaseStrategy<String> {
+    @Resource
+    private Properties scriptProperties;
+    private static StepEnum currentStep = MAIN_READY;
     private static Player currentPlayer;
-
+    private static Thread thread;
     public static Player getCurrentPlayer() {
         return currentPlayer;
     }
+    @SuppressWarnings("all")
+    public static void stopThread(){
+        try{
+            if (thread != null && thread.isAlive()){
+                thread.stop();
+                log.info("出牌线程已停止");
+            }
+            thread = null;
+        }catch (Exception e){
+            log.warn("出牌线程已停止");
+        }
+    }
 
+    public static void reset(){
+        currentStep = MAIN_READY;
+    }
     @SneakyThrows
     @Override
-    public void dealing(String l) {
-        War.setCurrentPhase(WarPhaseEnum.GAME_TURN_PHASE);
-        log.info("当前处于：" + War.getCurrentPhase().getComment());
-        RandomAccessFile accessFile = PowerFileListener.getAccessFile();
+    protected void execute(String l, RandomAccessFile accessFile) {
         log.info(currentStep.getComment());
         while (true) {
+            if (isPause.get().get()){
+                return;
+            }
             if ((l = accessFile.readLine()) == null) {
                 if (accessFile.getFilePointer() > accessFile.length()){
                     accessFile.seek(0);
                 }else {
                     ROBOT.delay(1000);
                 }
-            }else if (PowerFileListener.isRelevance(l)){
+            }else if (powerFileListener.isRelevance(l)){
                 PowerFileListener.setMark(System.currentTimeMillis());
                 switch (currentStep){
                     case MAIN_READY -> mainReady(l);
@@ -68,12 +85,18 @@ public class GameTurnAbstractPhaseStrategy extends AbstractPhaseStrategy {
                     case MAIN_CLEANUP -> mainCleanup(l, accessFile);
                     case MAIN_NEXT -> mainNext(l, accessFile);
                     default -> {
-                        log.info(War.getCurrentPhase().getComment() + " -> 结束");
-                        GAME_OVER_PHASE.getPhaseStrategySupplier().get().afterInto(l);
                         return;
                     }
                 }
             }
+        }
+    }
+
+    @Override
+    protected void afterExecute() {
+        super.afterExecute();
+        if (!isPause.get().get()){
+            War.setCurrentPhase(GAME_OVER_PHASE);
         }
     }
 
@@ -136,13 +159,16 @@ public class GameTurnAbstractPhaseStrategy extends AbstractPhaseStrategy {
 //                          等待动画结束
                             log.info("我方出牌");
                             ROBOT.delay(4000);
+                            stopThread();
 //                            异步执行出牌策略，以便监听出牌后的卡牌变动
-                            MyThreadPool.myTurnThreadPool.execute(() -> {
+                            thread = new Thread(() -> {
                                 log.info("执行出牌策略");
-                                Deck.getCurrentDeck().getStrategySupplier().get().afterIntoMyTurn();
+                                DeckEnum.valueOf(scriptProperties.getProperty(DECK_KEY.getKey())).getAbstractDeckStrategy().afterIntoMyTurn();
                                 log.info("出牌策略执行完毕");
-                            });
+                            }, "outCardThread");
+                            thread.start();
                         }else {
+                            stopThread();
                             log.info("对方出牌");
                         }
                     }else if (Objects.equals(tagChangeEntity.getValue(), FINAL_GAMEOVER.getValue())){

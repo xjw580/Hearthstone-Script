@@ -1,9 +1,16 @@
 package club.xiaojiawei.enums;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.ToString;
+
 /**
  * @author 肖嘉威
  * @date 2022/11/29 20:28
  */
+@Getter
+@ToString
+@AllArgsConstructor
 public enum StepEnum {
     BEGIN_MULLIGAN("BEGIN_MULLIGAN", "调度开始"),
     MAIN_READY("MAIN_READY", "主游戏-准备"),
@@ -19,24 +26,4 @@ public enum StepEnum {
     private final String value;
     private final String comment;
 
-    StepEnum(String value, String comment) {
-        this.value = value;
-        this.comment = comment;
-    }
-
-    public String getValue() {
-        return value;
-    }
-
-    public String getComment() {
-        return comment;
-    }
-
-    @Override
-    public String toString() {
-        return "StepEnum{" +
-                "value='" + value + '\'' +
-                ", comment='" + comment + '\'' +
-                '}';
-    }
 }

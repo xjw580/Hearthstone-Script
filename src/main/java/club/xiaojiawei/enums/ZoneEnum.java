@@ -1,9 +1,16 @@
 package club.xiaojiawei.enums;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.ToString;
+
 /**
  * @author 肖嘉威
  * @date 2022/11/28 23:16
  */
+@Getter
+@ToString
+@AllArgsConstructor
 public enum ZoneEnum {
 
     DECK("DECK", "牌库区"),
@@ -16,25 +23,4 @@ public enum ZoneEnum {
     ;
     private final String value;
     private final String comment;
-
-    ZoneEnum(String value, String comment) {
-        this.value = value;
-        this.comment = comment;
-    }
-
-    public String getValue() {
-        return value;
-    }
-
-    public String getComment() {
-        return comment;
-    }
-
-    @Override
-    public String toString() {
-        return "ZoneEnum{" +
-                "value='" + value + '\'' +
-                ", comment='" + comment + '\'' +
-                '}';
-    }
 }

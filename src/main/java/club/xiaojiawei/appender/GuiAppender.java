@@ -13,7 +13,7 @@ import javafx.scene.text.Text;
  * @author 肖嘉威
  * @version 1.0
  * @date 2022/9/28 上午10:11
- * @description 向GUI客户端发送消息
+ * @msg 向GUI客户端发送消息
  */
 public class GuiAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
 
@@ -22,7 +22,12 @@ public class GuiAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
         if (DashboardController.logSwitchBack.statusProperty().get() && DashboardController.logVBoxBack != null && DashboardController.accordionBack!= null){
             Platform.runLater(() -> {
                 ObservableList<Node> list = DashboardController.logVBoxBack.getChildren();
-                Text text = new Text(event.getMessage());
+                Text text;
+                if (event.getThrowableProxy() == null){
+                    text = new Text(event.getMessage());
+                }else {
+                    text = new Text(event.getMessage() + "，查看脚本日志获取详细信息");
+                }
                 text.wrappingWidthProperty().bind(DashboardController.accordionBack.widthProperty().subtract(15));
                 list.add(text);
 //                大于两百条就清空,防止内存泄露和性能问题

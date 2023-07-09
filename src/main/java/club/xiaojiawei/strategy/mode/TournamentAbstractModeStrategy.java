@@ -1,28 +1,23 @@
 package club.xiaojiawei.strategy.mode;
 
-import club.xiaojiawei.entity.WsResult;
+import club.xiaojiawei.custom.LogRunnable;
+import club.xiaojiawei.data.ScriptStaticData;
 import club.xiaojiawei.enums.DeckEnum;
-import club.xiaojiawei.enums.DeckTypeEnum;
 import club.xiaojiawei.enums.ModeEnum;
-import club.xiaojiawei.run.Core;
-import club.xiaojiawei.status.Deck;
+import club.xiaojiawei.enums.RunModeEnum;
+import club.xiaojiawei.listener.PowerFileListener;
 import club.xiaojiawei.status.Mode;
 import club.xiaojiawei.strategy.AbstractModeStrategy;
-import club.xiaojiawei.utils.GameUtil;
-import club.xiaojiawei.utils.MouseUtil;
 import club.xiaojiawei.utils.RandomUtil;
-import club.xiaojiawei.utils.SystemUtil;
-import com.sun.jna.platform.win32.WinDef;
+import club.xiaojiawei.data.GameStaticData;
+import club.xiaojiawei.enums.ConfigurationKeyEnum;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
-import java.util.Timer;
-import java.util.TimerTask;
-
-import static club.xiaojiawei.constant.GameMapConst.DECK_MAP;
-import static club.xiaojiawei.constant.GameMapConst.DECK_TYPE_MAP;
-import static club.xiaojiawei.constant.GameRatioConst.*;
-import static club.xiaojiawei.constant.SystemConst.*;
-import static club.xiaojiawei.enums.DeckTypeEnum.GENERAL;
+import javax.annotation.Resource;
+import java.util.Properties;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -31,7 +26,15 @@ import static club.xiaojiawei.enums.DeckTypeEnum.GENERAL;
  * 传统对战
  */
 @Slf4j
-public class TournamentAbstractModeStrategy extends AbstractModeStrategy {
+@Component
+public class TournamentAbstractModeStrategy extends AbstractModeStrategy<Object> {
+
+    @Resource
+    private Properties scriptProperties;
+    @Resource
+    private PowerFileListener powerFileListener;
+    private static ScheduledFuture<?> scheduledFuture;
+    private static ScheduledFuture<?> errorScheduledFuture;
 
     public static final float TOURNAMENT_MODE_BUTTON_VERTICAL_TO_BOTTOM_RATIO = (float) 0.7;
     public static final float FIRST_DECK_BUTTON_HORIZONTAL_TO_CENTER_RATIO = (float) (0.333);
@@ -40,158 +43,155 @@ public class TournamentAbstractModeStrategy extends AbstractModeStrategy {
     public static final float CHANGE_MODE_BUTTON_HORIZONTAL_TO_CENTER_RATION = (float) 0.313;
     public static final float CLASSIC_BUTTON_VERTICAL_TO_BOTTOM_RATION = (float) 0.581;
     public static final float CLASSIC_BUTTON_HORIZONTAL_TO_CENTER_RATION = (float) 0.34;
-    private static Timer errorTimer;
-    public static void cancelTimer(){
-        if (errorTimer != null){
-            errorTimer.cancel();
-            errorTimer = null;
+    public static final float STANDARD_BUTTON_VERTICAL_TO_BOTTOM_RATION = (float) 0.714;
+    public static final float STANDARD_BUTTON_HORIZONTAL_TO_CENTER_RATION = (float) 0.11;
+    public static void cancelTask(){
+        if (scheduledFuture != null && !scheduledFuture.isDone()){
+            scheduledFuture.cancel(true);
+        }
+        if (errorScheduledFuture != null && !errorScheduledFuture.isDone()){
+            errorScheduledFuture.cancel(true);
         }
     }
 
     @Override
-    public void intoMode() {
-        Timer timer = new Timer();
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                if (Mode.getCurrMode() == ModeEnum.HUB){
-                    SystemUtil.frontWindow(Core.getGameHWND());
-                    WinDef.RECT gameRECT = SystemUtil.getRect(Core.getGameHWND());
-                    MouseUtil.leftButtonClick(
-                            ((gameRECT.right + gameRECT.left) >> 1) + RandomUtil.getRandom(-15, 15),
-                            (int) (gameRECT.bottom - (gameRECT.bottom - gameRECT.top) * TOURNAMENT_MODE_BUTTON_VERTICAL_TO_BOTTOM_RATIO) + RandomUtil.getRandom(-5, 5)
-                    );
-                }else if (Mode.getCurrMode() == ModeEnum.GAME_MODE){
-                    timer.cancel();
-                    SystemUtil.frontWindow(Core.getGameHWND());
-                    WinDef.RECT gameRECT = SystemUtil.getRect(Core.getGameHWND());
-                    GameUtil.clickBackButton(gameRECT);
-                }else {
-                    timer.cancel();
-                }
+    public void wantEnter() {
+        scheduledFuture = extraThreadPool.scheduleWithFixedDelay(new LogRunnable(() -> {
+            if (isPause.get().get()){
+                scheduledFuture.cancel(true);
+            } else if (Mode.getCurrMode() == ModeEnum.HUB){
+                systemUtil.frontWindow(ScriptStaticData.getGameHWND());
+                systemUtil.updateRect(ScriptStaticData.getGameHWND(), ScriptStaticData.GAME_RECT);
+                mouseUtil.leftButtonClick(
+                        ((ScriptStaticData.GAME_RECT.right + ScriptStaticData.GAME_RECT.left) >> 1) + RandomUtil.getRandom(-15, 15),
+                        (int) (ScriptStaticData.GAME_RECT.bottom - (ScriptStaticData.GAME_RECT.bottom - ScriptStaticData.GAME_RECT.top) * TOURNAMENT_MODE_BUTTON_VERTICAL_TO_BOTTOM_RATIO) + RandomUtil.getRandom(-5, 5)
+                );
+            }else if (Mode.getCurrMode() == ModeEnum.GAME_MODE){
+                scheduledFuture.cancel(true);
+                systemUtil.frontWindow(ScriptStaticData.getGameHWND());
+                systemUtil.updateRect(ScriptStaticData.getGameHWND(), ScriptStaticData.GAME_RECT);
+                gameUtil.clickBackButton();
+            }else {
+                scheduledFuture.cancel(true);
             }
-        }, delayTime, intervalTime);
+        }), DELAY_TIME, INTERVAL_TIME, TimeUnit.MILLISECONDS);
     }
 
     @Override
-    protected void log() {
-        Mode.setCurrMode(ModeEnum.TOURNAMENT);
-        log.info("切換到" + ModeEnum.TOURNAMENT.getComment());
-    }
-
-    @Override
-    protected void nextStep() {
-        WinDef.RECT gameRECT = SystemUtil.getRect(Core.getGameHWND());
-        if (ModeEnum.TOURNAMENT.getValue().equals(PROPERTIES.getProperty("mode"))){
-            SystemUtil.delayMedium();
-            clickModeChangeButton(gameRECT);
-            SystemUtil.delayMedium();
-            changeMode(gameRECT);
-            SystemUtil.delayMedium();
-            selectDeck(gameRECT);
-            SystemUtil.delayShort();
-            startMatching(gameRECT);
-            generateTimer();
+    protected void afterEnter(Object o) {
+        systemUtil.updateRect(ScriptStaticData.getGameHWND(), ScriptStaticData.GAME_RECT);
+        if (ModeEnum.TOURNAMENT == RunModeEnum.valueOf(scriptProperties.getProperty(ConfigurationKeyEnum.RUN_MODE_KEY.getKey())).getModeEnum()){
+            DeckEnum deck = DeckEnum.valueOf(scriptProperties.getProperty(ConfigurationKeyEnum.DECK_KEY.getKey()));
+            if (!deck.getRunMode().isEnable()){
+                log.warn("不可用或不支持的模式：" + deck.getValue());
+                return;
+            }
+            systemUtil.delayMedium();
+            clickModeChangeButton();
+            systemUtil.delayMedium();
+            changeMode(deck);
+            systemUtil.delayMedium();
+            selectDeck(deck);
+            systemUtil.delayShort();
+            startMatching();
         }else {
-            SystemUtil.frontWindow(Core.getGameHWND());
-            GameUtil.clickBackButton(gameRECT);
+//            退出该界面
+            systemUtil.frontWindow(ScriptStaticData.getGameHWND());
+            gameUtil.clickBackButton();
         }
     }
 
-
-
-    public void selectDeck(WinDef.RECT gameRECT){
-        DeckEnum deck = DECK_MAP.get(PROPERTIES.getProperty("deck"));
-        DeckTypeEnum ranked = DECK_TYPE_MAP.get(PROPERTIES.getProperty("ranked"));
-        if (deck.getDeckType() != ranked && deck.getDeckType() != GENERAL){
-            log.warn("指定套牌类型和当前模式不符");
-            return;
-        }
-//        todo 发送套牌类型到GUI
-        Deck.setDeck(deck);
-        log.info("选择套牌:" + deck.getComment());
-        SystemUtil.frontWindow(Core.getGameHWND());
-        MouseUtil.leftButtonClick(
-                (int) (((gameRECT.right + gameRECT.left) >> 1) - (gameRECT.bottom - gameRECT.top) * FIRST_DECK_BUTTON_HORIZONTAL_TO_CENTER_RATIO * GAME_WINDOW_ASPECT_TO_HEIGHT_RATIO + RandomUtil.getRandom(-10, 10)),
-                (int) (gameRECT.bottom - (gameRECT.bottom - gameRECT.top) * FIRST_ROW_DECK_VERTICAL_TO_BOTTOM_RATIO) + RandomUtil.getRandom(-5, 5)
-        );
-    }
-
-    public void clickModeChangeButton(WinDef.RECT gameRECT){
+    private void clickModeChangeButton(){
         log.info("点击切换模式按钮");
-        SystemUtil.frontWindow(Core.getGameHWND());
-        MouseUtil.leftButtonClick(
-                (int) (((gameRECT.right + gameRECT.left) >> 1) + (gameRECT.bottom - gameRECT.top) * CHANGE_MODE_BUTTON_HORIZONTAL_TO_CENTER_RATION * GAME_WINDOW_ASPECT_TO_HEIGHT_RATIO + RandomUtil.getRandom(-5, 5)),
-                (int) (gameRECT.bottom - (gameRECT.bottom - gameRECT.top) * CHANGE_MODE_BUTTON_VERTICAL_TO_BOTTOM_RATION) + RandomUtil.getRandom(-5, 5)
+        systemUtil.frontWindow(ScriptStaticData.getGameHWND());
+        mouseUtil.leftButtonClick(
+                (int) (((ScriptStaticData.GAME_RECT.right + ScriptStaticData.GAME_RECT.left) >> 1) + (ScriptStaticData.GAME_RECT.bottom - ScriptStaticData.GAME_RECT.top) * CHANGE_MODE_BUTTON_HORIZONTAL_TO_CENTER_RATION * GameStaticData.GAME_WINDOW_ASPECT_TO_HEIGHT_RATIO + RandomUtil.getRandom(-5, 5)),
+                (int) (ScriptStaticData.GAME_RECT.bottom - (ScriptStaticData.GAME_RECT.bottom - ScriptStaticData.GAME_RECT.top) * CHANGE_MODE_BUTTON_VERTICAL_TO_BOTTOM_RATION) + RandomUtil.getRandom(-5, 5)
         );
     }
 
-    public void changeMode(WinDef.RECT gameRECT){
-        SystemUtil.frontWindow(Core.getGameHWND());
-        switch (PROPERTIES.getProperty("ranked")){
-            case "CLASSIC" -> changeModeToClassic(gameRECT);
-            case "STANDARD" -> changeModeToStandard(gameRECT);
-            case "WILD" -> changeModeToWild(gameRECT);
-            case "CASUAL" -> changeModeToCasual(gameRECT);
-            default -> throw new RuntimeException("没有此天梯模式");
+    private void changeMode(DeckEnum deck){
+        systemUtil.frontWindow(ScriptStaticData.getGameHWND());
+        switch (deck.getDeckType()){
+            case CLASSIC -> changeModeToClassic();
+            case STANDARD -> changeModeToStandard();
+            case WILD -> changeModeToWild();
+            case CASUAL -> changeModeToCasual();
+            default -> throw new RuntimeException("没有此模式：" + deck.getDeckType().getComment());
         }
     }
 
-    public void changeModeToClassic(WinDef.RECT gameRECT){
+    private void selectDeck(DeckEnum deck){
+        log.info("选择套牌:" + deck.getComment());
+        systemUtil.frontWindow(ScriptStaticData.getGameHWND());
+        mouseUtil.leftButtonClick(
+                (int) (((ScriptStaticData.GAME_RECT.right + ScriptStaticData.GAME_RECT.left) >> 1) - (ScriptStaticData.GAME_RECT.bottom - ScriptStaticData.GAME_RECT.top) * FIRST_DECK_BUTTON_HORIZONTAL_TO_CENTER_RATIO * GameStaticData.GAME_WINDOW_ASPECT_TO_HEIGHT_RATIO + RandomUtil.getRandom(-10, 10)),
+                (int) (ScriptStaticData.GAME_RECT.bottom - (ScriptStaticData.GAME_RECT.bottom - ScriptStaticData.GAME_RECT.top) * GameStaticData.FIRST_ROW_DECK_VERTICAL_TO_BOTTOM_RATIO) + RandomUtil.getRandom(-5, 5)
+        );
+    }
+
+    private void changeModeToClassic(){
         log.info("切换至经典模式");
-        MouseUtil.leftButtonClick(
-                (int) (((gameRECT.right + gameRECT.left) >> 1) - (gameRECT.bottom - gameRECT.top) * CLASSIC_BUTTON_HORIZONTAL_TO_CENTER_RATION * GAME_WINDOW_ASPECT_TO_HEIGHT_RATIO + RandomUtil.getRandom(-5, 5)),
-                (int) (gameRECT.bottom - (gameRECT.bottom - gameRECT.top) * CLASSIC_BUTTON_VERTICAL_TO_BOTTOM_RATION) + RandomUtil.getRandom(-5, 5)
+        mouseUtil.leftButtonClick(
+                (int) (((ScriptStaticData.GAME_RECT.right + ScriptStaticData.GAME_RECT.left) >> 1) - (ScriptStaticData.GAME_RECT.bottom - ScriptStaticData.GAME_RECT.top) * CLASSIC_BUTTON_HORIZONTAL_TO_CENTER_RATION * GameStaticData.GAME_WINDOW_ASPECT_TO_HEIGHT_RATIO + RandomUtil.getRandom(-5, 5)),
+                (int) (ScriptStaticData.GAME_RECT.bottom - (ScriptStaticData.GAME_RECT.bottom - ScriptStaticData.GAME_RECT.top) * CLASSIC_BUTTON_VERTICAL_TO_BOTTOM_RATION) + RandomUtil.getRandom(-5, 5)
         );
     }
 
-    public void changeModeToStandard(WinDef.RECT gameRECT){
+    private void changeModeToStandard(){
         log.info("切换至标准模式");
-    }
-
-    public void changeModeToWild(WinDef.RECT gameRECT){
-        log.info("切换至狂野模式");
-    }
-
-    public void changeModeToCasual(WinDef.RECT gameRECT){
-        log.info("切换至休闲模式");
-    }
-
-    public void startMatching(WinDef.RECT gameRECT){
-        log.info("开始匹配");
-        SystemUtil.frontWindow(Core.getGameHWND());
-        //        重置游戏
-        MouseUtil.leftButtonClick(
-                (int) (((gameRECT.right + gameRECT.left) >> 1) + (gameRECT.bottom - gameRECT.top) * START_BUTTON_HORIZONTAL_TO_CENTER_RATIO * GAME_WINDOW_ASPECT_TO_HEIGHT_RATIO + RandomUtil.getRandom(-10, 10)),
-                (int) (gameRECT.bottom - (gameRECT.bottom - gameRECT.top) * START_BUTTON_VERTICAL_TO_BOTTOM_RATIO) + RandomUtil.getRandom(-10, 10)
+        mouseUtil.leftButtonClick(
+                (int) (((ScriptStaticData.GAME_RECT.right + ScriptStaticData.GAME_RECT.left) >> 1) - (ScriptStaticData.GAME_RECT.bottom - ScriptStaticData.GAME_RECT.top) * STANDARD_BUTTON_HORIZONTAL_TO_CENTER_RATION * GameStaticData.GAME_WINDOW_ASPECT_TO_HEIGHT_RATIO + RandomUtil.getRandom(-5, 5)),
+                (int) (ScriptStaticData.GAME_RECT.bottom - (ScriptStaticData.GAME_RECT.bottom - ScriptStaticData.GAME_RECT.top) * STANDARD_BUTTON_VERTICAL_TO_BOTTOM_RATION) + RandomUtil.getRandom(-5, 5)
         );
+    }
+
+    private void changeModeToWild(){
+        log.info("切换至狂野模式");
+        mouseUtil.leftButtonClick(
+                (int) (((ScriptStaticData.GAME_RECT.right + ScriptStaticData.GAME_RECT.left) >> 1) + (ScriptStaticData.GAME_RECT.bottom - ScriptStaticData.GAME_RECT.top) * STANDARD_BUTTON_HORIZONTAL_TO_CENTER_RATION * GameStaticData.GAME_WINDOW_ASPECT_TO_HEIGHT_RATIO + RandomUtil.getRandom(-5, 5)),
+                (int) (ScriptStaticData.GAME_RECT.bottom - (ScriptStaticData.GAME_RECT.bottom - ScriptStaticData.GAME_RECT.top) * STANDARD_BUTTON_VERTICAL_TO_BOTTOM_RATION) + RandomUtil.getRandom(-5, 5)
+        );
+    }
+
+    private void changeModeToCasual(){
+        log.info("切换至休闲模式");
+        mouseUtil.leftButtonClick(
+                (int) (((ScriptStaticData.GAME_RECT.right + ScriptStaticData.GAME_RECT.left) >> 1) + (ScriptStaticData.GAME_RECT.bottom - ScriptStaticData.GAME_RECT.top) * CLASSIC_BUTTON_HORIZONTAL_TO_CENTER_RATION * GameStaticData.GAME_WINDOW_ASPECT_TO_HEIGHT_RATIO + RandomUtil.getRandom(-5, 5)),
+                (int) (ScriptStaticData.GAME_RECT.bottom - (ScriptStaticData.GAME_RECT.bottom - ScriptStaticData.GAME_RECT.top) * CLASSIC_BUTTON_VERTICAL_TO_BOTTOM_RATION) + RandomUtil.getRandom(-5, 5)
+        );
+    }
+
+    private void startMatching(){
+        log.info("开始匹配");
+        powerFileListener.listen();
+        systemUtil.frontWindow(ScriptStaticData.getGameHWND());
+        //        重置游戏
+        mouseUtil.leftButtonClick(
+                (int) (((ScriptStaticData.GAME_RECT.right + ScriptStaticData.GAME_RECT.left) >> 1) + (ScriptStaticData.GAME_RECT.bottom - ScriptStaticData.GAME_RECT.top) * GameStaticData.START_BUTTON_HORIZONTAL_TO_CENTER_RATIO * GameStaticData.GAME_WINDOW_ASPECT_TO_HEIGHT_RATIO + RandomUtil.getRandom(-10, 10)),
+                (int) (ScriptStaticData.GAME_RECT.bottom - (ScriptStaticData.GAME_RECT.bottom - ScriptStaticData.GAME_RECT.top) * GameStaticData.START_BUTTON_VERTICAL_TO_BOTTOM_RATIO) + RandomUtil.getRandom(-10, 10)
+        );
+        generateTimer();
     }
 
     /**
      * 生成匹配失败时兜底的定时器
      */
     public void generateTimer(){
-        errorTimer = new Timer();
-        errorTimer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                if (Core.getPause()){
-                    ROBOT.delay(REST_TIME * 1000);
-                    run();
-                }else {
-                    log.info("游戏网络出现问题，匹配失败，再次匹配中");
-                    SystemUtil.notice("游戏网络出现问题，匹配失败，再次匹配中");
-                    SystemUtil.frontWindow(Core.getGameHWND());
-                    WinDef.RECT gameRECT = SystemUtil.getRect(Core.getGameHWND());
-                    MouseUtil.leftButtonClick(
-                            ((gameRECT.right + gameRECT.left) >> 1) + RandomUtil.getRandom(-10, 10),
-                            (int) (gameRECT.bottom - (gameRECT.bottom - gameRECT.top) * ERROR_BUTTON_VERTICAL_TO_BOTTOM_RATION) + RandomUtil.getRandom(-5, 5)
-                    );
-                    SystemUtil.delayMedium();
-                    startMatching(gameRECT);
-                }
+        errorScheduledFuture = extraThreadPool.schedule(new LogRunnable(() -> {
+            if (!isPause.get().get()){
+                log.info("游戏网络出现问题，匹配失败，再次匹配中");
+                systemUtil.notice("游戏网络出现问题，匹配失败，再次匹配中");
+                systemUtil.frontWindow(ScriptStaticData.getGameHWND());
+                systemUtil.updateRect(ScriptStaticData.getGameHWND(), ScriptStaticData.GAME_RECT);
+                mouseUtil.leftButtonClick(
+                        ((ScriptStaticData.GAME_RECT.right + ScriptStaticData.GAME_RECT.left) >> 1) + RandomUtil.getRandom(-10, 10),
+                        (int) (ScriptStaticData.GAME_RECT.bottom - (ScriptStaticData.GAME_RECT.bottom - ScriptStaticData.GAME_RECT.top) * ERROR_BUTTON_VERTICAL_TO_BOTTOM_RATION) + RandomUtil.getRandom(-5, 5)
+                );
+                systemUtil.delayMedium();
+                afterEnter(null);
             }
-        }, 60000);
+        }), 60, TimeUnit.SECONDS);
     }
 
 }

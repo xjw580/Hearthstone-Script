@@ -23,9 +23,7 @@ import java.util.Objects;
 public class PlayArea extends Area {
 
     private HeroTypeEnum heroProfession;
-
     private PowerTypeEnum heroPower;
-
     private Card hero;
     private Card power;
     private Card weapon;

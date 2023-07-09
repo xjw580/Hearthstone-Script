@@ -1,9 +1,16 @@
 package club.xiaojiawei.enums;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.ToString;
+
 /**
  * @author 肖嘉威
  * @date 2022/12/4 14:33
  */
+@Getter
+@ToString
+@AllArgsConstructor
 public enum ResultStatusEnum {
 
     SUCCESS(200, "成功"),
@@ -12,25 +19,4 @@ public enum ResultStatusEnum {
     ;
     private final int code;
     private final String comment;
-
-    ResultStatusEnum(int code, String comment) {
-        this.code = code;
-        this.comment = comment;
-    }
-
-    public int getCode() {
-        return code;
-    }
-
-    public String getComment() {
-        return comment;
-    }
-
-    @Override
-    public String toString() {
-        return "ResultStatusEnum{" +
-                "code=" + code +
-                ", comment='" + comment + '\'' +
-                '}';
-    }
 }

@@ -3,65 +3,63 @@ package club.xiaojiawei.strategy.phase;
 import club.xiaojiawei.entity.Card;
 import club.xiaojiawei.entity.ExtraEntity;
 import club.xiaojiawei.entity.TagChangeEntity;
-import club.xiaojiawei.enums.WarPhaseEnum;
 import club.xiaojiawei.listener.PowerFileListener;
 import club.xiaojiawei.status.War;
 import club.xiaojiawei.strategy.AbstractPhaseStrategy;
-import club.xiaojiawei.utils.GameUtil;
 import club.xiaojiawei.utils.PowerLogUtil;
+import club.xiaojiawei.data.GameStaticData;
+import club.xiaojiawei.data.ScriptStaticData;
+import club.xiaojiawei.enums.TagEnum;
+import club.xiaojiawei.enums.WarPhaseEnum;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
 import java.io.RandomAccessFile;
 import java.util.Objects;
-
-import static club.xiaojiawei.constant.GameKeyWordConst.*;
-import static club.xiaojiawei.constant.SystemConst.ROBOT;
-import static club.xiaojiawei.enums.TagEnum.FIRST_PLAYER;
-import static club.xiaojiawei.enums.WarPhaseEnum.GAME_OVER_PHASE;
 
 /**
  * @author 肖嘉威
  * @date 2022/11/27 13:35
  */
 @Slf4j
-public class DrawnInitCardAbstractPhaseStrategy extends AbstractPhaseStrategy {
+@Component
+public class DrawnInitCardAbstractPhaseStrategy extends AbstractPhaseStrategy<String> {
 
     private String firstPlayerGameId;
 
     @SneakyThrows
     @Override
-    public void dealing(String l) {
-        War.setCurrentPhase(WarPhaseEnum.DRAWN_INIT_CARD_PHASE);
-        log.info("当前处于：" + War.getCurrentPhase().getComment());
-        RandomAccessFile accessFile = PowerFileListener.getAccessFile();
+    protected void execute(String l, RandomAccessFile accessFile) {
         ExtraEntity extraEntity;
         TagChangeEntity tagChangeEntity;
         while (true) {
-            if ((l = accessFile.readLine()) == null){
+            if (isPause.get().get()){
+                return;
+            }else if ((l = accessFile.readLine()) == null){
                 if (accessFile.getFilePointer() > accessFile.length()){
                     accessFile.seek(0);
                 }else {
-                    ROBOT.delay(1000);
+                    ScriptStaticData.ROBOT.delay(1000);
                 }
-            }else if (PowerFileListener.isRelevance(l)){
+            }else if (powerFileListener.isRelevance(l)){
                 PowerFileListener.setMark(System.currentTimeMillis());
-                if (l.contains(SHOW_ENTITY)){
+                if (l.contains(GameStaticData.SHOW_ENTITY)){
                     dealShowEntity(l, accessFile);
-                }else if (l.contains(TAG_CHANGE)){
+                }else if (l.contains(GameStaticData.TAG_CHANGE)){
                     tagChangeEntity = PowerLogUtil.parseTagChange(l);
-                    if (tagChangeEntity.getTag() == FIRST_PLAYER){
+                    if (tagChangeEntity.getTag() == TagEnum.FIRST_PLAYER){
 //                        炉石日志抽风，先手玩家游戏id打印出错，导致无法正常完成后续对局，所以直接投降
                         if(Objects.equals(firstPlayerGameId = tagChangeEntity.getEntity(), "UNKNOWN HUMAN PLAYER")){
-                            GameUtil.surrender();
-                            log.info(War.getCurrentPhase().getComment() + " -> 结束");
-                            GAME_OVER_PHASE.getPhaseStrategySupplier().get().afterInto(l);
+                            log.info("power.log输出的玩家id有误，无法完成后续流程，准备投降");
+                            gameUtil.surrender();
+                            War.setCurrentPhase(WarPhaseEnum.GAME_OVER_PHASE, l);
                             break;
                         }
                     }else {
                         PowerLogUtil.dealTagChange(tagChangeEntity);
                     }
-                }else if (l.contains(FULL_ENTITY)){
+                }else if (l.contains(GameStaticData.FULL_ENTITY)){
                     extraEntity = PowerLogUtil.parseExtraEntity(l, accessFile);
                     extraEntity.setEntityName("幸运币");
                     Card card = new Card(extraEntity);
@@ -78,7 +76,6 @@ public class DrawnInitCardAbstractPhaseStrategy extends AbstractPhaseStrategy {
                     }
                     firstPlayerGameId = null;
                 }else if (l.contains("BLOCK_END")){
-                    log.info(War.getCurrentPhase().getComment() + " -> 结束");
                     break;
                 }
             }

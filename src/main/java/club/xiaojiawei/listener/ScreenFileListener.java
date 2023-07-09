@@ -1,118 +1,134 @@
 package club.xiaojiawei.listener;
 
+import club.xiaojiawei.core.Core;
+import club.xiaojiawei.custom.LogRunnable;
+import club.xiaojiawei.data.SpringData;
+import club.xiaojiawei.enums.ConfigurationKeyEnum;
 import club.xiaojiawei.enums.ModeEnum;
-import club.xiaojiawei.run.Core;
-import club.xiaojiawei.utils.SystemUtil;
-import lombok.SneakyThrows;
+import club.xiaojiawei.status.Mode;
+import javafx.beans.property.BooleanProperty;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.annotation.Scheduled;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import java.io.*;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Properties;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 
-import static club.xiaojiawei.constant.GameMapConst.MODE_MAP;
-import static club.xiaojiawei.constant.SystemConst.*;
+import static club.xiaojiawei.data.ScriptStaticData.GAME_MSG_CMD;
 
 /**
  * @author 肖嘉威
- * @date 2022/11/24 22:06
+ * @date 2023/7/5 14:55
+ * @msg
  */
+
 @Component
 @Slf4j
 public class ScreenFileListener {
-
-
-    private static File file;
+    @Resource
+    private ScheduledThreadPoolExecutor listenFileThreadPool;
+    @Resource
+    private Properties scriptProperties;
+    @Resource
+    private SpringData springData;
+    @Resource
+    private Core core;
+    @Resource
+    private AtomicReference<BooleanProperty> isPause;
+    private static ScheduledFuture<?> scheduledFuture;
     private static BufferedReader reader;
-    private static long lastChangeTime;
-    private static String suffix;
-
-    @Value("${game.log.path.screen}")
-    public void setFile(String suffix){
-        ScreenFileListener.suffix = suffix;
-    }
-
-    public void init(){
-        try {
-            File gamepath = new File(PROPERTIES.getProperty("gamepath") + GAME_LOG_PATH_SUFFIX);
-            if (!gamepath.exists() && !gamepath.mkdirs()){
-                log.error("游戏日志目录不存在且创建失败，path：" + gamepath);
-            }
-            file = new File(PROPERTIES.getProperty("gamepath") + suffix);
-            if (!file.exists()){
-                try(FileWriter fileWriter = new FileWriter(file)){
-                    fileWriter.write("");
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-            reader = new BufferedReader(new FileReader(file));
-            lastChangeTime = file.lastModified();
-            log.info(file.getName() + "读取正常");
-        } catch (FileNotFoundException e) {
-            log.error("未找到" + file.getName() +  "文件", e);
-        }
-    }
-
-    private volatile boolean reading;
-    @Scheduled(fixedRate=1000, initialDelay = 3000)
-    public void listenScreenStatus() {
-        if (!reading && lastChangeTime < file.lastModified()){
-            lastChangeTime = file.lastModified();
-            try {
-                readScreenLog();
-            } catch (IOException e) {
-                log.error(file.getName() + "文件读取失败", e);
-            }
-        }
-    }
-
-    private void readScreenLog() throws IOException {
-        reading = true;
-        try{
-            String l;
-            boolean mark = false;
-            while ((l = reader.readLine()) != null){
-                mark = false;
-                int index;
-                if (l.contains("OnDestroy()")){
-                    mark = true;
-                    ROBOT.delay(1000);
-                }else if (!Core.getPause() && (index = l.indexOf("currMode")) != -1){
-                    MODE_MAP.getOrDefault(l.substring(index + 9), ModeEnum.UNKNOWN).getModeStrategy().get().afterInto();
-                }
-            }
-            if (mark){
-                log.warn("游戏被关闭，重启中，请稍等");
-                SystemUtil.reStart();
-            }
-        }finally {
-            reading = false;
-        }
-    }
-
-    public static void initReadScreenLog() throws IOException {
-        String l;
-        String lastMode = null;
-        while ((l = reader.readLine()) != null){
-            int index;
-            if ((index = l.indexOf("currMode")) != -1){
-                lastMode = l.substring(index + 9);
-            }
-        }
-        if (lastMode == null){
+    public synchronized void listen(){
+        if (scheduledFuture != null && !scheduledFuture.isDone()){
+            log.warn(springData.getScreenLogName() + "正在被监听，无法再次被监听");
             return;
         }
-        ModeEnum currentMode = MODE_MAP.getOrDefault(lastMode, ModeEnum.UNKNOWN);
-        currentMode.getModeStrategy().get().afterInto();
+        File logPath = new File(scriptProperties.getProperty(ConfigurationKeyEnum.GAME_PATH_KEY.getKey()) + springData.getGameLogPath());
+        File [] files;
+        if (!logPath.exists() || (files = logPath.listFiles()) == null || files.length == 0){
+            log.error(springData.getScreenLogName() + "日志文件读取失败");
+            return;
+        }
+        Arrays.sort(files, Comparator.comparing(File::getName));
+        File logDir = files[files.length - 1];
+        log.info("开始监听" + springData.getScreenLogName());
+        try {
+            File screenLogFile = new File(logDir.getAbsolutePath() + "/" + springData.getScreenLogName());
+            if (!screenLogFile.exists()){
+                try(FileWriter fileWriter = new FileWriter(screenLogFile)){
+                    fileWriter.write("");
+                }
+            }
+            reader = new BufferedReader(new FileReader(screenLogFile));
+            loadPrevData();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        scheduledFuture = listenFileThreadPool.scheduleAtFixedRate(new LogRunnable(() -> {
+            try {
+                String line;
+                while (!isPause.get().get() && Strings.isNotBlank((line = reader.readLine()))){
+                    Mode.setCurrMode(resolveLog(line));
+                }
+                if (isPause.get().get()){
+                    cancelListener();
+                }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }), 0, 1500, TimeUnit.MILLISECONDS);
     }
 
-    @SneakyThrows
-    public static void reset(){
-        if (reader != null){
-            reader.close();
+    public static void cancelListener(){
+        if (scheduledFuture != null && !scheduledFuture.isDone()){
+            log.info("已停止监听screen.log");
+            scheduledFuture.cancel(true);
         }
-        reader = new BufferedReader(new FileReader(file));
+        if (reader != null){
+            try {
+                reader.close();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    private ModeEnum resolveLog(String line) {
+        if (line == null){
+            return null;
+        }
+        int index;
+        if ((index = line.indexOf("currMode")) != -1){
+            return ModeEnum.valueOf(line.substring(index + 9));
+        }else if (line.contains("Box.OnDestroy()")){
+            try {
+                Thread.sleep(2000);
+                if (Strings.isBlank(new String(Runtime.getRuntime().exec(GAME_MSG_CMD).getInputStream().readAllBytes()))){
+                    log.info("检测到游戏意外退出，准备重新启动");
+                    core.start();
+                }
+            } catch (InterruptedException | IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return null;
+    }
+
+    public void loadPrevData() throws IOException {
+        String line;
+        int index;
+        ModeEnum finalMode = null;
+        while ((line = reader.readLine()) != null){
+            if ((index = line.indexOf("currMode")) != -1){
+                finalMode = ModeEnum.valueOf(line.substring(index + 9));
+            }
+        }
+        Mode.setCurrMode(finalMode);
     }
 }

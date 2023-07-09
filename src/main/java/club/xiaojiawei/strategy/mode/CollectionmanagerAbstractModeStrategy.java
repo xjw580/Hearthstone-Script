@@ -1,30 +1,22 @@
 package club.xiaojiawei.strategy.mode;
 
-import club.xiaojiawei.enums.ModeEnum;
-import club.xiaojiawei.status.Mode;
 import club.xiaojiawei.strategy.AbstractModeStrategy;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
 /**
  * @author 肖嘉威
  * @date 2022/11/25 12:40
  */
 @Slf4j
-public class CollectionmanagerAbstractModeStrategy extends AbstractModeStrategy {
-
+@Component
+public class CollectionmanagerAbstractModeStrategy extends AbstractModeStrategy<Object> {
     @Override
-    public void intoMode() {
-
+    public void wantEnter() {
     }
 
     @Override
-    protected void log() {
-        Mode.setCurrMode(ModeEnum.COLLECTIONMANAGER);
-        log.info("切換到" + ModeEnum.COLLECTIONMANAGER.getComment());
-    }
-
-    @Override
-    protected void nextStep() {
+    protected void afterEnter(Object o) {
 
     }
 }
