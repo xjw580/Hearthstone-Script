@@ -1,9 +1,16 @@
 package club.xiaojiawei.enums;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.ToString;
+
 /**
  * @author 肖嘉威
  * @date 2022/11/30 17:56
  */
+@Getter
+@ToString
+@AllArgsConstructor
 public enum BlockTypeEnum {
 
     TRIGGER("TRIGGER", "触发"),
@@ -16,24 +23,4 @@ public enum BlockTypeEnum {
     private final String value;
     private final String comment;
 
-    public String getValue() {
-        return value;
-    }
-
-    public String getComment() {
-        return comment;
-    }
-
-    BlockTypeEnum(String value, String comment) {
-        this.value = value;
-        this.comment = comment;
-    }
-
-    @Override
-    public String toString() {
-        return "BlockTypeEnum{" +
-                "value='" + value + '\'' +
-                ", comment='" + comment + '\'' +
-                '}';
-    }
 }

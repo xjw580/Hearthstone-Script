@@ -1,5 +1,7 @@
 package club.xiaojiawei.utils;
 
+import club.xiaojiawei.data.GameStaticData;
+import club.xiaojiawei.data.ScriptStaticData;
 import club.xiaojiawei.entity.*;
 import club.xiaojiawei.entity.area.Area;
 import club.xiaojiawei.status.War;
@@ -14,12 +16,11 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Objects;
 
-import static club.xiaojiawei.constant.GameKeyWordConst.*;
-import static club.xiaojiawei.constant.GameMapConst.*;
-import static club.xiaojiawei.constant.SystemConst.ROBOT;
+import static club.xiaojiawei.data.GameStaticData.CARD_AREA_MAP;
 import static club.xiaojiawei.enums.TagEnum.*;
 
 /**
+ * 解析power.log日志的工具，非常非常非常重要
  * @author 肖嘉威
  * @date 2022/11/28 23:12
  */
@@ -34,7 +35,10 @@ public class PowerLogUtil {
         }else {
             card = War.exchangeAreaOfCard(extraEntity);
         }
-        card.extraEntityToCard(extraEntity);
+//        todo newAdd
+        if (card != null){
+            card.extraEntityToCard(extraEntity);
+        }
         return extraEntity;
     }
 
@@ -59,12 +63,16 @@ public class PowerLogUtil {
                 return false;
             }
             Card card = area.getByEntityId(tagChangeEntity.getEntityId());
+            if (card == null){
+                return false;
+            }
+//            只列出可能被修改的属性
             switch (tagChangeEntity.getTag()){
                 case ZONE_POSITION -> {
                     card = area.removeByEntityId(tagChangeEntity.getEntityId());
                     area.add(card, Integer.parseInt(tagChangeEntity.getValue()));
                 }
-                case ZONE -> player.getArea(ZONE_MAP.get(tagChangeEntity.getValue())).add(card, 0);
+                case ZONE -> player.getArea(GameStaticData.ZONE_MAP.get(tagChangeEntity.getValue())).add(card, 0);
                 case HEALTH -> card.setHealth(Integer.parseInt(tagChangeEntity.getValue()));
                 case ATK -> card.setAtc(Integer.parseInt(tagChangeEntity.getValue()));
                 case COST -> card.setCost(Integer.parseInt(tagChangeEntity.getValue()));
@@ -78,6 +86,10 @@ public class PowerLogUtil {
                 case DEATHRATTLE -> card.setDeathRattle(Objects.equals(tagChangeEntity.getValue(), "1"));
                 case AURA -> card.setAura(Objects.equals(tagChangeEntity.getValue(), "1"));
                 case STEALTH -> card.setStealth(Objects.equals(tagChangeEntity.getValue(), "1"));
+                case WINDFURY -> card.setWindFury(Objects.equals(tagChangeEntity.getValue(), "1"));
+                case CANT_BE_TARGETED_BY_SPELLS -> card.setCantBeTargetedBySpells(Objects.equals(tagChangeEntity.getValue(), "1"));
+                case CANT_BE_TARGETED_BY_HERO_POWERS -> card.setCantBeTargetedByHeroPowers(Objects.equals(tagChangeEntity.getValue(), "1"));
+                case SPAWN_TIME_COUNT -> card.setSpawnTimeCount(Objects.equals(tagChangeEntity.getValue(), "1"));
                 default -> {
                     return false;
                 }
@@ -89,12 +101,16 @@ public class PowerLogUtil {
                 case RESOURCES -> GameTurnAbstractPhaseStrategy.getCurrentPlayer().setResources(Integer.parseInt(tagChangeEntity.getValue()));
                 case TEMP_RESOURCES -> GameTurnAbstractPhaseStrategy.getCurrentPlayer().setTempResources(Integer.parseInt(tagChangeEntity.getValue()));
                 case PLAYSTATE -> {
-                    if (Objects.equals(tagChangeEntity.getValue(), WON)){
-                        log.info("本局游戏胜者：" + new String(tagChangeEntity.getEntity().getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8));
-                    }else if (Objects.equals(tagChangeEntity.getValue(), LOST)){
-                        log.info("本局游戏败者：" + new String(tagChangeEntity.getEntity().getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8));
-                    }else if (Objects.equals(tagChangeEntity.getValue(), CONCEDED)){
-                        log.info("本局游戏投降者：" + new String(tagChangeEntity.getEntity().getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8));
+                    if (Objects.equals(tagChangeEntity.getValue(), GameStaticData.WON)){
+//                        todo
+//                        log.info("本局游戏胜者：" + new String(tagChangeEntity.getEntity().getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8));
+                        log.info("本局游戏胜者：" + tagChangeEntity.getEntity());
+                    }else if (Objects.equals(tagChangeEntity.getValue(), GameStaticData.LOST)){
+//                        log.info("本局游戏败者：" + new String(tagChangeEntity.getEntity().getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8));
+                        log.info("本局游戏胜者：" + tagChangeEntity.getEntity());
+                    }else if (Objects.equals(tagChangeEntity.getValue(), GameStaticData.CONCEDED)){
+//                        log.info("本局游戏投降者：" + new String(tagChangeEntity.getEntity().getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8));
+                        log.info("本局游戏胜者：" + tagChangeEntity.getEntity());
                     }
                 }
                 default -> {
@@ -107,13 +123,14 @@ public class PowerLogUtil {
 
     public static TagChangeEntity parseTagChange(String l){
         int tagIndex = l.lastIndexOf("tag");
-        int valueIndex = l.lastIndexOf(VALUE);
+        int valueIndex = l.lastIndexOf(GameStaticData.VALUE);
         int index = l.lastIndexOf("]");
         TagChangeEntity tagChangeEntity = new TagChangeEntity();
-        tagChangeEntity.setTag(TAG_MAP.getOrDefault(l.substring(tagIndex + 4, valueIndex).strip(), UNKNOWN));
+        tagChangeEntity.setTag(GameStaticData.TAG_MAP.getOrDefault(l.substring(tagIndex + 4, valueIndex).strip(), UNKNOWN));
         tagChangeEntity.setValue(l.substring(valueIndex + 6).strip());
         if (index == -1){
-            tagChangeEntity.setEntity(l.substring(l.indexOf("Entity") + 7, tagIndex).strip());
+//            todo
+            tagChangeEntity.setEntity(new String(l.substring(l.indexOf("Entity") + 7, tagIndex).strip().getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8));
         }else {
             parseCommonEntity(tagChangeEntity, l);
         }
@@ -127,11 +144,11 @@ public class PowerLogUtil {
         commonEntity.setEntity(l.substring(entityIndex + 7, index).strip());
         Block block = new Block();
         block.setEntity(commonEntity);
-        block.setBlockType(BLOCK_TYPE_MAP.get(l.substring(l.lastIndexOf("BlockType") + 10, l.lastIndexOf("Entity")).strip()));
+        block.setBlockType(GameStaticData.BLOCK_TYPE_MAP.get(l.substring(l.lastIndexOf("BlockType") + 10, l.lastIndexOf("Entity")).strip()));
         return block;
     }
 
-    private static final boolean[] SIGH = new boolean[16];
+    private static final boolean[] SIGH = new boolean[21];
 
     /**
      * 处理只有tag和value的日志
@@ -147,13 +164,13 @@ public class PowerLogUtil {
         long mark = accessFile.getFilePointer();
         while (true){
             if ((l = accessFile.readLine()) == null){
-                ROBOT.delay(1000);
+                ScriptStaticData.ROBOT.delay(1000);
             }else if (l.lastIndexOf("    tag=") == -1){
                 accessFile.seek(mark);
                 Arrays.fill(SIGH, false);
                 break;
             }else if (!SIGH[0] && l.lastIndexOf("CARDTYPE") != -1){
-                extraEntity.getExtraCard().setCardType(CARD_TYPE_MAP.get(parseValue(l)));
+                extraEntity.getExtraCard().setCardType(GameStaticData.CARD_TYPE_MAP.get(parseValue(l)));
                 SIGH[0] = true;
             }else if (!SIGH[1] && l.lastIndexOf(COST.getValue()) != -1){
                 extraEntity.getExtraCard().setCost(Integer.parseInt(parseValue(l)));
@@ -165,12 +182,12 @@ public class PowerLogUtil {
                 extraEntity.getExtraCard().setHealth(Integer.parseInt(parseValue(l)));
                 SIGH[3] = true;
             }else if (!SIGH[4] && l.lastIndexOf(ZONE.getValue()) != -1){
-                extraEntity.getExtraCard().setZone(ZONE_MAP.get(parseValue(l)));
+                extraEntity.getExtraCard().setZone(GameStaticData.ZONE_MAP.get(parseValue(l)));
                 SIGH[4] = true;
             }else if (!SIGH[5] && l.lastIndexOf(ZONE_POSITION.getValue()) != -1){
                 extraEntity.getExtraCard().setZonePos(Integer.parseInt(parseValue(l)));
                 SIGH[5] = true;
-            }else if (!SIGH[6] && l.lastIndexOf("ADJACENT_BUFF") != -1){
+            }else if (!SIGH[6] && l.lastIndexOf(ADJACENT_BUFF.getValue()) != -1){
                 extraEntity.getExtraCard().setAdjacentBuff("1".equals(parseValue(l)));
                 SIGH[6] = true;
             }else if (!SIGH[7] && l.lastIndexOf(POISONOUS.getValue()) != -1){
@@ -200,13 +217,28 @@ public class PowerLogUtil {
             }else if (!SIGH[15] && l.lastIndexOf(STEALTH.getValue()) != -1){
                 extraEntity.getExtraCard().setStealth("1".equals(parseValue(l)));
                 SIGH[15] = true;
+            }else if (!SIGH[16] && l.lastIndexOf(WINDFURY.getValue()) != -1){
+                extraEntity.getExtraCard().setWindFury("1".equals(parseValue(l)));
+                SIGH[16] = true;
+            }else if (!SIGH[17] && l.lastIndexOf(BATTLECRY.getValue()) != -1){
+                extraEntity.getExtraCard().setBattlecry("1".equals(parseValue(l)));
+                SIGH[17] = true;
+            }else if (!SIGH[18] && l.lastIndexOf(CANT_BE_TARGETED_BY_SPELLS.getValue()) != -1){
+                extraEntity.getExtraCard().setCantBeTargetedBySpells("1".equals(parseValue(l)));
+                SIGH[18] = true;
+            }else if (!SIGH[19] && l.lastIndexOf(CANT_BE_TARGETED_BY_HERO_POWERS.getValue()) != -1){
+                extraEntity.getExtraCard().setCantBeTargetedByHeroPowers("1".equals(parseValue(l)));
+                SIGH[19] = true;
+            }else if (!SIGH[20] && l.lastIndexOf(SPAWN_TIME_COUNT.getValue()) != -1){
+                extraEntity.getExtraCard().setSpawnTimeCount("1".equals(parseValue(l)));
+                SIGH[20] = true;
             }
             mark = accessFile.getFilePointer();
         }
         return extraEntity;
     }
 
-    private static void parseCommonEntity(CommonEntity commonEntity, String l){
+    private static void parseCommonEntity(CommonEntity commonEntity, String l) {
         int index = l.lastIndexOf("]");
         int playerIndex = l.lastIndexOf("player", index);
         int cardIdIndex = l.lastIndexOf("cardId", playerIndex);
@@ -215,24 +247,23 @@ public class PowerLogUtil {
         int entityIdIndex = l.lastIndexOf("id", zoneIndex);
         int entityNameIndex = l.lastIndexOf("entityName", entityIdIndex);
         commonEntity.setCardId(l.substring(cardIdIndex + 7, playerIndex).strip());
-        if (Strings.isBlank(commonEntity.getCardId())){
+        if (Strings.isBlank(commonEntity.getCardId())) {
             //noinspection AlibabaLowerCamelCaseVariableNaming
             int cardIDIndex = l.lastIndexOf("CardID");
-            if (cardIDIndex != -1){
+            if (cardIDIndex != -1) {
                 commonEntity.setCardId(l.substring(cardIDIndex + 7).strip());
             }
         }
-        if (Strings.isNotBlank(commonEntity.getCardId()) && commonEntity.getCardId().contains(COIN)){
-            commonEntity.setCardId(COIN);
+        if (Strings.isNotBlank(commonEntity.getCardId()) && commonEntity.getCardId().contains(GameStaticData.COIN)) {
+            commonEntity.setCardId(GameStaticData.COIN);
         }
         commonEntity.setPlayerId(l.substring(playerIndex + 7, index).strip());
-        commonEntity.setZone(ZONE_MAP.get(l.substring(zoneIndex + 5, zonePosIndex).strip()));
+        commonEntity.setZone(GameStaticData.ZONE_MAP.get(l.substring(zoneIndex + 5, zonePosIndex).strip()));
         commonEntity.setZonePos(Integer.parseInt(l.substring(zonePosIndex + 8, cardIdIndex).strip()));
         commonEntity.setEntityId(l.substring(entityIdIndex + 3, zoneIndex).strip());
-        commonEntity.setEntityName(l.substring(entityNameIndex + 11, entityIdIndex).strip());
+        commonEntity.setEntityName(new String(l.substring(entityNameIndex + 11, entityIdIndex).strip().getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8));
     }
-
     public static String parseValue(String l){
-        return l.substring(l.lastIndexOf(VALUE) + 6).strip();
+        return l.substring(l.lastIndexOf(GameStaticData.VALUE) + 6).strip();
     }
 }

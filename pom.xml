@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>club.xiaojiawei</groupId>
-    <artifactId>hearthstone</artifactId>
-    <version>v2.0.0-GA</version>
-    <name>hearthstone</name>
-    <description>hearthstone</description>
+    <artifactId>HearthstoneScript</artifactId>
+    <version>v3.0.0-GA</version>
+    <name>hearthstoneScript</name>
+    <description>炉石传说脚本</description>
     <properties>
         <java.version>17</java.version>
         <javafx-version>17.0.2</javafx-version>
@@ -53,12 +53,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.springframework.boot</groupId>
-                    <artifactId>spring-boot-starter-tomcat</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <!--javafx-->
         <dependency>
@@ -85,9 +79,10 @@
         <!--组件补充库-->
         <dependency>
             <groupId>club.xiaojiawei</groupId>
-            <artifactId>javafx-controls</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <artifactId>javafx-ui</artifactId>
+            <version>0.0.1</version>
         </dependency>
+
     </dependencies>
 
     <build>
@@ -95,7 +90,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
-                <version>3.3.0</version>
                 <configuration>
                     <appendAssemblyId>false</appendAssemblyId>
                     <descriptors>
@@ -115,13 +109,6 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <configuration>
-                    <skipTests>true</skipTests>
-                </configuration>
-            </plugin>
             <!-- 打包成jar包，并指定lib和resources文件夹位置 -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -129,12 +116,13 @@
                 <version>3.0.2</version>
                 <configuration>
                     <excludes>
-                        <exclude>**/static/*.bat</exclude>
+                        <exclude>**/bat/**</exclude>
+                        <exclude>application.yml</exclude>
                     </excludes>
                     <archive>
                         <manifest>
                             <!-- 入口Main Class -->
-                            <mainClass>club.xiaojiawei.SpringApplication</mainClass>
+                            <mainClass>club.xiaojiawei.ScriptApplication</mainClass>
                             <!-- 依赖的lib -->
                             <classpathPrefix>lib/</classpathPrefix>
                             <addClasspath>true</addClasspath>

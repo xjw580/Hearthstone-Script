@@ -1,11 +1,17 @@
 package club.xiaojiawei.enums;
 
-import lombok.SneakyThrows;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.ToString;
 
 /**
+ * 开局触发特殊效果的卡牌
  * @author 肖嘉威
  * @date 2022/11/29 22:04
  */
+@Getter
+@ToString
+@AllArgsConstructor
 public enum SpecialCardEnum {
 
     PRINCE_RENATHAL("REV_018", "雷纳索尔王子"),
@@ -16,26 +22,4 @@ public enum SpecialCardEnum {
     ;
     private final String value;
     private final String comment;
-
-    SpecialCardEnum(String value, String comment) {
-        this.value = value;
-        this.comment = comment;
-    }
-
-    public String getValue() {
-        return value;
-    }
-
-    public String getComment() {
-        return comment;
-    }
-
-    @SneakyThrows
-    @Override
-    public String toString() {
-        return "SpecialCardEnum{" +
-                "value='" + value + '\'' +
-                ", comment='" + comment + '\'' +
-                '}';
-    }
 }

@@ -1,30 +1,22 @@
 package club.xiaojiawei.strategy.mode;
 
-import club.xiaojiawei.enums.ModeEnum;
-import club.xiaojiawei.status.Mode;
 import club.xiaojiawei.strategy.AbstractModeStrategy;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
 /**
  * @author 肖嘉威
  * @date 2022/11/25 12:43
  */
 @Slf4j
-public class BaconAbstractModeStrategy extends AbstractModeStrategy {
-
+@Component
+public class BaconAbstractModeStrategy extends AbstractModeStrategy<Object> {
     @Override
-    public void intoMode() {
-
+    public void wantEnter() {
     }
 
     @Override
-    protected void log() {
-        Mode.setCurrMode(ModeEnum.BACON);
-        log.info("切換到" + ModeEnum.BACON.getComment());
+    protected void afterEnter(Object o) {
     }
 
-    @Override
-    protected void nextStep() {
-
-    }
 }

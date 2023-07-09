@@ -10,7 +10,6 @@ public class SecretArea extends Area{
     public SecretArea() {
         super(5);
     }
-
     @Override
     public void putZeroAreaCard(Card card) {
         add(card);

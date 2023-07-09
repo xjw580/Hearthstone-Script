@@ -3,11 +3,10 @@ package club.xiaojiawei.entity.area;
 import club.xiaojiawei.entity.Card;
 import club.xiaojiawei.entity.Player;
 import club.xiaojiawei.status.War;
+import club.xiaojiawei.data.GameStaticData;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.*;
-
-import static club.xiaojiawei.constant.GameMapConst.CARD_AREA_MAP;
 
 /**
  * @author 肖嘉威
@@ -16,7 +15,7 @@ import static club.xiaojiawei.constant.GameMapConst.CARD_AREA_MAP;
 @Slf4j
 public abstract class Area {
 
-    protected List<Card> cards;
+    protected volatile List<Card> cards;
 
     protected final Map<String, Card> zeroArea;
 
@@ -42,7 +41,7 @@ public abstract class Area {
     }
 
     protected void addZone(Card card){
-        CARD_AREA_MAP.put(card.getEntityId(), this);
+        GameStaticData.CARD_AREA_MAP.put(card.getEntityId(), this);
     };
 
     public int maxCardSize() {

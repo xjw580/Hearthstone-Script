@@ -1,11 +1,17 @@
 package club.xiaojiawei.enums;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.ToString;
+
 /**
  * @author 肖嘉威
  * @date 2022/11/28 20:11
  */
+@Getter
+@ToString
+@AllArgsConstructor
 public enum HeroTypeEnum {
-
     WARRIOR("战士"),
     MAGE("法师"),
     WARLOCK("术士"),
@@ -20,20 +26,4 @@ public enum HeroTypeEnum {
     ;
 
     private final String comment;
-
-    HeroTypeEnum(String comment) {
-        this.comment = comment;
-    }
-
-    @Override
-    public String toString() {
-        return "ProfessionEnum{" +
-                "comment='" + comment + '\'' +
-                '}';
-    }
-
-    public String getComment() {
-
-        return comment;
-    }
 }

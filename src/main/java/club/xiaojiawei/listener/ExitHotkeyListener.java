@@ -18,6 +18,8 @@ public class ExitHotkeyListener implements HotkeyListener {
 
     @Resource
     private PauseHotkeyListener pauseHotkeyListener;
+    @Resource
+    private SystemUtil systemUtil;
 
     private final static int HOT_KEY_EXIT = 111;
 
@@ -37,7 +39,7 @@ public class ExitHotkeyListener implements HotkeyListener {
         //如果是我指定的快捷键就执行指定的操作
         if(i == HOT_KEY_EXIT){
             log.info("捕捉到热键，关闭程序");
-            SystemUtil.notice("捕捉到热键，关闭程序");
+            systemUtil.notice("捕捉到热键，关闭程序");
             JIntellitype.getInstance().removeHotKeyListener(this);
             JIntellitype.getInstance().removeHotKeyListener(pauseHotkeyListener);
             System.exit(0);

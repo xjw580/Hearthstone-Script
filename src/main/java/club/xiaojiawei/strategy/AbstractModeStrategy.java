@@ -1,38 +1,54 @@
 package club.xiaojiawei.strategy;
 
-import club.xiaojiawei.run.Core;
-import club.xiaojiawei.utils.RandomUtil;
+import club.xiaojiawei.data.ScriptStaticData;
+import club.xiaojiawei.status.Mode;
+import club.xiaojiawei.utils.GameUtil;
+import club.xiaojiawei.utils.MouseUtil;
 import club.xiaojiawei.utils.SystemUtil;
+import javafx.beans.property.BooleanProperty;
+import lombok.extern.slf4j.Slf4j;
 
-import static club.xiaojiawei.constant.SystemConst.ROBOT;
+import javax.annotation.Resource;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * @author 肖嘉威
  * @date 2022/11/26 17:39
  */
-public abstract class AbstractModeStrategy implements Strategy<Object>{
+@Slf4j
+public abstract class AbstractModeStrategy<T>{
+    @Resource
+    protected SystemUtil systemUtil;
+    @Resource
+    protected MouseUtil mouseUtil;
+    @Resource
+    protected GameUtil gameUtil;
+    @Resource
+    protected AtomicReference<BooleanProperty> isPause;
+    @Resource
+    protected ScheduledThreadPoolExecutor extraThreadPool;
+    protected final static int INTERVAL_TIME = 5000;
+    protected final static int DELAY_TIME = 1000;
 
-    protected final static int intervalTime = 5000;
-
-    protected final static int delayTime = 1000;
-
-    @Override
-    public final void afterInto(){
-        afterInto(null);
+    public abstract void wantEnter();
+    public final void entering(){
+        entering(null);
     }
-
-    @Override
-    public void afterInto(Object o) {
-        SystemUtil.cancelAllTask();
+    public final void entering(T t) {
+        beforeEnter();
         log();
-        ROBOT.delay(RandomUtil.getMediumRandom());
-        SystemUtil.frontWindow(Core.getGameHWND());
-        nextStep();
+        afterEnter(t);
     }
-
-    public abstract void intoMode();
-
-    protected abstract void log();
-
-    protected abstract void nextStep();
+    protected void beforeEnter(){
+        systemUtil.frontWindow(ScriptStaticData.getGameHWND());
+        SystemUtil.cancelAllTask();
+        SystemUtil.stopAllThread();
+    }
+    protected void log(){
+        log.info("切換到" + Mode.getCurrMode().getComment());
+    }
+    protected abstract void afterEnter(T t);
+    public void afterLeave(){
+    };
 }

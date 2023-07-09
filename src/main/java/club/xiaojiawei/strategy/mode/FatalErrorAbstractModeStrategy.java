@@ -1,30 +1,27 @@
 package club.xiaojiawei.strategy.mode;
 
-import club.xiaojiawei.enums.ModeEnum;
-import club.xiaojiawei.status.Mode;
+import club.xiaojiawei.core.Core;
 import club.xiaojiawei.strategy.AbstractModeStrategy;
-import club.xiaojiawei.utils.SystemUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
+
+import javax.annotation.Resource;
 
 /**
  * @author 肖嘉威
  * @date 2022/12/10 22:35
  */
 @Slf4j
-public class FatalErrorAbstractModeStrategy extends AbstractModeStrategy {
+@Component
+public class FatalErrorAbstractModeStrategy extends AbstractModeStrategy<Object> {
+    @Resource
+    private Core core;
     @Override
-    public void intoMode() {
+    public void wantEnter() {
 
     }
-
     @Override
-    protected void log() {
-        Mode.setCurrMode(ModeEnum.FATAL_ERROR);
-        log.info("切換到" + ModeEnum.FATAL_ERROR.getComment());
-    }
-
-    @Override
-    protected void nextStep() {
-        SystemUtil.shutdownGame();
+    protected void afterEnter(Object o) {
+        core.restart();
     }
 }
