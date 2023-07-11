@@ -1,7 +1,9 @@
 package club.xiaojiawei.strategy.mode;
 
 import club.xiaojiawei.custom.LogRunnable;
+import club.xiaojiawei.data.GameStaticData;
 import club.xiaojiawei.data.ScriptStaticData;
+import club.xiaojiawei.enums.ConfigurationKeyEnum;
 import club.xiaojiawei.enums.DeckEnum;
 import club.xiaojiawei.enums.ModeEnum;
 import club.xiaojiawei.enums.RunModeEnum;
@@ -9,8 +11,6 @@ import club.xiaojiawei.listener.PowerFileListener;
 import club.xiaojiawei.status.Mode;
 import club.xiaojiawei.strategy.AbstractModeStrategy;
 import club.xiaojiawei.utils.RandomUtil;
-import club.xiaojiawei.data.GameStaticData;
-import club.xiaojiawei.enums.ConfigurationKeyEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -18,6 +18,8 @@ import javax.annotation.Resource;
 import java.util.Properties;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+
+import static club.xiaojiawei.data.GameStaticData.CANCEL_MATCH_BUTTON_VERTICAL_TO_BOTTOM_RATION;
 
 
 /**
@@ -184,6 +186,13 @@ public class TournamentAbstractModeStrategy extends AbstractModeStrategy<Object>
                 systemUtil.notice("游戏网络出现问题，匹配失败，再次匹配中");
                 systemUtil.frontWindow(ScriptStaticData.getGameHWND());
                 systemUtil.updateRect(ScriptStaticData.getGameHWND(), ScriptStaticData.GAME_RECT);
+//                点击取消匹配按钮
+                mouseUtil.leftButtonClick(
+                        ((ScriptStaticData.GAME_RECT.right + ScriptStaticData.GAME_RECT.left) >> 1) + RandomUtil.getRandom(-10, 10),
+                        (int) (ScriptStaticData.GAME_RECT.bottom - (ScriptStaticData.GAME_RECT.bottom - ScriptStaticData.GAME_RECT.top) * CANCEL_MATCH_BUTTON_VERTICAL_TO_BOTTOM_RATION) + RandomUtil.getRandom(-5, 5)
+                );
+                systemUtil.delayLong();
+//                点击错误按钮
                 mouseUtil.leftButtonClick(
                         ((ScriptStaticData.GAME_RECT.right + ScriptStaticData.GAME_RECT.left) >> 1) + RandomUtil.getRandom(-10, 10),
                         (int) (ScriptStaticData.GAME_RECT.bottom - (ScriptStaticData.GAME_RECT.bottom - ScriptStaticData.GAME_RECT.top) * ERROR_BUTTON_VERTICAL_TO_BOTTOM_RATION) + RandomUtil.getRandom(-5, 5)

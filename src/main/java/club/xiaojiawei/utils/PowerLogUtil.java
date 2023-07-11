@@ -90,6 +90,7 @@ public class PowerLogUtil {
                 case CANT_BE_TARGETED_BY_SPELLS -> card.setCantBeTargetedBySpells(Objects.equals(tagChangeEntity.getValue(), "1"));
                 case CANT_BE_TARGETED_BY_HERO_POWERS -> card.setCantBeTargetedByHeroPowers(Objects.equals(tagChangeEntity.getValue(), "1"));
                 case SPAWN_TIME_COUNT -> card.setSpawnTimeCount(Objects.equals(tagChangeEntity.getValue(), "1"));
+                case DORMANT_AWAKEN_CONDITION_ENCHANT -> card.setDormantAwakenConditionEnchant(Objects.equals(tagChangeEntity.getValue(), "1"));
                 default -> {
                     return false;
                 }
@@ -148,7 +149,7 @@ public class PowerLogUtil {
         return block;
     }
 
-    private static final boolean[] SIGH = new boolean[21];
+    private static final boolean[] SIGH = new boolean[22];
 
     /**
      * 处理只有tag和value的日志
@@ -232,6 +233,9 @@ public class PowerLogUtil {
             }else if (!SIGH[20] && l.lastIndexOf(SPAWN_TIME_COUNT.getValue()) != -1){
                 extraEntity.getExtraCard().setSpawnTimeCount("1".equals(parseValue(l)));
                 SIGH[20] = true;
+            }else if (!SIGH[21] && l.lastIndexOf(DORMANT_AWAKEN_CONDITION_ENCHANT.getValue()) != -1){
+                extraEntity.getExtraCard().setDormantAwakenConditionEnchant("1".equals(parseValue(l)));
+                SIGH[21] = true;
             }
             mark = accessFile.getFilePointer();
         }

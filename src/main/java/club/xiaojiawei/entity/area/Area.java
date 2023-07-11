@@ -23,7 +23,7 @@ public abstract class Area {
 
     public Area(int maxSize) {
         this.cards = new ArrayList<>();
-        zeroArea = new HashMap<>();
+        this.zeroArea = new HashMap<>();
         this.maxSize = maxSize;
     }
 

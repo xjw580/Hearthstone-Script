@@ -1,6 +1,6 @@
 package club.xiaojiawei.strategy.phase;
 
-import club.xiaojiawei.listener.PowerFileListener;
+import club.xiaojiawei.listener.ScreenFileListener;
 import club.xiaojiawei.status.War;
 import club.xiaojiawei.strategy.AbstractPhaseStrategy;
 import club.xiaojiawei.utils.PowerLogUtil;
@@ -33,7 +33,7 @@ public class GameOverAbstractPhaseStrategy extends AbstractPhaseStrategy<String>
                 }
                 break;
             }else if (powerFileListener.isRelevance(l)){
-                PowerFileListener.setMark(System.currentTimeMillis());
+                ScreenFileListener.setMark(System.currentTimeMillis());
                 if (l.contains("TAG_CHANGE")){
                     PowerLogUtil.dealTagChange(PowerLogUtil.parseTagChange(l));
                 }

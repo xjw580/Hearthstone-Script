@@ -83,9 +83,13 @@ public class Card extends Entity{
     private boolean cantBeTargetedByHeroPowers;
 
     /**
-     * 休眠
+     * 刷出时间计数
      */
     private boolean spawnTimeCount;
+    /**
+     * 休眠
+     */
+    private boolean dormantAwakenConditionEnchant;
 
     public Card() {
     }
@@ -121,6 +125,7 @@ public class Card extends Entity{
         cantBeTargetedBySpells = extraEntity.getExtraCard().isCantBeTargetedBySpells();
         cantBeTargetedByHeroPowers = extraEntity.getExtraCard().isCantBeTargetedByHeroPowers();
         spawnTimeCount = extraEntity.getExtraCard().isSpawnTimeCount();
+        dormantAwakenConditionEnchant = extraEntity.getExtraCard().isDormantAwakenConditionEnchant();
     }
 
 }

@@ -5,7 +5,7 @@ import club.xiaojiawei.entity.Player;
 import club.xiaojiawei.entity.TagChangeEntity;
 import club.xiaojiawei.enums.DeckEnum;
 import club.xiaojiawei.enums.StepEnum;
-import club.xiaojiawei.listener.PowerFileListener;
+import club.xiaojiawei.listener.ScreenFileListener;
 import club.xiaojiawei.status.War;
 import club.xiaojiawei.strategy.AbstractDeckStrategy;
 import club.xiaojiawei.strategy.AbstractPhaseStrategy;
@@ -26,7 +26,8 @@ import static club.xiaojiawei.data.ScriptStaticData.ROBOT;
 import static club.xiaojiawei.enums.BlockTypeEnum.TRIGGER;
 import static club.xiaojiawei.enums.ConfigurationKeyEnum.DECK_KEY;
 import static club.xiaojiawei.enums.StepEnum.*;
-import static club.xiaojiawei.enums.TagEnum.*;
+import static club.xiaojiawei.enums.TagEnum.CURRENT_PLAYER;
+import static club.xiaojiawei.enums.TagEnum.STEP;
 import static club.xiaojiawei.enums.WarPhaseEnum.GAME_OVER_PHASE;
 
 /**
@@ -50,6 +51,9 @@ public class GameTurnAbstractPhaseStrategy extends AbstractPhaseStrategy<String>
             if (thread != null && thread.isAlive()){
                 thread.stop();
                 log.info("出牌线程已停止");
+                System.out.println("isAlive:" + thread.isAlive());
+            }else {
+                log.info("出牌线程早已停止");
             }
             thread = null;
         }catch (Exception e){
@@ -75,7 +79,7 @@ public class GameTurnAbstractPhaseStrategy extends AbstractPhaseStrategy<String>
                     ROBOT.delay(1000);
                 }
             }else if (powerFileListener.isRelevance(l)){
-                PowerFileListener.setMark(System.currentTimeMillis());
+                ScreenFileListener.setMark(System.currentTimeMillis());
                 switch (currentStep){
                     case MAIN_READY -> mainReady(l);
                     case MAIN_START_TRIGGERS -> mainStartTriggers(l, accessFile);
@@ -159,7 +163,6 @@ public class GameTurnAbstractPhaseStrategy extends AbstractPhaseStrategy<String>
 //                          等待动画结束
                             log.info("我方出牌");
                             ROBOT.delay(4000);
-                            stopThread();
 //                            异步执行出牌策略，以便监听出牌后的卡牌变动
                             thread = new Thread(() -> {
                                 log.info("执行出牌策略");
@@ -168,7 +171,6 @@ public class GameTurnAbstractPhaseStrategy extends AbstractPhaseStrategy<String>
                             }, "outCardThread");
                             thread.start();
                         }else {
-                            stopThread();
                             log.info("对方出牌");
                         }
                     }else if (Objects.equals(tagChangeEntity.getValue(), FINAL_GAMEOVER.getValue())){
@@ -212,6 +214,7 @@ public class GameTurnAbstractPhaseStrategy extends AbstractPhaseStrategy<String>
             if (!PowerLogUtil.dealTagChange(tagChangeEntity)){
                 if (tagChangeEntity.getTag() == STEP){
                     if (Objects.equals(tagChangeEntity.getValue(), MAIN_CLEANUP.getValue())){
+                        stopThread();
                         currentStep = MAIN_CLEANUP;
                         log.info(currentStep.getComment());
                     }else if (Objects.equals(tagChangeEntity.getValue(), FINAL_GAMEOVER.getValue())){

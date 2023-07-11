@@ -12,10 +12,12 @@ script:
   configuration:
     file: ${script.path}/script.properties
 log:
-  level: info
+  level: debug
   path: ${script.path}
 logging:
   config: logback-spring.xml
+  level:
+    root: ${log.level}
 #  禁用web容器
 spring:
   main:
