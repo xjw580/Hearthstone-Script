@@ -12,7 +12,7 @@ script:
   configuration:
     file: ${script.path}/script.properties
 log:
-  level: debug
+  level: info
   path: ${script.path}
 logging:
   config: logback-spring.xml

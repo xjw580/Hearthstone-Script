@@ -59,7 +59,7 @@ public enum TagEnum {
     ADJACENT_BUFF("ADJACENT_BUFF", "相邻增益"),
     CANT_BE_TARGETED_BY_SPELLS("CANT_BE_TARGETED_BY_SPELLS", "不能被法术指向"),
     CANT_BE_TARGETED_BY_HERO_POWERS("CANT_BE_TARGETED_BY_HERO_POWERS", "不能被英雄技能指向"),
-    SPAWN_TIME_COUNT("SPAWN_TIME_COUNT", "休眠"),
+    SPAWN_TIME_COUNT("SPAWN_TIME_COUNT", "刷出时间计数"),
     DORMANT_AWAKEN_CONDITION_ENCHANT("DORMANT_AWAKEN_CONDITION_ENCHANT", "休眠"),
     /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
     UNKNOWN("UNKNOWN", "未知")
