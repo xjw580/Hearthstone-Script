@@ -1,10 +1,10 @@
 package club.xiaojiawei.strategy.phase;
 
-import club.xiaojiawei.listener.PowerFileListener;
-import club.xiaojiawei.strategy.AbstractPhaseStrategy;
-import club.xiaojiawei.utils.PowerLogUtil;
 import club.xiaojiawei.data.GameStaticData;
 import club.xiaojiawei.data.ScriptStaticData;
+import club.xiaojiawei.listener.ScreenFileListener;
+import club.xiaojiawei.strategy.AbstractPhaseStrategy;
+import club.xiaojiawei.utils.PowerLogUtil;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -31,7 +31,7 @@ public class SpecialEffectTriggerAbstractPhaseStrategy extends AbstractPhaseStra
                     ScriptStaticData.ROBOT.delay(1000);
                 }
             } else if (powerFileListener.isRelevance(l)) {
-                PowerFileListener.setMark(System.currentTimeMillis());
+                ScreenFileListener.setMark(System.currentTimeMillis());
                 if (l.contains("MAIN_READY")) {
                     accessFile.seek(mark);
                     break;

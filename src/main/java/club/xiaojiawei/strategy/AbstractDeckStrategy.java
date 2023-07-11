@@ -82,7 +82,9 @@ public abstract class AbstractDeckStrategy{
             firstCardPos = getFloatCardFirstCardPosForFourCard();
         }
         systemUtil.updateRect(ScriptStaticData.getGameHWND(), GAME_RECT);
-        log.info("我方手牌：" + myHandCards);
+        if (log.isDebugEnabled()){
+            log.info("我方手牌：" + myHandCards);
+        }
         executeChangeCard(myHandCards, clearance, firstCardPos);
         systemUtil.updateRect(ScriptStaticData.getGameHWND(), GAME_RECT);
 //        点击确认
@@ -119,11 +121,13 @@ public abstract class AbstractDeckStrategy{
         this.myPlayCards = myPlayArea.getCards();
         this.rivalHandCards = rivalHandArea.getCards();
         this.rivalPlayCards = rivalPlayArea.getCards();
-        log.info("我方手牌：" + myHandCards);
-        log.info("我方战场：" + myPlayCards);
-        log.info("我方英雄：" + myPlayArea.getHero());
+        if (log.isDebugEnabled()){
+            log.info("我方手牌：" + myHandCards);
+            log.info("我方战场：" + myPlayCards);
+            log.info("我方英雄：" + myPlayArea.getHero());
 //        log.info("我方武器：" + myPlayArea.getWeapon());
-        log.info("我方技能：" + myPlayArea.getPower());
+            log.info("我方技能：" + myPlayArea.getPower());
+        }
         outCard();
         mouseUtil.cancel();
         clickTurnOverButton();
@@ -153,7 +157,7 @@ public abstract class AbstractDeckStrategy{
     protected int calcTotalAtc(List<Card> cards){
         int atc = 0;
         for (Card card : cards) {
-            if (!card.isExhausted() && !card.isFrozen() && !card.isSpawnTimeCount()){
+            if (!card.isExhausted() && !card.isFrozen() && !card.isDormantAwakenConditionEnchant()){
                 atc += card.getAtc();
                 if (card.isWindFury()){
                     atc += card.getAtc();
@@ -206,7 +210,7 @@ public abstract class AbstractDeckStrategy{
 //        寻找能白吃的
         for (int i = rivalPlayCards.size() - 1; i >= 0 ; i--) {
             Card card = rivalPlayCards.get(i);
-            if (!card.isStealth() && !card.isSpawnTimeCount() && card.getCardType() == MINION && card.getHealth() - card.getDamage() <= atc && (card.getAtc() < health || myPlayCard.isDivineShield())){
+            if (!card.isStealth() && !card.isDormantAwakenConditionEnchant() && card.getCardType() == MINION && card.getHealth() - card.getDamage() <= atc && (card.getAtc() < health || myPlayCard.isDivineShield())){
                 double newWeight = (card.getHealth()  - card.getDamage()) * HEALTH_WEIGHT + card.getAtc() * ATC_WEIGHT;
 //                寻找最优白吃方法，既要白吃又不能白吃过头忽略打脸，如55白吃11这种
                 if (newWeight > weight && myWeight - newWeight < FREE_EAT_MAX){
@@ -221,7 +225,7 @@ public abstract class AbstractDeckStrategy{
             weight = 0;
             for (int i = rivalPlayCards.size() - 1; i >= 0 ; i--) {
                 Card card = rivalPlayCards.get(i);
-                if (!card.isStealth() && !card.isSpawnTimeCount() && card.getHealth() - card.getDamage() <= atc){
+                if (!card.isStealth() && !card.isDormantAwakenConditionEnchant() && card.getHealth() - card.getDamage() <= atc){
                     double newWeight = (card.getHealth() - card.getDamage()) * HEALTH_WEIGHT + card.getAtc() * ATC_WEIGHT;
                     if (newWeight >= myWeightPlus && newWeight > weight){
                         index = i;
@@ -317,11 +321,11 @@ public abstract class AbstractDeckStrategy{
         ROBOT.delay(ACTION_INTERVAL);
         return true;
     }
-    protected void myHeadPointToMyPlayNoPlace(int handIndex, int playIndex){
+    protected void myHandPointToMyPlayNoPlace(int handIndex, int playIndex){
         myHandSpellPointToMyPlayForQuick(handIndex, playIndex);
         ROBOT.delay(ACTION_INTERVAL);
     }
-    protected void myHeadPointToMyPlayNoPlace(int handIndex){
+    protected void myHandPointToMyPlayNoPlace(int handIndex){
         myHandSpellPointToMyPlayForQuick(handIndex);
         ROBOT.delay(ACTION_INTERVAL);
     }
@@ -680,6 +684,18 @@ public abstract class AbstractDeckStrategy{
         }
         return index;
     }
+    protected int findMaxAtcByGEAtkNotWindFury(List<Card> cards, int atk){
+        int index = -1, attackNum = 0;
+        for (int i = 0; i < cards.size(); i++) {
+            Card card = cards.get(i);
+            int atc = card.getAtc();
+            if (atc >= atk && atc > attackNum && !card.isWindFury()){
+                index = i;
+                attackNum = atc;
+            }
+        }
+        return index;
+    }
     /**
      * 寻找在等于指定血量中攻击力最大的
      * @param cards
@@ -708,7 +724,7 @@ public abstract class AbstractDeckStrategy{
     protected int findCanMove(List<Card> cards){
         for (int i = 0; i < cards.size(); i++) {
             Card card = cards.get(i);
-            if (!card.isExhausted() && !card.isFrozen() && !card.isSpawnTimeCount()){
+            if (!card.isExhausted() && !card.isFrozen() && !card.isDormantAwakenConditionEnchant()){
                 return i;
             }
         }

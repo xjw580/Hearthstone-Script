@@ -1,15 +1,15 @@
 package club.xiaojiawei.strategy.phase;
 
+import club.xiaojiawei.data.GameStaticData;
+import club.xiaojiawei.data.ScriptStaticData;
 import club.xiaojiawei.entity.TagChangeEntity;
+import club.xiaojiawei.enums.ConfigurationKeyEnum;
 import club.xiaojiawei.enums.DeckEnum;
-import club.xiaojiawei.listener.PowerFileListener;
+import club.xiaojiawei.enums.StepEnum;
+import club.xiaojiawei.listener.ScreenFileListener;
 import club.xiaojiawei.status.War;
 import club.xiaojiawei.strategy.AbstractPhaseStrategy;
 import club.xiaojiawei.utils.PowerLogUtil;
-import club.xiaojiawei.data.GameStaticData;
-import club.xiaojiawei.data.ScriptStaticData;
-import club.xiaojiawei.enums.ConfigurationKeyEnum;
-import club.xiaojiawei.enums.StepEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -54,7 +54,7 @@ public class ReplaceCardAbstractPhaseStrategy extends AbstractPhaseStrategy<Stri
                         ScriptStaticData.ROBOT.delay(1_000);
                     }
                 }else if (powerFileListener.isRelevance(l)){
-                    PowerFileListener.setMark(System.currentTimeMillis());
+                    ScreenFileListener.setMark(System.currentTimeMillis());
                     if (l.contains(GameStaticData.SHOW_ENTITY)){
                         PowerLogUtil.dealShowEntity(l, accessFile);
                     }else if (l.contains(GameStaticData.TAG_CHANGE)){

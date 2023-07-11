@@ -43,6 +43,12 @@ public class ScreenFileListener {
     @Resource
     private AtomicReference<BooleanProperty> isPause;
     private static ScheduledFuture<?> scheduledFuture;
+    private static long mark;
+    public static void setMark(long mark) {
+        ScreenFileListener.mark = mark;
+    }
+    private static ScheduledFuture<?> errorScheduledFuture;
+    public static final long MAX_ERROR_TIME = 5 * 60 * 1000L;
     private static BufferedReader reader;
     public synchronized void listen(){
         if (scheduledFuture != null && !scheduledFuture.isDone()){
@@ -83,12 +89,23 @@ public class ScreenFileListener {
                 throw new RuntimeException(e);
             }
         }), 0, 1500, TimeUnit.MILLISECONDS);
+        mark = System.currentTimeMillis();
+        log.info("开始监听是否出现异常情况");
+        errorScheduledFuture = listenFileThreadPool.scheduleAtFixedRate(new LogRunnable(() -> {
+            if (!isPause.get().get() && System.currentTimeMillis() - mark > MAX_ERROR_TIME){
+                core.restart();
+            }
+        }), 0, 1, TimeUnit.MINUTES);
     }
 
     public static void cancelListener(){
         if (scheduledFuture != null && !scheduledFuture.isDone()){
             log.info("已停止监听screen.log");
             scheduledFuture.cancel(true);
+        }
+        if (errorScheduledFuture != null && !errorScheduledFuture.isDone()){
+            log.info("已停止监听是否出现异常情况");
+            errorScheduledFuture.cancel(true);
         }
         if (reader != null){
             try {

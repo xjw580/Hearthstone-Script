@@ -16,6 +16,8 @@ log:
   path: ${script.path}
 logging:
   config: logback-spring.xml
+  level:
+    root: ${log.level}
 #  禁用web容器
 spring:
   main:

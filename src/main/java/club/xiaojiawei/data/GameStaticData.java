@@ -22,6 +22,7 @@ public class GameStaticData {
     public static final String CONCEDED = "CONCEDED";
     public static final String COIN = "COIN";
 /*游戏UI相关*/
+    /*我的屏幕高30.5*/
     public static final float GAME_WINDOW_ASPECT_TO_HEIGHT_RATIO = (float) 1.351;
     public static final float FIRST_ROW_DECK_VERTICAL_TO_BOTTOM_RATIO = (float) 0.75;
     public static final float START_BUTTON_HORIZONTAL_TO_CENTER_RATIO = (float) 0.313;
@@ -34,6 +35,7 @@ public class GameStaticData {
     public static final float FIRST_CARD_HORIZONTAL_TO_CENTER_WHEN_FOUR_CARD = (float) 0.267;
     public static final float CARD_HORIZONTAL_CLEARANCE_WHEN_FOUR_CARD = (float) 0.173;
     public static final float CONFIRM_OR_CLOSE_BUTTON_VERTICAL_TO_BOTTOM_RATION = (float) 0.255;
+    public static final float CANCEL_MATCH_BUTTON_VERTICAL_TO_BOTTOM_RATION = (float) 0.148;
 
 /*游戏数据相关*/
 //为什么用Map取枚举而不用valueOf()?因为用valueOf()传入的数据不在枚举中时会直接报错，影响后续运行，而map返回null不影响其他操作

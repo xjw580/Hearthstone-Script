@@ -51,27 +51,17 @@ public class PowerFileListener {
     @Resource
     private Core core;
     private static ScheduledFuture<?> scheduledFuture;
-    private static ScheduledFuture<?> errorScheduledFuture;
-    private static long mark;
-    public static final long MAX_ERROR_TIME = 5 * 60 * 1000L;
     private static RandomAccessFile accessFile;
 
     public static RandomAccessFile getAccessFile() {
         return accessFile;
     }
 
-    public static void setMark(long mark) {
-        PowerFileListener.mark = mark;
-    }
 
     public static void cancelListener(){
         if (scheduledFuture != null && !scheduledFuture.isDone()){
             log.info("已停止监听power.log");
             scheduledFuture.cancel(true);
-        }
-        if (errorScheduledFuture != null && !errorScheduledFuture.isDone()){
-            log.info("已停止监听是否出现异常情况");
-            errorScheduledFuture.cancel(true);
         }
         if (accessFile != null){
             try {
@@ -87,7 +77,6 @@ public class PowerFileListener {
             log.warn(springData.getPowerLogName() + "正在被监听，无法再次被监听");
             return;
         }
-        mark = System.currentTimeMillis();
         File logPath = new File(scriptProperties.getProperty(ConfigurationKeyEnum.GAME_PATH_KEY.getKey()) + springData.getGameLogPath());
         File [] files;
         if (!logPath.exists() || (files = logPath.listFiles()) == null || files.length == 0){
@@ -121,12 +110,6 @@ public class PowerFileListener {
                 throw new RuntimeException(e);
             }
         }), 0, 1500, TimeUnit.MILLISECONDS);
-        log.info("开始监听是否出现异常情况");
-        errorScheduledFuture = listenFileThreadPool.scheduleAtFixedRate(new LogRunnable(() -> {
-            if (!isPause.get().get() && System.currentTimeMillis() - mark > MAX_ERROR_TIME){
-                core.restart();
-            }
-        }), 0, 1, TimeUnit.MINUTES);
     }
 
     public void resolveLog(String line, RandomAccessFile accessFile) throws IOException {
@@ -135,7 +118,7 @@ public class PowerFileListener {
                 accessFile.seek(0);
             }
         }else if (isRelevance(line)){
-            setMark(System.currentTimeMillis());
+            ScreenFileListener.setMark(System.currentTimeMillis());
             if (War.getCurrentPhase() == null && line.contains("CREATE_GAME")){
                 War.setCurrentPhase(FILL_DECK_PHASE, line);
             }else if (War.getCurrentPhase() == FILL_DECK_PHASE && line.contains("BLOCK_START")){
