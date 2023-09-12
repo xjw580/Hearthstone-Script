@@ -4,9 +4,13 @@ import club.xiaojiawei.entity.Card;
 import club.xiaojiawei.entity.Player;
 import club.xiaojiawei.status.War;
 import club.xiaojiawei.data.GameStaticData;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
+import java.nio.charset.StandardCharsets;
 import java.util.*;
+
+import static club.xiaojiawei.data.GameStaticData.CARD_AREA_MAP;
 
 /**
  * @author 肖嘉威
@@ -15,6 +19,7 @@ import java.util.*;
 @Slf4j
 public abstract class Area {
 
+    @Getter
     protected volatile List<Card> cards;
 
     protected final Map<String, Card> zeroArea;
@@ -27,17 +32,13 @@ public abstract class Area {
         this.maxSize = maxSize;
     }
 
-    public List<Card> getCards() {
-        return cards;
-    }
-
     public void putZeroAreaCard(Card card){
         addZone(card);
         Player player = War.testArea(this);
-        if (log.isDebugEnabled()){
-            log.debug("向玩家 " + (player == War.getPlayer1()? 1 : 2) + "-" + player.getGameId() + "的" + this.getClass().getSimpleName() + " 的zeroArea 添加卡牌， entityId:" + card.getEntityId());
-        }
         zeroArea.put(card.getEntityId(), card);
+        if (log.isDebugEnabled()){
+            log.debug("向玩家" + (player == War.getPlayer1()? 1 : 2) + "-" + player.getGameId() + " 的 " + this.getClass().getSimpleName() + "的 zeroArea 添加卡牌，entityId:" + card.getEntityId() + "，size:" + cards.size());
+        }
     }
 
     protected void addZone(Card card){
@@ -60,10 +61,10 @@ public abstract class Area {
         if (card == null || isFull()){
             return false;
         }
-        Player player = War.testArea(this);
-        log.info("向玩家" + (player == War.getPlayer1()? 1 : 2) + " - " + player.getGameId() + "的" + this.getClass().getSimpleName() + " 添加卡牌， entityId:" + card.getEntityId());
         cards.add(card);
         addZone(card);
+        Player player = War.testArea(this);
+        log.info("向玩家" + (player == War.getPlayer1()? 1 : 2) + "-" + player.getGameId() + " 的 " + this.getClass().getSimpleName() + " 添加卡牌，entityId:" + card.getEntityId() + "，size:" + cards.size());
         return true;
     }
 
@@ -79,13 +80,13 @@ public abstract class Area {
             return false;
         }
         Player player = War.testArea(this);
-        log.info("向玩家" + (player == War.getPlayer1()? 1 : 2) + " - " + player.getGameId() + "的" + this.getClass().getSimpleName() + " 添加卡牌， entityId:" + card.getEntityId());
         if (cards.size() <= pos){
             cards.add(card);
         }else {
             cards.add(pos, card);
         }
         addZone(card);
+        log.info("向玩家" + (player == War.getPlayer1()? 1 : 2) + "-" + player.getGameId() + " 的 " + this.getClass().getSimpleName() + " 添加卡牌，entityId:" + card.getEntityId() + "，size:" + cards.size());
         return true;
     }
 

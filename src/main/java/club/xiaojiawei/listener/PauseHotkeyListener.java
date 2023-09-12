@@ -20,8 +20,6 @@ public class PauseHotkeyListener implements HotkeyListener {
 
     @Resource
     private AtomicReference<BooleanProperty> isPause;
-    @Resource
-    private SystemUtil systemUtil;
     private final static int HOT_KEY_PAUSE = 222;
 
     public PauseHotkeyListener(){
@@ -40,12 +38,12 @@ public class PauseHotkeyListener implements HotkeyListener {
         if (i == HOT_KEY_PAUSE){
             if (!isPause.get().get()){
                 log.info("捕捉到热键,停止脚本");
+                SystemUtil.notice("捕捉到热键,停止脚本");
                 isPause.get().set(true);
-                systemUtil.notice("捕捉到热键,停止脚本");
             }else {
                 log.info("捕捉到热键,开始脚本");
+                SystemUtil.notice("捕捉到热键,开始脚本");
                 isPause.get().set(false);
-                systemUtil.notice("捕捉到热键,开始脚本");
             }
         }
     }

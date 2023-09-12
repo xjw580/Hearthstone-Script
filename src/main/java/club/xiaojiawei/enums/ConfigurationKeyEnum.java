@@ -13,11 +13,14 @@ import lombok.ToString;
 @ToString
 @AllArgsConstructor
 public enum ConfigurationKeyEnum {
-
+    AUTO_OPEN_KEY("autoOpen"),
     GAME_PATH_KEY("gamePath"),
     PLATFORM_PATH_KEY("platformPath"),
     RUN_MODE_KEY("runMode"),
-    DECK_KEY("deck")
+    DECK_KEY("deck"),
+    WORK_DAY_FLAG_KEY("workDayFlag"),
+    WORK_TIME_FLAG_KEY("workTimeFlag"),
+    WORK_TIME_KEY("workTime")
     ;
     private final String key;
 

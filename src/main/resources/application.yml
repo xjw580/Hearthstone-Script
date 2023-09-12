@@ -18,7 +18,12 @@ logging:
   config: logback-spring.xml
   level:
     root: ${log.level}
-#  禁用web容器
+server:
+  port: 8080
+#  web容器开关
 spring:
+  thymeleaf:
+    cache: false
   main:
-    web-application-type: none
+    web-application-type: servlet
+##    web-application-type: none

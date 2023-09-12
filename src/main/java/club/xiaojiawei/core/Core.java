@@ -1,13 +1,14 @@
 package club.xiaojiawei.core;
 
-import club.xiaojiawei.controller.DashboardController;
-import club.xiaojiawei.controller.InitSettingsController;
+import club.xiaojiawei.controller.JavaFXDashboardController;
+import club.xiaojiawei.controller.JavaFXInitSettingsController;
 import club.xiaojiawei.data.ScriptStaticData;
 import club.xiaojiawei.enums.DeckEnum;
 import club.xiaojiawei.enums.ModeEnum;
 import club.xiaojiawei.enums.WarPhaseEnum;
 import club.xiaojiawei.initializer.AbstractInitializer;
 import club.xiaojiawei.starter.AbstractStarter;
+import club.xiaojiawei.status.Work;
 import club.xiaojiawei.strategy.AbstractDeckStrategy;
 import club.xiaojiawei.strategy.AbstractModeStrategy;
 import club.xiaojiawei.strategy.AbstractPhaseStrategy;
@@ -42,51 +43,48 @@ public class Core implements ApplicationRunner {
     @Resource
     private AtomicReference<BooleanProperty> isPause;
     @Resource
-    private SystemUtil systemUtil;
-    @Resource
     private AbstractInitializer initializer;
     @Resource
     private ConfigurableApplicationContext springContext;
     @Resource
-    private DashboardController dashboardController;
+    private JavaFXDashboardController javaFXDashboardController;
     @Resource
-    private InitSettingsController initSettingsController;
+    private JavaFXInitSettingsController javaFXInitSettingsController;
     @Resource
     private ThreadPoolExecutor coreThreadPool;
 
     /**
-     * 启动需要的程序
+     * 启动脚本
      */
     public void start(){
+        Work.setWorking(true);
         coreThreadPool.execute(() -> {
             if (!ScriptStaticData.isSetPath()){
-                systemUtil.notice("需要配置" + ScriptStaticData.GAME_CN_NAME + "和" + ScriptStaticData.PLATFORM_CN_NAME + "的路径");
-                Platform.runLater(() -> initSettingsController.showStage());
+                SystemUtil.notice("需要配置" + ScriptStaticData.GAME_CN_NAME + "和" + ScriptStaticData.PLATFORM_CN_NAME + "的路径");
+                Platform.runLater(() -> javaFXInitSettingsController.showStage());
                 isPause.get().set(true);
             }else if (!isPause.get().get()){
-                dashboardController.expandedLogPane();
+                javaFXDashboardController.expandedLogPane();
                 log.info("热键：Ctrl+P 开始/停止程序,Alt+P 关闭程序");
                 starter.start();
             }
         });
     }
 
+    /**
+     * 重启脚本
+     */
     public void restart(){
         coreThreadPool.execute(() -> {
+            SystemUtil.killGame();
             isPause.get().set(true);
-            try {
-//          等待脚本将监听资源关闭
-                Thread.sleep(5000);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-            systemUtil.killGame();
             isPause.get().set(false);
         });
     }
 
     @Override
-    public void run(ApplicationArguments args) {
+    public void run(ApplicationArguments args){
+//        创建对象为枚举赋值
         for (WarPhaseEnum phase : WarPhaseEnum.values()) {
             Class<? extends AbstractPhaseStrategy<String>> phaseStrategyClass = phase.getPhaseStrategyClass();
             if (phaseStrategyClass != null){

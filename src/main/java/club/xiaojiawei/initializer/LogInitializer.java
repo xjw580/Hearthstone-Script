@@ -22,8 +22,7 @@ public class LogInitializer extends AbstractInitializer{
     @Resource
     private SpringData springData;
     @Override
-    public void init() {
-        log.info("开始执行LogInitializer");
+    public void exec() {
         File logFile = new File(springData.getGameLogConfigurationPath());
         try(BufferedWriter writer = new BufferedWriter(new FileWriter(logFile))){
             writer.write("""

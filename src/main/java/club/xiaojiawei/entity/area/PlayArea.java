@@ -43,7 +43,7 @@ public class PlayArea extends Area {
                     War.getPlayer2().getSetasideArea().add(power);
                 }
                 Player player = War.testArea(this);
-                log.info("向玩家" + (player == War.getPlayer1()? 1 : 2) + " - " + player.getGameId() + "的" + this.getClass().getSimpleName() + " 的Power 添加卡牌， entityId:" + card.getEntityId());
+                log.info("向玩家" + (player == War.getPlayer1()? 1 : 2) + "-" + player.getGameId() + " 的 " + this.getClass().getSimpleName() + " 的 Power 添加卡牌，entityId:" + card.getEntityId());
                 power = card;
                 addZone(card);
                 return true;
@@ -55,7 +55,7 @@ public class PlayArea extends Area {
                     War.getPlayer2().getSetasideArea().add(power);
                 }
                 Player player = War.testArea(this);
-                log.info("向玩家" + (player == War.getPlayer1()? 1 : 2) + " - " + player.getGameId() + "的" + this.getClass().getSimpleName() + " 的Hero 添加卡牌， entityId:" + card.getEntityId());
+                log.info("向玩家" + (player == War.getPlayer1()? 1 : 2) + "-" + player.getGameId() + " 的 " + this.getClass().getSimpleName() + " 的 Hero 添加卡牌，entityId:" + card.getEntityId());
                 hero = card;
                 addZone(card);
                 return true;

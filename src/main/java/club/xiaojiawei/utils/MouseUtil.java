@@ -1,6 +1,7 @@
 package club.xiaojiawei.utils;
 
 import club.xiaojiawei.data.ScriptStaticData;
+import com.sun.jna.platform.win32.WinDef;
 import javafx.beans.property.BooleanProperty;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -23,8 +24,6 @@ public class MouseUtil {
     private static final int MOVE_DISTANCE = 10;
     @Resource
     private AtomicReference<BooleanProperty> isPause;
-    @Resource
-    private SystemUtil systemUtil;
 
     /**
      * 鼠标左键从指定处拖拽到指定处
@@ -45,12 +44,12 @@ public class MouseUtil {
             ScriptStaticData.ROBOT.mouseMove(startX, startY);
             ScriptStaticData.ROBOT.delay(100);
             ScriptStaticData.ROBOT.mousePress(BUTTON1_DOWN_MASK);
-            systemUtil.delayShort();
+            SystemUtil.delayShort();
             for (int i = 0; i < 50; i++) {
                 ScriptStaticData.ROBOT.mouseMove(startX, --startY);
                 ScriptStaticData.ROBOT.delay(MOVE_INTERVAL);
             }
-            systemUtil.delayShort();
+            SystemUtil.delayShort();
             if (startX == endX){
                 for (startY -= MOVE_DISTANCE; startY >= endY; startY -= MOVE_DISTANCE){
                     ScriptStaticData.ROBOT.mouseMove(startX, startY);
@@ -101,7 +100,7 @@ public class MouseUtil {
                     ScriptStaticData.ROBOT.delay(MOVE_INTERVAL);
                 }
             }
-            systemUtil.delayShort();
+            SystemUtil.delayShort();
             ScriptStaticData.ROBOT.mousePress(BUTTON1_DOWN_MASK);
             ScriptStaticData.ROBOT.delay(100);
             ScriptStaticData.ROBOT.mouseRelease(BUTTON1_DOWN_MASK);
@@ -136,8 +135,8 @@ public class MouseUtil {
     private int pixelToPosY(int pixelY){
         return (int) (pixelY / ScriptStaticData.DISPLAY_SCALE_Y);
     }
-    public void cancel(){
-        systemUtil.delayMedium();
+    public static void cancel(){
+        SystemUtil.delayMedium();
 //        点击右键
         ScriptStaticData.ROBOT.mousePress(BUTTON3_DOWN_MASK);
         ScriptStaticData.ROBOT.delay(200);

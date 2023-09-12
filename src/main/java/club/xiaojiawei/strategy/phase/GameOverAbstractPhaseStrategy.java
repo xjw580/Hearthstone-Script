@@ -4,6 +4,7 @@ import club.xiaojiawei.listener.ScreenFileListener;
 import club.xiaojiawei.status.War;
 import club.xiaojiawei.strategy.AbstractPhaseStrategy;
 import club.xiaojiawei.utils.PowerLogUtil;
+import club.xiaojiawei.utils.SystemUtil;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -21,7 +22,7 @@ public class GameOverAbstractPhaseStrategy extends AbstractPhaseStrategy<String>
     @SneakyThrows
     @Override
     protected void execute(String l, RandomAccessFile accessFile) {
-        systemUtil.delayMedium();
+        SystemUtil.delayMedium();
 //        宣布本局游戏胜者，败者
         while (true) {
             if (isPause.get().get()){

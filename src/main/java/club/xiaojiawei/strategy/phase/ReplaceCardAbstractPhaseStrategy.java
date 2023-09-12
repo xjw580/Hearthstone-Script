@@ -10,6 +10,7 @@ import club.xiaojiawei.listener.ScreenFileListener;
 import club.xiaojiawei.status.War;
 import club.xiaojiawei.strategy.AbstractPhaseStrategy;
 import club.xiaojiawei.utils.PowerLogUtil;
+import club.xiaojiawei.utils.SystemUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -40,7 +41,7 @@ public class ReplaceCardAbstractPhaseStrategy extends AbstractPhaseStrategy<Stri
         ScriptStaticData.ROBOT.delay(20_000);
 //        执行换牌策略
         DeckEnum.valueOf(scriptProperties.getProperty(ConfigurationKeyEnum.DECK_KEY.getKey())).getAbstractDeckStrategy().changeCard();
-        systemUtil.delayMedium();
+        SystemUtil.delayMedium();
         TagChangeEntity tagChangeEntity;
         while (true) {
             if (isPause.get().get()){

@@ -21,7 +21,7 @@ public class LogRunnable implements Runnable{
         try {
             task.run();
         }catch (Exception e){
-            log.error("发生错误" , e);
+            log.error("Runnable发生错误" , e);
         }
     }
 }

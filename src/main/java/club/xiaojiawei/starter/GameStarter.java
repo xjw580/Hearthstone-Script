@@ -14,7 +14,6 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.io.IOException;
-import java.util.Properties;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -29,29 +28,26 @@ import java.util.concurrent.atomic.AtomicReference;
 @Component
 public class GameStarter extends AbstractStarter{
     @Resource
-    private Properties scriptProperties;
-    @Resource
     private AtomicReference<BooleanProperty> isPause;
     @Resource
     private ScheduledThreadPoolExecutor launchProgramThreadPool;
     @Resource
-    private SystemUtil systemUtil;
-    @Resource
     private MouseUtil mouseUtil;
+    @Resource
+    private ScheduledThreadPoolExecutor extraThreadPool;
     @Resource
     private ScreenFileListener screenFileListener;
     private static ScheduledFuture<?> scheduledFuture;
     private static WinDef.HWND gameHWND;
     @Override
-    public void start() {
-        log.info("开始执行GameStarter");
+    public void exec() {
         log.info("开始检查" + ScriptStaticData.GAME_CN_NAME);
         scheduledFuture = launchProgramThreadPool.scheduleAtFixedRate(new LogRunnable(() -> {
             if (isPause.get().get()) {
                 cancelGameTimer();
             } else {
                 try {
-                    if (Strings.isNotBlank(new String(Runtime.getRuntime().exec(ScriptStaticData.GAME_MSG_CMD).getInputStream().readAllBytes()))) {
+                    if (Strings.isNotBlank(new String(Runtime.getRuntime().exec(ScriptStaticData.GAME_ALIVE_CMD).getInputStream().readAllBytes()))) {
                         if ((gameHWND = SystemUtil.getHWND(ScriptStaticData.GAME_CN_NAME)) == null){
                             return;
                         }
@@ -66,29 +62,35 @@ public class GameStarter extends AbstractStarter{
                     throw new RuntimeException(e);
                 }
             }
-        }), 0, 4, TimeUnit.SECONDS);
+        }), 1, 4, TimeUnit.SECONDS);
     }
 
     private void launchGame(){
-        systemUtil.frontWindow(ScriptStaticData.getPlatformHWND());
-        systemUtil.updateRect(ScriptStaticData.getPlatformHWND(), ScriptStaticData.PLATFORM_RECT);
-        systemUtil.delayShort();
-        mouseUtil.leftButtonClick(ScriptStaticData.PLATFORM_RECT.left + RandomUtil.getRandom(100, 150), ScriptStaticData.PLATFORM_RECT.bottom - RandomUtil.getRandom(110, 125));
+        ScriptStaticData.setPlatformHWND(SystemUtil.getHWND(ScriptStaticData.PLATFORM_CN_NAME));
+        SystemUtil.frontWindow(ScriptStaticData.getPlatformHWND());
+        SystemUtil.updateRect(ScriptStaticData.getPlatformHWND(), ScriptStaticData.PLATFORM_RECT);
+        SystemUtil.delayShort();
+        mouseUtil.leftButtonClick(ScriptStaticData.PLATFORM_RECT.left + RandomUtil.getRandom(120, 170), ScriptStaticData.PLATFORM_RECT.bottom - RandomUtil.getRandom(115, 130));
     }
 
     public static void cancelGameTimer(){
         if (scheduledFuture != null && !scheduledFuture.isDone()){
+            log.info("已取消游戏启动定时器");
             scheduledFuture.cancel(true);
         }
     }
     public void commonExecute(){
         log.info(ScriptStaticData.GAME_CN_NAME + "正在运行");
         ScriptStaticData.setGameHWND(gameHWND);
-        systemUtil.updateRect(ScriptStaticData.getGameHWND(), ScriptStaticData.GAME_RECT);
-        screenFileListener.listen();
-        cancelGameTimer();
-        if (nextStarter != null) {
-            nextStarter.start();
-        }
+        extraThreadPool.schedule(new LogRunnable(() -> {
+            cancelGameTimer();
+            SystemUtil.updateRect(ScriptStaticData.getGameHWND(), ScriptStaticData.GAME_RECT);
+            SystemUtil.frontWindow(ScriptStaticData.getGameHWND());
+            SystemUtil.delayMedium();
+            screenFileListener.listen();
+            if (nextStarter != null) {
+                nextStarter.start();
+            }
+        }),1, TimeUnit.SECONDS);
     }
 }

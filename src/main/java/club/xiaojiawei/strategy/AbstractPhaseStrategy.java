@@ -6,6 +6,7 @@ import club.xiaojiawei.status.War;
 import club.xiaojiawei.utils.GameUtil;
 import club.xiaojiawei.utils.SystemUtil;
 import javafx.beans.property.BooleanProperty;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.annotation.Resource;
@@ -21,16 +22,12 @@ public abstract class AbstractPhaseStrategy<T>{
     @Resource
     protected PowerFileListener powerFileListener;
     @Resource
-    protected SystemUtil systemUtil;
-    @Resource
     protected GameUtil gameUtil;
     @Resource
     protected AtomicReference<BooleanProperty> isPause;
+    @Getter
     private volatile static boolean dealing = false;
 
-    public static boolean isDealing() {
-        return dealing;
-    }
     public static void setDealing(boolean dealing) {
         AbstractPhaseStrategy.dealing = dealing;
     }
@@ -42,7 +39,7 @@ public abstract class AbstractPhaseStrategy<T>{
     public void dealing(T t) {
         dealing = true;
         beforeExecute();
-        systemUtil.frontWindow(ScriptStaticData.getGameHWND());
+        SystemUtil.frontWindow(ScriptStaticData.getGameHWND());
         execute(t, PowerFileListener.getAccessFile());
         afterExecute();
         if (War.getCurrentPhase() != null){
@@ -50,6 +47,7 @@ public abstract class AbstractPhaseStrategy<T>{
         }
     }
     protected void beforeExecute(){
+        SystemUtil.cancelAllTask();
         log.info("当前处于：" + War.getCurrentPhase().getComment());
     }
     protected void afterExecute(){
