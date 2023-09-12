@@ -22,8 +22,7 @@ public class PathInitializer extends AbstractInitializer{
     private Properties scriptProperties;
 
     @Override
-    public void init() {
-        log.info("开始执行PathInitializer");
+    public void exec() {
         if (Strings.isNotBlank(scriptProperties.getProperty(ConfigurationKeyEnum.GAME_PATH_KEY.getKey())) && Strings.isNotBlank(scriptProperties.getProperty(ConfigurationKeyEnum.PLATFORM_PATH_KEY.getKey()))){
             ScriptStaticData.setSetPath(true);
             if (nextInitializer != null){

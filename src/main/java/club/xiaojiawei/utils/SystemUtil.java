@@ -28,19 +28,22 @@ import static club.xiaojiawei.data.ScriptStaticData.GAME_NAME;
  * @date 2022/11/24 17:21
  */
 @Slf4j
-@Component
 public class SystemUtil {
-    @Resource
-    private AtomicReference<BooleanProperty> isPause;
 
     public final static Clipboard CLIPBOARD = Toolkit.getDefaultToolkit().getSystemClipboard();
+    /**
+     * 系统托盘
+     */
+    public static final SystemTray TRAY = SystemTray.getSystemTray();
+
+    public static TrayIcon trayIcon;
 
     /**
      * 调用系统通知
      * @param title
      * @param content
      */
-    public void notice(String title, String content){
+    public static void notice(String title, String content){
         trayIcon.displayMessage(title, content, TrayIcon.MessageType.INFO);
     }
 
@@ -53,8 +56,8 @@ public class SystemUtil {
 
     public static void cancelAllListener(){
         log.info("终止所有监听器");
-        PowerFileListener.cancelListener();
         ScreenFileListener.cancelListener();
+        PowerFileListener.cancelListener();
     }
 
     public static void stopAllThread(){
@@ -68,24 +71,15 @@ public class SystemUtil {
         GameStarter.cancelGameTimer();
     }
 
-    public static void cancelAll(){
-        cancelAllListener();
+    public static void cancelAllRunnable(){
         stopAllThread();
         cancelAllTask();
         cancelAllProgramTimer();
+        cancelAllListener();
+        delay(2000);
     }
-    public void notice(String context){
+    public static void notice(String context){
         notice(ScriptStaticData.SCRIPT_NAME, context);
-    }
-
-    /**
-     * 更新窗口信息
-     */
-    public void updateRect(WinDef.HWND gameHWND, WinDef.RECT gameRECT) {
-        User32.INSTANCE.GetWindowRect(gameHWND, gameRECT);
-        if ((ScriptStaticData.GAME_RECT.bottom - ScriptStaticData.GAME_RECT.top) != ScriptStaticData.DISPLAY_PIXEL_Y){
-            ScriptStaticData.GAME_RECT.top += ScriptStaticData.WINDOW_TOP_PIXEL;
-        }
     }
 
     /**
@@ -99,33 +93,55 @@ public class SystemUtil {
     }
 
     /**
-     * 前置窗口
-     * @param hwnd
+     * 更新窗口信息
      */
-    public void frontWindow(WinDef.HWND hwnd){
-        if (isPause.get().get()){
-            return;
+    public static void updateRect(WinDef.HWND programHWND, WinDef.RECT programRECT) {
+        User32.INSTANCE.GetWindowRect(programHWND, programRECT);
+        if ((ScriptStaticData.GAME_RECT.bottom - ScriptStaticData.GAME_RECT.top) != ScriptStaticData.DISPLAY_PIXEL_Y){
+            ScriptStaticData.GAME_RECT.top += ScriptStaticData.WINDOW_TOP_PIXEL;
         }
-        // 显示窗口
-        User32.INSTANCE.ShowWindow(hwnd, 9 );
-        // 前置窗口
-        User32.INSTANCE.SetForegroundWindow(hwnd);
     }
 
-    public void delayShort(){
+    /**
+     * 前置窗口
+     * @param programHWND
+     */
+    public static void frontWindow(WinDef.HWND programHWND){
+        // 显示窗口
+        User32.INSTANCE.ShowWindow(programHWND, 9 );
+        // 前置窗口
+        User32.INSTANCE.SetForegroundWindow(programHWND);
+    }
+
+    /**
+     * 单位毫秒
+     * @param delay
+     */
+    public static void delay(int delay){
+        ScriptStaticData.ROBOT.delay(delay);
+    }
+    public static void delayHuman(){
+        ScriptStaticData.ROBOT.delay(RandomUtil.getHugeRandom());
+    }
+    public static void delayTiny(){
+        ScriptStaticData.ROBOT.delay(RandomUtil.getTinyRandom());
+    }
+    public static void delayShort(){
         ScriptStaticData.ROBOT.delay(RandomUtil.getShortRandom());
     }
-
-    public void delayMedium(){
+    public static void delayMedium(){
         ScriptStaticData.ROBOT.delay(RandomUtil.getMediumRandom());
     }
-
-    public void delayLong(){
+    public static void delayLong(){
         ScriptStaticData.ROBOT.delay(RandomUtil.getLongRandom());
     }
+    public static void delayHuge(){
+        ScriptStaticData.ROBOT.delay(RandomUtil.getHugeRandom());
+    }
+
 
     @Deprecated
-    public void killProgram(){
+    public  static void killProgram(){
         ScriptStaticData.ROBOT.keyPress(18);
         ScriptStaticData.ROBOT.keyPress(115);
         ScriptStaticData.ROBOT.keyRelease(115);
@@ -136,21 +152,15 @@ public class SystemUtil {
     /**
      * 通过此方式停止的游戏，screen.log监听器无法监测到游戏被关闭
      */
-    public void killGame(){
+    public static void killGame(){
         try {
             Runtime.getRuntime().exec("cmd /c taskkill /f /t /im " + GAME_NAME);
             log.info("已关闭游戏");
+            SystemUtil.delay(1500);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
-
-    /**
-     * 系统托盘
-     */
-    public static final SystemTray TRAY = SystemTray.getSystemTray();
-
-    public static TrayIcon trayIcon;
 
     /**
      * 添加托盘
@@ -158,7 +168,7 @@ public class SystemUtil {
      * @param trayName
      * @param menuItems
      */
-    public void addTray(String trayIconName, String trayName, MenuItem... menuItems){
+    public static void addTray(String trayIconName, String trayName, MenuItem... menuItems){
         if (trayIcon != null){
             return;
         }
@@ -182,7 +192,7 @@ public class SystemUtil {
     /**
      * 移除托盘
      */
-    public void removeTray(){
+    public static void removeTray(){
         TRAY.remove(trayIcon);
     }
 
@@ -190,7 +200,7 @@ public class SystemUtil {
      * 粘贴到系统剪切板
      * @param content
      */
-    public boolean pasteClipboard(String content){
+    public static boolean pasteClipboard(String content){
         Transferable contents = CLIPBOARD.getContents(null);
         //判断是否为文本类型
         if (contents.isDataFlavorSupported(DataFlavor.stringFlavor)) {

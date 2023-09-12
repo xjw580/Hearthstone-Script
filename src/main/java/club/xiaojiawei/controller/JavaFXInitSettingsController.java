@@ -1,5 +1,6 @@
 package club.xiaojiawei.controller;
 
+import club.xiaojiawei.custom.LogRunnable;
 import club.xiaojiawei.data.ScriptStaticData;
 import club.xiaojiawei.data.SpringData;
 import club.xiaojiawei.enums.ConfigurationKeyEnum;
@@ -30,6 +31,8 @@ import java.net.URL;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.ResourceBundle;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -37,7 +40,7 @@ import java.util.ResourceBundle;
  * @date 2023/2/11 17:24
  */
 @Component
-public class InitSettingsController implements Initializable {
+public class JavaFXInitSettingsController implements Initializable {
 
     @FXML
     private Button apply;
@@ -54,11 +57,11 @@ public class InitSettingsController implements Initializable {
     @Resource
     private Properties scriptProperties;
     @Resource
-    private SpringData springData;
-    @Resource
     private PathInitializer pathInitializer;
-    @Autowired
+    @Resource
     private PropertiesUtil propertiesUtil;
+    @Resource
+    private ScheduledThreadPoolExecutor extraThreadPool;
     @FXML
     protected void gameClicked(){
         DirectoryChooser directoryChooser = new DirectoryChooser();
@@ -83,7 +86,7 @@ public class InitSettingsController implements Initializable {
     }
 
     @FXML
-    protected void save(){
+    protected void apply(){
         savePlatformPath();
         if(validateGamePath()){
             pathInitializer.init();
@@ -95,15 +98,17 @@ public class InitSettingsController implements Initializable {
         }
     }
     @FXML
-    protected void apply(){
+    protected void save(){
         savePlatformPath();
         if(validateGamePath()){
             pathInitializer.init();
             tip.setFill(Paint.valueOf("#00cc00"));
-            tip.setText("保存成功");
+            tip.setText("保存成功😊");
+            extraThreadPool.schedule(new LogRunnable(() -> tip.setText("")), 3, TimeUnit.SECONDS);
         }else {
             tip.setFill(Paint.valueOf("#ff3300"));
-            tip.setText(ScriptStaticData.GAME_CN_NAME + "安装路径不正确,请重新选择");
+            tip.setText(ScriptStaticData.GAME_CN_NAME + "安装路径不正确,请重新选择😩");
+            extraThreadPool.schedule(new LogRunnable(() -> tip.setText("")), 3, TimeUnit.SECONDS);
         }
     }
 

@@ -21,7 +21,8 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static club.xiaojiawei.data.ScriptStaticData.GAME_MSG_CMD;
+import static club.xiaojiawei.data.ScriptStaticData.GAME_ALIVE_CMD;
+import static club.xiaojiawei.data.ScriptStaticData.ROBOT;
 
 /**
  * @author 肖嘉威
@@ -71,6 +72,14 @@ public class ScreenFileListener {
                     fileWriter.write("");
                 }
             }
+            if (reader != null){
+                try {
+                    reader.close();
+                    reader = null;
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
             reader = new BufferedReader(new FileReader(screenLogFile));
             loadPrevData();
         } catch (IOException e) {
@@ -100,19 +109,13 @@ public class ScreenFileListener {
 
     public static void cancelListener(){
         if (scheduledFuture != null && !scheduledFuture.isDone()){
-            log.info("已停止监听screen.log");
             scheduledFuture.cancel(true);
+            log.info("已停止监听screen.log");
+            ROBOT.delay(2000);
         }
         if (errorScheduledFuture != null && !errorScheduledFuture.isDone()){
-            log.info("已停止监听是否出现异常情况");
             errorScheduledFuture.cancel(true);
-        }
-        if (reader != null){
-            try {
-                reader.close();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+            log.info("已停止监听是否出现异常情况");
         }
     }
 
@@ -126,7 +129,7 @@ public class ScreenFileListener {
         }else if (line.contains("Box.OnDestroy()")){
             try {
                 Thread.sleep(2000);
-                if (Strings.isBlank(new String(Runtime.getRuntime().exec(GAME_MSG_CMD).getInputStream().readAllBytes()))){
+                if (Strings.isBlank(new String(Runtime.getRuntime().exec(GAME_ALIVE_CMD).getInputStream().readAllBytes()))){
                     log.info("检测到游戏意外退出，准备重新启动");
                     core.start();
                 }

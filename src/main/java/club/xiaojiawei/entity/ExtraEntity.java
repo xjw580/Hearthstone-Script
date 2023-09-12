@@ -14,4 +14,5 @@ import lombok.ToString;
 public class ExtraEntity extends CommonEntity {
 
     private ExtraCard extraCard = new ExtraCard();
+
 }

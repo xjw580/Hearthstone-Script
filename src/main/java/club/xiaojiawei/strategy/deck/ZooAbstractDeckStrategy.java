@@ -124,7 +124,7 @@ public class ZooAbstractDeckStrategy extends AbstractDeckStrategy{
         }
         dealResource();
 //        算斩杀
-        int allAtc = calcTotalAtc(myPlayCards);
+        int allAtc = calcEnablePlayTotalAtc(myPlayCards);
         int blood = rivalPlayArea.getHero().getHealth() + rivalPlayArea.getHero().getArmor() - rivalPlayArea.getHero().getDamage();
         int soulFireCount = 0;
         if (throughWall){
@@ -252,7 +252,7 @@ public class ZooAbstractDeckStrategy extends AbstractDeckStrategy{
      * @return
      */
     private boolean canUsePower(){
-        return  myPlayArea.getHero().getHealth() - myPlayArea.getHero().getDamage() - calcPureTotalAtc(rivalPlayCards) > 3;
+        return  myPlayArea.getHero().getHealth() - myPlayArea.getHero().getDamage() - calcPlayTotalAtc(rivalPlayCards) > 3;
     }
 
 
@@ -516,7 +516,7 @@ public class ZooAbstractDeckStrategy extends AbstractDeckStrategy{
         }
         if (!myPlayArea.isFull()){
             int blood = rivalPlayArea.getHero().getHealth() + rivalPlayArea.getHero().getArmor() - rivalPlayArea.getHero().getDamage();
-            int myPlayAtc = calcTotalAtc(myPlayCards);
+            int myPlayAtc = calcEnablePlayTotalAtc(myPlayCards);
 //        57大哥
             if ((index1 = findByCardId(myHandCards, "VAN_EX1_310")) != -1 && (myHandCards.size() <= 2
                     || blood - myPlayAtc <= 10 || myHandCards.size() > 4)

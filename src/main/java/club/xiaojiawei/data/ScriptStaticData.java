@@ -1,6 +1,7 @@
 package club.xiaojiawei.data;
 
 import com.sun.jna.platform.win32.WinDef;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.awt.*;
@@ -18,17 +19,16 @@ public class ScriptStaticData {
     private static boolean isSetPath;
     public static final String GAME_CN_NAME = "炉石传说";
     public static final String PLATFORM_CN_NAME = "战网";
-    /**
-     * 暂停时间
-     */
-    public static final int REST_TIME = 15;
+
     /**
      * 游戏窗口句柄
      */
+    @Getter
     private static WinDef.HWND gameHWND;
     /**
      * 平台窗口句柄
      */
+    @Getter
     private static WinDef.HWND platformHWND;
 
     /**
@@ -72,7 +72,7 @@ public class ScriptStaticData {
      * 炉石传说程序名
      */
     public static final String GAME_NAME = "Hearthstone.exe";
-    public static final String GAME_MSG_CMD = "cmd /c tasklist | find \"" + GAME_NAME + "\"";
+    public static final String GAME_ALIVE_CMD = "cmd /c tasklist | find \"" + GAME_NAME + "\"";
     /**
      * 作者
      */
@@ -96,16 +96,8 @@ public class ScriptStaticData {
         isSetPath = setPath;
     }
 
-    public static WinDef.HWND getGameHWND() {
-        return gameHWND;
-    }
-
     public static void setGameHWND(WinDef.HWND gameHWND) {
         ScriptStaticData.gameHWND = gameHWND;
-    }
-
-    public static WinDef.HWND getPlatformHWND() {
-        return platformHWND;
     }
 
     public static void setPlatformHWND(WinDef.HWND platformHWND) {
@@ -120,7 +112,7 @@ public class ScriptStaticData {
         }
         GraphicsDevice[] screenDevices = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices();
         if (screenDevices.length > 1){
-            log.info("检测到你有多台显示器，特此提醒需要将炉石传说和战网放到主屏运行");
+            log.info("检测到有多台显示器，请将炉石传说和战网放到主显示器运行");
         }
         AffineTransform tx = screenDevices[0].getDefaultConfiguration().getDefaultTransform();
         DISPLAY_SCALE_X = tx.getScaleX();

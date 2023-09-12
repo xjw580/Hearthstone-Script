@@ -1,5 +1,6 @@
 package club.xiaojiawei.strategy.phase;
 
+import club.xiaojiawei.data.ScriptStaticData;
 import club.xiaojiawei.entity.Block;
 import club.xiaojiawei.entity.Player;
 import club.xiaojiawei.entity.TagChangeEntity;
@@ -10,6 +11,8 @@ import club.xiaojiawei.status.War;
 import club.xiaojiawei.strategy.AbstractDeckStrategy;
 import club.xiaojiawei.strategy.AbstractPhaseStrategy;
 import club.xiaojiawei.utils.PowerLogUtil;
+import club.xiaojiawei.utils.SystemUtil;
+import lombok.Getter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
@@ -40,22 +43,17 @@ public class GameTurnAbstractPhaseStrategy extends AbstractPhaseStrategy<String>
     @Resource
     private Properties scriptProperties;
     private static StepEnum currentStep = MAIN_READY;
+    @Getter
     private static Player currentPlayer;
     private static Thread thread;
-    public static Player getCurrentPlayer() {
-        return currentPlayer;
-    }
+
     @SuppressWarnings("all")
     public static void stopThread(){
         try{
             if (thread != null && thread.isAlive()){
                 thread.stop();
                 log.info("出牌线程已停止");
-                System.out.println("isAlive:" + thread.isAlive());
-            }else {
-                log.info("出牌线程早已停止");
             }
-            thread = null;
         }catch (Exception e){
             log.warn("出牌线程已停止");
         }
@@ -115,16 +113,17 @@ public class GameTurnAbstractPhaseStrategy extends AbstractPhaseStrategy<String>
             }
         }else if (l.contains("BLOCK_START")){
             Block block = PowerLogUtil.parseBlock(l);
-            if (block.getBlockType() == TRIGGER){
+//            匹配战网id后缀正则
+            if (block.getBlockType() == TRIGGER && block.getEntity().getEntity().matches("^.+#\\d+$")){
                 String gameId = new String(block.getEntity().getEntity().getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8);
-                if (Strings.isNotBlank(gameId)){
-                    if (Objects.equals(War.getMe().getGameId(), gameId) || (War.getRival().getGameId() != null && !Objects.equals(War.getRival().getGameId(), gameId))){
-                        currentPlayer = War.getMe();
-                    }else {
-                        currentPlayer = War.getRival();
-                    }
-                    log.info(gameId + " 的回合");
+                if (Objects.equals(War.getMe().getGameId(), gameId) || (War.getRival().getGameId() != null && !Objects.equals(War.getRival().getGameId(), gameId))){
+                    currentPlayer = War.getMe();
+                    War.getMe().setGameId(gameId);
+                }else {
+                    currentPlayer = War.getRival();
+                    War.getRival().setGameId(gameId);
                 }
+                log.info(gameId + " 的回合");
             }
         }
     }
@@ -160,18 +159,21 @@ public class GameTurnAbstractPhaseStrategy extends AbstractPhaseStrategy<String>
                         currentStep = MAIN_ACTION;
                         log.info(currentStep.getComment());
                         if (War.getMe() == currentPlayer){
+                            log.info("我方回合");
+                            SystemUtil.frontWindow(ScriptStaticData.getGameHWND());
+                            SystemUtil.updateRect(ScriptStaticData.getGameHWND(), ScriptStaticData.GAME_RECT);
+                            AbstractDeckStrategy.setMyTurn(true);
 //                          等待动画结束
-                            log.info("我方出牌");
                             ROBOT.delay(4000);
 //                            异步执行出牌策略，以便监听出牌后的卡牌变动
-                            thread = new Thread(() -> {
+                            (thread = new Thread(() -> {
                                 log.info("执行出牌策略");
                                 DeckEnum.valueOf(scriptProperties.getProperty(DECK_KEY.getKey())).getAbstractDeckStrategy().afterIntoMyTurn();
                                 log.info("出牌策略执行完毕");
-                            }, "outCardThread");
-                            thread.start();
+                            }, "outCardThread")).start();
                         }else {
-                            log.info("对方出牌");
+                            log.info("对方回合");
+                            AbstractDeckStrategy.setMyTurn(false);
                         }
                     }else if (Objects.equals(tagChangeEntity.getValue(), FINAL_GAMEOVER.getValue())){
                         currentStep = FINAL_GAMEOVER;
@@ -192,7 +194,6 @@ public class GameTurnAbstractPhaseStrategy extends AbstractPhaseStrategy<String>
             if (!PowerLogUtil.dealTagChange(tagChangeEntity)){
                 if (tagChangeEntity.getTag() == STEP){
                     if (Objects.equals(tagChangeEntity.getValue(), MAIN_END.getValue())){
-                        AbstractDeckStrategy.setMyTurn(false);
                         currentStep = MAIN_END;
                         log.info(currentStep.getComment());
                     }else if (Objects.equals(tagChangeEntity.getValue(), FINAL_GAMEOVER.getValue())){

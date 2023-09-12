@@ -12,6 +12,8 @@ import club.xiaojiawei.strategy.phase.GameTurnAbstractPhaseStrategy;
 import javafx.beans.property.SimpleIntegerProperty;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 /**
  * @author 肖嘉威
  * @date 2022/11/25 20:57
@@ -21,7 +23,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class War {
 
-    public final static SimpleIntegerProperty warCount = new SimpleIntegerProperty();
+    public volatile static SimpleIntegerProperty warCount = new SimpleIntegerProperty();
+    public final static AtomicInteger winCount = new AtomicInteger();
     private volatile static WarPhaseEnum currentPhase;
     private volatile static Player me;
     private volatile static Player rival;
@@ -62,12 +65,7 @@ public class War {
         War.rival = rival;
     }
 
-    static {
-        reset();
-    }
-
     public static void reset(){
-        AbstractDeckStrategy.setMyTurn(false);
         player1 = new Player();
         player1.setPlayerId("1");
         player2 = new Player();

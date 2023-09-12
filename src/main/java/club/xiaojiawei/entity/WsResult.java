@@ -14,17 +14,13 @@ public class WsResult <T>{
 
     private T msg;
 
-    private WsResult(WsResultTypeEnum wsResultType, T msg) {
+    public WsResult(WsResultTypeEnum wsResultType, T msg) {
         this.wsResultType = wsResultType;
         this.msg = msg;
     }
 
-    public static WsResult<Object> ofDeckType(Object msg){
-        return new WsResult<>(WsResultTypeEnum.DECK_TYPE, msg);
-    }
-
-    public static WsResult<Object> ofScriptLog(Object msg){
-        return new WsResult<>(WsResultTypeEnum.SCRIPT_LOG, msg);
+    public static <T>WsResult<T> ofNew(WsResultTypeEnum wsResultType, T msg){
+        return new WsResult<>(wsResultType, msg);
     }
 
 

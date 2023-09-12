@@ -16,11 +16,10 @@ import org.springframework.stereotype.Component;
 public class ClearStarter extends AbstractStarter{
 
     @Override
-    public void start() {
-        log.info("开始执行ClearStarter");
+    public void exec() {
+        SystemUtil.cancelAllRunnable();
         War.reset();
         Mode.reset();
-        SystemUtil.cancelAll();
         if (nextStarter != null){
             nextStarter.start();
         }

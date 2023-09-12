@@ -15,6 +15,9 @@ public class RandomUtil {
         return (int) (random.nextDouble() * (max - min + 1) + min);
     }
 
+    public static int getHugeRandom(){
+        return getRandom(3000, 5000);
+    }
     public static int getLongRandom(){
         return getRandom(2000, 2500);
     }

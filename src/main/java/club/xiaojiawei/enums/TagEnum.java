@@ -1,7 +1,10 @@
 package club.xiaojiawei.enums;
 
+import club.xiaojiawei.entity.Card;
 import club.xiaojiawei.entity.ExtraEntity;
 import club.xiaojiawei.entity.TagChangeEntity;
+import club.xiaojiawei.strategy.AbstractPhaseStrategy;
+import club.xiaojiawei.utils.PowerLogUtil;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
@@ -17,7 +20,7 @@ import java.io.RandomAccessFile;
 @AllArgsConstructor
 public enum TagEnum {
     /**
-     * 调度标签，在AbstractPhaseStrategy里使用
+     * 调度标签，在 ${@link AbstractPhaseStrategy} 里使用
      */
     MULLIGAN_STATE("MULLIGAN_STATE", "调度阶段"),
     STEP("STEP", "步骤"),
@@ -35,16 +38,20 @@ public enum TagEnum {
     ZONE("ZONE", "区域"),
     PLAYSTATE("PLAYSTATE", "游戏状态"),
     FIRST_PLAYER("FIRST_PLAYER", "先手玩家"),
+    TIMEOUT("TIMEOUT", "超时"),
+    TURN("TURN", "回合"),
+    NUM_TURNS_IN_PLAY("NUM_TURNS_IN_PLAY", "回合数"),
+    NUM_CARDS_DRAWN_THIS_TURN("NUM_CARDS_DRAWN_THIS_TURN", "本回合抽牌数"),
     /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
     /**
      * 卡牌属性标签
-     * 需要在{@link club.xiaojiawei.utils.PowerLogUtil#parseExtraEntity(String, RandomAccessFile)}和{@link club.xiaojiawei.entity.Card}和{@link club.xiaojiawei.entity.Card#extraEntityToCard(ExtraEntity)}里添加
-     * 如果值会改变则还需要在此添加{@link club.xiaojiawei.utils.PowerLogUtil#dealTagChange(TagChangeEntity)}
+     * 需要在{@link PowerLogUtil#parseExtraEntity(String, RandomAccessFile)}和{@link Card}和{@link Card#byExtraEntityUpdate(ExtraEntity)}里添加
+     * 如果值会改变则还需要在此添加{@link PowerLogUtil#dealTagChange(TagChangeEntity)}
      */
     HEALTH("HEALTH", "生命值"),
     ATK("ATK", "攻击力"),
     COST("COST", "法力值"),
-    FROZEN("FROZEN", "冻结"),
+    FREEZE("FREEZE", "冻结"),
     EXHAUSTED("EXHAUSTED", "疲劳"),
     DAMAGE("DAMAGE", "受到的伤害"),
     TAUNT("TAUNT", "嘲讽"),
@@ -61,6 +68,7 @@ public enum TagEnum {
     CANT_BE_TARGETED_BY_HERO_POWERS("CANT_BE_TARGETED_BY_HERO_POWERS", "不能被英雄技能指向"),
     SPAWN_TIME_COUNT("SPAWN_TIME_COUNT", "刷出时间计数"),
     DORMANT_AWAKEN_CONDITION_ENCHANT("DORMANT_AWAKEN_CONDITION_ENCHANT", "休眠"),
+    IMMUNE("IMMUNE", "免疫"),
     /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
     UNKNOWN("UNKNOWN", "未知")
     ;

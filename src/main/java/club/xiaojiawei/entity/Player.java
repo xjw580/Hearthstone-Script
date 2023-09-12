@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.SneakyThrows;
 import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.util.Strings;
 
 import java.nio.charset.StandardCharsets;
 
@@ -16,6 +18,7 @@ import java.nio.charset.StandardCharsets;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @ToString(callSuper = true)
+@Slf4j
 public class Player extends Entity{
 
     private String playerId;
@@ -58,7 +61,10 @@ public class Player extends Entity{
 
     @SneakyThrows
     public void setGameId(String gameId) {
-        this.gameId = new String(gameId.getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8);
+        if (Strings.isBlank(this.gameId)){
+            log.info("playerId:" + playerId + ",gameId:" + gameId);
+        }
+        this.gameId = gameId;
     }
 
     public void clear(){

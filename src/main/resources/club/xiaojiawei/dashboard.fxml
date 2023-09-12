@@ -1,19 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import club.xiaojiawei.controls.Switch?>
-<?import javafx.collections.FXCollections?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Text?>
-<?import java.lang.Double?>
-<?import java.lang.String?>
 <?import javafx.util.Duration?>
+<?import java.lang.Double?>
 <Accordion xmlns:fx="http://javafx.com/fxml"
            expandedPane="$titledPaneControl"
            fx:id="accordion"
-           fx:controller="club.xiaojiawei.controller.DashboardController">
+           fx:controller="club.xiaojiawei.controller.JavaFXDashboardController">
     <panes>
         <TitledPane text="控制" fx:id="titledPaneControl">
             <GridPane>
@@ -24,16 +22,22 @@
                 <fx:define>
                     <Double fx:value="40" fx:id="space"/>
                     <Double fx:value="18" fx:id="imageSize"/>
+                    <Double fx:value="10" fx:id="dateTranslateX"/>
                 </fx:define>
                 <rowConstraints>
                     <RowConstraints minHeight="$space"/>
                     <RowConstraints minHeight="$space"/>
                     <RowConstraints minHeight="$space"/>
                     <RowConstraints minHeight="$space"/>
+                    <RowConstraints minHeight="$space"/>
+                    <RowConstraints minHeight="$space"/>
+                    <RowConstraints minHeight="$space"/>
+                    <RowConstraints minHeight="75"/>
                 </rowConstraints>
+
                 <Button fx:id="startButton" text="开始" styleClass="btn, btn-xs, btn-success" onAction="#start">
                     <tooltip>
-                        <Tooltip text="开始挂机">
+                        <Tooltip text="开始工作">
                             <showDelay>
                                 <Duration millis="400"/>
                             </showDelay>
@@ -48,7 +52,7 @@
                 <Button fx:id="pauseButton" disable="true" text="暂停" GridPane.columnIndex="1"
                         styleClass="btn, btn-xs, btn-danger" onAction="#pause">
                     <tooltip>
-                        <Tooltip text="暂停挂机">
+                        <Tooltip text="暂停工作">
                             <showDelay>
                                 <Duration millis="400"/>
                             </showDelay>
@@ -60,45 +64,103 @@
                         </ImageView>
                     </graphic>
                 </Button>
+
                 <Label text="模式：" GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.columnSpan="2"
                        contentDisplay="RIGHT">
                     <graphic>
-                        <ComboBox prefWidth="100" value="标准" styleClass="split-menu-btn-info" fx:id="runModeBox">
-                            <items>
-<!--                                <FXCollections fx:factory="observableArrayList">-->
-<!--                                    <String fx:value="标准"/>-->
-<!--                                </FXCollections>-->
-                            </items>
-                        </ComboBox>
-                    </graphic>
-                </Label>
-                <Label text="卡组：" GridPane.columnIndex="0" GridPane.rowIndex="2" GridPane.columnSpan="2"
-                       contentDisplay="RIGHT">
-                    <graphic>
-                        <ComboBox prefWidth="100" value="免费" styleClass="split-menu-btn-info" fx:id="deckBox">
-                            <items>
-<!--                                <FXCollections fx:factory="observableArrayList">-->
-<!--                                    <String fx:value="免费"/>-->
-<!--                                </FXCollections>-->
-                            </items>
-                        </ComboBox>
+                        <ComboBox prefWidth="100" value="标准" styleClass="split-menu-btn-info" fx:id="runModeBox"/>
                     </graphic>
                 </Label>
 
-                <Label text="游戏局数：" GridPane.columnIndex="0" GridPane.rowIndex="3" GridPane.columnSpan="2"
+                <Label text="卡组：" GridPane.columnIndex="0" GridPane.rowIndex="2" GridPane.columnSpan="2"
+                       contentDisplay="RIGHT">
+                    <graphic>
+                        <ComboBox prefWidth="100" value="免费" styleClass="split-menu-btn-info" fx:id="deckBox"/>
+                    </graphic>
+                </Label>
+
+                <Label text="游戏局数：" GridPane.columnIndex="0" GridPane.rowIndex="3"
                        contentDisplay="RIGHT">
                     <graphic>
                         <Text text="0" fx:id="gameCount"/>
                     </graphic>
                 </Label>
-                <Button onAction="#settings" text="设置" GridPane.columnIndex="0" GridPane.rowIndex="4"
-                        styleClass="btn, btn-xs, btn-info">
+                <Label text="胜率：" GridPane.columnIndex="1" GridPane.rowIndex="3"
+                       contentDisplay="RIGHT">
+                    <graphic>
+                        <Text text="?" fx:id="winningPercentage"/>
+                    </graphic>
+                </Label>
+
+                <!--边框-->
+                <Label GridPane.rowIndex="3" GridPane.columnSpan="2" GridPane.rowSpan="4"
+                       style="-fx-border-width: 1;-fx-border-color: rgb(128,128,128); -fx-border-radius: 5%;-fx-background-color: #E8E8FF"
+                       minHeight="250" minWidth="190" translateY="25">
+                </Label>
+
+                <Label text="工作天：" GridPane.columnIndex="0" GridPane.rowIndex="4" GridPane.columnSpan="2"
+                       contentDisplay="RIGHT" translateX="$dateTranslateX">
+                    <padding>
+                        <Insets top="15" bottom="10"/>
+                    </padding>
+                    <graphic>
+                        <FlowPane hgap="15" vgap="5" maxWidth="120" fx:id="workDay">
+                            <padding>
+                                <Insets top="25" bottom="30"/>
+                            </padding>
+                            <CheckBox text="每天"/>
+                            <CheckBox text="周一"/>
+                            <CheckBox text="周二"/>
+                            <CheckBox text="周三"/>
+                            <CheckBox text="周四"/>
+                            <CheckBox text="周五"/>
+                            <CheckBox text="周六"/>
+                            <CheckBox text="周日"/>
+                        </FlowPane>
+                    </graphic>
+                </Label>
+
+                <Label text="工作段：" GridPane.columnIndex="0" GridPane.rowIndex="5" GridPane.columnSpan="2"
+                       contentDisplay="RIGHT" translateX="$dateTranslateX">
+                    <padding>
+                        <Insets top="5" bottom="10"/>
+                    </padding>
+                    <fx:define>
+                        <Double fx:value="100" fx:id="maxWidth"/>
+                    </fx:define>
+                    <graphic>
+                        <VBox spacing="5" fx:id="workTime">
+                            <CheckBox>
+                                <graphic>
+                                    <TextField promptText="HH:mm-HH:mm" maxWidth="$maxWidth" text="00:00-24:00" disable="true"/>
+                                </graphic>
+                            </CheckBox>
+                            <CheckBox>
+                                <graphic>
+                                    <TextField promptText="HH:mm-HH:mm" maxWidth="$maxWidth"/>
+                                </graphic>
+                            </CheckBox>
+                            <CheckBox>
+                                <graphic>
+                                    <TextField promptText="HH:mm-HH:mm" maxWidth="$maxWidth"/>
+                                </graphic>
+                            </CheckBox>
+                        </VBox>
+                    </graphic>
+                </Label>
+
+                <Text fx:id="tip" GridPane.columnIndex="1" GridPane.rowIndex="6" translateX="18"/>
+                <Button text="保存" GridPane.columnIndex="0" GridPane.rowIndex="6" translateX="73" onAction="#save"/>
+
+                <Button onAction="#settings" text="设置" GridPane.columnIndex="0" GridPane.rowIndex="7"
+                        styleClass="btn, btn-xs, btn-info" translateX="55">
                     <graphic>
                         <ImageView fitHeight="$imageSize" fitWidth="$imageSize" translateX="-5">
                             <Image url="@images/settings.png"/>
                         </ImageView>
                     </graphic>
                 </Button>
+
             </GridPane>
         </TitledPane>
         <TitledPane text="日志" fx:id="titledPaneLog">
@@ -118,5 +180,4 @@
             </ScrollPane>
         </TitledPane>
     </panes>
-
 </Accordion>

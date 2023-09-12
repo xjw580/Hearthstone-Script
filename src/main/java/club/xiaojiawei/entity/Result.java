@@ -21,7 +21,7 @@ public class Result<T> {
         this.data = data;
     }
 
-    public static Result<Object> ofSuccess(Object data){
+    public static<T> Result <T>ofSuccess(T data){
         return new Result<>(SUCCESS, data);
     }
 

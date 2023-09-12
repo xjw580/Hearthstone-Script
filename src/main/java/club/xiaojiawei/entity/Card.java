@@ -25,22 +25,18 @@ public class Card extends Entity{
      * 相邻增益
      */
     private boolean adjacentBuff;
-
     /**
      * 剧毒
      */
     private boolean poisonous;
-
     /**
      * 亡语
      */
     private boolean deathRattle;
-
     /**
      * 创建者id
      */
     private String creatorEntityId;
-
     /**
      * 嘲讽
      */
@@ -61,7 +57,9 @@ public class Card extends Entity{
      * 冰冻
      */
     private volatile boolean frozen;
-
+    /**
+     * 疲劳
+     */
     private volatile boolean exhausted;
     /**
      * 风怒
@@ -71,17 +69,14 @@ public class Card extends Entity{
      * 战吼
      */
     private boolean battlecry;
-
     /**
      * 不能被法术指向
      */
     private boolean cantBeTargetedBySpells;
-
     /**
      * 不能被英雄技能指向
      */
     private boolean cantBeTargetedByHeroPowers;
-
     /**
      * 刷出时间计数
      */
@@ -90,6 +85,10 @@ public class Card extends Entity{
      * 休眠
      */
     private boolean dormantAwakenConditionEnchant;
+    /**
+     * 免疫
+     */
+    private boolean immune;
 
     public Card() {
     }
@@ -99,7 +98,7 @@ public class Card extends Entity{
         cardId = commonEntity.getCardId();
     }
 
-    public void extraEntityToCard(ExtraEntity extraEntity){
+    public void byExtraEntityUpdate(ExtraEntity extraEntity){
         cardId = extraEntity.cardId;
         entityId = extraEntity.entityId;
         entityName = extraEntity.entityName;
@@ -126,6 +125,7 @@ public class Card extends Entity{
         cantBeTargetedByHeroPowers = extraEntity.getExtraCard().isCantBeTargetedByHeroPowers();
         spawnTimeCount = extraEntity.getExtraCard().isSpawnTimeCount();
         dormantAwakenConditionEnchant = extraEntity.getExtraCard().isDormantAwakenConditionEnchant();
+        immune = extraEntity.getExtraCard().isImmune();
     }
 
 }

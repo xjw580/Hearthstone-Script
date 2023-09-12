@@ -1,7 +1,9 @@
 package club.xiaojiawei.strategy.deck;
 
+import club.xiaojiawei.data.GameStaticData;
 import club.xiaojiawei.entity.Card;
 import club.xiaojiawei.strategy.AbstractDeckStrategy;
+import club.xiaojiawei.utils.SystemUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -69,7 +71,7 @@ public class EvenNumberShamanAbstractDeckStrategy extends AbstractDeckStrategy{
         dealResource();
         boolean throughWall = true;
         //        算斩杀
-        int allAtc = calcTotalAtc(myPlayCards);
+        int allAtc = calcEnablePlayTotalAtc(myPlayCards);
         int blood = calcRivalHeroBlood();
 //        解嘲讽怪
         for (int i = rivalPlayCards.size() - 1; i >= 0; i--) {
@@ -93,12 +95,11 @@ public class EvenNumberShamanAbstractDeckStrategy extends AbstractDeckStrategy{
             if (!myPlayArea.getHero().isExhausted() && myPlayArea.getHero().getAtc() > 0){
                 if (findTauntCard(rivalPlayCards) == -1){
                     int index;
-                    if (calcTotalAtcUltimate(myPlayCards) >= calcRivalHeroBlood()){
+                    if (calcEnableTotalAtc(myPlayCards) >= calcRivalHeroBlood() && canPoint()){
                         myHeroPointToRivalHero();
-                    }
-                    if ((index = findMaxAtcByBlood(rivalPlayCards, myPlayArea.getHero().getAtc())) != -1){
+                    }else if ((index = findMaxAtcByBlood(rivalPlayCards, myPlayArea.getHero().getAtc())) != -1){
                         myHeroPointToRivalPlay(index);
-                    }else {
+                    }else if (canPoint()){
                         myHeroPointToRivalHero();
                     }
                 }
@@ -190,7 +191,7 @@ public class EvenNumberShamanAbstractDeckStrategy extends AbstractDeckStrategy{
         switch (resource){
             case 1 -> dealOneResource();
             case 2 -> {
-                int index = findByCardId(myHandCards, "COIN");
+                int index = findByCardId(myHandCards, GameStaticData.COIN);
                 if (index != -1){
                     myHandPointToMyPlay(index);
                     decreaseResource(-1);
@@ -212,6 +213,9 @@ public class EvenNumberShamanAbstractDeckStrategy extends AbstractDeckStrategy{
     }
 
     private void dealZeroResource(){
+        if (!isMyTurn() || isPause.get().get()){
+            return;
+        }
         //        巨像
         int index = findByCardId(myHandCards, "REV_838");
         if (index != -1){
@@ -237,13 +241,12 @@ public class EvenNumberShamanAbstractDeckStrategy extends AbstractDeckStrategy{
         if (myPlayCards.size() >= 3){
             //            武器攻击
             if (!myPlayArea.getHero().isExhausted() && myPlayArea.getHero().getAtc() == 1 && findTauntCard(rivalPlayCards) == -1){
-                if (calcTotalAtcUltimate(myPlayCards) >= calcRivalHeroBlood()){
-                    myHeroPointToRivalHero();
-                }
                 int i;
-                if ((i = findMaxAtcByBlood(rivalPlayCards, myPlayArea.getHero().getAtc())) != -1){
+                if (calcEnableTotalAtc(myPlayCards) >= calcRivalHeroBlood() && canPoint()){
+                    myHeroPointToRivalHero();
+                } else if ((i = findMaxAtcByBlood(rivalPlayCards, myPlayArea.getHero().getAtc())) != -1){
                     myHeroPointToRivalPlay(i);
-                }else {
+                }else if (canPoint()){
                     myHeroPointToRivalHero();
                 }
             }
@@ -263,7 +266,7 @@ public class EvenNumberShamanAbstractDeckStrategy extends AbstractDeckStrategy{
         }
     }
     private void dealOneResource(){
-        if (resource < 1){
+        if (resource < 1 || !isMyTurn() || isPause.get().get()){
             return;
         }
         if (!isUsePower && !myPlayArea.isFull()){
@@ -284,7 +287,7 @@ public class EvenNumberShamanAbstractDeckStrategy extends AbstractDeckStrategy{
         }
     }
     private void dealTwoResource(){
-        if (resource < 2){
+        if (resource < 2 || !isMyTurn() || isPause.get().get()){
             return;
         }
         int index;
@@ -303,13 +306,14 @@ public class EvenNumberShamanAbstractDeckStrategy extends AbstractDeckStrategy{
         }
 //        刀
         if ((index = findByCardId(myHandCards, "REV_917")) != -1){
+            Card card = myHandCards.get(index);
             if (myPlayArea.getHero().getAtc() > 0 && findTauntCard(rivalPlayCards) == -1 && !myPlayArea.getHero().isExhausted()){
-                if (calcTotalAtcUltimate(myPlayCards) >= calcRivalHeroBlood()){
+                if (calcEnableTotalAtc(myPlayCards) >= calcRivalHeroBlood() && canPoint()){
                     myHeroPointToRivalHero();
                 }
                 if ((index = findMaxAtcByBlood(rivalPlayCards, myPlayArea.getHero().getAtc())) != -1){
                     myHeroPointToRivalPlay(index);
-                }else {
+                }else if (canPoint()){
                     myHeroPointToRivalHero();
                 }
             }
@@ -317,11 +321,11 @@ public class EvenNumberShamanAbstractDeckStrategy extends AbstractDeckStrategy{
             if (log.isDebugEnabled()){
                 log.debug("出牌：REV_917");
             }
-            decreaseResource(2);
+            decreaseResource(card.getCost());
             if (findTauntCard(rivalPlayCards) == -1 && !myPlayArea.getHero().isExhausted()){
                 if ((index = findMaxAtcByBlood(rivalPlayCards, myPlayArea.getHero().getAtc())) != -1){
                     myHeroPointToRivalPlay(index);
-                }else {
+                }else if (canPoint()){
                     myHeroPointToRivalHero();
                 }
                 return;
@@ -345,7 +349,7 @@ public class EvenNumberShamanAbstractDeckStrategy extends AbstractDeckStrategy{
         }
 //        电鳗
         if ((index = findByCardId(myHandCards, "GIL_530")) != -1){
-            if (calcTotalAtc(myHandCards) + 2 >= calcRivalHeroBlood() && myHandPointToMyPlayThenPointToRivalHero(index, myPlayCards.size())){
+            if (calcEnableTotalAtc(myHandCards) + 2 >= calcRivalHeroBlood() && myHandPointToMyPlayThenPointToRivalHero(index, myPlayCards.size())){
                 if (log.isDebugEnabled()){
                     log.debug("出牌：GIL_530");
                 }
@@ -381,8 +385,8 @@ public class EvenNumberShamanAbstractDeckStrategy extends AbstractDeckStrategy{
         }
         //        冰霜撕咬
         if ((index = findByCardId(myHandCards, "AV_259")) != -1){
-            if (calcTotalAtc(myHandCards) + 3 >= calcRivalHeroBlood()){
-                Card card = myHandCards.get(index);
+            Card card = myHandCards.get(index);
+            if (calcEnablePlayTotalAtc(myHandCards) + 3 >= calcRivalHeroBlood() && canPoint()){
                 myHandPointToRivalHero(index);
                 if (log.isDebugEnabled()){
                     log.debug("出牌：AV_259");
@@ -392,8 +396,8 @@ public class EvenNumberShamanAbstractDeckStrategy extends AbstractDeckStrategy{
             }
             int rivalIndex = findMaxAtcByBlood(rivalPlayCards, 3);
             if (rivalIndex != -1){
-                Card card = rivalPlayCards.get(rivalIndex);
-                if (!card.isCantBeTargetedBySpells() && !card.isStealth()){
+                Card rivalCard = rivalPlayCards.get(rivalIndex);
+                if (!rivalCard.isCantBeTargetedBySpells() && !rivalCard.isStealth()){
                     myHandPointToRivalPlay(index, rivalIndex);
                     if (log.isDebugEnabled()){
                         log.debug("出牌：AV_259");
@@ -451,8 +455,9 @@ public class EvenNumberShamanAbstractDeckStrategy extends AbstractDeckStrategy{
         if ((index = findByCardId(myHandCards, "AV_259")) != -1){
             int rivalIndex = findMaxAtcByBlood(rivalPlayCards, 2);
             if (rivalIndex != -1){
-                Card card = rivalPlayCards.get(rivalIndex);
-                if (!card.isCantBeTargetedBySpells() && !card.isStealth()){
+                Card rivalCard = rivalPlayCards.get(rivalIndex);
+                Card card = myHandCards.get(index);
+                if (!rivalCard.isCantBeTargetedBySpells() && !rivalCard.isStealth()){
                     myHandPointToRivalPlay(index, rivalIndex);
                     if (log.isDebugEnabled()){
                         log.debug("出牌：AV_259");
@@ -465,28 +470,29 @@ public class EvenNumberShamanAbstractDeckStrategy extends AbstractDeckStrategy{
         dealOneResource();
     }
     private void dealThreeResource(){
-        if (resource < 3){
+        if (resource < 3 || !isMyTurn() || isPause.get().get()){
             return;
         }
         dealTwoResource();
         dealOneResource();
     }
     private void dealFourResource(){
-        if (resource < 4){
+        if (resource < 4 || !isMyTurn() || isPause.get().get()){
             return;
         }
         int index;
 //        分裂战斧
-        if ((index = findByCardId(myHandCards, "ULD_413")) != -1 && myPlayCards.size() > 3 && myPlayArea.getHero().getAtc() <= 0){
+        if ((index = findByCardId(myHandCards, "ULD_413")) != -1 && ((myPlayCards.size() > 3 && myPlayArea.getHero().getAtc() <= 0) || findByCardId(myPlayCards, "REV_838") != -1)){
             dealZeroResource();
             myHandPointToMyPlayNoPlace(index);
+            SystemUtil.delayMedium();
             if (findTauntCard(rivalPlayCards) == -1 && !myPlayArea.getHero().isExhausted()){
-                if (calcTotalAtcUltimate(myPlayCards) >= calcRivalHeroBlood()){
+                if (calcEnableTotalAtc(myPlayCards) >= calcRivalHeroBlood() && canPoint()){
                     myHeroPointToRivalHero();
                 }
                 if ((index = findMaxAtcByBlood(rivalPlayCards, myPlayArea.getHero().getAtc())) != -1){
                     myHeroPointToRivalPlay(index);
-                }else {
+                }else if (canPoint()){
                     myHeroPointToRivalHero();
                 }
             }
@@ -502,14 +508,14 @@ public class EvenNumberShamanAbstractDeckStrategy extends AbstractDeckStrategy{
         dealTwoResource();
     }
     private void dealFiveResource(){
-        if (resource < 5){
+        if (resource < 5 || !isMyTurn() || isPause.get().get()){
             return;
         }
         dealFourResource();
         dealThreeResource();
     }
     private void dealSixResource(){
-        if (resource < 6){
+        if (resource < 6 || !isMyTurn() || isPause.get().get()){
             return;
         }
         int index = findByCardId(myHandCards, "GIL_692");
@@ -521,28 +527,28 @@ public class EvenNumberShamanAbstractDeckStrategy extends AbstractDeckStrategy{
         dealFourResource();
     }
     private void dealSevenResource(){
-        if (resource < 7){
+        if (resource < 7 || !isMyTurn() || isPause.get().get()){
             return;
         }
         dealSixResource();
         dealFiveResource();
     }
     private void dealEightResource(){
-        if (resource < 8){
+        if (resource < 8 || !isMyTurn() || isPause.get().get()){
             return;
         }
         dealSevenResource();
         dealSixResource();
     }
     private void dealNineResource(){
-        if (resource < 9){
+        if (resource < 9 || !isMyTurn() || isPause.get().get()){
             return;
         }
         dealEightResource();
         dealSevenResource();
     }
     private void dealTenResource(){
-        if (resource < 10){
+        if (resource < 10 || !isMyTurn() || isPause.get().get()){
             return;
         }
         dealNineResource();
