@@ -36,9 +36,6 @@ import static club.xiaojiawei.enums.ConfigurationKeyEnum.DECK_KEY;
 @Component
 @Slf4j
 public class UIApplication extends Application {
-
-    @Resource
-    private SystemUtil systemUtil;
     @Resource
     private Properties scriptProperties;
     @Resource
@@ -51,7 +48,9 @@ public class UIApplication extends Application {
         springContext.getAutowireCapableBeanFactory().autowireBean(this);
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("dashboard.fxml"));
         fxmlLoader.setControllerFactory(springContext::getBean);
-        int width = (int) (ScriptStaticData.DISPLAY_PIXEL_X / 7.6 / ScriptStaticData.DISPLAY_SCALE_X), height = (int) (ScriptStaticData.DISPLAY_PIXEL_Y / 1.4 / ScriptStaticData.DISPLAY_SCALE_Y);
+//        界面的宽和高
+//        int width = (int) (ScriptStaticData.DISPLAY_PIXEL_X / 10 / ScriptStaticData.DISPLAY_SCALE_X + 50), height = (int) (ScriptStaticData.DISPLAY_PIXEL_Y / ScriptStaticData.DISPLAY_SCALE_Y * 0.75);
+        int width = 225, height = 620;
         Scene scene = new Scene(fxmlLoader.load(), width, height);
         scene.getStylesheets().add(BootstrapFX.bootstrapFXStylesheet());
         scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("css/dashboard.css")).toExternalForm());
@@ -61,7 +60,7 @@ public class UIApplication extends Application {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Platform.runLater(() -> {
-                    systemUtil.removeTray();
+                    SystemUtil.removeTray();
                     System.exit(0);
                 });
             }
@@ -76,13 +75,13 @@ public class UIApplication extends Application {
                 });
             }
         });
-        systemUtil.addTray("main.png", ScriptStaticData.SCRIPT_NAME, show, quit);
+        SystemUtil.addTray("main.png", ScriptStaticData.SCRIPT_NAME, show, quit);
         frame = FrameUtil.createAlwaysTopWindow(ScriptStaticData.SCRIPT_NAME, scene, width, height, ScriptStaticData.SCRIPT_ICON_PATH);
         DeckEnum deckEnum = DeckEnum.valueOf(scriptProperties.getProperty(DECK_KEY.getKey()));
         log.info(deckEnum.getDeckCode());
-        if (systemUtil.pasteClipboard(deckEnum.getDeckCode())){
+        if (SystemUtil.pasteClipboard(deckEnum.getDeckCode())){
             log.info(deckEnum.getComment() + "卡组代码已经粘贴到剪切板");
-            systemUtil.notice(deckEnum.getComment() + "卡组代码已经粘贴到剪切板");
+            SystemUtil.notice(deckEnum.getComment() + "卡组代码已经粘贴到剪切板");
         }
         log.info("脚本数据路径：：" + springData.getScriptPath());
     }

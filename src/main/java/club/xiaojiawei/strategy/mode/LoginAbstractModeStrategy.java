@@ -22,6 +22,7 @@ public class LoginAbstractModeStrategy extends AbstractModeStrategy<Object> {
 
     public static void cancelTask(){
         if (scheduledFuture != null && !scheduledFuture.isDone()){
+            log.info("已取消国服登陆时的点击任务");
             scheduledFuture.cancel(true);
         }
     }
@@ -31,18 +32,20 @@ public class LoginAbstractModeStrategy extends AbstractModeStrategy<Object> {
     }
     @Override
     protected void afterEnter(Object o) {
-//        去除国服登陆时恼人的点击开始
-        scheduledFuture = extraThreadPool.scheduleWithFixedDelay(new LogRunnable(() -> {
-            if (!isPause.get().get()){
-                systemUtil.frontWindow(ScriptStaticData.getGameHWND());
-                systemUtil.updateRect(ScriptStaticData.getGameHWND(), ScriptStaticData.GAME_RECT);
-                mouseUtil.leftButtonClick(
-                        (ScriptStaticData.GAME_RECT.right + ScriptStaticData.GAME_RECT.left) >> 1,
-                        (int) (ScriptStaticData.GAME_RECT.bottom - (ScriptStaticData.GAME_RECT.bottom - ScriptStaticData.GAME_RECT.top) * GameStaticData.CONFIRM_OR_CLOSE_BUTTON_VERTICAL_TO_BOTTOM_RATION)
-                );
-            }else {
-                cancelTask();
-            }
-        }), 3000, 2000, TimeUnit.MILLISECONDS);
+//        todo 国服没了，这段代码暂时没用了
+//        cancelTask();
+////        去除国服登陆时恼人的点击开始
+//        scheduledFuture = extraThreadPool.scheduleWithFixedDelay(new LogRunnable(() -> {
+//            if (!isPause.get().get()){
+//                systemUtil.frontWindow(ScriptStaticData.getGameHWND());
+//                systemUtil.updateRect(ScriptStaticData.getGameHWND(), ScriptStaticData.GAME_RECT);
+//                mouseUtil.leftButtonClick(
+//                        (ScriptStaticData.GAME_RECT.right + ScriptStaticData.GAME_RECT.left) >> 1,
+//                        (int) (ScriptStaticData.GAME_RECT.bottom - (ScriptStaticData.GAME_RECT.bottom - ScriptStaticData.GAME_RECT.top) * GameStaticData.CONFIRM_OR_CLOSE_BUTTON_VERTICAL_TO_BOTTOM_RATION)
+//                );
+//            }else {
+//                cancelTask();
+//            }
+//        }), 3000, 2000, TimeUnit.MILLISECONDS);
     }
 }

@@ -19,8 +19,6 @@ import java.util.concurrent.atomic.AtomicReference;
 @Slf4j
 public abstract class AbstractModeStrategy<T>{
     @Resource
-    protected SystemUtil systemUtil;
-    @Resource
     protected MouseUtil mouseUtil;
     @Resource
     protected GameUtil gameUtil;
@@ -41,9 +39,9 @@ public abstract class AbstractModeStrategy<T>{
         afterEnter(t);
     }
     protected void beforeEnter(){
-        systemUtil.frontWindow(ScriptStaticData.getGameHWND());
-        SystemUtil.cancelAllTask();
         SystemUtil.stopAllThread();
+        SystemUtil.cancelAllTask();
+        SystemUtil.frontWindow(ScriptStaticData.getGameHWND());
     }
     protected void log(){
         log.info("切換到" + Mode.getCurrMode().getComment());

@@ -27,28 +27,45 @@ import static club.xiaojiawei.enums.TagEnum.*;
 @Slf4j
 public class PowerLogUtil {
 
+    /**
+     * 更新entity
+     * @param l
+     * @param accessFile
+     * @return
+     */
     public static ExtraEntity dealShowEntity(String l, RandomAccessFile accessFile){
-        ExtraEntity extraEntity = PowerLogUtil.parseExtraEntity(l, accessFile);
+        ExtraEntity extraEntity = parseExtraEntity(l, accessFile);
         Card card;
         if (extraEntity.getZone() == extraEntity.getExtraCard().getZone() || extraEntity.getExtraCard().getZone() == null){
             card = CARD_AREA_MAP.get(extraEntity.getEntityId()).getByEntityId(extraEntity.getEntityId());
         }else {
             card = War.exchangeAreaOfCard(extraEntity);
         }
-//        todo newAdd
         if (card != null){
-            card.extraEntityToCard(extraEntity);
+            card.byExtraEntityUpdate(extraEntity);
         }
         return extraEntity;
     }
 
-    public static void dealFullEntity(String l, RandomAccessFile accessFile){
-        ExtraEntity extraEntity = PowerLogUtil.parseExtraEntity(l, accessFile);
-        Player player = War.getPlayer(extraEntity.getPlayerId());
-        Card card = new Card();
-        card.extraEntityToCard(extraEntity);
-        Area area = player.getArea(extraEntity.getExtraCard().getZone());
-        area.add(card, extraEntity.getExtraCard().getZonePos());
+    /**
+     * 生成entity
+     * @param l
+     * @param accessFile
+     */
+    public static Card dealFullEntity(String l, RandomAccessFile accessFile){
+        ExtraEntity extraEntity = parseExtraEntity(l, accessFile);
+        Card card;
+        Area area;
+        if ((area = CARD_AREA_MAP.get(extraEntity.getEntityId())) != null){
+            card = area.getByEntityId(extraEntity.getEntityId());
+            log.warn("dealFullEntity中发现entityId重复，将不会生成新Card");
+        }else {
+            card = new Card();
+            card.byExtraEntityUpdate(extraEntity);
+            area = War.getPlayer(extraEntity.getPlayerId()).getArea(extraEntity.getExtraCard().getZone());
+            area.add(card, extraEntity.getExtraCard().getZonePos());
+        }
+        return card;
     }
 
     public static boolean dealTagChange(TagChangeEntity tagChangeEntity){
@@ -76,7 +93,7 @@ public class PowerLogUtil {
                 case HEALTH -> card.setHealth(Integer.parseInt(tagChangeEntity.getValue()));
                 case ATK -> card.setAtc(Integer.parseInt(tagChangeEntity.getValue()));
                 case COST -> card.setCost(Integer.parseInt(tagChangeEntity.getValue()));
-                case FROZEN -> card.setFrozen(Objects.equals(tagChangeEntity.getValue(), "1"));
+                case FREEZE -> card.setFrozen(Objects.equals(tagChangeEntity.getValue(), "1"));
                 case EXHAUSTED -> card.setExhausted(Objects.equals(tagChangeEntity.getValue(), "1"));
                 case DAMAGE -> card.setDamage(Integer.parseInt(tagChangeEntity.getValue()));
                 case TAUNT -> card.setTaunt(Objects.equals(tagChangeEntity.getValue(), "1"));
@@ -91,6 +108,7 @@ public class PowerLogUtil {
                 case CANT_BE_TARGETED_BY_HERO_POWERS -> card.setCantBeTargetedByHeroPowers(Objects.equals(tagChangeEntity.getValue(), "1"));
                 case SPAWN_TIME_COUNT -> card.setSpawnTimeCount(Objects.equals(tagChangeEntity.getValue(), "1"));
                 case DORMANT_AWAKEN_CONDITION_ENCHANT -> card.setDormantAwakenConditionEnchant(Objects.equals(tagChangeEntity.getValue(), "1"));
+                case IMMUNE -> card.setImmune(Objects.equals(tagChangeEntity.getValue(), "1"));
                 default -> {
                     return false;
                 }
@@ -102,16 +120,16 @@ public class PowerLogUtil {
                 case RESOURCES -> GameTurnAbstractPhaseStrategy.getCurrentPlayer().setResources(Integer.parseInt(tagChangeEntity.getValue()));
                 case TEMP_RESOURCES -> GameTurnAbstractPhaseStrategy.getCurrentPlayer().setTempResources(Integer.parseInt(tagChangeEntity.getValue()));
                 case PLAYSTATE -> {
+                    String gameId = new String(tagChangeEntity.getEntity().getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8);
                     if (Objects.equals(tagChangeEntity.getValue(), GameStaticData.WON)){
-//                        todo
-//                        log.info("本局游戏胜者：" + new String(tagChangeEntity.getEntity().getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8));
-                        log.info("本局游戏胜者：" + tagChangeEntity.getEntity());
+                        log.info("本局游戏胜者：" + gameId);
+                        if (Objects.equals(gameId, War.getMe().getGameId())){
+                            War.winCount.incrementAndGet();
+                        }
                     }else if (Objects.equals(tagChangeEntity.getValue(), GameStaticData.LOST)){
-//                        log.info("本局游戏败者：" + new String(tagChangeEntity.getEntity().getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8));
-                        log.info("本局游戏胜者：" + tagChangeEntity.getEntity());
+                        log.info("本局游戏败者：" + gameId);
                     }else if (Objects.equals(tagChangeEntity.getValue(), GameStaticData.CONCEDED)){
-//                        log.info("本局游戏投降者：" + new String(tagChangeEntity.getEntity().getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8));
-                        log.info("本局游戏胜者：" + tagChangeEntity.getEntity());
+                        log.info("本局游戏投降者：" + gameId);
                     }
                 }
                 default -> {
@@ -127,11 +145,11 @@ public class PowerLogUtil {
         int valueIndex = l.lastIndexOf(GameStaticData.VALUE);
         int index = l.lastIndexOf("]");
         TagChangeEntity tagChangeEntity = new TagChangeEntity();
+//        为什么不用TagEnum.valueOf()?因为可能会报错
         tagChangeEntity.setTag(GameStaticData.TAG_MAP.getOrDefault(l.substring(tagIndex + 4, valueIndex).strip(), UNKNOWN));
         tagChangeEntity.setValue(l.substring(valueIndex + 6).strip());
-        if (index == -1){
-//            todo
-            tagChangeEntity.setEntity(new String(l.substring(l.indexOf("Entity") + 7, tagIndex).strip().getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8));
+        if (index < 50){
+            tagChangeEntity.setEntity(l.substring(l.indexOf("Entity") + 7, tagIndex).strip());
         }else {
             parseCommonEntity(tagChangeEntity, l);
         }
@@ -149,7 +167,7 @@ public class PowerLogUtil {
         return block;
     }
 
-    private static final boolean[] SIGH = new boolean[22];
+    private static final boolean[] SIGH = new boolean[23];
 
     /**
      * 处理只有tag和value的日志
@@ -200,7 +218,7 @@ public class PowerLogUtil {
             }else if (!SIGH[9] && l.lastIndexOf(EXHAUSTED.getValue()) != -1){
                 extraEntity.getExtraCard().setExhausted("1".equals(parseValue(l)));
                 SIGH[9] = true;
-            }else if (!SIGH[10] && l.lastIndexOf(FROZEN.getValue()) != -1){
+            }else if (!SIGH[10] && l.lastIndexOf(FREEZE.getValue()) != -1){
                 extraEntity.getExtraCard().setFrozen("1".equals(parseValue(l)));
                 SIGH[10] = true;
             }else if (!SIGH[11] && l.lastIndexOf(TAUNT.getValue()) != -1){
@@ -236,6 +254,9 @@ public class PowerLogUtil {
             }else if (!SIGH[21] && l.lastIndexOf(DORMANT_AWAKEN_CONDITION_ENCHANT.getValue()) != -1){
                 extraEntity.getExtraCard().setDormantAwakenConditionEnchant("1".equals(parseValue(l)));
                 SIGH[21] = true;
+            }else if (!SIGH[22] && l.lastIndexOf(IMMUNE.getValue()) != -1){
+                extraEntity.getExtraCard().setImmune("1".equals(parseValue(l)));
+                SIGH[22] = true;
             }
             mark = accessFile.getFilePointer();
         }
@@ -258,14 +279,11 @@ public class PowerLogUtil {
                 commonEntity.setCardId(l.substring(cardIDIndex + 7).strip());
             }
         }
-        if (Strings.isNotBlank(commonEntity.getCardId()) && commonEntity.getCardId().contains(GameStaticData.COIN)) {
-            commonEntity.setCardId(GameStaticData.COIN);
-        }
         commonEntity.setPlayerId(l.substring(playerIndex + 7, index).strip());
         commonEntity.setZone(GameStaticData.ZONE_MAP.get(l.substring(zoneIndex + 5, zonePosIndex).strip()));
         commonEntity.setZonePos(Integer.parseInt(l.substring(zonePosIndex + 8, cardIdIndex).strip()));
         commonEntity.setEntityId(l.substring(entityIdIndex + 3, zoneIndex).strip());
-        commonEntity.setEntityName(new String(l.substring(entityNameIndex + 11, entityIdIndex).strip().getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8));
+        commonEntity.setEntityName(l.substring(entityNameIndex + 11, entityIdIndex).strip());
     }
     public static String parseValue(String l){
         return l.substring(l.lastIndexOf(GameStaticData.VALUE) + 6).strip();

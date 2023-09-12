@@ -1,7 +1,8 @@
 package club.xiaojiawei.config;
 
-import club.xiaojiawei.controller.DashboardController;
+import club.xiaojiawei.controller.JavaFXDashboardController;
 import club.xiaojiawei.core.Core;
+import club.xiaojiawei.status.Work;
 import club.xiaojiawei.utils.SystemUtil;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -20,11 +21,11 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 @Configuration
 @Slf4j
-public class DataConfig {
+public class PauseConfig {
 
     @Resource
     @Lazy
-    private DashboardController dashboardController;
+    private JavaFXDashboardController javaFXDashboardController;
     @Resource
     @Lazy
     private Core core;
@@ -37,11 +38,16 @@ public class DataConfig {
         SimpleBooleanProperty booleanProperty = new SimpleBooleanProperty(true);
         booleanProperty.addListener((observable, oldValue, newValue) -> {
             log.info("当前处于" + (newValue? "停止" : "运行") + "状态");
-            dashboardController.changeSwitch(newValue);
-            if (!newValue){
-                core.start();
+            javaFXDashboardController.changeSwitch(newValue);
+            if (newValue){
+                SystemUtil.cancelAllRunnable();
+                Work.setWorking(false);
             }else {
-                SystemUtil.cancelAll();
+                if (Work.canWork()){
+                    core.start();
+                }else {
+                    Work.cannotWorkLog();
+                }
             }
         });
         return new AtomicReference<>(booleanProperty);

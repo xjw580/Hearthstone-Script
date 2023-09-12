@@ -45,11 +45,14 @@
         <appender-ref ref="file"/>
     </appender>
 
-    <!--自定义gui-->
-    <appender name="gui" class="club.xiaojiawei.appender.GuiAppender"/>
+    <!--websocket-->
+    <appender name="ws" class="club.xiaojiawei.appender.WsAppender"/>
+    <!--javafx-->
+    <appender name="javafx" class="club.xiaojiawei.appender.JavaFXAppender"/>
     <!--输出到guiAppender-->
     <logger name="club.xiaojiawei" level="info">
-        <appender-ref ref="gui"/>
+        <appender-ref ref="ws"/>
+        <appender-ref ref="javafx"/>
     </logger>
 
     <root level="${logLevel}">

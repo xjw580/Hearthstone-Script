@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>炉石传说脚本控制台</title>
+    <link rel="shortcut icon" th:href="@{ico/favicon.ico}" type="image/x-icon"/>
+    <script th:src="@{js/jquery.js}"></script>
+    <script th:src="@{js/index.js}"></script>
+    <link rel="stylesheet" th:href="@{css/index.css}"  type="text/css">
+</head>
+<body>
+    <div id="outer">
+        <div id="left">
+            <div id="leftInner">
+                <button id="start" onclick="start()">开始</button>
+                <button id="pause" onclick="pause()">暂停</button>
+<!--                <div id="modeOuter">-->
+<!--                    <span>-->
+<!--                        模式：-->
+<!--                    </span>-->
+<!--                    <select name="mode" id="mode">-->
+<!--                    </select>-->
+<!--                </div>-->
+<!--                <div id="deckOuter">-->
+<!--                    <span>-->
+<!--                        卡组：-->
+<!--                    </span>-->
+<!--                    <select name="deck">-->
+<!--                    </select>-->
+<!--                </div>-->
+<!--                <div style="margin-top: 10px" id="dayOuter">-->
+<!--                    <div>-->
+<!--                        工作天：-->
+<!--                    </div>-->
+<!--                    <br>-->
+<!--                    <span id="day">-->
+<!--                        <span><input type="checkbox" name="day" class="day" checked>每天</span>-->
+<!--                        <span><input type="checkbox" name="day" class="day">周一</span>-->
+<!--                        <span><input type="checkbox" name="day" class="day">周二</span>-->
+<!--                        <span><input type="checkbox" name="day" class="day">周三</span>-->
+<!--                        <span><input type="checkbox" name="day" class="day">周四</span>-->
+<!--                        <span><input type="checkbox" name="day" class="day">周五</span>-->
+<!--                        <span><input type="checkbox" name="day" class="day">周六</span>-->
+<!--                        <span><input type="checkbox" name="day" class="day">周日</span>-->
+<!--                    </span>-->
+<!--                </div>-->
+<!--                <div>-->
+<!--                    <div>-->
+<!--                        工作段：-->
+<!--                    </div>-->
+<!--                    <br>-->
+<!--                    <span class="time">-->
+<!--                    <div class="time">-->
+<!--                        <input type="checkbox" name="time" checked>-->
+<!--                        <input type="time" disabled> - -->
+<!--                        <input type="time" disabled>-->
+<!--                    </div>-->
+<!--                    <div class="time">-->
+<!--                        <input type="checkbox" name="time">-->
+<!--                        <input type="time"> - -->
+<!--                        <input type="time">-->
+<!--                    </div>-->
+<!--                    <div class="time">-->
+<!--                        <input type="checkbox" name="time">-->
+<!--                        <input type="time"> - -->
+<!--                        <input type="time">-->
+<!--                    </div>-->
+<!--                </span>-->
+<!--                </div>-->
+<!--                <div id="background">-->
+<!--                </div>-->
+            </div>
+<!--            <center>-->
+<!--                <button id="save" onclick="save()">保存</button>-->
+<!--            </center>-->
+<!--            <center style="margin-top: 50px">-->
+<!--                <button id="screenCapture" onclick="screenCapture()">截屏</button>-->
+<!--                <div>-->
+<!--                    <img src="">-->
+<!--                </div>-->
+<!--            </center>-->
+        </div>
+        <div id="right">
+            <div id="log">
+                <strong>脚本日志：</strong>
+                <div id="content">
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

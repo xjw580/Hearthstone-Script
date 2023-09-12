@@ -11,6 +11,7 @@ import club.xiaojiawei.status.War;
 import club.xiaojiawei.strategy.AbstractPhaseStrategy;
 import club.xiaojiawei.utils.PowerLogUtil;
 import javafx.beans.property.BooleanProperty;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -28,7 +29,8 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static club.xiaojiawei.enums.TagEnum.*;
+import static club.xiaojiawei.data.ScriptStaticData.ROBOT;
+import static club.xiaojiawei.enums.TagEnum.MULLIGAN_STATE;
 import static club.xiaojiawei.enums.WarPhaseEnum.*;
 
 /**
@@ -51,24 +53,14 @@ public class PowerFileListener {
     @Resource
     private Core core;
     private static ScheduledFuture<?> scheduledFuture;
+    @Getter
     private static RandomAccessFile accessFile;
-
-    public static RandomAccessFile getAccessFile() {
-        return accessFile;
-    }
-
 
     public static void cancelListener(){
         if (scheduledFuture != null && !scheduledFuture.isDone()){
-            log.info("已停止监听power.log");
             scheduledFuture.cancel(true);
-        }
-        if (accessFile != null){
-            try {
-                accessFile.close();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+            log.info("已停止监听power.log");
+            ROBOT.delay(1000);
         }
     }
 
@@ -90,6 +82,14 @@ public class PowerFileListener {
             if (!powerLog.exists()){
                 try(FileWriter fileWriter = new FileWriter(powerLog)){
                     fileWriter.write("#created by " + ScriptStaticData.SCRIPT_NAME);
+                }
+            }
+            if (accessFile != null){
+                try {
+                    accessFile.close();
+                    accessFile = null;
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
                 }
             }
             accessFile = new RandomAccessFile(powerLog, "r");

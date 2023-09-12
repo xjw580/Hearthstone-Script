@@ -1,5 +1,6 @@
 package club.xiaojiawei.config;
 
+import club.xiaojiawei.custom.LogRunnable;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -14,6 +15,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Configuration
 public class ThreadPoolConfig {
 
+    /**
+     * 使用 ${@link LogRunnable}
+     * @return
+     */
     @Bean
     public ScheduledThreadPoolExecutor launchProgramThreadPool(){
         return new ScheduledThreadPoolExecutor(1, new ThreadFactory() {
@@ -25,6 +30,10 @@ public class ThreadPoolConfig {
         }, new ThreadPoolExecutor.AbortPolicy());
     }
 
+    /**
+     * 使用 ${@link LogRunnable}
+     * @return
+     */
     @Bean
     public ScheduledThreadPoolExecutor listenFileThreadPool(){
         return new ScheduledThreadPoolExecutor(3, new ThreadFactory() {
@@ -36,9 +45,13 @@ public class ThreadPoolConfig {
         }, new ThreadPoolExecutor.AbortPolicy());
     }
 
+    /**
+     * 使用 ${@link LogRunnable}
+     * @return
+     */
     @Bean
     public ScheduledThreadPoolExecutor extraThreadPool(){
-        return new ScheduledThreadPoolExecutor(3, new ThreadFactory() {
+        return new ScheduledThreadPoolExecutor(5, new ThreadFactory() {
             private final AtomicInteger num = new AtomicInteger(0);
             @Override
             public Thread newThread(Runnable r) {

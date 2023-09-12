@@ -2,6 +2,7 @@ package club.xiaojiawei.config;
 
 import club.xiaojiawei.initializer.AbstractInitializer;
 import club.xiaojiawei.initializer.LogInitializer;
+import club.xiaojiawei.initializer.WebInitializer;
 import club.xiaojiawei.initializer.PathInitializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,6 +21,8 @@ public class InitializerConfig {
     private LogInitializer logInitializer;
     @Resource
     private PathInitializer pathInitializer;
+    @Resource
+    private WebInitializer webInitializer;
 
     /**
      * Initializer责任链头对象
@@ -27,7 +30,7 @@ public class InitializerConfig {
      */
     @Bean
     public AbstractInitializer initializer(){
-        logInitializer.setNextInitializer(pathInitializer);
+        logInitializer.setNextInitializer(pathInitializer).setNextInitializer(webInitializer);
         return logInitializer;
     }
 

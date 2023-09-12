@@ -8,7 +8,7 @@
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:id="anchor"
-            fx:controller="club.xiaojiawei.controller.InitSettingsController"
+            fx:controller="club.xiaojiawei.controller.JavaFXInitSettingsController"
       >
     <VBox spacing="15">
         <padding>

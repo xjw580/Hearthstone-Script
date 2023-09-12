@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 /**
  * @author 肖嘉威
  * @date 2023/7/4 18:20
- * @msg 存储application.yaml里的变量
+ * @msg 存储application.yaml里的值
  */
 @Component
 @Getter
@@ -27,4 +27,8 @@ public class SpringData {
     private String screenLogName;
     @Value("${game.log.out.file.power}")
     private String powerLogName;
+    @Value("${spring.main.web-application-type}")
+    private String webType;
+    @Value("${server.port}")
+    private String serverPort;
 }
