@@ -286,7 +286,6 @@ public class SystemUtil {
             br.readLine();
             br.readLine();
             if((msg=br.readLine()) != null){
-                System.out.println(msg);
                 //去掉无用信息
                 return msg.replaceAll(" {4}" + queryArgEnum.getValue() + " {4}REG_SZ {4}", "");
             }
