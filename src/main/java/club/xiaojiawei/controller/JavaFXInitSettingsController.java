@@ -87,10 +87,8 @@ public class JavaFXInitSettingsController implements Initializable {
 
     @FXML
     protected void apply(){
-        savePlatformPath();
-        if(validateGamePath()){
-            pathInitializer.init();
-//            ((Stage)(apply.getScene().getWindow().getScene().getWindow())).close();
+        if(propertiesUtil.storePath(game.getText(), platform.getText())){
+            ScriptStaticData.setSetPath(true);
             ((Stage)(apply.getScene().getWindow())).close();
         }else {
             tip.setFill(Paint.valueOf("#ff3300"));
@@ -99,9 +97,8 @@ public class JavaFXInitSettingsController implements Initializable {
     }
     @FXML
     protected void save(){
-        savePlatformPath();
-        if(validateGamePath()){
-            pathInitializer.init();
+        if(propertiesUtil.storePath(game.getText(), platform.getText())){
+            ScriptStaticData.setSetPath(true);
             tip.setFill(Paint.valueOf("#00cc00"));
             tip.setText("保存成功😊");
             extraThreadPool.schedule(new LogRunnable(() -> tip.setText("")), 3, TimeUnit.SECONDS);
@@ -110,24 +107,6 @@ public class JavaFXInitSettingsController implements Initializable {
             tip.setText(ScriptStaticData.GAME_CN_NAME + "安装路径不正确,请重新选择😩");
             extraThreadPool.schedule(new LogRunnable(() -> tip.setText("")), 3, TimeUnit.SECONDS);
         }
-    }
-
-    public boolean validateGamePath(){
-        String path = game.getText();
-        if (new File(path).exists()){
-            if (!new File(path + "/" + ScriptStaticData.GAME_NAME).exists()){
-                return false;
-            }
-            scriptProperties.setProperty(ConfigurationKeyEnum.GAME_PATH_KEY.getKey(), path);
-            propertiesUtil.storeScriptProperties();
-            return true;
-        }
-        return false;
-    }
-    public void savePlatformPath(){
-        String path = platform.getText();
-        scriptProperties.setProperty(ConfigurationKeyEnum.PLATFORM_PATH_KEY.getKey(), path);
-        propertiesUtil.storeScriptProperties();
     }
 
     @Override

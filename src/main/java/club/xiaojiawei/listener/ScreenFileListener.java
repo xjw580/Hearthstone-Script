@@ -126,12 +126,12 @@ public class ScreenFileListener {
         int index;
         if ((index = line.indexOf("currMode")) != -1){
             return ModeEnum.valueOf(line.substring(index + 9));
-        }else if (line.contains("Box.OnDestroy()")){
+        }else if (line.contains("OnDestroy()")){
             try {
-                Thread.sleep(2000);
+                Thread.sleep(3000);
                 if (Strings.isBlank(new String(Runtime.getRuntime().exec(GAME_ALIVE_CMD).getInputStream().readAllBytes()))){
-                    log.info("检测到游戏意外退出，准备重新启动");
-                    core.start();
+                    log.info("检测到游戏关闭，准备重新启动");
+                    core.restart();
                 }
             } catch (InterruptedException | IOException e) {
                 throw new RuntimeException(e);
