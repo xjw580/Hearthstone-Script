@@ -19,6 +19,8 @@ public class ScriptStaticData {
     private static boolean isSetPath;
     public static final String GAME_CN_NAME = "炉石传说";
     public static final String PLATFORM_CN_NAME = "战网";
+    public static final String GAME_US_NAME = "Hearthstone";
+    public static final String PLATFORM_US_NAME = "Battle.net";
 
     /**
      * 游戏窗口句柄

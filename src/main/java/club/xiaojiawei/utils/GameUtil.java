@@ -60,6 +60,7 @@ public class GameUtil {
     public void clickGameEndPageTask(){
         SystemUtil.updateRect(ScriptStaticData.getGameHWND(), ScriptStaticData.GAME_RECT);
         cancelTask();
+        log.info("点掉游戏结束结算页面中……");
         clickGameEndPageTask = extraThreadPool.scheduleWithFixedDelay(
                 new LogRunnable(() -> {
                     if (isPause.get().get()){
@@ -69,7 +70,6 @@ public class GameUtil {
                             ScriptStaticData.GAME_RECT.right + ScriptStaticData.GAME_RECT.left >> 1,
                             (int) (ScriptStaticData.GAME_RECT.bottom - (ScriptStaticData.GAME_RECT.bottom - ScriptStaticData.GAME_RECT.top) * SURRENDER_BUTTON_VERTICAL_TO_BOTTOM_RATION)
                     );
-                    log.info("点掉游戏结束结算页面中……");
                 }),
                 5000,
                 2000,

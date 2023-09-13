@@ -37,6 +37,7 @@ public class HubAbstractModeStrategy extends AbstractModeStrategy<Object> {
     @Override
     protected void afterEnter(Object o) {
 //        点击弹窗（去除任务，活动等）
+        log.info("点击弹窗（去除任务，活动等）中……");
         for (int i = 0; i < 4; i++) {
             if (isPause.get().get()){
                 return;
@@ -47,7 +48,6 @@ public class HubAbstractModeStrategy extends AbstractModeStrategy<Object> {
                     (ScriptStaticData.GAME_RECT.right + ScriptStaticData.GAME_RECT.left) >> 1,
                     (int) (ScriptStaticData.GAME_RECT.bottom - (ScriptStaticData.GAME_RECT.bottom - ScriptStaticData.GAME_RECT.top) * GameStaticData.CONFIRM_OR_CLOSE_BUTTON_VERTICAL_TO_BOTTOM_RATION)
             );
-            log.info("点击弹窗（去除任务，活动等）中……");
             ScriptStaticData.ROBOT.delay(500);
         }
         SystemUtil.frontWindow(ScriptStaticData.getGameHWND());

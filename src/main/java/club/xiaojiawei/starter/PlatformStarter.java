@@ -6,6 +6,7 @@ import club.xiaojiawei.enums.ConfigurationKeyEnum;
 import club.xiaojiawei.utils.SystemUtil;
 import javafx.beans.property.BooleanProperty;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -35,6 +36,14 @@ public class PlatformStarter extends AbstractStarter{
     private static ScheduledFuture<?> scheduledFuture;
     @Override
     public void exec() {
+        try {
+            if (Strings.isNotBlank(new String(Runtime.getRuntime().exec(ScriptStaticData.GAME_ALIVE_CMD).getInputStream().readAllBytes()))) {
+                nextStarter.start();
+                return;
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         log.info("开始检查" + ScriptStaticData.PLATFORM_CN_NAME);
         log.info("正在进入" + ScriptStaticData.PLATFORM_CN_NAME + ScriptStaticData.GAME_CN_NAME + "启动页");
         String platformPath = scriptProperties.getProperty(ConfigurationKeyEnum.PLATFORM_PATH_KEY.getKey());

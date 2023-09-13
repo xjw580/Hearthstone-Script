@@ -56,7 +56,11 @@ public class Core implements ApplicationRunner {
     /**
      * 启动脚本
      */
-    public void start(){
+    public synchronized void start(){
+        if (Work.isWorking()){
+            log.warn("正在工作，无法重复工作");
+            return;
+        }
         Work.setWorking(true);
         coreThreadPool.execute(() -> {
             if (!ScriptStaticData.isSetPath()){

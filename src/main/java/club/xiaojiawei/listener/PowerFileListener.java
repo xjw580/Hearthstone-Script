@@ -143,7 +143,7 @@ public class PowerFileListener {
 
     public boolean isRelevance(String l){
         if (l.contains("Truncating log")){
-            log.info("power.log文件过大，游戏停止输出日志，需要重启游戏");
+            log.info("power.log文件过大，游戏停止输出日志，准备重启游戏");
             core.restart();
         }
         return l.contains("PowerTaskList.DebugPrintPower()");
