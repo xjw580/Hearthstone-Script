@@ -573,8 +573,8 @@ public abstract class AbstractDeckStrategy{
     protected void clickTurnOverButton(){
         SystemUtil.updateRect(ScriptStaticData.getGameHWND(), GAME_RECT);
         mouseUtil.leftButtonClick(
-                (int) ((GAME_RECT.right + GAME_RECT.left >> 1) + (GAME_RECT.bottom - GAME_RECT.top) * GameStaticData.GAME_WINDOW_ASPECT_TO_HEIGHT_RATIO * TURN_OVER_BUTTON_HORIZONTAL_TO_CENTER_RATION + RandomUtil.getRandom(-5, 5)),
-                (int) (GAME_RECT.bottom - (GAME_RECT.bottom - GAME_RECT.top) * TURN_OVER_BUTTON_VERTICAL_TO_BOTTOM_RATION)
+                (int) ((GAME_RECT.right + GAME_RECT.left >> 1) + (GAME_RECT.bottom - GAME_RECT.top) * GameStaticData.GAME_WINDOW_ASPECT_TO_HEIGHT_RATIO * TURN_OVER_BUTTON_HORIZONTAL_TO_CENTER_RATION + RandomUtil.getRandom(-6, 6)),
+                (int) (GAME_RECT.bottom - (GAME_RECT.bottom - GAME_RECT.top) * TURN_OVER_BUTTON_VERTICAL_TO_BOTTOM_RATION  + RandomUtil.getRandom(-3, 3))
         );
     }
 
@@ -792,7 +792,7 @@ public abstract class AbstractDeckStrategy{
         return -1;
     }
     /**
-     * 寻找非力竭卡牌
+     * 寻找非疲劳卡牌
      * @param cards
      * @return
      */

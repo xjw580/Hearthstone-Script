@@ -1,7 +1,7 @@
 package club.xiaojiawei.utils;
 
 import club.xiaojiawei.data.ScriptStaticData;
-import club.xiaojiawei.enums.QueryArgEnum;
+import club.xiaojiawei.enums.RegCommonNameEnum;
 import club.xiaojiawei.listener.PowerFileListener;
 import club.xiaojiawei.listener.ScreenFileListener;
 import club.xiaojiawei.starter.GameStarter;
@@ -9,16 +9,15 @@ import club.xiaojiawei.starter.PlatformStarter;
 import club.xiaojiawei.strategy.mode.LoginAbstractModeStrategy;
 import club.xiaojiawei.strategy.mode.TournamentAbstractModeStrategy;
 import club.xiaojiawei.strategy.phase.GameTurnAbstractPhaseStrategy;
+import com.sun.jna.platform.win32.Advapi32Util;
 import com.sun.jna.platform.win32.User32;
 import com.sun.jna.platform.win32.WinDef;
+import com.sun.jna.platform.win32.WinReg;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.logging.log4j.util.Strings;
 
 import java.awt.*;
 import java.awt.datatransfer.*;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.Objects;
 
 import static club.xiaojiawei.data.ScriptStaticData.GAME_NAME;
@@ -150,7 +149,7 @@ public class SystemUtil {
     }
 
     /**
-     * 通过此方式停止的游戏，screen.log监听器无法监测到游戏被关闭
+     * 通过此方式停止的游戏，screen.log监听器可能无法监测到游戏被关闭
      */
     public static void killGame(){
         try {
@@ -218,81 +217,25 @@ public class SystemUtil {
         return true;
     }
 
-    private static final Runtime runtime = Runtime.getRuntime();
-
     /**
-     * 获取64位程序的注册表路径
-     * @param programName
-     * @return registryPath
-     */
-    public static String getProgram64(String programName){
-        return getProgram("cmd /c reg query HKEY_LOCAL_MACHINE\\SOFTWARE\\Wow6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\", programName);
-
-    }
-
-    /**
-     * 获取32位程序的注册表路径
-     * @param programName
-     * @return registryPath
-     */
-    public static String getProgram32(String programName){
-        return getProgram("cmd /c reg query HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\", programName);
-    }
-    /**
-     * 获取程序的注册表路径
-     * @param command
-     * @param programName
-     * @return registryPath
-     */
-    private static String getProgram(String command, String programName){
-        if (Strings.isBlank(programName)){
-            return null;
-        }
-        Process process;
-        try {
-            process = runtime
-                    .exec(command);
-            BufferedReader in = new BufferedReader(new InputStreamReader(process
-                    .getInputStream(),"GBK"));
-            String registryName;
-            while ((registryName = in.readLine()) != null){
-                if (registryName.contains(programName)){
-                    return registryName;
-                }
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        return null;
-    }
-
-    /**
-     * 获取程序信息
-     * @param queryArgEnum
-     * @param registryPath
+     * 获取注册表中用户程序REG_SZ类型的信息
+     * @param regCommonNameEnum
+     * @param userProgramName
      * @return
      */
-    public static String queryMsg(QueryArgEnum queryArgEnum, String registryPath){
-        if (Strings.isBlank(registryPath) || queryArgEnum == null){
+    public static String registryGetStringValueForUserProgram(RegCommonNameEnum regCommonNameEnum, String userProgramName){
+        if (regCommonNameEnum == null){
             return null;
         }
-        Process process;
-        String msg;
-        BufferedReader br;
-        try {
-            process = runtime.exec("cmd /c reg query " + registryPath + " /v " + queryArgEnum.getValue());
-            br = new BufferedReader(new InputStreamReader(process.getInputStream(), "GBK"));
-            //去掉前两行无用信息
-            br.readLine();
-            br.readLine();
-            if((msg=br.readLine()) != null){
-                //去掉无用信息
-                return msg.replaceAll(" {4}" + queryArgEnum.getValue() + " {4}REG_SZ {4}", "");
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+//        64位程序和32位程序
+        String path;
+        if (!Advapi32Util.registryValueExists(WinReg.HKEY_LOCAL_MACHINE, path = "SOFTWARE\\Wow6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\" + userProgramName, regCommonNameEnum.getValue())
+                &&
+            !Advapi32Util.registryValueExists(WinReg.HKEY_LOCAL_MACHINE, path = "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\" + userProgramName, regCommonNameEnum.getValue())
+        ){
+            return null;
         }
-        return null;
+        return Advapi32Util.registryGetStringValue(WinReg.HKEY_LOCAL_MACHINE, path, regCommonNameEnum.getValue());
     }
 
 }

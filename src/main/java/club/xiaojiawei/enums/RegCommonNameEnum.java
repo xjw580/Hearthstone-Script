@@ -8,7 +8,7 @@ import lombok.Getter;
  * @msg
  */
 @Getter
-public enum QueryArgEnum {
+public enum RegCommonNameEnum {
     DISPLAY_NAME("DisplayName", "软件名称"),
     DISPLAY_VERSION("DisplayVersion", "版本号"),
     PUBLISHER("Publisher", "出版商"),
@@ -16,7 +16,7 @@ public enum QueryArgEnum {
     INSTALL_LOCATION("InstallLocation", "安装路径");
     private final String value;
     private final String comment;
-    QueryArgEnum(String value, String comment) {
+    RegCommonNameEnum(String value, String comment) {
         this.value = value;
         this.comment = comment;
     }

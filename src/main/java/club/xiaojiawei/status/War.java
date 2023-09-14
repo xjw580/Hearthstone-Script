@@ -82,6 +82,9 @@ public class War {
     public static Card exchangeAreaOfCard(ExtraEntity extraEntity){
         Area sourceArea = GameStaticData.CARD_AREA_MAP.get(extraEntity.getEntityId());
         Area targetArea = War.getPlayer(extraEntity.getPlayerId()).getArea(extraEntity.getExtraCard().getZone());
+        if (sourceArea == null || targetArea == null){
+            return null;
+        }
         Card sourceCard = sourceArea.removeByEntityId(extraEntity.getEntityId());
         targetArea.add(sourceCard, extraEntity.getExtraCard().getZonePos());
         return sourceCard;
