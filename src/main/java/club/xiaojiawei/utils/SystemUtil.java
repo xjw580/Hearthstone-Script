@@ -108,6 +108,7 @@ public class SystemUtil {
     public static void frontWindow(WinDef.HWND programHWND){
         // 显示窗口
         User32.INSTANCE.ShowWindow(programHWND, 9 );
+        delay(100);
         // 前置窗口
         User32.INSTANCE.SetForegroundWindow(programHWND);
     }
