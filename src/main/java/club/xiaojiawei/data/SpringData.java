@@ -19,6 +19,8 @@ public class SpringData {
     //    脚本配置文件路径
     @Value("${script.configuration.file}")
     private String scriptConfigurationFile;
+    @Value("${script.version}")
+    private String version;
     @Value("${script.path}")
     private String scriptPath;
     @Value("${game.log.out.path}")

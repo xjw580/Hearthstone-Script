@@ -6,6 +6,11 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.net.URLConnection;
 
 /**
  * @author 肖嘉威
@@ -21,7 +26,8 @@ public class ScriptStaticData {
     public static final String PLATFORM_CN_NAME = "战网";
     public static final String GAME_US_NAME = "Hearthstone";
     public static final String PLATFORM_US_NAME = "Battle.net";
-
+    public static final String REPO_NAME = "HearthstoneScript";
+    public static final String TEMP_DIR = System.getProperty("user.dir") + "\\new_version_temp\\";
     /**
      * 游戏窗口句柄
      */

@@ -14,7 +14,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.kordamp.bootstrapfx.BootstrapFX;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.Resource;
 import javax.swing.*;
@@ -50,7 +52,7 @@ public class UIApplication extends Application {
         fxmlLoader.setControllerFactory(springContext::getBean);
 //        界面的宽和高
 //        int width = (int) (ScriptStaticData.DISPLAY_PIXEL_X / 10 / ScriptStaticData.DISPLAY_SCALE_X + 50), height = (int) (ScriptStaticData.DISPLAY_PIXEL_Y / ScriptStaticData.DISPLAY_SCALE_Y * 0.75);
-        int width = 225, height = 620;
+        int width = 225, height = 650;
         Scene scene = new Scene(fxmlLoader.load(), width, height);
         scene.getStylesheets().add(BootstrapFX.bootstrapFXStylesheet());
         scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("css/dashboard.css")).toExternalForm());
@@ -78,12 +80,12 @@ public class UIApplication extends Application {
         SystemUtil.addTray("main.png", ScriptStaticData.SCRIPT_NAME, show, quit);
         frame = FrameUtil.createAlwaysTopWindow(ScriptStaticData.SCRIPT_NAME, scene, width, height, ScriptStaticData.SCRIPT_ICON_PATH);
         DeckEnum deckEnum = DeckEnum.valueOf(scriptProperties.getProperty(DECK_KEY.getKey()));
-        log.info(deckEnum.getDeckCode());
+        log.info(deckEnum.getComment() + "卡组代码：" + deckEnum.getDeckCode());
         if (SystemUtil.pasteClipboard(deckEnum.getDeckCode())){
             log.info(deckEnum.getComment() + "卡组代码已经粘贴到剪切板");
             SystemUtil.notice(deckEnum.getComment() + "卡组代码已经粘贴到剪切板");
         }
-        log.info("脚本数据路径：：" + springData.getScriptPath());
+        log.info("脚本数据路径：" + springData.getScriptPath());
     }
 
 }

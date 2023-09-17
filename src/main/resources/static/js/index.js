@@ -1,4 +1,4 @@
-const ws = new WebSocket("ws://localhost:8080/info");
+const ws = new WebSocket("ws://localhost:8848/info");
 $(
     function (){
         ws.onopen = function(){

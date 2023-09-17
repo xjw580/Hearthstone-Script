@@ -66,11 +66,9 @@ public class GameStarter extends AbstractStarter{
     }
 
     private void launchGame(){
-        ScriptStaticData.setPlatformHWND(SystemUtil.getHWND(ScriptStaticData.PLATFORM_CN_NAME));
-        SystemUtil.frontWindow(ScriptStaticData.getPlatformHWND());
-        SystemUtil.updateRect(ScriptStaticData.getPlatformHWND(), ScriptStaticData.PLATFORM_RECT);
-        SystemUtil.delayShort();
-        mouseUtil.leftButtonClick(ScriptStaticData.PLATFORM_RECT.left + RandomUtil.getRandom(120, 170), ScriptStaticData.PLATFORM_RECT.bottom - RandomUtil.getRandom(115, 130));
+        WinDef.HWND platformhwnd = SystemUtil.getHWND(ScriptStaticData.PLATFORM_CN_NAME);
+        ScriptStaticData.setPlatformHWND(platformhwnd);
+        mouseUtil.leftButtonClick(platformhwnd, 145, 120);
     }
 
     public static void cancelGameTimer(){

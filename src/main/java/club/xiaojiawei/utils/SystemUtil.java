@@ -17,8 +17,14 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.awt.*;
 import java.awt.datatransfer.*;
-import java.io.IOException;
+import java.io.*;
+import java.net.*;
+import java.nio.charset.Charset;
+import java.util.Enumeration;
 import java.util.Objects;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+import java.util.zip.ZipInputStream;
 
 import static club.xiaojiawei.data.ScriptStaticData.GAME_NAME;
 
@@ -112,6 +118,22 @@ public class SystemUtil {
         // 前置窗口
         User32.INSTANCE.SetForegroundWindow(programHWND);
     }
+    public static final Desktop DESKTOP = Desktop.getDesktop();
+    /**
+     * 通过浏览器打开链接
+     * @param url
+     */
+    public static void openUrlByBrowser(String url){
+        // 判断桌面是否支持浏览器调用
+        if (DESKTOP.isSupported(Desktop.Action.BROWSE)) {
+            // 调用默认浏览器打开网页
+            try {
+                DESKTOP.browse(new URI(url));
+            } catch (IOException | URISyntaxException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
 
     /**
      * 单位毫秒
@@ -154,10 +176,10 @@ public class SystemUtil {
      */
     public static void killGame(){
         try {
-            Runtime.getRuntime().exec("cmd /c taskkill /f /t /im " + GAME_NAME);
+            Runtime.getRuntime().exec("cmd /c taskkill /f /t /im " + GAME_NAME).waitFor();
             SystemUtil.delay(1000);
             log.info("已关闭游戏");
-        } catch (IOException e) {
+        } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
         }
     }

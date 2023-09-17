@@ -22,6 +22,10 @@ public class JavaFXAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
         if (JavaFXDashboardController.logSwitchBack.statusProperty().get() && JavaFXDashboardController.logVBoxBack != null && JavaFXDashboardController.accordionBack!= null){
             Platform.runLater(() -> {
                 ObservableList<Node> list = JavaFXDashboardController.logVBoxBack.getChildren();
+                //                大于二百五条就清空,防止内存泄露和性能问题
+                if (list.size() > 250){
+                    list.clear();
+                }
                 Text text;
                 if (event.getThrowableProxy() == null){
                     text = new Text(event.getMessage());
@@ -30,10 +34,6 @@ public class JavaFXAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
                 }
                 text.wrappingWidthProperty().bind(JavaFXDashboardController.accordionBack.widthProperty().subtract(15));
                 list.add(text);
-//                大于两百条就清空,防止内存泄露和性能问题
-                if (list.size() > 200){
-                    list.clear();
-                }
             });
         }
     }

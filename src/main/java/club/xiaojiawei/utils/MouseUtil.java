@@ -1,10 +1,14 @@
 package club.xiaojiawei.utils;
 
+import club.xiaojiawei.custom.dll.User32Dll;
 import club.xiaojiawei.data.ScriptStaticData;
+import club.xiaojiawei.entity.Release;
 import com.sun.jna.platform.win32.WinDef;
 import javafx.beans.property.BooleanProperty;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.Resource;
 
@@ -37,10 +41,10 @@ public class MouseUtil {
             return;
         }
         synchronized (MouseUtil.class){
-            startX = pixelToPosX(startX);
-            startY = pixelToPosY(startY);
-            endX = pixelToPosX(endX);
-            endY = pixelToPosY(endY);
+            startX = pixelToScaleX(startX);
+            startY = pixelToScaleY(startY);
+            endX = pixelToScaleX(endX);
+            endY = pixelToScaleY(endY);
             ScriptStaticData.ROBOT.mouseMove(startX, startY);
             ScriptStaticData.ROBOT.delay(100);
             ScriptStaticData.ROBOT.mousePress(BUTTON1_DOWN_MASK);
@@ -81,10 +85,10 @@ public class MouseUtil {
             return;
         }
         synchronized (MouseUtil.class){
-            startX = pixelToPosX(startX);
-            startY = pixelToPosY(startY);
-            endX = pixelToPosX(endX);
-            endY = pixelToPosY(endY);
+            startX = pixelToScaleX(startX);
+            startY = pixelToScaleY(startY);
+            endX = pixelToScaleX(endX);
+            endY = pixelToScaleY(endY);
             ScriptStaticData.ROBOT.mouseMove(startX, startY);
             ScriptStaticData.ROBOT.delay(100);
             if (Math.abs(startY - endY) < 20){
@@ -118,8 +122,8 @@ public class MouseUtil {
             return;
         }
         synchronized (MouseUtil.class){
-            x = pixelToPosX(x);
-            y = pixelToPosY(y);
+            x = pixelToScaleX(x);
+            y = pixelToScaleY(y);
             ScriptStaticData.ROBOT.mouseMove(x, y);
             ScriptStaticData.ROBOT.delay(100);
             ScriptStaticData.ROBOT.mousePress(BUTTON1_DOWN_MASK);
@@ -128,11 +132,18 @@ public class MouseUtil {
             ScriptStaticData.ROBOT.delay(200);
         }
     }
+    public static final User32Dll USER32_DLL_INSTANCE = User32Dll.INSTANCE;
+    public void leftButtonClick(WinDef.HWND hwnd, int x, int y){
+        if (isPause.get().get()){
+            return;
+        }
+        USER32_DLL_INSTANCE.leftClick(hwnd, x, y);
+    }
 
-    private int pixelToPosX(int pixelX){
+    public static int pixelToScaleX(int pixelX){
         return (int) (pixelX / ScriptStaticData.DISPLAY_SCALE_X);
     }
-    private int pixelToPosY(int pixelY){
+    public static int pixelToScaleY(int pixelY){
         return (int) (pixelY / ScriptStaticData.DISPLAY_SCALE_Y);
     }
     public static void cancel(){

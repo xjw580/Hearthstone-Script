@@ -3,13 +3,16 @@ package club.xiaojiawei.controller;
 import club.xiaojiawei.controls.Switch;
 import club.xiaojiawei.custom.LogRunnable;
 import club.xiaojiawei.data.SpringData;
+import club.xiaojiawei.entity.Release;
 import club.xiaojiawei.enums.DeckEnum;
 import club.xiaojiawei.enums.RunModeEnum;
 import club.xiaojiawei.status.Work;
 import club.xiaojiawei.utils.DashboardUtil;
+import club.xiaojiawei.utils.FrameUtil;
 import club.xiaojiawei.utils.PropertiesUtil;
-import club.xiaojiawei.utils.SystemUtil;
+import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -24,8 +27,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.Resource;
+import java.io.*;
 import java.net.URL;
 import java.util.Objects;
 import java.util.Properties;
@@ -33,7 +38,11 @@ import java.util.ResourceBundle;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
+import static club.xiaojiawei.data.ScriptStaticData.REPO_NAME;
+import static club.xiaojiawei.data.ScriptStaticData.TEMP_DIR;
 import static club.xiaojiawei.enums.ConfigurationKeyEnum.DECK_KEY;
 
 /**
@@ -41,11 +50,14 @@ import static club.xiaojiawei.enums.ConfigurationKeyEnum.DECK_KEY;
  */
 @Component
 @Slf4j
-@SuppressWarnings("all")
 public class JavaFXDashboardController implements Initializable {
 
     @FXML
     private ScrollPane logScrollPane;
+    @FXML
+    private Button update;
+    @FXML
+    private Label version;
     @FXML
     private VBox logVBox;
     @FXML
@@ -79,6 +91,8 @@ public class JavaFXDashboardController implements Initializable {
     @Resource
     private AtomicReference<BooleanProperty> isPause;
     @Resource
+    private RestTemplate restTemplate;
+    @Resource
     private SpringData springData;
     @Resource
     private Properties scriptProperties;
@@ -108,7 +122,73 @@ public class JavaFXDashboardController implements Initializable {
     protected void settings() {
         javaFXInitSettingsController.showStage();
     }
+    private static final SimpleBooleanProperty IS_UPDATING = new SimpleBooleanProperty(false);
 
+    @FXML
+    protected synchronized void update() {
+        if (release != null && update.isVisible() && !IS_UPDATING.get()){
+            if (new File(TEMP_DIR).exists()){
+                execUpdate();
+            }else if (!IS_UPDATING.get()){
+                IS_UPDATING.set(true);
+                extraThreadPool.schedule(new LogRunnable(() -> {
+                    try (
+                            InputStream inputStream = new URL(String.format("https://gitee.com/zergqueen/Hearthstone-Script/releases/download/%s/%s-%s.zip", release.getTagName(), REPO_NAME, release.getTagName()))
+                                    .openConnection()
+                                    .getInputStream();
+                            ZipInputStream zipInputStream = new ZipInputStream(inputStream);
+                    ){
+                        expandedLogPane();
+                        log.info("开始下载" + release.getTagName());
+                        File currentDir = new File(TEMP_DIR);
+                        if (!currentDir.exists()){
+                            currentDir.mkdirs();
+                        }
+                        ZipEntry nextEntry = zipInputStream.getNextEntry();
+                        while (nextEntry != null) {
+                            String path = nextEntry.getName();
+                            File file = new File(TEMP_DIR + path);
+                            if (nextEntry.isDirectory()) {
+                                file.mkdirs();
+                                log.info("dir：" + file.getPath());
+                            } else {
+                                new File(file.getPath().substring(0, file.getPath().lastIndexOf("\\"))).mkdirs();
+                                try (BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(new FileOutputStream(file))){
+                                    int l;
+                                    byte[] bytes = new byte[1024];
+                                    while ((l = zipInputStream.read(bytes)) != -1) {
+                                        bufferedOutputStream.write(bytes, 0, l);
+                                    }
+                                }
+                                log.info("file：" + file.getPath());
+                            }
+                            zipInputStream.closeEntry();
+                            nextEntry = zipInputStream.getNextEntry();
+                        }
+                        log.info(release.getTagName() + "下载完毕");
+                        IS_UPDATING.set(false);
+                    } catch (IOException e) {
+                        IS_UPDATING.set(false);
+                        throw new RuntimeException(e);
+                    }
+                    execUpdate();
+                }), 0, TimeUnit.SECONDS);
+            }
+        }
+//        SystemUtil.openUrlByBrowser("https://gitee.com/zergqueen/Hearthstone-Script/releases/tag/" + release.getTagName());
+    }
+
+    private void execUpdate(){
+        Platform.runLater(() -> FrameUtil.createAlert("新版本[" + release.getTagName() + "]下载完毕", "现在更新？", event -> {
+            try {
+                IS_UPDATING.set(true);
+                Runtime.getRuntime().exec("cmd /c start " + System.getProperty("user.dir") + "\\update.bat " + System.getProperty("user.dir") + "\\new_version_temp");
+            } catch (IOException e) {
+                IS_UPDATING.set(false);
+                throw new RuntimeException(e);
+            }
+        }, event -> {IS_UPDATING.set(false);}, event -> {IS_UPDATING.set(false);}).show());
+    }
     @FXML
     protected void save(){
 //        检查挂机天
@@ -155,12 +235,44 @@ public class JavaFXDashboardController implements Initializable {
     public static VBox logVBoxBack;
     public static Accordion accordionBack;
     public static Switch logSwitchBack;
-    private RunModeEnum currentRunMode;
+    private static RunModeEnum currentRunMode;
+    private static Release release;
+    public static String currentVersion;
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        /*
+            用idea启动时springData.getVersion()能读到正确的值
+            打完包后启动this.getClass().getPackage().getImplementationVersion()能读到正确的值
+        */
+        if ((currentVersion = this.getClass().getPackage().getImplementationVersion()) == null){
+            currentVersion = springData.getVersion();
+        }
         logVBoxBack = logVBox;
         accordionBack = accordion;
         logSwitchBack = logSwitch;
+//        初始化版本
+        extraThreadPool.schedule(new LogRunnable(() -> {
+            version.setText("当前版本：" + currentVersion);
+            try {
+                release = restTemplate.getForObject("https://gitee.com/api/v5/repos/zergqueen/Hearthstone-Script/releases/latest", Release.class);
+            }catch (RuntimeException e){
+                try {
+                    release = restTemplate.getForObject("https://api.github.com/repos/xjw580/Hearthstone-Script/releases/latest", Release.class);
+                }catch (RuntimeException e2){
+                    log.warn("获取最新版本信息失败", e2);
+                }
+            }
+            if (release != null){
+                if (currentVersion.compareTo(release.getTagName()) < 0 && !release.isPreRelease()){
+                    update.setVisible(true);
+                    log.info("有更新可用😊，当前版本：" + currentVersion + ", 最新版本：" + release.getTagName());
+                }else {
+                    log.info("已是最新，当前版本：" + currentVersion + ", 最新版本：" + release.getTagName());
+                }
+            }else {
+                log.warn("没有任何最新版本");
+            }
+        }), 0, TimeUnit.SECONDS);
 //        初始化模式和卡组
         DeckEnum deckEnum = DeckEnum.valueOf(scriptProperties.getProperty(DECK_KEY.getKey()));
         currentRunMode = deckEnum.getRunMode();
@@ -206,6 +318,10 @@ public class JavaFXDashboardController implements Initializable {
                 }
             }
         }
+//        是否在更新中监听
+        IS_UPDATING.addListener((observable, oldValue, newValue) -> {
+            update.setDisable(newValue);
+        });
 //        模式更改监听
         runModeBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             for (RunModeEnum value : RunModeEnum.values()) {

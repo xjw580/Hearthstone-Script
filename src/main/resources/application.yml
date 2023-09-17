@@ -8,6 +8,7 @@ game:
         screen: /LoadingScreen.log
         power: /Power.log
 script:
+  version: '@project.version@'
   path: ${PROGRAMDATA:C:\ProgramData}/hs_script/
   configuration:
     file: ${script.path}/script.properties
@@ -18,8 +19,9 @@ logging:
   config: logback-spring.xml
   level:
     root: ${log.level}
+#  改端口时记得把index.js里的ws端口也改了
 server:
-  port: 8080
+  port: 8848
 #  web容器开关
 spring:
   thymeleaf:

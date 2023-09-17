@@ -8,6 +8,7 @@
 <?import javafx.scene.text.Text?>
 <?import javafx.util.Duration?>
 <?import java.lang.Double?>
+<?import java.lang.String?>
 <Accordion xmlns:fx="http://javafx.com/fxml"
            expandedPane="$titledPaneControl"
            fx:id="accordion"
@@ -32,7 +33,8 @@
                     <RowConstraints minHeight="$space"/>
                     <RowConstraints minHeight="$space"/>
                     <RowConstraints minHeight="$space"/>
-                    <RowConstraints minHeight="75"/>
+                    <RowConstraints minHeight="60"/>
+                    <RowConstraints minHeight="$space"/>
                 </rowConstraints>
 
                 <Button fx:id="startButton" text="开始" styleClass="btn, btn-xs, btn-success" onAction="#start">
@@ -152,8 +154,41 @@
                 <Text fx:id="tip" GridPane.columnIndex="1" GridPane.rowIndex="6" translateX="18"/>
                 <Button text="保存" GridPane.columnIndex="0" GridPane.rowIndex="6" translateX="73" onAction="#save"/>
 
-                <Button onAction="#settings" text="设置" GridPane.columnIndex="0" GridPane.rowIndex="7"
+                <Label fx:id="version" GridPane.columnIndex="0" GridPane.rowIndex="7" GridPane.columnSpan="2"
+                       contentDisplay="RIGHT">
+                    <graphic>
+                        <Button onAction="#update" translateX="10" fx:id="update" style="-fx-background-radius: 100%" visible="false">
+                            <tooltip>
+                                <Tooltip>
+                                    <showDelay>
+                                        <Duration millis="400"/>
+                                    </showDelay>
+                                    <text>
+                                        <String fx:value="更新"/>
+                                    </text>
+                                </Tooltip>
+                            </tooltip>
+                            <graphic>
+                                <ImageView fitHeight="$imageSize" fitWidth="12">
+                                    <Image url="@images/updates.png"/>
+                                </ImageView>
+                            </graphic>
+                        </Button>
+                    </graphic>
+                </Label>
+
+                <Button onAction="#settings" text="设置" GridPane.columnIndex="0" GridPane.rowIndex="8"
                         styleClass="btn, btn-xs, btn-info" translateX="55">
+                    <tooltip>
+                        <Tooltip>
+                            <showDelay>
+                                <Duration millis="400"/>
+                            </showDelay>
+                            <text>
+                                <String fx:value="打开设置"/>
+                            </text>
+                        </Tooltip>
+                    </tooltip>
                     <graphic>
                         <ImageView fitHeight="$imageSize" fitWidth="$imageSize" translateX="-5">
                             <Image url="@images/settings.png"/>

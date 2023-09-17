@@ -1,6 +1,7 @@
 package club.xiaojiawei.initializer;
 
 import club.xiaojiawei.data.SpringData;
+import club.xiaojiawei.utils.SystemUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -30,17 +31,7 @@ public class WebInitializer extends AbstractInitializer{
     @Override
     public void exec(){
         if (Objects.equals(scriptProperties.getProperty(AUTO_OPEN_KEY.getKey()), "true")){
-            // 获取系统默认的浏览器
-            Desktop desktop = Desktop.getDesktop();
-            // 判断桌面是否支持浏览器调用
-            if (desktop.isSupported(Desktop.Action.BROWSE)) {
-                // 调用默认浏览器打开网页
-                try {
-                    desktop.browse(new URI("http://127.0.0.1:" + springData.getServerPort()));
-                } catch (IOException | URISyntaxException e) {
-                    throw new RuntimeException(e);
-                }
-            }
+            SystemUtil.openUrlByBrowser("http://127.0.0.1:" + springData.getServerPort());
         }
         if (nextInitializer != null){
             nextInitializer.init();
