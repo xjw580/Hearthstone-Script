@@ -2,10 +2,13 @@ package club.xiaojiawei.utils;
 
 import club.xiaojiawei.custom.dll.User32Dll;
 import club.xiaojiawei.data.ScriptStaticData;
+import club.xiaojiawei.entity.Release;
 import com.sun.jna.platform.win32.WinDef;
 import javafx.beans.property.BooleanProperty;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.Resource;
 import java.util.concurrent.atomic.AtomicReference;

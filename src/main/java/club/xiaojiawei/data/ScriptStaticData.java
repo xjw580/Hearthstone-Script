@@ -6,6 +6,11 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.net.URLConnection;
 
 /**
  * @author 肖嘉威
