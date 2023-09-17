@@ -6,6 +6,7 @@ import club.xiaojiawei.data.SpringData;
 import club.xiaojiawei.entity.Release;
 import club.xiaojiawei.enums.DeckEnum;
 import club.xiaojiawei.enums.RunModeEnum;
+import club.xiaojiawei.listener.VersionListener;
 import club.xiaojiawei.status.Work;
 import club.xiaojiawei.utils.DashboardUtil;
 import club.xiaojiawei.utils.FrameUtil;
@@ -126,9 +127,10 @@ public class JavaFXDashboardController implements Initializable {
 
     @FXML
     protected synchronized void update() {
+        Release release = VersionListener.getRelease();
         if (release != null && update.isVisible() && !IS_UPDATING.get()){
             if (new File(TEMP_DIR).exists()){
-                execUpdate();
+                execUpdate(release.getTagName());
             }else if (!IS_UPDATING.get()){
                 IS_UPDATING.set(true);
                 extraThreadPool.schedule(new LogRunnable(() -> {
@@ -171,15 +173,15 @@ public class JavaFXDashboardController implements Initializable {
                         IS_UPDATING.set(false);
                         throw new RuntimeException(e);
                     }
-                    execUpdate();
+                    execUpdate(release.getTagName());
                 }), 0, TimeUnit.SECONDS);
             }
         }
 //        SystemUtil.openUrlByBrowser("https://gitee.com/zergqueen/Hearthstone-Script/releases/tag/" + release.getTagName());
     }
 
-    private void execUpdate(){
-        Platform.runLater(() -> FrameUtil.createAlert("新版本[" + release.getTagName() + "]下载完毕", "现在更新？", event -> {
+    private void execUpdate(String latestVersion){
+        Platform.runLater(() -> FrameUtil.createAlert("新版本[" + latestVersion + "]下载完毕", "现在更新？", event -> {
             try {
                 IS_UPDATING.set(true);
                 Runtime.getRuntime().exec("cmd /c start " + System.getProperty("user.dir") + "\\update.bat " + System.getProperty("user.dir") + "\\new_version_temp");
@@ -235,44 +237,15 @@ public class JavaFXDashboardController implements Initializable {
     public static VBox logVBoxBack;
     public static Accordion accordionBack;
     public static Switch logSwitchBack;
+    public static Button updateBack;
     private static RunModeEnum currentRunMode;
-    private static Release release;
-    public static String currentVersion;
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        /*
-            用idea启动时springData.getVersion()能读到正确的值
-            打完包后启动this.getClass().getPackage().getImplementationVersion()能读到正确的值
-        */
-        if ((currentVersion = this.getClass().getPackage().getImplementationVersion()) == null){
-            currentVersion = springData.getVersion();
-        }
         logVBoxBack = logVBox;
         accordionBack = accordion;
         logSwitchBack = logSwitch;
-//        初始化版本
-        extraThreadPool.schedule(new LogRunnable(() -> {
-            version.setText("当前版本：" + currentVersion);
-            try {
-                release = restTemplate.getForObject("https://gitee.com/api/v5/repos/zergqueen/Hearthstone-Script/releases/latest", Release.class);
-            }catch (RuntimeException e){
-                try {
-                    release = restTemplate.getForObject("https://api.github.com/repos/xjw580/Hearthstone-Script/releases/latest", Release.class);
-                }catch (RuntimeException e2){
-                    log.warn("获取最新版本信息失败", e2);
-                }
-            }
-            if (release != null){
-                if (currentVersion.compareTo(release.getTagName()) < 0 && !release.isPreRelease()){
-                    update.setVisible(true);
-                    log.info("有更新可用😊，当前版本：" + currentVersion + ", 最新版本：" + release.getTagName());
-                }else {
-                    log.info("已是最新，当前版本：" + currentVersion + ", 最新版本：" + release.getTagName());
-                }
-            }else {
-                log.warn("没有任何最新版本");
-            }
-        }), 0, TimeUnit.SECONDS);
+        updateBack = update;
+        version.setText("当前版本：" + VersionListener.getCurrentVersion());
 //        初始化模式和卡组
         DeckEnum deckEnum = DeckEnum.valueOf(scriptProperties.getProperty(DECK_KEY.getKey()));
         currentRunMode = deckEnum.getRunMode();

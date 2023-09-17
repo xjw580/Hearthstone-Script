@@ -25,7 +25,7 @@ public class ThreadPoolConfig {
             private final AtomicInteger num = new AtomicInteger(0);
             @Override
             public Thread newThread(Runnable r) {
-                return new Thread(r, "launchProgramThreadPool-" + num.getAndIncrement());
+                return new Thread(r, "LaunchProgramPool Thread-" + num.getAndIncrement());
             }
         }, new ThreadPoolExecutor.AbortPolicy());
     }
@@ -40,7 +40,7 @@ public class ThreadPoolConfig {
             private final AtomicInteger num = new AtomicInteger(0);
             @Override
             public Thread newThread(Runnable r) {
-                return new Thread(r, "listenFileThreadPool-" + num.getAndIncrement());
+                return new Thread(r, "ListenFilePool Thread-" + num.getAndIncrement());
             }
         }, new ThreadPoolExecutor.AbortPolicy());
     }
@@ -55,7 +55,7 @@ public class ThreadPoolConfig {
             private final AtomicInteger num = new AtomicInteger(0);
             @Override
             public Thread newThread(Runnable r) {
-                return new Thread(r, "extraThreadPool-" + num.getAndIncrement());
+                return new Thread(r, "ExtraPool Thread-" + num.getAndIncrement());
             }
         }, new ThreadPoolExecutor.AbortPolicy());
     }
@@ -66,7 +66,7 @@ public class ThreadPoolConfig {
             private final AtomicInteger num = new AtomicInteger(0);
             @Override
             public Thread newThread(Runnable r) {
-                return new Thread(r, "coreThreadPool-" + num.getAndIncrement());
+                return new Thread(r, "CorePool Thread-" + num.getAndIncrement());
             }
         }, new ThreadPoolExecutor.AbortPolicy());
     }

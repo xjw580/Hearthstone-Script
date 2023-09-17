@@ -1,7 +1,6 @@
 package club.xiaojiawei.status;
 
 import club.xiaojiawei.core.Core;
-import club.xiaojiawei.listener.PowerFileListener;
 import club.xiaojiawei.utils.PropertiesUtil;
 import club.xiaojiawei.utils.SystemUtil;
 import javafx.beans.property.BooleanProperty;
@@ -9,13 +8,10 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import java.io.IOException;
-import java.io.RandomAccessFile;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -23,7 +19,6 @@ import java.util.Objects;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static club.xiaojiawei.data.ScriptStaticData.ROBOT;
 import static club.xiaojiawei.enums.ConfigurationKeyEnum.*;
 
 /**
@@ -31,7 +26,6 @@ import static club.xiaojiawei.enums.ConfigurationKeyEnum.*;
  * @date 2023/9/10 22:04
  * @msg
  */
-@EnableScheduling
 @Component
 @Slf4j
 public class Work {

@@ -2,19 +2,16 @@ package club.xiaojiawei.utils;
 
 import club.xiaojiawei.custom.dll.User32Dll;
 import club.xiaojiawei.data.ScriptStaticData;
-import club.xiaojiawei.entity.Release;
 import com.sun.jna.platform.win32.WinDef;
 import javafx.beans.property.BooleanProperty;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.Resource;
-
 import java.util.concurrent.atomic.AtomicReference;
 
-import static java.awt.event.InputEvent.*;
+import static java.awt.event.InputEvent.BUTTON1_DOWN_MASK;
+import static java.awt.event.InputEvent.BUTTON3_DOWN_MASK;
 
 /**
  * @author 肖嘉威
@@ -67,7 +64,7 @@ public class MouseUtil {
                     ScriptStaticData.ROBOT.delay(MOVE_INTERVAL);
                 }
             }
-            ScriptStaticData.ROBOT.delay(200);
+            ScriptStaticData.ROBOT.delay(100);
             ScriptStaticData.ROBOT.mouseRelease(BUTTON1_DOWN_MASK);
             ScriptStaticData.ROBOT.delay(100);
         }

@@ -19,12 +19,7 @@ import java.awt.*;
 import java.awt.datatransfer.*;
 import java.io.*;
 import java.net.*;
-import java.nio.charset.Charset;
-import java.util.Enumeration;
 import java.util.Objects;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
-import java.util.zip.ZipInputStream;
 
 import static club.xiaojiawei.data.ScriptStaticData.GAME_NAME;
 
@@ -103,7 +98,7 @@ public class SystemUtil {
     public static void updateRect(WinDef.HWND programHWND, WinDef.RECT programRECT) {
         User32.INSTANCE.GetWindowRect(programHWND, programRECT);
         if ((ScriptStaticData.GAME_RECT.bottom - ScriptStaticData.GAME_RECT.top) != ScriptStaticData.DISPLAY_PIXEL_Y){
-            ScriptStaticData.GAME_RECT.top += ScriptStaticData.WINDOW_TOP_PIXEL;
+            ScriptStaticData.GAME_RECT.top += ScriptStaticData.WINDOW_TITLE_Y;
         }
     }
 

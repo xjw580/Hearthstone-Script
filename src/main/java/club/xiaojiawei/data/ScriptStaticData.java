@@ -6,11 +6,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.net.URLConnection;
 
 /**
  * @author 肖嘉威
@@ -70,7 +65,7 @@ public class ScriptStaticData {
     /**
      * 窗口标题栏纵向像素数
      */
-    public static final int WINDOW_TOP_PIXEL;
+    public static final int WINDOW_TITLE_Y;
 
     /**
      * 本脚本的程序名
@@ -90,10 +85,11 @@ public class ScriptStaticData {
      * 图片路径
      */
     public static final String IMAGE_PATH = MAIN_PATH + "images/";
+    public static final String MAIN_ICO_NAME = "main.png";
     /**
      * 脚本程序图标路径
      */
-    public static final String SCRIPT_ICON_PATH = IMAGE_PATH + "main.png";
+    public static final String SCRIPT_ICON_PATH = IMAGE_PATH + MAIN_ICO_NAME;
 
 
     public static boolean isSetPath() {
@@ -125,7 +121,7 @@ public class ScriptStaticData {
         AffineTransform tx = screenDevices[0].getDefaultConfiguration().getDefaultTransform();
         DISPLAY_SCALE_X = tx.getScaleX();
         DISPLAY_SCALE_Y = tx.getScaleY();
-        WINDOW_TOP_PIXEL = (int) (33 / DISPLAY_SCALE_Y);
+        WINDOW_TITLE_Y = (int) (33 / DISPLAY_SCALE_Y);
     }
 
 }

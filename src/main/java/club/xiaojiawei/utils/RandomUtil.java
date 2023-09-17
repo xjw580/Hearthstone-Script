@@ -9,10 +9,10 @@ import java.util.Random;
  */
 public class RandomUtil {
 
-    private static final Random random = new Random();
+    private static final Random RANDOM = new Random();
 
     public static int getRandom(int min, int max){
-        return (int) (random.nextDouble() * (max - min + 1) + min);
+        return (int) (RANDOM.nextDouble() * (max - min + 1) + min);
     }
 
     public static int getHugeRandom(){

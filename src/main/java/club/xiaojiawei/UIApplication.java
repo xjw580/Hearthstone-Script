@@ -27,6 +27,7 @@ import java.util.Objects;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicReference;
 
+import static club.xiaojiawei.data.ScriptStaticData.MAIN_ICO_NAME;
 import static club.xiaojiawei.enums.ConfigurationKeyEnum.DECK_KEY;
 
 
@@ -77,7 +78,7 @@ public class UIApplication extends Application {
                 });
             }
         });
-        SystemUtil.addTray("main.png", ScriptStaticData.SCRIPT_NAME, show, quit);
+        SystemUtil.addTray(MAIN_ICO_NAME, ScriptStaticData.SCRIPT_NAME, show, quit);
         frame = FrameUtil.createAlwaysTopWindow(ScriptStaticData.SCRIPT_NAME, scene, width, height, ScriptStaticData.SCRIPT_ICON_PATH);
         DeckEnum deckEnum = DeckEnum.valueOf(scriptProperties.getProperty(DECK_KEY.getKey()));
         log.info(deckEnum.getComment() + "卡组代码：" + deckEnum.getDeckCode());

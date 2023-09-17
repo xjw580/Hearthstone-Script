@@ -15,7 +15,6 @@ import club.xiaojiawei.utils.SystemUtil;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -170,7 +169,7 @@ public class GameTurnAbstractPhaseStrategy extends AbstractPhaseStrategy<String>
                                 log.info("执行出牌策略");
                                 DeckEnum.valueOf(scriptProperties.getProperty(DECK_KEY.getKey())).getAbstractDeckStrategy().afterIntoMyTurn();
                                 log.info("出牌策略执行完毕");
-                            }, "outCardThread")).start();
+                            }, "OutCard Thread")).start();
                         }else {
                             log.info("对方回合");
                             AbstractDeckStrategy.setMyTurn(false);
