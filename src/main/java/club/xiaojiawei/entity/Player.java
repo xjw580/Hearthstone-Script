@@ -9,8 +9,6 @@ import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
 
-import java.nio.charset.StandardCharsets;
-
 /**
  * @author 肖嘉威
  * @date 2022/11/27 15:03
@@ -42,14 +40,14 @@ public class Player extends Entity{
     private volatile int maxResources = 10;
 
     private volatile int resources;
-
-    private volatile int usedResources;
-
+    private volatile int resourcesUsed;
     private volatile int tempResources;
 
-    private volatile int usedTempResources;
+    private volatile int timeOut;
+    private volatile int turn;
 
-    public Player() {
+    public Player(String playerId) {
+        this.playerId = playerId;
         this.handArea = new HandArea();
         this.playArea = new PlayArea();
         this.secretArea = new SecretArea();
@@ -67,10 +65,10 @@ public class Player extends Entity{
         this.gameId = gameId;
     }
 
-    public void clear(){
-        usedResources = 0;
+    public void resetResources(){
+        resources = 0;
+        resourcesUsed = 0;
         tempResources = 0;
-        usedTempResources = 0;
     }
 
     public Area getArea(ZoneEnum zoneEnum){

@@ -2,15 +2,16 @@ package club.xiaojiawei.entity.area;
 
 import club.xiaojiawei.entity.Card;
 import club.xiaojiawei.entity.Player;
+import club.xiaojiawei.enums.ZoneEnum;
 import club.xiaojiawei.status.War;
-import club.xiaojiawei.data.GameStaticData;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.util.Strings;
 
-import java.nio.charset.StandardCharsets;
 import java.util.*;
 
-import static club.xiaojiawei.data.GameStaticData.CARD_AREA_MAP;
+import static club.xiaojiawei.data.ScriptStaticData.CARD_AREA_MAP;
 
 /**
  * @author 肖嘉威
@@ -22,120 +23,112 @@ public abstract class Area {
     @Getter
     protected volatile List<Card> cards;
 
-    protected final Map<String, Card> zeroArea;
+    protected final Map<String, Card> zeroCards;
 
+    @Setter
+    @Getter
     private int maxSize;
 
     public Area(int maxSize) {
         this.cards = new ArrayList<>();
-        this.zeroArea = new HashMap<>();
+        this.zeroCards = new HashMap<>();
         this.maxSize = maxSize;
-    }
-
-    public void putZeroAreaCard(Card card){
-        addZone(card);
-        Player player = War.testArea(this);
-        zeroArea.put(card.getEntityId(), card);
-        if (log.isDebugEnabled()){
-            log.debug("向玩家" + (player == War.getPlayer1()? 1 : 2) + "-" + player.getGameId() + " 的 " + this.getClass().getSimpleName() + "的 zeroArea 添加卡牌，entityId:" + card.getEntityId() + "，size:" + cards.size());
-        }
     }
 
     protected void addZone(Card card){
-        GameStaticData.CARD_AREA_MAP.put(card.getEntityId(), this);
-    };
-
-    public int maxCardSize() {
-        return maxSize;
+        CARD_AREA_MAP.put(card.getEntityId(), this);
     }
 
-    public void setMaxSize(byte maxSize) {
-        this.maxSize = maxSize;
+    protected void addZeroCard(Card card){
+        zeroCards.put(card.getEntityId(), card);
+        addZone(card);
+        if (log.isDebugEnabled()){
+            logDebug(card, "zeroArea");
+        }
+    }
+    protected void addCard(Card card, int pos){
+        if (pos >= cards.size()){
+            cards.add(card);
+        }else {
+            cards.add(pos, card);
+        }
+        addZone(card);
+        logInfo(card, "");
+    }
+    protected void logInfo(Card card, String name){
+        Player player = War.getPlayerByArea(this);
+        if (Strings.isNotEmpty(name)){
+            name = "的【" + name + "】";
+        }
+        log.info("向玩家" + player.getPlayerId() + "【" + player.getGameId() + "】的【" + ZoneEnum.valueOf(this.getClass().getSimpleName().substring(0, this.getClass().getSimpleName().length() - 4).toUpperCase()).getComment() + "】" + name + "添加卡牌，entityId:" + card.getEntityId() + "，cardId:" + card.getCardId() + "，size:" + cards.size());
+    }
+    protected void logDebug(Card card, String name){
+        Player player = War.getPlayerByArea(this);
+        if (Strings.isNotEmpty(name)){
+            name = "的【" + name + "】";
+        }
+        log.debug("向玩家" + player.getPlayerId() + "【" + player.getGameId() + "】的【" + ZoneEnum.valueOf(this.getClass().getSimpleName().substring(0, this.getClass().getSimpleName().length() - 4).toUpperCase()).getComment() + "】" + name + "添加卡牌，entityId:" + card.getEntityId() + "，cardId:" + card.getCardId() + "，size:" + cards.size());
+    }
+
+    /**
+     * 向末尾添加
+     * @param card
+     * @return
+     */
+    public boolean add(Card card){
+        return add(card, cards.size() + 1);
+    }
+
+    /**
+     * @param card
+     * @param pos 注意！不是index
+     * @return
+     */
+    public boolean add(Card card, int pos){
+        boolean result = true;
+        if (card == null){
+            result = false;
+        }else {
+            if (pos-- <= 0){
+                addZeroCard(card);
+            }else {
+                addCard(card, pos);
+            }
+        }
+        return result;
     }
 
     public int size(){
         return cards.size();
     }
 
-    public boolean add(Card card){
-        if (card == null || isFull()){
-            return false;
-        }
-        cards.add(card);
-        addZone(card);
-        Player player = War.testArea(this);
-        log.info("向玩家" + (player == War.getPlayer1()? 1 : 2) + "-" + player.getGameId() + " 的 " + this.getClass().getSimpleName() + " 添加卡牌，entityId:" + card.getEntityId() + "，size:" + cards.size());
-        return true;
-    }
-
-    public boolean add(Card card, int pos){
+    public Card findByEntityId(String entityId){
+        Card card = zeroCards.get(entityId);
         if (card == null){
-            return false;
-        }
-        if (pos-- <= 0){
-            putZeroAreaCard(card);
-            return true;
-        }
-        if (isFull()){
-            return false;
-        }
-        Player player = War.testArea(this);
-        if (cards.size() <= pos){
-            cards.add(card);
-        }else {
-            cards.add(pos, card);
-        }
-        addZone(card);
-        log.info("向玩家" + (player == War.getPlayer1()? 1 : 2) + "-" + player.getGameId() + " 的 " + this.getClass().getSimpleName() + " 添加卡牌，entityId:" + card.getEntityId() + "，size:" + cards.size());
-        return true;
-    }
-
-    public Card getByCardId(String cardId){
-        for (Card card : cards) {
-            if (Objects.equals(cardId, card.getCardId())){
-                return card;
+            for (Card c : cards) {
+                if (Objects.equals(entityId, c.getEntityId())){
+                    card = c;
+                    break;
+                }
             }
         }
-        return null;
-    }
-
-    public Card getByEntityId(String entityId){
-        Card c = zeroArea.get(entityId);
-        if (c != null){
-            return c;
-        }
-        for (Card card : cards) {
-            if (Objects.equals(entityId, card.getEntityId())){
-                return card;
-            }
-        }
-        return null;
-    }
-
-    public Card removeByCardId(String cardId){
-        for (int i = 0; i < cards.size(); i++) {
-            if (Objects.equals(cardId, cards.get(i).getCardId())){
-                return cards.remove(i);
-            }
-        }
-        return null;
+        return card;
     }
 
     public Card removeByEntityId(String entityId){
-        Card card = zeroArea.remove(entityId);
-        if (card != null){
-            return card;
-        }
-        for (int i = 0; i < cards.size(); i++) {
-            if (Objects.equals(entityId, cards.get(i).getEntityId())){
-                return cards.remove(i);
+        Card card = removeByEntityIdInZeroArea(entityId);
+        if (card == null){
+            for (int i = 0; i < cards.size(); i++) {
+                if (Objects.equals(entityId, cards.get(i).getEntityId())){
+                    card =  cards.remove(i);
+                    break;
+                }
             }
         }
-        return null;
+        return card;
     }
-
-    public Card removeByPosition(int position){
-        return --position < size()? cards.remove(position) : null;
+    public Card removeByEntityIdInZeroArea(String entityId){
+        return zeroCards.remove(entityId);
     }
 
     public boolean isFull(){
@@ -143,7 +136,7 @@ public abstract class Area {
     }
 
     public boolean isEmpty(){
-        return cards.size() == 0;
+        return cards.isEmpty();
     }
 
     @Override

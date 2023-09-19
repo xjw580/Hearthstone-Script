@@ -22,4 +22,6 @@ public class CommonEntity extends Entity{
 
     private String playerId;
 
+    private String logType;
+
 }

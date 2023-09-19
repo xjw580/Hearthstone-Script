@@ -3,7 +3,7 @@ package club.xiaojiawei.strategy.mode;
 import club.xiaojiawei.custom.LogRunnable;
 import club.xiaojiawei.data.ScriptStaticData;
 import club.xiaojiawei.strategy.AbstractModeStrategy;
-import club.xiaojiawei.data.GameStaticData;
+import club.xiaojiawei.data.GameRationStaticData;
 import club.xiaojiawei.utils.SystemUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -37,11 +37,10 @@ public class LoginAbstractModeStrategy extends AbstractModeStrategy<Object> {
 //        去除国服登陆时恼人的点击开始和进入主界面时弹出的每日任务
         scheduledFuture = extraThreadPool.scheduleWithFixedDelay(new LogRunnable(() -> {
             if (!isPause.get().get()){
-                SystemUtil.frontWindow(ScriptStaticData.getGameHWND());
                 SystemUtil.updateRect(ScriptStaticData.getGameHWND(), ScriptStaticData.GAME_RECT);
                 mouseUtil.leftButtonClick(
                         (ScriptStaticData.GAME_RECT.right + ScriptStaticData.GAME_RECT.left) >> 1,
-                        (int) (ScriptStaticData.GAME_RECT.bottom - (ScriptStaticData.GAME_RECT.bottom - ScriptStaticData.GAME_RECT.top) * GameStaticData.CONFIRM_OR_CLOSE_BUTTON_VERTICAL_TO_BOTTOM_RATION)
+                        (int) (ScriptStaticData.GAME_RECT.bottom - (ScriptStaticData.GAME_RECT.bottom - ScriptStaticData.GAME_RECT.top) * GameRationStaticData.CONFIRM_OR_CLOSE_BUTTON_VERTICAL_TO_BOTTOM_RATION)
                 );
             }else {
                 cancelTask();

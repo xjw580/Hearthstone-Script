@@ -30,6 +30,8 @@ public abstract class AbstractModeStrategy<T>{
     protected final static int DELAY_TIME = 1000;
 
     public abstract void wantEnter();
+    protected abstract void afterEnter(T t);
+    public void afterLeave(){}
     public final void entering(){
         entering(null);
     }
@@ -39,14 +41,9 @@ public abstract class AbstractModeStrategy<T>{
         afterEnter(t);
     }
     protected void beforeEnter(){
-        SystemUtil.stopAllThread();
         SystemUtil.cancelAllTask();
-        SystemUtil.frontWindow(ScriptStaticData.getGameHWND());
     }
     protected void log(){
         log.info("切換到" + Mode.getCurrMode().getComment());
     }
-    protected abstract void afterEnter(T t);
-    public void afterLeave(){
-    };
 }

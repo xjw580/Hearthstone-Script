@@ -45,8 +45,6 @@ public class Core implements ApplicationRunner {
     @Resource
     private AbstractInitializer initializer;
     @Resource
-    private ConfigurableApplicationContext springContext;
-    @Resource
     private JavaFXDashboardController javaFXDashboardController;
     @Resource
     private JavaFXInitSettingsController javaFXInitSettingsController;
@@ -88,25 +86,6 @@ public class Core implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args){
-//        创建对象为枚举赋值
-        for (WarPhaseEnum phase : WarPhaseEnum.values()) {
-            Class<? extends AbstractPhaseStrategy<String>> phaseStrategyClass = phase.getPhaseStrategyClass();
-            if (phaseStrategyClass != null){
-                phase.setAbstractPhaseStrategy(springContext.getBean(phaseStrategyClass));
-            }
-        }
-        for (ModeEnum mode : ModeEnum.values()) {
-            Class<? extends AbstractModeStrategy<Object>> modeStrategyClass = mode.getModeStrategyClass();
-            if (modeStrategyClass != null){
-                mode.setAbstractModeStrategy(springContext.getBean(modeStrategyClass));
-            }
-        }
-        for (DeckEnum deck : DeckEnum.values()) {
-            Class<? extends AbstractDeckStrategy> deckStrategyClass = deck.getAbstractDeckStrategyClass();
-            if (deckStrategyClass != null){
-                deck.setAbstractDeckStrategy(springContext.getBean(deckStrategyClass));
-            }
-        }
         initializer.init();
     }
 }

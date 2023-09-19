@@ -21,14 +21,14 @@ public enum WarPhaseEnum {
     GAME_OVER_PHASE("游戏结束阶段", GameOverAbstractPhaseStrategy.class);
 
     private final String comment;
-    private final  Class<? extends AbstractPhaseStrategy<String>> phaseStrategyClass;
-    private AbstractPhaseStrategy<String> abstractPhaseStrategy;
+    private final  Class<? extends AbstractPhaseStrategy> phaseStrategyClass;
+    private AbstractPhaseStrategy abstractPhaseStrategy;
 
-    public void setAbstractPhaseStrategy(AbstractPhaseStrategy<String> abstractPhaseStrategy) {
+    public void setAbstractPhaseStrategy(AbstractPhaseStrategy abstractPhaseStrategy) {
         this.abstractPhaseStrategy = abstractPhaseStrategy;
     }
 
-    WarPhaseEnum(String comment, Class<? extends AbstractPhaseStrategy<String>> phaseStrategyClass) {
+    WarPhaseEnum(String comment, Class<? extends AbstractPhaseStrategy> phaseStrategyClass) {
         this.comment = comment;
         this.phaseStrategyClass = phaseStrategyClass;
     }

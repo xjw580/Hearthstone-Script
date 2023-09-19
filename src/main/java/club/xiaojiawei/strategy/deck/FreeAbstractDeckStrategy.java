@@ -16,20 +16,14 @@ import java.util.List;
 @Slf4j
 public class FreeAbstractDeckStrategy extends AbstractDeckStrategy {
 
+
     @Override
-    protected void executeChangeCard(List<Card> myHandCards, float clearance , float firstCardPos) {
-        Card card;
-        for (int i = 0; i < myHandCards.size(); i++) {
-            card = myHandCards.get(i);
-//            只留费用小于等于2的
-            if (card.getCost() > 2){
-                clickFloatCard(clearance, firstCardPos, i);
-            }
-        }
+    protected boolean executeChangeCard(Card card, int index) {
+        return card.getCost() > 2;
     }
 
     @Override
-    protected void outCard() {
+    protected void executeOutCard() {
         List<Card> handCards = myHandArea.getCards();
         List<Card> playCards = myPlayArea.getCards();
         List<Card> rivalPlayCards = rivalPlayArea.getCards();

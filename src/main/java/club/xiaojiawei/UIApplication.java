@@ -51,8 +51,6 @@ public class UIApplication extends Application {
         springContext.getAutowireCapableBeanFactory().autowireBean(this);
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("dashboard.fxml"));
         fxmlLoader.setControllerFactory(springContext::getBean);
-//        界面的宽和高
-//        int width = (int) (ScriptStaticData.DISPLAY_PIXEL_X / 10 / ScriptStaticData.DISPLAY_SCALE_X + 50), height = (int) (ScriptStaticData.DISPLAY_PIXEL_Y / ScriptStaticData.DISPLAY_SCALE_Y * 0.75);
         int width = 225, height = 650;
         Scene scene = new Scene(fxmlLoader.load(), width, height);
         scene.getStylesheets().add(BootstrapFX.bootstrapFXStylesheet());

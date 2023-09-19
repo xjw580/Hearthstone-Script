@@ -2,13 +2,10 @@ package club.xiaojiawei.utils;
 
 import club.xiaojiawei.custom.dll.User32Dll;
 import club.xiaojiawei.data.ScriptStaticData;
-import club.xiaojiawei.entity.Release;
 import com.sun.jna.platform.win32.WinDef;
 import javafx.beans.property.BooleanProperty;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.Resource;
 import java.util.concurrent.atomic.AtomicReference;
@@ -41,35 +38,36 @@ public class MouseUtil {
             return;
         }
         synchronized (MouseUtil.class){
+            SystemUtil.frontWindow(ScriptStaticData.getGameHWND());
             startX = pixelToScaleX(startX);
             startY = pixelToScaleY(startY);
             endX = pixelToScaleX(endX);
             endY = pixelToScaleY(endY);
             ScriptStaticData.ROBOT.mouseMove(startX, startY);
-            ScriptStaticData.ROBOT.delay(100);
+            SystemUtil.delay(100);
             ScriptStaticData.ROBOT.mousePress(BUTTON1_DOWN_MASK);
             SystemUtil.delayShort();
             for (int i = 0; i < 50; i++) {
                 ScriptStaticData.ROBOT.mouseMove(startX, --startY);
-                ScriptStaticData.ROBOT.delay(MOVE_INTERVAL);
+                SystemUtil.delay(MOVE_INTERVAL);
             }
             SystemUtil.delayShort();
             if (startX == endX){
                 for (startY -= MOVE_DISTANCE; startY >= endY; startY -= MOVE_DISTANCE){
                     ScriptStaticData.ROBOT.mouseMove(startX, startY);
-                    ScriptStaticData.ROBOT.delay(MOVE_INTERVAL);
+                    SystemUtil.delay(MOVE_INTERVAL);
                 }
             }else {
                 double k = (double)(startY - endY) / (startX - endX);
                 double b = startY - k * startX;
                 for (startY -= MOVE_DISTANCE; startY >= endY; startY -= MOVE_DISTANCE){
                     ScriptStaticData.ROBOT.mouseMove((int) ((startY - b) / k), startY);
-                    ScriptStaticData.ROBOT.delay(MOVE_INTERVAL);
+                    SystemUtil.delay(MOVE_INTERVAL);
                 }
             }
-            ScriptStaticData.ROBOT.delay(100);
+            SystemUtil.delay(100);
             ScriptStaticData.ROBOT.mouseRelease(BUTTON1_DOWN_MASK);
-            ScriptStaticData.ROBOT.delay(100);
+            SystemUtil.delay(100);
         }
     }
 
@@ -85,30 +83,31 @@ public class MouseUtil {
             return;
         }
         synchronized (MouseUtil.class){
+            SystemUtil.frontWindow(ScriptStaticData.getGameHWND());
             startX = pixelToScaleX(startX);
             startY = pixelToScaleY(startY);
             endX = pixelToScaleX(endX);
             endY = pixelToScaleY(endY);
             ScriptStaticData.ROBOT.mouseMove(startX, startY);
-            ScriptStaticData.ROBOT.delay(100);
+            SystemUtil.delay(100);
             if (Math.abs(startY - endY) < 20){
                 for (startX -= MOVE_DISTANCE; startX >= endX; startX -= MOVE_DISTANCE){
                     ScriptStaticData.ROBOT.mouseMove(startX, startY);
-                    ScriptStaticData.ROBOT.delay(MOVE_INTERVAL);
+                    SystemUtil.delay(MOVE_INTERVAL);
                 }
             }else {
                 double k = (double)(startY - endY) / (startX - endX);
                 double b = startY - k * startX;
                 for (startY -= MOVE_DISTANCE; startY >= endY; startY -= MOVE_DISTANCE){
                     ScriptStaticData.ROBOT.mouseMove((int) ((startY - b) / k), startY);
-                    ScriptStaticData.ROBOT.delay(MOVE_INTERVAL);
+                    SystemUtil.delay(MOVE_INTERVAL);
                 }
             }
             SystemUtil.delayShort();
             ScriptStaticData.ROBOT.mousePress(BUTTON1_DOWN_MASK);
-            ScriptStaticData.ROBOT.delay(100);
+            SystemUtil.delay(100);
             ScriptStaticData.ROBOT.mouseRelease(BUTTON1_DOWN_MASK);
-            ScriptStaticData.ROBOT.delay(300);
+            SystemUtil.delay(300);
         }
     }
 
@@ -122,14 +121,15 @@ public class MouseUtil {
             return;
         }
         synchronized (MouseUtil.class){
+            SystemUtil.frontWindow(ScriptStaticData.getGameHWND());
             x = pixelToScaleX(x);
             y = pixelToScaleY(y);
             ScriptStaticData.ROBOT.mouseMove(x, y);
-            ScriptStaticData.ROBOT.delay(100);
+            SystemUtil.delay(100);
             ScriptStaticData.ROBOT.mousePress(BUTTON1_DOWN_MASK);
-            ScriptStaticData.ROBOT.delay(100);
+            SystemUtil.delay(100);
             ScriptStaticData.ROBOT.mouseRelease(BUTTON1_DOWN_MASK);
-            ScriptStaticData.ROBOT.delay(200);
+            SystemUtil.delay(200);
         }
     }
     public static final User32Dll USER32_DLL_INSTANCE = User32Dll.INSTANCE;
@@ -150,7 +150,7 @@ public class MouseUtil {
         SystemUtil.delayMedium();
 //        点击右键
         ScriptStaticData.ROBOT.mousePress(BUTTON3_DOWN_MASK);
-        ScriptStaticData.ROBOT.delay(200);
+        SystemUtil.delay(200);
         ScriptStaticData.ROBOT.mouseRelease(BUTTON3_DOWN_MASK);
     }
 }

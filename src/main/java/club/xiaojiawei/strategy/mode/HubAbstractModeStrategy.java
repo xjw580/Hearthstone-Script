@@ -1,6 +1,6 @@
 package club.xiaojiawei.strategy.mode;
 
-import club.xiaojiawei.data.GameStaticData;
+import club.xiaojiawei.data.GameRationStaticData;
 import club.xiaojiawei.data.ScriptStaticData;
 import club.xiaojiawei.enums.ConfigurationKeyEnum;
 import club.xiaojiawei.enums.RunModeEnum;
@@ -42,15 +42,13 @@ public class HubAbstractModeStrategy extends AbstractModeStrategy<Object> {
             if (isPause.get().get()){
                 return;
             }
-            SystemUtil.frontWindow(ScriptStaticData.getGameHWND());
             SystemUtil.updateRect(ScriptStaticData.getGameHWND(), ScriptStaticData.GAME_RECT);
             mouseUtil.leftButtonClick(
                     (ScriptStaticData.GAME_RECT.right + ScriptStaticData.GAME_RECT.left) >> 1,
-                    (int) (ScriptStaticData.GAME_RECT.bottom - (ScriptStaticData.GAME_RECT.bottom - ScriptStaticData.GAME_RECT.top) * GameStaticData.CONFIRM_OR_CLOSE_BUTTON_VERTICAL_TO_BOTTOM_RATION)
+                    (int) (ScriptStaticData.GAME_RECT.bottom - (ScriptStaticData.GAME_RECT.bottom - ScriptStaticData.GAME_RECT.top) * GameRationStaticData.CONFIRM_OR_CLOSE_BUTTON_VERTICAL_TO_BOTTOM_RATION)
             );
-            ScriptStaticData.ROBOT.delay(500);
+            SystemUtil.delay(500);
         }
-        SystemUtil.frontWindow(ScriptStaticData.getGameHWND());
         log.info("准备进入指定模式");
         RunModeEnum.valueOf(scriptProperties.getProperty(ConfigurationKeyEnum.RUN_MODE_KEY.getKey())).getModeEnum().getAbstractModeStrategy().wantEnter();
     }

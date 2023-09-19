@@ -8,17 +8,18 @@ game:
         screen: /LoadingScreen.log
         power: /Power.log
 script:
+  strategy: true
   version: '@project.version@'
   path: ${PROGRAMDATA:C:\ProgramData}/hs_script/
   configuration:
     file: ${script.path}/script.properties
-log:
-  level: info
-  path: ${script.path}
 logging:
-  config: logback-spring.xml
   level:
-    root: ${log.level}
+    root: info
+  config: logback-spring.xml
+log:
+  level: ${logging.level.root}
+  path: ${script.path}
 #  改端口时记得把index.js里的ws端口也改了
 server:
   port: 8848

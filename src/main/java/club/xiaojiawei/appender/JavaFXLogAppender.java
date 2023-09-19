@@ -15,7 +15,7 @@ import javafx.scene.text.Text;
  * @date 2022/9/28 上午10:11
  * @msg 向GUI客户端发送消息
  */
-public class JavaFXAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
+public class JavaFXLogAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
 
     @Override
     protected void append(ILoggingEvent event) {

@@ -33,7 +33,7 @@ public class PropertiesUtil {
 
     public boolean storeGamePath(String path){
         if (new File(path).exists()){
-            if (!new File(path + "/" + ScriptStaticData.GAME_NAME).exists()){
+            if (!new File(path + "/" + ScriptStaticData.GAME_PROGRAM_NAME).exists()){
                 return false;
             }
             scriptProperties.setProperty(ConfigurationKeyEnum.GAME_PATH_KEY.getKey(), path);

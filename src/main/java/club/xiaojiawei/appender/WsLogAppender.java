@@ -11,7 +11,7 @@ import club.xiaojiawei.ws.WebSocketServer;
  * @date 2023/9/11 22:29
  * @msg
  */
-public class WsAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
+public class WsLogAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
     @Override
     protected void append(ILoggingEvent event) {
         WebSocketServer.sendAllMessage(WsResult.ofNew(WsResultTypeEnum.LOG, event.getFormattedMessage()));

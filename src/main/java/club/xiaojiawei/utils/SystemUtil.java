@@ -9,6 +9,7 @@ import club.xiaojiawei.starter.PlatformStarter;
 import club.xiaojiawei.strategy.mode.LoginAbstractModeStrategy;
 import club.xiaojiawei.strategy.mode.TournamentAbstractModeStrategy;
 import club.xiaojiawei.strategy.phase.GameTurnAbstractPhaseStrategy;
+import club.xiaojiawei.strategy.phase.ReplaceCardAbstractPhaseStrategy;
 import com.sun.jna.platform.win32.Advapi32Util;
 import com.sun.jna.platform.win32.User32;
 import com.sun.jna.platform.win32.WinDef;
@@ -21,7 +22,7 @@ import java.io.*;
 import java.net.*;
 import java.util.Objects;
 
-import static club.xiaojiawei.data.ScriptStaticData.GAME_NAME;
+import static club.xiaojiawei.data.ScriptStaticData.GAME_PROGRAM_NAME;
 
 /**
  * @author 肖嘉威
@@ -62,6 +63,7 @@ public class SystemUtil {
 
     public static void stopAllThread(){
         log.info("终止所有额外线程");
+        ReplaceCardAbstractPhaseStrategy.stopThread();
         GameTurnAbstractPhaseStrategy.stopThread();
     }
 
@@ -138,22 +140,22 @@ public class SystemUtil {
         ScriptStaticData.ROBOT.delay(delay);
     }
     public static void delayHuman(){
-        ScriptStaticData.ROBOT.delay(RandomUtil.getHugeRandom());
+        delay(RandomUtil.getHugeRandom());
     }
     public static void delayTiny(){
-        ScriptStaticData.ROBOT.delay(RandomUtil.getTinyRandom());
+        delay(RandomUtil.getTinyRandom());
     }
     public static void delayShort(){
-        ScriptStaticData.ROBOT.delay(RandomUtil.getShortRandom());
+        delay(RandomUtil.getShortRandom());
     }
     public static void delayMedium(){
-        ScriptStaticData.ROBOT.delay(RandomUtil.getMediumRandom());
+        delay(RandomUtil.getMediumRandom());
     }
     public static void delayLong(){
-        ScriptStaticData.ROBOT.delay(RandomUtil.getLongRandom());
+        delay(RandomUtil.getLongRandom());
     }
     public static void delayHuge(){
-        ScriptStaticData.ROBOT.delay(RandomUtil.getHugeRandom());
+        delay(RandomUtil.getHugeRandom());
     }
 
 
@@ -171,7 +173,7 @@ public class SystemUtil {
      */
     public static void killGame(){
         try {
-            Runtime.getRuntime().exec("cmd /c taskkill /f /t /im " + GAME_NAME).waitFor();
+            Runtime.getRuntime().exec("cmd /c taskkill /f /t /im " + GAME_PROGRAM_NAME).waitFor();
             SystemUtil.delay(1000);
             log.info("已关闭游戏");
         } catch (IOException | InterruptedException e) {

@@ -1,29 +1,19 @@
 package club.xiaojiawei.strategy.phase;
 
-import club.xiaojiawei.data.GameStaticData;
-import club.xiaojiawei.data.ScriptStaticData;
 import club.xiaojiawei.entity.Card;
+import club.xiaojiawei.entity.ExtraEntity;
 import club.xiaojiawei.entity.TagChangeEntity;
-import club.xiaojiawei.enums.StepEnum;
-import club.xiaojiawei.enums.TagEnum;
-import club.xiaojiawei.listener.ScreenFileListener;
 import club.xiaojiawei.status.War;
 import club.xiaojiawei.strategy.AbstractPhaseStrategy;
-import club.xiaojiawei.utils.PowerLogUtil;
-import lombok.Getter;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
-import java.io.RandomAccessFile;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
-import java.util.Properties;
 
+import static club.xiaojiawei.data.ScriptStaticData.CARD_AREA_MAP;
 import static club.xiaojiawei.enums.TagEnum.ZONE;
-import static club.xiaojiawei.enums.WarPhaseEnum.GAME_OVER_PHASE;
 
 /**
  * @author 肖嘉威
@@ -31,57 +21,7 @@ import static club.xiaojiawei.enums.WarPhaseEnum.GAME_OVER_PHASE;
  */
 @Slf4j
 @Component
-public class DrawnInitCardAbstractPhaseStrategy extends AbstractPhaseStrategy<String> {
-
-    @Getter
-    private static String firstPlayerGameId;
-
-    @SneakyThrows
-    @Override
-    protected void execute(String l, RandomAccessFile accessFile) {
-        TagChangeEntity tagChangeEntity;
-        while (true) {
-            if (isPause.get().get()){
-                return;
-            }else if ((l = accessFile.readLine()) == null){
-                if (accessFile.getFilePointer() > accessFile.length()){
-                    accessFile.seek(0);
-                }else {
-                    ScriptStaticData.ROBOT.delay(1000);
-                }
-            }else if (powerFileListener.isRelevance(l)){
-                ScreenFileListener.setMark(System.currentTimeMillis());
-                if (l.contains(GameStaticData.SHOW_ENTITY)){
-                    verifyPlayer(PowerLogUtil.dealShowEntity(l, accessFile).getPlayerId(), false);
-                }else if (l.contains(GameStaticData.TAG_CHANGE)){
-                    tagChangeEntity = PowerLogUtil.parseTagChange(l);
-                    if (tagChangeEntity.getTag() == TagEnum.FIRST_PLAYER){
-                        log.info("先手玩家：" + (firstPlayerGameId = new String(tagChangeEntity.getEntity().getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8)));
-                    }else if (Objects.equals(tagChangeEntity.getValue(), StepEnum.FINAL_GAMEOVER.getValue())){
-                        War.setCurrentPhase(GAME_OVER_PHASE, l);
-                        break;
-                    }else {
-                        PowerLogUtil.dealTagChange(tagChangeEntity);
-                        if (tagChangeEntity.getTag() == ZONE){
-                            verifyPlayer(tagChangeEntity.getPlayerId(), true);
-                        }
-                    }
-                }else if (l.contains(GameStaticData.FULL_ENTITY)){
-                    Card coin = PowerLogUtil.dealFullEntity(l, accessFile);
-                    coin.setEntityName("幸运币");
-                    if (Strings.isNotBlank(coin.getCardId())){
-                        War.getRival().setGameId(firstPlayerGameId);
-                        log.info("对方：" + firstPlayerGameId);
-                    }else {
-                        War.getMe().setGameId(firstPlayerGameId);
-                        log.info("我方：" + firstPlayerGameId);
-                    }
-                }else if (l.contains("BLOCK_END")){
-                    break;
-                }
-            }
-        }
-    }
+public class DrawnInitCardAbstractPhaseStrategy extends AbstractPhaseStrategy{
 
     /**
      * SHOW_ENTITY解析来的reverse为false
@@ -93,6 +33,7 @@ public class DrawnInitCardAbstractPhaseStrategy extends AbstractPhaseStrategy<St
         if (reverse){
             playerId = Objects.equals(playerId, "1")? "2" : "1";
         }
+//        设置我和对手哪个是一号玩家，哪个是二号玩家
         if (War.getMe() == null && Strings.isNotBlank(playerId)) {
             switch (playerId) {
                 case "1" -> {
@@ -106,5 +47,44 @@ public class DrawnInitCardAbstractPhaseStrategy extends AbstractPhaseStrategy<St
                 default -> log.warn("不支持的playId");
             }
         }
+    }
+
+    @Override
+    protected boolean dealTagChangeThenIsOver(String s, TagChangeEntity tagChangeEntity) {
+        if (tagChangeEntity.getTag() == ZONE){
+            verifyPlayer(tagChangeEntity.getPlayerId(), true);
+        }
+        return false;
+    }
+
+    @Override
+    protected boolean dealShowEntityThenIsOver(String s, ExtraEntity extraEntity) {
+        verifyPlayer(extraEntity.getPlayerId(), false);
+        return false;
+    }
+
+    @Override
+    protected boolean dealFullEntityThenIsOver(String s, ExtraEntity extraEntity) {
+        Card card = CARD_AREA_MAP.get(extraEntity.getEntityId()).findByEntityId(extraEntity.getEntityId());
+//        确定一方玩家的游戏id，verifyPlayer方法绝对会在此方法执行前执行
+        card.setEntityName("幸运币");
+        if (Strings.isNotBlank(card.getCardId())){
+            War.getRival().setGameId(War.getFirstPlayerGameId());
+            log.info("对方：" + War.getFirstPlayerGameId());
+        }else {
+            War.getMe().setGameId(War.getFirstPlayerGameId());
+            log.info("我方：" + War.getFirstPlayerGameId());
+        }
+        if (Objects.equals(War.getMe().getGameId(), War.getFirstPlayerGameId()) || (War.getRival().getGameId() != null && !Objects.equals(War.getRival().getGameId(), War.getFirstPlayerGameId()))){
+            War.setCurrentPlayer(War.getMe());
+        }else {
+            War.setCurrentPlayer(War.getRival());
+        }
+        return false;
+    }
+
+    @Override
+    protected boolean dealOtherThenIsOver(String s) {
+        return s.contains("BLOCK_END");
     }
 }

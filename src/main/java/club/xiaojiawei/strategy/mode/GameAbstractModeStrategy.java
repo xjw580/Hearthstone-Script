@@ -34,7 +34,6 @@ public class GameAbstractModeStrategy extends AbstractModeStrategy<Object> {
             if (isPause.get().get()){
                 scheduledFuture.cancel(true);
             }else if (Mode.getCurrMode() != GAME_MODE){
-                SystemUtil.frontWindow(ScriptStaticData.getGameHWND());
                 SystemUtil.updateRect(ScriptStaticData.getGameHWND(), ScriptStaticData.GAME_RECT);
                 mouseUtil.leftButtonClick(
                         ((ScriptStaticData.GAME_RECT.right + ScriptStaticData.GAME_RECT.left) >> 1) + RandomUtil.getRandom(-15, 15),

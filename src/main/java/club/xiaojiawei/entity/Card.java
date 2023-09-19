@@ -1,5 +1,6 @@
 package club.xiaojiawei.entity;
 
+import club.xiaojiawei.enums.CardRaceEnum;
 import club.xiaojiawei.enums.CardTypeEnum;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -70,6 +71,10 @@ public class Card extends Entity{
      */
     private boolean battlecry;
     /**
+     * 发现
+     */
+    private boolean discover;
+    /**
      * 不能被法术指向
      */
     private boolean cantBeTargetedBySpells;
@@ -89,7 +94,21 @@ public class Card extends Entity{
      * 免疫
      */
     private boolean immune;
+    /**
+     * 种族
+     */
+    private CardRaceEnum cardRace;
+    /**
+     * 磁力
+     */
+    private boolean modular;
 
+    /**
+     * 衍生物
+     */
+    private boolean premium;
+
+    private String controller;
     public Card() {
     }
     public Card(CommonEntity commonEntity) {
@@ -99,33 +118,39 @@ public class Card extends Entity{
     }
 
     public void byExtraEntityUpdate(ExtraEntity extraEntity){
+        ExtraCard extraCard = extraEntity.getExtraCard();
         cardId = extraEntity.cardId;
         entityId = extraEntity.entityId;
         entityName = extraEntity.entityName;
-        cardType = extraEntity.getExtraCard().getCardType();
-        cost = extraEntity.getExtraCard().getCost();
-        atc = extraEntity.getExtraCard().getAtc();
-        health = extraEntity.getExtraCard().getHealth();
-        adjacentBuff = extraEntity.getExtraCard().isAdjacentBuff();
-        poisonous = extraEntity.getExtraCard().isPoisonous();
-        deathRattle = extraEntity.getExtraCard().isDeathRattle();
-        creatorEntityId = extraEntity.getExtraCard().getCreatorEntityId();
-        frozen = extraEntity.getExtraCard().isFrozen();
-        exhausted = extraEntity.getExtraCard().isExhausted();
-        taunt = extraEntity.getExtraCard().isTaunt();
-        armor = extraEntity.getExtraCard().getArmor();
-        divineShield = extraEntity.getExtraCard().isDivineShield();
-        aura = extraEntity.getExtraCard().isAura();
-        stealth = extraEntity.getExtraCard().isStealth();
-        frozen = extraEntity.getExtraCard().isFrozen();
-        exhausted = extraEntity.getExtraCard().isExhausted();
-        windFury = extraEntity.getExtraCard().isWindFury();
-        battlecry = extraEntity.getExtraCard().isBattlecry();
-        cantBeTargetedBySpells = extraEntity.getExtraCard().isCantBeTargetedBySpells();
-        cantBeTargetedByHeroPowers = extraEntity.getExtraCard().isCantBeTargetedByHeroPowers();
-        spawnTimeCount = extraEntity.getExtraCard().isSpawnTimeCount();
-        dormantAwakenConditionEnchant = extraEntity.getExtraCard().isDormantAwakenConditionEnchant();
-        immune = extraEntity.getExtraCard().isImmune();
+        cardType = extraCard.getCardType();
+        cost = extraCard.getCost();
+        atc = extraCard.getAtc();
+        health = extraCard.getHealth();
+        adjacentBuff = extraCard.isAdjacentBuff();
+        poisonous = extraCard.isPoisonous();
+        deathRattle = extraCard.isDeathRattle();
+        creatorEntityId = extraCard.getCreatorEntityId();
+        frozen = extraCard.isFrozen();
+        exhausted = extraCard.isExhausted();
+        taunt = extraCard.isTaunt();
+        armor = extraCard.getArmor();
+        divineShield = extraCard.isDivineShield();
+        aura = extraCard.isAura();
+        stealth = extraCard.isStealth();
+        frozen = extraCard.isFrozen();
+        exhausted = extraCard.isExhausted();
+        windFury = extraCard.isWindFury();
+        battlecry = extraCard.isBattlecry();
+        discover = extraCard.isDiscover();
+        cantBeTargetedBySpells = extraCard.isCantBeTargetedBySpells();
+        cantBeTargetedByHeroPowers = extraCard.isCantBeTargetedByHeroPowers();
+        spawnTimeCount = extraCard.isSpawnTimeCount();
+        dormantAwakenConditionEnchant = extraCard.isDormantAwakenConditionEnchant();
+        immune = extraCard.isImmune();
+        cardRace = extraCard.getCardRace();
+        premium = extraCard.isPremium();
+        modular = extraCard.isModular();
+        controller = extraCard.getController();
     }
 
 }

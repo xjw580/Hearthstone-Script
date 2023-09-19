@@ -4,12 +4,11 @@ import club.xiaojiawei.core.Core;
 import club.xiaojiawei.custom.LogRunnable;
 import club.xiaojiawei.data.ScriptStaticData;
 import club.xiaojiawei.data.SpringData;
-import club.xiaojiawei.entity.TagChangeEntity;
 import club.xiaojiawei.enums.ConfigurationKeyEnum;
 import club.xiaojiawei.enums.StepEnum;
 import club.xiaojiawei.status.War;
 import club.xiaojiawei.strategy.AbstractPhaseStrategy;
-import club.xiaojiawei.utils.PowerLogUtil;
+import club.xiaojiawei.utils.SystemUtil;
 import javafx.beans.property.BooleanProperty;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -22,15 +21,12 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.Objects;
 import java.util.Properties;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static club.xiaojiawei.data.ScriptStaticData.ROBOT;
-import static club.xiaojiawei.enums.TagEnum.MULLIGAN_STATE;
 import static club.xiaojiawei.enums.WarPhaseEnum.*;
 
 /**
@@ -60,7 +56,7 @@ public class PowerFileListener {
         if (scheduledFuture != null && !scheduledFuture.isDone()){
             scheduledFuture.cancel(true);
             log.info("已停止监听power.log");
-            ROBOT.delay(1000);
+            SystemUtil.delay(1000);
         }
     }
 
@@ -100,52 +96,53 @@ public class PowerFileListener {
         log.info("开始监听" + springData.getPowerLogName());
         scheduledFuture = listenFileThreadPool.scheduleAtFixedRate(new LogRunnable(() -> {
             try {
-                while (!isPause.get().get() && !AbstractPhaseStrategy.isDealing()){
-                    resolveLog(accessFile.readLine(), accessFile);
-                }
-                if (isPause.get().get()){
-                    cancelListener();
+                while (true){
+                    if (isPause.get().get()){
+                        cancelListener();
+                        break;
+                    }else if (AbstractPhaseStrategy.isDealing()){
+                        break;
+                    }else {
+                        String s = accessFile.readLine();
+                        if (s == null){
+                            break;
+                        }else if (isRelevance(s)){
+                            resolveLog(s);
+                        }
+                    }
                 }
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-        }), 0, 1500, TimeUnit.MILLISECONDS);
+        }), 0, 1000, TimeUnit.MILLISECONDS);
     }
 
-    public void resolveLog(String line, RandomAccessFile accessFile) throws IOException {
-        if (line == null){
-            if (accessFile.getFilePointer() > accessFile.length()){
-                accessFile.seek(0);
-            }
-        }else if (isRelevance(line)){
-            ScreenFileListener.setMark(System.currentTimeMillis());
-            if (War.getCurrentPhase() == null && line.contains("CREATE_GAME")){
-                War.setCurrentPhase(FILL_DECK_PHASE, line);
-            }else if (War.getCurrentPhase() == FILL_DECK_PHASE && line.contains("BLOCK_START")){
-                War.setCurrentPhase(DRAWN_INIT_CARD_PHASE, line);
-            }else if (War.getCurrentPhase() == DRAWN_INIT_CARD_PHASE && line.contains("TAG_CHANGE")){
-                TagChangeEntity tagChangeEntity = PowerLogUtil.parseTagChange(line);
-                if (tagChangeEntity.getTag() == MULLIGAN_STATE && Objects.equals(tagChangeEntity.getValue(), "INPUT")){
-                    War.setCurrentPhase(REPLACE_CARD_PHASE, line);
-                }
-            }else if (War.getCurrentPhase() == REPLACE_CARD_PHASE && line.contains("BLOCK_END")){
-                War.setCurrentPhase(SPECIAL_EFFECT_TRIGGER_PHASE, line);
-            }else if (War.getCurrentPhase() == SPECIAL_EFFECT_TRIGGER_PHASE && line.contains("MAIN_READY")){
-                War.setCurrentPhase(GAME_TURN_PHASE, line);
-            }else if (War.getCurrentPhase() == GAME_OVER_PHASE
-                    || (War.getCurrentPhase() != null
-                    && (line.contains(StepEnum.FINAL_GAMEOVER.getValue()) || line.contains(StepEnum.FINAL_WRAPUP.getValue()))
-            )){
-                War.setCurrentPhase(GAME_OVER_PHASE, line);
-            }
+    private void resolveLog(String line) throws IOException {
+        if (War.getCurrentTurnStep() == StepEnum.FINAL_GAMEOVER){
+            War.setCurrentPhase(GAME_OVER_PHASE, line);
+        }else if (War.getCurrentPhase() == null){
+            War.reset();
+            War.setCurrentPhase(FILL_DECK_PHASE, line);
+        }else if (War.getCurrentPhase() == FILL_DECK_PHASE){
+            War.setCurrentPhase(DRAWN_INIT_CARD_PHASE, line);
+        }else if (War.getCurrentPhase() == DRAWN_INIT_CARD_PHASE){
+            War.setCurrentPhase(REPLACE_CARD_PHASE, line);
+        }else if (War.getCurrentPhase() == REPLACE_CARD_PHASE){
+            War.setCurrentPhase(SPECIAL_EFFECT_TRIGGER_PHASE, line);
+        }else if (War.getCurrentPhase() == SPECIAL_EFFECT_TRIGGER_PHASE){
+            War.setCurrentPhase(GAME_TURN_PHASE, line);
         }
     }
 
     public boolean isRelevance(String l){
+        boolean flag = false;
         if (l.contains("Truncating log")){
             log.info("power.log文件过大，游戏停止输出日志，准备重启游戏");
             core.restart();
+        }else {
+            flag = l.contains("PowerTaskList");
         }
-        return l.contains("PowerTaskList.DebugPrintPower()");
+        ScreenFileListener.setLastWorkTime(System.currentTimeMillis());
+        return flag;
     }
 }

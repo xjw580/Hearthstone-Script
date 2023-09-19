@@ -1,10 +1,8 @@
 package club.xiaojiawei.entity.area;
 
 import club.xiaojiawei.entity.Card;
-import club.xiaojiawei.entity.Player;
 import club.xiaojiawei.enums.HeroTypeEnum;
 import club.xiaojiawei.enums.PowerTypeEnum;
-import club.xiaojiawei.status.War;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -12,9 +10,12 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.Objects;
 
+import static club.xiaojiawei.enums.CardTypeEnum.*;
+
 /**
  * @author 肖嘉威
  * @date 2022/11/27 15:02
+ * @msg 战场
  */
 @Getter
 @Setter
@@ -22,114 +23,92 @@ import java.util.Objects;
 @Slf4j
 public class PlayArea extends Area {
 
-    private HeroTypeEnum heroProfession;
-    private PowerTypeEnum heroPower;
+    private HeroTypeEnum heroType;
+    private PowerTypeEnum powerType;
     private Card hero;
+    private Card heroHide;
     private Card power;
+    private Card powerHide;
     private Card weapon;
+    private Card weaponHide;
 
     @Override
     public boolean add(Card card, int pos){
+        boolean result = true;
         if (card == null){
-            return false;
-        }else if (card.getCardType() == null){
-            return super.add(card, pos);
+            result = false;
+        }else if (card.getCardType() == HERO_POWER){
+            powerHide = power;
+            power = card;
+//            TODO 设置powerType
+            addZoneAndLog("技能", card);
+        }else if (card.getCardType() == HERO){
+//            TODO 设置heroType
+            heroHide = hero;
+            hero = card;
+            addZoneAndLog("英雄", card);
+        }else if (card.getCardType() == WEAPON){
+            weaponHide = weapon;
+            weapon = card;
+            addZoneAndLog("武器", card);
+        }else {
+            result =  super.add(card, pos);
         }
-        switch (card.getCardType()){
-            case HERO_POWER -> {
-                if (this == War.getPlayer1().getPlayArea()){
-                    War.getPlayer1().getSetasideArea().add(power);
-                }else {
-                    War.getPlayer2().getSetasideArea().add(power);
-                }
-                Player player = War.testArea(this);
-                log.info("向玩家" + (player == War.getPlayer1()? 1 : 2) + "-" + player.getGameId() + " 的 " + this.getClass().getSimpleName() + " 的 Power 添加卡牌，entityId:" + card.getEntityId());
-                power = card;
-                addZone(card);
-                return true;
-            }
-            case HERO -> {
-                if (this == War.getPlayer1().getPlayArea()){
-                    War.getPlayer1().getSetasideArea().add(power);
-                }else {
-                    War.getPlayer2().getSetasideArea().add(power);
-                }
-                Player player = War.testArea(this);
-                log.info("向玩家" + (player == War.getPlayer1()? 1 : 2) + "-" + player.getGameId() + " 的 " + this.getClass().getSimpleName() + " 的 Hero 添加卡牌，entityId:" + card.getEntityId());
-                hero = card;
-                addZone(card);
-                return true;
-            }
-            default -> {
-                return super.add(card, pos);
-            }
-        }
+        return result;
+    }
+
+    private void addZoneAndLog(String name, Card card){
+        addZone(card);
+        logInfo(card, name);
     }
 
     @Override
-    public Card getByCardId(String cardId) {
-        Card byCardId = super.getByCardId(cardId);
-        if (byCardId != null){
-            return byCardId;
+    public Card findByEntityId(String entityId) {
+        Card card = super.findByEntityId(entityId);
+        if (card == null){
+            if (hero != null && Objects.equals(hero.getEntityId(), entityId)){
+                card = hero;
+            }else if (power != null && Objects.equals(power.getEntityId(), entityId)){
+                card = power;
+            }else if (weapon != null && Objects.equals(weapon.getEntityId(), entityId)){
+                card = weapon;
+            }else if (heroHide != null && Objects.equals(heroHide.getEntityId(), entityId)){
+                card = heroHide;
+            }else if (powerHide != null && Objects.equals(powerHide.getEntityId(), entityId)){
+                card = powerHide;
+            }else if (weaponHide != null && Objects.equals(weaponHide.getEntityId(), entityId)){
+                card = weaponHide;
+            }
         }
-        if (Objects.equals(hero.getCardId(), cardId)){
-            return hero;
-        }else if(Objects.equals(power.getCardId(), cardId)){
-            return power;
-        }
-        return null;
+        return card;
     }
 
-    @Override
-    public Card getByEntityId(String entityId) {
-        Card card = super.getByEntityId(entityId);
-        if (card != null){
-            return card;
-        }
-        if (Objects.equals(hero.getEntityId(), entityId)){
-            return hero;
-        }else if (Objects.equals(power.getEntityId(), entityId)){
-            return power;
-        }
-        return null;
-    }
-
-    @Override
-    public Card removeByCardId(String cardId) {
-        Card byCardId = super.removeByCardId(cardId);
-        if (byCardId != null){
-            return byCardId;
-        }
-        Card temp;
-        if (Objects.equals(hero.getCardId(), cardId)){
-            temp = hero;
-            hero = null;
-            return temp;
-        }else if(Objects.equals(power.getCardId(), cardId)){
-            temp = power;
-            power = null;
-            return temp;
-        }
-        return null;
-    }
 
     @Override
     public Card removeByEntityId(String entityId) {
         Card card = super.removeByEntityId(entityId);
-        if (card != null){
-            return card;
+        if (card == null){
+            if (hero != null && Objects.equals(hero.getEntityId(), entityId)){
+                card = hero;
+                hero = null;
+            }else if (power != null && Objects.equals(power.getEntityId(), entityId)){
+                card = power;
+                power = null;
+            }else if (weapon != null && Objects.equals(weapon.getEntityId(), entityId)){
+                card = weapon;
+                weapon = null;
+            }else if (heroHide != null && Objects.equals(heroHide.getEntityId(), entityId)){
+                card = heroHide;
+                heroHide = null;
+            }else if (powerHide != null && Objects.equals(powerHide.getEntityId(), entityId)){
+                card = powerHide;
+                powerHide = null;
+            }else if (weaponHide != null && Objects.equals(weaponHide.getEntityId(), entityId)){
+                card = weaponHide;
+                weaponHide = null;
+            }
         }
-        Card temp;
-        if (Objects.equals(hero.getEntityId(), entityId)){
-            temp = hero;
-            hero = null;
-            return temp;
-        }else if (Objects.equals(power.getEntityId(), entityId)){
-            temp = power;
-            power = null;
-            return temp;
-        }
-        return null;
+        return card;
     }
 
     public PlayArea() {

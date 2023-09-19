@@ -12,7 +12,6 @@ import org.springframework.stereotype.Component;
 @Component
 @Getter
 public class SpringData {
-
     //    游戏日志配置路径
     @Value("${game.log.configuration.path}")
     private String gameLogConfigurationPath;
@@ -21,6 +20,8 @@ public class SpringData {
     private String scriptConfigurationFile;
     @Value("${script.version}")
     private String version;
+    @Value("${script.strategy}")
+    private boolean strategy;
     @Value("${script.path}")
     private String scriptPath;
     @Value("${game.log.out.path}")

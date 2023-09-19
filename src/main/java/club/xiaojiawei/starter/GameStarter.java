@@ -83,7 +83,6 @@ public class GameStarter extends AbstractStarter{
         extraThreadPool.schedule(new LogRunnable(() -> {
             cancelGameTimer();
             SystemUtil.updateRect(ScriptStaticData.getGameHWND(), ScriptStaticData.GAME_RECT);
-            SystemUtil.frontWindow(ScriptStaticData.getGameHWND());
             SystemUtil.delayMedium();
             screenFileListener.listen();
             if (nextStarter != null) {
