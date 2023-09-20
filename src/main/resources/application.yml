@@ -7,26 +7,33 @@ game:
       file:
         screen: /LoadingScreen.log
         power: /Power.log
+        deck: /Decks.log
+
 script:
+  #是否执行套牌策略
   strategy: true
   version: '@project.version@'
   path: ${PROGRAMDATA:C:\ProgramData}/hs_script/
   configuration:
     file: ${script.path}/script.properties
+
 logging:
   level:
     root: info
   config: logback-spring.xml
+
 log:
   level: ${logging.level.root}
   path: ${script.path}
-#  改端口时记得把index.js里的ws端口也改了
+
 server:
+  #  改端口时记得把index.js里的ws端口也改了
   port: 8848
-#  web容器开关
+
 spring:
   thymeleaf:
     cache: false
   main:
+    #  web容器开关
     web-application-type: servlet
 ##    web-application-type: none

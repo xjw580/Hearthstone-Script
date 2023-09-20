@@ -1,4 +1,4 @@
-package club.xiaojiawei.entity.area;
+package club.xiaojiawei.bean.area;
 
 /**
  * @author 肖嘉威

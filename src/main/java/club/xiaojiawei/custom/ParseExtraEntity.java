@@ -1,6 +1,6 @@
 package club.xiaojiawei.custom;
 
-import club.xiaojiawei.entity.ExtraEntity;
+import club.xiaojiawei.bean.entity.ExtraEntity;
 
 /**
  * @author 肖嘉威

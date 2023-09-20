@@ -1,6 +1,6 @@
 package club.xiaojiawei.strategy.deck;
 
-import club.xiaojiawei.entity.Card;
+import club.xiaojiawei.bean.entity.Card;
 import club.xiaojiawei.strategy.AbstractDeckStrategy;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -40,7 +40,7 @@ public class FreeAbstractDeckStrategy extends AbstractDeckStrategy {
             }
         }
         if (resources >= 2){
-            clickMyPower();
+            clickPower();
         }
         boolean throughWall = true;
 //        解嘲讽怪
@@ -67,5 +67,10 @@ public class FreeAbstractDeckStrategy extends AbstractDeckStrategy {
                 }
             }
         }
+    }
+
+    @Override
+    protected int executeDiscoverChooseCard(Card ... cards) {
+        return 0;
     }
 }

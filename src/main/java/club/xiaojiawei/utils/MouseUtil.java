@@ -26,6 +26,9 @@ public class MouseUtil {
     @Resource
     private AtomicReference<BooleanProperty> isPause;
 
+    public void leftButtonDrag(int[] start, int[] end) {
+        leftButtonDrag(start[0], start[1], end[0], end[1]);
+    }
     /**
      * 鼠标左键从指定处拖拽到指定处
      * @param startX
@@ -38,7 +41,6 @@ public class MouseUtil {
             return;
         }
         synchronized (MouseUtil.class){
-            SystemUtil.frontWindow(ScriptStaticData.getGameHWND());
             startX = pixelToScaleX(startX);
             startY = pixelToScaleY(startY);
             endX = pixelToScaleX(endX);
@@ -71,6 +73,9 @@ public class MouseUtil {
         }
     }
 
+    public void leftButtonMoveThenClick(int[] start, int[] end) {
+        leftButtonMoveThenClick(start[0], start[1], end[0], end[1]);
+    }
     /**
      * 鼠标左键从指定处移动到指定处然后点击
      * @param startX
@@ -83,7 +88,6 @@ public class MouseUtil {
             return;
         }
         synchronized (MouseUtil.class){
-            SystemUtil.frontWindow(ScriptStaticData.getGameHWND());
             startX = pixelToScaleX(startX);
             startY = pixelToScaleY(startY);
             endX = pixelToScaleX(endX);
@@ -121,7 +125,6 @@ public class MouseUtil {
             return;
         }
         synchronized (MouseUtil.class){
-            SystemUtil.frontWindow(ScriptStaticData.getGameHWND());
             x = pixelToScaleX(x);
             y = pixelToScaleY(y);
             ScriptStaticData.ROBOT.mouseMove(x, y);
@@ -131,6 +134,9 @@ public class MouseUtil {
             ScriptStaticData.ROBOT.mouseRelease(BUTTON1_DOWN_MASK);
             SystemUtil.delay(200);
         }
+    }
+    public void leftButtonClick(int[] pos){
+        leftButtonClick(pos[0], pos[1]);
     }
     public static final User32Dll USER32_DLL_INSTANCE = User32Dll.INSTANCE;
     public void leftButtonClick(WinDef.HWND hwnd, int x, int y){

@@ -1,19 +1,20 @@
 package club.xiaojiawei.strategy.phase;
 
-import club.xiaojiawei.entity.Card;
-import club.xiaojiawei.entity.ExtraEntity;
-import club.xiaojiawei.entity.TagChangeEntity;
+import club.xiaojiawei.data.ScriptStaticData;
+import club.xiaojiawei.bean.entity.Card;
+import club.xiaojiawei.bean.entity.ExtraEntity;
+import club.xiaojiawei.bean.entity.TagChangeEntity;
 import club.xiaojiawei.status.War;
 import club.xiaojiawei.strategy.AbstractPhaseStrategy;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Component;
 
-import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
 import static club.xiaojiawei.data.ScriptStaticData.CARD_AREA_MAP;
-import static club.xiaojiawei.enums.TagEnum.ZONE;
+import static club.xiaojiawei.enums.StepEnum.BEGIN_MULLIGAN;
+import static club.xiaojiawei.enums.TagEnum.*;
 
 /**
  * @author 肖嘉威
@@ -33,16 +34,17 @@ public class DrawnInitCardAbstractPhaseStrategy extends AbstractPhaseStrategy{
         if (reverse){
             playerId = Objects.equals(playerId, "1")? "2" : "1";
         }
-//        设置我和对手哪个是一号玩家，哪个是二号玩家
         if (War.getMe() == null && Strings.isNotBlank(playerId)) {
             switch (playerId) {
                 case "1" -> {
                     War.setMe(War.getPlayer1());
                     War.setRival(War.getPlayer2());
+                    log.info("确定双方玩家号，我方1号，对方2号");
                 }
                 case "2" -> {
                     War.setMe(War.getPlayer2());
                     War.setRival(War.getPlayer1());
+                    log.info("确定双方玩家号，我方2号，对方1号");
                 }
                 default -> log.warn("不支持的playId");
             }
@@ -50,41 +52,52 @@ public class DrawnInitCardAbstractPhaseStrategy extends AbstractPhaseStrategy{
     }
 
     @Override
-    protected boolean dealTagChangeThenIsOver(String s, TagChangeEntity tagChangeEntity) {
+    protected boolean dealTagChangeThenIsOver(String line, TagChangeEntity tagChangeEntity) {
         if (tagChangeEntity.getTag() == ZONE){
             verifyPlayer(tagChangeEntity.getPlayerId(), true);
+        }else {
+            return tagChangeEntity.getTag() == NEXT_STEP && Objects.equals(tagChangeEntity.getValue(), BEGIN_MULLIGAN.getValue());
         }
         return false;
     }
 
     @Override
-    protected boolean dealShowEntityThenIsOver(String s, ExtraEntity extraEntity) {
-        verifyPlayer(extraEntity.getPlayerId(), false);
+    protected boolean dealShowEntityThenIsOver(String line, ExtraEntity extraEntity) {
+        if (Objects.equals(extraEntity.getEntityName(), ScriptStaticData.UNKNOWN)){
+            verifyPlayer(extraEntity.getPlayerId(), false);
+        }
         return false;
     }
 
+    /**
+     * 确定一方玩家的游戏id，{@link #verifyPlayer(String, boolean)}方法绝对会在此方法执行前执行
+     * @param line
+     * @param extraEntity
+     * @return
+     */
     @Override
-    protected boolean dealFullEntityThenIsOver(String s, ExtraEntity extraEntity) {
+    protected boolean dealFullEntityThenIsOver(String line, ExtraEntity extraEntity) {
         Card card = CARD_AREA_MAP.get(extraEntity.getEntityId()).findByEntityId(extraEntity.getEntityId());
-//        确定一方玩家的游戏id，verifyPlayer方法绝对会在此方法执行前执行
-        card.setEntityName("幸运币");
-        if (Strings.isNotBlank(card.getCardId())){
-            War.getRival().setGameId(War.getFirstPlayerGameId());
-            log.info("对方：" + War.getFirstPlayerGameId());
-        }else {
-            War.getMe().setGameId(War.getFirstPlayerGameId());
-            log.info("我方：" + War.getFirstPlayerGameId());
-        }
-        if (Objects.equals(War.getMe().getGameId(), War.getFirstPlayerGameId()) || (War.getRival().getGameId() != null && !Objects.equals(War.getRival().getGameId(), War.getFirstPlayerGameId()))){
-            War.setCurrentPlayer(War.getMe());
-        }else {
-            War.setCurrentPlayer(War.getRival());
+        if (Objects.equals(card.getEntityName(), ScriptStaticData.UNKNOWN) || Objects.equals(card.getEntityName(), "幸运币")){
+            card.setEntityName("幸运币");
+            if (Strings.isNotBlank(card.getCardId())){
+                War.getRival().setGameId(War.getFirstPlayerGameId());
+                log.info("对方游戏id：" + War.getFirstPlayerGameId());
+            }else {
+                War.getMe().setGameId(War.getFirstPlayerGameId());
+                log.info("我方游戏id：" + War.getFirstPlayerGameId());
+            }
+            if (Objects.equals(War.getMe().getGameId(), War.getFirstPlayerGameId()) || (War.getRival().getGameId() != null && !Objects.equals(War.getRival().getGameId(), War.getFirstPlayerGameId()))){
+                War.setCurrentPlayer(War.getMe());
+            }else {
+                War.setCurrentPlayer(War.getRival());
+            }
         }
         return false;
     }
 
     @Override
-    protected boolean dealOtherThenIsOver(String s) {
-        return s.contains("BLOCK_END");
+    protected boolean dealOtherThenIsOver(String line) {
+        return false;
     }
 }

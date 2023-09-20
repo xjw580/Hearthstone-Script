@@ -1,7 +1,7 @@
-package club.xiaojiawei.entity.area;
+package club.xiaojiawei.bean.area;
 
-import club.xiaojiawei.entity.Card;
-import club.xiaojiawei.entity.Player;
+import club.xiaojiawei.bean.entity.Card;
+import club.xiaojiawei.bean.Player;
 import club.xiaojiawei.enums.ZoneEnum;
 import club.xiaojiawei.status.War;
 import lombok.Getter;
@@ -12,6 +12,7 @@ import org.apache.logging.log4j.util.Strings;
 import java.util.*;
 
 import static club.xiaojiawei.data.ScriptStaticData.CARD_AREA_MAP;
+import static club.xiaojiawei.data.ScriptStaticData.UNKNOWN;
 
 /**
  * @author 肖嘉威
@@ -60,14 +61,14 @@ public abstract class Area {
         if (Strings.isNotEmpty(name)){
             name = "的【" + name + "】";
         }
-        log.info("向玩家" + player.getPlayerId() + "【" + player.getGameId() + "】的【" + ZoneEnum.valueOf(this.getClass().getSimpleName().substring(0, this.getClass().getSimpleName().length() - 4).toUpperCase()).getComment() + "】" + name + "添加卡牌，entityId:" + card.getEntityId() + "，cardId:" + card.getCardId() + "，size:" + cards.size());
+        log.info("向玩家" + player.getPlayerId() + "【" + player.getGameId() + "】的【" + ZoneEnum.valueOf(this.getClass().getSimpleName().substring(0, this.getClass().getSimpleName().length() - 4).toUpperCase()).getComment() + "】" + name + "添加卡牌，entityId:" + card.getEntityId() + "，entityName:" + (Objects.equals(card.getEntityName(), UNKNOWN)? "" : card.getEntityName()) + "，cardId:" + card.getCardId() + "，size:" + cards.size());
     }
     protected void logDebug(Card card, String name){
         Player player = War.getPlayerByArea(this);
         if (Strings.isNotEmpty(name)){
             name = "的【" + name + "】";
         }
-        log.debug("向玩家" + player.getPlayerId() + "【" + player.getGameId() + "】的【" + ZoneEnum.valueOf(this.getClass().getSimpleName().substring(0, this.getClass().getSimpleName().length() - 4).toUpperCase()).getComment() + "】" + name + "添加卡牌，entityId:" + card.getEntityId() + "，cardId:" + card.getCardId() + "，size:" + cards.size());
+        log.debug("向玩家" + player.getPlayerId() + "【" + player.getGameId() + "】的【" + ZoneEnum.valueOf(this.getClass().getSimpleName().substring(0, this.getClass().getSimpleName().length() - 4).toUpperCase()).getComment() + "】" + name + "添加卡牌，entityId:" + card.getEntityId() + "，entityName:" + (Objects.equals(card.getEntityName(), UNKNOWN)? "" : card.getEntityName()) + "，cardId:" + card.getCardId() + "，size:" + cards.size());
     }
 
     /**

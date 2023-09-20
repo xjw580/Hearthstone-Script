@@ -1,6 +1,7 @@
-package club.xiaojiawei.entity;
+package club.xiaojiawei.bean;
 
-import club.xiaojiawei.entity.area.*;
+import club.xiaojiawei.bean.area.*;
+import club.xiaojiawei.bean.entity.Entity;
 import club.xiaojiawei.enums.ZoneEnum;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -17,7 +18,7 @@ import org.apache.logging.log4j.util.Strings;
 @Data
 @ToString(callSuper = true)
 @Slf4j
-public class Player extends Entity{
+public class Player extends Entity {
 
     private String playerId;
 

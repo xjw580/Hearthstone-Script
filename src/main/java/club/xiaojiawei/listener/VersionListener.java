@@ -2,7 +2,7 @@ package club.xiaojiawei.listener;
 
 import club.xiaojiawei.controller.JavaFXDashboardController;
 import club.xiaojiawei.data.SpringData;
-import club.xiaojiawei.entity.Release;
+import club.xiaojiawei.bean.Release;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;

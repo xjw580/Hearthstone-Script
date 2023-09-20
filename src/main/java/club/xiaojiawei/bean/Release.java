@@ -1,4 +1,4 @@
-package club.xiaojiawei.entity;
+package club.xiaojiawei.bean;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;

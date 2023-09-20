@@ -1,11 +1,5 @@
 package club.xiaojiawei.data;
 
-import club.xiaojiawei.entity.area.Area;
-import club.xiaojiawei.enums.*;
-
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * @author 肖嘉威
  * @date 2023/7/3 21:08

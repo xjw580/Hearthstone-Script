@@ -1,6 +1,6 @@
 package club.xiaojiawei.ws;
 
-import club.xiaojiawei.entity.WsResult;
+import club.xiaojiawei.bean.WsResult;
 import club.xiaojiawei.enums.WsResultTypeEnum;
 import com.alibaba.fastjson.JSON;
 import lombok.SneakyThrows;

@@ -1,5 +1,6 @@
-package club.xiaojiawei.entity;
+package club.xiaojiawei.bean.entity;
 
+import club.xiaojiawei.bean.entity.CommonEntity;
 import club.xiaojiawei.enums.TagEnum;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -12,7 +13,7 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @ToString(callSuper = true)
-public class TagChangeEntity extends CommonEntity{
+public class TagChangeEntity extends CommonEntity {
 
     private TagEnum tag;
 

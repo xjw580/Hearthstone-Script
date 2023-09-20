@@ -1,6 +1,6 @@
 package club.xiaojiawei.data;
 
-import club.xiaojiawei.entity.area.Area;
+import club.xiaojiawei.bean.area.Area;
 import club.xiaojiawei.enums.CardRaceEnum;
 import club.xiaojiawei.enums.CardTypeEnum;
 import club.xiaojiawei.enums.TagEnum;
@@ -8,7 +8,6 @@ import com.sun.jna.platform.win32.WinDef;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.thymeleaf.util.MapUtils;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
@@ -120,6 +119,7 @@ public class ScriptStaticData {
     public static final String WON = "WON";
     public static final String CONCEDED = "CONCEDED";
     public static final String COIN = "COIN";
+    public static final String UNKNOWN = "UNKNOWN ENTITY";
 
     /*游戏数据相关*/
 //为什么用Map取枚举而不用valueOf()?因为用valueOf()传入的数据不在枚举中时会直接报错，影响后续运行，而map返回null不影响后续操作

@@ -4,7 +4,7 @@ import club.xiaojiawei.data.GameRationStaticData;
 import club.xiaojiawei.data.ScriptStaticData;
 import club.xiaojiawei.enums.ConfigurationKeyEnum;
 import club.xiaojiawei.enums.RunModeEnum;
-import club.xiaojiawei.listener.PowerFileListener;
+import club.xiaojiawei.listener.PowerLogListener;
 import club.xiaojiawei.strategy.AbstractModeStrategy;
 import club.xiaojiawei.utils.SystemUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +23,8 @@ public class HubAbstractModeStrategy extends AbstractModeStrategy<Object> {
 
     @Resource
     private Properties scriptProperties;
+    @Resource
+    private PowerLogListener powerLogListener;
     @Override
     public void wantEnter() {
 
@@ -30,7 +32,7 @@ public class HubAbstractModeStrategy extends AbstractModeStrategy<Object> {
 
     @Override
     protected void beforeEnter() {
-        PowerFileListener.cancelListener();
+        powerLogListener.cancelListener();
         super.beforeEnter();
     }
 

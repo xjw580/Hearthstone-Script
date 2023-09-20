@@ -1,4 +1,4 @@
-package club.xiaojiawei.entity;
+package club.xiaojiawei.bean;
 
 import club.xiaojiawei.enums.WsResultTypeEnum;
 import lombok.Data;

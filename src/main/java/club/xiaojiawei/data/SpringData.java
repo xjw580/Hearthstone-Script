@@ -30,6 +30,8 @@ public class SpringData {
     private String screenLogName;
     @Value("${game.log.out.file.power}")
     private String powerLogName;
+    @Value("${game.log.out.file.deck}")
+    private String deckLogName;
     @Value("${spring.main.web-application-type}")
     private String webType;
     @Value("${server.port}")

@@ -1,6 +1,6 @@
-package club.xiaojiawei.entity.area;
+package club.xiaojiawei.bean.area;
 
-import club.xiaojiawei.entity.Card;
+import club.xiaojiawei.bean.entity.Card;
 
 /**
  * @author 肖嘉威

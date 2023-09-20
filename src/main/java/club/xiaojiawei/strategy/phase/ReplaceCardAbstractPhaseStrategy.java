@@ -1,14 +1,13 @@
 package club.xiaojiawei.strategy.phase;
 
-import club.xiaojiawei.entity.Card;
-import club.xiaojiawei.entity.ExtraEntity;
-import club.xiaojiawei.entity.TagChangeEntity;
+import club.xiaojiawei.bean.entity.ExtraEntity;
+import club.xiaojiawei.bean.entity.TagChangeEntity;
 import club.xiaojiawei.enums.ConfigurationKeyEnum;
 import club.xiaojiawei.enums.DeckEnum;
 import club.xiaojiawei.enums.StepEnum;
-import club.xiaojiawei.enums.TagEnum;
 import club.xiaojiawei.status.War;
 import club.xiaojiawei.strategy.AbstractPhaseStrategy;
+import club.xiaojiawei.utils.PowerLogUtil;
 import club.xiaojiawei.utils.SystemUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -46,15 +45,16 @@ public class ReplaceCardAbstractPhaseStrategy extends AbstractPhaseStrategy{
     }
 
     @Override
-    protected boolean dealTagChangeThenIsOver(String s, TagChangeEntity tagChangeEntity) {
+    protected boolean dealTagChangeThenIsOver(String line, TagChangeEntity tagChangeEntity) {
         if (tagChangeEntity.getTag() == MULLIGAN_STATE && Objects.equals(tagChangeEntity.getValue(), INPUT.getValue())){
-            String gameId = TagEnum.iso88591_To_utf8(tagChangeEntity.getEntity());
+            String gameId = tagChangeEntity.getEntity();
             if (Objects.equals(War.getMe().getGameId(), gameId) || (War.getRival().getGameId() != null && !Objects.equals(War.getRival().getGameId(), gameId))){
                 //            等待动画
                 stopThread();
                 //        执行换牌策略
                 (thread = new Thread(() -> {
-                    SystemUtil.delay(20_000);
+//                    因为傻逼畸变模式导致开局动画增加，这又加了四秒
+                    SystemUtil.delay(24_000);
                     DeckEnum.valueOf(scriptProperties.getProperty(ConfigurationKeyEnum.DECK_KEY.getKey())).getAbstractDeckStrategy().changeCard();
                 })).start();
             }
@@ -65,17 +65,17 @@ public class ReplaceCardAbstractPhaseStrategy extends AbstractPhaseStrategy{
     }
 
     @Override
-    protected boolean dealShowEntityThenIsOver(String s, ExtraEntity extraEntity) {
+    protected boolean dealShowEntityThenIsOver(String line, ExtraEntity extraEntity) {
         return false;
     }
 
     @Override
-    protected boolean dealFullEntityThenIsOver(String s, ExtraEntity extraEntity) {
+    protected boolean dealFullEntityThenIsOver(String line, ExtraEntity extraEntity) {
         return false;
     }
 
     @Override
-    protected boolean dealOtherThenIsOver(String s) {
+    protected boolean dealOtherThenIsOver(String line) {
         return false;
     }
 }

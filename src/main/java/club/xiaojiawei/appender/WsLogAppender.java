@@ -2,7 +2,7 @@ package club.xiaojiawei.appender;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.UnsynchronizedAppenderBase;
-import club.xiaojiawei.entity.WsResult;
+import club.xiaojiawei.bean.WsResult;
 import club.xiaojiawei.enums.WsResultTypeEnum;
 import club.xiaojiawei.ws.WebSocketServer;
 

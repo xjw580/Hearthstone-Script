@@ -38,7 +38,9 @@ public class PlatformStarter extends AbstractStarter{
     public void exec() {
         try {
             if (Strings.isNotBlank(new String(Runtime.getRuntime().exec(ScriptStaticData.GAME_ALIVE_CMD).getInputStream().readAllBytes()))) {
-                nextStarter.start();
+                if (nextStarter != null){
+                    nextStarter.start();
+                }
                 return;
             }
         } catch (IOException e) {

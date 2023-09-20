@@ -2,19 +2,19 @@ package club.xiaojiawei.enums;
 
 import club.xiaojiawei.custom.DealTagChange;
 import club.xiaojiawei.custom.ParseExtraEntity;
-import club.xiaojiawei.entity.Card;
-import club.xiaojiawei.entity.ExtraEntity;
-import club.xiaojiawei.entity.Player;
-import club.xiaojiawei.entity.TagChangeEntity;
-import club.xiaojiawei.entity.area.Area;
+import club.xiaojiawei.data.ScriptStaticData;
+import club.xiaojiawei.bean.entity.Card;
+import club.xiaojiawei.bean.entity.ExtraEntity;
+import club.xiaojiawei.bean.Player;
+import club.xiaojiawei.bean.area.Area;
 import club.xiaojiawei.status.War;
 import club.xiaojiawei.strategy.AbstractPhaseStrategy;
+import club.xiaojiawei.utils.PowerLogUtil;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 
-import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
 import static club.xiaojiawei.data.ScriptStaticData.*;
@@ -29,7 +29,7 @@ import static club.xiaojiawei.data.ScriptStaticData.*;
 @AllArgsConstructor
 public enum TagEnum {
     /**
-     * 调度标签，在 ${@link AbstractPhaseStrategy} 里使用
+     * 调度标签，在 {@link AbstractPhaseStrategy} 里使用
      */
     MULLIGAN_STATE("MULLIGAN_STATE", "调度阶段",
             null,
@@ -65,7 +65,7 @@ public enum TagEnum {
     CURRENT_PLAYER("CURRENT_PLAYER", "当前玩家",
             (card, tagChangeEntity, player, area) -> {
                 if (War.getMe() != null){
-                    String gameId = iso88591_To_utf8(tagChangeEntity.getEntity());
+                    String gameId = tagChangeEntity.getEntity();
                     if (isTrue(tagChangeEntity.getValue())){
                         //                匹配战网id后缀正则
                         if (gameId.matches("^.+#\\d+$")){
@@ -89,7 +89,7 @@ public enum TagEnum {
             null),
     FIRST_PLAYER("FIRST_PLAYER", "先手玩家",
             (card, tagChangeEntity, player, area) -> {
-                String gameId = iso88591_To_utf8(tagChangeEntity.getEntity());
+                String gameId = tagChangeEntity.getEntity();
                 War.setFirstPlayerGameId(gameId);
             },
             null),
@@ -116,7 +116,7 @@ public enum TagEnum {
             }),
     PLAYSTATE("PLAYSTATE", "游戏状态",
             (card, tagChangeEntity, player, area) -> {
-                String gameId = iso88591_To_utf8(tagChangeEntity.getEntity());
+                String gameId = tagChangeEntity.getEntity();
                 if (Objects.equals(tagChangeEntity.getValue(), WON)){
                     War.setWon(gameId);
                 }else if (Objects.equals(tagChangeEntity.getValue(), LOST)){
@@ -353,12 +353,17 @@ public enum TagEnum {
             (card, tagChangeEntity, player, area) -> {
                 card.setController(tagChangeEntity.getValue());
                 card = area.removeByEntityId(tagChangeEntity.getEntityId());
-                Area reverseArea = War.getReverseArea(area, player);
+                Area reverseArea = War.getReverseArea(area);
                 reverseArea.add(card, 0);
                 log(player, card, "控制者", tagChangeEntity.getValue());
             },
             (extraEntity, value) -> {
                 extraEntity.getExtraCard().setModular(isTrue(value));
+            }),
+    CREATOR("CREATOR", "创建者",
+            null,
+            (extraEntity, value) -> {
+                extraEntity.getExtraCard().setCreator(value);
             }),
     /*+++++++++++++++++++++++++++++++++++++++++++++++*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
     UNKNOWN("UNKNOWN", "未知",
@@ -367,7 +372,7 @@ public enum TagEnum {
     ;
 
     private static void log(Player player, Card card, String tagComment, Object value){
-        String playerId = "", gameId = "", entityId = "", cardId = "";
+        String playerId = "", gameId = "", entityId = "", cardId = "", entityName = "";
         if (player != null){
             playerId = player.getPlayerId();
             gameId = player.getGameId();
@@ -375,11 +380,9 @@ public enum TagEnum {
         if (card != null){
             entityId = card.getEntityId();
             cardId = card.getCardId();
+            entityName = Objects.equals(ScriptStaticData.UNKNOWN, card.getEntityName())? "" : card.getEntityName();
         }
-        log.info("【玩家" + playerId + ":" + gameId + "，entityId:" + entityId+ "，cardId:" + cardId + "】的【" + tagComment + "】发生变化:" + value);
-    }
-    public static String iso88591_To_utf8(String s){
-        return s == null? null : new String(s.getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8);
+        log.info("【玩家" + playerId + ":" + gameId + "，entityId:" + entityId+ "，entityName:" + entityName + "，cardId:" + cardId + "】的【" + tagComment + "】发生变化:" + value);
     }
     private static boolean isTrue(String s){
         return Objects.equals(s, "1");

@@ -1,4 +1,4 @@
-package club.xiaojiawei.entity;
+package club.xiaojiawei.bean.entity;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;

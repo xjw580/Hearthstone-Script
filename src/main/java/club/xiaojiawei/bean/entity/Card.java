@@ -1,4 +1,4 @@
-package club.xiaojiawei.entity;
+package club.xiaojiawei.bean.entity;
 
 import club.xiaojiawei.enums.CardRaceEnum;
 import club.xiaojiawei.enums.CardTypeEnum;
@@ -102,6 +102,7 @@ public class Card extends Entity{
      * 磁力
      */
     private boolean modular;
+    private String creator;
 
     /**
      * 衍生物
@@ -151,6 +152,7 @@ public class Card extends Entity{
         premium = extraCard.isPremium();
         modular = extraCard.isModular();
         controller = extraCard.getController();
+        creator = extraCard.getCreator();
     }
 
 }

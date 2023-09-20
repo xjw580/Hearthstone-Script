@@ -1,9 +1,8 @@
 package club.xiaojiawei.strategy.phase;
 
 import club.xiaojiawei.data.ScriptStaticData;
-import club.xiaojiawei.entity.Card;
-import club.xiaojiawei.entity.ExtraEntity;
-import club.xiaojiawei.entity.TagChangeEntity;
+import club.xiaojiawei.bean.entity.ExtraEntity;
+import club.xiaojiawei.bean.entity.TagChangeEntity;
 import club.xiaojiawei.enums.DeckEnum;
 import club.xiaojiawei.status.War;
 import club.xiaojiawei.strategy.AbstractPhaseStrategy;
@@ -45,7 +44,7 @@ public class GameTurnAbstractPhaseStrategy extends AbstractPhaseStrategy{
     }
 
     @Override
-    protected boolean dealTagChangeThenIsOver(String s, TagChangeEntity tagChangeEntity) {
+    protected boolean dealTagChangeThenIsOver(String line, TagChangeEntity tagChangeEntity) {
         if (tagChangeEntity.getTag() == STEP){
             if (Objects.equals(tagChangeEntity.getValue(), MAIN_ACTION.getValue())){
                 if (War.getMe() == War.getCurrentPlayer()){
@@ -71,17 +70,17 @@ public class GameTurnAbstractPhaseStrategy extends AbstractPhaseStrategy{
     }
 
     @Override
-    protected boolean dealShowEntityThenIsOver(String s, ExtraEntity extraEntity) {
+    protected boolean dealShowEntityThenIsOver(String line, ExtraEntity extraEntity) {
         return false;
     }
 
     @Override
-    protected boolean dealFullEntityThenIsOver(String s, ExtraEntity extraEntity) {
+    protected boolean dealFullEntityThenIsOver(String line, ExtraEntity extraEntity) {
         return false;
     }
 
     @Override
-    protected boolean dealOtherThenIsOver(String s) {
+    protected boolean dealOtherThenIsOver(String line) {
         return false;
     }
 

@@ -1,9 +1,6 @@
 package club.xiaojiawei.config;
 
-import club.xiaojiawei.starter.AbstractStarter;
-import club.xiaojiawei.starter.ClearStarter;
-import club.xiaojiawei.starter.GameStarter;
-import club.xiaojiawei.starter.PlatformStarter;
+import club.xiaojiawei.starter.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -23,10 +20,12 @@ public class StarterConfig {
     private PlatformStarter platformStarter;
     @Resource
     private GameStarter gameStarter;
+    @Resource
+    private ListenStarter listenStarter;
 
     @Bean
     public AbstractStarter starter(){
-        clearStarter.setNextStarter(platformStarter).setNextStarter(gameStarter);
+        clearStarter.setNextStarter(platformStarter).setNextStarter(gameStarter).setNextStarter(listenStarter);
         return clearStarter;
     }
 }

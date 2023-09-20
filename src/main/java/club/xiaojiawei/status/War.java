@@ -1,10 +1,10 @@
 package club.xiaojiawei.status;
 
-import club.xiaojiawei.entity.Card;
-import club.xiaojiawei.entity.ExtraEntity;
-import club.xiaojiawei.entity.Player;
-import club.xiaojiawei.entity.TagChangeEntity;
-import club.xiaojiawei.entity.area.Area;
+import club.xiaojiawei.bean.entity.Card;
+import club.xiaojiawei.bean.entity.ExtraEntity;
+import club.xiaojiawei.bean.Player;
+import club.xiaojiawei.bean.entity.TagChangeEntity;
+import club.xiaojiawei.bean.area.Area;
 import club.xiaojiawei.enums.StepEnum;
 import club.xiaojiawei.enums.WarPhaseEnum;
 import club.xiaojiawei.enums.ZoneEnum;
@@ -146,22 +146,35 @@ public class War {
         }
         return player2;
     }
-    public static Area getReverseArea(Area area, Player player){
-        Player reversePlayer = getReversePlayer(player.getPlayerId());
-        if (area == player.getPlayArea()){
-            return reversePlayer.getPlayArea();
-        }else if (area == player.getHandArea()){
-            return reversePlayer.getHandArea();
-        }else if (area == player.getDeckArea()){
-            return reversePlayer.getDeckArea();
-        }else if (area == player.getGraveyardArea()){
-            return reversePlayer.getGraveyardArea();
-        }else if (area == player.getRemovedfromgameArea()){
-            return reversePlayer.getRemovedfromgameArea();
-        }else if (area == player.getSecretArea()){
-            return reversePlayer.getSecretArea();
-        }else if (area == player.getSetasideArea()){
-            return reversePlayer.getSetasideArea();
+    public static Area getReverseArea(Area area){
+        if (area == player1.getPlayArea()){
+            return player2.getPlayArea();
+        }else if (area == player1.getHandArea()){
+            return player2.getHandArea();
+        }else if (area == player1.getDeckArea()){
+            return player2.getDeckArea();
+        }else if (area == player1.getGraveyardArea()){
+            return player2.getGraveyardArea();
+        }else if (area == player1.getRemovedfromgameArea()){
+            return player2.getRemovedfromgameArea();
+        }else if (area == player1.getSecretArea()){
+            return player2.getSecretArea();
+        }else if (area == player1.getSetasideArea()){
+            return player2.getSetasideArea();
+        }else if (area == player2.getPlayArea()){
+            return player1.getPlayArea();
+        }else if (area == player2.getHandArea()){
+            return player1.getHandArea();
+        }else if (area == player2.getDeckArea()){
+            return player1.getDeckArea();
+        }else if (area == player2.getGraveyardArea()){
+            return player1.getGraveyardArea();
+        }else if (area == player2.getRemovedfromgameArea()){
+            return player1.getRemovedfromgameArea();
+        }else if (area == player2.getSecretArea()){
+            return player1.getSecretArea();
+        }else if (area == player2.getSetasideArea()){
+            return player1.getSetasideArea();
         }
         return null;
     }

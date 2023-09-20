@@ -3,7 +3,7 @@ package club.xiaojiawei.controller;
 import club.xiaojiawei.controls.Switch;
 import club.xiaojiawei.custom.LogRunnable;
 import club.xiaojiawei.data.SpringData;
-import club.xiaojiawei.entity.Release;
+import club.xiaojiawei.bean.Release;
 import club.xiaojiawei.enums.DeckEnum;
 import club.xiaojiawei.enums.RunModeEnum;
 import club.xiaojiawei.listener.VersionListener;

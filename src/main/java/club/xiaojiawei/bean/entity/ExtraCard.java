@@ -1,4 +1,4 @@
-package club.xiaojiawei.entity;
+package club.xiaojiawei.bean.entity;
 
 import club.xiaojiawei.enums.ZoneEnum;
 import lombok.Data;

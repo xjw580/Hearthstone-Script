@@ -1,17 +1,21 @@
 package club.xiaojiawei.utils;
 
+import club.xiaojiawei.bean.entity.Card;
+import club.xiaojiawei.bean.entity.CommonEntity;
+import club.xiaojiawei.bean.entity.ExtraEntity;
+import club.xiaojiawei.bean.entity.TagChangeEntity;
 import club.xiaojiawei.custom.DealTagChange;
 import club.xiaojiawei.custom.ParseExtraEntity;
-import club.xiaojiawei.entity.*;
-import club.xiaojiawei.entity.area.Area;
+import club.xiaojiawei.bean.*;
+import club.xiaojiawei.bean.area.Area;
 import club.xiaojiawei.enums.ZoneEnum;
 import club.xiaojiawei.status.War;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
 
-import java.io.IOException;
-import java.io.RandomAccessFile;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 
 import static club.xiaojiawei.data.ScriptStaticData.*;
 import static club.xiaojiawei.enums.TagEnum.UNKNOWN;
@@ -97,7 +101,7 @@ public class PowerLogUtil {
         tagChangeEntity.setTag(TAG_MAP.getOrDefault(tagName, UNKNOWN));
         tagChangeEntity.setValue(line.substring(valueIndex + 6).strip());
         if (index < 100){
-            tagChangeEntity.setEntity(line.substring(line.indexOf("Entity") + 7, tagIndex).strip());
+            tagChangeEntity.setEntity(iso88591_To_utf8(line.substring(line.indexOf("Entity") + 7, tagIndex).strip()));
         }else {
             parseCommonEntity(tagChangeEntity, line);
         }
@@ -153,6 +157,7 @@ public class PowerLogUtil {
         int zonePosIndex = line.lastIndexOf("zonePos", cardIdIndex);
         int zoneIndex = line.lastIndexOf("zone=", zonePosIndex);
         int entityIdIndex = line.lastIndexOf("id", zoneIndex);
+        int cardTypeIndex = line.lastIndexOf("cardType", entityIdIndex);
         int entityNameIndex = line.lastIndexOf("entityName", entityIdIndex);
         commonEntity.setCardId(line.substring(cardIdIndex + 7, playerIndex).strip());
         if (Strings.isBlank(commonEntity.getCardId())) {
@@ -166,6 +171,59 @@ public class PowerLogUtil {
         commonEntity.setZone(ZoneEnum.valueOf(line.substring(zoneIndex + 5, zonePosIndex).strip()));
         commonEntity.setZonePos(Integer.parseInt(line.substring(zonePosIndex + 8, cardIdIndex).strip()));
         commonEntity.setEntityId(line.substring(entityIdIndex + 3, zoneIndex).strip());
-        commonEntity.setEntityName(line.substring(entityNameIndex + 11, entityIdIndex).strip());
+        commonEntity.setEntityName(iso88591_To_utf8(line.substring(entityNameIndex + 11, cardTypeIndex == -1? entityIdIndex : cardTypeIndex - 1).strip()));
+    }
+
+    public static String iso88591_To_utf8(String s){
+        return s == null? null : new String(s.getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8);
+    }
+
+
+    @SuppressWarnings("all")
+    private static void decontamination(String path, boolean renew){
+        if (renew){
+            try(RandomAccessFile accessFile = new RandomAccessFile(new File(path + "\\Power.log"), "r");
+                FileOutputStream outputStream = new FileOutputStream(path + "\\Power_renew.log")
+            ){
+                String line;
+                while ((line = accessFile.readLine()) != null){
+                    if (line.contains("PowerTaskList")){
+                        outputStream.write(new String((line.replace("PowerTaskList.Debug", "") + "\n").getBytes(StandardCharsets.ISO_8859_1)).getBytes(StandardCharsets.UTF_8));
+                    }
+                }
+            } catch (FileNotFoundException e) {
+                throw new RuntimeException(e);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }else {
+            try(RandomAccessFile accessFile = new RandomAccessFile(new File(path + "\\Power.log"), "rw")){
+                String line;
+                long leftPoint = accessFile.getFilePointer(), rightPoint;
+                while ((line = accessFile.readLine()) != null){
+                    rightPoint = accessFile.getFilePointer();
+                    if (line.contains("PowerTaskList")){
+                        accessFile.seek(leftPoint);
+                        accessFile.write(new String((line.replace("PowerTaskList.Debug", "") + "\n").getBytes(StandardCharsets.ISO_8859_1)).getBytes(StandardCharsets.UTF_8));
+                        leftPoint = accessFile.getFilePointer();
+                        accessFile.seek(rightPoint);
+                    }
+                }
+                if (leftPoint != 0){
+                    accessFile.setLength(leftPoint);
+                }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+    }
+
+    /**
+     * 将power.log日志中的不相干信息去除，方便查看
+     * @param args
+     */
+    public static void main(String[] args) {
+        decontamination("D:\\soft\\game\\Hearthstone\\Logs\\Hearthstone_2023_09_20_21_29_48", true);
     }
 }

@@ -1,9 +1,9 @@
 package club.xiaojiawei.custom;
 
-import club.xiaojiawei.entity.Card;
-import club.xiaojiawei.entity.Player;
-import club.xiaojiawei.entity.TagChangeEntity;
-import club.xiaojiawei.entity.area.Area;
+import club.xiaojiawei.bean.entity.Card;
+import club.xiaojiawei.bean.Player;
+import club.xiaojiawei.bean.entity.TagChangeEntity;
+import club.xiaojiawei.bean.area.Area;
 
 /**
  * @author 肖嘉威

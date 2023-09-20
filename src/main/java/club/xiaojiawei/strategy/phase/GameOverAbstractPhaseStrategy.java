@@ -1,9 +1,7 @@
 package club.xiaojiawei.strategy.phase;
 
-import club.xiaojiawei.entity.Card;
-import club.xiaojiawei.entity.ExtraEntity;
-import club.xiaojiawei.entity.TagChangeEntity;
-import club.xiaojiawei.listener.PowerFileListener;
+import club.xiaojiawei.bean.entity.ExtraEntity;
+import club.xiaojiawei.bean.entity.TagChangeEntity;
 import club.xiaojiawei.status.War;
 import club.xiaojiawei.strategy.AbstractPhaseStrategy;
 import club.xiaojiawei.utils.SystemUtil;
@@ -22,31 +20,31 @@ import java.io.RandomAccessFile;
 public class GameOverAbstractPhaseStrategy extends AbstractPhaseStrategy{
 
     @Override
-    protected boolean dealTagChangeThenIsOver(String s, TagChangeEntity tagChangeEntity) {
+    protected boolean dealTagChangeThenIsOver(String line, TagChangeEntity tagChangeEntity) {
         over();
         return true;
     }
 
     @Override
-    protected boolean dealShowEntityThenIsOver(String s, ExtraEntity extraEntity) {
+    protected boolean dealShowEntityThenIsOver(String line, ExtraEntity extraEntity) {
         over();
         return true;
     }
 
     @Override
-    protected boolean dealFullEntityThenIsOver(String s, ExtraEntity extraEntity) {
+    protected boolean dealFullEntityThenIsOver(String line, ExtraEntity extraEntity) {
         over();
         return true;
     }
 
     @Override
-    protected boolean dealOtherThenIsOver(String s) {
+    protected boolean dealOtherThenIsOver(String line) {
         over();
         return true;
     }
 
     private void over(){
-        RandomAccessFile accessFile = PowerFileListener.getAccessFile();
+        RandomAccessFile accessFile = powerLogListener.getAccessFile();
         try {
             accessFile.seek(accessFile.length());
         } catch (IOException e) {

@@ -2,9 +2,8 @@ package club.xiaojiawei.starter;
 
 import club.xiaojiawei.custom.LogRunnable;
 import club.xiaojiawei.data.ScriptStaticData;
-import club.xiaojiawei.listener.ScreenFileListener;
+import club.xiaojiawei.listener.ScreenLogListener;
 import club.xiaojiawei.utils.MouseUtil;
-import club.xiaojiawei.utils.RandomUtil;
 import club.xiaojiawei.utils.SystemUtil;
 import com.sun.jna.platform.win32.WinDef;
 import javafx.beans.property.BooleanProperty;
@@ -35,12 +34,18 @@ public class GameStarter extends AbstractStarter{
     private MouseUtil mouseUtil;
     @Resource
     private ScheduledThreadPoolExecutor extraThreadPool;
-    @Resource
-    private ScreenFileListener screenFileListener;
     private static ScheduledFuture<?> scheduledFuture;
     private static WinDef.HWND gameHWND;
     @Override
     public void exec() {
+        if ((gameHWND = SystemUtil.getHWND(ScriptStaticData.GAME_CN_NAME)) != null){
+            ScriptStaticData.setGameHWND(gameHWND);
+            SystemUtil.updateRect(gameHWND, ScriptStaticData.GAME_RECT);
+            if (nextStarter != null){
+                nextStarter.start();
+            }
+            return;
+        }
         log.info("开始检查" + ScriptStaticData.GAME_CN_NAME);
         scheduledFuture = launchProgramThreadPool.scheduleAtFixedRate(new LogRunnable(() -> {
             if (isPause.get().get()) {
@@ -83,8 +88,6 @@ public class GameStarter extends AbstractStarter{
         extraThreadPool.schedule(new LogRunnable(() -> {
             cancelGameTimer();
             SystemUtil.updateRect(ScriptStaticData.getGameHWND(), ScriptStaticData.GAME_RECT);
-            SystemUtil.delayMedium();
-            screenFileListener.listen();
             if (nextStarter != null) {
                 nextStarter.start();
             }
