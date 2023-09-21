@@ -22,7 +22,7 @@ import java.util.Properties;
  */
 @Configuration
 @Slf4j
-public class PropertiesConfig {
+public class ConfigurationConfig {
 
     @Resource
     private SpringData springData;
@@ -31,7 +31,7 @@ public class PropertiesConfig {
      * 脚本配置文件
      */
     @Bean
-    public Properties scriptProperties(){
+    public Properties scriptConfiguration(){
         Properties properties = new Properties();
         reloadScriptProperties(properties);
         return properties;
@@ -71,6 +71,7 @@ public class PropertiesConfig {
                         case WORK_DAY_FLAG_KEY -> fileWriter.write("true,false,false,false,false,false,false,false\n");
                         case WORK_TIME_FLAG_KEY -> fileWriter.write("true,false,false\n");
                         case WORK_TIME_KEY -> fileWriter.write("00:00-24:00,null,null\n");
+                        case STRATEGY_KEY -> fileWriter.write("true\n");
                         default -> {
                             fileWriter.write("\n");
                         }

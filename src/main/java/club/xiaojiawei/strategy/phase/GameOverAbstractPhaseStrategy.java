@@ -38,6 +38,12 @@ public class GameOverAbstractPhaseStrategy extends AbstractPhaseStrategy{
     }
 
     @Override
+    protected boolean dealChangeEntityThenIsOver(String line, ExtraEntity extraEntity) {
+        over();
+        return true;
+    }
+
+    @Override
     protected boolean dealOtherThenIsOver(String line) {
         over();
         return true;

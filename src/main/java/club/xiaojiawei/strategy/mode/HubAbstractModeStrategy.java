@@ -22,7 +22,7 @@ import java.util.Properties;
 public class HubAbstractModeStrategy extends AbstractModeStrategy<Object> {
 
     @Resource
-    private Properties scriptProperties;
+    private Properties scriptConfiguration;
     @Resource
     private PowerLogListener powerLogListener;
     @Override
@@ -52,6 +52,6 @@ public class HubAbstractModeStrategy extends AbstractModeStrategy<Object> {
             SystemUtil.delay(500);
         }
         log.info("准备进入指定模式");
-        RunModeEnum.valueOf(scriptProperties.getProperty(ConfigurationKeyEnum.RUN_MODE_KEY.getKey())).getModeEnum().getAbstractModeStrategy().wantEnter();
+        RunModeEnum.valueOf(scriptConfiguration.getProperty(ConfigurationKeyEnum.RUN_MODE_KEY.getKey())).getModeEnum().getAbstractModeStrategy().wantEnter();
     }
 }

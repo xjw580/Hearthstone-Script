@@ -94,7 +94,7 @@ public class ZooAbstractDeckStrategy extends AbstractDeckStrategy{
         for (int i = rivalPlayCards.size() - 1; i >= 0; i--) {
             Card card = rivalPlayCards.get(i);
             if (card.isTaunt() && !card.isStealth()){
-                List<Integer> result = calcFreeEatRivalTaunt(card);
+                List<Integer> result = calcEatRivalCard(card);
                 if (result == null){
 //                    过墙失败
                     throughWall = false;
@@ -154,7 +154,7 @@ public class ZooAbstractDeckStrategy extends AbstractDeckStrategy{
             for (int i = rivalPlayCards.size() - 1; i >= 0; i--) {
                 Card card = rivalPlayCards.get(i);
                 if ((card.isAura() || card.isAdjacentBuff()) && !card.isStealth()){
-                    List<Integer> result = calcFreeEatRivalTaunt(card);
+                    List<Integer> result = calcEatRivalCard(card);
                     if (result == null){
                         continue;
                     }
@@ -193,7 +193,7 @@ public class ZooAbstractDeckStrategy extends AbstractDeckStrategy{
             int index = -1;
             for (int i = rivalPlayCards.size() - 1; i >= 0; i--) {
                 Card card = rivalPlayCards.get(i);
-                double newWeight = (card.getHealth() - card.getDamage()) * HEALTH_WEIGHT + card.getAtc() * ATC_WEIGHT;
+                double newWeight = (card.getHealth() - card.getDamage()) * BLOOD_WEIGHT + card.getAtc() * ATC_WEIGHT;
                 float sub = 0;
                 if (myHandCards.size() == 1){
                     sub = (float) 0.6;

@@ -13,9 +13,14 @@
         <padding>
             <Insets top="10" left="10" bottom="10" right="10"/>
         </padding>
-        <Label contentDisplay="RIGHT" text="启动时是否自动打开web界面：" style="-fx-border-width: 3;-fx-font-size: 13">
+        <Label contentDisplay="RIGHT" text="自动打开web界面：" style="-fx-border-width: 3;-fx-font-size: 13">
             <graphic>
                 <Switch fx:id="webSwitch" status="false"/>
+            </graphic>
+        </Label>
+        <Label contentDisplay="RIGHT" text="执行策略：" style="-fx-border-width: 3;-fx-font-size: 13">
+            <graphic>
+                <Switch fx:id="strategySwitch" status="false"/>
             </graphic>
         </Label>
     </VBox>

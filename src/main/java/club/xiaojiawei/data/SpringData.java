@@ -20,8 +20,6 @@ public class SpringData {
     private String scriptConfigurationFile;
     @Value("${script.version}")
     private String version;
-    @Value("${script.strategy}")
-    private boolean strategy;
     @Value("${script.path}")
     private String scriptPath;
     @Value("${game.log.out.path}")

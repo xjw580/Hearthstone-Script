@@ -115,6 +115,7 @@ public class ScriptStaticData {
     public static final String SHOW_ENTITY = "SHOW_ENTITY";
     public static final String FULL_ENTITY = "FULL_ENTITY";
     public static final String TAG_CHANGE = "TAG_CHANGE";
+    public static final String CHANGE_ENTITY = "CHANGE_ENTITY";
     public static final String LOST = "LOST";
     public static final String WON = "WON";
     public static final String CONCEDED = "CONCEDED";

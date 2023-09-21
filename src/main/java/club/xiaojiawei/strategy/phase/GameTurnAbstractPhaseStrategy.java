@@ -1,7 +1,7 @@
 package club.xiaojiawei.strategy.phase;
 
+import club.xiaojiawei.custom.LogRunnable;
 import club.xiaojiawei.data.ScriptStaticData;
-import club.xiaojiawei.bean.entity.ExtraEntity;
 import club.xiaojiawei.bean.entity.TagChangeEntity;
 import club.xiaojiawei.enums.DeckEnum;
 import club.xiaojiawei.status.War;
@@ -27,7 +27,7 @@ import static club.xiaojiawei.enums.TagEnum.STEP;
 @Component
 public class GameTurnAbstractPhaseStrategy extends AbstractPhaseStrategy{
     @Resource
-    private Properties scriptProperties;
+    private Properties scriptConfiguration;
 
     private static Thread thread;
 
@@ -53,11 +53,11 @@ public class GameTurnAbstractPhaseStrategy extends AbstractPhaseStrategy{
                     stopThread();
                     War.setMyTurn(true);
 //                            异步执行出牌策略，以便监听出牌后的卡牌变动
-                    (thread = new Thread(() -> {
+                    (thread = new Thread(new LogRunnable(() -> {
                         //                          等待动画结束
                         SystemUtil.delay(4000);
-                        DeckEnum.valueOf(scriptProperties.getProperty(DECK_KEY.getKey())).getAbstractDeckStrategy().outCard();
-                    }, "OutCard Thread")).start();
+                        DeckEnum.valueOf(scriptConfiguration.getProperty(DECK_KEY.getKey())).getAbstractDeckStrategy().outCard();
+                    }), "OutCard Thread")).start();
                 }else {
                     log.info("对方回合");
                 }
@@ -66,21 +66,6 @@ public class GameTurnAbstractPhaseStrategy extends AbstractPhaseStrategy{
                 stopThread();
             }
         }
-        return false;
-    }
-
-    @Override
-    protected boolean dealShowEntityThenIsOver(String line, ExtraEntity extraEntity) {
-        return false;
-    }
-
-    @Override
-    protected boolean dealFullEntityThenIsOver(String line, ExtraEntity extraEntity) {
-        return false;
-    }
-
-    @Override
-    protected boolean dealOtherThenIsOver(String line) {
         return false;
     }
 

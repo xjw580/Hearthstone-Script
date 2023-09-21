@@ -96,8 +96,4 @@ public class DrawnInitCardAbstractPhaseStrategy extends AbstractPhaseStrategy{
         return false;
     }
 
-    @Override
-    protected boolean dealOtherThenIsOver(String line) {
-        return false;
-    }
 }

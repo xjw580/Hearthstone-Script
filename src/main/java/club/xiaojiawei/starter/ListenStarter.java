@@ -23,7 +23,7 @@ import java.util.Properties;
 @Component
 public class ListenStarter extends AbstractStarter{
     @Resource
-    protected Properties scriptProperties;
+    protected Properties scriptConfiguration;
     @Resource
     private ScreenLogListener screenLogListener;
     @Resource
@@ -32,7 +32,7 @@ public class ListenStarter extends AbstractStarter{
     protected SpringData springData;
     @Override
     protected void exec() {
-        File filePath = new File(scriptProperties.getProperty(ConfigurationKeyEnum.GAME_PATH_KEY.getKey()) + springData.getGameLogPath());
+        File filePath = new File(scriptConfiguration.getProperty(ConfigurationKeyEnum.GAME_PATH_KEY.getKey()) + springData.getGameLogPath());
         File [] files;
         if (!filePath.exists() || (files = filePath.listFiles()) == null || files.length == 0){
             log.error("游戏日志目录读取失败");

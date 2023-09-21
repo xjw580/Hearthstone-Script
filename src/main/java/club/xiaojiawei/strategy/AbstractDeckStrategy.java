@@ -22,6 +22,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import static club.xiaojiawei.data.ScriptStaticData.GAME_RECT;
 import static club.xiaojiawei.enums.CardTypeEnum.MINION;
+import static club.xiaojiawei.enums.ConfigurationKeyEnum.STRATEGY_KEY;
 
 /**
  * @author 肖嘉威
@@ -34,7 +35,7 @@ public abstract class AbstractDeckStrategy{
     @Resource
     protected AtomicReference<BooleanProperty> isPause;
     @Resource
-    protected SpringData springData;
+    protected Properties scriptConfiguration;
     /**
      * 每次行动后停顿时间
      */
@@ -56,7 +57,7 @@ public abstract class AbstractDeckStrategy{
     protected static final float TURN_OVER_BUTTON_VERTICAL_TO_BOTTOM_RATION = (float) 0.54;
     protected static final float TURN_OVER_BUTTON_HORIZONTAL_TO_CENTER_RATION = (float) 0.417;
     public static final float CONFIRM_BUTTON_VERTICAL_TO_BOTTOM_RATION = (float) 0.23;
-    protected static double HEALTH_WEIGHT = 0.4;
+    protected static double BLOOD_WEIGHT = 0.4;
     protected static double ATC_WEIGHT = 0.6;
     protected static double FREE_EAT_MAX = 5;
     protected PlayArea myPlayArea;
@@ -71,55 +72,61 @@ public abstract class AbstractDeckStrategy{
     protected List<Card> rivalPlayCards;
 
     public void changeCard() {
-        if (springData.isStrategy()){
-            log.info("执行换牌策略");
-            assign();
-            float clearance ,firstCardPos;
-            if (myHandCards.size() == 3){
-                clearance  = getFloatCardClearanceForThreeCard();
-                firstCardPos = getFloatCardFirstCardPosForThreeCard();
-            }else {
-                clearance  = getFloatCardClearanceForFourCard();
-                firstCardPos = getFloatCardFirstCardPosForFourCard();
-            }
-            SystemUtil.updateRect(ScriptStaticData.getGameHWND(), GAME_RECT);
-            int size = Math.min(myHandCards.size(), 4);
-            for (int index = 0; index < size; index++) {
-                Card card = myHandCards.get(index);
-                if (executeChangeCard(card, index)){
-                    clickFloatCard(clearance, firstCardPos, index);
-                    log.info("换掉起始卡牌：【entityId:" + card.getEntityId() + "，entityName:" + card.getEntityName() + "，cardId:" + card.getCardId() + "】");
+        if (Boolean.parseBoolean(scriptConfiguration.getProperty(STRATEGY_KEY.getKey()))){
+            try {
+                log.info("执行换牌策略");
+                assign();
+                float clearance ,firstCardPos;
+                if (myHandCards.size() == 3){
+                    clearance  = getFloatCardClearanceForThreeCard();
+                    firstCardPos = getFloatCardFirstCardPosForThreeCard();
+                }else {
+                    clearance  = getFloatCardClearanceForFourCard();
+                    firstCardPos = getFloatCardFirstCardPosForFourCard();
                 }
+                SystemUtil.updateRect(ScriptStaticData.getGameHWND(), GAME_RECT);
+                int size = Math.min(myHandCards.size(), 4);
+                for (int index = 0; index < size; index++) {
+                    Card card = myHandCards.get(index);
+                    if (executeChangeCard(card, index)){
+                        clickFloatCard(clearance, firstCardPos, index);
+                        log.info("换掉起始卡牌：【entityId:" + card.getEntityId() + "，entityName:" + card.getEntityName() + "，cardId:" + card.getCardId() + "】");
+                    }
+                }
+                log.info("执行换牌策略完毕");
+            }finally {
+                SystemUtil.updateRect(ScriptStaticData.getGameHWND(), GAME_RECT);
+                //        点击确认按钮
+                mouseUtil.leftButtonClick(
+                        ((GAME_RECT.right + GAME_RECT.left) >> 1) + RandomUtil.getRandom(-10, 10),
+                        (int) (GAME_RECT.bottom - (GAME_RECT.bottom - GAME_RECT.top) * CONFIRM_BUTTON_VERTICAL_TO_BOTTOM_RATION + RandomUtil.getRandom(-5, 5))
+                );
             }
-            SystemUtil.updateRect(ScriptStaticData.getGameHWND(), GAME_RECT);
-//        点击确认按钮
-            mouseUtil.leftButtonClick(
-                    ((GAME_RECT.right + GAME_RECT.left) >> 1) + RandomUtil.getRandom(-10, 10),
-                    (int) (GAME_RECT.bottom - (GAME_RECT.bottom - GAME_RECT.top) * CONFIRM_BUTTON_VERTICAL_TO_BOTTOM_RATION + RandomUtil.getRandom(-5, 5))
-            );
-            log.info("执行换牌策略完毕");
         }
     }
 
     public void outCard(){
-        if (springData.isStrategy()){
-            log.info("执行出牌策略");
-            if (log.isDebugEnabled()){
-                log.debug("我方手牌：" + myHandCards);
-                log.debug("我方战场：" + myPlayCards);
-                log.debug("我方英雄：" + myPlayArea.getHero());
-                log.debug("我方武器：" + myPlayArea.getWeapon());
-                log.debug("我方技能：" + myPlayArea.getPower());
+        if (Boolean.parseBoolean(scriptConfiguration.getProperty(STRATEGY_KEY.getKey()))){
+            try{
+                log.info("执行出牌策略");
+                if (log.isDebugEnabled()){
+                    log.debug("我方手牌：" + myHandCards);
+                    log.debug("我方战场：" + myPlayCards);
+                    log.debug("我方英雄：" + myPlayArea.getHero());
+                    log.debug("我方武器：" + myPlayArea.getWeapon());
+                    log.debug("我方技能：" + myPlayArea.getPower());
+                }
+                log.info("回合开始可用水晶数：" + getMyUsableResource());
+                executeOutCard();
+                MouseUtil.cancel();
+                log.info("执行出牌策略完毕");
+            }finally {
+                clickTurnOverButton();
             }
-            log.info("回合开始可用水晶数：" + getMyUsableResource());
-            executeOutCard();
-            MouseUtil.cancel();
-            clickTurnOverButton();
-            log.info("执行出牌策略完毕");
         }
     }
     public void discoverChooseCard(Card...cards){
-        if (springData.isStrategy()){
+        if (Boolean.parseBoolean(scriptConfiguration.getProperty(STRATEGY_KEY.getKey()))){
             SystemUtil.delay(1000);
             log.info("执行发现选牌策略");
             int index = executeDiscoverChooseCard(cards);
@@ -164,6 +171,20 @@ public abstract class AbstractDeckStrategy{
     }
 
     /*calc*/
+    protected int calcMySpellPower(){
+        int spellPower = 0;
+        for (Card playCard : myPlayCards) {
+            spellPower += playCard.getSpellPower();
+        }
+        spellPower += myPlayArea.getHero().getSpellPower();
+        if (myPlayArea.getWeapon() != null){
+            spellPower += myPlayArea.getWeapon().getSpellPower();
+        }
+        return spellPower;
+    }
+    protected int calcCardBlood(Card card){
+        return card.getHealth() + card.getArmor() - card.getDamage();
+    }
     protected int calcCardCount(List<Card> cards, String cardId){
         int count = 0;
         for (Card card : cards) {
@@ -181,13 +202,13 @@ public abstract class AbstractDeckStrategy{
      * @return
      */
     protected int calcRivalHeroBlood(){
-        return rivalPlayArea.getHero().getHealth() + rivalPlayArea.getHero().getArmor() - rivalPlayArea.getHero().getDamage();
+        return calcCardBlood(rivalPlayArea.getHero());
     }
     protected int calcMyHeroTotalAtc(){
         return Math.max((myPlayArea.getWeapon() == null)? 0 : myPlayArea.getWeapon().getAtc(), myPlayArea.getHero().getAtc());
     }
     protected int calcMyHeroBlood(){
-        return myPlayArea.getHero().getHealth() + myPlayArea.getHero().getArmor() - myPlayArea.getHero().getDamage();
+        return calcCardBlood(myPlayArea.getHero());
     }
     protected int calcMyPlayTotalAtc(){
         int atc = 0;
@@ -238,116 +259,146 @@ public abstract class AbstractDeckStrategy{
         return count;
     }
     /**
-     * 计算我的怪如何白吃对面的怪
+     * 计算我的一个怪如何白吃对面一个怪
      * @param myPlayCard
-     * @param allowNotFreeEat 允许不白吃
+     * @param allowDeath 允许不白吃
      * @return
      */
-    protected int calcMyCardFreeEat(Card myPlayCard, boolean allowNotFreeEat){
-        int index = -1;
+    protected int calcMyCardFreeEat(Card myPlayCard, boolean allowDeath){
+        int rivalIndex = -1;
         double weight = 0;
-        int atc = myPlayCard.getAtc();
-        int health = myPlayCard.getHealth() - myPlayCard.getDamage();
-        double myWeight = atc * ATC_WEIGHT + health * HEALTH_WEIGHT;
+        int myAtc = myPlayCard.getAtc();
+        int myBlood = calcCardBlood(myPlayCard);
+        double myWeight = myAtc * ATC_WEIGHT + myBlood * BLOOD_WEIGHT;
 //        寻找能白吃的
         for (int i = rivalPlayCards.size() - 1; i >= 0 ; i--) {
-            Card card = rivalPlayCards.get(i);
-            if (canPointedToRival(card) && card.getCardType() == MINION && card.getHealth() - card.getDamage() <= atc && (card.getAtc() < health || myPlayCard.isDivineShield())){
-                double newWeight = (card.getHealth()  - card.getDamage()) * HEALTH_WEIGHT + card.getAtc() * ATC_WEIGHT;
+            Card rivalCard = rivalPlayCards.get(i);
+            if (canPointedToRival(rivalCard) && rivalCard.getCardType() == MINION && calcCardBlood(rivalCard) <= myAtc && (rivalCard.getAtc() < myBlood || myPlayCard.isDivineShield())){
+                double newWeight = calcCardBlood(rivalCard) * BLOOD_WEIGHT + rivalCard.getAtc() * ATC_WEIGHT;
 //                寻找最优白吃方法，既要白吃又不能白吃过头忽略打脸，如55白吃11这种
                 if (newWeight > weight && myWeight - newWeight < FREE_EAT_MAX){
                     weight = newWeight;
-                    index = i;
+                    rivalIndex = i;
                 }
             }
         }
 //            白吃不了，寻找比较赚的解法
-        if (allowNotFreeEat && index == -1){
-            double myWeightPlus = health * HEALTH_WEIGHT + (atc + 1) * ATC_WEIGHT;
+        if (allowDeath && rivalIndex == -1){
+            double myWeightPlus = myBlood * BLOOD_WEIGHT + (myAtc + 1) * ATC_WEIGHT;
             weight = 0;
             for (int i = rivalPlayCards.size() - 1; i >= 0 ; i--) {
                 Card card = rivalPlayCards.get(i);
-                if (canPointedToRival(card) && card.getCardType() == MINION && card.getHealth() - card.getDamage() <= atc){
-                    double newWeight = (card.getHealth() - card.getDamage()) * HEALTH_WEIGHT + card.getAtc() * ATC_WEIGHT;
+                if (canPointedToRival(card) && card.getCardType() == MINION && calcCardBlood(card) <= myAtc){
+                    double newWeight = calcCardBlood(card) * BLOOD_WEIGHT + card.getAtc() * ATC_WEIGHT;
                     if (newWeight >= myWeightPlus && newWeight > weight){
-                        index = i;
+                        rivalIndex = i;
                         weight = newWeight;
                     }
                 }
             }
         }
-        return index;
+        return rivalIndex;
     }
+
     /**
-     * 计算如何白吃对面的嘲讽
-     * @param rivalTauntCard
-     * @return
+     * 计算我的多个怪如何吃对面一个怪
+     * @param rivalCard
+     * @param maxDeathCount
+     * @param subtractRivalBlood 需要减少的敌方怪的血量
+     * @return 储存下标的list，最后一位存储总攻击力
      */
-    protected List<Integer> calcFreeEatRivalTaunt(Card rivalTauntCard){
+    protected List<Integer> calcEatRivalCard(Card rivalCard, int maxDeathCount, int subtractRivalBlood){
+        if (rivalCard == null){
+            return null;
+        }
         TreeSet<List<Integer>> result = new TreeSet<>(Comparator.comparingInt(o -> o.get(o.size() - 1)));
-        calcFreeEatRivalTauntRecursive(result, myPlayCards, new ArrayList<>(), rivalTauntCard.getHealth() - rivalTauntCard.getDamage(), rivalTauntCard.getAtc(), 0, 0);
+        calcFreeEatRivalCardRecursive(result, myPlayCards, new ArrayList<>(), calcCardBlood(rivalCard) - subtractRivalBlood, rivalCard.getAtc(), 0, 0, maxDeathCount);
         return result.isEmpty() ? null : result.first();
+    }
+    protected List<Integer> calcEatRivalCard(Card rivalCard){
+        return calcEatRivalCard(rivalCard, Integer.MAX_VALUE, 0);
+    }
+    protected List<Integer> calcFreeEatRivalCard(Card rivalCard){
+        return calcEatRivalCard(rivalCard, 0, 0);
     }
     /**
      * 穷举法
      * @param result
-     * @param cards
-     * @param list
-     * @param health
-     * @param atc
+     * @param myPlayCards
+     * @param indexList 存储卡组下标，最后一位存储总攻击力
+     * @param rivalBlood
+     * @param rivalAtc
      * @param atcSum
      * @param index
      */
-    private void calcFreeEatRivalTauntRecursive(TreeSet<List<Integer>> result, List<Card> cards, List<Integer> list, int health, int atc, int atcSum, int index){
+    private void calcFreeEatRivalCardRecursive(TreeSet<List<Integer>> result, List<Card> myPlayCards, List<Integer> indexList, int rivalBlood, int rivalAtc, int atcSum, int index, int maxDeathCount){
 //        终止条件
-        if (atcSum >= health){
-            list.add(atcSum);
-            ArrayList<Integer> temp = new ArrayList<>(list);
-            list.remove(list.size() - 1);
-            if (result.contains(temp)){
+        if (atcSum >= rivalBlood){
+            indexList.add(atcSum);
+            ArrayList<Integer> tempIndexList = new ArrayList<>(indexList);
+            indexList.remove(indexList.size() - 1);
+//            由于重写了compare方法，所以这里比较的是总攻击力是否相等
+            if (result.contains(tempIndexList)){
                 double oldFreeEatCount = 0, newFreeEatCount = 0;
                 List<Integer> oldList = null;
-                for (List<Integer> integers : result) {
-                    if (integers.get(integers.size() - 1) == atcSum){
-                        oldList = integers;
-                        for (int i = 0; i < integers.size() - 1; i++) {
-                            Card card = cards.get(i);
-                            if (card.getHealth() - card.getDamage() > atc || card.isDivineShield()){
+                for (List<Integer> lists : result) {
+//                取出总攻击力相等的那个旧list
+                    if (lists.get(lists.size() - 1) == atcSum){
+                        oldList = lists;
+//                计算旧list的白吃数
+                        for (int i = 0; i < lists.size() - 1; i++) {
+                            Card card = myPlayCards.get(lists.get(i));
+                            if (calcCardBlood(card) > rivalAtc || card.isDivineShield() || card.isImmune()){
                                 oldFreeEatCount++;
                             }
                         }
+                        break;
                     }
                 }
-                for (Integer integer : list) {
-                    Card card = cards.get(integer);
-                    if (card.getHealth() - card.getDamage() > atc || card.isDivineShield()){
+//                计算新list的白吃数
+                for (Integer integer : indexList) {
+                    Card card = myPlayCards.get(integer);
+                    if (calcCardBlood(card) > rivalAtc || card.isDivineShield() || card.isImmune()){
                         newFreeEatCount++;
                     }
                 }
                 assert oldList != null;
-                if (oldFreeEatCount / oldList.size() < newFreeEatCount / temp.size()){
-                    result.remove(temp);
-                    result.add(temp);
+//                比较新旧list白吃率
+                if (oldFreeEatCount / oldList.size() < newFreeEatCount / tempIndexList.size()){
+                    result.remove(tempIndexList);
+                    result.add(tempIndexList);
                 }
             }else {
-                result.add(temp);
+                if (maxDeathCount != Integer.MAX_VALUE){
+                    int deathCount = 0;
+                    for (Integer integer : indexList) {
+                        Card card = myPlayCards.get(integer);
+//                        保证全部白吃才能添加
+                        if (calcCardBlood(card) <= rivalAtc && !card.isDivineShield() && !card.isImmune()){
+                            if (++deathCount > maxDeathCount){
+                                return;
+                            }
+                        }
+                    }
+                }
+                result.add(tempIndexList);
             }
             return;
-        }else if (index == cards.size()){
+        }else if (index == myPlayCards.size()){
             return;
         }
 
-        Card card = cards.get(index);
-        if (!card.isExhausted() && !card.isFrozen() && card.getAtc() > 0){
-            list.add(index);
-            atcSum += card.getAtc();
+        Card card = myPlayCards.get(index);
+        if (canMove(card)){
 //            选
-            calcFreeEatRivalTauntRecursive(result, cards, list, health, atc, atcSum, index + 1);
-            list.remove(list.size() - 1);
+            indexList.add(index);
+            atcSum += card.getAtc();
+            calcFreeEatRivalCardRecursive(result, myPlayCards, indexList, rivalBlood, rivalAtc, atcSum, index + 1, maxDeathCount);
+            indexList.remove(indexList.size() - 1);
             atcSum -= card.getAtc();
         }
 //        不选
-        calcFreeEatRivalTauntRecursive(result, cards, list, health, atc,  atcSum, index + 1);
+        calcFreeEatRivalCardRecursive(result, myPlayCards, indexList, rivalBlood, rivalAtc,  atcSum, index + 1, maxDeathCount);
     }
     /*action*/
     
@@ -362,27 +413,42 @@ public abstract class AbstractDeckStrategy{
         );
     }
     protected boolean myHandPointToMyPlay(int handIndex){
+        if (handIndex >= myHandCards.size()){
+            return false;
+        }
         Card card = myHandCards.get(handIndex);
         if (myPlayArea.isFull() || card.getCost() > getMyUsableResource()){
             return false;
         }
         myHandPointToMyPlayForBase(handIndex, myPlayCards.size(), true);
+        SystemUtil.delay(ACTION_INTERVAL);
+        log.info("当前可用水晶数：" + getMyUsableResource());
         return findByEntityId(myHandCards, card) == -1;
     }
-    protected boolean myHandPointToMyPlay(int handIndex, int playIndex){
-        Card card = myHandCards.get(handIndex);
+    protected boolean myHandPointToMyPlay(int myHandIndex, int myPlayIndex){
+        if (myHandIndex >= myHandCards.size() || myPlayIndex >= myPlayCards.size()){
+            return false;
+        }
+        Card card = myHandCards.get(myHandIndex);
         if (myPlayArea.isFull() || card.getCost() > getMyUsableResource()){
             return false;
         }
-        myHandPointToMyPlayForBase(handIndex, playIndex, true);
+        myHandPointToMyPlayForBase(myHandIndex, myPlayIndex, true);
+        SystemUtil.delay(ACTION_INTERVAL);
+        log.info("当前可用水晶数：" + getMyUsableResource());
         return findByEntityId(myHandCards, card) == -1;
     }
-    protected boolean myHandPointToMyPlayNoPlace(int handIndex, int playIndex){
-        Card card = myHandCards.get(handIndex);
-        if (card.getCost() > getMyUsableResource() || !canPointedToMe(myPlayCards.get(playIndex))){
+    protected boolean myHandPointToMyPlayNoPlace(int myHandIndex, int myPlayIndex){
+        if (myHandIndex >= myHandCards.size() || myPlayIndex >= myPlayCards.size()){
             return false;
         }
-        myHandPointToMyPlayForBase(handIndex, playIndex, false);
+        Card card = myHandCards.get(myHandIndex);
+        if (card.getCost() > getMyUsableResource() || !canSpellPointedToMe(myPlayCards.get(myPlayIndex))){
+            return false;
+        }
+        myHandPointToMyPlayForBase(myHandIndex, myPlayIndex, false);
+        SystemUtil.delay(ACTION_INTERVAL);
+        log.info("当前可用水晶数：" + getMyUsableResource());
         return findByEntityId(myHandCards, card) == -1;
     }
 
@@ -398,25 +464,29 @@ public abstract class AbstractDeckStrategy{
             playPos = getMyPlayCardPos(me.getPlayArea().getCards().size() + (insertGap? 1 : 0), playIndex);
         }
         myHandPointTo(handIndex, playPos);
-        SystemUtil.delay(ACTION_INTERVAL);
-        log.info("当前可用水晶数：" + getMyUsableResource());
         return playPos;
     }
 
-    protected boolean myHandPointToRivalPlayNoPlace(int handIndex, int playIndex){
-        Card card = myHandCards.get(handIndex);
-        if (card.getCost() > getMyUsableResource() || !canPointedToRival(myPlayCards.get(playIndex))){
+    protected boolean myHandPointToRivalPlayNoPlace(int myHandIndex, int rivalPlayIndex){
+        if (myHandIndex >= myHandCards.size() || rivalPlayIndex >= rivalPlayCards.size()){
+            return false;
+        }
+        Card card = myHandCards.get(myHandIndex);
+        if (card.getCost() > getMyUsableResource() || !canSpellPointedToRival(rivalPlayCards.get(rivalPlayIndex))){
             return false;
         }
         SystemUtil.updateRect(ScriptStaticData.getGameHWND(), GAME_RECT);
-        myHandPointTo(handIndex, getRivalPlayCardPos(me.getPlayArea().getCards().size(), playIndex));
+        myHandPointTo(myHandIndex, getRivalPlayCardPos(rival.getPlayArea().getCards().size(), rivalPlayIndex));
         SystemUtil.delay(ACTION_INTERVAL);
         log.info("当前可用水晶数：" + getMyUsableResource());
         return findByEntityId(myHandCards, card) == -1;
     }
     protected boolean myHandPointToRivalHeroNoPlace(int myHandIndex){
+        if (myHandIndex >= myHandCards.size()){
+            return false;
+        }
         Card card = myHandCards.get(myHandIndex);
-        if (card.getCost() > getMyUsableResource() || !canPointToRivalHero()){
+        if (card.getCost() > getMyUsableResource() || !canSpellPointedToRival(rivalPlayArea.getHero())){
             return false;
         }
         SystemUtil.updateRect(ScriptStaticData.getGameHWND(), GAME_RECT);
@@ -425,18 +495,23 @@ public abstract class AbstractDeckStrategy{
         log.info("当前可用水晶数：" + getMyUsableResource());
         return findByEntityId(myHandCards, card) == -1;
     }
-    protected boolean myHandPointToNoPlace(int handIndex){
-        Card card = myHandCards.get(handIndex);
+    protected boolean myHandPointToNoPlace(int myHandIndex){
+        if (myHandIndex >= myHandCards.size()){
+            return false;
+        }
+        Card card = myHandCards.get(myHandIndex);
         if (card.getCost() > getMyUsableResource()){
             return false;
         }
-        myHandPointToMyPlayForBase(handIndex, -1, false);
+        myHandPointToMyPlayForBase(myHandIndex, -1, false);
+        SystemUtil.delay(ACTION_INTERVAL);
+        log.info("当前可用水晶数：" + getMyUsableResource());
         return findByEntityId(myHandCards, card) == -1;
     }
     
 
     protected boolean myHeroPointToRivalHero(){
-        if (!canPointToRivalHero() || myPlayArea.getHero().isExhausted() || calcMyHeroTotalAtc() > 0){
+        if (!canPointedToRival(rivalPlayArea.getHero()) || !canMove(myPlayArea.getHero()) || calcMyHeroTotalAtc() <= 0){
            return false;
         }
         SystemUtil.updateRect(ScriptStaticData.getGameHWND(), GAME_RECT);
@@ -445,7 +520,7 @@ public abstract class AbstractDeckStrategy{
         return true;
     }
     protected boolean myHeroPointToRivalPlay(int rivalPlayIndex){
-        if (!canPointedToRival(rivalPlayCards.get(rivalPlayIndex)) || myPlayArea.getHero().isExhausted() || calcMyHeroTotalAtc() > 0){
+        if (rivalPlayIndex >= rivalPlayCards.size() || !canPointedToRival(rivalPlayCards.get(rivalPlayIndex)) || !canMove(myPlayArea.getHero()) || calcMyHeroTotalAtc() <= 0){
             return false;
         }
         SystemUtil.updateRect(ScriptStaticData.getGameHWND(), GAME_RECT);
@@ -463,8 +538,11 @@ public abstract class AbstractDeckStrategy{
 
 
     protected boolean myPlayPointToRivalHero(int myPlayIndex){
+        if (myPlayIndex >= myPlayCards.size()){
+            return false;
+        }
         Card card = myPlayCards.get(myPlayIndex);
-        if (!canPointToRivalHero() || !canMove(card)){
+        if (!canPointedToRival(rivalPlayArea.getHero()) || !canMove(card)){
             return false;
         }
         SystemUtil.updateRect(ScriptStaticData.getGameHWND(), GAME_RECT);
@@ -483,6 +561,9 @@ public abstract class AbstractDeckStrategy{
      * @param rivalPlayIndex
      */
     protected boolean myPlayPointToRivalPlay(int myPlayIndex, int rivalPlayIndex){
+        if (myPlayIndex >= myPlayCards.size() || rivalPlayIndex >= rivalPlayCards.size()){
+            return false;
+        }
         Card card = myPlayCards.get(myPlayIndex);
         if (!canPointedToRival(rivalPlayCards.get(rivalPlayIndex)) || !canMove(card)){
             return false;
@@ -525,19 +606,19 @@ public abstract class AbstractDeckStrategy{
         );
     }
 
-    protected boolean myHandPointToMyPlayThenPointToMyPlay(int handIndex, int playIndex, int thenPlayIndex){
-        if (myPlayArea.isFull() || myPlayCards.get(thenPlayIndex).isDormantAwakenConditionEnchant() || myHandCards.get(handIndex).getCost() > getMyUsableResource()){
+    protected boolean myHandPointToMyPlayThenPointToMyPlay(int myHandIndex, int myPlayIndex, int thenMyPlayIndex){
+        if (myHandIndex >= myHandCards.size() || myPlayArea.isFull() || myPlayCards.get(thenMyPlayIndex).isDormantAwakenConditionEnchant() || myHandCards.get(myHandIndex).getCost() > getMyUsableResource()){
             return false;
         }
-        int[] playPos = myHandPointToMyPlayForBase(handIndex, playIndex, true);
-        if (playIndex <= thenPlayIndex){
-            thenPlayIndex++;
+        int[] playPos = myHandPointToMyPlayForBase(myHandIndex, myPlayIndex, true);
+        if (myPlayIndex <= thenMyPlayIndex){
+            thenMyPlayIndex++;
         }
         SystemUtil.delayMedium();
         SystemUtil.updateRect(ScriptStaticData.getGameHWND(), GAME_RECT);
         mouseUtil.leftButtonMoveThenClick(
                 playPos,
-                getMyPlayCardPos(me.getPlayArea().getCards().size() + 1, thenPlayIndex)
+                getMyPlayCardPos(me.getPlayArea().getCards().size() + 1, thenMyPlayIndex)
         );
         SystemUtil.delay(ACTION_INTERVAL);
         log.info("当前可用水晶数：" + getMyUsableResource());
@@ -545,7 +626,7 @@ public abstract class AbstractDeckStrategy{
     }
 
     protected boolean myHandPointToMyPlayThenPointToRivalPlay(int myHandIndex, int myPlayIndex, int rivalPlayIndex){
-        if (myPlayArea.isFull() || !canPointedToRival(rivalPlayCards.get(rivalPlayIndex)) || myHandCards.get(myHandIndex).getCost() > getMyUsableResource()){
+        if (myHandIndex >= myHandCards.size() || rivalPlayIndex >= rivalPlayCards.size() || myPlayArea.isFull() || !canPointedToRival(rivalPlayCards.get(rivalPlayIndex)) || myHandCards.get(myHandIndex).getCost() > getMyUsableResource()){
             return false;
         }
         int[] playPos = myHandPointToMyPlayForBase(myHandIndex, myPlayIndex, true);
@@ -561,7 +642,7 @@ public abstract class AbstractDeckStrategy{
     }
 
     protected boolean myHandPointToMyPlayThenPointToRivalHero(int myHandIndex, int myPlayIndex){
-        if (myPlayArea.isFull() || !canPointToRivalHero() || myHandCards.get(myHandIndex).getCost() > getMyUsableResource()){
+        if (myHandIndex >= myHandCards.size() || myPlayArea.isFull() || !canPointedToRival(rivalPlayArea.getHero()) || myHandCards.get(myHandIndex).getCost() > getMyUsableResource()){
             return false;
         }
         int[] playPos = myHandPointToMyPlayForBase(myHandIndex, myPlayIndex, true);
@@ -587,7 +668,7 @@ public abstract class AbstractDeckStrategy{
                 (int) (firstCardPos + floatCardIndex * clearance) + RandomUtil.getRandom(-10, 10),
                 (GAME_RECT.bottom + GAME_RECT.top >> 1) + RandomUtil.getRandom(-15, 15)
         );
-        SystemUtil.delayMedium();
+        SystemUtil.delayShort();
     }
     /*exist*/
     /**
@@ -607,7 +688,7 @@ public abstract class AbstractDeckStrategy{
     protected int findCountByBlood(List<Card> cards, int blood){
         int count = 0;
         for (Card card : cards) {
-            if (card.getHealth() - card.getDamage() == blood){
+            if (calcCardBlood(card) == blood){
                 count++;
             }
         }
@@ -642,7 +723,7 @@ public abstract class AbstractDeckStrategy{
         for (int i = 0; i < cards.size(); i++) {
             Card card = cards.get(i);
             int atc = card.getAtc();
-            if ((atc > Math.max(atcMax, atcLine) || (atc == Math.max(atcMax, atcLine) && (index != -1 && card.getHealth() - card.getDamage() > cards.get(index).getHealth() - cards.get(index).getDamage()))) && !card.isWindFury()){
+            if ((atc > Math.max(atcMax, atcLine) || (atc == Math.max(atcMax, atcLine) && (index != -1 && calcCardBlood(card) > calcCardBlood(cards.get(index))))) && !card.isWindFury()){
                 index = i;
                 atcMax = atc;
             }
@@ -671,8 +752,8 @@ public abstract class AbstractDeckStrategy{
         int index = -1;
         for (int i = 0; i < cards.size(); i++) {
             Card card = cards.get(i);
-            if (card.getHealth() - card.getDamage() == blood
-                    && (!canLTBlood || card.getHealth() - card.getDamage() < blood)
+            if (
+                    (calcCardBlood(card) == blood || (canLTBlood && calcCardBlood(card) < blood))
                     && card.getAtc() > atk
                     && card.getAtc() <= maxAtc
             ){
@@ -726,6 +807,7 @@ public abstract class AbstractDeckStrategy{
         }
         return -1;
     }
+
     /**
      * 寻找指定cardId的card
      * @param cards
@@ -904,16 +986,20 @@ public abstract class AbstractDeckStrategy{
         return longCard != null && longCard.getCardId().contains(shortCard.cardId());
     }
 
-    protected boolean canPointToRivalHero(){
-        return canPointedToRival(rivalPlayArea.getHero());
-    }
     /**
      * 能否被指向
      * @param card
      * @return
      */
+    protected boolean canSpellPointedToRival(Card card){
+        return canPointedToRival(card) && !isImmunityMagic(card);
+    }
+
+    protected boolean canSpellPointedToMe(Card card){
+        return canPointedToMe(card) && !isImmunityMagic(card);
+    }
     protected boolean canPointedToRival(Card card){
-        return !(card.isImmune() || card.isStealth() || card.isDormantAwakenConditionEnchant() || isImmunityMagic(card));
+        return !(card.isImmune() || card.isStealth() || card.isDormantAwakenConditionEnchant());
     }
 
     protected boolean canPointedToMe(Card card){
@@ -930,6 +1016,6 @@ public abstract class AbstractDeckStrategy{
     }
 
     protected boolean canMove(Card card){
-        return !(card.isExhausted() || card.isFrozen() || card.isDormantAwakenConditionEnchant());
+        return !(card.isExhausted() || card.isFrozen() || card.isDormantAwakenConditionEnchant() || card.getAtc() <= 0);
     }
 }

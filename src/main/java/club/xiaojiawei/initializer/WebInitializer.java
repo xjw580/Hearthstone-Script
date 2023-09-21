@@ -6,14 +6,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import java.awt.*;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.Objects;
 import java.util.Properties;
 
-import static club.xiaojiawei.data.ScriptStaticData.ROBOT;
 import static club.xiaojiawei.enums.ConfigurationKeyEnum.AUTO_OPEN_KEY;
 
 /**
@@ -27,10 +22,10 @@ public class WebInitializer extends AbstractInitializer{
     @Resource
     private SpringData springData;
     @Resource
-    private Properties scriptProperties;
+    private Properties scriptConfiguration;
     @Override
     public void exec(){
-        if (Objects.equals(scriptProperties.getProperty(AUTO_OPEN_KEY.getKey()), "true")){
+        if (Objects.equals(scriptConfiguration.getProperty(AUTO_OPEN_KEY.getKey()), "true")){
             SystemUtil.openUrlByBrowser("http://127.0.0.1:" + springData.getServerPort());
         }
         if (nextInitializer != null){

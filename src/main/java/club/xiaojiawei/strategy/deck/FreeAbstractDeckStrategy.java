@@ -47,7 +47,7 @@ public class FreeAbstractDeckStrategy extends AbstractDeckStrategy {
         for (int i = rivalPlayCards.size() - 1; i >= 0; i--) {
             Card card = rivalPlayCards.get(i);
             if (card.isTaunt() && !card.isStealth()){
-                List<Integer> result = calcFreeEatRivalTaunt(card);
+                List<Integer> result = calcEatRivalCard(card);
                 if (result == null){
 //                    过墙失败
                     throughWall = false;

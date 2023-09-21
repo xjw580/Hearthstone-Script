@@ -8,8 +8,6 @@ import club.xiaojiawei.bean.entity.ExtraEntity;
 import club.xiaojiawei.bean.Player;
 import club.xiaojiawei.bean.area.Area;
 import club.xiaojiawei.status.War;
-import club.xiaojiawei.strategy.AbstractPhaseStrategy;
-import club.xiaojiawei.utils.PowerLogUtil;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
@@ -29,7 +27,7 @@ import static club.xiaojiawei.data.ScriptStaticData.*;
 @AllArgsConstructor
 public enum TagEnum {
     /**
-     * 调度标签，在 {@link AbstractPhaseStrategy} 里使用
+     * 调度标签
      */
     MULLIGAN_STATE("MULLIGAN_STATE", "调度阶段",
             null,
@@ -155,7 +153,7 @@ public enum TagEnum {
     /*++++++++++++++++++++++++++++++++++*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
     /**
      * 卡牌属性标签-复杂TAG_CHANGE
-     * 和{@link Card}和{@link Card#byExtraEntityUpdate(ExtraEntity)}里添加
+     * 和{@link Card}和{@link Card#updateByExtraEntity(ExtraEntity)}里添加
      */
     HEALTH("HEALTH", "生命值",
             (card, tagChangeEntity, player, area) -> {
@@ -364,6 +362,19 @@ public enum TagEnum {
             null,
             (extraEntity, value) -> {
                 extraEntity.getExtraCard().setCreator(value);
+            }),
+    TITAN("TITAN", "泰坦",
+            null,
+            (extraEntity, value) -> {
+                extraEntity.getExtraCard().setTitan(isTrue(value));
+            }),
+    SPELLPOWER("SPELLPOWER", "法强",
+            (card, tagChangeEntity, player, area) -> {
+                card.setSpellPower(Integer.parseInt(tagChangeEntity.getValue()));
+                log(player, card, "法强", tagChangeEntity.getValue());
+            },
+            (extraEntity, value) -> {
+                extraEntity.getExtraCard().setSpellPower(Integer.parseInt(value));
             }),
     /*+++++++++++++++++++++++++++++++++++++++++++++++*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
     UNKNOWN("UNKNOWN", "未知",

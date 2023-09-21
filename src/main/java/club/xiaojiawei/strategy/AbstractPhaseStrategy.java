@@ -38,12 +38,13 @@ public abstract class AbstractPhaseStrategy{
     @Resource
     protected AtomicReference<BooleanProperty> isPause;
     @Resource
-    protected Properties scriptProperties;
+    protected Properties scriptConfiguration;
     /**
      * 告诉Power.log监听器，AbstractPhaseStrategy是否正在处理日志
      */
     @Getter
     private volatile static boolean dealing;
+    private String lastDiscoverEntityId;
 
     public void deal(String line) {
         dealing = true;
@@ -63,15 +64,18 @@ public abstract class AbstractPhaseStrategy{
                 if (line == null) {
                     mark = accessFile.getFilePointer();
                     SystemUtil.delay(1000);
-                    if (accessFile.length() <= mark){
+                    if (accessFile.length() <= mark && War.getMe() != null){
                         List<Card> cards = War.getMe().getSetasideArea().getCards();
                         int size = cards.size();
-                        if (size >= 3
+                        if (
+                                size >= 3
+                                && !Objects.equals(lastDiscoverEntityId, cards.get(cards.size() - 1).getEntityId())
                                 && Objects.equals(cards.get(size - 1).getCreator(), cards.get(size - 2).getCreator())
                                 && Objects.equals(cards.get(size - 1).getCreator(), cards.get(size - 3).getCreator())
                         ){
                             log.info("触发发现动作");
-                            DeckEnum.valueOf(scriptProperties.getProperty(ConfigurationKeyEnum.DECK_KEY.getKey())).getAbstractDeckStrategy().discoverChooseCard(cards.get(size - 3), cards.get(size - 2), cards.get(size - 1));
+                            lastDiscoverEntityId = cards.get(cards.size() - 1).getEntityId();
+                            DeckEnum.valueOf(scriptConfiguration.getProperty(ConfigurationKeyEnum.DECK_KEY.getKey())).getAbstractDeckStrategy().discoverChooseCard(cards.get(size - 3), cards.get(size - 2), cards.get(size - 1));
                         }
                     }
                 }else if (powerLogListener.isRelevance(line)){
@@ -88,6 +92,10 @@ public abstract class AbstractPhaseStrategy{
                         }
                     }else if (line.contains(FULL_ENTITY)){
                         if (dealFullEntityThenIsOver(line, PowerLogUtil.dealFullEntity(line, accessFile))){
+                            break;
+                        }
+                    }else if (line.contains(CHANGE_ENTITY)){
+                        if (dealChangeEntityThenIsOver(line, PowerLogUtil.dealChangeEntity(line, accessFile))){
                             break;
                         }
                     }else {
@@ -109,8 +117,19 @@ public abstract class AbstractPhaseStrategy{
         log.info(War.getCurrentPhase().getComment() + " -> 结束");
     }
 
-    protected abstract boolean dealTagChangeThenIsOver(String line, TagChangeEntity tagChangeEntity);
-    protected abstract boolean dealShowEntityThenIsOver(String line, ExtraEntity extraEntity);
-    protected abstract boolean dealFullEntityThenIsOver(String line, ExtraEntity extraEntity);
-    protected abstract boolean dealOtherThenIsOver(String line);
+    protected boolean dealTagChangeThenIsOver(String line, TagChangeEntity tagChangeEntity){
+        return false;
+    }
+    protected boolean dealShowEntityThenIsOver(String line, ExtraEntity extraEntity){
+        return false;
+    }
+    protected boolean dealFullEntityThenIsOver(String line, ExtraEntity extraEntity){
+        return false;
+    }
+    protected boolean dealChangeEntityThenIsOver(String line, ExtraEntity extraEntity){
+        return false;
+    }
+    protected boolean dealOtherThenIsOver(String line){
+        return false;
+    }
 }

@@ -2,6 +2,7 @@ package club.xiaojiawei.core;
 
 import club.xiaojiawei.controller.JavaFXDashboardController;
 import club.xiaojiawei.controller.JavaFXInitSettingsController;
+import club.xiaojiawei.custom.LogRunnable;
 import club.xiaojiawei.data.ScriptStaticData;
 import club.xiaojiawei.enums.DeckEnum;
 import club.xiaojiawei.enums.ModeEnum;
@@ -24,6 +25,9 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -60,7 +64,7 @@ public class Core implements ApplicationRunner {
             return;
         }
         Work.setWorking(true);
-        coreThreadPool.execute(() -> {
+        coreThreadPool.execute(new LogRunnable(() -> {
             if (!ScriptStaticData.isSetPath()){
                 SystemUtil.notice("需要配置" + ScriptStaticData.GAME_CN_NAME + "和" + ScriptStaticData.PLATFORM_CN_NAME + "的路径");
                 Platform.runLater(() -> javaFXInitSettingsController.showStage());
@@ -70,7 +74,7 @@ public class Core implements ApplicationRunner {
                 log.info("热键：Ctrl+P 开始/停止程序,Alt+P 关闭程序");
                 starter.start();
             }
-        });
+        }));
     }
 
     /**

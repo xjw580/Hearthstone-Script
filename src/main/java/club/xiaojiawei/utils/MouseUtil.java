@@ -153,7 +153,7 @@ public class MouseUtil {
         return (int) (pixelY / ScriptStaticData.DISPLAY_SCALE_Y);
     }
     public static void cancel(){
-        SystemUtil.delayMedium();
+        SystemUtil.delay(1000);
 //        点击右键
         ScriptStaticData.ROBOT.mousePress(BUTTON3_DOWN_MASK);
         SystemUtil.delay(200);

@@ -24,18 +24,4 @@ public class SpecialEffectTriggerAbstractPhaseStrategy extends AbstractPhaseStra
         return tagChangeEntity.getTag() == TagEnum.STEP && Objects.equals(tagChangeEntity.getValue(), MAIN_READY.getValue());
     }
 
-    @Override
-    protected boolean dealShowEntityThenIsOver(String line, ExtraEntity extraEntity) {
-        return false;
-    }
-
-    @Override
-    protected boolean dealFullEntityThenIsOver(String line, ExtraEntity extraEntity) {
-        return false;
-    }
-
-    @Override
-    protected boolean dealOtherThenIsOver(String line) {
-        return false;
-    }
 }

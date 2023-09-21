@@ -14,6 +14,7 @@ import java.util.Properties;
 import java.util.ResourceBundle;
 
 import static club.xiaojiawei.enums.ConfigurationKeyEnum.AUTO_OPEN_KEY;
+import static club.xiaojiawei.enums.ConfigurationKeyEnum.STRATEGY_KEY;
 
 /**
  * @author 肖嘉威
@@ -26,19 +27,29 @@ public class JavaFXAdvancedSettingsController implements Initializable {
 
     @FXML
     private Switch webSwitch;
+    @FXML
+    private Switch strategySwitch;
     @Resource
-    private Properties scriptProperties;
+    private Properties scriptConfiguration;
     @Resource
     private PropertiesUtil propertiesUtil;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        if (Objects.equals(scriptProperties.getProperty(AUTO_OPEN_KEY.getKey()), "true")){
+        if (Objects.equals(scriptConfiguration.getProperty(AUTO_OPEN_KEY.getKey()), "true")){
             webSwitch.setStatus(true);
+        }
+        if (Objects.equals(scriptConfiguration.getProperty(STRATEGY_KEY.getKey()), "true")){
+            strategySwitch.setStatus(true);
         }
 //        监听web界面开关
         webSwitch.statusProperty().addListener((observable, oldValue, newValue) -> {
-            scriptProperties.setProperty(AUTO_OPEN_KEY.getKey(), String.valueOf(newValue));
+            scriptConfiguration.setProperty(AUTO_OPEN_KEY.getKey(), String.valueOf(newValue));
+            propertiesUtil.storeScriptProperties();
+        });
+//        监听策略开关
+        strategySwitch.statusProperty().addListener((observable, oldValue, newValue) -> {
+            scriptConfiguration.setProperty(STRATEGY_KEY.getKey(), String.valueOf(newValue));
             propertiesUtil.storeScriptProperties();
         });
     }

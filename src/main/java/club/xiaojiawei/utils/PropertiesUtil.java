@@ -21,11 +21,11 @@ public class PropertiesUtil {
     @Resource
     private SpringData springData;
     @Resource
-    private Properties scriptProperties;
+    private Properties scriptConfiguration;
 
     public void storeScriptProperties(){
         try(FileOutputStream fileOutputStream = new FileOutputStream(springData.getScriptConfigurationFile())){
-            scriptProperties.store(fileOutputStream, ScriptStaticData.AUTHOR);
+            scriptConfiguration.store(fileOutputStream, ScriptStaticData.AUTHOR);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -36,14 +36,14 @@ public class PropertiesUtil {
             if (!new File(path + "/" + ScriptStaticData.GAME_PROGRAM_NAME).exists()){
                 return false;
             }
-            scriptProperties.setProperty(ConfigurationKeyEnum.GAME_PATH_KEY.getKey(), path);
+            scriptConfiguration.setProperty(ConfigurationKeyEnum.GAME_PATH_KEY.getKey(), path);
             storeScriptProperties();
             return true;
         }
         return false;
     }
     public void storePlatformPath(String path){
-        scriptProperties.setProperty(ConfigurationKeyEnum.PLATFORM_PATH_KEY.getKey(), path);
+        scriptConfiguration.setProperty(ConfigurationKeyEnum.PLATFORM_PATH_KEY.getKey(), path);
         storeScriptProperties();
     }
     public boolean storePath(String gamePath, String platformPath){

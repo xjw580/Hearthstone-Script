@@ -22,19 +22,4 @@ public class FillDeckAbstractPhaseStrategy extends AbstractPhaseStrategy {
         return tagChangeEntity.getTag() == TagEnum.TURN && Objects.equals(tagChangeEntity.getValue(), "1");
     }
 
-    @Override
-    protected boolean dealShowEntityThenIsOver(String line, ExtraEntity extraEntity) {
-        return false;
-    }
-
-    @Override
-    protected boolean dealFullEntityThenIsOver(String line, ExtraEntity extraEntity) {
-        return false;
-    }
-
-    @Override
-    protected boolean dealOtherThenIsOver(String line) {
-        return false;
-    }
-
 }

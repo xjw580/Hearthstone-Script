@@ -10,8 +10,6 @@ game:
         deck: /Decks.log
 
 script:
-  #是否执行套牌策略
-  strategy: true
   version: '@project.version@'
   path: ${PROGRAMDATA:C:\ProgramData}/hs_script/
   configuration:

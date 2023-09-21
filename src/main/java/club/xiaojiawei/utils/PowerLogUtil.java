@@ -16,6 +16,7 @@ import org.apache.logging.log4j.util.Strings;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 
 import static club.xiaojiawei.data.ScriptStaticData.*;
 import static club.xiaojiawei.enums.TagEnum.UNKNOWN;
@@ -42,7 +43,7 @@ public class PowerLogUtil {
         }else {
             card = War.exchangeAreaOfCard(extraEntity);
         }
-        card.byExtraEntityUpdate(extraEntity);
+        card.updateByExtraEntity(extraEntity);
         return extraEntity;
     }
 
@@ -57,12 +58,22 @@ public class PowerLogUtil {
         if (CARD_AREA_MAP.get(extraEntity.getEntityId()) == null){
             Area area;
             Card card = new Card();
-            card.byExtraEntityUpdate(extraEntity);
+            card.updateByExtraEntity(extraEntity);
             area = War.getPlayer(extraEntity.getPlayerId()).getArea(extraEntity.getExtraCard().getZone());
             area.add(card, extraEntity.getExtraCard().getZonePos());
         }else {
-            log.warn("dealFullEntity中发现entityId重复，将不会生成新Card");
+            if (log.isDebugEnabled()){
+                log.debug("dealFullEntity中发现entityId重复，将不会生成新Card");
+            }
         }
+        return extraEntity;
+    }
+    public static ExtraEntity dealChangeEntity(String line, RandomAccessFile accessFile){
+        ExtraEntity extraEntity = parseExtraEntity(line, accessFile, CHANGE_ENTITY);
+        Card card = CARD_AREA_MAP.get(extraEntity.getEntityId()).findByEntityId(extraEntity.getEntityId());
+        log.info("玩家"+ extraEntity.getPlayerId() + "【" + War.getPlayer(extraEntity.getPlayerId()).getGameId() + "】 的 【entityId:" + extraEntity.getEntityId() + "】 由 【entityName:" + card.getEntityName() + "，cardId:" + card.getCardId() + "】 变形成了 【entityName:，cardId:" + extraEntity.getCardId() + "】");
+        extraEntity.setEntityName("");
+        card.updateByExtraEntity(extraEntity);
         return extraEntity;
     }
 
@@ -159,13 +170,13 @@ public class PowerLogUtil {
         int entityIdIndex = line.lastIndexOf("id", zoneIndex);
         int cardTypeIndex = line.lastIndexOf("cardType", entityIdIndex);
         int entityNameIndex = line.lastIndexOf("entityName", entityIdIndex);
-        commonEntity.setCardId(line.substring(cardIdIndex + 7, playerIndex).strip());
+        int cardIDIndex = line.lastIndexOf("CardID");
+        if (cardIDIndex != -1) {
+            commonEntity.setCardId(line.substring(cardIDIndex + 7).strip());
+        }
         if (Strings.isBlank(commonEntity.getCardId())) {
             //noinspection AlibabaLowerCamelCaseVariableNaming
-            int cardIDIndex = line.lastIndexOf("CardID");
-            if (cardIDIndex != -1) {
-                commonEntity.setCardId(line.substring(cardIDIndex + 7).strip());
-            }
+            commonEntity.setCardId(line.substring(cardIdIndex + 7, playerIndex).strip());
         }
         commonEntity.setPlayerId(line.substring(playerIndex + 7, index).strip());
         commonEntity.setZone(ZoneEnum.valueOf(line.substring(zoneIndex + 5, zonePosIndex).strip()));
@@ -173,6 +184,7 @@ public class PowerLogUtil {
         commonEntity.setEntityId(line.substring(entityIdIndex + 3, zoneIndex).strip());
         commonEntity.setEntityName(iso88591_To_utf8(line.substring(entityNameIndex + 11, cardTypeIndex == -1? entityIdIndex : cardTypeIndex - 1).strip()));
     }
+
 
     public static String iso88591_To_utf8(String s){
         return s == null? null : new String(s.getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8);
@@ -224,6 +236,6 @@ public class PowerLogUtil {
      * @param args
      */
     public static void main(String[] args) {
-        decontamination("D:\\soft\\game\\Hearthstone\\Logs\\Hearthstone_2023_09_20_21_29_48", true);
+        decontamination("D:\\soft\\game\\Hearthstone\\Logs\\Hearthstone_2023_09_21_22_49_34", true);
     }
 }

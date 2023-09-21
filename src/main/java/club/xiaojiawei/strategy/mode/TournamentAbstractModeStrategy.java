@@ -39,7 +39,7 @@ import static club.xiaojiawei.data.GameRationStaticData.FIRST_ROW_DECK_VERTICAL_
 public class TournamentAbstractModeStrategy extends AbstractModeStrategy<Object> {
 
     @Resource
-    private Properties scriptProperties;
+    private Properties scriptConfiguration;
     @Resource
     private PowerLogListener powerLogListener;
     private static ScheduledFuture<?> scheduledFuture;
@@ -60,7 +60,7 @@ public class TournamentAbstractModeStrategy extends AbstractModeStrategy<Object>
             scheduledFuture.cancel(true);
         }
         if (errorScheduledFuture != null && !errorScheduledFuture.isDone()){
-            log.info("已取消网络错误再次匹配任务");
+            log.info("已取消再次匹配任务");
             errorScheduledFuture.cancel(true);
         }
     }
@@ -91,8 +91,8 @@ public class TournamentAbstractModeStrategy extends AbstractModeStrategy<Object>
     protected void afterEnter(Object o) {
         if (Work.canWork()){
             SystemUtil.updateRect(ScriptStaticData.getGameHWND(), ScriptStaticData.GAME_RECT);
-            if (ModeEnum.TOURNAMENT == RunModeEnum.valueOf(scriptProperties.getProperty(ConfigurationKeyEnum.RUN_MODE_KEY.getKey())).getModeEnum()){
-                 currentDeck = DeckEnum.valueOf(scriptProperties.getProperty(ConfigurationKeyEnum.DECK_KEY.getKey()));
+            if (ModeEnum.TOURNAMENT == RunModeEnum.valueOf(scriptConfiguration.getProperty(ConfigurationKeyEnum.RUN_MODE_KEY.getKey())).getModeEnum()){
+                 currentDeck = DeckEnum.valueOf(scriptConfiguration.getProperty(ConfigurationKeyEnum.DECK_KEY.getKey()));
                 if (!currentDeck.getRunMode().isEnable()){
                     log.warn("不可用或不支持的模式：" + currentDeck.getValue());
                     return;
@@ -200,8 +200,8 @@ public class TournamentAbstractModeStrategy extends AbstractModeStrategy<Object>
     public void generateTimer(){
         errorScheduledFuture = extraThreadPool.schedule(new LogRunnable(() -> {
             if (!isPause.get().get()){
-                log.info("游戏网络出现问题，匹配失败，再次匹配中");
-                SystemUtil.notice("游戏网络出现问题，匹配失败，再次匹配中");
+                log.info("匹配失败，再次匹配中");
+                SystemUtil.notice("匹配失败，再次匹配中");
                 SystemUtil.updateRect(ScriptStaticData.getGameHWND(), ScriptStaticData.GAME_RECT);
 //                点击取消匹配按钮
                 mouseUtil.leftButtonClick(

@@ -1,5 +1,6 @@
 package club.xiaojiawei;
 
+import club.xiaojiawei.custom.LogRunnable;
 import club.xiaojiawei.data.ScriptStaticData;
 import club.xiaojiawei.data.SpringData;
 import club.xiaojiawei.enums.DeckEnum;
@@ -14,14 +15,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.kordamp.bootstrapfx.BootstrapFX;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.Resource;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Objects;
 import java.util.Properties;
@@ -40,7 +42,7 @@ import static club.xiaojiawei.enums.ConfigurationKeyEnum.DECK_KEY;
 @Slf4j
 public class UIApplication extends Application {
     @Resource
-    private Properties scriptProperties;
+    private Properties scriptConfiguration;
     @Resource
     private SpringData springData;
     private static AtomicReference<JFrame> frame;
@@ -78,7 +80,7 @@ public class UIApplication extends Application {
         });
         SystemUtil.addTray(MAIN_ICO_NAME, ScriptStaticData.SCRIPT_NAME, show, quit);
         frame = FrameUtil.createAlwaysTopWindow(ScriptStaticData.SCRIPT_NAME, scene, width, height, ScriptStaticData.SCRIPT_ICON_PATH);
-        DeckEnum deckEnum = DeckEnum.valueOf(scriptProperties.getProperty(DECK_KEY.getKey()));
+        DeckEnum deckEnum = DeckEnum.valueOf(scriptConfiguration.getProperty(DECK_KEY.getKey()));
         log.info(deckEnum.getComment() + "卡组代码：" + deckEnum.getDeckCode());
         if (SystemUtil.pasteClipboard(deckEnum.getDeckCode())){
             log.info(deckEnum.getComment() + "卡组代码已经粘贴到剪切板");

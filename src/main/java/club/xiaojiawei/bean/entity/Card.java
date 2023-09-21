@@ -103,13 +103,17 @@ public class Card extends Entity{
      */
     private boolean modular;
     private String creator;
-
     /**
      * 衍生物
      */
     private boolean premium;
 
     private String controller;
+    /**
+     * 泰坦
+     */
+    private boolean titan;
+    private int spellPower;
     public Card() {
     }
     public Card(CommonEntity commonEntity) {
@@ -118,7 +122,7 @@ public class Card extends Entity{
         cardId = commonEntity.getCardId();
     }
 
-    public void byExtraEntityUpdate(ExtraEntity extraEntity){
+    public void updateByExtraEntity(ExtraEntity extraEntity){
         ExtraCard extraCard = extraEntity.getExtraCard();
         cardId = extraEntity.cardId;
         entityId = extraEntity.entityId;
@@ -153,6 +157,8 @@ public class Card extends Entity{
         modular = extraCard.isModular();
         controller = extraCard.getController();
         creator = extraCard.getCreator();
+        titan = extraCard.isTitan();
+        spellPower = extraCard.getSpellPower();
     }
 
 }
