@@ -1,16 +1,14 @@
 package club.xiaojiawei.controller;
 
+import club.xiaojiawei.bean.Release;
 import club.xiaojiawei.controls.Switch;
 import club.xiaojiawei.custom.LogRunnable;
-import club.xiaojiawei.data.SpringData;
-import club.xiaojiawei.entity.Release;
 import club.xiaojiawei.enums.DeckEnum;
 import club.xiaojiawei.enums.RunModeEnum;
 import club.xiaojiawei.listener.VersionListener;
 import club.xiaojiawei.status.Work;
 import club.xiaojiawei.utils.DashboardUtil;
 import club.xiaojiawei.utils.FrameUtil;
-import club.xiaojiawei.utils.PropertiesUtil;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -26,9 +24,7 @@ import javafx.scene.text.Text;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.Resource;
 import java.io.*;
@@ -92,15 +88,9 @@ public class JavaFXDashboardController implements Initializable {
     @Resource
     private AtomicReference<BooleanProperty> isPause;
     @Resource
-    private RestTemplate restTemplate;
-    @Resource
-    private SpringData springData;
-    @Resource
-    private Properties scriptProperties;
+    private Properties scriptConfiguration;
     @Resource
     private JavaFXInitSettingsController javaFXInitSettingsController;
-    @Autowired
-    private PropertiesUtil propertiesUtil;
     @Resource
     private Work work;
     @Resource
@@ -247,7 +237,7 @@ public class JavaFXDashboardController implements Initializable {
         updateBack = update;
         version.setText("当前版本：" + VersionListener.getCurrentVersion());
 //        初始化模式和卡组
-        DeckEnum deckEnum = DeckEnum.valueOf(scriptProperties.getProperty(DECK_KEY.getKey()));
+        DeckEnum deckEnum = DeckEnum.valueOf(scriptConfiguration.getProperty(DECK_KEY.getKey()));
         currentRunMode = deckEnum.getRunMode();
         ObservableList runModeBoxItems = runModeBox.getItems();
         RunModeEnum[] values = RunModeEnum.values();

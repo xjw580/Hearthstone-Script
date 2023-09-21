@@ -2,7 +2,6 @@ package club.xiaojiawei.utils;
 
 import club.xiaojiawei.enums.DeckEnum;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -21,15 +20,15 @@ import static club.xiaojiawei.enums.ConfigurationKeyEnum.RUN_MODE_KEY;
 @Slf4j
 public class DashboardUtil {
     @Resource
-    private Properties scriptProperties;
+    private Properties scriptConfiguration;
     @Resource
     private PropertiesUtil propertiesUtil;
     public void changeDeck(String deckComment){
-        if (!Objects.equals(DeckEnum.valueOf(scriptProperties.getProperty(DECK_KEY.getKey())).getComment(), deckComment)){
-            scriptProperties.setProperty(RUN_MODE_KEY.getKey(), DeckEnum.valueOf(scriptProperties.getProperty(DECK_KEY.getKey())).getRunMode().getValue());
+        if (!Objects.equals(DeckEnum.valueOf(scriptConfiguration.getProperty(DECK_KEY.getKey())).getComment(), deckComment)){
+            scriptConfiguration.setProperty(RUN_MODE_KEY.getKey(), DeckEnum.valueOf(scriptConfiguration.getProperty(DECK_KEY.getKey())).getRunMode().getValue());
             for (DeckEnum anEnum : DeckEnum.values()) {
                 if (Objects.equals(deckComment, anEnum.getComment())){
-                    scriptProperties.setProperty(DECK_KEY.getKey(), anEnum.getValue());
+                    scriptConfiguration.setProperty(DECK_KEY.getKey(), anEnum.getValue());
                     break;
                 }
             }

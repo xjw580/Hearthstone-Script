@@ -1,6 +1,7 @@
 package club.xiaojiawei.status;
 
 import club.xiaojiawei.enums.ModeEnum;
+import lombok.Getter;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 
@@ -13,7 +14,9 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class Mode{
 
+    @Getter
     private static ModeEnum currMode;
+    @Getter
     private static ModeEnum prevMode;
 
     public static void setCurrMode(ModeEnum currMode) {
@@ -26,14 +29,6 @@ public class Mode{
         Mode.prevMode = Mode.currMode;
         Mode.currMode = currMode;
         Mode.currMode.getAbstractModeStrategy().entering();
-    }
-
-    public static ModeEnum getCurrMode() {
-        return currMode;
-    }
-
-    public static ModeEnum getPrevMode() {
-        return prevMode;
     }
 
     public static void reset(){

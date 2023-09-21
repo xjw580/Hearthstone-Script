@@ -1,27 +1,23 @@
 package club.xiaojiawei.strategy.phase;
 
-import club.xiaojiawei.data.GameStaticData;
-import club.xiaojiawei.data.ScriptStaticData;
-import club.xiaojiawei.entity.TagChangeEntity;
+import club.xiaojiawei.bean.entity.TagChangeEntity;
+import club.xiaojiawei.custom.LogRunnable;
 import club.xiaojiawei.enums.ConfigurationKeyEnum;
 import club.xiaojiawei.enums.DeckEnum;
 import club.xiaojiawei.enums.StepEnum;
-import club.xiaojiawei.listener.ScreenFileListener;
 import club.xiaojiawei.status.War;
 import club.xiaojiawei.strategy.AbstractPhaseStrategy;
-import club.xiaojiawei.utils.PowerLogUtil;
 import club.xiaojiawei.utils.SystemUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import java.io.IOException;
-import java.io.RandomAccessFile;
 import java.util.Objects;
 import java.util.Properties;
 
+import static club.xiaojiawei.enums.MulliganStateEnum.INPUT;
+import static club.xiaojiawei.enums.TagEnum.MULLIGAN_STATE;
 import static club.xiaojiawei.enums.TagEnum.NEXT_STEP;
-import static club.xiaojiawei.enums.WarPhaseEnum.GAME_OVER_PHASE;
 
 /**
  * @author 肖嘉威
@@ -29,51 +25,42 @@ import static club.xiaojiawei.enums.WarPhaseEnum.GAME_OVER_PHASE;
  */
 @Slf4j
 @Component
-public class ReplaceCardAbstractPhaseStrategy extends AbstractPhaseStrategy<String> {
+public class ReplaceCardAbstractPhaseStrategy extends AbstractPhaseStrategy{
 
-    private static final float CONFIRM_BUTTON_VERTICAL_TO_BOTTOM_RATION = (float) 0.20;
     @Resource
-    private Properties scriptProperties;
+    private Properties scriptConfiguration;
+    private static Thread thread;
+
+    @SuppressWarnings("all")
+    public static void stopThread(){
+        try{
+            if (thread != null && thread.isAlive()){
+                thread.stop();
+                log.info("换牌线程已停止");
+            }
+        }catch (Exception e){
+            log.warn("换牌线程已停止");
+        }
+    }
 
     @Override
-    protected void execute(String l, RandomAccessFile accessFile) {
-//        等待动画结束
-        ScriptStaticData.ROBOT.delay(20_000);
-//        执行换牌策略
-        DeckEnum.valueOf(scriptProperties.getProperty(ConfigurationKeyEnum.DECK_KEY.getKey())).getAbstractDeckStrategy().changeCard();
-        SystemUtil.delayMedium();
-        TagChangeEntity tagChangeEntity;
-        while (true) {
-            if (isPause.get().get()){
-                return;
+    protected boolean dealTagChangeThenIsOver(String line, TagChangeEntity tagChangeEntity) {
+        if (tagChangeEntity.getTag() == MULLIGAN_STATE && Objects.equals(tagChangeEntity.getValue(), INPUT.getValue())){
+            String gameId = tagChangeEntity.getEntity();
+            if (Objects.equals(War.getMe().getGameId(), gameId) || (War.getRival().getGameId() != null && !Objects.equals(War.getRival().getGameId(), gameId))){
+                //            等待动画
+                stopThread();
+                //        执行换牌策略
+                (thread = new Thread(new LogRunnable(() -> {
+//                    因为傻逼畸变模式导致开局动画增加，这又加了4.5秒
+                    SystemUtil.delay(24_500);
+                    DeckEnum.valueOf(scriptConfiguration.getProperty(ConfigurationKeyEnum.DECK_KEY.getKey())).getAbstractDeckStrategy().changeCard();
+                }))).start();
             }
-            try {
-                if ((l = accessFile.readLine()) == null) {
-                    if (accessFile.getFilePointer() > accessFile.length()){
-                        accessFile.seek(0);
-                    }else {
-                        ScriptStaticData.ROBOT.delay(1_000);
-                    }
-                }else if (powerFileListener.isRelevance(l)){
-                    ScreenFileListener.setMark(System.currentTimeMillis());
-                    if (l.contains(GameStaticData.SHOW_ENTITY)){
-                        PowerLogUtil.dealShowEntity(l, accessFile);
-                    }else if (l.contains(GameStaticData.TAG_CHANGE)){
-                        tagChangeEntity = PowerLogUtil.parseTagChange(l);
-                        if (!PowerLogUtil.dealTagChange(tagChangeEntity)){
-                            if (tagChangeEntity.getTag() == NEXT_STEP && Objects.equals(StepEnum.MAIN_READY.getValue(), tagChangeEntity.getValue())){
-                                break;
-                            }else if (Objects.equals(tagChangeEntity.getValue(), StepEnum.FINAL_GAMEOVER.getValue())){
-                                War.setCurrentPhase(GAME_OVER_PHASE, l);
-                                break;
-                            }
-                        }
-                    }
-                }
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+        }else {
+            return tagChangeEntity.getTag() == NEXT_STEP && Objects.equals(StepEnum.MAIN_READY.getValue(), tagChangeEntity.getValue());
         }
+        return false;
     }
 
 }

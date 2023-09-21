@@ -36,7 +36,7 @@ public class ThreadPoolConfig {
      */
     @Bean
     public ScheduledThreadPoolExecutor listenFileThreadPool(){
-        return new ScheduledThreadPoolExecutor(3, new ThreadFactory() {
+        return new ScheduledThreadPoolExecutor(4, new ThreadFactory() {
             private final AtomicInteger num = new AtomicInteger(0);
             @Override
             public Thread newThread(Runnable r) {

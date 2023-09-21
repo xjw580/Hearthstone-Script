@@ -41,13 +41,13 @@ public class Work {
     private static AtomicReference<BooleanProperty> isPause;
     private static Core core;
     @Resource
-    public void setScriptProperties(Properties scriptProperties) {
-        Work.scriptProperties = scriptProperties;
-        String workDayFlagStr = scriptProperties.getProperty(WORK_DAY_FLAG_KEY.getKey());
+    public void setScriptProperties(Properties scriptConfiguration) {
+        Work.scriptProperties = scriptConfiguration;
+        String workDayFlagStr = scriptConfiguration.getProperty(WORK_DAY_FLAG_KEY.getKey());
         workDayFlagArr = workDayFlagStr.split(",");
-        String workTimeFlagStr = scriptProperties.getProperty(WORK_TIME_FLAG_KEY.getKey());
+        String workTimeFlagStr = scriptConfiguration.getProperty(WORK_TIME_FLAG_KEY.getKey());
         workTimeFlagArr = workTimeFlagStr.split(",");
-        String workTimeStr = scriptProperties.getProperty(WORK_TIME_KEY.getKey());
+        String workTimeStr = scriptConfiguration.getProperty(WORK_TIME_KEY.getKey());
         workTimeArr = workTimeStr.split(",");
     }
     @Resource

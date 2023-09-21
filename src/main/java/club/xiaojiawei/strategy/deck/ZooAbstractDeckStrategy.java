@@ -1,8 +1,8 @@
 package club.xiaojiawei.strategy.deck;
 
-import club.xiaojiawei.entity.Card;
-import club.xiaojiawei.entity.Player;
-import club.xiaojiawei.entity.area.PlayArea;
+import club.xiaojiawei.bean.Player;
+import club.xiaojiawei.bean.area.PlayArea;
+import club.xiaojiawei.bean.entity.Card;
 import club.xiaojiawei.enums.CardTypeEnum;
 import club.xiaojiawei.status.War;
 import club.xiaojiawei.strategy.AbstractDeckStrategy;
@@ -42,32 +42,6 @@ public class ZooAbstractDeckStrategy extends AbstractDeckStrategy{
      *                 Map.entry("COIN", new CardMes("幸运币", "COIN", 0))
      */
 
-    @Override
-    public void executeChangeCard(List<Card> myHandCards, float clearance , float firstCardPos) {
-        Card card;
-        int oneCostCount = 0;
-        for (int i = 0; i < myHandCards.size(); i++) {
-            card = myHandCards.get(i);
-//            只留费用小于等于2的
-            if (card.getCost() > 2
-//                    只留随从
-                    || (card.getCardType() != CardTypeEnum.MINION && !Objects.equals(card.getCardId(), "COIN"))
-//                    不留叫嚣
-                    || Objects.equals(card.getCardId(), "VAN_CS2_188")
-//                    不留持盾，如果没有恐狼或者飞刀
-                    || (Objects.equals(card.getCardId(), "VAN_EX1_405") && findByCardId(myHandCards, "VAN_EX1_162") == -1 && findByCardId(myHandCards, "VAN_NEW1_019") == -1)
-            ){
-                clickFloatCard(clearance, firstCardPos, i);
-            }
-            if (card.getCost() == 1){
-                oneCostCount++;
-            }
-        }
-//        如果没有一张一费牌，则将恐狼换下去
-        if (oneCostCount == 0){
-            clickFloatCard(clearance, firstCardPos, findByCardId(myHandCards, "VAN_EX1_162"));
-        }
-    }
 
     PlayArea myPlayArea;
     PlayArea rivalPlayArea;
@@ -79,10 +53,20 @@ public class ZooAbstractDeckStrategy extends AbstractDeckStrategy{
     private int coinIndex;
     private int index1, index2;
     private boolean usedPower;
+    @Override
+    protected boolean executeChangeCard(Card card, int index) {
+        return card.getCost() > 2
+//                    只留随从
+                || (card.getCardType() != CardTypeEnum.MINION && !Objects.equals(card.getCardId(), "COIN"))
+//                    不留叫嚣
+                || Objects.equals(card.getCardId(), "VAN_CS2_188")
+//                    不留持盾，如果没有恐狼或者飞刀
+                || (Objects.equals(card.getCardId(), "VAN_EX1_405") && findByCardId(myHandCards, "VAN_EX1_162") == -1 && findByCardId(myHandCards, "VAN_NEW1_019") == -1);
+    }
 
     @SneakyThrows
     @Override
-    public void outCard() {
+    public void executeOutCard() {
         this.me = me;
         this.rival = rival;
         myPlayCards = me.getPlayArea().getCards();
@@ -110,7 +94,7 @@ public class ZooAbstractDeckStrategy extends AbstractDeckStrategy{
         for (int i = rivalPlayCards.size() - 1; i >= 0; i--) {
             Card card = rivalPlayCards.get(i);
             if (card.isTaunt() && !card.isStealth()){
-                List<Integer> result = calcFreeEatRivalTaunt(card);
+                List<Integer> result = calcEatRivalCard(card);
                 if (result == null){
 //                    过墙失败
                     throughWall = false;
@@ -124,7 +108,7 @@ public class ZooAbstractDeckStrategy extends AbstractDeckStrategy{
         }
         dealResource();
 //        算斩杀
-        int allAtc = calcEnablePlayTotalAtc(myPlayCards);
+        int allAtc = calcMyPlayTotalAtc();
         int blood = rivalPlayArea.getHero().getHealth() + rivalPlayArea.getHero().getArmor() - rivalPlayArea.getHero().getDamage();
         int soulFireCount = 0;
         if (throughWall){
@@ -151,7 +135,7 @@ public class ZooAbstractDeckStrategy extends AbstractDeckStrategy{
                     int index = 0;
                     while (--soulFireCount >= 0){
                         index = findByCardId(myHandCards, "VAN_EX1_308");
-                        myHandPointToRivalHero(index);
+                        myHandPointToRivalHeroNoPlace(index);
                     }
                     if (index != -1){
                         //        怪全部打脸
@@ -170,7 +154,7 @@ public class ZooAbstractDeckStrategy extends AbstractDeckStrategy{
             for (int i = rivalPlayCards.size() - 1; i >= 0; i--) {
                 Card card = rivalPlayCards.get(i);
                 if ((card.isAura() || card.isAdjacentBuff()) && !card.isStealth()){
-                    List<Integer> result = calcFreeEatRivalTaunt(card);
+                    List<Integer> result = calcEatRivalCard(card);
                     if (result == null){
                         continue;
                     }
@@ -209,7 +193,7 @@ public class ZooAbstractDeckStrategy extends AbstractDeckStrategy{
             int index = -1;
             for (int i = rivalPlayCards.size() - 1; i >= 0; i--) {
                 Card card = rivalPlayCards.get(i);
-                double newWeight = (card.getHealth() - card.getDamage()) * HEALTH_WEIGHT + card.getAtc() * ATC_WEIGHT;
+                double newWeight = (card.getHealth() - card.getDamage()) * BLOOD_WEIGHT + card.getAtc() * ATC_WEIGHT;
                 float sub = 0;
                 if (myHandCards.size() == 1){
                     sub = (float) 0.6;
@@ -222,7 +206,7 @@ public class ZooAbstractDeckStrategy extends AbstractDeckStrategy{
                 }
             }
             if (index != -1){
-                myHandPointToRivalPlay(findByCardId(myHandCards, "VAN_EX1_308"), index);
+                myHandPointToRivalPlayNoPlace(findByCardId(myHandCards, "VAN_EX1_308"), index);
                 soulFireCount--;
             }else {
                 break;
@@ -230,10 +214,15 @@ public class ZooAbstractDeckStrategy extends AbstractDeckStrategy{
         }
     }
 
+    @Override
+    protected int executeDiscoverChooseCard(Card ... cards) {
+        return 0;
+    }
+
     private final static double soulFireWeight = 3.6;
 
     private void dealResource(){
-        switch (getUsableResource(me)){
+        switch (getMyUsableResource()){
             case 1 -> dealOneResource();
             case 2 -> dealTwoResource();
             case 3 -> dealThreeResource();
@@ -252,15 +241,15 @@ public class ZooAbstractDeckStrategy extends AbstractDeckStrategy{
      * @return
      */
     private boolean canUsePower(){
-        return  myPlayArea.getHero().getHealth() - myPlayArea.getHero().getDamage() - calcPlayTotalAtc(rivalPlayCards) > 3;
+        return  myPlayArea.getHero().getHealth() - myPlayArea.getHero().getDamage() - calcTotalAtc(rivalPlayCards) > 3;
     }
 
 
     private void dealOneResource() {
-        if (isMyTurn()){
+        if (War.isMyTurn()){
             return;
         }
-        if (getUsableResource(me) < 1){
+        if (getMyUsableResource() < 1){
             return;
         }
         if (!myPlayArea.isFull()){
@@ -277,7 +266,7 @@ public class ZooAbstractDeckStrategy extends AbstractDeckStrategy{
                 }
 //                        有精灵弓箭手且对方场上有一血怪
             }else if ((index1 = findByCardId(myHandCards, "VAN_CS2_189")) != -1){
-                if ((index2 = findMaxAtcByBlood(rivalPlayCards, 1)) != -1
+                if ((index2 = findMaxAtcByBlood(rivalPlayCards, 1, true)) != -1
                         && !rivalPlayCards.get(index2).isStealth()
                         && rivalPlayArea.getHero().getHealth() + rivalPlayArea.getHero().getArmor() - rivalPlayArea.getHero().getDamage() > 1
                 ){
@@ -324,10 +313,10 @@ public class ZooAbstractDeckStrategy extends AbstractDeckStrategy{
         }
     }
     private void dealTwoResource() {
-        if (isMyTurn()){
+        if (War.isMyTurn()){
             return;
         }
-        if (getUsableResource(me) < 2){
+        if (getMyUsableResource() < 2){
             dealOneResource();
             return;
         }
@@ -360,16 +349,16 @@ public class ZooAbstractDeckStrategy extends AbstractDeckStrategy{
             dealOneResource();
             dealOneResource();
         }
-        if (canUsePower() && getUsableResource(me) >= 2 && !usedPower){
+        if (canUsePower() && getMyUsableResource() >= 2 && !usedPower){
             usedPower = true;
-            clickMyPower();
+            clickPower();
         }
     }
     private void dealThreeResource(){
-        if(isMyTurn()){
+        if(War.isMyTurn()){
             return;
         }
-        if (getUsableResource(me) < 3){
+        if (getMyUsableResource() < 3){
             dealTwoResource();
             return;
         }
@@ -426,17 +415,17 @@ public class ZooAbstractDeckStrategy extends AbstractDeckStrategy{
             dealTwoResource();
             dealOneResource();
         }
-        if (canUsePower() && getUsableResource(me) >= 2 && !usedPower){
+        if (canUsePower() && getMyUsableResource() >= 2 && !usedPower){
             usedPower = true;
-            clickMyPower();
+            clickPower();
             dealOneResource();
         }
     }
     private void dealFourResource(){
-        if(isMyTurn()){
+        if(War.isMyTurn()){
             return;
         }
-        if (getUsableResource(me) < 4){
+        if (getMyUsableResource() < 4){
             dealThreeResource();
             return;
         }
@@ -500,23 +489,23 @@ public class ZooAbstractDeckStrategy extends AbstractDeckStrategy{
             }
             dealOneResource();
         }
-        if (canUsePower() && getUsableResource(me) >= 2 && !usedPower){
+        if (canUsePower() && getMyUsableResource() >= 2 && !usedPower){
             usedPower = true;
-            clickMyPower();
+            clickPower();
             dealTwoResource();
         }
     }
     private void dealFiveResource(){
-        if(isMyTurn()){
+        if(War.isMyTurn()){
             return;
         }
-        if (getUsableResource(me) < 5){
+        if (getMyUsableResource() < 5){
             dealFourResource();
             return;
         }
         if (!myPlayArea.isFull()){
             int blood = rivalPlayArea.getHero().getHealth() + rivalPlayArea.getHero().getArmor() - rivalPlayArea.getHero().getDamage();
-            int myPlayAtc = calcEnablePlayTotalAtc(myPlayCards);
+            int myPlayAtc = calcMyPlayTotalAtc();
 //        57大哥
             if ((index1 = findByCardId(myHandCards, "VAN_EX1_310")) != -1 && (myHandCards.size() <= 2
                     || blood - myPlayAtc <= 10 || myHandCards.size() > 4)
@@ -543,17 +532,17 @@ public class ZooAbstractDeckStrategy extends AbstractDeckStrategy{
             dealTwoResource();
             dealOneResource();
         }
-        if (canUsePower() && getUsableResource(me) >= 2 && !usedPower){
+        if (canUsePower() && getMyUsableResource() >= 2 && !usedPower){
             usedPower = true;
-            clickMyPower();
+            clickPower();
             dealThreeResource();
         }
     }
     private void dealSixResource(){
-        if(isMyTurn()){
+        if(War.isMyTurn()){
             return;
         }
-        if (getUsableResource(me) < 6){
+        if (getMyUsableResource() < 6){
             dealFiveResource();
             return;
         }
@@ -564,17 +553,17 @@ public class ZooAbstractDeckStrategy extends AbstractDeckStrategy{
             dealFourResource();
             dealThreeResource();
         }
-        if (canUsePower() && getUsableResource(me) >= 2 && !usedPower){
+        if (canUsePower() && getMyUsableResource() >= 2 && !usedPower){
             usedPower = true;
-            clickMyPower();
+            clickPower();
             dealFourResource();
         }
     }
     private void dealSevenResource(){
-        if(isMyTurn()){
+        if(War.isMyTurn()){
             return;
         }
-        if (getUsableResource(me) < 7){
+        if (getMyUsableResource() < 7){
             dealSixResource();
             return;
         }
@@ -586,17 +575,17 @@ public class ZooAbstractDeckStrategy extends AbstractDeckStrategy{
             dealThreeResource();
             dealTwoResource();
         }
-        if (canUsePower() && getUsableResource(me) >= 2 && !usedPower){
+        if (canUsePower() && getMyUsableResource() >= 2 && !usedPower){
             usedPower = true;
-            clickMyPower();
+            clickPower();
             dealFiveResource();
         }
     }
     private void dealEightResource(){
-        if(isMyTurn()){
+        if(War.isMyTurn()){
             return;
         }
-        if (getUsableResource(me) < 7){
+        if (getMyUsableResource() < 7){
             dealSevenResource();
             return;
         }
@@ -608,17 +597,17 @@ public class ZooAbstractDeckStrategy extends AbstractDeckStrategy{
             dealThreeResource();
             dealTwoResource();
         }
-        if (canUsePower() && getUsableResource(me) >= 2 && !usedPower){
+        if (canUsePower() && getMyUsableResource() >= 2 && !usedPower){
             usedPower = true;
-            clickMyPower();
+            clickPower();
             dealSixResource();
         }
     }
     private void dealNineResource(){
-        if(isMyTurn()){
+        if(War.isMyTurn()){
             return;
         }
-        if (getUsableResource(me) < 9){
+        if (getMyUsableResource() < 9){
             dealEightResource();
             return;
         }
@@ -630,9 +619,9 @@ public class ZooAbstractDeckStrategy extends AbstractDeckStrategy{
             dealThreeResource();
             dealTwoResource();
         }
-        if (canUsePower() && getUsableResource(me) >= 2 && !usedPower){
+        if (canUsePower() && getMyUsableResource() >= 2 && !usedPower){
             usedPower = true;
-            clickMyPower();
+            clickPower();
             dealSevenResource();
         }
     }
@@ -645,9 +634,9 @@ public class ZooAbstractDeckStrategy extends AbstractDeckStrategy{
             dealThreeResource();
             dealTwoResource();
         }
-        if (canUsePower() && getUsableResource(me) >= 2 && !usedPower){
+        if (canUsePower() && getMyUsableResource() >= 2 && !usedPower){
             usedPower = true;
-            clickMyPower();
+            clickPower();
             dealEightResource();
         }
     }

@@ -10,6 +10,8 @@ import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Properties;
 import java.util.concurrent.ScheduledFuture;
@@ -26,7 +28,7 @@ import java.util.concurrent.atomic.AtomicReference;
 @Component
 public class PlatformStarter extends AbstractStarter{
     @Resource
-    private Properties scriptProperties;
+    private Properties scriptConfiguration;
     @Resource
     private AtomicReference<BooleanProperty> isPause;
     @Resource
@@ -38,7 +40,9 @@ public class PlatformStarter extends AbstractStarter{
     public void exec() {
         try {
             if (Strings.isNotBlank(new String(Runtime.getRuntime().exec(ScriptStaticData.GAME_ALIVE_CMD).getInputStream().readAllBytes()))) {
-                nextStarter.start();
+                if (nextStarter != null){
+                    nextStarter.start();
+                }
                 return;
             }
         } catch (IOException e) {
@@ -46,10 +50,10 @@ public class PlatformStarter extends AbstractStarter{
         }
         log.info("开始检查" + ScriptStaticData.PLATFORM_CN_NAME);
         log.info("正在进入" + ScriptStaticData.PLATFORM_CN_NAME + ScriptStaticData.GAME_CN_NAME + "启动页");
-        String platformPath = scriptProperties.getProperty(ConfigurationKeyEnum.PLATFORM_PATH_KEY.getKey());
+        String platformPath = scriptConfiguration.getProperty(ConfigurationKeyEnum.PLATFORM_PATH_KEY.getKey());
         try {
-            Runtime.getRuntime().exec("\"" + platformPath + "\"" + " --exec=\"launch WTCG\"").waitFor();
-        } catch (IOException | InterruptedException e) {
+            Runtime.getRuntime().exec("\"" + platformPath + "\"" + " --exec=\"launch WTCG\"");
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
         scheduledFuture = launchProgramThreadPool.scheduleAtFixedRate(new LogRunnable(() -> {

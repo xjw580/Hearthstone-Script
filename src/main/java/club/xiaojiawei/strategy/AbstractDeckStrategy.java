@@ -1,29 +1,28 @@
 package club.xiaojiawei.strategy;
 
-import club.xiaojiawei.data.GameStaticData;
+import club.xiaojiawei.data.GameRationStaticData;
 import club.xiaojiawei.data.ScriptStaticData;
-import club.xiaojiawei.entity.Card;
-import club.xiaojiawei.entity.Player;
-import club.xiaojiawei.entity.area.HandArea;
-import club.xiaojiawei.entity.area.PlayArea;
+import club.xiaojiawei.data.SpringData;
+import club.xiaojiawei.bean.BaseCard;
+import club.xiaojiawei.bean.entity.Card;
+import club.xiaojiawei.bean.Player;
+import club.xiaojiawei.bean.area.HandArea;
+import club.xiaojiawei.bean.area.PlayArea;
+import club.xiaojiawei.enums.CardRaceEnum;
 import club.xiaojiawei.status.War;
 import club.xiaojiawei.utils.MouseUtil;
 import club.xiaojiawei.utils.RandomUtil;
 import club.xiaojiawei.utils.SystemUtil;
 import javafx.beans.property.BooleanProperty;
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.TreeSet;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static club.xiaojiawei.data.ScriptStaticData.GAME_RECT;
-import static club.xiaojiawei.data.ScriptStaticData.ROBOT;
 import static club.xiaojiawei.enums.CardTypeEnum.MINION;
+import static club.xiaojiawei.enums.ConfigurationKeyEnum.STRATEGY_KEY;
 
 /**
  * @author 肖嘉威
@@ -31,11 +30,12 @@ import static club.xiaojiawei.enums.CardTypeEnum.MINION;
  */
 @Slf4j
 public abstract class AbstractDeckStrategy{
-
     @Resource
     protected MouseUtil mouseUtil;
     @Resource
     protected AtomicReference<BooleanProperty> isPause;
+    @Resource
+    protected Properties scriptConfiguration;
     /**
      * 每次行动后停顿时间
      */
@@ -57,47 +57,9 @@ public abstract class AbstractDeckStrategy{
     protected static final float TURN_OVER_BUTTON_VERTICAL_TO_BOTTOM_RATION = (float) 0.54;
     protected static final float TURN_OVER_BUTTON_HORIZONTAL_TO_CENTER_RATION = (float) 0.417;
     public static final float CONFIRM_BUTTON_VERTICAL_TO_BOTTOM_RATION = (float) 0.23;
-    protected static final double HEALTH_WEIGHT = 0.4;
-    protected static final double ATC_WEIGHT = 0.6;
-    protected static final double FREE_EAT_MAX = 5;
-    @Getter
-    private volatile static boolean myTurn;
-
-    public static void setMyTurn(boolean myTurn) {
-        AbstractDeckStrategy.myTurn = myTurn;
-    }
-
-    public void changeCard() {
-        log.info("执行换牌策略");
-        Player me = War.getMe();
-        if (me == null){
-            log.warn("me为null，取消换牌策略的执行");
-            return;
-        }
-        List<Card> myHandCards = me.getHandArea().getCards();
-        log.info("myHandSize:" + myHandCards.size());
-        float clearance ,firstCardPos;
-        if (myHandCards.size() == 3){
-            clearance  = getFloatCardClearanceForThreeCard();
-            firstCardPos = getFloatCardFirstCardPosForThreeCard();
-        }else {
-            clearance  = getFloatCardClearanceForFourCard();
-            firstCardPos = getFloatCardFirstCardPosForFourCard();
-        }
-        SystemUtil.updateRect(ScriptStaticData.getGameHWND(), GAME_RECT);
-        if (log.isDebugEnabled()){
-            log.info("我方手牌：" + myHandCards);
-        }
-        executeChangeCard(myHandCards, clearance, firstCardPos);
-        SystemUtil.updateRect(ScriptStaticData.getGameHWND(), GAME_RECT);
-//        点击确认
-        mouseUtil.leftButtonClick(
-                ((GAME_RECT.right + GAME_RECT.left) >> 1) + RandomUtil.getRandom(-10, 10),
-                (int) (GAME_RECT.bottom - (GAME_RECT.bottom - GAME_RECT.top) * CONFIRM_BUTTON_VERTICAL_TO_BOTTOM_RATION + RandomUtil.getRandom(-5, 5))
-        );
-        log.info("确认换牌");
-    }
-
+    protected static double BLOOD_WEIGHT = 0.4;
+    protected static double ATC_WEIGHT = 0.6;
+    protected static double FREE_EAT_MAX = 5;
     protected PlayArea myPlayArea;
     protected PlayArea rivalPlayArea;
     protected HandArea myHandArea;
@@ -108,14 +70,93 @@ public abstract class AbstractDeckStrategy{
     protected List<Card> myPlayCards;
     protected List<Card> rivalHandCards;
     protected List<Card> rivalPlayCards;
-    public void afterIntoMyTurn(){
-        myTurn = true;
+
+    public void changeCard() {
+        if (Boolean.parseBoolean(scriptConfiguration.getProperty(STRATEGY_KEY.getKey()))){
+            try {
+                log.info("执行换牌策略");
+                assign();
+                float clearance ,firstCardPos;
+                if (myHandCards.size() == 3){
+                    clearance  = getFloatCardClearanceForThreeCard();
+                    firstCardPos = getFloatCardFirstCardPosForThreeCard();
+                }else {
+                    clearance  = getFloatCardClearanceForFourCard();
+                    firstCardPos = getFloatCardFirstCardPosForFourCard();
+                }
+                SystemUtil.updateRect(ScriptStaticData.getGameHWND(), GAME_RECT);
+                int size = Math.min(myHandCards.size(), 4);
+                for (int index = 0; index < size; index++) {
+                    Card card = myHandCards.get(index);
+                    if (executeChangeCard(card, index)){
+                        clickFloatCard(clearance, firstCardPos, index);
+                        log.info("换掉起始卡牌：【entityId:" + card.getEntityId() + "，entityName:" + card.getEntityName() + "，cardId:" + card.getCardId() + "】");
+                    }
+                }
+                log.info("执行换牌策略完毕");
+            }finally {
+                SystemUtil.updateRect(ScriptStaticData.getGameHWND(), GAME_RECT);
+                //        点击确认按钮
+                mouseUtil.leftButtonClick(
+                        ((GAME_RECT.right + GAME_RECT.left) >> 1) + RandomUtil.getRandom(-10, 10),
+                        (int) (GAME_RECT.bottom - (GAME_RECT.bottom - GAME_RECT.top) * CONFIRM_BUTTON_VERTICAL_TO_BOTTOM_RATION + RandomUtil.getRandom(-5, 5))
+                );
+            }
+        }
+    }
+
+    public void outCard(){
+        if (Boolean.parseBoolean(scriptConfiguration.getProperty(STRATEGY_KEY.getKey()))){
+            try{
+                log.info("执行出牌策略");
+                if (log.isDebugEnabled()){
+                    log.debug("我方手牌：" + myHandCards);
+                    log.debug("我方战场：" + myPlayCards);
+                    log.debug("我方英雄：" + myPlayArea.getHero());
+                    log.debug("我方武器：" + myPlayArea.getWeapon());
+                    log.debug("我方技能：" + myPlayArea.getPower());
+                }
+                log.info("回合开始可用水晶数：" + getMyUsableResource());
+                executeOutCard();
+                MouseUtil.cancel();
+                log.info("执行出牌策略完毕");
+            }finally {
+                clickTurnOverButton();
+            }
+        }
+    }
+    public void discoverChooseCard(Card...cards){
+        if (Boolean.parseBoolean(scriptConfiguration.getProperty(STRATEGY_KEY.getKey()))){
+            SystemUtil.delay(1000);
+            log.info("执行发现选牌策略");
+            int index = executeDiscoverChooseCard(cards);
+            clickFloatCard(getFloatCardClearanceForThreeCard(), getFloatCardFirstCardPosForThreeCard(), index);
+            Card card = cards[index];
+            log.info("选择了：【entityId:" + card.getEntityId() + "，entityName:" + card.getEntityName() + "，cardId:" + card.getCardId() + "】");
+            log.info("执行发现选牌策略完毕");
+        }
+    }
+
+    /**
+     * 执行换牌策略
+     * @param card
+     * @return 返回true表示换掉该牌
+     */
+    protected abstract boolean executeChangeCard(Card card, int index);
+
+    /**
+     * 执行出牌策略
+     */
+    protected abstract void executeOutCard();
+
+    /**
+     * 执行发现选牌,返回0~2的数字
+     */
+    protected abstract int executeDiscoverChooseCard(Card...cards);
+
+    private void assign(){
         this.me = War.getMe();
         this.rival = War.getRival();
-        if (me == null || rival == null){
-            log.warn("me或者rival为null，取消出牌策略的执行");
-            return;
-        }
         this.myHandArea = me.getHandArea();
         this.myPlayArea = me.getPlayArea();
         this.rivalHandArea = rival.getHandArea();
@@ -125,48 +166,53 @@ public abstract class AbstractDeckStrategy{
         this.rivalHandCards = rivalHandArea.getCards();
         this.rivalPlayCards = rivalPlayArea.getCards();
         if (log.isDebugEnabled()){
-            log.info("我方手牌：" + myHandCards);
-            log.info("我方战场：" + myPlayCards);
-            log.info("我方英雄：" + myPlayArea.getHero());
-//        log.info("我方武器：" + myPlayArea.getWeapon());
-            log.info("我方技能：" + myPlayArea.getPower());
+            log.debug("我方手牌：" + myHandCards);
         }
-        outCard();
-        MouseUtil.cancel();
-        clickTurnOverButton();
-        myTurn = false;
     }
 
-    /**
-     * 正常出牌策略
-     */
-    protected abstract void outCard();
-
-    /**
-     * 初始换牌阶段策略
-     * @param myHandCards
-     * @param clearance
-     * @param firstCardPos
-     */
-    protected abstract void executeChangeCard(List<Card> myHandCards, float clearance , float firstCardPos);
-
-
     /*calc*/
+    protected int calcMySpellPower(){
+        int spellPower = 0;
+        for (Card playCard : myPlayCards) {
+            spellPower += playCard.getSpellPower();
+        }
+        spellPower += myPlayArea.getHero().getSpellPower();
+        if (myPlayArea.getWeapon() != null){
+            spellPower += myPlayArea.getWeapon().getSpellPower();
+        }
+        return spellPower;
+    }
+    protected int calcCardBlood(Card card){
+        return card.getHealth() + card.getArmor() - card.getDamage();
+    }
+    protected int calcCardCount(List<Card> cards, String cardId){
+        int count = 0;
+        for (Card card : cards) {
+            if (Objects.equals(card.getCardId(), cardId)){
+                count++;
+            }
+        }
+        return count;
+    }
+    protected int calcCardCount(List<Card> cards, BaseCard card){
+        return calcCardCount(cards, card.cardId());
+    }
     /**
      * 计算对方英雄血量
      * @return
      */
     protected int calcRivalHeroBlood(){
-        return canPoint()? rivalPlayArea.getHero().getHealth() + rivalPlayArea.getHero().getArmor() - rivalPlayArea.getHero().getDamage() : Integer.MAX_VALUE;
+        return calcCardBlood(rivalPlayArea.getHero());
     }
-    /**
-     * 计算能动的随从和英雄的总攻击力
-     * @param cards
-     * @return
-     */
-    protected int calcEnablePlayTotalAtc(List<Card> cards){
+    protected int calcMyHeroTotalAtc(){
+        return Math.max((myPlayArea.getWeapon() == null)? 0 : myPlayArea.getWeapon().getAtc(), myPlayArea.getHero().getAtc());
+    }
+    protected int calcMyHeroBlood(){
+        return calcCardBlood(myPlayArea.getHero());
+    }
+    protected int calcMyPlayTotalAtc(){
         int atc = 0;
-        for (Card card : cards) {
+        for (Card card : myPlayCards) {
             if (!card.isExhausted() && !card.isFrozen() && !card.isDormantAwakenConditionEnchant()){
                 atc += card.getAtc();
                 if (card.isWindFury()){
@@ -176,27 +222,17 @@ public abstract class AbstractDeckStrategy{
         }
         return atc;
     }
-    /**
-     * 计算能动的总攻击力
-     * @param cards
-     * @return
-     */
-    protected int calcEnableTotalAtc(List<Card> cards){
-        int atc = calcEnablePlayTotalAtc(cards);
+    protected int calcMyTotalAtc(){
+        int atc = calcMyPlayTotalAtc();
         if (!myPlayArea.getHero().isFrozen()){
-            atc += myPlayArea.getHero().getAtc();
-            if (myPlayArea.getHero().isWindFury()){
-                atc += myPlayArea.getHero().getAtc();
+            atc += calcMyHeroTotalAtc();
+            if (myPlayArea.getHero().isWindFury() || (myPlayArea.getWeapon() != null && myPlayArea.getWeapon().isWindFury())){
+                atc += calcMyHeroTotalAtc();
             }
         }
         return atc;
     }
-    /**
-     * 计算纯粹的随从总攻击力，不考虑能不能动等情况
-     * @param cards
-     * @return
-     */
-    protected int calcPlayTotalAtc(List<Card> cards){
+    protected int calcTotalAtc(List<Card> cards){
         int atc = 0;
         for (Card card : cards) {
             atc += card.getAtc();
@@ -206,331 +242,317 @@ public abstract class AbstractDeckStrategy{
         }
         return atc;
     }
+
     /**
-     * 计算我的怪如何白吃对面的怪
-     * @param myPlayCard
-     * @param allowNotFreeEat 是否强制白吃
+     * 计算指定种族的数量
+     * @param cards
+     * @param cardRace
      * @return
      */
-    protected int calcMyCardFreeEat(Card myPlayCard, boolean allowNotFreeEat){
-        int index = -1;
+    protected int calcCardRaceCount(List<Card> cards, CardRaceEnum cardRace, boolean canMove){
+        int count = 0;
+        for (Card card : cards) {
+            if ((card.getCardRace() == cardRace || card.getCardRace() == CardRaceEnum.ALL) && (!canMove || canMove(card))){
+                count++;
+            }
+        }
+        return count;
+    }
+    /**
+     * 计算我的一个怪如何白吃对面一个怪
+     * @param myPlayCard
+     * @param allowDeath 允许不白吃
+     * @return
+     */
+    protected int calcMyCardFreeEat(Card myPlayCard, boolean allowDeath){
+        int rivalIndex = -1;
         double weight = 0;
-        int atc = myPlayCard.getAtc();
-        int health = myPlayCard.getHealth() - myPlayCard.getDamage();
-        double myWeight = atc * ATC_WEIGHT + health * HEALTH_WEIGHT;
+        int myAtc = myPlayCard.getAtc();
+        int myBlood = calcCardBlood(myPlayCard);
+        double myWeight = myAtc * ATC_WEIGHT + myBlood * BLOOD_WEIGHT;
 //        寻找能白吃的
         for (int i = rivalPlayCards.size() - 1; i >= 0 ; i--) {
-            Card card = rivalPlayCards.get(i);
-            if (!card.isImmune() && !card.isStealth() && !card.isDormantAwakenConditionEnchant() && card.getCardType() == MINION && card.getHealth() - card.getDamage() <= atc && (card.getAtc() < health || myPlayCard.isDivineShield())){
-                double newWeight = (card.getHealth()  - card.getDamage()) * HEALTH_WEIGHT + card.getAtc() * ATC_WEIGHT;
+            Card rivalCard = rivalPlayCards.get(i);
+            if (canPointedToRival(rivalCard) && rivalCard.getCardType() == MINION && calcCardBlood(rivalCard) <= myAtc && (rivalCard.getAtc() < myBlood || myPlayCard.isDivineShield())){
+                double newWeight = calcCardBlood(rivalCard) * BLOOD_WEIGHT + rivalCard.getAtc() * ATC_WEIGHT;
 //                寻找最优白吃方法，既要白吃又不能白吃过头忽略打脸，如55白吃11这种
                 if (newWeight > weight && myWeight - newWeight < FREE_EAT_MAX){
                     weight = newWeight;
-                    index = i;
+                    rivalIndex = i;
                 }
             }
         }
-        if (allowNotFreeEat && index == -1){
 //            白吃不了，寻找比较赚的解法
-            double myWeightPlus = health * HEALTH_WEIGHT + (atc + 1) * ATC_WEIGHT;
+        if (allowDeath && rivalIndex == -1){
+            double myWeightPlus = myBlood * BLOOD_WEIGHT + (myAtc + 1) * ATC_WEIGHT;
             weight = 0;
             for (int i = rivalPlayCards.size() - 1; i >= 0 ; i--) {
                 Card card = rivalPlayCards.get(i);
-                if (!card.isImmune() && !card.isStealth() && !card.isDormantAwakenConditionEnchant() && card.getHealth() - card.getDamage() <= atc){
-                    double newWeight = (card.getHealth() - card.getDamage()) * HEALTH_WEIGHT + card.getAtc() * ATC_WEIGHT;
+                if (canPointedToRival(card) && card.getCardType() == MINION && calcCardBlood(card) <= myAtc){
+                    double newWeight = calcCardBlood(card) * BLOOD_WEIGHT + card.getAtc() * ATC_WEIGHT;
                     if (newWeight >= myWeightPlus && newWeight > weight){
-                        index = i;
+                        rivalIndex = i;
                         weight = newWeight;
                     }
                 }
             }
         }
-        return index;
+        return rivalIndex;
     }
+
     /**
-     * 计算如何白吃对面的嘲讽
-     * @param rivalTauntCard
-     * @return
+     * 计算我的多个怪如何吃对面一个怪
+     * @param rivalCard
+     * @param maxDeathCount
+     * @param subtractRivalBlood 需要减少的敌方怪的血量
+     * @return 储存下标的list，最后一位存储总攻击力
      */
-    protected List<Integer> calcFreeEatRivalTaunt(Card rivalTauntCard){
+    protected List<Integer> calcEatRivalCard(Card rivalCard, int maxDeathCount, int subtractRivalBlood){
+        if (rivalCard == null){
+            return null;
+        }
         TreeSet<List<Integer>> result = new TreeSet<>(Comparator.comparingInt(o -> o.get(o.size() - 1)));
-        calcFreeEatRivalTauntRecursive(result, myPlayCards, new ArrayList<>(), rivalTauntCard.getHealth()  - rivalTauntCard.getDamage(), rivalTauntCard.getAtc(), 0, 0);
-        return result.size() == 0? null : result.first();
+        calcFreeEatRivalCardRecursive(result, myPlayCards, new ArrayList<>(), calcCardBlood(rivalCard) - subtractRivalBlood, rivalCard.getAtc(), 0, 0, maxDeathCount);
+        return result.isEmpty() ? null : result.first();
+    }
+    protected List<Integer> calcEatRivalCard(Card rivalCard){
+        return calcEatRivalCard(rivalCard, Integer.MAX_VALUE, 0);
+    }
+    protected List<Integer> calcFreeEatRivalCard(Card rivalCard){
+        return calcEatRivalCard(rivalCard, 0, 0);
     }
     /**
      * 穷举法
      * @param result
-     * @param cards
-     * @param list
-     * @param health
-     * @param atc
+     * @param myPlayCards
+     * @param indexList 存储卡组下标，最后一位存储总攻击力
+     * @param rivalBlood
+     * @param rivalAtc
      * @param atcSum
      * @param index
      */
-    private void calcFreeEatRivalTauntRecursive(TreeSet<List<Integer>> result, List<Card> cards, List<Integer> list, int health, int atc, int atcSum, int index){
+    private void calcFreeEatRivalCardRecursive(TreeSet<List<Integer>> result, List<Card> myPlayCards, List<Integer> indexList, int rivalBlood, int rivalAtc, int atcSum, int index, int maxDeathCount){
 //        终止条件
-        if (atcSum >= health){
-            list.add(atcSum);
-            ArrayList<Integer> temp = new ArrayList<>(list);
-            list.remove(list.size() - 1);
-            if (result.contains(temp)){
+        if (atcSum >= rivalBlood){
+            indexList.add(atcSum);
+            ArrayList<Integer> tempIndexList = new ArrayList<>(indexList);
+            indexList.remove(indexList.size() - 1);
+//            由于重写了compare方法，所以这里比较的是总攻击力是否相等
+            if (result.contains(tempIndexList)){
                 double oldFreeEatCount = 0, newFreeEatCount = 0;
                 List<Integer> oldList = null;
-                for (List<Integer> integers : result) {
-                    if (integers.get(integers.size() - 1) == atcSum){
-                        oldList = integers;
-                        for (int i = 0; i < integers.size() - 1; i++) {
-                            Card card = cards.get(i);
-                            if (card.getHealth() - card.getDamage() > atc || card.isDivineShield()){
+                for (List<Integer> lists : result) {
+//                取出总攻击力相等的那个旧list
+                    if (lists.get(lists.size() - 1) == atcSum){
+                        oldList = lists;
+//                计算旧list的白吃数
+                        for (int i = 0; i < lists.size() - 1; i++) {
+                            Card card = myPlayCards.get(lists.get(i));
+                            if (calcCardBlood(card) > rivalAtc || card.isDivineShield() || card.isImmune()){
                                 oldFreeEatCount++;
                             }
                         }
+                        break;
                     }
                 }
-                for (Integer integer : list) {
-                    Card card = cards.get(integer);
-                    if (card.getHealth() - card.getDamage() > atc || card.isDivineShield()){
+//                计算新list的白吃数
+                for (Integer integer : indexList) {
+                    Card card = myPlayCards.get(integer);
+                    if (calcCardBlood(card) > rivalAtc || card.isDivineShield() || card.isImmune()){
                         newFreeEatCount++;
                     }
                 }
                 assert oldList != null;
-                if (oldFreeEatCount / oldList.size() < newFreeEatCount / temp.size()){
-                    result.remove(temp);
-                    result.add(temp);
+//                比较新旧list白吃率
+                if (oldFreeEatCount / oldList.size() < newFreeEatCount / tempIndexList.size()){
+                    result.remove(tempIndexList);
+                    result.add(tempIndexList);
                 }
             }else {
-                result.add(temp);
+                if (maxDeathCount != Integer.MAX_VALUE){
+                    int deathCount = 0;
+                    for (Integer integer : indexList) {
+                        Card card = myPlayCards.get(integer);
+//                        保证全部白吃才能添加
+                        if (calcCardBlood(card) <= rivalAtc && !card.isDivineShield() && !card.isImmune()){
+                            if (++deathCount > maxDeathCount){
+                                return;
+                            }
+                        }
+                    }
+                }
+                result.add(tempIndexList);
             }
             return;
-        }else if (index == cards.size()){
+        }else if (index == myPlayCards.size()){
             return;
         }
 
-        Card card = cards.get(index);
-        if (!card.isExhausted() && !card.isFrozen() && card.getAtc() > 0){
-            list.add(index);
-            atcSum += card.getAtc();
+        Card card = myPlayCards.get(index);
+        if (canMove(card)){
 //            选
-            calcFreeEatRivalTauntRecursive(result, cards, list, health, atc, atcSum, index + 1);
-            list.remove(list.size() - 1);
+            indexList.add(index);
+            atcSum += card.getAtc();
+            calcFreeEatRivalCardRecursive(result, myPlayCards, indexList, rivalBlood, rivalAtc, atcSum, index + 1, maxDeathCount);
+            indexList.remove(indexList.size() - 1);
             atcSum -= card.getAtc();
         }
 //        不选
-        calcFreeEatRivalTauntRecursive(result, cards, list, health, atc,  atcSum, index + 1);
+        calcFreeEatRivalCardRecursive(result, myPlayCards, indexList, rivalBlood, rivalAtc,  atcSum, index + 1, maxDeathCount);
     }
     /*action*/
-    /**
-     * 从我方手牌放入我方战场
-     * @param handIndex
-     * @param playIndex
-     */
-    protected boolean myHandPointToMyPlay(int handIndex, int playIndex){
-        if (myPlayArea.isFull()){
-            return false;
-        }
-        myHandPointToMyPlayForQuick(handIndex, playIndex);
-        ROBOT.delay(ACTION_INTERVAL);
-        return true;
-    }
-    protected void myHandPointToMyPlayNoPlace(int handIndex, int playIndex){
-        myHandSpellPointToMyPlayForQuick(handIndex, playIndex);
-        ROBOT.delay(ACTION_INTERVAL);
-    }
-    protected void myHandPointToMyPlayNoPlace(int handIndex){
-        myHandSpellPointToMyPlayForQuick(handIndex);
-        ROBOT.delay(ACTION_INTERVAL);
-    }
-    private int[] myHandPointToMyPlayForQuick(int handIndex, int playIndex){
-        if (handIndex < 0 || playIndex < 0){
-            return null;
-        }
-        SystemUtil.updateRect(ScriptStaticData.getGameHWND(), GAME_RECT);
-        int[] handPos = getMyHandCardPos(me.getHandArea().getCards().size(), handIndex);
-        int[] playPos = getMyPlayCardPos(me.getPlayArea().getCards().size() + 1, playIndex);
-        mouseUtil.leftButtonDrag(
-                handPos[0],
-                handPos[1],
-                playPos[0],
-                playPos[1]
-        );
-        return playPos;
-    }
-
-    private int[] myHandSpellPointToMyPlayForQuick(int handIndex, int playIndex){
-        if (handIndex < 0 || playIndex < 0){
-            return null;
-        }
-        SystemUtil.updateRect(ScriptStaticData.getGameHWND(), GAME_RECT);
-        int[] handPos = getMyHandCardPos(me.getHandArea().getCards().size(), handIndex);
-        int[] playPos = getMyPlayCardPos(me.getPlayArea().getCards().size(), playIndex);
-        mouseUtil.leftButtonDrag(
-                handPos[0],
-                handPos[1],
-                playPos[0],
-                playPos[1]
-        );
-        return playPos;
-    }
-
-    private int[] myHandSpellPointToMyPlayForQuick(int handIndex){
+    
+    private void myHandPointTo(int handIndex, int[] endPos){
         if (handIndex < 0){
-            return null;
-        }
-        SystemUtil.updateRect(ScriptStaticData.getGameHWND(), GAME_RECT);
-        int[] handPos = getMyHandCardPos(me.getHandArea().getCards().size(), handIndex);
-        int[] playPos = {
-                (GAME_RECT.right + GAME_RECT.left) >> 1,
-                (int) (GAME_RECT.bottom - (GAME_RECT.bottom - GAME_RECT.top) * MY_PLAY_CARD_VERTICAL_TO_BOTTOM_RATION) + RandomUtil.getRandom(-5, 5)
-        };
-        mouseUtil.leftButtonDrag(
-                handPos[0],
-                handPos[1],
-                playPos[0],
-                playPos[1]
-        );
-        return playPos;
-    }
-
-
-    /**
-     * 从我方手牌放入我方战场，不指定战场位置
-     * @param handIndex
-     */
-    protected boolean myHandPointToMyPlay(int handIndex){
-        if (myPlayArea.isFull()){
-            return false;
-        }
-        myHandPointToMyPlayForQuick(handIndex);
-        ROBOT.delay(ACTION_INTERVAL);
-        return true;
-    }
-    private int[] myHandPointToMyPlayForQuick(int handIndex){
-        if (handIndex < 0){
-            return null;
-        }
-        SystemUtil.updateRect(ScriptStaticData.getGameHWND(), GAME_RECT);
-        int[] handPos = getMyHandCardPos(me.getHandArea().getCards().size(), handIndex);
-        int endY = (int) (GAME_RECT.bottom - MY_PLAY_CARD_VERTICAL_TO_BOTTOM_RATION * (GAME_RECT.bottom - GAME_RECT.top));
-        mouseUtil.leftButtonDrag(
-                handPos[0],
-                handPos[1],
-                handPos[0],
-                endY
-        );
-        handPos[1] = endY;
-        return handPos;
-    }
-    protected boolean canPoint(){
-        return !(rivalPlayArea.getHero().isImmune() || rivalPlayArea.getHero().isStealth());
-    }
-    /**
-     * 从我方手牌指向对方英雄
-     * @param myHandIndex
-     */
-    protected void myHandPointToRivalHero(int myHandIndex){
-        myHandPointToRivalHeroForQuick(myHandIndex);
-        ROBOT.delay(ACTION_INTERVAL);
-    }
-    private int[] myHandPointToRivalHeroForQuick(int myHandIndex){
-        if (myHandIndex < 0){
-            return null;
-        }
-        SystemUtil.updateRect(ScriptStaticData.getGameHWND(), GAME_RECT);
-        int[] handPos = getMyHandCardPos(me.getHandArea().getCards().size(), myHandIndex);
-        int[] rivalHeroPos = getRivalHeroPos();
-        mouseUtil.leftButtonDrag(
-                handPos[0],
-                handPos[1],
-                rivalHeroPos[0],
-                rivalHeroPos[1]
-        );
-        return rivalHeroPos;
-    }
-
-    protected void myHeroPointToRivalHero(){
-        int[] rivalHeroPos = getRivalHeroPos();
-        int[] myHeroPos = getMyHeroPos();
-        mouseUtil.leftButtonDrag(
-                myHeroPos[0], myHeroPos[1],
-                rivalHeroPos[0], rivalHeroPos[1]
-        );
-        ROBOT.delay(ACTION_INTERVAL);
-    }
-    protected void myHeroPointToRivalPlay(int rivalPlayIndex){
-        int[] myHeroPos = getMyHeroPos();
-        int[] rivalPlayPos = getRivalPlayPos(rivalPlayCards.size(), rivalPlayIndex);
-        mouseUtil.leftButtonDrag(
-                myHeroPos[0], myHeroPos[1],
-                rivalPlayPos[0], rivalPlayPos[1]
-        );
-        ROBOT.delay(ACTION_INTERVAL);
-    }
-    /**
-     * 从我方手牌指向对方战场
-     * @param myHandIndex
-     * @param rivalPlayIndex
-     */
-    protected void myHandPointToRivalPlay(int myHandIndex, int rivalPlayIndex){
-        myHandPointToRivalPlayForQuick(myHandIndex, rivalPlayIndex);
-        ROBOT.delay(ACTION_INTERVAL);
-    }
-    protected void myHandPointToRivalPlay(int myHandIndex, Player me){
-        myHandPointToRivalPlayForQuick(myHandIndex);
-        ROBOT.delay(ACTION_INTERVAL);
-    }
-    private int[] myHandPointToRivalPlayForQuick(int myHandIndex, int rivalPlayIndex){
-        if (myHandIndex < 0 || rivalPlayIndex < 0){
-            return null;
-        }
-        SystemUtil.updateRect(ScriptStaticData.getGameHWND(), GAME_RECT);
-        int[] handPos = getMyHandCardPos(me.getHandArea().getCards().size(), myHandIndex);
-        int[] rivalPlayPos = getRivalPlayPos(rival.getPlayArea().getCards().size(), rivalPlayIndex);
-        mouseUtil.leftButtonDrag(
-                handPos[0],
-                handPos[1],
-                rivalPlayPos[0],
-                rivalPlayPos[1]
-        );
-        return rivalPlayPos;
-    }
-
-    private int[] myHandPointToRivalPlayForQuick(int myHandIndex){
-        if (myHandIndex < 0){
-            return null;
-        }
-        SystemUtil.updateRect(ScriptStaticData.getGameHWND(), GAME_RECT);
-        int[] handPos = getMyHandCardPos(me.getHandArea().getCards().size(), myHandIndex);
-        int[] rivalPlayPos = {(GAME_RECT.right + GAME_RECT.left) >> 1, (int) (GAME_RECT.bottom - (GAME_RECT.bottom - GAME_RECT.top) * RIVAL_PLAY_CARD_VERTICAL_TO_BOTTOM_RATION) + RandomUtil.getRandom(-5, 5)};
-        mouseUtil.leftButtonDrag(
-                handPos[0],
-                handPos[1],
-                rivalPlayPos[0],
-                rivalPlayPos[1]
-        );
-        return rivalPlayPos;
-    }
-
-    /**
-     * 从我方战场指向对方英雄
-     * @param myPlayIndex
-     */
-    protected void myPlayPointToRivalHero(int myPlayIndex){
-        myPlayPointToRivalHeroForQuick(myPlayIndex);
-        ROBOT.delay(ACTION_INTERVAL - 500);
-    }
-    private void myPlayPointToRivalHeroForQuick(int myPlayIndex){
-        if (myPlayIndex < 0){
             return;
         }
+        int[] handPos = getMyHandCardPos(me.getHandArea().getCards().size(), handIndex);
+        mouseUtil.leftButtonDrag(
+                handPos,
+                endPos
+        );
+    }
+    protected boolean myHandPointToMyPlay(int handIndex){
+        if (handIndex >= myHandCards.size()){
+            return false;
+        }
+        Card card = myHandCards.get(handIndex);
+        if (myPlayArea.isFull() || card.getCost() > getMyUsableResource()){
+            return false;
+        }
+        myHandPointToMyPlayForBase(handIndex, myPlayCards.size(), true);
+        SystemUtil.delay(ACTION_INTERVAL);
+        log.info("当前可用水晶数：" + getMyUsableResource());
+        return findByEntityId(myHandCards, card) == -1;
+    }
+    protected boolean myHandPointToMyPlay(int myHandIndex, int myPlayIndex){
+        if (myHandIndex >= myHandCards.size() || myPlayIndex >= myPlayCards.size()){
+            return false;
+        }
+        Card card = myHandCards.get(myHandIndex);
+        if (myPlayArea.isFull() || card.getCost() > getMyUsableResource()){
+            return false;
+        }
+        myHandPointToMyPlayForBase(myHandIndex, myPlayIndex, true);
+        SystemUtil.delay(ACTION_INTERVAL);
+        log.info("当前可用水晶数：" + getMyUsableResource());
+        return findByEntityId(myHandCards, card) == -1;
+    }
+    protected boolean myHandPointToMyPlayNoPlace(int myHandIndex, int myPlayIndex){
+        if (myHandIndex >= myHandCards.size() || myPlayIndex >= myPlayCards.size()){
+            return false;
+        }
+        Card card = myHandCards.get(myHandIndex);
+        if (card.getCost() > getMyUsableResource() || !canSpellPointedToMe(myPlayCards.get(myPlayIndex))){
+            return false;
+        }
+        myHandPointToMyPlayForBase(myHandIndex, myPlayIndex, false);
+        SystemUtil.delay(ACTION_INTERVAL);
+        log.info("当前可用水晶数：" + getMyUsableResource());
+        return findByEntityId(myHandCards, card) == -1;
+    }
+
+    private int[] myHandPointToMyPlayForBase(int handIndex, int playIndex, boolean insertGap){
         SystemUtil.updateRect(ScriptStaticData.getGameHWND(), GAME_RECT);
-        int[] playPos = getMyPlayCardPos(me.getPlayArea().getCards().size(), myPlayIndex);
+        int[] playPos;
+        if (playIndex < 0){
+            playPos = new int[]{
+                    (GAME_RECT.right + GAME_RECT.left) >> 1,
+                    (int) (GAME_RECT.bottom - (GAME_RECT.bottom - GAME_RECT.top) * MY_PLAY_CARD_VERTICAL_TO_BOTTOM_RATION) + RandomUtil.getRandom(-5, 5)
+            };
+        }else {
+            playPos = getMyPlayCardPos(me.getPlayArea().getCards().size() + (insertGap? 1 : 0), playIndex);
+        }
+        myHandPointTo(handIndex, playPos);
+        return playPos;
+    }
+
+    protected boolean myHandPointToRivalPlayNoPlace(int myHandIndex, int rivalPlayIndex){
+        if (myHandIndex >= myHandCards.size() || rivalPlayIndex >= rivalPlayCards.size()){
+            return false;
+        }
+        Card card = myHandCards.get(myHandIndex);
+        if (card.getCost() > getMyUsableResource() || !canSpellPointedToRival(rivalPlayCards.get(rivalPlayIndex))){
+            return false;
+        }
+        SystemUtil.updateRect(ScriptStaticData.getGameHWND(), GAME_RECT);
+        myHandPointTo(myHandIndex, getRivalPlayCardPos(rival.getPlayArea().getCards().size(), rivalPlayIndex));
+        SystemUtil.delay(ACTION_INTERVAL);
+        log.info("当前可用水晶数：" + getMyUsableResource());
+        return findByEntityId(myHandCards, card) == -1;
+    }
+    protected boolean myHandPointToRivalHeroNoPlace(int myHandIndex){
+        if (myHandIndex >= myHandCards.size()){
+            return false;
+        }
+        Card card = myHandCards.get(myHandIndex);
+        if (card.getCost() > getMyUsableResource() || !canSpellPointedToRival(rivalPlayArea.getHero())){
+            return false;
+        }
+        SystemUtil.updateRect(ScriptStaticData.getGameHWND(), GAME_RECT);
+        myHandPointTo(myHandIndex, getRivalHeroPos());
+        SystemUtil.delay(ACTION_INTERVAL);
+        log.info("当前可用水晶数：" + getMyUsableResource());
+        return findByEntityId(myHandCards, card) == -1;
+    }
+    protected boolean myHandPointToNoPlace(int myHandIndex){
+        if (myHandIndex >= myHandCards.size()){
+            return false;
+        }
+        Card card = myHandCards.get(myHandIndex);
+        if (card.getCost() > getMyUsableResource()){
+            return false;
+        }
+        myHandPointToMyPlayForBase(myHandIndex, -1, false);
+        SystemUtil.delay(ACTION_INTERVAL);
+        log.info("当前可用水晶数：" + getMyUsableResource());
+        return findByEntityId(myHandCards, card) == -1;
+    }
+    
+
+    protected boolean myHeroPointToRivalHero(){
+        if (!canPointedToRival(rivalPlayArea.getHero()) || !canMove(myPlayArea.getHero()) || calcMyHeroTotalAtc() <= 0){
+           return false;
+        }
+        SystemUtil.updateRect(ScriptStaticData.getGameHWND(), GAME_RECT);
+        myHeroPointTo(getRivalHeroPos());
+        SystemUtil.delay(ACTION_INTERVAL);
+        return true;
+    }
+    protected boolean myHeroPointToRivalPlay(int rivalPlayIndex){
+        if (rivalPlayIndex >= rivalPlayCards.size() || !canPointedToRival(rivalPlayCards.get(rivalPlayIndex)) || !canMove(myPlayArea.getHero()) || calcMyHeroTotalAtc() <= 0){
+            return false;
+        }
+        SystemUtil.updateRect(ScriptStaticData.getGameHWND(), GAME_RECT);
+        int[] rivalPlayPos = getRivalPlayCardPos(rivalPlayCards.size(), rivalPlayIndex);
+        myHeroPointTo(rivalPlayPos);
+        SystemUtil.delay(ACTION_INTERVAL);
+        return true;
+    }
+    private void myHeroPointTo(int[] endPos){
+        mouseUtil.leftButtonDrag(
+                getMyHeroPos(),
+                endPos
+        );
+    }
+
+
+    protected boolean myPlayPointToRivalHero(int myPlayIndex){
+        if (myPlayIndex >= myPlayCards.size()){
+            return false;
+        }
+        Card card = myPlayCards.get(myPlayIndex);
+        if (!canPointedToRival(rivalPlayArea.getHero()) || !canMove(card)){
+            return false;
+        }
+        SystemUtil.updateRect(ScriptStaticData.getGameHWND(), GAME_RECT);
         int[] rivalHeroPos = getRivalHeroPos();
         mouseUtil.leftButtonDrag(
-                playPos[0],
-                playPos[1],
-                rivalHeroPos[0],
-                rivalHeroPos[1]
+                getMyPlayCardPos(me.getPlayArea().getCards().size(), myPlayIndex),
+                rivalHeroPos
         );
+        SystemUtil.delay(ACTION_INTERVAL - 500);
+        return true;
     }
 
     /**
@@ -538,33 +560,39 @@ public abstract class AbstractDeckStrategy{
      * @param myPlayIndex
      * @param rivalPlayIndex
      */
-    protected void myPlayPointToRivalPlay(int myPlayIndex, int rivalPlayIndex){
-        myPlayPointToRivalPlayForQuick(myPlayIndex, rivalPlayIndex);
-        ROBOT.delay(ACTION_INTERVAL + 500);
-    }
-    private void myPlayPointToRivalPlayForQuick(int myPlayIndex, int rivalPlayIndex){
-        if (myPlayIndex < 0 || rivalPlayIndex < 0){
-            return;
+    protected boolean myPlayPointToRivalPlay(int myPlayIndex, int rivalPlayIndex){
+        if (myPlayIndex >= myPlayCards.size() || rivalPlayIndex >= rivalPlayCards.size()){
+            return false;
+        }
+        Card card = myPlayCards.get(myPlayIndex);
+        if (!canPointedToRival(rivalPlayCards.get(rivalPlayIndex)) || !canMove(card)){
+            return false;
         }
         SystemUtil.updateRect(ScriptStaticData.getGameHWND(), GAME_RECT);
         int[] myPlayPos = getMyPlayCardPos(me.getPlayArea().getCards().size(), myPlayIndex);
-        int[] rivalPlayPos = getRivalPlayPos(rival.getPlayArea().getCards().size(), rivalPlayIndex);
+        int[] rivalPlayPos = getRivalPlayCardPos(rival.getPlayArea().getCards().size(), rivalPlayIndex);
         mouseUtil.leftButtonDrag(
                 myPlayPos[0],
                 myPlayPos[1],
                 rivalPlayPos[0],
                 rivalPlayPos[1]
         );
+        SystemUtil.delay(ACTION_INTERVAL + 500);
+        return true;
     }
 
     /**
      * 点击我方技能
      */
-    protected void clickMyPower(){
+    protected boolean clickPower(){
+        if (myPlayArea.getPower().isExhausted() || getMyUsableResource() < myPlayArea.getPower().getCost() || myPlayArea.isFull()){
+            return false;
+        }
         SystemUtil.updateRect(ScriptStaticData.getGameHWND(), GAME_RECT);
-        int[] myPowerPos = getMyPowerPos();
-        mouseUtil.leftButtonClick(myPowerPos[0], myPowerPos[1]);
-        ROBOT.delay(ACTION_INTERVAL);
+        mouseUtil.leftButtonClick(getMyPowerPos());
+        SystemUtil.delay(ACTION_INTERVAL);
+        log.info("当前可用水晶数：" + getMyUsableResource());
+        return true;
     }
 
     /**
@@ -573,79 +601,74 @@ public abstract class AbstractDeckStrategy{
     protected void clickTurnOverButton(){
         SystemUtil.updateRect(ScriptStaticData.getGameHWND(), GAME_RECT);
         mouseUtil.leftButtonClick(
-                (int) ((GAME_RECT.right + GAME_RECT.left >> 1) + (GAME_RECT.bottom - GAME_RECT.top) * GameStaticData.GAME_WINDOW_ASPECT_TO_HEIGHT_RATIO * TURN_OVER_BUTTON_HORIZONTAL_TO_CENTER_RATION + RandomUtil.getRandom(-6, 6)),
+                (int) ((GAME_RECT.right + GAME_RECT.left >> 1) + (GAME_RECT.bottom - GAME_RECT.top) * GameRationStaticData.GAME_WINDOW_ASPECT_TO_HEIGHT_RATIO * TURN_OVER_BUTTON_HORIZONTAL_TO_CENTER_RATION + RandomUtil.getRandom(-6, 6)),
                 (int) (GAME_RECT.bottom - (GAME_RECT.bottom - GAME_RECT.top) * TURN_OVER_BUTTON_VERTICAL_TO_BOTTOM_RATION  + RandomUtil.getRandom(-3, 3))
         );
     }
 
-    protected boolean myHandPointToMyPlayThenPointToMyPlay(int handIndex, int playIndex, int thenPlayIndex){
-        if (handIndex < 0 || playIndex < 0 || myPlayArea.isFull()){
+    protected boolean myHandPointToMyPlayThenPointToMyPlay(int myHandIndex, int myPlayIndex, int thenMyPlayIndex){
+        if (myHandIndex >= myHandCards.size() || myPlayArea.isFull() || myPlayCards.get(thenMyPlayIndex).isDormantAwakenConditionEnchant() || myHandCards.get(myHandIndex).getCost() > getMyUsableResource()){
             return false;
         }
-        int[] playPos = myHandPointToMyPlayForQuick(handIndex, playIndex);
-        SystemUtil.delayMedium();
-        if (playIndex <= thenPlayIndex){
-            thenPlayIndex++;
+        int[] playPos = myHandPointToMyPlayForBase(myHandIndex, myPlayIndex, true);
+        if (myPlayIndex <= thenMyPlayIndex){
+            thenMyPlayIndex++;
         }
+        SystemUtil.delayMedium();
         SystemUtil.updateRect(ScriptStaticData.getGameHWND(), GAME_RECT);
-        int[] thenPlayPos = getMyPlayCardPos(me.getPlayArea().getCards().size() + 1, thenPlayIndex);
         mouseUtil.leftButtonMoveThenClick(
-                playPos[0],
-                playPos[1],
-                thenPlayPos[0],
-                thenPlayPos[1]
+                playPos,
+                getMyPlayCardPos(me.getPlayArea().getCards().size() + 1, thenMyPlayIndex)
         );
-        ROBOT.delay(ACTION_INTERVAL);
+        SystemUtil.delay(ACTION_INTERVAL);
+        log.info("当前可用水晶数：" + getMyUsableResource());
         return true;
     }
 
     protected boolean myHandPointToMyPlayThenPointToRivalPlay(int myHandIndex, int myPlayIndex, int rivalPlayIndex){
-        if (myHandIndex < 0 || myPlayIndex < 0 || myPlayArea.isFull()){
+        if (myHandIndex >= myHandCards.size() || rivalPlayIndex >= rivalPlayCards.size() || myPlayArea.isFull() || !canPointedToRival(rivalPlayCards.get(rivalPlayIndex)) || myHandCards.get(myHandIndex).getCost() > getMyUsableResource()){
             return false;
         }
-        int[] playPos = myHandPointToMyPlayForQuick(myHandIndex, myPlayIndex);
+        int[] playPos = myHandPointToMyPlayForBase(myHandIndex, myPlayIndex, true);
         SystemUtil.delayMedium();
         SystemUtil.updateRect(ScriptStaticData.getGameHWND(), GAME_RECT);
-        int[] rivalPlayPos = getRivalPlayPos(rival.getPlayArea().getCards().size(), rivalPlayIndex);
         mouseUtil.leftButtonMoveThenClick(
-                playPos[0],
-                playPos[1],
-                rivalPlayPos[0],
-                rivalPlayPos[1]
+                playPos,
+                getRivalPlayCardPos(rival.getPlayArea().getCards().size(), rivalPlayIndex)
         );
-        ROBOT.delay(ACTION_INTERVAL);
+        SystemUtil.delay(ACTION_INTERVAL);
+        log.info("当前可用水晶数：" + getMyUsableResource());
         return true;
     }
 
     protected boolean myHandPointToMyPlayThenPointToRivalHero(int myHandIndex, int myPlayIndex){
-        if (myHandIndex < 0 || myPlayIndex < 0 || myPlayArea.isFull()){
+        if (myHandIndex >= myHandCards.size() || myPlayArea.isFull() || !canPointedToRival(rivalPlayArea.getHero()) || myHandCards.get(myHandIndex).getCost() > getMyUsableResource()){
             return false;
         }
-        int[] playPos = myHandPointToMyPlayForQuick(myHandIndex, myPlayIndex);
+        int[] playPos = myHandPointToMyPlayForBase(myHandIndex, myPlayIndex, true);
         SystemUtil.delayMedium();
         SystemUtil.updateRect(ScriptStaticData.getGameHWND(), GAME_RECT);
-        int[] rivalHeroPos = getRivalHeroPos();
         mouseUtil.leftButtonMoveThenClick(
-                playPos[0],
-                playPos[1],
-                rivalHeroPos[0],
-                rivalHeroPos[1]
+                playPos,
+                getRivalHeroPos()
         );
-        ROBOT.delay(ACTION_INTERVAL);
+        SystemUtil.delay(ACTION_INTERVAL);
+        log.info("当前可用水晶数：" + getMyUsableResource());
         return true;
     }
     /**
-     * 点击悬浮卡牌，如发现
+     * 点击悬浮卡牌，如发现,
      * @param clearance
      * @param firstCardPos
-     * @param floatCardIndex
+     * @param floatCardIndex 0~2
      */
     protected void clickFloatCard(float clearance, float firstCardPos, int floatCardIndex){
+        SystemUtil.updateRect(ScriptStaticData.getGameHWND(), GAME_RECT);
         mouseUtil.leftButtonClick(
                 (int) (firstCardPos + floatCardIndex * clearance) + RandomUtil.getRandom(-10, 10),
                 (GAME_RECT.bottom + GAME_RECT.top >> 1) + RandomUtil.getRandom(-15, 15)
         );
-        SystemUtil.delayMedium();
+        SystemUtil.delayShort();
     }
     /*exist*/
     /**
@@ -665,7 +688,7 @@ public abstract class AbstractDeckStrategy{
     protected int findCountByBlood(List<Card> cards, int blood){
         int count = 0;
         for (Card card : cards) {
-            if (card.getHealth() - card.getDamage() == blood){
+            if (calcCardBlood(card) == blood){
                 count++;
             }
         }
@@ -688,17 +711,35 @@ public abstract class AbstractDeckStrategy{
         }
         return index;
     }
-    protected int findMaxAtcByGEAtkNotWindFury(List<Card> cards, int atk){
-        int index = -1, attackNum = 0;
+
+    /**
+     *
+     * @param cards
+     * @param atcLine
+     * @return
+     */
+    protected int findMaxAtcByGEAtkNotWindFury(List<Card> cards, int atcLine){
+        int index = -1, atcMax = 0;
         for (int i = 0; i < cards.size(); i++) {
             Card card = cards.get(i);
             int atc = card.getAtc();
-            if (atc >= atk && atc > attackNum && !card.isWindFury()){
+            if ((atc > Math.max(atcMax, atcLine) || (atc == Math.max(atcMax, atcLine) && (index != -1 && calcCardBlood(card) > calcCardBlood(cards.get(index))))) && !card.isWindFury()){
                 index = i;
-                attackNum = atc;
+                atcMax = atc;
             }
         }
         return index;
+    }
+    protected int findCardByCardRace(List<Card> cards, CardRaceEnum ...cardRace){
+        for (int i = 0; i < cards.size(); i++) {
+            Card card = cards.get(i);
+            for (CardRaceEnum cardRaceEnum : cardRace) {
+                if (cardRaceEnum == card.getCardRace()){
+                    return i;
+                }
+            }
+        }
+        return -1;
     }
     /**
      * 寻找在等于指定血量中攻击力最大的
@@ -706,19 +747,24 @@ public abstract class AbstractDeckStrategy{
      * @param blood 生命值减去伤害等得出
      * @return
      */
-    protected int findMaxAtcByBlood(List<Card> cards, int blood){
+    protected int findMaxAtcByBlood(List<Card> cards, int blood, int maxAtc, boolean canLTBlood){
         int atk = 0;
         int index = -1;
         for (int i = 0; i < cards.size(); i++) {
             Card card = cards.get(i);
-            if (card.getHealth() - card.getDamage() == blood){
-                if (card.getAtc() > atk){
+            if (
+                    (calcCardBlood(card) == blood || (canLTBlood && calcCardBlood(card) < blood))
+                    && card.getAtc() > atk
+                    && card.getAtc() <= maxAtc
+            ){
                     atk = card.getAtc();
                     index = i;
-                }
             }
         }
         return index;
+    }
+    protected int findMaxAtcByBlood(List<Card> cards, int blood, boolean canLTBlood){
+        return findMaxAtcByBlood(cards, blood, Integer.MAX_VALUE, canLTBlood);
     }
     /**
      * 寻找能动的怪
@@ -727,8 +773,7 @@ public abstract class AbstractDeckStrategy{
      */
     protected int findCanMove(List<Card> cards){
         for (int i = 0; i < cards.size(); i++) {
-            Card card = cards.get(i);
-            if (!card.isExhausted() && !card.isFrozen() && !card.isDormantAwakenConditionEnchant()){
+            if (canMove(cards.get(i))){
                 return i;
             }
         }
@@ -749,6 +794,21 @@ public abstract class AbstractDeckStrategy{
         return -1;
     }
     /**
+     * 寻找小于等于费用的卡牌
+     * @param cards
+     * @param cost
+     * @return
+     */
+    protected int findByLECost(List<Card> cards, int cost){
+        for (int i = 0; i < cards.size(); i++) {
+            if (cards.get(i).getCost() <= cost){
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    /**
      * 寻找指定cardId的card
      * @param cards
      * @param cardId
@@ -758,6 +818,42 @@ public abstract class AbstractDeckStrategy{
         for (int i = cards.size() - 1; i >= 0; i--) {
             String id = cards.get(i).getCardId();
             if (id != null && id.contains(cardId)){
+                return i;
+            }
+        }
+        return -1;
+    }
+    protected int findByCardId(List<Card> cards, Card card){
+        String cardId = card.getCardId();
+        for (int i = cards.size() - 1; i >= 0; i--) {
+            String id = cards.get(i).getCardId();
+            if (id != null && id.contains(cardId)){
+                return i;
+            }
+        }
+        return -1;
+    }
+    protected int findByEntityId(List<Card> cards, Card card){
+        String entityId = card.getEntityId();
+        for (int i = cards.size() - 1; i >= 0; i--) {
+            if (Objects.equals(entityId, cards.get(i).getEntityId())){
+                return i;
+            }
+        }
+        return -1;
+    }
+    protected int findByEntityId(List<Card> cards, String entityId){
+        for (int i = cards.size() - 1; i >= 0; i--) {
+            if (Objects.equals(entityId, cards.get(i).getEntityId())){
+                return i;
+            }
+        }
+        return -1;
+    }
+    protected int findByCardId(List<Card> cards, BaseCard baseCard){
+        for (int i = cards.size() - 1; i >= 0; i--) {
+            String id = cards.get(i).getCardId();
+            if (id != null && id.contains(baseCard.cardId())){
                 return i;
             }
         }
@@ -810,22 +906,20 @@ public abstract class AbstractDeckStrategy{
      * 获取可用水晶数
      * @return
      */
-    protected int getUsableResource(Player player){
-        int resource = player.getResources() - player.getUsedResources() + player.getTempResources();
-        log.info("回合开始水晶数:" + resource);
-        return resource;
+    protected int getMyUsableResource(){
+        return me.getResources() - me.getResourcesUsed() + me.getTempResources();
     }
     protected float getFloatCardClearanceForFourCard(){
-        return GameStaticData.GAME_WINDOW_ASPECT_TO_HEIGHT_RATIO * GameStaticData.CARD_HORIZONTAL_CLEARANCE_WHEN_FOUR_CARD * (GAME_RECT.bottom - GAME_RECT.top);
+        return GameRationStaticData.GAME_WINDOW_ASPECT_TO_HEIGHT_RATIO * GameRationStaticData.CARD_HORIZONTAL_CLEARANCE_WHEN_FOUR_CARD * (GAME_RECT.bottom - GAME_RECT.top);
     }
     protected float getFloatCardClearanceForThreeCard(){
-        return GameStaticData.GAME_WINDOW_ASPECT_TO_HEIGHT_RATIO * GameStaticData.CARD_HORIZONTAL_CLEARANCE_WHEN_THREE_CARD * (GAME_RECT.bottom - GAME_RECT.top);
+        return GameRationStaticData.GAME_WINDOW_ASPECT_TO_HEIGHT_RATIO * GameRationStaticData.CARD_HORIZONTAL_CLEARANCE_WHEN_THREE_CARD * (GAME_RECT.bottom - GAME_RECT.top);
     }
     protected float getFloatCardFirstCardPosForFourCard(){
-        return (GAME_RECT.left + GAME_RECT.right >> 1) - (GAME_RECT.bottom - GAME_RECT.top) * GameStaticData.FIRST_CARD_HORIZONTAL_TO_CENTER_WHEN_FOUR_CARD * GameStaticData.GAME_WINDOW_ASPECT_TO_HEIGHT_RATIO;
+        return (GAME_RECT.left + GAME_RECT.right >> 1) - (GAME_RECT.bottom - GAME_RECT.top) * GameRationStaticData.FIRST_CARD_HORIZONTAL_TO_CENTER_WHEN_FOUR_CARD * GameRationStaticData.GAME_WINDOW_ASPECT_TO_HEIGHT_RATIO;
     }
     protected float getFloatCardFirstCardPosForThreeCard(){
-        return (GAME_RECT.left + GAME_RECT.right >> 1) - (GAME_RECT.bottom - GAME_RECT.top) * GameStaticData.FIRST_CARD_HORIZONTAL_TO_CENTER_WHEN_THREE_CARD * GameStaticData.GAME_WINDOW_ASPECT_TO_HEIGHT_RATIO;
+        return (GAME_RECT.left + GAME_RECT.right >> 1) - (GAME_RECT.bottom - GAME_RECT.top) * GameRationStaticData.FIRST_CARD_HORIZONTAL_TO_CENTER_WHEN_THREE_CARD * GameRationStaticData.GAME_WINDOW_ASPECT_TO_HEIGHT_RATIO;
     }
 
     /**
@@ -835,8 +929,8 @@ public abstract class AbstractDeckStrategy{
      * @return
      */
     protected int[] getMyHandCardPos(int size, int handIndex){
-        float clearance = GameStaticData.GAME_WINDOW_ASPECT_TO_HEIGHT_RATIO * HAND_CARD_HORIZONTAL_CLEARANCE_RATION[size - 1] * (GAME_RECT.bottom - GAME_RECT.top),
-                firstCardPos = (GAME_RECT.left + GAME_RECT.right >> 1) - (GAME_RECT.bottom - GAME_RECT.top) * FIRST_HAND_CARD_HORIZONTAL_TO_CENTER_RATION[size - 1] * GameStaticData.GAME_WINDOW_ASPECT_TO_HEIGHT_RATIO;
+        float clearance = GameRationStaticData.GAME_WINDOW_ASPECT_TO_HEIGHT_RATIO * HAND_CARD_HORIZONTAL_CLEARANCE_RATION[size - 1] * (GAME_RECT.bottom - GAME_RECT.top),
+                firstCardPos = (GAME_RECT.left + GAME_RECT.right >> 1) - (GAME_RECT.bottom - GAME_RECT.top) * FIRST_HAND_CARD_HORIZONTAL_TO_CENTER_RATION[size - 1] * GameRationStaticData.GAME_WINDOW_ASPECT_TO_HEIGHT_RATIO;
         return new int[]{
                 (int) (firstCardPos + handIndex * clearance) + RandomUtil.getRandom(-5, 5),
                 (int) (GAME_RECT.bottom - (GAME_RECT.bottom - GAME_RECT.top) * HAND_CARD_VERTICAL_TO_BOTTOM_RATION + RandomUtil.getRandom(-5, 5))
@@ -849,7 +943,14 @@ public abstract class AbstractDeckStrategy{
      * @return
      */
     protected int[] getMyPlayCardPos(int size, int playIndex){
-        float clearance = (GAME_RECT.bottom - GAME_RECT.top) * GameStaticData.GAME_WINDOW_ASPECT_TO_HEIGHT_RATIO * PLAY_CARD_HORIZONTAL_CLEARANCE_RATION;
+        return calcPlayCardPos(size, playIndex, MY_PLAY_CARD_VERTICAL_TO_BOTTOM_RATION);
+    }
+    protected int[] getRivalPlayCardPos(int size, int playIndex){
+        return calcPlayCardPos(size, playIndex, RIVAL_PLAY_CARD_VERTICAL_TO_BOTTOM_RATION);
+    }
+
+    private int[] calcPlayCardPos(int size, int playIndex, float rivalPlayCardVerticalToBottomRation) {
+        float clearance = (GAME_RECT.bottom - GAME_RECT.top) * GameRationStaticData.GAME_WINDOW_ASPECT_TO_HEIGHT_RATIO * PLAY_CARD_HORIZONTAL_CLEARANCE_RATION;
         int x;
         if ((size & 1) == 0){
             x =  (int) ((GAME_RECT.right + GAME_RECT.left >> 1) + (-(size >> 1) + 0.5 + playIndex) * clearance);
@@ -858,22 +959,10 @@ public abstract class AbstractDeckStrategy{
         }
         return new int[]{
                 x,
-                (int) (GAME_RECT.bottom - (GAME_RECT.bottom - GAME_RECT.top) * MY_PLAY_CARD_VERTICAL_TO_BOTTOM_RATION) + RandomUtil.getRandom(-5, 5)
+                (int) (GAME_RECT.bottom - (GAME_RECT.bottom - GAME_RECT.top) * rivalPlayCardVerticalToBottomRation) + RandomUtil.getRandom(-5, 5)
         };
     }
-    protected int[] getRivalPlayPos(int size, int playIndex){
-        float clearance = (GAME_RECT.bottom - GAME_RECT.top) * GameStaticData.GAME_WINDOW_ASPECT_TO_HEIGHT_RATIO * PLAY_CARD_HORIZONTAL_CLEARANCE_RATION;
-        int x;
-        if ((size & 1) == 0){
-            x =  (int) ((GAME_RECT.right + GAME_RECT.left >> 1) + (-(size >> 1) + 0.5 + playIndex) * clearance);
-        }else {
-            x = (int) ((GAME_RECT.right + GAME_RECT.left >> 1) + (-(size >> 1) + playIndex) * clearance);
-        }
-        return new int[]{
-                x,
-                (int) (GAME_RECT.bottom - (GAME_RECT.bottom - GAME_RECT.top) * RIVAL_PLAY_CARD_VERTICAL_TO_BOTTOM_RATION) + RandomUtil.getRandom(-5, 5)
-        };
-    }
+
     protected int[] getRivalHeroPos(){
         return new int[]{
                 (GAME_RECT.right + GAME_RECT.left >> 1) + RandomUtil.getRandom(-10 , 10),
@@ -888,8 +977,45 @@ public abstract class AbstractDeckStrategy{
     }
     protected int[] getMyPowerPos(){
         return new int[]{
-                (int) ((GAME_RECT.right + GAME_RECT.left >> 1) + POWER_HORIZONTAL_TO_CENTER_RATION * GameStaticData.GAME_WINDOW_ASPECT_TO_HEIGHT_RATIO * (GAME_RECT.bottom - GAME_RECT.top) + RandomUtil.getRandom(-5 , 5)),
+                (int) ((GAME_RECT.right + GAME_RECT.left >> 1) + POWER_HORIZONTAL_TO_CENTER_RATION * GameRationStaticData.GAME_WINDOW_ASPECT_TO_HEIGHT_RATIO * (GAME_RECT.bottom - GAME_RECT.top) + RandomUtil.getRandom(-5 , 5)),
                 (int) (GAME_RECT.bottom - (GAME_RECT.bottom - GAME_RECT.top) * POWER_VERTICAL_TO_BOTTOM_RATION + RandomUtil.getRandom(-5 , 5))
         };
+    }
+
+    protected boolean cardEquals(Card longCard, BaseCard shortCard){
+        return longCard != null && longCard.getCardId().contains(shortCard.cardId());
+    }
+
+    /**
+     * 能否被指向
+     * @param card
+     * @return
+     */
+    protected boolean canSpellPointedToRival(Card card){
+        return canPointedToRival(card) && !isImmunityMagic(card);
+    }
+
+    protected boolean canSpellPointedToMe(Card card){
+        return canPointedToMe(card) && !isImmunityMagic(card);
+    }
+    protected boolean canPointedToRival(Card card){
+        return !(card.isImmune() || card.isStealth() || card.isDormantAwakenConditionEnchant());
+    }
+
+    protected boolean canPointedToMe(Card card){
+        return !(card.isImmune() || card.isDormantAwakenConditionEnchant() || isImmunityMagic(card));
+    }
+
+    /**
+     * 是不是魔免
+     * @param card
+     * @return
+     */
+    protected boolean isImmunityMagic(Card card){
+        return card.isCantBeTargetedByHeroPowers() && card.isCantBeTargetedBySpells();
+    }
+
+    protected boolean canMove(Card card){
+        return !(card.isExhausted() || card.isFrozen() || card.isDormantAwakenConditionEnchant() || card.getAtc() <= 0);
     }
 }

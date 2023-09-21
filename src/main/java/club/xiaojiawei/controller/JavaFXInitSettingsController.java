@@ -2,9 +2,7 @@ package club.xiaojiawei.controller;
 
 import club.xiaojiawei.custom.LogRunnable;
 import club.xiaojiawei.data.ScriptStaticData;
-import club.xiaojiawei.data.SpringData;
 import club.xiaojiawei.enums.ConfigurationKeyEnum;
-import club.xiaojiawei.initializer.PathInitializer;
 import club.xiaojiawei.utils.PropertiesUtil;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -20,7 +18,6 @@ import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import org.kordamp.bootstrapfx.BootstrapFX;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
@@ -55,9 +52,7 @@ public class JavaFXInitSettingsController implements Initializable {
     @Resource
     private ApplicationContext context;
     @Resource
-    private Properties scriptProperties;
-    @Resource
-    private PathInitializer pathInitializer;
+    private Properties scriptConfiguration;
     @Resource
     private PropertiesUtil propertiesUtil;
     @Resource
@@ -115,8 +110,8 @@ public class JavaFXInitSettingsController implements Initializable {
         AnchorPane.setRightAnchor(apply, 15.0);
         AnchorPane.setBottomAnchor(save, 15.0);
         AnchorPane.setRightAnchor(save, 120.0);
-        game.setText(scriptProperties.getProperty(ConfigurationKeyEnum.GAME_PATH_KEY.getKey()));
-        platform.setText(scriptProperties.getProperty(ConfigurationKeyEnum.PLATFORM_PATH_KEY.getKey()));
+        game.setText(scriptConfiguration.getProperty(ConfigurationKeyEnum.GAME_PATH_KEY.getKey()));
+        platform.setText(scriptConfiguration.getProperty(ConfigurationKeyEnum.PLATFORM_PATH_KEY.getKey()));
     }
 
     public void showStage(){

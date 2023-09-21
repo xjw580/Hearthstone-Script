@@ -18,7 +18,11 @@ public enum BlockTypeEnum {
     POWER("POWER", "卡牌效果结算"),
     ATTACK("ATTACK", "攻击"),
     DEATHS("DEATHS", "死亡"),
-    FATIGUE("FATIGUE", "疲劳")
+    FATIGUE("FATIGUE", "疲劳"),
+    ACTION("ACTION", "行动"),
+    CONTINUOUS("CONTINUOUS", "连续"),
+    GAME_RESET("GAME_RESET", "游戏复位"),
+    INVALID("INVALID", "无效"),
     ;
     private final String value;
     private final String comment;

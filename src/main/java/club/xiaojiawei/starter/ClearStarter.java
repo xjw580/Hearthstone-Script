@@ -1,7 +1,6 @@
 package club.xiaojiawei.starter;
 
 import club.xiaojiawei.status.Mode;
-import club.xiaojiawei.status.War;
 import club.xiaojiawei.utils.SystemUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -18,7 +17,6 @@ public class ClearStarter extends AbstractStarter{
     @Override
     public void exec() {
         SystemUtil.cancelAllRunnable();
-        War.reset();
         Mode.reset();
         if (nextStarter != null){
             nextStarter.start();

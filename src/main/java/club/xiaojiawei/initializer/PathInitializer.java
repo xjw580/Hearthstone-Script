@@ -24,13 +24,13 @@ import static club.xiaojiawei.utils.SystemUtil.registryGetStringValueForUserProg
 public class PathInitializer extends AbstractInitializer{
 
     @Resource
-    private Properties scriptProperties;
+    private Properties scriptConfiguration;
     @Resource
     private PropertiesUtil propertiesUtil;
 
     @Override
     public void exec() {
-        if (Strings.isNotBlank(scriptProperties.getProperty(ConfigurationKeyEnum.GAME_PATH_KEY.getKey())) && Strings.isNotBlank(scriptProperties.getProperty(ConfigurationKeyEnum.PLATFORM_PATH_KEY.getKey()))){
+        if (Strings.isNotBlank(scriptConfiguration.getProperty(ConfigurationKeyEnum.GAME_PATH_KEY.getKey())) && Strings.isNotBlank(scriptConfiguration.getProperty(ConfigurationKeyEnum.PLATFORM_PATH_KEY.getKey()))){
             ScriptStaticData.setSetPath(true);
             if (nextInitializer != null){
                 nextInitializer.init();

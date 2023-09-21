@@ -11,12 +11,11 @@ import com.sun.jna.platform.win32.WinDef;
  */
 public interface User32Dll extends Library {
 
-    User32Dll INSTANCE = Native.load("dll/libuser32.dll", User32Dll.class);
+    User32Dll INSTANCE = Native.load("dll/libuser32", User32Dll.class);
     void leftClick(WinDef.HWND hwnd, int x, int y);
     void rightClick(WinDef.HWND hwnd, int x, int y);
     void leftDown(WinDef.HWND hwnd, int x, int y);
     void leftUp(WinDef.HWND hwnd, int x, int y);
     void rightDown(WinDef.HWND hwnd, int x, int y);
     void rightUp(WinDef.HWND hwnd, int x, int y);
-//    void move(WinDef.HWND hwnd, int startX, int startY, int endX, int endY);
 }

@@ -1,14 +1,14 @@
 package club.xiaojiawei.strategy.phase;
 
-import club.xiaojiawei.listener.ScreenFileListener;
+import club.xiaojiawei.bean.entity.ExtraEntity;
+import club.xiaojiawei.bean.entity.TagChangeEntity;
 import club.xiaojiawei.status.War;
 import club.xiaojiawei.strategy.AbstractPhaseStrategy;
-import club.xiaojiawei.utils.PowerLogUtil;
 import club.xiaojiawei.utils.SystemUtil;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.io.RandomAccessFile;
 
 /**
@@ -17,36 +17,47 @@ import java.io.RandomAccessFile;
  */
 @Slf4j
 @Component
-public class GameOverAbstractPhaseStrategy extends AbstractPhaseStrategy<String> {
+public class GameOverAbstractPhaseStrategy extends AbstractPhaseStrategy{
 
-    @SneakyThrows
     @Override
-    protected void execute(String l, RandomAccessFile accessFile) {
-        SystemUtil.delayMedium();
-//        宣布本局游戏胜者，败者
-        while (true) {
-            if (isPause.get().get()){
-                return;
-            }
-            if ((l = accessFile.readLine()) == null) {
-                if (accessFile.getFilePointer() > accessFile.length()){
-                    accessFile.seek(0);
-                }
-                break;
-            }else if (powerFileListener.isRelevance(l)){
-                ScreenFileListener.setMark(System.currentTimeMillis());
-                if (l.contains("TAG_CHANGE")){
-                    PowerLogUtil.dealTagChange(PowerLogUtil.parseTagChange(l));
-                }
-            }
-        }
-        War.increaseWarCount();
-        gameUtil.clickGameEndPageTask();
+    protected boolean dealTagChangeThenIsOver(String line, TagChangeEntity tagChangeEntity) {
+        over();
+        return true;
     }
 
     @Override
-    protected void afterExecute() {
-        super.afterExecute();
-        War.reset();
+    protected boolean dealShowEntityThenIsOver(String line, ExtraEntity extraEntity) {
+        over();
+        return true;
+    }
+
+    @Override
+    protected boolean dealFullEntityThenIsOver(String line, ExtraEntity extraEntity) {
+        over();
+        return true;
+    }
+
+    @Override
+    protected boolean dealChangeEntityThenIsOver(String line, ExtraEntity extraEntity) {
+        over();
+        return true;
+    }
+
+    @Override
+    protected boolean dealOtherThenIsOver(String line) {
+        over();
+        return true;
+    }
+
+    private void over(){
+        RandomAccessFile accessFile = powerLogListener.getAccessFile();
+        try {
+            accessFile.seek(accessFile.length());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        War.increaseWarCount();
+        SystemUtil.stopAllThread();
+        gameUtil.clickGameEndPageTask();
     }
 }

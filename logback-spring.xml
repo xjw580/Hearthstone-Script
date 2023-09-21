@@ -46,11 +46,11 @@
     </appender>
 
     <!--websocket-->
-    <appender name="ws" class="club.xiaojiawei.appender.WsAppender"/>
+    <appender name="ws" class="club.xiaojiawei.appender.WsLogAppender"/>
     <!--javafx-->
-    <appender name="javafx" class="club.xiaojiawei.appender.JavaFXAppender"/>
+    <appender name="javafx" class="club.xiaojiawei.appender.JavaFXLogAppender"/>
     <!--输出到guiAppender-->
-    <logger name="club.xiaojiawei" level="info">
+    <logger name="club.xiaojiawei" level="${logLevel}">
         <appender-ref ref="ws"/>
         <appender-ref ref="javafx"/>
     </logger>

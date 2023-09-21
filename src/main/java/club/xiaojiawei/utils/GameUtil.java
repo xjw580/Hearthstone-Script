@@ -1,8 +1,9 @@
 package club.xiaojiawei.utils;
 
 import club.xiaojiawei.custom.LogRunnable;
-import club.xiaojiawei.data.GameStaticData;
+import club.xiaojiawei.data.GameRationStaticData;
 import club.xiaojiawei.data.ScriptStaticData;
+import club.xiaojiawei.status.War;
 import javafx.beans.property.BooleanProperty;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -30,8 +31,8 @@ public class GameUtil {
 
     public void clickBackButton(){
         mouseUtil.leftButtonClick(
-                (int) (((ScriptStaticData.GAME_RECT.right + ScriptStaticData.GAME_RECT.left) >> 1) + ((ScriptStaticData.GAME_RECT.bottom - ScriptStaticData.GAME_RECT.top) * GameStaticData.BACK_BUTTON_HORIZONTAL_TO_CENTER_RATION * GameStaticData.GAME_WINDOW_ASPECT_TO_HEIGHT_RATIO) + RandomUtil.getRandom(-5, 5)),
-                (int) (ScriptStaticData.GAME_RECT.bottom - (ScriptStaticData.GAME_RECT.bottom - ScriptStaticData.GAME_RECT.top) * GameStaticData.BACK_BUTTON_VERTICAL_TO_BOTTOM_RATION) + RandomUtil.getRandom(-2, 2)
+                (int) (((ScriptStaticData.GAME_RECT.right + ScriptStaticData.GAME_RECT.left) >> 1) + ((ScriptStaticData.GAME_RECT.bottom - ScriptStaticData.GAME_RECT.top) * GameRationStaticData.BACK_BUTTON_HORIZONTAL_TO_CENTER_RATION * GameRationStaticData.GAME_WINDOW_ASPECT_TO_HEIGHT_RATIO) + RandomUtil.getRandom(-5, 5)),
+                (int) (ScriptStaticData.GAME_RECT.bottom - (ScriptStaticData.GAME_RECT.bottom - ScriptStaticData.GAME_RECT.top) * GameRationStaticData.BACK_BUTTON_VERTICAL_TO_BOTTOM_RATION) + RandomUtil.getRandom(-2, 2)
         );
     }
 
@@ -40,11 +41,12 @@ public class GameUtil {
      */
     public void surrender(){
         SystemUtil.stopAllThread();
-        ScriptStaticData.ROBOT.delay(10000);
+        SystemUtil.delay(10000);
+        SystemUtil.frontWindow(ScriptStaticData.getGameHWND());
 //        按ESC键弹出投降界面
         ScriptStaticData.ROBOT.keyPress(27);
         ScriptStaticData.ROBOT.keyRelease(27);
-        ScriptStaticData.ROBOT.delay(2000);
+        SystemUtil.delay(1500);
         SystemUtil.updateRect(ScriptStaticData.getGameHWND(), ScriptStaticData.GAME_RECT);
 //        点击投降按钮
         mouseUtil.leftButtonClick(
@@ -81,6 +83,7 @@ public class GameUtil {
         if (clickGameEndPageTask != null && !clickGameEndPageTask.isDone()){
             log.info("已取消点掉游戏结束结算页面任务");
             clickGameEndPageTask.cancel(true);
+            War.reset();
         }
     }
 

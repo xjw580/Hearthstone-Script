@@ -1,7 +1,7 @@
 package club.xiaojiawei.controller;
 
 
-import club.xiaojiawei.entity.Result;
+import club.xiaojiawei.bean.Result;
 import club.xiaojiawei.enums.DeckEnum;
 import club.xiaojiawei.status.Work;
 import club.xiaojiawei.utils.DashboardUtil;

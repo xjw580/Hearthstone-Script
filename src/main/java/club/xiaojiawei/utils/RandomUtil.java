@@ -26,14 +26,14 @@ public class RandomUtil {
     }
 
     public static int getShortRandom(){
-        return getRandom(250, 500);
+        return getRandom(250, 450);
     }
 
     public static int getTinyRandom(){
-        return getRandom(100, 200);
+        return getRandom(100, 250);
     }
 
     public static int getHumanRandom(){
-        return getRandom(400, 2400);
+        return getRandom(300, 2000);
     }
 }

@@ -1,6 +1,6 @@
 package club.xiaojiawei.strategy.deck;
 
-import club.xiaojiawei.entity.Card;
+import club.xiaojiawei.bean.entity.Card;
 import club.xiaojiawei.strategy.AbstractDeckStrategy;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -16,20 +16,14 @@ import java.util.List;
 @Slf4j
 public class FreeAbstractDeckStrategy extends AbstractDeckStrategy {
 
+
     @Override
-    protected void executeChangeCard(List<Card> myHandCards, float clearance , float firstCardPos) {
-        Card card;
-        for (int i = 0; i < myHandCards.size(); i++) {
-            card = myHandCards.get(i);
-//            只留费用小于等于2的
-            if (card.getCost() > 2){
-                clickFloatCard(clearance, firstCardPos, i);
-            }
-        }
+    protected boolean executeChangeCard(Card card, int index) {
+        return card.getCost() > 2;
     }
 
     @Override
-    protected void outCard() {
+    protected void executeOutCard() {
         List<Card> handCards = myHandArea.getCards();
         List<Card> playCards = myPlayArea.getCards();
         List<Card> rivalPlayCards = rivalPlayArea.getCards();
@@ -46,14 +40,14 @@ public class FreeAbstractDeckStrategy extends AbstractDeckStrategy {
             }
         }
         if (resources >= 2){
-            clickMyPower();
+            clickPower();
         }
         boolean throughWall = true;
 //        解嘲讽怪
         for (int i = rivalPlayCards.size() - 1; i >= 0; i--) {
             Card card = rivalPlayCards.get(i);
             if (card.isTaunt() && !card.isStealth()){
-                List<Integer> result = calcFreeEatRivalTaunt(card);
+                List<Integer> result = calcEatRivalCard(card);
                 if (result == null){
 //                    过墙失败
                     throughWall = false;
@@ -73,5 +67,10 @@ public class FreeAbstractDeckStrategy extends AbstractDeckStrategy {
                 }
             }
         }
+    }
+
+    @Override
+    protected int executeDiscoverChooseCard(Card ... cards) {
+        return 0;
     }
 }

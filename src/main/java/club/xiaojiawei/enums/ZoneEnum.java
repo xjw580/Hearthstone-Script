@@ -19,7 +19,7 @@ public enum ZoneEnum {
     SETASIDE("SETASIDE", "除外区"),
     SECRET("SECRET", "奥秘区"),
     GRAVEYARD("GRAVEYARD", "墓地"),
-    REMOVEDFROMGAME("REMOVEDFROMGAME", "从游戏中移除")
+    REMOVEDFROMGAME("REMOVEDFROMGAME", "移除区")
     ;
     private final String value;
     private final String comment;

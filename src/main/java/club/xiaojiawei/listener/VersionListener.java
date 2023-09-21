@@ -2,7 +2,7 @@ package club.xiaojiawei.listener;
 
 import club.xiaojiawei.controller.JavaFXDashboardController;
 import club.xiaojiawei.data.SpringData;
-import club.xiaojiawei.entity.Release;
+import club.xiaojiawei.bean.Release;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -11,6 +11,7 @@ import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
+import java.util.Objects;
 
 /**
  * @author 肖嘉威
@@ -40,6 +41,10 @@ public class VersionListener {
     }
     @Scheduled(fixedDelay = 1000 * 60 * 60 * 24)
     void checkVersion(){
+//        在idea中启动时就不要检查更新了
+        if (!Objects.equals(Objects.requireNonNull(this.getClass().getResource("")).getProtocol(), "jar")){
+            return;
+        }
         log.info("开始检查是否有更新");
         try {
             release = restTemplate.getForObject("https://gitee.com/api/v5/repos/zergqueen/Hearthstone-Script/releases/latest", Release.class);

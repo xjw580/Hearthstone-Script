@@ -24,6 +24,5 @@ public enum HeroTypeEnum {
     DEMON_HUNTER("恶魔猎手"),
     DEATH_KNIGHT("死亡骑士")
     ;
-
     private final String comment;
 }

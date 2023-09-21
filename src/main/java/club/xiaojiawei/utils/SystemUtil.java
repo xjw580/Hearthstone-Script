@@ -2,33 +2,48 @@ package club.xiaojiawei.utils;
 
 import club.xiaojiawei.data.ScriptStaticData;
 import club.xiaojiawei.enums.RegCommonNameEnum;
-import club.xiaojiawei.listener.PowerFileListener;
-import club.xiaojiawei.listener.ScreenFileListener;
+import club.xiaojiawei.listener.DeckLogListener;
+import club.xiaojiawei.listener.PowerLogListener;
+import club.xiaojiawei.listener.ScreenLogListener;
 import club.xiaojiawei.starter.GameStarter;
 import club.xiaojiawei.starter.PlatformStarter;
 import club.xiaojiawei.strategy.mode.LoginAbstractModeStrategy;
 import club.xiaojiawei.strategy.mode.TournamentAbstractModeStrategy;
 import club.xiaojiawei.strategy.phase.GameTurnAbstractPhaseStrategy;
+import club.xiaojiawei.strategy.phase.ReplaceCardAbstractPhaseStrategy;
 import com.sun.jna.platform.win32.Advapi32Util;
 import com.sun.jna.platform.win32.User32;
 import com.sun.jna.platform.win32.WinDef;
 import com.sun.jna.platform.win32.WinReg;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import java.awt.*;
 import java.awt.datatransfer.*;
 import java.io.*;
 import java.net.*;
 import java.util.Objects;
 
-import static club.xiaojiawei.data.ScriptStaticData.GAME_NAME;
+import static club.xiaojiawei.data.ScriptStaticData.GAME_PROGRAM_NAME;
 
 /**
  * @author 肖嘉威
  * @date 2022/11/24 17:21
  */
 @Slf4j
+@Component
 public class SystemUtil {
+    private static ScreenLogListener screenLogListener;
+    private static PowerLogListener powerLogListener;
+    private static DeckLogListener deckLogListener;
+    @Autowired
+    public void setScreenLogListener(ScreenLogListener screenLogListener, PowerLogListener powerLogListener, DeckLogListener deckLogListener) {
+        SystemUtil.screenLogListener = screenLogListener;
+        SystemUtil.powerLogListener = powerLogListener;
+        SystemUtil.deckLogListener = deckLogListener;
+    }
 
     public final static Clipboard CLIPBOARD = Toolkit.getDefaultToolkit().getSystemClipboard();
     /**
@@ -56,12 +71,14 @@ public class SystemUtil {
 
     public static void cancelAllListener(){
         log.info("终止所有监听器");
-        ScreenFileListener.cancelListener();
-        PowerFileListener.cancelListener();
+        screenLogListener.cancelListener();
+        powerLogListener.cancelListener();
+        deckLogListener.cancelListener();
     }
 
     public static void stopAllThread(){
         log.info("终止所有额外线程");
+        ReplaceCardAbstractPhaseStrategy.stopThread();
         GameTurnAbstractPhaseStrategy.stopThread();
     }
 
@@ -96,6 +113,8 @@ public class SystemUtil {
      * 更新窗口信息
      */
     public static void updateRect(WinDef.HWND programHWND, WinDef.RECT programRECT) {
+//        如果程序最小化无法获取到准确的窗口信息
+        frontWindow(programHWND);
         User32.INSTANCE.GetWindowRect(programHWND, programRECT);
         if ((ScriptStaticData.GAME_RECT.bottom - ScriptStaticData.GAME_RECT.top) != ScriptStaticData.DISPLAY_PIXEL_Y){
             ScriptStaticData.GAME_RECT.top += ScriptStaticData.WINDOW_TITLE_Y;
@@ -112,6 +131,7 @@ public class SystemUtil {
         delay(100);
         // 前置窗口
         User32.INSTANCE.SetForegroundWindow(programHWND);
+        delay(100);
     }
     public static final Desktop DESKTOP = Desktop.getDesktop();
     /**
@@ -138,22 +158,22 @@ public class SystemUtil {
         ScriptStaticData.ROBOT.delay(delay);
     }
     public static void delayHuman(){
-        ScriptStaticData.ROBOT.delay(RandomUtil.getHugeRandom());
+        delay(RandomUtil.getHugeRandom());
     }
     public static void delayTiny(){
-        ScriptStaticData.ROBOT.delay(RandomUtil.getTinyRandom());
+        delay(RandomUtil.getTinyRandom());
     }
     public static void delayShort(){
-        ScriptStaticData.ROBOT.delay(RandomUtil.getShortRandom());
+        delay(RandomUtil.getShortRandom());
     }
     public static void delayMedium(){
-        ScriptStaticData.ROBOT.delay(RandomUtil.getMediumRandom());
+        delay(RandomUtil.getMediumRandom());
     }
     public static void delayLong(){
-        ScriptStaticData.ROBOT.delay(RandomUtil.getLongRandom());
+        delay(RandomUtil.getLongRandom());
     }
     public static void delayHuge(){
-        ScriptStaticData.ROBOT.delay(RandomUtil.getHugeRandom());
+        delay(RandomUtil.getHugeRandom());
     }
 
 
@@ -171,7 +191,7 @@ public class SystemUtil {
      */
     public static void killGame(){
         try {
-            Runtime.getRuntime().exec("cmd /c taskkill /f /t /im " + GAME_NAME).waitFor();
+            Runtime.getRuntime().exec("cmd /c taskkill /f /t /im " + GAME_PROGRAM_NAME).waitFor();
             SystemUtil.delay(1000);
             log.info("已关闭游戏");
         } catch (IOException | InterruptedException e) {
