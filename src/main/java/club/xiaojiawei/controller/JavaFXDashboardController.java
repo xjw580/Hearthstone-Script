@@ -38,8 +38,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import static club.xiaojiawei.data.ScriptStaticData.REPO_NAME;
-import static club.xiaojiawei.data.ScriptStaticData.TEMP_DIR;
+import static club.xiaojiawei.data.ScriptStaticData.*;
 import static club.xiaojiawei.enums.ConfigurationKeyEnum.DECK_KEY;
 
 /**
@@ -119,7 +118,7 @@ public class JavaFXDashboardController implements Initializable {
     protected synchronized void update() {
         Release release = VersionListener.getRelease();
         if (release != null && update.isVisible() && !IS_UPDATING.get()){
-            if (new File(TEMP_DIR).exists()){
+            if (new File(TEMP_PATH).exists()){
                 execUpdate(release.getTagName());
             }else if (!IS_UPDATING.get()){
                 IS_UPDATING.set(true);
@@ -132,14 +131,14 @@ public class JavaFXDashboardController implements Initializable {
                     ){
                         expandedLogPane();
                         log.info("开始下载" + release.getTagName());
-                        File currentDir = new File(TEMP_DIR);
+                        File currentDir = new File(TEMP_PATH);
                         if (!currentDir.exists()){
                             currentDir.mkdirs();
                         }
                         ZipEntry nextEntry = zipInputStream.getNextEntry();
                         while (nextEntry != null) {
                             String path = nextEntry.getName();
-                            File file = new File(TEMP_DIR + path);
+                            File file = new File(TEMP_PATH + path);
                             if (nextEntry.isDirectory()) {
                                 file.mkdirs();
                                 log.info("dir：" + file.getPath());
@@ -174,7 +173,7 @@ public class JavaFXDashboardController implements Initializable {
         Platform.runLater(() -> FrameUtil.createAlert("新版本[" + latestVersion + "]下载完毕", "现在更新？", event -> {
             try {
                 IS_UPDATING.set(true);
-                Runtime.getRuntime().exec("cmd /c start " + System.getProperty("user.dir") + "\\update.bat " + System.getProperty("user.dir") + "\\new_version_temp");
+                Runtime.getRuntime().exec("cmd /c start update.bat " + TEMP_DIR);
             } catch (IOException e) {
                 IS_UPDATING.set(false);
                 throw new RuntimeException(e);

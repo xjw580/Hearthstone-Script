@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.IOException;
 
 import static club.xiaojiawei.data.ScriptStaticData.TEMP_DIR;
+import static club.xiaojiawei.data.ScriptStaticData.TEMP_PATH;
 
 /**
  * @author 肖嘉威
@@ -18,9 +19,9 @@ import static club.xiaojiawei.data.ScriptStaticData.TEMP_DIR;
 public class DelTempInitializer extends AbstractInitializer{
     @Override
     protected void exec() {
-        if (new File(TEMP_DIR).exists()){
+        if (new File(TEMP_PATH).exists()){
             try {
-                Runtime.getRuntime().exec("cmd /c rd /s /Q " + TEMP_DIR);
+                Runtime.getRuntime().exec("cmd /c start rd /s /Q " + TEMP_DIR);
                 log.info("临时文件删除成功");
             } catch (IOException e) {
                 throw new RuntimeException(e);
