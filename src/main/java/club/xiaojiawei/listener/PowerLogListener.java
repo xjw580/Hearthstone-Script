@@ -33,58 +33,44 @@ public class PowerLogListener extends AbstractLogListener{
     }
 
     @Override
-    public void readOldLog() {
-        try {
-            accessFile.seek(accessFile.length());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    public void readOldLog() throws IOException {
+        accessFile.seek(accessFile.length());
+        War.reset();
     }
 
     @Override
-    protected void listenLog() {
-        try {
-            while (true){
-                if (isPause.get().get()){
-                    cancelListener();
-                    break;
-                }else if (AbstractPhaseStrategy.isDealing()){
-                    break;
-                }else {
-                    String s = accessFile.readLine();
-                    if (s == null){
-                        break;
-                    }else if (isRelevance(s)){
-                        resolveLog(s);
-                    }
-                }
+    protected void listenLog() throws IOException {
+        while (!isPause.get().get() && !AbstractPhaseStrategy.isDealing()){
+            String line = accessFile.readLine();
+            if (line == null){
+                break;
+            }else if (isRelevance(line)){
+                resolveLog(line);
             }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
         }
     }
 
-    private void resolveLog(String line) throws IOException {
+    private void resolveLog(String line) {
+        switch (War.getCurrentPhase()){
+            case FILL_DECK_PHASE -> FILL_DECK_PHASE.getAbstractPhaseStrategy().deal(line);
+            case DRAWN_INIT_CARD_PHASE -> DRAWN_INIT_CARD_PHASE.getAbstractPhaseStrategy().deal(line);
+            case REPLACE_CARD_PHASE -> REPLACE_CARD_PHASE.getAbstractPhaseStrategy().deal(line);
+            case SPECIAL_EFFECT_TRIGGER_PHASE -> SPECIAL_EFFECT_TRIGGER_PHASE.getAbstractPhaseStrategy().deal(line);
+            case GAME_TURN_PHASE -> GAME_TURN_PHASE.getAbstractPhaseStrategy().deal(line);
+            case GAME_OVER_PHASE -> {
+                GAME_OVER_PHASE.getAbstractPhaseStrategy().deal(line);
+                War.reset();
+            }
+        }
         if (War.getCurrentTurnStep() == StepEnum.FINAL_GAMEOVER){
-            War.setCurrentPhase(GAME_OVER_PHASE, line);
-        }else if (War.getCurrentPhase() == null){
-            War.reset();
-            War.setCurrentPhase(FILL_DECK_PHASE, line);
-        }else if (War.getCurrentPhase() == FILL_DECK_PHASE){
-            War.setCurrentPhase(DRAWN_INIT_CARD_PHASE, line);
-        }else if (War.getCurrentPhase() == DRAWN_INIT_CARD_PHASE){
-            War.setCurrentPhase(REPLACE_CARD_PHASE, line);
-        }else if (War.getCurrentPhase() == REPLACE_CARD_PHASE){
-            War.setCurrentPhase(SPECIAL_EFFECT_TRIGGER_PHASE, line);
-        }else if (War.getCurrentPhase() == SPECIAL_EFFECT_TRIGGER_PHASE){
-            War.setCurrentPhase(GAME_TURN_PHASE, line);
+            War.setCurrentPhase(GAME_OVER_PHASE);
         }
     }
 
     public boolean isRelevance(String l){
         boolean flag = false;
         if (l.contains("Truncating log")){
-            log.info("power.log文件过大，游戏停止输出日志，准备重启游戏");
+            log.info("power.log达到10000KB，游戏停止输出日志，准备重启游戏");
             core.restart();
         }else {
             flag = l.contains("PowerTaskList");

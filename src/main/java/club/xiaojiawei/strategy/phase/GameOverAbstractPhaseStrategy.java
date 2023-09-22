@@ -50,14 +50,15 @@ public class GameOverAbstractPhaseStrategy extends AbstractPhaseStrategy{
     }
 
     private void over(){
-        RandomAccessFile accessFile = powerLogListener.getAccessFile();
+        SystemUtil.stopAllThread();
+        War.increaseWarCount();
         try {
+            SystemUtil.delay(1000);
+            RandomAccessFile accessFile = powerLogListener.getAccessFile();
             accessFile.seek(accessFile.length());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        War.increaseWarCount();
-        SystemUtil.stopAllThread();
         gameUtil.clickGameEndPageTask();
     }
 }

@@ -32,70 +32,54 @@ public class DeckLogListener extends AbstractLogListener{
     private static final LinkedList<Deck> decks = new LinkedList<>();
 
     @Override
-    protected void readOldLog() {
+    protected void readOldLog() throws IOException {
         String line;
-        try {
-            while ((line = accessFile.readLine()) != null){
-                if (line.contains("Deck Contents Received")){
-                    dealReceived();
-                }else if (line.contains("Finished Editing Deck")){
-                    dealEditing();
-                }
+        while ((line = accessFile.readLine()) != null){
+            if (line.contains("Deck Contents Received")){
+                dealReceived();
+            }else if (line.contains("Finished Editing Deck")){
+                dealEditing();
             }
-        }catch (IOException e) {
-            throw new RuntimeException(e);
         }
     }
-    private void dealReceived(){
+    private void dealReceived() throws IOException {
         decks.clear();
         String line;
-        try {
-            long filePointer = accessFile.getFilePointer();
-            while ((line = accessFile.readLine()) != null){
-                if (!line.contains("#")){
-                    accessFile.seek(filePointer);
-                    break;
-                }
-                decks.addFirst(createDeck(line));
-                filePointer = accessFile.getFilePointer();
+        long filePointer = accessFile.getFilePointer();
+        while ((line = accessFile.readLine()) != null){
+            if (!line.contains("#")){
+                accessFile.seek(filePointer);
+                break;
             }
-        }catch (IOException e) {
-            throw new RuntimeException(e);
+            decks.addFirst(createDeck(line));
+            filePointer = accessFile.getFilePointer();
         }
     }
-    private void dealEditing(){
-        try {
-            Deck deck = createDeck(accessFile.readLine());
-            boolean exist = false;
-            for (Deck d : decks) {
-                if (Objects.equals(d.getId(), deck.getId())){
-                    d.setName(deck.getName());
-                    d.setCode(deck.getCode());
-                    exist = true;
-                    break;
-                }
+    private void dealEditing() throws IOException {
+        Deck deck = createDeck(accessFile.readLine());
+        boolean exist = false;
+        for (Deck d : decks) {
+            if (Objects.equals(d.getId(), deck.getId())){
+                d.setName(deck.getName());
+                d.setCode(deck.getCode());
+                exist = true;
+                break;
             }
-            if (!exist){
-                decks.addFirst(deck);
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        }
+        if (!exist){
+            decks.addFirst(deck);
         }
     }
 
-    private Deck createDeck(String line){
-        try {
-            return new Deck(
-                    PowerLogUtil.iso88591_To_utf8(line.substring(line.indexOf("#") + 4)),
-                    (line = accessFile.readLine()).substring(line.indexOf("#") + 11),
-                    (line = accessFile.readLine()).substring(line.lastIndexOf(" ") + 1));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    private Deck createDeck(String line) throws IOException {
+        return new Deck(
+                PowerLogUtil.iso88591_To_utf8(line.substring(line.indexOf("#") + 4)),
+                (line = accessFile.readLine()).substring(line.indexOf("#") + 11),
+                (line = accessFile.readLine()).substring(line.lastIndexOf(" ") + 1));
     }
 
     @Override
-    protected void listenLog() {
+    protected void listenLog() throws IOException {
         readOldLog();
     }
 }

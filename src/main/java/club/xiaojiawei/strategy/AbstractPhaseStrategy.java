@@ -6,6 +6,7 @@ import club.xiaojiawei.bean.entity.TagChangeEntity;
 import club.xiaojiawei.enums.ConfigurationKeyEnum;
 import club.xiaojiawei.enums.DeckEnum;
 import club.xiaojiawei.enums.StepEnum;
+import club.xiaojiawei.enums.WarPhaseEnum;
 import club.xiaojiawei.listener.PowerLogListener;
 import club.xiaojiawei.status.War;
 import club.xiaojiawei.utils.GameUtil;
@@ -48,18 +49,18 @@ public abstract class AbstractPhaseStrategy{
 
     public void deal(String line) {
         dealing = true;
-        beforeDeal();
-        dealLog(line);
-        afterDeal();
-        dealing = false;
+        try{
+            beforeDeal();
+            dealLog(line);
+            afterDeal();
+        }finally {
+            dealing = false;
+        }
     }
     private void dealLog(String line){
         RandomAccessFile accessFile = powerLogListener.getAccessFile();
         long mark;
-        while (true) {
-            if (isPause.get().get()){
-                return;
-            }
+        while (!isPause.get().get()) {
             try {
                 if (line == null) {
                     mark = accessFile.getFilePointer();

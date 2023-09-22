@@ -67,7 +67,6 @@ public class Player extends Entity {
     }
 
     public void resetResources(){
-        resources = 0;
         resourcesUsed = 0;
         tempResources = 0;
     }
