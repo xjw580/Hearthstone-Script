@@ -4,6 +4,7 @@ import club.xiaojiawei.data.ScriptStaticData;
 import club.xiaojiawei.bean.entity.Card;
 import club.xiaojiawei.bean.entity.ExtraEntity;
 import club.xiaojiawei.bean.entity.TagChangeEntity;
+import club.xiaojiawei.enums.WarPhaseEnum;
 import club.xiaojiawei.status.War;
 import club.xiaojiawei.strategy.AbstractPhaseStrategy;
 import lombok.extern.slf4j.Slf4j;
@@ -55,8 +56,9 @@ public class DrawnInitCardAbstractPhaseStrategy extends AbstractPhaseStrategy{
     protected boolean dealTagChangeThenIsOver(String line, TagChangeEntity tagChangeEntity) {
         if (tagChangeEntity.getTag() == ZONE){
             verifyPlayer(tagChangeEntity.getPlayerId(), true);
-        }else {
-            return tagChangeEntity.getTag() == NEXT_STEP && Objects.equals(tagChangeEntity.getValue(), BEGIN_MULLIGAN.getValue());
+        }else if (tagChangeEntity.getTag() == NEXT_STEP && Objects.equals(tagChangeEntity.getValue(), BEGIN_MULLIGAN.getValue())){
+            War.setCurrentPhase(WarPhaseEnum.REPLACE_CARD_PHASE);
+            return true;
         }
         return false;
     }

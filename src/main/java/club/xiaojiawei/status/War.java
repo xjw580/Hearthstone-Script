@@ -17,6 +17,7 @@ import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static club.xiaojiawei.data.ScriptStaticData.CARD_AREA_MAP;
+import static club.xiaojiawei.enums.WarPhaseEnum.FILL_DECK_PHASE;
 
 /**
  * @author 肖嘉威
@@ -31,7 +32,8 @@ public class War {
     @Getter
     private static String firstPlayerGameId;
     @Getter
-    private volatile static WarPhaseEnum currentPhase;
+    @Setter
+    private volatile static WarPhaseEnum currentPhase = FILL_DECK_PHASE;
     @Getter
     private volatile static StepEnum currentTurnStep;
     @Getter
@@ -64,7 +66,7 @@ public class War {
     public static void reset(){
         currentPlayer = null;
         firstPlayerGameId = null;
-        currentPhase = null;
+        currentPhase = FILL_DECK_PHASE;
         currentTurnStep = null;
         me = null;
         rival = null;
@@ -100,15 +102,11 @@ public class War {
     }
 
     public static synchronized void increaseWarCount(){
+        if (War.getMe() != null){
+            printResult();
+        }
         warCount.set(warCount.get() + 1);
-        printResult();
     }
-
-    public static void setCurrentPhase(WarPhaseEnum currentPhase, String l) {
-        War.currentPhase = currentPhase;
-        currentPhase.getAbstractPhaseStrategy().deal(l);
-    }
-
     public static Card exchangeAreaOfCard(ExtraEntity extraEntity){
         Area sourceArea = CARD_AREA_MAP.get(extraEntity.getEntityId());
         if (sourceArea == null){

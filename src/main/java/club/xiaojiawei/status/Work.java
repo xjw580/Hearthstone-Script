@@ -76,9 +76,11 @@ public class Work {
     @Getter
     private volatile static boolean working;
     public static void stopWork(){
+        working = false;
+        cannotWorkLog();
+        log.info("停止工作，准备关闭游戏");
         SystemUtil.killGame();
         SystemUtil.cancelAllRunnable();
-        working = false;
     }
     public static void cannotWorkLog(){
         String context = "现在是下班时间 🌜";

@@ -77,6 +77,10 @@ public class EvenNumberShamanAbstractDeckStrategy extends AbstractDeckStrategy{
         static final BaseCard 深渊魔物 = new BaseCard("OG_028");
         static final BaseCard 图腾巨像 = new BaseCard("REV_838");
         static final BaseCard 末日预言者 = new BaseCard("NEW1_021");
+        static final BaseCard 对空奥数法师 = new BaseCard("ULD_240");
+        static final BaseCard 健谈的调酒师 = new BaseCard("REV_513");
+        static final BaseCard 船载火炮 = new BaseCard("GVG_075");
+        static final BaseCard 刺豚拳手 = new BaseCard("TSC_002");
     }
 
     @Override
@@ -164,8 +168,17 @@ public class EvenNumberShamanAbstractDeckStrategy extends AbstractDeckStrategy{
                     Card rivalCard = rivalPlayCards.get(rivalIndex);
                     if (
                             rivalCard.getCardType() == MINION
-                                    && canPointedToRival(rivalCard)
-                                    && (rivalCard.isTitan() || rivalCard.isAura() || rivalCard.isAdjacentBuff() || cardEquals(rivalCard, 末日预言者))
+                            && canPointedToRival(rivalCard)
+                            && (
+                                    rivalCard.isTitan()
+                                    || rivalCard.isAura()
+                                    || rivalCard.isAdjacentBuff()
+                                    || cardEquals(rivalCard, 末日预言者)
+                                    || cardEquals(rivalCard, 对空奥数法师)
+                                    || cardEquals(rivalCard, 健谈的调酒师)
+                                    || cardEquals(rivalCard, 船载火炮)
+                                    || cardEquals(rivalCard, 船载火炮)
+                                 )
                     ){
                         int heroAtc = calcMyHeroTotalAtc();
                         List<Integer> result = calcEatRivalCard(rivalCard, Integer.MAX_VALUE, (heroAtc == 0 || myPlayArea.getHero().isExhausted())? 0 : heroAtc);
@@ -232,8 +245,7 @@ public class EvenNumberShamanAbstractDeckStrategy extends AbstractDeckStrategy{
         for (int i = myHandCards.size() - 1; i >= 0; i--) {
             Card card = myHandCards.get(i);
             if (card.getCardType() == MINION){
-                myHandPointToMyPlay(i, myPlayCards.size());
-                if (card.isBattlecry()){
+                if (myHandPointToMyPlay(i) && card.isBattlecry()){
                     MouseUtil.cancel();
                 }
             }
@@ -384,9 +396,10 @@ public class EvenNumberShamanAbstractDeckStrategy extends AbstractDeckStrategy{
         }
         index = findByCardId(myHandCards, COIN);
         if (index != -1 && findByCost(myHandCards, 2) != -1){
-            myHandPointToMyPlay(index);
-            dealThreeResource();
-            return;
+            if (myHandPointToNoPlace(index)){
+                dealThreeResource();
+                return;
+            }
         }
         if ((index = findByCardId(myHandCards, 风怒)) != -1){
             int playIndex = findMaxAtcByGEAtkNotWindFury(myPlayCards, 6);
@@ -548,10 +561,14 @@ public class EvenNumberShamanAbstractDeckStrategy extends AbstractDeckStrategy{
         if (
                 (index = findByCardId(myHandCards, 图腾团聚)) != -1
                 && (myPlayCards.size() == 3 && getMyUsableResource() == 4 || myPlayCards.size() < 3)
-                && myHandPointToNoPlace(index)
         ){
-            dealZeroResource();
-            return;
+            if (getMyUsableResource() > 5 && (otherIndex = findByCardId(myHandCards, 驻锚图腾)) != -1){
+                myHandPointToMyPlay(otherIndex);
+            }
+            if (myHandPointToNoPlace(index)){
+                dealZeroResource();
+                return;
+            }
         }
         dealTwoResource();
         dealTwoResource();

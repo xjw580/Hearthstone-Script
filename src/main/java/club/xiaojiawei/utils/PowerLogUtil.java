@@ -108,9 +108,13 @@ public class PowerLogUtil {
         int index = line.lastIndexOf("]");
         TagChangeEntity tagChangeEntity = new TagChangeEntity();
         String tagName = line.substring(tagIndex + 4, valueIndex).strip();
-//        为什么不用TagEnum.valueOf()?因为可能会报错
         tagChangeEntity.setTag(TAG_MAP.getOrDefault(tagName, UNKNOWN));
-        tagChangeEntity.setValue(line.substring(valueIndex + 6).strip());
+        String value = line.substring(valueIndex + 6).strip();
+//        可能会有这样的日志：TAG_CHANGE Entity=128 tag=DISPLAYED_CREATOR value=46 DEF CHANGE
+        if ((valueIndex = value.indexOf(" ")) != -1){
+            value = value.substring(0, valueIndex);
+        }
+        tagChangeEntity.setValue(value);
         if (index < 100){
             tagChangeEntity.setEntity(iso88591_To_utf8(line.substring(line.indexOf("Entity") + 7, tagIndex).strip()));
         }else {

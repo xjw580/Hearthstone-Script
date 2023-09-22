@@ -3,6 +3,8 @@ package club.xiaojiawei.strategy.phase;
 import club.xiaojiawei.bean.entity.ExtraEntity;
 import club.xiaojiawei.bean.entity.TagChangeEntity;
 import club.xiaojiawei.enums.TagEnum;
+import club.xiaojiawei.enums.WarPhaseEnum;
+import club.xiaojiawei.status.War;
 import club.xiaojiawei.strategy.AbstractPhaseStrategy;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -21,7 +23,11 @@ public class SpecialEffectTriggerAbstractPhaseStrategy extends AbstractPhaseStra
 
     @Override
     protected boolean dealTagChangeThenIsOver(String line, TagChangeEntity tagChangeEntity) {
-        return tagChangeEntity.getTag() == TagEnum.STEP && Objects.equals(tagChangeEntity.getValue(), MAIN_READY.getValue());
+        if (tagChangeEntity.getTag() == TagEnum.STEP && Objects.equals(tagChangeEntity.getValue(), MAIN_READY.getValue())){
+            War.setCurrentPhase(WarPhaseEnum.GAME_TURN_PHASE);
+            return true;
+        }
+        return false;
     }
 
 }

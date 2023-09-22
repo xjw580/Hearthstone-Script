@@ -49,8 +49,8 @@ public abstract class AbstractLogListener {
         this.listenUnit = listenUnit;
     }
 
-    protected abstract void readOldLog();
-    protected abstract void listenLog();
+    protected abstract void readOldLog() throws Exception;
+    protected abstract void listenLog() throws Exception;
     protected void otherListen(){};
     protected void cancelOtherListener(){};
     public synchronized void listen(){
@@ -58,33 +58,40 @@ public abstract class AbstractLogListener {
             log.warn(logName + "正在被监听，无法再次被监听");
             return;
         }
-        File logFile = createFile();
         closeLogStream();
+        File logFile = createFile();
         log.info("开始监听" + logName);
         try {
             accessFile = new RandomAccessFile(logFile, "r");
             readOldLog();
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        logScheduledFuture = listenFileThreadPool.scheduleAtFixedRate(new LogRunnable(this::listenLog), listenInitialDelay, listenPeriod, listenUnit);
+        logScheduledFuture = listenFileThreadPool.scheduleAtFixedRate(new LogRunnable(() -> {
+            try {
+                listenLog();
+            }catch (Exception e){
+                log.warn(logName + "监听器发生错误", e);
+            }
+        }), listenInitialDelay, listenPeriod, listenUnit);
         otherListen();
     }
     private File createFile(){
-        File screenLogFile = new File(logDir.getAbsolutePath() + "/" + logName);
-        if (!screenLogFile.exists()){
-            try(FileWriter fileWriter = new FileWriter(screenLogFile)){
-                fileWriter.write("#created by " + ScriptStaticData.SCRIPT_NAME);
+        File logFile = new File(logDir.getAbsolutePath() + "/" + logName);
+        if (!logFile.exists()){
+            try(FileWriter fileWriter = new FileWriter(logFile)){
+                fileWriter.write("");
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         }
-        return screenLogFile;
+        return logFile;
     }
     private void closeLogStream(){
         if (accessFile != null){
             try {
                 accessFile.close();
+                log.info("旧的" + logName + "文件流已关闭");
                 accessFile = null;
             } catch (IOException e) {
                 throw new RuntimeException(e);

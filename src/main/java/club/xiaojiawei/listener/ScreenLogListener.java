@@ -7,6 +7,7 @@ import club.xiaojiawei.data.SpringData;
 import club.xiaojiawei.enums.ConfigurationKeyEnum;
 import club.xiaojiawei.enums.ModeEnum;
 import club.xiaojiawei.status.Mode;
+import club.xiaojiawei.status.Work;
 import club.xiaojiawei.utils.SystemUtil;
 import javafx.beans.property.BooleanProperty;
 import lombok.Setter;
@@ -49,43 +50,37 @@ public class ScreenLogListener extends AbstractLogListener{
     }
 
     @Override
-    protected void readOldLog() {
+    protected void readOldLog() throws IOException {
         String line;
         int index;
         ModeEnum finalMode = null;
-        try {
-            while ((line = accessFile.readLine()) != null) {
-                if ((index = line.indexOf("currMode")) != -1) {
-                    finalMode = ModeEnum.valueOf(line.substring(index + 9));
-                }
+        while ((line = accessFile.readLine()) != null) {
+            if ((index = line.indexOf("currMode")) != -1) {
+                finalMode = ModeEnum.valueOf(line.substring(index + 9));
             }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
         }
         Mode.setCurrMode(finalMode);
     }
 
     @Override
-    protected void listenLog() {
-        try {
-            String line;
-            while (!isPause.get().get() && Strings.isNotBlank((line = accessFile.readLine()))){
-                Mode.setCurrMode(resolveLog(line));
-            }
-            if (isPause.get().get()){
-                cancelListener();
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+    protected void listenLog() throws IOException, InterruptedException {
+        String line;
+        while (!isPause.get().get() && Strings.isNotBlank((line = accessFile.readLine()))){
+            Mode.setCurrMode(resolveLog(line));
+        }
+        if (isPause.get().get()){
+            cancelListener();
         }
     }
 
     @Override
     protected void otherListen() {
         lastWorkTime = System.currentTimeMillis();
-        log.info("开始监听是否出现异常情况");
+        log.info("开始监听异常情况");
         errorScheduledFuture = listenFileThreadPool.scheduleAtFixedRate(new LogRunnable(() -> {
             if (!isPause.get().get() && System.currentTimeMillis() - lastWorkTime > MAX_IDLE_TIME){
+                log.info("监听到异常情况，准备重启游戏");
+                lastWorkTime = System.currentTimeMillis();
                 core.restart();
             }
         }), 0, 1, TimeUnit.MINUTES);
@@ -95,11 +90,11 @@ public class ScreenLogListener extends AbstractLogListener{
     protected void cancelOtherListener() {
         if (errorScheduledFuture != null && !errorScheduledFuture.isDone()){
             errorScheduledFuture.cancel(true);
-            log.info("已停止监听是否出现异常情况");
+            log.info("已停止监听异常情况");
         }
     }
 
-    private ModeEnum resolveLog(String line) {
+    private ModeEnum resolveLog(String line) throws InterruptedException, IOException {
         if (line == null){
             return null;
         }
@@ -107,14 +102,10 @@ public class ScreenLogListener extends AbstractLogListener{
         if ((index = line.indexOf("currMode")) != -1){
             return ModeEnum.valueOf(line.substring(index + 9));
         }else if (line.contains("OnDestroy()")){
-            try {
-                Thread.sleep(2000);
-                if (Strings.isBlank(new String(Runtime.getRuntime().exec(GAME_ALIVE_CMD).getInputStream().readAllBytes()))){
-                    log.info("检测到游戏关闭，准备重新启动");
-                    core.restart();
-                }
-            } catch (InterruptedException | IOException e) {
-                throw new RuntimeException(e);
+            Thread.sleep(2000);
+            if (Strings.isBlank(new String(Runtime.getRuntime().exec(GAME_ALIVE_CMD).getInputStream().readAllBytes()))){
+                log.info("检测到游戏关闭，准备重启游戏");
+                core.restart();
             }
         }
         return null;
