@@ -84,6 +84,7 @@ public class Core implements ApplicationRunner {
         coreThreadPool.execute(() -> {
             SystemUtil.killGame();
             isPause.get().set(true);
+            log.info("游戏重启中……");
             isPause.get().set(false);
         });
     }

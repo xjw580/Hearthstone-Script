@@ -5,6 +5,7 @@ import club.xiaojiawei.custom.LogRunnable;
 import club.xiaojiawei.enums.ConfigurationKeyEnum;
 import club.xiaojiawei.enums.DeckEnum;
 import club.xiaojiawei.enums.StepEnum;
+import club.xiaojiawei.enums.WarPhaseEnum;
 import club.xiaojiawei.status.War;
 import club.xiaojiawei.strategy.AbstractPhaseStrategy;
 import club.xiaojiawei.utils.SystemUtil;
@@ -57,8 +58,9 @@ public class ReplaceCardAbstractPhaseStrategy extends AbstractPhaseStrategy{
                     DeckEnum.valueOf(scriptConfiguration.getProperty(ConfigurationKeyEnum.DECK_KEY.getKey())).getAbstractDeckStrategy().changeCard();
                 }))).start();
             }
-        }else {
-            return tagChangeEntity.getTag() == NEXT_STEP && Objects.equals(StepEnum.MAIN_READY.getValue(), tagChangeEntity.getValue());
+        }else if (tagChangeEntity.getTag() == NEXT_STEP && Objects.equals(StepEnum.MAIN_READY.getValue(), tagChangeEntity.getValue())){
+            War.setCurrentPhase(WarPhaseEnum.SPECIAL_EFFECT_TRIGGER_PHASE);
+            return true;
         }
         return false;
     }

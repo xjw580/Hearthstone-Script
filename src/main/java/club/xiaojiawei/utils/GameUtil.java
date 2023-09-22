@@ -73,7 +73,7 @@ public class GameUtil {
                             (int) (ScriptStaticData.GAME_RECT.bottom - (ScriptStaticData.GAME_RECT.bottom - ScriptStaticData.GAME_RECT.top) * SURRENDER_BUTTON_VERTICAL_TO_BOTTOM_RATION)
                     );
                 }),
-                5000,
+                4500,
                 2000,
                 TimeUnit.MILLISECONDS
         );
@@ -81,9 +81,8 @@ public class GameUtil {
 
     public static void cancelTask(){
         if (clickGameEndPageTask != null && !clickGameEndPageTask.isDone()){
-            log.info("已取消点掉游戏结束结算页面任务");
             clickGameEndPageTask.cancel(true);
-            War.reset();
+            log.info("已取消点掉游戏结束结算页面任务");
         }
     }
 

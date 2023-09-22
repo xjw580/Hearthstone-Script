@@ -4,6 +4,7 @@ import club.xiaojiawei.data.SpringData;
 import club.xiaojiawei.enums.ConfigurationKeyEnum;
 import club.xiaojiawei.listener.AbstractLogListener;
 import club.xiaojiawei.listener.DeckLogListener;
+import club.xiaojiawei.listener.PowerLogListener;
 import club.xiaojiawei.listener.ScreenLogListener;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -29,6 +30,8 @@ public class ListenStarter extends AbstractStarter{
     @Resource
     private DeckLogListener deckLogListener;
     @Resource
+    private PowerLogListener powerLogListener;
+    @Resource
     protected SpringData springData;
     @Override
     protected void exec() {
@@ -40,9 +43,10 @@ public class ListenStarter extends AbstractStarter{
         }
         Arrays.sort(files, Comparator.comparing(File::getName));
         AbstractLogListener.setLogDir(files[files.length - 1]);
-        log.info("游戏日志目录读取成功");
+        log.info("游戏日志目录读取成功：" + files[files.length - 1].getAbsoluteFile());
         deckLogListener.listen();
         screenLogListener.listen();
+        powerLogListener.listen();
         if (nextStarter != null){
             nextStarter.start();
         }

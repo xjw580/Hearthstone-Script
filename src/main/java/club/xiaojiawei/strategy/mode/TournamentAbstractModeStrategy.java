@@ -1,6 +1,7 @@
 package club.xiaojiawei.strategy.mode;
 
 import club.xiaojiawei.bean.Deck;
+import club.xiaojiawei.core.Core;
 import club.xiaojiawei.custom.LogRunnable;
 import club.xiaojiawei.data.GameRationStaticData;
 import club.xiaojiawei.data.ScriptStaticData;
@@ -19,6 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Properties;
@@ -42,18 +44,19 @@ public class TournamentAbstractModeStrategy extends AbstractModeStrategy<Object>
     private Properties scriptConfiguration;
     @Resource
     private PowerLogListener powerLogListener;
+    @Resource
+    private Core core;
     private static ScheduledFuture<?> scheduledFuture;
     private static ScheduledFuture<?> errorScheduledFuture;
-
-    public static final float TOURNAMENT_MODE_BUTTON_VERTICAL_TO_BOTTOM_RATIO = (float) 0.7;
-    public static final float FIRST_DECK_BUTTON_HORIZONTAL_TO_CENTER_RATIO = (float) (0.333);
-    public static final float ERROR_BUTTON_VERTICAL_TO_BOTTOM_RATION = (float) 0.395;
-    public static final float CHANGE_MODE_BUTTON_VERTICAL_TO_BOTTOM_RATION = (float) 0.963;
-    public static final float CHANGE_MODE_BUTTON_HORIZONTAL_TO_CENTER_RATION = (float) 0.313;
-    public static final float CLASSIC_BUTTON_VERTICAL_TO_BOTTOM_RATION = (float) 0.581;
-    public static final float CLASSIC_BUTTON_HORIZONTAL_TO_CENTER_RATION = (float) 0.34;
-    public static final float STANDARD_BUTTON_VERTICAL_TO_BOTTOM_RATION = (float) 0.714;
-    public static final float STANDARD_BUTTON_HORIZONTAL_TO_CENTER_RATION = (float) 0.11;
+    private static final float TOURNAMENT_MODE_BUTTON_VERTICAL_TO_BOTTOM_RATIO = (float) 0.7;
+    private static final float FIRST_DECK_BUTTON_HORIZONTAL_TO_CENTER_RATIO = (float) (0.333);
+    private static final float ERROR_BUTTON_VERTICAL_TO_BOTTOM_RATION = (float) 0.395;
+    private static final float CHANGE_MODE_BUTTON_VERTICAL_TO_BOTTOM_RATION = (float) 0.963;
+    private static final float CHANGE_MODE_BUTTON_HORIZONTAL_TO_CENTER_RATION = (float) 0.313;
+    private static final float CLASSIC_BUTTON_VERTICAL_TO_BOTTOM_RATION = (float) 0.581;
+    private static final float CLASSIC_BUTTON_HORIZONTAL_TO_CENTER_RATION = (float) 0.34;
+    private static final float STANDARD_BUTTON_VERTICAL_TO_BOTTOM_RATION = (float) 0.714;
+    private static final float STANDARD_BUTTON_HORIZONTAL_TO_CENTER_RATION = (float) 0.11;
     public static void cancelTask(){
         if (scheduledFuture != null && !scheduledFuture.isDone()){
             log.info("已取消点击天梯模式按钮任务");
@@ -86,15 +89,17 @@ public class TournamentAbstractModeStrategy extends AbstractModeStrategy<Object>
             }
         }), DELAY_TIME, INTERVAL_TIME, TimeUnit.MILLISECONDS);
     }
-    DeckEnum currentDeck;
     @Override
     protected void afterEnter(Object o) {
         if (Work.canWork()){
             SystemUtil.updateRect(ScriptStaticData.getGameHWND(), ScriptStaticData.GAME_RECT);
             if (ModeEnum.TOURNAMENT == RunModeEnum.valueOf(scriptConfiguration.getProperty(ConfigurationKeyEnum.RUN_MODE_KEY.getKey())).getModeEnum()){
-                 currentDeck = DeckEnum.valueOf(scriptConfiguration.getProperty(ConfigurationKeyEnum.DECK_KEY.getKey()));
+                DeckEnum currentDeck = DeckEnum.valueOf(scriptConfiguration.getProperty(ConfigurationKeyEnum.DECK_KEY.getKey()));
                 if (!currentDeck.getRunMode().isEnable()){
                     log.warn("不可用或不支持的模式：" + currentDeck.getValue());
+                    return;
+                }
+                if (!(checkPowerLogSize())){
                     return;
                 }
                 SystemUtil.delayMedium();
@@ -111,8 +116,21 @@ public class TournamentAbstractModeStrategy extends AbstractModeStrategy<Object>
             }
         }else {
             Work.stopWork();
-            Work.cannotWorkLog();
         }
+    }
+    private static final int RESERVE_SIZE = 1500 * 1024;
+    private static final int MAX_SIZE = 10000 * 1024;
+    private boolean checkPowerLogSize(){
+        try {
+            if (powerLogListener.getAccessFile() != null && powerLogListener.getAccessFile().length() + RESERVE_SIZE > MAX_SIZE){
+                log.info("power.log即将达到10000KB，准备重启游戏");
+                core.restart();
+                return false;
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return true;
     }
 
     private void clickModeChangeButton(){
@@ -123,17 +141,17 @@ public class TournamentAbstractModeStrategy extends AbstractModeStrategy<Object>
         );
     }
 
-    private void changeMode(DeckEnum deck){
-        switch (deck.getDeckType()){
+    private void changeMode(DeckEnum currentDeck){
+        switch (currentDeck.getDeckType()){
             case CLASSIC -> changeModeToClassic();
             case STANDARD -> changeModeToStandard();
             case WILD -> changeModeToWild();
             case CASUAL -> changeModeToCasual();
-            default -> throw new RuntimeException("没有此模式：" + deck.getDeckType().getComment());
+            default -> throw new RuntimeException("没有此模式：" + currentDeck.getDeckType().getComment());
         }
     }
 
-    private void selectDeck(DeckEnum deck){
+    private void selectDeck(DeckEnum currentDeck){
         List<Deck> decks = DeckLogListener.getDecks();
         for (int i = decks.size() - 1; i >= 0; i--) {
             Deck d = decks.get(i);
@@ -142,7 +160,7 @@ public class TournamentAbstractModeStrategy extends AbstractModeStrategy<Object>
                 break;
             }
         }
-        log.info("选择套牌:" + deck.getComment());
+        log.info("选择套牌");
         mouseUtil.leftButtonClick(
                 (int) (((ScriptStaticData.GAME_RECT.right + ScriptStaticData.GAME_RECT.left) >> 1) - (ScriptStaticData.GAME_RECT.bottom - ScriptStaticData.GAME_RECT.top) * FIRST_DECK_BUTTON_HORIZONTAL_TO_CENTER_RATIO * GameRationStaticData.GAME_WINDOW_ASPECT_TO_HEIGHT_RATIO + RandomUtil.getRandom(-10, 10)),
                 (int) (ScriptStaticData.GAME_RECT.bottom - (ScriptStaticData.GAME_RECT.bottom - ScriptStaticData.GAME_RECT.top) * FIRST_ROW_DECK_VERTICAL_TO_BOTTOM_RATIO) + RandomUtil.getRandom(-5, 5)
@@ -185,7 +203,6 @@ public class TournamentAbstractModeStrategy extends AbstractModeStrategy<Object>
 
     private void startMatching(){
         log.info("开始匹配");
-        powerLogListener.listen();
         //        重置游戏
         mouseUtil.leftButtonClick(
                 (int) (((ScriptStaticData.GAME_RECT.right + ScriptStaticData.GAME_RECT.left) >> 1) + (ScriptStaticData.GAME_RECT.bottom - ScriptStaticData.GAME_RECT.top) * GameRationStaticData.START_BUTTON_HORIZONTAL_TO_CENTER_RATIO * GameRationStaticData.GAME_WINDOW_ASPECT_TO_HEIGHT_RATIO + RandomUtil.getRandom(-10, 10)),
@@ -197,7 +214,7 @@ public class TournamentAbstractModeStrategy extends AbstractModeStrategy<Object>
     /**
      * 生成匹配失败时兜底的定时器
      */
-    public void generateTimer(){
+    private void generateTimer(){
         errorScheduledFuture = extraThreadPool.schedule(new LogRunnable(() -> {
             if (!isPause.get().get()){
                 log.info("匹配失败，再次匹配中");

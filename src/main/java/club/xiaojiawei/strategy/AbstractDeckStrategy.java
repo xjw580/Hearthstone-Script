@@ -36,10 +36,7 @@ public abstract class AbstractDeckStrategy{
     protected AtomicReference<BooleanProperty> isPause;
     @Resource
     protected Properties scriptConfiguration;
-    /**
-     * 每次行动后停顿时间
-     */
-    protected static final int ACTION_INTERVAL = 3500;
+
     protected static final float[] FIRST_HAND_CARD_HORIZONTAL_TO_CENTER_RATION = new float[]{
             (float) 0.033, (float) 0.08, (float) 0.123, (float) 0.167, (float) 0.177, (float) 0.193, (float) 0.203, (float) 0.213, (float) 0.22, (float) 0.227
     };
@@ -70,7 +67,10 @@ public abstract class AbstractDeckStrategy{
     protected List<Card> myPlayCards;
     protected List<Card> rivalHandCards;
     protected List<Card> rivalPlayCards;
-
+    /**
+     * 每次行动后停顿时间
+     */
+    protected static final int ACTION_INTERVAL = 3500;
     public void changeCard() {
         if (Boolean.parseBoolean(scriptConfiguration.getProperty(STRATEGY_KEY.getKey()))){
             try {
@@ -118,9 +118,9 @@ public abstract class AbstractDeckStrategy{
                 }
                 log.info("回合开始可用水晶数：" + getMyUsableResource());
                 executeOutCard();
-                MouseUtil.cancel();
                 log.info("执行出牌策略完毕");
             }finally {
+                MouseUtil.cancel();
                 clickTurnOverButton();
             }
         }
@@ -423,7 +423,11 @@ public abstract class AbstractDeckStrategy{
         myHandPointToMyPlayForBase(handIndex, myPlayCards.size(), true);
         SystemUtil.delay(ACTION_INTERVAL);
         log.info("当前可用水晶数：" + getMyUsableResource());
-        return findByEntityId(myHandCards, card) == -1;
+        if (findByEntityId(myHandCards, card) == -1){
+            return true;
+        }
+        MouseUtil.cancel();
+        return false;
     }
     protected boolean myHandPointToMyPlay(int myHandIndex, int myPlayIndex){
         if (myHandIndex >= myHandCards.size() || myPlayIndex >= myPlayCards.size()){
@@ -436,7 +440,11 @@ public abstract class AbstractDeckStrategy{
         myHandPointToMyPlayForBase(myHandIndex, myPlayIndex, true);
         SystemUtil.delay(ACTION_INTERVAL);
         log.info("当前可用水晶数：" + getMyUsableResource());
-        return findByEntityId(myHandCards, card) == -1;
+        if (findByEntityId(myHandCards, card) == -1){
+            return true;
+        }
+        MouseUtil.cancel();
+        return false;
     }
     protected boolean myHandPointToMyPlayNoPlace(int myHandIndex, int myPlayIndex){
         if (myHandIndex >= myHandCards.size() || myPlayIndex >= myPlayCards.size()){
@@ -449,7 +457,11 @@ public abstract class AbstractDeckStrategy{
         myHandPointToMyPlayForBase(myHandIndex, myPlayIndex, false);
         SystemUtil.delay(ACTION_INTERVAL);
         log.info("当前可用水晶数：" + getMyUsableResource());
-        return findByEntityId(myHandCards, card) == -1;
+        if (findByEntityId(myHandCards, card) == -1){
+            return true;
+        }
+        MouseUtil.cancel();
+        return false;
     }
 
     private int[] myHandPointToMyPlayForBase(int handIndex, int playIndex, boolean insertGap){
@@ -479,7 +491,11 @@ public abstract class AbstractDeckStrategy{
         myHandPointTo(myHandIndex, getRivalPlayCardPos(rival.getPlayArea().getCards().size(), rivalPlayIndex));
         SystemUtil.delay(ACTION_INTERVAL);
         log.info("当前可用水晶数：" + getMyUsableResource());
-        return findByEntityId(myHandCards, card) == -1;
+        if (findByEntityId(myHandCards, card) == -1){
+            return true;
+        }
+        MouseUtil.cancel();
+        return false;
     }
     protected boolean myHandPointToRivalHeroNoPlace(int myHandIndex){
         if (myHandIndex >= myHandCards.size()){
@@ -493,7 +509,11 @@ public abstract class AbstractDeckStrategy{
         myHandPointTo(myHandIndex, getRivalHeroPos());
         SystemUtil.delay(ACTION_INTERVAL);
         log.info("当前可用水晶数：" + getMyUsableResource());
-        return findByEntityId(myHandCards, card) == -1;
+        if (findByEntityId(myHandCards, card) == -1){
+            return true;
+        }
+        MouseUtil.cancel();
+        return false;
     }
     protected boolean myHandPointToNoPlace(int myHandIndex){
         if (myHandIndex >= myHandCards.size()){
@@ -506,7 +526,11 @@ public abstract class AbstractDeckStrategy{
         myHandPointToMyPlayForBase(myHandIndex, -1, false);
         SystemUtil.delay(ACTION_INTERVAL);
         log.info("当前可用水晶数：" + getMyUsableResource());
-        return findByEntityId(myHandCards, card) == -1;
+        if (findByEntityId(myHandCards, card) == -1){
+            return true;
+        }
+        MouseUtil.cancel();
+        return false;
     }
     
 
@@ -551,7 +575,7 @@ public abstract class AbstractDeckStrategy{
                 getMyPlayCardPos(me.getPlayArea().getCards().size(), myPlayIndex),
                 rivalHeroPos
         );
-        SystemUtil.delay(ACTION_INTERVAL - 500);
+        SystemUtil.delay(ACTION_INTERVAL - 700);
         return true;
     }
 
@@ -577,7 +601,7 @@ public abstract class AbstractDeckStrategy{
                 rivalPlayPos[0],
                 rivalPlayPos[1]
         );
-        SystemUtil.delay(ACTION_INTERVAL + 500);
+        SystemUtil.delay(ACTION_INTERVAL + 750);
         return true;
     }
 
@@ -610,6 +634,7 @@ public abstract class AbstractDeckStrategy{
         if (myHandIndex >= myHandCards.size() || myPlayArea.isFull() || myPlayCards.get(thenMyPlayIndex).isDormantAwakenConditionEnchant() || myHandCards.get(myHandIndex).getCost() > getMyUsableResource()){
             return false;
         }
+        Card card = myHandCards.get(myHandIndex);
         int[] playPos = myHandPointToMyPlayForBase(myHandIndex, myPlayIndex, true);
         if (myPlayIndex <= thenMyPlayIndex){
             thenMyPlayIndex++;
@@ -622,13 +647,18 @@ public abstract class AbstractDeckStrategy{
         );
         SystemUtil.delay(ACTION_INTERVAL);
         log.info("当前可用水晶数：" + getMyUsableResource());
-        return true;
+        if (findByEntityId(myHandCards, card) == -1){
+            return true;
+        }
+        MouseUtil.cancel();
+        return false;
     }
 
     protected boolean myHandPointToMyPlayThenPointToRivalPlay(int myHandIndex, int myPlayIndex, int rivalPlayIndex){
         if (myHandIndex >= myHandCards.size() || rivalPlayIndex >= rivalPlayCards.size() || myPlayArea.isFull() || !canPointedToRival(rivalPlayCards.get(rivalPlayIndex)) || myHandCards.get(myHandIndex).getCost() > getMyUsableResource()){
             return false;
         }
+        Card card = myHandCards.get(myHandIndex);
         int[] playPos = myHandPointToMyPlayForBase(myHandIndex, myPlayIndex, true);
         SystemUtil.delayMedium();
         SystemUtil.updateRect(ScriptStaticData.getGameHWND(), GAME_RECT);
@@ -638,13 +668,18 @@ public abstract class AbstractDeckStrategy{
         );
         SystemUtil.delay(ACTION_INTERVAL);
         log.info("当前可用水晶数：" + getMyUsableResource());
-        return true;
+        if (findByEntityId(myHandCards, card) == -1){
+            return true;
+        }
+        MouseUtil.cancel();
+        return false;
     }
 
     protected boolean myHandPointToMyPlayThenPointToRivalHero(int myHandIndex, int myPlayIndex){
         if (myHandIndex >= myHandCards.size() || myPlayArea.isFull() || !canPointedToRival(rivalPlayArea.getHero()) || myHandCards.get(myHandIndex).getCost() > getMyUsableResource()){
             return false;
         }
+        Card card = myHandCards.get(myHandIndex);
         int[] playPos = myHandPointToMyPlayForBase(myHandIndex, myPlayIndex, true);
         SystemUtil.delayMedium();
         SystemUtil.updateRect(ScriptStaticData.getGameHWND(), GAME_RECT);
@@ -654,7 +689,11 @@ public abstract class AbstractDeckStrategy{
         );
         SystemUtil.delay(ACTION_INTERVAL);
         log.info("当前可用水晶数：" + getMyUsableResource());
-        return true;
+        if (findByEntityId(myHandCards, card) == -1){
+            return true;
+        }
+        MouseUtil.cancel();
+        return false;
     }
     /**
      * 点击悬浮卡牌，如发现,

@@ -22,6 +22,7 @@ public class FatalErrorAbstractModeStrategy extends AbstractModeStrategy<Object>
     }
     @Override
     protected void afterEnter(Object o) {
+        log.info("发生致命错误，准备重启游戏");
         core.restart();
     }
 }

@@ -193,7 +193,7 @@ public class SystemUtil {
         try {
             Runtime.getRuntime().exec("cmd /c taskkill /f /t /im " + GAME_PROGRAM_NAME).waitFor();
             SystemUtil.delay(1000);
-            log.info("已关闭游戏");
+            log.info("游戏已关闭");
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
         }

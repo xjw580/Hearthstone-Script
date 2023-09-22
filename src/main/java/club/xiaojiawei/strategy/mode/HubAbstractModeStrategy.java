@@ -32,7 +32,6 @@ public class HubAbstractModeStrategy extends AbstractModeStrategy<Object> {
 
     @Override
     protected void beforeEnter() {
-        powerLogListener.cancelListener();
         super.beforeEnter();
     }
 
