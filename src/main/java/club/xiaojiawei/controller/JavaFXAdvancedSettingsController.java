@@ -33,7 +33,6 @@ public class JavaFXAdvancedSettingsController implements Initializable {
     private Properties scriptConfiguration;
     @Resource
     private PropertiesUtil propertiesUtil;
-
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         if (Objects.equals(scriptConfiguration.getProperty(AUTO_OPEN_KEY.getKey()), "true")){

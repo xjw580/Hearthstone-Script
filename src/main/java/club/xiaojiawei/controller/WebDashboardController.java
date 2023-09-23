@@ -13,7 +13,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 
 
@@ -22,7 +23,6 @@ import java.util.concurrent.atomic.AtomicReference;
  * @date 2022/11/24 15:37
  */
 @Controller
-@RequestMapping("/dashboard")
 @Slf4j
 public class WebDashboardController {
 
@@ -33,22 +33,22 @@ public class WebDashboardController {
 
     @RequestMapping("/")
     public String index(){
-        return "index";
+        return "dashboard";
     }
 
-    @RequestMapping("/pause")
+    @RequestMapping("/dashboard/pause")
     @ResponseBody
     public void pause(){
         isPause.get().set(true);
     }
 
-    @RequestMapping("/start")
+    @RequestMapping("/dashboard/start")
     @ResponseBody
     public void start(){
         isPause.get().set(false);
     }
 
-    @RequestMapping("/save")
+    @RequestMapping("/dashboard/save")
     @ResponseBody
     public void save(@RequestParam("workDayFlagArr")String[] workDayFlagArr, @RequestParam("workTimeFlagArr") String[] workTimeFlagArr, @RequestParam("workTimeArr") String[] workTimeArr){
         System.arraycopy(workDayFlagArr, 0, Work.getWorkDayFlagArr(), 0, Work.getWorkDayFlagArr().length);
@@ -57,13 +57,13 @@ public class WebDashboardController {
         Work.storeWorkDate();
     }
 
-    @RequestMapping("/changeDeck")
+    @RequestMapping("/dashboard/changeDeck")
     @ResponseBody
     public void changeDeck(@RequestParam("deckComment")String deckComment){
         dashboardUtil.changeDeck(deckComment);
     }
 
-    @RequestMapping("/getAllDeckByMode")
+    @RequestMapping("/dashboard/getAllDeckByMode")
     @ResponseBody
     public Result<ArrayList<DeckEnum>> getAllDeckByMode(@RequestParam("mode")String mode){
         ArrayList<DeckEnum> result = new ArrayList<>();
