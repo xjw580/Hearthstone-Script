@@ -43,7 +43,7 @@ public class HubAbstractModeStrategy extends AbstractModeStrategy<Object> {
             if (isPause.get().get()){
                 return;
             }
-            SystemUtil.updateRect(ScriptStaticData.getGameHWND(), ScriptStaticData.GAME_RECT);
+            SystemUtil.updateGameRect();
             mouseUtil.leftButtonClick(
                     (ScriptStaticData.GAME_RECT.right + ScriptStaticData.GAME_RECT.left) >> 1,
                     (int) (ScriptStaticData.GAME_RECT.bottom - (ScriptStaticData.GAME_RECT.bottom - ScriptStaticData.GAME_RECT.top) * GameRationStaticData.CONFIRM_OR_CLOSE_BUTTON_VERTICAL_TO_BOTTOM_RATION)

@@ -37,7 +37,7 @@ public class LoginAbstractModeStrategy extends AbstractModeStrategy<Object> {
 //        去除国服登陆时恼人的点击开始和进入主界面时弹出的每日任务
         scheduledFuture = extraThreadPool.scheduleWithFixedDelay(new LogRunnable(() -> {
             if (!isPause.get().get()){
-                SystemUtil.updateRect(ScriptStaticData.getGameHWND(), ScriptStaticData.GAME_RECT);
+                SystemUtil.updateGameRect();
                 mouseUtil.leftButtonClick(
                         (ScriptStaticData.GAME_RECT.right + ScriptStaticData.GAME_RECT.left) >> 1,
                         (int) (ScriptStaticData.GAME_RECT.bottom - (ScriptStaticData.GAME_RECT.bottom - ScriptStaticData.GAME_RECT.top) * GameRationStaticData.CONFIRM_OR_CLOSE_BUTTON_VERTICAL_TO_BOTTOM_RATION)

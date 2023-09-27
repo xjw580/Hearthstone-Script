@@ -49,7 +49,7 @@ public class GameTurnAbstractPhaseStrategy extends AbstractPhaseStrategy{
             if (Objects.equals(tagChangeEntity.getValue(), MAIN_ACTION.getValue())){
                 if (War.getMe() == War.getCurrentPlayer()){
                     log.info("我方回合");
-                    SystemUtil.updateRect(ScriptStaticData.getGameHWND(), ScriptStaticData.GAME_RECT);
+                    SystemUtil.updateGameRect();
                     stopThread();
                     War.setMyTurn(true);
 //                            异步执行出牌策略，以便监听出牌后的卡牌变动

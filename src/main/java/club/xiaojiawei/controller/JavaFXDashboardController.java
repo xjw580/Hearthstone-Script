@@ -3,6 +3,7 @@ package club.xiaojiawei.controller;
 import club.xiaojiawei.bean.Release;
 import club.xiaojiawei.controls.Switch;
 import club.xiaojiawei.custom.LogRunnable;
+import club.xiaojiawei.custom.LogScheduledThreadPoolExecutor;
 import club.xiaojiawei.enums.DeckEnum;
 import club.xiaojiawei.enums.RunModeEnum;
 import club.xiaojiawei.listener.VersionListener;
@@ -122,7 +123,7 @@ public class JavaFXDashboardController implements Initializable {
                 execUpdate(release.getTagName());
             }else if (!IS_UPDATING.get()){
                 IS_UPDATING.set(true);
-                extraThreadPool.schedule(new LogRunnable(() -> {
+                extraThreadPool.schedule(() -> {
                     try (
                             InputStream inputStream = new URL(String.format("https://gitee.com/zergqueen/Hearthstone-Script/releases/download/%s/%s-%s.zip", release.getTagName(), REPO_NAME, release.getTagName()))
                                     .openConnection()
@@ -163,7 +164,7 @@ public class JavaFXDashboardController implements Initializable {
                         throw new RuntimeException(e);
                     }
                     execUpdate(release.getTagName());
-                }), 0, TimeUnit.SECONDS);
+                }, 0, TimeUnit.SECONDS);
             }
         }
 //        SystemUtil.openUrlByBrowser("https://gitee.com/zergqueen/Hearthstone-Script/releases/tag/" + release.getTagName());
@@ -220,7 +221,7 @@ public class JavaFXDashboardController implements Initializable {
         }
         tip.setFill(Paint.valueOf("#00cc00"));
         tip.setText("保存成功😊");
-        extraThreadPool.schedule(new LogRunnable(() -> tip.setText("")), 3, TimeUnit.SECONDS);
+        extraThreadPool.schedule(() -> tip.setText(""), 3, TimeUnit.SECONDS);
         Work.storeWorkDate();
     }
     public static VBox logVBoxBack;

@@ -41,7 +41,7 @@ public class AdventureAbstractModeStrategy extends AbstractModeStrategy<Object> 
                 wantEnterSchedule.cancel(true);
                 GAME_MODE.getAbstractModeStrategy().wantEnter();
             } else if (Mode.getCurrMode() == GAME_MODE) {
-                SystemUtil.updateRect(ScriptStaticData.getGameHWND(), GAME_RECT);
+                SystemUtil.updateGameRect();
 //                    点击冒险模式
                 mouseUtil.leftButtonClick(
                         (int) (((GAME_RECT.right + GAME_RECT.left) >> 1) - (GAME_RECT.bottom - GAME_RECT.top) * ADVENTURE_MODE_BUTTON_HORIZONTAL_TO_CENTER_RATIO * GAME_WINDOW_ASPECT_TO_HEIGHT_RATIO + RandomUtil.getRandom(-15, 15)),
@@ -61,7 +61,7 @@ public class AdventureAbstractModeStrategy extends AbstractModeStrategy<Object> 
 
     @Override
     protected void afterEnter(Object o) {
-        SystemUtil.updateRect(ScriptStaticData.getGameHWND(), GAME_RECT);
+        SystemUtil.updateGameRect();
         clickStart();
         SystemUtil.delayLong();
         selectDeck();

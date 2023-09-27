@@ -19,7 +19,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 import java.awt.*;
 import java.awt.datatransfer.*;
 import java.io.*;
@@ -104,7 +103,7 @@ public class SystemUtil {
      * @param windowTitle
      * @return
      */
-    public static WinDef.HWND getHWND(String windowTitle){
+    public static WinDef.HWND findHWND(String windowTitle){
         return User32.INSTANCE.FindWindow
                 (null, windowTitle);
     }
@@ -119,6 +118,13 @@ public class SystemUtil {
         if ((ScriptStaticData.GAME_RECT.bottom - ScriptStaticData.GAME_RECT.top) != ScriptStaticData.DISPLAY_PIXEL_Y){
             ScriptStaticData.GAME_RECT.top += ScriptStaticData.WINDOW_TITLE_Y;
         }
+    }
+
+    /**
+     * 更新游戏窗口信息
+     */
+    public static void updateGameRect(){
+        updateRect(ScriptStaticData.getGameHWND(), ScriptStaticData.GAME_RECT);
     }
 
     /**
