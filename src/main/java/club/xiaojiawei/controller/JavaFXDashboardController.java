@@ -2,8 +2,6 @@ package club.xiaojiawei.controller;
 
 import club.xiaojiawei.bean.Release;
 import club.xiaojiawei.controls.Switch;
-import club.xiaojiawei.custom.LogRunnable;
-import club.xiaojiawei.custom.LogScheduledThreadPoolExecutor;
 import club.xiaojiawei.enums.DeckEnum;
 import club.xiaojiawei.enums.RunModeEnum;
 import club.xiaojiawei.listener.VersionListener;
@@ -136,13 +134,16 @@ public class JavaFXDashboardController implements Initializable {
                         if (!currentDir.exists()){
                             currentDir.mkdirs();
                         }
-                        ZipEntry nextEntry = zipInputStream.getNextEntry();
-                        while (nextEntry != null) {
+                        while (true) {
+                            ZipEntry nextEntry = zipInputStream.getNextEntry();
+                            if (nextEntry == null){
+                                break;
+                            }
                             String path = nextEntry.getName();
                             File file = new File(TEMP_PATH + path);
                             if (nextEntry.isDirectory()) {
                                 file.mkdirs();
-                                log.info("dir：" + file.getPath());
+                                log.info("created_dir：" + file.getPath());
                             } else {
                                 new File(file.getPath().substring(0, file.getPath().lastIndexOf("\\"))).mkdirs();
                                 try (BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(new FileOutputStream(file))){
@@ -152,10 +153,8 @@ public class JavaFXDashboardController implements Initializable {
                                         bufferedOutputStream.write(bytes, 0, l);
                                     }
                                 }
-                                log.info("file：" + file.getPath());
+                                log.info("downloaded_file：" + file.getPath());
                             }
-                            zipInputStream.closeEntry();
-                            nextEntry = zipInputStream.getNextEntry();
                         }
                         log.info(release.getTagName() + "下载完毕");
                         IS_UPDATING.set(false);
