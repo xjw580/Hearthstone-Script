@@ -1,10 +1,8 @@
 package club.xiaojiawei.strategy.mode;
 
 import club.xiaojiawei.custom.LogRunnable;
-import club.xiaojiawei.data.ScriptStaticData;
 import club.xiaojiawei.enums.ModeEnum;
 import club.xiaojiawei.status.Mode;
-import club.xiaojiawei.strategy.AbstractDeckStrategy;
 import club.xiaojiawei.strategy.AbstractModeStrategy;
 import club.xiaojiawei.utils.RandomUtil;
 import club.xiaojiawei.utils.SystemUtil;
@@ -26,7 +24,7 @@ import static club.xiaojiawei.enums.ModeEnum.GAME_MODE;
  */
 @Slf4j
 @Component
-public class AdventureAbstractModeStrategy extends AbstractModeStrategy<Object> {
+public class AdventureModeStrategy extends AbstractModeStrategy<Object> {
     private static final float ADVENTURE_MODE_BUTTON_VERTICAL_TO_BOTTOM_RATIO = (float) 0.742;
     private static final float ADVENTURE_MODE_BUTTON_HORIZONTAL_TO_CENTER_RATIO = (float) 0.107;
     private static final float CHOOSE_BUTTON_HORIZONTAL_TO_CENTER_RATION = (float) 0.29;

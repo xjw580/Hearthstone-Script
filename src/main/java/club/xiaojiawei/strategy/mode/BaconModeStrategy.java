@@ -6,16 +6,17 @@ import org.springframework.stereotype.Component;
 
 /**
  * @author 肖嘉威
- * @date 2022/11/25 13:00
+ * @date 2022/11/25 12:43
  */
 @Slf4j
 @Component
-public class DraftAbstractModeStrategy extends AbstractModeStrategy<Object> {
+public class BaconModeStrategy extends AbstractModeStrategy<Object> {
     @Override
     public void wantEnter() {
     }
+
     @Override
     protected void afterEnter(Object o) {
-
     }
+
 }

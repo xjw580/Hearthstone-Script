@@ -1,7 +1,6 @@
 package club.xiaojiawei.strategy.phase;
 
 import club.xiaojiawei.custom.LogRunnable;
-import club.xiaojiawei.data.ScriptStaticData;
 import club.xiaojiawei.bean.entity.TagChangeEntity;
 import club.xiaojiawei.enums.DeckEnum;
 import club.xiaojiawei.status.War;
@@ -25,7 +24,7 @@ import static club.xiaojiawei.enums.TagEnum.STEP;
  */
 @Slf4j
 @Component
-public class GameTurnAbstractPhaseStrategy extends AbstractPhaseStrategy{
+public class GameTurnPhaseStrategy extends AbstractPhaseStrategy{
     @Resource
     private Properties scriptConfiguration;
 

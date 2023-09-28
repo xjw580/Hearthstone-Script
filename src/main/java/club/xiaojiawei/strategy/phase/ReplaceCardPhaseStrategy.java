@@ -26,7 +26,7 @@ import static club.xiaojiawei.enums.TagEnum.NEXT_STEP;
  */
 @Slf4j
 @Component
-public class ReplaceCardAbstractPhaseStrategy extends AbstractPhaseStrategy{
+public class ReplaceCardPhaseStrategy extends AbstractPhaseStrategy{
 
     @Resource
     private Properties scriptConfiguration;

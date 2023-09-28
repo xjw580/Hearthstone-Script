@@ -23,7 +23,7 @@ import static club.xiaojiawei.enums.TagEnum.*;
  */
 @Slf4j
 @Component
-public class DrawnInitCardAbstractPhaseStrategy extends AbstractPhaseStrategy{
+public class DrawnInitCardPhaseStrategy extends AbstractPhaseStrategy{
 
     /**
      * SHOW_ENTITY解析来的reverse为false

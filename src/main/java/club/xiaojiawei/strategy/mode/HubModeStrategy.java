@@ -19,7 +19,7 @@ import java.util.Properties;
  */
 @Slf4j
 @Component
-public class HubAbstractModeStrategy extends AbstractModeStrategy<Object> {
+public class HubModeStrategy extends AbstractModeStrategy<Object> {
 
     @Resource
     private Properties scriptConfiguration;

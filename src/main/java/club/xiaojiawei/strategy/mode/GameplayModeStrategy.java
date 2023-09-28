@@ -3,7 +3,6 @@ package club.xiaojiawei.strategy.mode;
 import club.xiaojiawei.enums.ModeEnum;
 import club.xiaojiawei.status.Mode;
 import club.xiaojiawei.strategy.AbstractModeStrategy;
-import club.xiaojiawei.utils.SystemUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -13,7 +12,7 @@ import org.springframework.stereotype.Component;
  */
 @Slf4j
 @Component
-public class GameplayAbstractModeStrategy extends AbstractModeStrategy<Object> {
+public class GameplayModeStrategy extends AbstractModeStrategy<Object> {
 
     @Override
     public void wantEnter() {

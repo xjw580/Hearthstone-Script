@@ -38,7 +38,7 @@ import static club.xiaojiawei.data.GameRationStaticData.FIRST_ROW_DECK_VERTICAL_
  */
 @Slf4j
 @Component
-public class TournamentAbstractModeStrategy extends AbstractModeStrategy<Object> {
+public class TournamentModeStrategy extends AbstractModeStrategy<Object> {
 
     @Resource
     private Properties scriptConfiguration;

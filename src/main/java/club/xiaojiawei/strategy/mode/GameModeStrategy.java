@@ -1,6 +1,5 @@
 package club.xiaojiawei.strategy.mode;
 
-import club.xiaojiawei.custom.LogRunnable;
 import club.xiaojiawei.data.ScriptStaticData;
 import club.xiaojiawei.status.Mode;
 import club.xiaojiawei.strategy.AbstractModeStrategy;
@@ -9,9 +8,7 @@ import club.xiaojiawei.utils.SystemUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import static club.xiaojiawei.enums.ModeEnum.GAME_MODE;
@@ -22,7 +19,7 @@ import static club.xiaojiawei.enums.ModeEnum.GAME_MODE;
  */
 @Slf4j
 @Component
-public class GameAbstractModeStrategy extends AbstractModeStrategy<Object> {
+public class GameModeStrategy extends AbstractModeStrategy<Object> {
 
     public static final float GAME_MODE_BUTTON_VERTICAL_TO_BOTTOM_RATIO = (float) 0.475;
     ScheduledFuture<?> scheduledFuture;

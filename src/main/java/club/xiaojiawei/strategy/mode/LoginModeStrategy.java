@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit;
  */
 @Slf4j
 @Component
-public class LoginAbstractModeStrategy extends AbstractModeStrategy<Object> {
+public class LoginModeStrategy extends AbstractModeStrategy<Object> {
     private static ScheduledFuture<?> scheduledFuture;
 
     public static void cancelTask(){

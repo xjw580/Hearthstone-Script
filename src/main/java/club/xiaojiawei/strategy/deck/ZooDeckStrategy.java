@@ -20,7 +20,7 @@ import java.util.Objects;
 @Slf4j
 @Component
 @Deprecated
-public class ZooAbstractDeckStrategy extends AbstractDeckStrategy{
+public class ZooDeckStrategy extends AbstractDeckStrategy{
 
     /**
      * Map.entry("VAN_EX1_308", new CardMes("灵魂之火", "VAN_EX1_308", 2)),

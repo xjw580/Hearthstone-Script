@@ -7,10 +7,10 @@ import club.xiaojiawei.listener.PowerLogListener;
 import club.xiaojiawei.listener.ScreenLogListener;
 import club.xiaojiawei.starter.GameStarter;
 import club.xiaojiawei.starter.PlatformStarter;
-import club.xiaojiawei.strategy.mode.LoginAbstractModeStrategy;
-import club.xiaojiawei.strategy.mode.TournamentAbstractModeStrategy;
-import club.xiaojiawei.strategy.phase.GameTurnAbstractPhaseStrategy;
-import club.xiaojiawei.strategy.phase.ReplaceCardAbstractPhaseStrategy;
+import club.xiaojiawei.strategy.mode.LoginModeStrategy;
+import club.xiaojiawei.strategy.mode.TournamentModeStrategy;
+import club.xiaojiawei.strategy.phase.GameTurnPhaseStrategy;
+import club.xiaojiawei.strategy.phase.ReplaceCardPhaseStrategy;
 import com.sun.jna.platform.win32.Advapi32Util;
 import com.sun.jna.platform.win32.User32;
 import com.sun.jna.platform.win32.WinDef;
@@ -64,8 +64,8 @@ public class SystemUtil {
     public static void cancelAllTask(){
         log.info("终止所有模式任务");
         GameUtil.cancelTask();
-        LoginAbstractModeStrategy.cancelTask();
-        TournamentAbstractModeStrategy.cancelTask();
+        LoginModeStrategy.cancelTask();
+        TournamentModeStrategy.cancelTask();
     }
 
     public static void cancelAllListener(){
@@ -77,8 +77,8 @@ public class SystemUtil {
 
     public static void stopAllThread(){
         log.info("终止所有额外线程");
-        ReplaceCardAbstractPhaseStrategy.stopThread();
-        GameTurnAbstractPhaseStrategy.stopThread();
+        ReplaceCardPhaseStrategy.stopThread();
+        GameTurnPhaseStrategy.stopThread();
     }
 
     public static void cancelAllProgramTimer(){
