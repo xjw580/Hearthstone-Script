@@ -24,9 +24,13 @@ import java.util.concurrent.CopyOnWriteArraySet;
 @SuppressWarnings("all")
 public class WebSocketServer {
 
-    // 与某个客户端的连接会话，需要通过它来给客户端发送数据
+    /**
+     * 与某个客户端的连接会话，需要通过它来给客户端发送数据
+     */
     private Session session;
-    // session集合,存放对应的session
+    /**
+     * session集合,存放对应的session
+     */
     public static final CopyOnWriteArraySet<WebSocketServer> webSocketSet = new CopyOnWriteArraySet<>();
 
     /**
@@ -72,7 +76,6 @@ public class WebSocketServer {
     public void onMessage(String message) {
         log.info("WebSocket收到客户端发来的消息：{}", message);
     }
-
 
     /**
      * 群发消息
