@@ -18,7 +18,7 @@ import java.util.Properties;
 /**
  * @author 肖嘉威
  * @date 2023/7/4 14:12
- * @msg 各种properties对象
+ * @msg 脚本配置文件
  */
 @Configuration
 @Slf4j
@@ -42,7 +42,7 @@ public class ConfigurationConfig {
         if (!scriptConfigurationFile.exists()){
             new File(springData.getScriptPath()).mkdir();
             try(FileWriter fileWriter = new FileWriter(scriptConfigurationFile)){
-                writeScriptProperties(fileWriter, properties);
+                writeDefaultScriptProperties(fileWriter, properties);
                 log.info("已创建脚本配置文件，路径：{}", scriptConfigurationFile.getAbsolutePath());
             } catch (IOException e) {
                 throw new RuntimeException(e);
@@ -51,7 +51,7 @@ public class ConfigurationConfig {
         try(FileReader fileReader = new FileReader(scriptConfigurationFile)){
             properties.load(fileReader);
             try(FileWriter fileWriter = new FileWriter(scriptConfigurationFile, true)){
-                writeScriptProperties(fileWriter, properties);
+                writeDefaultScriptProperties(fileWriter, properties);
             }
             properties.load(fileReader);
         } catch (IOException e) {
@@ -59,7 +59,7 @@ public class ConfigurationConfig {
         }
     }
 
-    private void writeScriptProperties(FileWriter fileWriter, Properties properties){
+    private void writeDefaultScriptProperties(FileWriter fileWriter, Properties properties){
         for (ConfigurationKeyEnum configurationKeyEnum : ConfigurationKeyEnum.values()) {
             if (!properties.containsKey(configurationKeyEnum.getKey())){
                 try {

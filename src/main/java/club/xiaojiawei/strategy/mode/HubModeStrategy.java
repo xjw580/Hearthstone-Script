@@ -23,8 +23,6 @@ public class HubModeStrategy extends AbstractModeStrategy<Object> {
 
     @Resource
     private Properties scriptConfiguration;
-    @Resource
-    private PowerLogListener powerLogListener;
     @Override
     public void wantEnter() {
 

@@ -42,7 +42,7 @@ public class ScreenLogListener extends AbstractLogListener{
     private static ScheduledFuture<?> errorScheduledFuture;
     @Setter
     private volatile static long lastWorkTime;
-    public static final long MAX_IDLE_TIME = 5 * 60 * 1000L;
+    private static final long MAX_IDLE_TIME = 5 * 60 * 1000L;
 
     @Autowired
     public ScreenLogListener(SpringData springData) {

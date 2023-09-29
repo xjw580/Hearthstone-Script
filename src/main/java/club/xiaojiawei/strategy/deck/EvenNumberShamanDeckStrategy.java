@@ -176,7 +176,7 @@ public class EvenNumberShamanDeckStrategy extends AbstractDeckStrategy{
                                     || cardEquals(rivalCard, 对空奥数法师)
                                     || cardEquals(rivalCard, 健谈的调酒师)
                                     || cardEquals(rivalCard, 船载火炮)
-                                    || cardEquals(rivalCard, 船载火炮)
+                                    || cardEquals(rivalCard, 刺豚拳手)
                                  )
                     ){
                         int heroAtc = calcMyHeroTotalAtc();

@@ -45,14 +45,26 @@ public class UIApplication extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
+        FXMLLoader fxmlLoader = getLoader();
+        setStyle(fxmlLoader);
+        setTray();
+        afterInit();
+    }
+    private FXMLLoader getLoader(){
         ConfigurableApplicationContext springContext = new SpringApplicationBuilder(ScriptApplication.class).headless(false).run();
         springContext.getAutowireCapableBeanFactory().autowireBean(this);
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("dashboard.fxml"));
         fxmlLoader.setControllerFactory(springContext::getBean);
+        return fxmlLoader;
+    }
+    private void setStyle(FXMLLoader fxmlLoader) throws IOException {
         int width = 225, height = 650;
         Scene scene = new Scene(fxmlLoader.load(), width, height);
         scene.getStylesheets().add(BootstrapFX.bootstrapFXStylesheet());
         scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("css/dashboard.css")).toExternalForm());
+        frame = FrameUtil.createAlwaysTopWindow(ScriptStaticData.SCRIPT_NAME, scene, width, height, ScriptStaticData.SCRIPT_ICON_PATH);
+    }
+    private void setTray(){
         MenuItem quit = new MenuItem("退出");
         MenuItem show = new MenuItem("显示");
         quit.addActionListener(new AbstractAction() {
@@ -75,7 +87,8 @@ public class UIApplication extends Application {
             }
         });
         SystemUtil.addTray(MAIN_ICO_NAME, ScriptStaticData.SCRIPT_NAME, show, quit);
-        frame = FrameUtil.createAlwaysTopWindow(ScriptStaticData.SCRIPT_NAME, scene, width, height, ScriptStaticData.SCRIPT_ICON_PATH);
+    }
+    private void afterInit(){
         DeckEnum deckEnum = DeckEnum.valueOf(scriptConfiguration.getProperty(DECK_KEY.getKey()));
         log.info(deckEnum.getComment() + "卡组代码：" + deckEnum.getDeckCode());
         if (SystemUtil.pasteClipboard(deckEnum.getDeckCode())){
@@ -84,5 +97,4 @@ public class UIApplication extends Application {
         }
         log.info("脚本数据路径：" + springData.getScriptPath());
     }
-
 }

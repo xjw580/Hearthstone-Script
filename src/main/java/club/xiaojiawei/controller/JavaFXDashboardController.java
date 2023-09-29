@@ -106,7 +106,6 @@ public class JavaFXDashboardController implements Initializable {
     protected void pause(){
         isPause.get().set(true);
     }
-
     @FXML
     protected void settings() {
         javaFXInitSettingsController.showStage();

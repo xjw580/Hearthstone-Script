@@ -12,10 +12,14 @@ import org.springframework.stereotype.Component;
 @Component
 @Getter
 public class SpringData {
-    //    游戏日志配置路径
+    /**
+     * 游戏日志配置路径
+     */
     @Value("${game.log.configuration.path}")
     private String gameLogConfigurationPath;
-    //    脚本配置文件路径
+    /**
+     * 脚本配置文件路径
+     */
     @Value("${script.configuration.file}")
     private String scriptConfigurationFile;
     @Value("${script.version}")

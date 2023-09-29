@@ -21,7 +21,6 @@ public class GameplayModeStrategy extends AbstractModeStrategy<Object> {
     @Override
     protected void afterEnter(Object o) {
         if (Mode.getPrevMode() == ModeEnum.LOGIN || Mode.getPrevMode() == null){
-//            投降
             log.info("当前对局不完整，准备投降");
             gameUtil.surrender();
         }
