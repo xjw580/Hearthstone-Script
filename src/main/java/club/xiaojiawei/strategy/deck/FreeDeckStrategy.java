@@ -14,7 +14,7 @@ import java.util.List;
  */
 @Component
 @Slf4j
-public class FreeAbstractDeckStrategy extends AbstractDeckStrategy {
+public class FreeDeckStrategy extends AbstractDeckStrategy {
 
 
     @Override

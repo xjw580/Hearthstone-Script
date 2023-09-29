@@ -381,7 +381,6 @@ public enum TagEnum {
             null,
             null)
     ;
-
     private static void log(Player player, Card card, String tagComment, Object value){
         String playerId = "", gameId = "", entityId = "", cardId = "", entityName = "";
         if (player != null){
@@ -398,6 +397,7 @@ public enum TagEnum {
     private static boolean isTrue(String s){
         return Objects.equals(s, "1");
     }
+
     private final String value;
 
     private final String comment;

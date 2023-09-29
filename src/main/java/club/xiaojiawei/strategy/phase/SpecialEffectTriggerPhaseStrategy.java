@@ -1,6 +1,5 @@
 package club.xiaojiawei.strategy.phase;
 
-import club.xiaojiawei.bean.entity.ExtraEntity;
 import club.xiaojiawei.bean.entity.TagChangeEntity;
 import club.xiaojiawei.enums.TagEnum;
 import club.xiaojiawei.enums.WarPhaseEnum;
@@ -19,7 +18,7 @@ import static club.xiaojiawei.enums.StepEnum.MAIN_READY;
  */
 @Slf4j
 @Component
-public class SpecialEffectTriggerAbstractPhaseStrategy extends AbstractPhaseStrategy{
+public class SpecialEffectTriggerPhaseStrategy extends AbstractPhaseStrategy{
 
     @Override
     protected boolean dealTagChangeThenIsOver(String line, TagChangeEntity tagChangeEntity) {

@@ -1,8 +1,9 @@
+timeout /t 3
 cmd /c start stop.bat
-ping -n 4 127.0.0.1>nul
+timeout /t 3
 del /Q *.jar
 del /s /Q lib\*.jar
-xcopy %1\* %1\..\ /s /i /y
+xcopy %1\* .\ /s /i /y
 cmd /c start start.bat
-timeout /t 1
+timeout /t 3
 exit

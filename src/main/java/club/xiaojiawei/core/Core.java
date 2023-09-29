@@ -64,7 +64,7 @@ public class Core implements ApplicationRunner {
             return;
         }
         Work.setWorking(true);
-        coreThreadPool.execute(new LogRunnable(() -> {
+        coreThreadPool.execute(() -> {
             if (!ScriptStaticData.isSetPath()){
                 SystemUtil.notice("需要配置" + ScriptStaticData.GAME_CN_NAME + "和" + ScriptStaticData.PLATFORM_CN_NAME + "的路径");
                 Platform.runLater(() -> javaFXInitSettingsController.showStage());
@@ -74,7 +74,7 @@ public class Core implements ApplicationRunner {
                 log.info("热键：Ctrl+P 开始/停止程序,Alt+P 关闭程序");
                 starter.start();
             }
-        }));
+        });
     }
 
     /**

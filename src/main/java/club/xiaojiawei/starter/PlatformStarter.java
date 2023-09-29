@@ -1,6 +1,5 @@
 package club.xiaojiawei.starter;
 
-import club.xiaojiawei.custom.LogRunnable;
 import club.xiaojiawei.data.ScriptStaticData;
 import club.xiaojiawei.enums.ConfigurationKeyEnum;
 import club.xiaojiawei.utils.SystemUtil;
@@ -10,8 +9,6 @@ import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Properties;
 import java.util.concurrent.ScheduledFuture;
@@ -56,13 +53,13 @@ public class PlatformStarter extends AbstractStarter{
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        scheduledFuture = launchProgramThreadPool.scheduleAtFixedRate(new LogRunnable(() -> {
+        scheduledFuture = launchProgramThreadPool.scheduleAtFixedRate(() -> {
             if (isPause.get().get()){
                 cancelPlatformTimer();
-            }else if (SystemUtil.getHWND(ScriptStaticData.PLATFORM_CN_NAME) != null){
+            }else if (SystemUtil.findHWND(ScriptStaticData.PLATFORM_CN_NAME) != null){
                 commonExecute();
             }
-        }), 1, 4, TimeUnit.SECONDS);
+        }, 1, 4, TimeUnit.SECONDS);
     }
     public static void cancelPlatformTimer(){
         if (scheduledFuture != null && !scheduledFuture.isDone()){
@@ -73,12 +70,12 @@ public class PlatformStarter extends AbstractStarter{
 
     public void commonExecute(){
         log.info(ScriptStaticData.PLATFORM_CN_NAME + "正在运行");
-        extraThreadPool.schedule(new LogRunnable(() -> {
+        extraThreadPool.schedule(() -> {
             cancelPlatformTimer();
             if (nextStarter != null){
                 nextStarter.start();
             }
-        }), 1, TimeUnit.SECONDS);
+        }, 1, TimeUnit.SECONDS);
     }
 
 }

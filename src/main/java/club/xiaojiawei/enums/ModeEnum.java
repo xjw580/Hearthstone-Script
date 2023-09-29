@@ -13,21 +13,21 @@ import lombok.ToString;
 @ToString
 public enum ModeEnum {
 
-    STARTUP("STARTUP", "准备界面", StartupAbstractModeStrategy.class),
-    LOGIN("LOGIN", "登录界面", LoginAbstractModeStrategy.class),
-    HUB("HUB", "主界面", HubAbstractModeStrategy.class),
-    TOURNAMENT("TOURNAMENT", "传统对战界面", TournamentAbstractModeStrategy.class),
-    PACKOPENING("PACKOPENING", "开包界面", PackopeningAbstractModeStrategy.class),
-    COLLECTIONMANAGER("COLLECTIONMANAGER", "我的收藏界面", CollectionmanagerAbstractModeStrategy.class),
-    ADVENTURE("ADVENTURE", "冒险模式界面", AdventureAbstractModeStrategy.class),
-    LETTUCE_MAP("LETTUCE_MAP", "佣兵战纪界面", LettuceMapAbstractModeStrategy.class),
-    BACON("BACON", "酒馆战棋界面", BaconAbstractModeStrategy.class),
-    GAMEPLAY("GAMEPLAY", "游戏界面", GameplayAbstractModeStrategy.class),
-    GAME_MODE("GAME_MODE", "其他模式", GameAbstractModeStrategy.class),
-    FATAL_ERROR("FATAL_ERROR", "致命错误", FatalErrorAbstractModeStrategy.class),
-    DRAFT("DRAFT", "竞技场界面", DraftAbstractModeStrategy.class),
-    PVP_DUNGEON_RUN("PVP_DUNGEON_RUN", "对决界面", PvpDungeonRunAbstractModeStrategy.class),
-    TAVERN_BRAWL("TAVERN_BRAWL", "乱斗界面", TavernBrawlAbstractModeStrategy.class)
+    STARTUP("STARTUP", "准备界面", StartupModeStrategy.class),
+    LOGIN("LOGIN", "登录界面", LoginModeStrategy.class),
+    HUB("HUB", "主界面", HubModeStrategy.class),
+    TOURNAMENT("TOURNAMENT", "传统对战界面", TournamentModeStrategy.class),
+    PACKOPENING("PACKOPENING", "开包界面", PackopeningModeStrategy.class),
+    COLLECTIONMANAGER("COLLECTIONMANAGER", "我的收藏界面", CollectionmanagerModeStrategy.class),
+    ADVENTURE("ADVENTURE", "冒险模式界面", AdventureModeStrategy.class),
+    LETTUCE_MAP("LETTUCE_MAP", "佣兵战纪界面", LettuceMapModeStrategy.class),
+    BACON("BACON", "酒馆战棋界面", BaconModeStrategy.class),
+    GAMEPLAY("GAMEPLAY", "游戏界面", GameplayModeStrategy.class),
+    GAME_MODE("GAME_MODE", "其他模式", GameModeStrategy.class),
+    FATAL_ERROR("FATAL_ERROR", "致命错误", FatalErrorModeStrategy.class),
+    DRAFT("DRAFT", "竞技场界面", DraftModeStrategy.class),
+    PVP_DUNGEON_RUN("PVP_DUNGEON_RUN", "对决界面", PvpDungeonRunModeStrategy.class),
+    TAVERN_BRAWL("TAVERN_BRAWL", "乱斗界面", TavernBrawlModeStrategy.class)
     ;
     private final String value;
     private final String comment;

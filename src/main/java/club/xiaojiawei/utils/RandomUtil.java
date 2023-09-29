@@ -9,7 +9,7 @@ import java.util.Random;
  */
 public class RandomUtil {
 
-    private static final Random RANDOM = new Random();
+    private static final Random RANDOM = new Random(System.currentTimeMillis());
 
     public static int getRandom(int min, int max){
         return (int) (RANDOM.nextDouble() * (max - min + 1) + min);
@@ -24,15 +24,12 @@ public class RandomUtil {
     public static int getMediumRandom(){
         return getRandom(1000, 1500);
     }
-
     public static int getShortRandom(){
         return getRandom(250, 450);
     }
-
     public static int getTinyRandom(){
         return getRandom(100, 250);
     }
-
     public static int getHumanRandom(){
         return getRandom(300, 2000);
     }

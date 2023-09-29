@@ -84,7 +84,7 @@ public abstract class AbstractDeckStrategy{
                     clearance  = getFloatCardClearanceForFourCard();
                     firstCardPos = getFloatCardFirstCardPosForFourCard();
                 }
-                SystemUtil.updateRect(ScriptStaticData.getGameHWND(), GAME_RECT);
+                SystemUtil.updateGameRect();
                 int size = Math.min(myHandCards.size(), 4);
                 for (int index = 0; index < size; index++) {
                     Card card = myHandCards.get(index);
@@ -95,7 +95,7 @@ public abstract class AbstractDeckStrategy{
                 }
                 log.info("执行换牌策略完毕");
             }finally {
-                SystemUtil.updateRect(ScriptStaticData.getGameHWND(), GAME_RECT);
+                SystemUtil.updateGameRect();
                 //        点击确认按钮
                 mouseUtil.leftButtonClick(
                         ((GAME_RECT.right + GAME_RECT.left) >> 1) + RandomUtil.getRandom(-10, 10),
@@ -150,7 +150,9 @@ public abstract class AbstractDeckStrategy{
     protected abstract void executeOutCard();
 
     /**
-     * 执行发现选牌,返回0~2的数字
+     * 执行发现选牌
+     * @param cards
+     * @return 返回0~2的数字
      */
     protected abstract int executeDiscoverChooseCard(Card...cards);
 
@@ -171,6 +173,11 @@ public abstract class AbstractDeckStrategy{
     }
 
     /*calc*/
+
+    /**
+     * 计算我方场上法强
+     * @return
+     */
     protected int calcMySpellPower(){
         int spellPower = 0;
         for (Card playCard : myPlayCards) {
@@ -194,6 +201,13 @@ public abstract class AbstractDeckStrategy{
         }
         return count;
     }
+
+    /**
+     * 计算指定卡的数量
+     * @param cards
+     * @param card
+     * @return
+     */
     protected int calcCardCount(List<Card> cards, BaseCard card){
         return calcCardCount(cards, card.cardId());
     }
@@ -465,7 +479,7 @@ public abstract class AbstractDeckStrategy{
     }
 
     private int[] myHandPointToMyPlayForBase(int handIndex, int playIndex, boolean insertGap){
-        SystemUtil.updateRect(ScriptStaticData.getGameHWND(), GAME_RECT);
+        SystemUtil.updateGameRect();
         int[] playPos;
         if (playIndex < 0){
             playPos = new int[]{
@@ -487,7 +501,7 @@ public abstract class AbstractDeckStrategy{
         if (card.getCost() > getMyUsableResource() || !canSpellPointedToRival(rivalPlayCards.get(rivalPlayIndex))){
             return false;
         }
-        SystemUtil.updateRect(ScriptStaticData.getGameHWND(), GAME_RECT);
+        SystemUtil.updateGameRect();
         myHandPointTo(myHandIndex, getRivalPlayCardPos(rival.getPlayArea().getCards().size(), rivalPlayIndex));
         SystemUtil.delay(ACTION_INTERVAL);
         log.info("当前可用水晶数：" + getMyUsableResource());
@@ -505,7 +519,7 @@ public abstract class AbstractDeckStrategy{
         if (card.getCost() > getMyUsableResource() || !canSpellPointedToRival(rivalPlayArea.getHero())){
             return false;
         }
-        SystemUtil.updateRect(ScriptStaticData.getGameHWND(), GAME_RECT);
+        SystemUtil.updateGameRect();
         myHandPointTo(myHandIndex, getRivalHeroPos());
         SystemUtil.delay(ACTION_INTERVAL);
         log.info("当前可用水晶数：" + getMyUsableResource());
@@ -532,13 +546,12 @@ public abstract class AbstractDeckStrategy{
         MouseUtil.cancel();
         return false;
     }
-    
 
     protected boolean myHeroPointToRivalHero(){
         if (!canPointedToRival(rivalPlayArea.getHero()) || !canMove(myPlayArea.getHero()) || calcMyHeroTotalAtc() <= 0){
            return false;
         }
-        SystemUtil.updateRect(ScriptStaticData.getGameHWND(), GAME_RECT);
+        SystemUtil.updateGameRect();
         myHeroPointTo(getRivalHeroPos());
         SystemUtil.delay(ACTION_INTERVAL);
         return true;
@@ -547,7 +560,7 @@ public abstract class AbstractDeckStrategy{
         if (rivalPlayIndex >= rivalPlayCards.size() || !canPointedToRival(rivalPlayCards.get(rivalPlayIndex)) || !canMove(myPlayArea.getHero()) || calcMyHeroTotalAtc() <= 0){
             return false;
         }
-        SystemUtil.updateRect(ScriptStaticData.getGameHWND(), GAME_RECT);
+        SystemUtil.updateGameRect();
         int[] rivalPlayPos = getRivalPlayCardPos(rivalPlayCards.size(), rivalPlayIndex);
         myHeroPointTo(rivalPlayPos);
         SystemUtil.delay(ACTION_INTERVAL);
@@ -560,7 +573,6 @@ public abstract class AbstractDeckStrategy{
         );
     }
 
-
     protected boolean myPlayPointToRivalHero(int myPlayIndex){
         if (myPlayIndex >= myPlayCards.size()){
             return false;
@@ -569,7 +581,7 @@ public abstract class AbstractDeckStrategy{
         if (!canPointedToRival(rivalPlayArea.getHero()) || !canMove(card)){
             return false;
         }
-        SystemUtil.updateRect(ScriptStaticData.getGameHWND(), GAME_RECT);
+        SystemUtil.updateGameRect();
         int[] rivalHeroPos = getRivalHeroPos();
         mouseUtil.leftButtonDrag(
                 getMyPlayCardPos(me.getPlayArea().getCards().size(), myPlayIndex),
@@ -592,7 +604,7 @@ public abstract class AbstractDeckStrategy{
         if (!canPointedToRival(rivalPlayCards.get(rivalPlayIndex)) || !canMove(card)){
             return false;
         }
-        SystemUtil.updateRect(ScriptStaticData.getGameHWND(), GAME_RECT);
+        SystemUtil.updateGameRect();
         int[] myPlayPos = getMyPlayCardPos(me.getPlayArea().getCards().size(), myPlayIndex);
         int[] rivalPlayPos = getRivalPlayCardPos(rival.getPlayArea().getCards().size(), rivalPlayIndex);
         mouseUtil.leftButtonDrag(
@@ -612,7 +624,7 @@ public abstract class AbstractDeckStrategy{
         if (myPlayArea.getPower().isExhausted() || getMyUsableResource() < myPlayArea.getPower().getCost() || myPlayArea.isFull()){
             return false;
         }
-        SystemUtil.updateRect(ScriptStaticData.getGameHWND(), GAME_RECT);
+        SystemUtil.updateGameRect();
         mouseUtil.leftButtonClick(getMyPowerPos());
         SystemUtil.delay(ACTION_INTERVAL);
         log.info("当前可用水晶数：" + getMyUsableResource());
@@ -623,7 +635,7 @@ public abstract class AbstractDeckStrategy{
      * 点击回合结束按钮
      */
     protected void clickTurnOverButton(){
-        SystemUtil.updateRect(ScriptStaticData.getGameHWND(), GAME_RECT);
+        SystemUtil.updateGameRect();
         mouseUtil.leftButtonClick(
                 (int) ((GAME_RECT.right + GAME_RECT.left >> 1) + (GAME_RECT.bottom - GAME_RECT.top) * GameRationStaticData.GAME_WINDOW_ASPECT_TO_HEIGHT_RATIO * TURN_OVER_BUTTON_HORIZONTAL_TO_CENTER_RATION + RandomUtil.getRandom(-6, 6)),
                 (int) (GAME_RECT.bottom - (GAME_RECT.bottom - GAME_RECT.top) * TURN_OVER_BUTTON_VERTICAL_TO_BOTTOM_RATION  + RandomUtil.getRandom(-3, 3))
@@ -640,7 +652,7 @@ public abstract class AbstractDeckStrategy{
             thenMyPlayIndex++;
         }
         SystemUtil.delayMedium();
-        SystemUtil.updateRect(ScriptStaticData.getGameHWND(), GAME_RECT);
+        SystemUtil.updateGameRect();
         mouseUtil.leftButtonMoveThenClick(
                 playPos,
                 getMyPlayCardPos(me.getPlayArea().getCards().size() + 1, thenMyPlayIndex)
@@ -661,7 +673,7 @@ public abstract class AbstractDeckStrategy{
         Card card = myHandCards.get(myHandIndex);
         int[] playPos = myHandPointToMyPlayForBase(myHandIndex, myPlayIndex, true);
         SystemUtil.delayMedium();
-        SystemUtil.updateRect(ScriptStaticData.getGameHWND(), GAME_RECT);
+        SystemUtil.updateGameRect();
         mouseUtil.leftButtonMoveThenClick(
                 playPos,
                 getRivalPlayCardPos(rival.getPlayArea().getCards().size(), rivalPlayIndex)
@@ -682,7 +694,7 @@ public abstract class AbstractDeckStrategy{
         Card card = myHandCards.get(myHandIndex);
         int[] playPos = myHandPointToMyPlayForBase(myHandIndex, myPlayIndex, true);
         SystemUtil.delayMedium();
-        SystemUtil.updateRect(ScriptStaticData.getGameHWND(), GAME_RECT);
+        SystemUtil.updateGameRect();
         mouseUtil.leftButtonMoveThenClick(
                 playPos,
                 getRivalHeroPos()
@@ -702,7 +714,7 @@ public abstract class AbstractDeckStrategy{
      * @param floatCardIndex 0~2
      */
     protected void clickFloatCard(float clearance, float firstCardPos, int floatCardIndex){
-        SystemUtil.updateRect(ScriptStaticData.getGameHWND(), GAME_RECT);
+        SystemUtil.updateGameRect();
         mouseUtil.leftButtonClick(
                 (int) (firstCardPos + floatCardIndex * clearance) + RandomUtil.getRandom(-10, 10),
                 (GAME_RECT.bottom + GAME_RECT.top >> 1) + RandomUtil.getRandom(-15, 15)
@@ -927,7 +939,7 @@ public abstract class AbstractDeckStrategy{
         return -1;
     }
     /**
-     * 寻找非疲劳卡牌
+     * 寻找第一个非疲劳卡牌
      * @param cards
      * @return
      */
@@ -981,14 +993,14 @@ public abstract class AbstractDeckStrategy{
      * @param playIndex
      * @return
      */
-    protected int[] getMyPlayCardPos(int size, int playIndex){
+    private int[] getMyPlayCardPos(int size, int playIndex){
         return calcPlayCardPos(size, playIndex, MY_PLAY_CARD_VERTICAL_TO_BOTTOM_RATION);
     }
-    protected int[] getRivalPlayCardPos(int size, int playIndex){
+    private int[] getRivalPlayCardPos(int size, int playIndex){
         return calcPlayCardPos(size, playIndex, RIVAL_PLAY_CARD_VERTICAL_TO_BOTTOM_RATION);
     }
 
-    private int[] calcPlayCardPos(int size, int playIndex, float rivalPlayCardVerticalToBottomRation) {
+    private int[] calcPlayCardPos(int size, int playIndex, float playCardVerticalToBottomRation) {
         float clearance = (GAME_RECT.bottom - GAME_RECT.top) * GameRationStaticData.GAME_WINDOW_ASPECT_TO_HEIGHT_RATIO * PLAY_CARD_HORIZONTAL_CLEARANCE_RATION;
         int x;
         if ((size & 1) == 0){
@@ -998,35 +1010,41 @@ public abstract class AbstractDeckStrategy{
         }
         return new int[]{
                 x,
-                (int) (GAME_RECT.bottom - (GAME_RECT.bottom - GAME_RECT.top) * rivalPlayCardVerticalToBottomRation) + RandomUtil.getRandom(-5, 5)
+                (int) (GAME_RECT.bottom - (GAME_RECT.bottom - GAME_RECT.top) * playCardVerticalToBottomRation) + RandomUtil.getRandom(-5, 5)
         };
     }
 
-    protected int[] getRivalHeroPos(){
+    private int[] getRivalHeroPos(){
         return new int[]{
                 (GAME_RECT.right + GAME_RECT.left >> 1) + RandomUtil.getRandom(-10 , 10),
                 (int) (GAME_RECT.bottom - (GAME_RECT.bottom - GAME_RECT.top) * RIVAL_HERO_VERTICAL_TO_BOTTOM_RATION + RandomUtil.getRandom(-15 , 15))
         };
     }
-    protected int[] getMyHeroPos(){
+    private int[] getMyHeroPos(){
         return new int[]{
                 (GAME_RECT.right + GAME_RECT.left >> 1) + RandomUtil.getRandom(-10 , 10),
                 (int) (GAME_RECT.bottom - (GAME_RECT.bottom - GAME_RECT.top) * MY_HERO_VERTICAL_TO_BOTTOM_RATION + RandomUtil.getRandom(-15 , 15))
         };
     }
-    protected int[] getMyPowerPos(){
+    private int[] getMyPowerPos(){
         return new int[]{
                 (int) ((GAME_RECT.right + GAME_RECT.left >> 1) + POWER_HORIZONTAL_TO_CENTER_RATION * GameRationStaticData.GAME_WINDOW_ASPECT_TO_HEIGHT_RATIO * (GAME_RECT.bottom - GAME_RECT.top) + RandomUtil.getRandom(-5 , 5)),
                 (int) (GAME_RECT.bottom - (GAME_RECT.bottom - GAME_RECT.top) * POWER_VERTICAL_TO_BOTTOM_RATION + RandomUtil.getRandom(-5 , 5))
         };
     }
 
+    /**
+     * 卡id是否相同
+     * @param longCard
+     * @param shortCard
+     * @return
+     */
     protected boolean cardEquals(Card longCard, BaseCard shortCard){
         return longCard != null && longCard.getCardId().contains(shortCard.cardId());
     }
 
     /**
-     * 能否被指向
+     * 能不能被对方法术指向
      * @param card
      * @return
      */
@@ -1034,13 +1052,29 @@ public abstract class AbstractDeckStrategy{
         return canPointedToRival(card) && !isImmunityMagic(card);
     }
 
+    /**
+     * 能不能被本方法术指向
+     * @param card
+     * @return
+     */
     protected boolean canSpellPointedToMe(Card card){
         return canPointedToMe(card) && !isImmunityMagic(card);
     }
+
+    /**
+     * 能不能被对方指向
+     * @param card
+     * @return
+     */
     protected boolean canPointedToRival(Card card){
         return !(card.isImmune() || card.isStealth() || card.isDormantAwakenConditionEnchant());
     }
 
+    /**
+     * 能不能被本方指向
+     * @param card
+     * @return
+     */
     protected boolean canPointedToMe(Card card){
         return !(card.isImmune() || card.isDormantAwakenConditionEnchant() || isImmunityMagic(card));
     }
@@ -1054,6 +1088,11 @@ public abstract class AbstractDeckStrategy{
         return card.isCantBeTargetedByHeroPowers() && card.isCantBeTargetedBySpells();
     }
 
+    /**
+     * 能不能动
+     * @param card
+     * @return
+     */
     protected boolean canMove(Card card){
         return !(card.isExhausted() || card.isFrozen() || card.isDormantAwakenConditionEnchant() || card.getAtc() <= 0);
     }

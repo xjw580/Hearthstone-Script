@@ -15,47 +15,35 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Configuration
 public class ThreadPoolConfig {
 
-    /**
-     * 使用 ${@link LogRunnable}
-     * @return
-     */
     @Bean
     public ScheduledThreadPoolExecutor launchProgramThreadPool(){
         return new ScheduledThreadPoolExecutor(1, new ThreadFactory() {
             private final AtomicInteger num = new AtomicInteger(0);
             @Override
             public Thread newThread(Runnable r) {
-                return new Thread(r, "LaunchProgramPool Thread-" + num.getAndIncrement());
+                return new Thread(new LogRunnable(r), "LaunchProgramPool Thread-" + num.getAndIncrement());
             }
         }, new ThreadPoolExecutor.AbortPolicy());
     }
 
-    /**
-     * 使用 ${@link LogRunnable}
-     * @return
-     */
     @Bean
     public ScheduledThreadPoolExecutor listenFileThreadPool(){
         return new ScheduledThreadPoolExecutor(4, new ThreadFactory() {
             private final AtomicInteger num = new AtomicInteger(0);
             @Override
             public Thread newThread(Runnable r) {
-                return new Thread(r, "ListenFilePool Thread-" + num.getAndIncrement());
+                return new Thread(new LogRunnable(r), "ListenFilePool Thread-" + num.getAndIncrement());
             }
         }, new ThreadPoolExecutor.AbortPolicy());
     }
 
-    /**
-     * 使用 ${@link LogRunnable}
-     * @return
-     */
     @Bean
     public ScheduledThreadPoolExecutor extraThreadPool(){
         return new ScheduledThreadPoolExecutor(5, new ThreadFactory() {
             private final AtomicInteger num = new AtomicInteger(0);
             @Override
             public Thread newThread(Runnable r) {
-                return new Thread(r, "ExtraPool Thread-" + num.getAndIncrement());
+                return new Thread(new LogRunnable(r), "ExtraPool Thread-" + num.getAndIncrement());
             }
         }, new ThreadPoolExecutor.AbortPolicy());
     }
@@ -66,7 +54,7 @@ public class ThreadPoolConfig {
             private final AtomicInteger num = new AtomicInteger(0);
             @Override
             public Thread newThread(Runnable r) {
-                return new Thread(r, "CorePool Thread-" + num.getAndIncrement());
+                return new Thread(new LogRunnable(r), "CorePool Thread-" + num.getAndIncrement());
             }
         }, new ThreadPoolExecutor.AbortPolicy());
     }

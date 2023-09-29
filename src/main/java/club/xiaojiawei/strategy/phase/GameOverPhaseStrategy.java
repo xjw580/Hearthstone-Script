@@ -17,7 +17,7 @@ import java.io.RandomAccessFile;
  */
 @Slf4j
 @Component
-public class GameOverAbstractPhaseStrategy extends AbstractPhaseStrategy{
+public class GameOverPhaseStrategy extends AbstractPhaseStrategy{
 
     @Override
     protected boolean dealTagChangeThenIsOver(String line, TagChangeEntity tagChangeEntity) {

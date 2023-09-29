@@ -1,6 +1,5 @@
 package club.xiaojiawei.strategy.phase;
 
-import club.xiaojiawei.bean.entity.ExtraEntity;
 import club.xiaojiawei.bean.entity.TagChangeEntity;
 import club.xiaojiawei.enums.TagEnum;
 import club.xiaojiawei.enums.WarPhaseEnum;
@@ -18,7 +17,7 @@ import java.util.Objects;
  */
 @Slf4j
 @Component
-public class FillDeckAbstractPhaseStrategy extends AbstractPhaseStrategy {
+public class FillDeckPhaseStrategy extends AbstractPhaseStrategy {
     @Override
     protected boolean dealTagChangeThenIsOver(String line, TagChangeEntity tagChangeEntity) {
         if (tagChangeEntity.getTag() == TagEnum.TURN && Objects.equals(tagChangeEntity.getValue(), "1")){

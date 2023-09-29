@@ -47,7 +47,7 @@ public class GameUtil {
         ScriptStaticData.ROBOT.keyPress(27);
         ScriptStaticData.ROBOT.keyRelease(27);
         SystemUtil.delay(1500);
-        SystemUtil.updateRect(ScriptStaticData.getGameHWND(), ScriptStaticData.GAME_RECT);
+        SystemUtil.updateGameRect();
 //        点击投降按钮
         mouseUtil.leftButtonClick(
                 ScriptStaticData.GAME_RECT.right + ScriptStaticData.GAME_RECT.left >> 1,
@@ -60,11 +60,11 @@ public class GameUtil {
      * 点掉游戏结束结算页面
      */
     public void clickGameEndPageTask(){
-        SystemUtil.updateRect(ScriptStaticData.getGameHWND(), ScriptStaticData.GAME_RECT);
+        SystemUtil.updateGameRect();
         cancelTask();
         log.info("点掉游戏结束结算页面中……");
         clickGameEndPageTask = extraThreadPool.scheduleWithFixedDelay(
-                new LogRunnable(() -> {
+                () -> {
                     if (isPause.get().get()){
                         cancelTask();
                     }
@@ -72,7 +72,7 @@ public class GameUtil {
                             ScriptStaticData.GAME_RECT.right + ScriptStaticData.GAME_RECT.left >> 1,
                             (int) (ScriptStaticData.GAME_RECT.bottom - (ScriptStaticData.GAME_RECT.bottom - ScriptStaticData.GAME_RECT.top) * SURRENDER_BUTTON_VERTICAL_TO_BOTTOM_RATION)
                     );
-                }),
+                },
                 4500,
                 2000,
                 TimeUnit.MILLISECONDS

@@ -13,12 +13,12 @@ import lombok.ToString;
 @ToString
 public enum WarPhaseEnum {
 
-    FILL_DECK_PHASE("填充牌库阶段", FillDeckAbstractPhaseStrategy.class),
-    DRAWN_INIT_CARD_PHASE("摸起始手牌阶段", DrawnInitCardAbstractPhaseStrategy.class),
-    REPLACE_CARD_PHASE("更换手牌阶段", ReplaceCardAbstractPhaseStrategy.class),
-    SPECIAL_EFFECT_TRIGGER_PHASE("特殊效果触发阶段", SpecialEffectTriggerAbstractPhaseStrategy.class),
-    GAME_TURN_PHASE("游戏回合阶段", GameTurnAbstractPhaseStrategy.class),
-    GAME_OVER_PHASE("游戏结束阶段", GameOverAbstractPhaseStrategy.class);
+    FILL_DECK_PHASE("填充牌库阶段", FillDeckPhaseStrategy.class),
+    DRAWN_INIT_CARD_PHASE("摸起始手牌阶段", DrawnInitCardPhaseStrategy.class),
+    REPLACE_CARD_PHASE("更换手牌阶段", ReplaceCardPhaseStrategy.class),
+    SPECIAL_EFFECT_TRIGGER_PHASE("特殊效果触发阶段", SpecialEffectTriggerPhaseStrategy.class),
+    GAME_TURN_PHASE("游戏回合阶段", GameTurnPhaseStrategy.class),
+    GAME_OVER_PHASE("游戏结束阶段", GameOverPhaseStrategy.class);
 
     private final String comment;
     private final  Class<? extends AbstractPhaseStrategy> phaseStrategyClass;

@@ -38,7 +38,7 @@ import static club.xiaojiawei.data.GameRationStaticData.FIRST_ROW_DECK_VERTICAL_
  */
 @Slf4j
 @Component
-public class TournamentAbstractModeStrategy extends AbstractModeStrategy<Object> {
+public class TournamentModeStrategy extends AbstractModeStrategy<Object> {
 
     @Resource
     private Properties scriptConfiguration;
@@ -75,14 +75,14 @@ public class TournamentAbstractModeStrategy extends AbstractModeStrategy<Object>
             if (isPause.get().get()){
                 scheduledFuture.cancel(true);
             } else if (Mode.getCurrMode() == ModeEnum.HUB){
-                SystemUtil.updateRect(ScriptStaticData.getGameHWND(), ScriptStaticData.GAME_RECT);
+                SystemUtil.updateGameRect();
                 mouseUtil.leftButtonClick(
                         ((ScriptStaticData.GAME_RECT.right + ScriptStaticData.GAME_RECT.left) >> 1) + RandomUtil.getRandom(-15, 15),
                         (int) (ScriptStaticData.GAME_RECT.bottom - (ScriptStaticData.GAME_RECT.bottom - ScriptStaticData.GAME_RECT.top) * TOURNAMENT_MODE_BUTTON_VERTICAL_TO_BOTTOM_RATIO) + RandomUtil.getRandom(-5, 5)
                 );
             }else if (Mode.getCurrMode() == ModeEnum.GAME_MODE){
                 scheduledFuture.cancel(true);
-                SystemUtil.updateRect(ScriptStaticData.getGameHWND(), ScriptStaticData.GAME_RECT);
+                SystemUtil.updateGameRect();
                 gameUtil.clickBackButton();
             }else {
                 scheduledFuture.cancel(true);
@@ -92,7 +92,7 @@ public class TournamentAbstractModeStrategy extends AbstractModeStrategy<Object>
     @Override
     protected void afterEnter(Object o) {
         if (Work.canWork()){
-            SystemUtil.updateRect(ScriptStaticData.getGameHWND(), ScriptStaticData.GAME_RECT);
+            SystemUtil.updateGameRect();
             if (ModeEnum.TOURNAMENT == RunModeEnum.valueOf(scriptConfiguration.getProperty(ConfigurationKeyEnum.RUN_MODE_KEY.getKey())).getModeEnum()){
                 DeckEnum currentDeck = DeckEnum.valueOf(scriptConfiguration.getProperty(ConfigurationKeyEnum.DECK_KEY.getKey()));
                 if (!currentDeck.getRunMode().isEnable()){
@@ -219,7 +219,7 @@ public class TournamentAbstractModeStrategy extends AbstractModeStrategy<Object>
             if (!isPause.get().get()){
                 log.info("匹配失败，再次匹配中");
                 SystemUtil.notice("匹配失败，再次匹配中");
-                SystemUtil.updateRect(ScriptStaticData.getGameHWND(), ScriptStaticData.GAME_RECT);
+                SystemUtil.updateGameRect();
 //                点击取消匹配按钮
                 mouseUtil.leftButtonClick(
                         ((ScriptStaticData.GAME_RECT.right + ScriptStaticData.GAME_RECT.left) >> 1) + RandomUtil.getRandom(-10, 10),

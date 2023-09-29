@@ -68,6 +68,13 @@ public class PowerLogUtil {
         }
         return extraEntity;
     }
+
+    /**
+     * 交换entity
+     * @param line
+     * @param accessFile
+     * @return
+     */
     public static ExtraEntity dealChangeEntity(String line, RandomAccessFile accessFile){
         ExtraEntity extraEntity = parseExtraEntity(line, accessFile, CHANGE_ENTITY);
         Card card = CARD_AREA_MAP.get(extraEntity.getEntityId()).findByEntityId(extraEntity.getEntityId());

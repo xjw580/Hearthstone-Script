@@ -1,20 +1,23 @@
 package club.xiaojiawei.strategy.mode;
 
 import club.xiaojiawei.strategy.AbstractModeStrategy;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 /**
  * @author 肖嘉威
- * @date 2023/7/6 16:28
- * @msg
+ * @date 2022/11/25 12:40
  */
+@Slf4j
 @Component
-public class StartupAbstractModeStrategy extends AbstractModeStrategy<Object> {
+public class PackopeningModeStrategy extends AbstractModeStrategy<Object> {
     @Override
     public void wantEnter() {
-    }
 
+    }
     @Override
     protected void afterEnter(Object o) {
+
     }
+
 }

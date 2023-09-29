@@ -1,10 +1,8 @@
 package club.xiaojiawei.strategy.mode;
 
 import club.xiaojiawei.custom.LogRunnable;
-import club.xiaojiawei.data.ScriptStaticData;
 import club.xiaojiawei.enums.ModeEnum;
 import club.xiaojiawei.status.Mode;
-import club.xiaojiawei.strategy.AbstractDeckStrategy;
 import club.xiaojiawei.strategy.AbstractModeStrategy;
 import club.xiaojiawei.utils.RandomUtil;
 import club.xiaojiawei.utils.SystemUtil;
@@ -26,7 +24,7 @@ import static club.xiaojiawei.enums.ModeEnum.GAME_MODE;
  */
 @Slf4j
 @Component
-public class AdventureAbstractModeStrategy extends AbstractModeStrategy<Object> {
+public class AdventureModeStrategy extends AbstractModeStrategy<Object> {
     private static final float ADVENTURE_MODE_BUTTON_VERTICAL_TO_BOTTOM_RATIO = (float) 0.742;
     private static final float ADVENTURE_MODE_BUTTON_HORIZONTAL_TO_CENTER_RATIO = (float) 0.107;
     private static final float CHOOSE_BUTTON_HORIZONTAL_TO_CENTER_RATION = (float) 0.29;
@@ -41,7 +39,7 @@ public class AdventureAbstractModeStrategy extends AbstractModeStrategy<Object> 
                 wantEnterSchedule.cancel(true);
                 GAME_MODE.getAbstractModeStrategy().wantEnter();
             } else if (Mode.getCurrMode() == GAME_MODE) {
-                SystemUtil.updateRect(ScriptStaticData.getGameHWND(), GAME_RECT);
+                SystemUtil.updateGameRect();
 //                    点击冒险模式
                 mouseUtil.leftButtonClick(
                         (int) (((GAME_RECT.right + GAME_RECT.left) >> 1) - (GAME_RECT.bottom - GAME_RECT.top) * ADVENTURE_MODE_BUTTON_HORIZONTAL_TO_CENTER_RATIO * GAME_WINDOW_ASPECT_TO_HEIGHT_RATIO + RandomUtil.getRandom(-15, 15)),
@@ -61,7 +59,7 @@ public class AdventureAbstractModeStrategy extends AbstractModeStrategy<Object> 
 
     @Override
     protected void afterEnter(Object o) {
-        SystemUtil.updateRect(ScriptStaticData.getGameHWND(), GAME_RECT);
+        SystemUtil.updateGameRect();
         clickStart();
         SystemUtil.delayLong();
         selectDeck();

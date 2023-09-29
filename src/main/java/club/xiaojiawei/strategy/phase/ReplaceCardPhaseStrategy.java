@@ -26,7 +26,7 @@ import static club.xiaojiawei.enums.TagEnum.NEXT_STEP;
  */
 @Slf4j
 @Component
-public class ReplaceCardAbstractPhaseStrategy extends AbstractPhaseStrategy{
+public class ReplaceCardPhaseStrategy extends AbstractPhaseStrategy{
 
     @Resource
     private Properties scriptConfiguration;
@@ -49,10 +49,11 @@ public class ReplaceCardAbstractPhaseStrategy extends AbstractPhaseStrategy{
         if (tagChangeEntity.getTag() == MULLIGAN_STATE && Objects.equals(tagChangeEntity.getValue(), INPUT.getValue())){
             String gameId = tagChangeEntity.getEntity();
             if (Objects.equals(War.getMe().getGameId(), gameId) || (War.getRival().getGameId() != null && !Objects.equals(War.getRival().getGameId(), gameId))){
-                //            等待动画
                 stopThread();
                 //        执行换牌策略
                 (thread = new Thread(new LogRunnable(() -> {
+                    log.info("1号玩家牌库数量：" + War.getPlayer1().getDeckArea().getCards().size());
+                    log.info("2号玩家牌库数量：" + War.getPlayer2().getDeckArea().getCards().size());
 //                    因为傻逼畸变模式导致开局动画增加，这又加了4.5秒
                     SystemUtil.delay(24_500);
                     DeckEnum.valueOf(scriptConfiguration.getProperty(ConfigurationKeyEnum.DECK_KEY.getKey())).getAbstractDeckStrategy().changeCard();

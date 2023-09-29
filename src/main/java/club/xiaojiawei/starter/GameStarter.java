@@ -2,7 +2,6 @@ package club.xiaojiawei.starter;
 
 import club.xiaojiawei.custom.LogRunnable;
 import club.xiaojiawei.data.ScriptStaticData;
-import club.xiaojiawei.listener.ScreenLogListener;
 import club.xiaojiawei.utils.MouseUtil;
 import club.xiaojiawei.utils.SystemUtil;
 import com.sun.jna.platform.win32.WinDef;
@@ -38,9 +37,9 @@ public class GameStarter extends AbstractStarter{
     private static WinDef.HWND gameHWND;
     @Override
     public void exec() {
-        if ((gameHWND = SystemUtil.getHWND(ScriptStaticData.GAME_CN_NAME)) != null){
+        if ((gameHWND = SystemUtil.findHWND(ScriptStaticData.GAME_CN_NAME)) != null){
             ScriptStaticData.setGameHWND(gameHWND);
-            SystemUtil.updateRect(gameHWND, ScriptStaticData.GAME_RECT);
+            SystemUtil.updateGameRect();
             if (nextStarter != null){
                 nextStarter.start();
             }
@@ -53,11 +52,11 @@ public class GameStarter extends AbstractStarter{
             } else {
                 try {
                     if (Strings.isNotBlank(new String(Runtime.getRuntime().exec(ScriptStaticData.GAME_ALIVE_CMD).getInputStream().readAllBytes()))) {
-                        if ((gameHWND = SystemUtil.getHWND(ScriptStaticData.GAME_CN_NAME)) == null){
+                        if ((gameHWND = SystemUtil.findHWND(ScriptStaticData.GAME_CN_NAME)) == null){
                             return;
                         }
                         commonExecute();
-                    }else if ((gameHWND = SystemUtil.getHWND(ScriptStaticData.GAME_CN_NAME)) != null){
+                    }else if ((gameHWND = SystemUtil.findHWND(ScriptStaticData.GAME_CN_NAME)) != null){
                         commonExecute();
                     }else {
                         log.info("正在打开" + ScriptStaticData.GAME_CN_NAME);
@@ -71,7 +70,7 @@ public class GameStarter extends AbstractStarter{
     }
 
     private void launchGame(){
-        WinDef.HWND platformhwnd = SystemUtil.getHWND(ScriptStaticData.PLATFORM_CN_NAME);
+        WinDef.HWND platformhwnd = SystemUtil.findHWND(ScriptStaticData.PLATFORM_CN_NAME);
         ScriptStaticData.setPlatformHWND(platformhwnd);
         mouseUtil.leftButtonClick(platformhwnd, 145, 120);
     }
@@ -85,12 +84,12 @@ public class GameStarter extends AbstractStarter{
     public void commonExecute(){
         log.info(ScriptStaticData.GAME_CN_NAME + "正在运行");
         ScriptStaticData.setGameHWND(gameHWND);
-        extraThreadPool.schedule(new LogRunnable(() -> {
+        extraThreadPool.schedule(() -> {
             cancelGameTimer();
-            SystemUtil.updateRect(ScriptStaticData.getGameHWND(), ScriptStaticData.GAME_RECT);
+            SystemUtil.updateGameRect();
             if (nextStarter != null) {
                 nextStarter.start();
             }
-        }),1, TimeUnit.SECONDS);
+        },1, TimeUnit.SECONDS);
     }
 }

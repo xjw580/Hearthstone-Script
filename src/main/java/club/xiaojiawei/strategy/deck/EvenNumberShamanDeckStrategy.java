@@ -3,7 +3,6 @@ package club.xiaojiawei.strategy.deck;
 import club.xiaojiawei.bean.BaseCard;
 import club.xiaojiawei.bean.entity.Card;
 import club.xiaojiawei.enums.CardRaceEnum;
-import club.xiaojiawei.enums.CardTypeEnum;
 import club.xiaojiawei.status.War;
 import club.xiaojiawei.strategy.AbstractDeckStrategy;
 import club.xiaojiawei.utils.MouseUtil;
@@ -16,7 +15,7 @@ import java.util.Objects;
 
 import static club.xiaojiawei.data.ScriptStaticData.COIN;
 import static club.xiaojiawei.enums.CardTypeEnum.MINION;
-import static club.xiaojiawei.strategy.deck.EvenNumberShamanAbstractDeckStrategy.EvenNumberShamanTemp.*;
+import static club.xiaojiawei.strategy.deck.EvenNumberShamanDeckStrategy.EvenNumberShamanTemp.*;
 
 /**
  * @author 肖嘉威
@@ -24,7 +23,7 @@ import static club.xiaojiawei.strategy.deck.EvenNumberShamanAbstractDeckStrategy
  */
 @Component
 @Slf4j
-public class EvenNumberShamanAbstractDeckStrategy extends AbstractDeckStrategy{
+public class EvenNumberShamanDeckStrategy extends AbstractDeckStrategy{
     /**
      ### 偶数萨
      # 职业：萨满祭司
@@ -177,7 +176,7 @@ public class EvenNumberShamanAbstractDeckStrategy extends AbstractDeckStrategy{
                                     || cardEquals(rivalCard, 对空奥数法师)
                                     || cardEquals(rivalCard, 健谈的调酒师)
                                     || cardEquals(rivalCard, 船载火炮)
-                                    || cardEquals(rivalCard, 船载火炮)
+                                    || cardEquals(rivalCard, 刺豚拳手)
                                  )
                     ){
                         int heroAtc = calcMyHeroTotalAtc();

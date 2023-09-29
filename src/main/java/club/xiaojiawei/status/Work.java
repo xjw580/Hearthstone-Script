@@ -37,7 +37,6 @@ public class Work {
     private static String[] workTimeArr;
     private static PropertiesUtil propertiesUtil;
     private static Properties scriptProperties;
-
     private static AtomicReference<BooleanProperty> isPause;
     private static Core core;
     @Resource

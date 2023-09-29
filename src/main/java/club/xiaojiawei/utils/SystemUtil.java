@@ -7,10 +7,10 @@ import club.xiaojiawei.listener.PowerLogListener;
 import club.xiaojiawei.listener.ScreenLogListener;
 import club.xiaojiawei.starter.GameStarter;
 import club.xiaojiawei.starter.PlatformStarter;
-import club.xiaojiawei.strategy.mode.LoginAbstractModeStrategy;
-import club.xiaojiawei.strategy.mode.TournamentAbstractModeStrategy;
-import club.xiaojiawei.strategy.phase.GameTurnAbstractPhaseStrategy;
-import club.xiaojiawei.strategy.phase.ReplaceCardAbstractPhaseStrategy;
+import club.xiaojiawei.strategy.mode.LoginModeStrategy;
+import club.xiaojiawei.strategy.mode.TournamentModeStrategy;
+import club.xiaojiawei.strategy.phase.GameTurnPhaseStrategy;
+import club.xiaojiawei.strategy.phase.ReplaceCardPhaseStrategy;
 import com.sun.jna.platform.win32.Advapi32Util;
 import com.sun.jna.platform.win32.User32;
 import com.sun.jna.platform.win32.WinDef;
@@ -19,7 +19,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 import java.awt.*;
 import java.awt.datatransfer.*;
 import java.io.*;
@@ -65,8 +64,8 @@ public class SystemUtil {
     public static void cancelAllTask(){
         log.info("终止所有模式任务");
         GameUtil.cancelTask();
-        LoginAbstractModeStrategy.cancelTask();
-        TournamentAbstractModeStrategy.cancelTask();
+        LoginModeStrategy.cancelTask();
+        TournamentModeStrategy.cancelTask();
     }
 
     public static void cancelAllListener(){
@@ -78,8 +77,8 @@ public class SystemUtil {
 
     public static void stopAllThread(){
         log.info("终止所有额外线程");
-        ReplaceCardAbstractPhaseStrategy.stopThread();
-        GameTurnAbstractPhaseStrategy.stopThread();
+        ReplaceCardPhaseStrategy.stopThread();
+        GameTurnPhaseStrategy.stopThread();
     }
 
     public static void cancelAllProgramTimer(){
@@ -104,7 +103,7 @@ public class SystemUtil {
      * @param windowTitle
      * @return
      */
-    public static WinDef.HWND getHWND(String windowTitle){
+    public static WinDef.HWND findHWND(String windowTitle){
         return User32.INSTANCE.FindWindow
                 (null, windowTitle);
     }
@@ -119,6 +118,13 @@ public class SystemUtil {
         if ((ScriptStaticData.GAME_RECT.bottom - ScriptStaticData.GAME_RECT.top) != ScriptStaticData.DISPLAY_PIXEL_Y){
             ScriptStaticData.GAME_RECT.top += ScriptStaticData.WINDOW_TITLE_Y;
         }
+    }
+
+    /**
+     * 更新游戏窗口信息
+     */
+    public static void updateGameRect(){
+        updateRect(ScriptStaticData.getGameHWND(), ScriptStaticData.GAME_RECT);
     }
 
     /**

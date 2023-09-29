@@ -5,18 +5,16 @@ import org.springframework.stereotype.Component;
 
 /**
  * @author 肖嘉威
- * @date 2023/7/8 15:29
- * @since
+ * @date 2023/7/6 16:28
+ * @msg
  */
 @Component
-public class TavernBrawlAbstractModeStrategy extends AbstractModeStrategy<Object> {
+public class StartupModeStrategy extends AbstractModeStrategy<Object> {
     @Override
     public void wantEnter() {
-
     }
 
     @Override
     protected void afterEnter(Object o) {
-
     }
 }

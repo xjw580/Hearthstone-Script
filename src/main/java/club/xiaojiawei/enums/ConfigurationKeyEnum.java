@@ -49,7 +49,7 @@ public enum ConfigurationKeyEnum {
     /**
      * 工作时间，具体时间段
      */
-    WORK_TIME_KEY("workTime")
+    WORK_TIME_KEY("workTime"),
     ;
     private final String key;
 

@@ -6,15 +6,14 @@ import org.springframework.stereotype.Component;
 
 /**
  * @author 肖嘉威
- * @date 2022/11/25 12:40
+ * @date 2022/11/25 12:42
  */
 @Slf4j
 @Component
-public class CollectionmanagerAbstractModeStrategy extends AbstractModeStrategy<Object> {
+public class LettuceMapModeStrategy extends AbstractModeStrategy<Object> {
     @Override
     public void wantEnter() {
     }
-
     @Override
     protected void afterEnter(Object o) {
 

@@ -1,4 +1,6 @@
-const ws = new WebSocket("ws://localhost:8848/info");
+const webSocketURL = window.location.href.replace("https", "ws").replace("http", "ws") + "/info";
+console.log("webSocketURL:" + webSocketURL);
+const ws = new WebSocket(webSocketURL);
 $(
     function (){
         ws.onopen = function(){

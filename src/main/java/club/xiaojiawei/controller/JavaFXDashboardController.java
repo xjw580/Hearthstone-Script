@@ -2,7 +2,6 @@ package club.xiaojiawei.controller;
 
 import club.xiaojiawei.bean.Release;
 import club.xiaojiawei.controls.Switch;
-import club.xiaojiawei.custom.LogRunnable;
 import club.xiaojiawei.enums.DeckEnum;
 import club.xiaojiawei.enums.RunModeEnum;
 import club.xiaojiawei.listener.VersionListener;
@@ -38,8 +37,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import static club.xiaojiawei.data.ScriptStaticData.REPO_NAME;
-import static club.xiaojiawei.data.ScriptStaticData.TEMP_DIR;
+import static club.xiaojiawei.data.ScriptStaticData.*;
 import static club.xiaojiawei.enums.ConfigurationKeyEnum.DECK_KEY;
 
 /**
@@ -108,7 +106,6 @@ public class JavaFXDashboardController implements Initializable {
     protected void pause(){
         isPause.get().set(true);
     }
-
     @FXML
     protected void settings() {
         javaFXInitSettingsController.showStage();
@@ -116,70 +113,64 @@ public class JavaFXDashboardController implements Initializable {
     private static final SimpleBooleanProperty IS_UPDATING = new SimpleBooleanProperty(false);
 
     @FXML
-    protected synchronized void update() {
+    protected void update() {
         Release release = VersionListener.getRelease();
-        if (release != null && update.isVisible() && !IS_UPDATING.get()){
-            if (new File(TEMP_DIR).exists()){
-                execUpdate(release.getTagName());
-            }else if (!IS_UPDATING.get()){
-                IS_UPDATING.set(true);
-                extraThreadPool.schedule(new LogRunnable(() -> {
-                    try (
-                            InputStream inputStream = new URL(String.format("https://gitee.com/zergqueen/Hearthstone-Script/releases/download/%s/%s-%s.zip", release.getTagName(), REPO_NAME, release.getTagName()))
-                                    .openConnection()
-                                    .getInputStream();
-                            ZipInputStream zipInputStream = new ZipInputStream(inputStream);
-                    ){
-                        expandedLogPane();
-                        log.info("开始下载" + release.getTagName());
-                        File currentDir = new File(TEMP_DIR);
-                        if (!currentDir.exists()){
-                            currentDir.mkdirs();
-                        }
-                        ZipEntry nextEntry = zipInputStream.getNextEntry();
-                        while (nextEntry != null) {
-                            String path = nextEntry.getName();
-                            File file = new File(TEMP_DIR + path);
-                            if (nextEntry.isDirectory()) {
-                                file.mkdirs();
-                                log.info("dir：" + file.getPath());
-                            } else {
-                                new File(file.getPath().substring(0, file.getPath().lastIndexOf("\\"))).mkdirs();
-                                try (BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(new FileOutputStream(file))){
-                                    int l;
-                                    byte[] bytes = new byte[1024];
-                                    while ((l = zipInputStream.read(bytes)) != -1) {
-                                        bufferedOutputStream.write(bytes, 0, l);
-                                    }
-                                }
-                                log.info("file：" + file.getPath());
-                            }
-                            zipInputStream.closeEntry();
-                            nextEntry = zipInputStream.getNextEntry();
-                        }
-                        log.info(release.getTagName() + "下载完毕");
-                        IS_UPDATING.set(false);
-                    } catch (IOException e) {
-                        IS_UPDATING.set(false);
-                        throw new RuntimeException(e);
-                    }
-                    execUpdate(release.getTagName());
-                }), 0, TimeUnit.SECONDS);
+        if (release != null && !IS_UPDATING.get()){
+            if (!new File(TEMP_PATH).exists()){
+                downloadRelease(release);
             }
+            execUpdate(release.getTagName());
         }
-//        SystemUtil.openUrlByBrowser("https://gitee.com/zergqueen/Hearthstone-Script/releases/tag/" + release.getTagName());
     }
 
+    private void downloadRelease(Release release){
+        IS_UPDATING.set(true);
+        extraThreadPool.schedule(() -> {
+            try (
+                    InputStream inputStream = new URL(String.format("https://gitee.com/zergqueen/Hearthstone-Script/releases/download/%s/%s-%s.zip", release.getTagName(), REPO_NAME, release.getTagName()))
+                            .openConnection()
+                            .getInputStream();
+                    ZipInputStream zipInputStream = new ZipInputStream(inputStream);
+            ){
+                expandedLogPane();
+                log.info("开始下载" + release.getTagName());
+                ZipEntry nextEntry;
+                while ((nextEntry = zipInputStream.getNextEntry()) != null) {
+                    File entryFile = new File(TEMP_PATH + nextEntry.getName());
+                    if (nextEntry.isDirectory()) {
+                        entryFile.mkdirs();
+                        log.info("created_dir：" + entryFile.getPath());
+                    } else {
+                        new File(entryFile.getPath().substring(0, entryFile.getPath().lastIndexOf("\\"))).mkdirs();
+                        try (BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(new FileOutputStream(entryFile))){
+                            int l;
+                            byte[] bytes = new byte[1024];
+                            while ((l = zipInputStream.read(bytes)) != -1) {
+                                bufferedOutputStream.write(bytes, 0, l);
+                            }
+                        }
+                        log.info("downloaded_file：" + entryFile.getPath());
+                    }
+                }
+                log.info(release.getTagName() + "下载完毕");
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }finally {
+                IS_UPDATING.set(false);
+            }
+        }, 0, TimeUnit.SECONDS);
+    }
     private void execUpdate(String latestVersion){
         Platform.runLater(() -> FrameUtil.createAlert("新版本[" + latestVersion + "]下载完毕", "现在更新？", event -> {
             try {
                 IS_UPDATING.set(true);
-                Runtime.getRuntime().exec("cmd /c start " + System.getProperty("user.dir") + "\\update.bat " + System.getProperty("user.dir") + "\\new_version_temp");
+                Runtime.getRuntime().exec("cmd /c start update.bat " + TEMP_DIR);
             } catch (IOException e) {
-                IS_UPDATING.set(false);
                 throw new RuntimeException(e);
+            }finally {
+                IS_UPDATING.set(false);
             }
-        }, event -> {IS_UPDATING.set(false);}, event -> {IS_UPDATING.set(false);}).show());
+        }, event -> IS_UPDATING.set(false), event -> IS_UPDATING.set(false)).show());
     }
     @FXML
     protected void save(){
@@ -221,7 +212,7 @@ public class JavaFXDashboardController implements Initializable {
         }
         tip.setFill(Paint.valueOf("#00cc00"));
         tip.setText("保存成功😊");
-        extraThreadPool.schedule(new LogRunnable(() -> tip.setText("")), 3, TimeUnit.SECONDS);
+        extraThreadPool.schedule(() -> tip.setText(""), 3, TimeUnit.SECONDS);
         Work.storeWorkDate();
     }
     public static VBox logVBoxBack;

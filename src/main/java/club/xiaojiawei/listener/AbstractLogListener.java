@@ -67,13 +67,13 @@ public abstract class AbstractLogListener {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        logScheduledFuture = listenFileThreadPool.scheduleAtFixedRate(new LogRunnable(() -> {
+        logScheduledFuture = listenFileThreadPool.scheduleAtFixedRate(() -> {
             try {
                 listenLog();
             }catch (Exception e){
                 log.warn(logName + "监听器发生错误", e);
             }
-        }), listenInitialDelay, listenPeriod, listenUnit);
+        }, listenInitialDelay, listenPeriod, listenUnit);
         otherListen();
     }
     private File createFile(){

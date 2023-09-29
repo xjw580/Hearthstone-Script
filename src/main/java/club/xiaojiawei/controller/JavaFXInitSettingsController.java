@@ -96,11 +96,11 @@ public class JavaFXInitSettingsController implements Initializable {
             ScriptStaticData.setSetPath(true);
             tip.setFill(Paint.valueOf("#00cc00"));
             tip.setText("保存成功😊");
-            extraThreadPool.schedule(new LogRunnable(() -> tip.setText("")), 3, TimeUnit.SECONDS);
+            extraThreadPool.schedule(() -> tip.setText(""), 3, TimeUnit.SECONDS);
         }else {
             tip.setFill(Paint.valueOf("#ff3300"));
             tip.setText(ScriptStaticData.GAME_CN_NAME + "安装路径不正确,请重新选择😩");
-            extraThreadPool.schedule(new LogRunnable(() -> tip.setText("")), 3, TimeUnit.SECONDS);
+            extraThreadPool.schedule(() -> tip.setText(""), 3, TimeUnit.SECONDS);
         }
     }
 
