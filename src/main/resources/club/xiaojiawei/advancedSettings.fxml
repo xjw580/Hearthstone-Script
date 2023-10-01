@@ -2,8 +2,9 @@
 
 <?import club.xiaojiawei.controls.Switch?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.*?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
@@ -21,6 +22,19 @@
         <Label contentDisplay="RIGHT" text="执行策略：" style="-fx-border-width: 3;-fx-font-size: 13">
             <graphic>
                 <Switch fx:id="strategySwitch" status="false"/>
+            </graphic>
+        </Label>
+        <Label contentDisplay="RIGHT" text="Web安全验证：" style="-fx-border-width: 3;-fx-font-size: 13">
+            <graphic>
+                <HBox>
+                    <Switch fx:id="verifySwitch" status="false"/>
+                    <TextField fx:id="psw" translateX="10" promptText="验证密码" />
+                </HBox>
+            </graphic>
+        </Label>
+        <Label contentDisplay="RIGHT" text="更新开发版：" style="-fx-border-width: 3;-fx-font-size: 13">
+            <graphic>
+                <Switch fx:id="updateDev" status="false"/>
             </graphic>
         </Label>
     </VBox>

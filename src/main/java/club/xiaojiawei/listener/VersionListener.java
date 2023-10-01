@@ -12,6 +12,9 @@ import org.springframework.web.client.RestTemplate;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import java.util.Objects;
+import java.util.Properties;
+
+import static club.xiaojiawei.enums.ConfigurationKeyEnum.UPDATE_DEV;
 
 /**
  * @author 肖嘉威
@@ -29,6 +32,8 @@ public class VersionListener {
     private RestTemplate restTemplate;
     @Resource
     private SpringData springData;
+    @Resource
+    private Properties scriptConfiguration;
     @PostConstruct
     void init(){
           /*
@@ -56,11 +61,11 @@ public class VersionListener {
             }
         }
         if (release != null){
-            if (currentVersion.compareTo(release.getTagName()) < 0 && !release.isPreRelease()){
+            if (currentVersion.compareTo(release.getTagName()) < 0 && (!release.isPreRelease() || Objects.equals(scriptConfiguration.getProperty(UPDATE_DEV.getKey()), "true"))){
                 JavaFXDashboardController.updateBack.setVisible(true);
                 log.info("有更新可用😊，当前版本：" + currentVersion + ", 最新版本：" + release.getTagName());
             }else {
-                log.info("已是最新，当前版本：" + currentVersion + ", 最新版本：" + release.getTagName());
+                log.info("已是最新，当前版本：" + currentVersion);
             }
         }else {
             log.warn("没有任何最新版本");

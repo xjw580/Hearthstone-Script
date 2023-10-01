@@ -8,7 +8,7 @@ import lombok.ToString;
 /**
  * @author 肖嘉威
  * @date 2023/7/5 11:26
- * @msg 脚本配置信息里的key，在{@link ConfigurationConfig}处配置
+ * @msg 脚本配置信息里的key，需要配置初始值的在{@link ConfigurationConfig}里处理
  */
 @Getter
 @ToString
@@ -50,6 +50,18 @@ public enum ConfigurationKeyEnum {
      * 工作时间，具体时间段
      */
     WORK_TIME_KEY("workTime"),
+    /**
+     * WEB访问密码
+     */
+    VERIFY_PASSWORD("verifyPassword"),
+    /**
+     * WEB启用密码
+     */
+    ENABLE_VERIFY("enableVerify"),
+    /**
+     * 更新开发版
+     */
+    UPDATE_DEV("updateDev"),
     ;
     private final String key;
 

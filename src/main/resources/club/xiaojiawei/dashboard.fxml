@@ -177,7 +177,7 @@
                     </graphic>
                 </Label>
 
-                <Button onAction="#settings" text="设置" GridPane.columnIndex="0" GridPane.rowIndex="8"
+                <Button onAction="#showSettings" text="设置" GridPane.columnIndex="0" GridPane.rowIndex="8"
                         styleClass="btn, btn-xs, btn-info" translateX="55">
                     <tooltip>
                         <Tooltip>

@@ -62,7 +62,7 @@ public class UIApplication extends Application {
         Scene scene = new Scene(fxmlLoader.load(), width, height);
         scene.getStylesheets().add(BootstrapFX.bootstrapFXStylesheet());
         scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("css/dashboard.css")).toExternalForm());
-        frame = FrameUtil.createAlwaysTopWindow(ScriptStaticData.SCRIPT_NAME, scene, width, height, ScriptStaticData.SCRIPT_ICON_PATH);
+        frame = FrameUtil.createAlwaysTopWindowFrame(ScriptStaticData.SCRIPT_NAME, scene, width, height, ScriptStaticData.SCRIPT_ICON_PATH);
     }
     private void setTray(){
         MenuItem quit = new MenuItem("退出");
@@ -86,7 +86,14 @@ public class UIApplication extends Application {
                 });
             }
         });
-        SystemUtil.addTray(MAIN_ICO_NAME, ScriptStaticData.SCRIPT_NAME, show, quit);
+        SystemUtil.addTray(MAIN_ICO_NAME, ScriptStaticData.SCRIPT_NAME, e -> {
+//            确保左键点击
+            if (e.getButton() == 1){
+                if (!frame.get().isVisible()){
+                    frame.get().setVisible(true);
+                }
+            }
+        }, show, quit);
     }
     private void afterInit(){
         DeckEnum deckEnum = DeckEnum.valueOf(scriptConfiguration.getProperty(DECK_KEY.getKey()));

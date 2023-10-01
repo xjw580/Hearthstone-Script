@@ -60,12 +60,13 @@ public class ConfigurationConfig {
     }
 
     private void writeDefaultScriptProperties(FileWriter fileWriter, Properties properties){
+
         for (ConfigurationKeyEnum configurationKeyEnum : ConfigurationKeyEnum.values()) {
             if (!properties.containsKey(configurationKeyEnum.getKey())){
                 try {
                     fileWriter.write(configurationKeyEnum.getKey() + "=");
                     switch (configurationKeyEnum){
-                        case AUTO_OPEN_KEY -> fileWriter.write("false\n");
+                        case AUTO_OPEN_KEY, UPDATE_DEV, ENABLE_VERIFY -> fileWriter.write("false\n");
                         case RUN_MODE_KEY -> fileWriter.write(RunModeEnum.STANDARD.getValue() + "\n");
                         case DECK_KEY -> fileWriter.write(DeckEnum.FREE.getValue() + "\n");
                         case WORK_DAY_FLAG_KEY -> fileWriter.write("true,false,false,false,false,false,false,false\n");

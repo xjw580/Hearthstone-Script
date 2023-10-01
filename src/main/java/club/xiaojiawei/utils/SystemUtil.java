@@ -1,5 +1,6 @@
 package club.xiaojiawei.utils;
 
+import club.xiaojiawei.custom.MouseClickListener;
 import club.xiaojiawei.data.ScriptStaticData;
 import club.xiaojiawei.enums.RegCommonNameEnum;
 import club.xiaojiawei.listener.DeckLogListener;
@@ -19,11 +20,16 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.datatransfer.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.*;
 import java.net.*;
 import java.util.Objects;
+import java.util.function.Consumer;
 
 import static club.xiaojiawei.data.ScriptStaticData.GAME_PROGRAM_NAME;
 
@@ -182,9 +188,9 @@ public class SystemUtil {
         delay(RandomUtil.getHugeRandom());
     }
 
-
     @Deprecated
-    public  static void killProgram(){
+    public  static void killProgram(WinDef.HWND programHWND){
+        frontWindow(programHWND);
         ScriptStaticData.ROBOT.keyPress(18);
         ScriptStaticData.ROBOT.keyPress(115);
         ScriptStaticData.ROBOT.keyRelease(115);
@@ -211,7 +217,7 @@ public class SystemUtil {
      * @param trayName
      * @param menuItems
      */
-    public static void addTray(String trayIconName, String trayName, MenuItem... menuItems){
+    public static void addTray(String trayIconName, String trayName, Consumer<MouseEvent> clickMouseListener, MenuItem... menuItems){
         if (trayIcon != null){
             return;
         }
@@ -225,6 +231,7 @@ public class SystemUtil {
         trayIcon = new TrayIcon(image, trayName, popupMenu);
         trayIcon.setImageAutoSize(true);
         trayIcon.setToolTip(ScriptStaticData.SCRIPT_NAME);
+        trayIcon.addMouseListener(new MouseClickListener(clickMouseListener));
         try {
             TRAY.add(trayIcon);
         } catch (AWTException e) {

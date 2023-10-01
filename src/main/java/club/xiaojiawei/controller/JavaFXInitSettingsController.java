@@ -1,31 +1,26 @@
 package club.xiaojiawei.controller;
 
-import club.xiaojiawei.custom.LogRunnable;
 import club.xiaojiawei.data.ScriptStaticData;
 import club.xiaojiawei.enums.ConfigurationKeyEnum;
+import club.xiaojiawei.enums.StageEnum;
+import club.xiaojiawei.utils.FrameUtil;
 import club.xiaojiawei.utils.PropertiesUtil;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Text;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import org.kordamp.bootstrapfx.BootstrapFX;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.io.File;
-import java.io.IOException;
 import java.net.URL;
-import java.util.Objects;
 import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
@@ -84,7 +79,7 @@ public class JavaFXInitSettingsController implements Initializable {
     protected void apply(){
         if(propertiesUtil.storePath(game.getText(), platform.getText())){
             ScriptStaticData.setSetPath(true);
-            ((Stage)(apply.getScene().getWindow())).close();
+            FrameUtil.hideStage(StageEnum.SETTINGS);
         }else {
             tip.setFill(Paint.valueOf("#ff3300"));
             tip.setText(ScriptStaticData.GAME_CN_NAME + "安装路径不正确,请重新选择");
@@ -112,21 +107,5 @@ public class JavaFXInitSettingsController implements Initializable {
         AnchorPane.setRightAnchor(save, 120.0);
         game.setText(scriptConfiguration.getProperty(ConfigurationKeyEnum.GAME_PATH_KEY.getKey()));
         platform.setText(scriptConfiguration.getProperty(ConfigurationKeyEnum.PLATFORM_PATH_KEY.getKey()));
-    }
-
-    public void showStage(){
-        Stage stage = new Stage();
-        try {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(ScriptStaticData.MAIN_PATH + "settings.fxml"));
-            fxmlLoader.setControllerFactory(context::getBean);
-            Scene scene = new Scene(fxmlLoader.load(), 600, 400);
-            stage.setScene(scene);
-            scene.getStylesheets().add(BootstrapFX.bootstrapFXStylesheet());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        stage.setTitle("设置");
-        stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResource(ScriptStaticData.SCRIPT_ICON_PATH)).toExternalForm()));
-        stage.show();
     }
 }

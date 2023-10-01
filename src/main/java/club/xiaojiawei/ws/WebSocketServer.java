@@ -3,15 +3,24 @@ package club.xiaojiawei.ws;
 import club.xiaojiawei.bean.WsResult;
 import club.xiaojiawei.enums.WsResultTypeEnum;
 import com.alibaba.fastjson.JSON;
+import javafx.beans.property.BooleanProperty;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import javax.websocket.*;
 import javax.websocket.server.ServerEndpoint;
+import javax.websocket.server.ServerEndpointConfig;
 import java.io.IOException;
 import java.util.Objects;
+import java.util.Properties;
 import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * @author 肖嘉威
@@ -20,14 +29,22 @@ import java.util.concurrent.CopyOnWriteArraySet;
  */
 @Slf4j
 @Component
-@ServerEndpoint("/info")    // 指定websocket 连接的url
+@ServerEndpoint(value = "/info")
 @SuppressWarnings("all")
-public class WebSocketServer {
+public class WebSocketServer{
 
     /**
      * 与某个客户端的连接会话，需要通过它来给客户端发送数据
      */
     private Session session;
+
+    private static AtomicReference<BooleanProperty> isPause;
+//
+    @Resource
+    public void setIsPause(AtomicReference<BooleanProperty> isPause) {
+        WebSocketServer.isPause = isPause;
+    }
+
     /**
      * session集合,存放对应的session
      */
@@ -45,7 +62,9 @@ public class WebSocketServer {
         this.session = session;
         webSocketSet.add(this);
         log.info("WebSocket建立连接完成,当前在线人数为：{}", webSocketSet.size());
-        session.getBasicRemote().sendText(JSON.toJSONString(WsResult.ofNew(WsResultTypeEnum.LOG, "WebSocket连接成功")));
+        RemoteEndpoint.Basic remote = session.getBasicRemote();
+        remote.sendText(JSON.toJSONString(WsResult.ofNew(WsResultTypeEnum.LOG, "WebSocket连接成功")));
+        remote.sendText(JSON.toJSONString(WsResult.ofNew(WsResultTypeEnum.PAUSE, isPause.get().get())));
     }
 
     /**

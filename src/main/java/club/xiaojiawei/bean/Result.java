@@ -12,12 +12,12 @@ import static club.xiaojiawei.enums.ResultStatusEnum.*;
 @Data
 public class Result<T> {
 
-    private ResultStatusEnum resultStatus;
+    private ResultStatusEnum status;
 
     private T data;
 
-    public Result(ResultStatusEnum resultStatus, T data) {
-        this.resultStatus = resultStatus;
+    public Result(ResultStatusEnum status, T data) {
+        this.status = status;
         this.data = data;
     }
 

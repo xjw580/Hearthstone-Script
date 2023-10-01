@@ -4,6 +4,7 @@ import club.xiaojiawei.bean.Release;
 import club.xiaojiawei.controls.Switch;
 import club.xiaojiawei.enums.DeckEnum;
 import club.xiaojiawei.enums.RunModeEnum;
+import club.xiaojiawei.enums.StageEnum;
 import club.xiaojiawei.listener.VersionListener;
 import club.xiaojiawei.status.Work;
 import club.xiaojiawei.utils.DashboardUtil;
@@ -107,8 +108,8 @@ public class JavaFXDashboardController implements Initializable {
         isPause.get().set(true);
     }
     @FXML
-    protected void settings() {
-        javaFXInitSettingsController.showStage();
+    protected void showSettings() {
+        FrameUtil.showStage(StageEnum.SETTINGS);
     }
     private static final SimpleBooleanProperty IS_UPDATING = new SimpleBooleanProperty(false);
 
