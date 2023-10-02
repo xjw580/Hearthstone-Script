@@ -110,7 +110,11 @@
                             <padding>
                                 <Insets top="25" bottom="30"/>
                             </padding>
-                            <CheckBox text="每天"/>
+                            <CheckBox text="每天">
+                                <tooltip>
+                                    <Tooltip text="优先级最高"/>
+                                </tooltip>
+                            </CheckBox>
                             <CheckBox text="周一"/>
                             <CheckBox text="周二"/>
                             <CheckBox text="周三"/>
@@ -134,8 +138,15 @@
                         <VBox spacing="5" fx:id="workTime">
                             <CheckBox>
                                 <graphic>
-                                    <TextField promptText="HH:mm-HH:mm" maxWidth="$maxWidth" text="00:00-24:00" disable="true"/>
+                                    <TextField promptText="HH:mm-HH:mm" maxWidth="$maxWidth" text="00:00-24:00" disable="true">
+                                        <tooltip>
+                                            <Tooltip text="优先级最高"/>
+                                        </tooltip>
+                                    </TextField>
                                 </graphic>
+                                <tooltip>
+                                    <Tooltip text="优先级最高"/>
+                                </tooltip>
                             </CheckBox>
                             <CheckBox>
                                 <graphic>

@@ -24,6 +24,9 @@ public class Result<T> {
     public static<T> Result <T>ofSuccess(T data){
         return new Result<>(SUCCESS, data);
     }
+    public static<T> Result <T>ofSuccess(){
+        return new Result<>(SUCCESS, null);
+    }
 
     public static Result<Object> ofError(Object data){
         return new Result<>(ERROR, data);

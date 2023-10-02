@@ -1,7 +1,7 @@
 package club.xiaojiawei.starter;
 
 import club.xiaojiawei.data.SpringData;
-import club.xiaojiawei.enums.ConfigurationKeyEnum;
+import club.xiaojiawei.enums.ConfigurationEnum;
 import club.xiaojiawei.listener.AbstractLogListener;
 import club.xiaojiawei.listener.DeckLogListener;
 import club.xiaojiawei.listener.PowerLogListener;
@@ -35,7 +35,7 @@ public class ListenStarter extends AbstractStarter{
     protected SpringData springData;
     @Override
     protected void exec() {
-        File filePath = new File(scriptConfiguration.getProperty(ConfigurationKeyEnum.GAME_PATH_KEY.getKey()) + springData.getGameLogPath());
+        File filePath = new File(scriptConfiguration.getProperty(ConfigurationEnum.GAME_PATH.getKey()) + springData.getGameLogPath());
         File [] files;
         if (!filePath.exists() || (files = filePath.listFiles()) == null || files.length == 0){
             log.error("游戏日志目录读取失败");

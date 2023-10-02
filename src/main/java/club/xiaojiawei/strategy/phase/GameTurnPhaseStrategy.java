@@ -13,7 +13,7 @@ import javax.annotation.Resource;
 import java.util.Objects;
 import java.util.Properties;
 
-import static club.xiaojiawei.enums.ConfigurationKeyEnum.DECK_KEY;
+import static club.xiaojiawei.enums.ConfigurationEnum.DECK;
 import static club.xiaojiawei.enums.StepEnum.MAIN_ACTION;
 import static club.xiaojiawei.enums.StepEnum.MAIN_END;
 import static club.xiaojiawei.enums.TagEnum.STEP;
@@ -55,7 +55,7 @@ public class GameTurnPhaseStrategy extends AbstractPhaseStrategy{
                     (thread = new Thread(new LogRunnable(() -> {
                         //                          等待动画结束
                         SystemUtil.delay(4000);
-                        DeckEnum.valueOf(scriptConfiguration.getProperty(DECK_KEY.getKey())).getAbstractDeckStrategy().outCard();
+                        DeckEnum.valueOf(scriptConfiguration.getProperty(DECK.getKey())).getAbstractDeckStrategy().outCard();
                     }), "OutCard Thread")).start();
                 }else {
                     log.info("对方回合");

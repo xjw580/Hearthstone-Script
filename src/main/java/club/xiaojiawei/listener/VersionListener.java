@@ -14,7 +14,7 @@ import javax.annotation.Resource;
 import java.util.Objects;
 import java.util.Properties;
 
-import static club.xiaojiawei.enums.ConfigurationKeyEnum.UPDATE_DEV;
+import static club.xiaojiawei.enums.ConfigurationEnum.UPDATE_DEV;
 
 /**
  * @author 肖嘉威
@@ -55,6 +55,7 @@ public class VersionListener {
             release = restTemplate.getForObject("https://gitee.com/api/v5/repos/zergqueen/Hearthstone-Script/releases/latest", Release.class);
         }catch (RuntimeException e){
             try {
+//                todo 获取不到Github的预览版
                 release = restTemplate.getForObject("https://api.github.com/repos/xjw580/Hearthstone-Script/releases/latest", Release.class);
             }catch (RuntimeException e2){
                 log.warn("获取最新版本信息失败", e2);

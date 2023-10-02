@@ -7,7 +7,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.TextField;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
-import org.apache.tomcat.util.security.MD5Encoder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.DigestUtils;
 
@@ -18,7 +17,7 @@ import java.util.Objects;
 import java.util.Properties;
 import java.util.ResourceBundle;
 
-import static club.xiaojiawei.enums.ConfigurationKeyEnum.*;
+import static club.xiaojiawei.enums.ConfigurationEnum.*;
 
 /**
  * @author 肖嘉威
@@ -45,10 +44,10 @@ public class JavaFXAdvancedSettingsController implements Initializable {
     private PropertiesUtil propertiesUtil;
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        if (Objects.equals(scriptConfiguration.getProperty(AUTO_OPEN_KEY.getKey()), "true")){
+        if (Objects.equals(scriptConfiguration.getProperty(AUTO_OPEN_WEB.getKey()), "true")){
             webSwitch.setStatus(true);
         }
-        if (Objects.equals(scriptConfiguration.getProperty(STRATEGY_KEY.getKey()), "true")){
+        if (Objects.equals(scriptConfiguration.getProperty(STRATEGY.getKey()), "true")){
             strategySwitch.setStatus(true);
         }
         if (Objects.equals(scriptConfiguration.getProperty(ENABLE_VERIFY.getKey()), "true")){
@@ -59,12 +58,12 @@ public class JavaFXAdvancedSettingsController implements Initializable {
         }
 //        监听web界面开关
         webSwitch.statusProperty().addListener((observable, oldValue, newValue) -> {
-            scriptConfiguration.setProperty(AUTO_OPEN_KEY.getKey(), String.valueOf(newValue));
+            scriptConfiguration.setProperty(AUTO_OPEN_WEB.getKey(), String.valueOf(newValue));
             propertiesUtil.storeScriptProperties();
         });
 //        监听策略开关
         strategySwitch.statusProperty().addListener((observable, oldValue, newValue) -> {
-            scriptConfiguration.setProperty(STRATEGY_KEY.getKey(), String.valueOf(newValue));
+            scriptConfiguration.setProperty(STRATEGY.getKey(), String.valueOf(newValue));
             propertiesUtil.storeScriptProperties();
         });
 //        监听安全验证开关

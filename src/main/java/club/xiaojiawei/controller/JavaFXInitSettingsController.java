@@ -1,7 +1,7 @@
 package club.xiaojiawei.controller;
 
 import club.xiaojiawei.data.ScriptStaticData;
-import club.xiaojiawei.enums.ConfigurationKeyEnum;
+import club.xiaojiawei.enums.ConfigurationEnum;
 import club.xiaojiawei.enums.StageEnum;
 import club.xiaojiawei.utils.FrameUtil;
 import club.xiaojiawei.utils.PropertiesUtil;
@@ -105,7 +105,7 @@ public class JavaFXInitSettingsController implements Initializable {
         AnchorPane.setRightAnchor(apply, 15.0);
         AnchorPane.setBottomAnchor(save, 15.0);
         AnchorPane.setRightAnchor(save, 120.0);
-        game.setText(scriptConfiguration.getProperty(ConfigurationKeyEnum.GAME_PATH_KEY.getKey()));
-        platform.setText(scriptConfiguration.getProperty(ConfigurationKeyEnum.PLATFORM_PATH_KEY.getKey()));
+        game.setText(scriptConfiguration.getProperty(ConfigurationEnum.GAME_PATH.getKey()));
+        platform.setText(scriptConfiguration.getProperty(ConfigurationEnum.PLATFORM_PATH.getKey()));
     }
 }

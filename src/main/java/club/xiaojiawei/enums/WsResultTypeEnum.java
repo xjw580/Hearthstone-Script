@@ -18,7 +18,7 @@ public enum WsResultTypeEnum {
     GAME_COUNT(103, "游戏局数"),
     WINNING_PERCENTAGE(104, "胜率"),
     WORK_DATE(105, "工作时间"),
-    SCREEN_CAPTURE(106, "截屏"),
+    MODE_LIST(106, "所有模式"),
     LOG(200, "脚本日志"),
     ;
     private final int value;

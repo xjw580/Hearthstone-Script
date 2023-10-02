@@ -5,7 +5,7 @@ import club.xiaojiawei.core.Core;
 import club.xiaojiawei.custom.LogRunnable;
 import club.xiaojiawei.data.GameRationStaticData;
 import club.xiaojiawei.data.ScriptStaticData;
-import club.xiaojiawei.enums.ConfigurationKeyEnum;
+import club.xiaojiawei.enums.ConfigurationEnum;
 import club.xiaojiawei.enums.DeckEnum;
 import club.xiaojiawei.enums.ModeEnum;
 import club.xiaojiawei.enums.RunModeEnum;
@@ -93,8 +93,8 @@ public class TournamentModeStrategy extends AbstractModeStrategy<Object> {
     protected void afterEnter(Object o) {
         if (Work.canWork()){
             SystemUtil.updateGameRect();
-            if (ModeEnum.TOURNAMENT == RunModeEnum.valueOf(scriptConfiguration.getProperty(ConfigurationKeyEnum.RUN_MODE_KEY.getKey())).getModeEnum()){
-                DeckEnum currentDeck = DeckEnum.valueOf(scriptConfiguration.getProperty(ConfigurationKeyEnum.DECK_KEY.getKey()));
+            if (ModeEnum.TOURNAMENT == RunModeEnum.valueOf(scriptConfiguration.getProperty(ConfigurationEnum.RUN_MODE.getKey())).getModeEnum()){
+                DeckEnum currentDeck = DeckEnum.valueOf(scriptConfiguration.getProperty(ConfigurationEnum.DECK.getKey()));
                 if (!currentDeck.getRunMode().isEnable()){
                     log.warn("不可用或不支持的模式：" + currentDeck.getValue());
                     return;

@@ -16,6 +16,7 @@ body{
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-gap: 30px;
+    padding-top: 15px;
 }
 #right{
     height: 100%;
@@ -49,14 +50,18 @@ select{
     border: 1px solid #ccc;
     padding: 3px;
 }
-#modeOuter{
+#modeOuter, #warCountOuter{
     margin-left: calc(100% - 160px);
 }
-#deckOuter{
+#deckOuter, #winningPercentageOuter{
     margin-left: 40px;
 }
 #dayOuter{
     padding-left: 20px;
+    margin-top: 10px;
+}
+#timeOuter{
+    margin-top: 10px;
 }
 #day{
     display: grid;
@@ -70,9 +75,9 @@ select{
     z-index: -1;
     position: fixed;
     background-color:  #E8E8FF;
-    height: 210px;
+    height: 200px;
     width: 40vw;
-    top: 110px;
+    top: 190px;
     border-radius: 1rem;
     border: 1px solid rgb(128, 128, 128);
 }

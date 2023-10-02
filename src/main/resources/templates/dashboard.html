@@ -15,71 +15,84 @@
             <div id="leftInner">
                 <button id="start" onclick="start()">开始</button>
                 <button id="pause" onclick="pause()">暂停</button>
-<!--                <div id="modeOuter">-->
-<!--                    <span>-->
-<!--                        模式：-->
-<!--                    </span>-->
-<!--                    <select name="mode" id="mode">-->
-<!--                    </select>-->
-<!--                </div>-->
-<!--                <div id="deckOuter">-->
-<!--                    <span>-->
-<!--                        卡组：-->
-<!--                    </span>-->
-<!--                    <select name="deck">-->
-<!--                    </select>-->
-<!--                </div>-->
-<!--                <div style="margin-top: 10px" id="dayOuter">-->
-<!--                    <div>-->
-<!--                        工作天：-->
-<!--                    </div>-->
-<!--                    <br>-->
-<!--                    <span id="day">-->
-<!--                        <span><input type="checkbox" name="day" class="day" checked>每天</span>-->
-<!--                        <span><input type="checkbox" name="day" class="day">周一</span>-->
-<!--                        <span><input type="checkbox" name="day" class="day">周二</span>-->
-<!--                        <span><input type="checkbox" name="day" class="day">周三</span>-->
-<!--                        <span><input type="checkbox" name="day" class="day">周四</span>-->
-<!--                        <span><input type="checkbox" name="day" class="day">周五</span>-->
-<!--                        <span><input type="checkbox" name="day" class="day">周六</span>-->
-<!--                        <span><input type="checkbox" name="day" class="day">周日</span>-->
-<!--                    </span>-->
-<!--                </div>-->
-<!--                <div>-->
-<!--                    <div>-->
-<!--                        工作段：-->
-<!--                    </div>-->
-<!--                    <br>-->
-<!--                    <span class="time">-->
-<!--                    <div class="time">-->
-<!--                        <input type="checkbox" name="time" checked>-->
-<!--                        <input type="time" disabled> - -->
-<!--                        <input type="time" disabled>-->
-<!--                    </div>-->
-<!--                    <div class="time">-->
-<!--                        <input type="checkbox" name="time">-->
-<!--                        <input type="time"> - -->
-<!--                        <input type="time">-->
-<!--                    </div>-->
-<!--                    <div class="time">-->
-<!--                        <input type="checkbox" name="time">-->
-<!--                        <input type="time"> - -->
-<!--                        <input type="time">-->
-<!--                    </div>-->
-<!--                </span>-->
-<!--                </div>-->
-<!--                <div id="background">-->
-<!--                </div>-->
+                <div id="modeOuter">
+                    <span>
+                        模式：
+                    </span>
+                    <select name="mode" id="mode" onchange="getAllDeckByMode()"></select>
+                </div>
+                <div id="deckOuter">
+                    <span>
+                        卡组：
+                    </span>
+                    <select name="deck" id="deck" onchange="changeDeck()"></select>
+                </div>
+
+                <div id="warCountOuter">
+                    <span>
+                        游戏局数：
+                    </span>
+                    <span id="warCount"/>
+                </div>
+                <div id="winningPercentageOuter">
+                    <span>
+                        胜率：
+                    </span>
+                    <span id="winningPercentage"/>
+                </div>
+
+                <div id="dayOuter">
+                    <div>
+                        工作天：
+                    </div>
+                    <br>
+                    <span id="day">
+                        <span><input type="checkbox" name="day" class="day">每天</span>
+                        <span><input type="checkbox" name="day" class="day">周一</span>
+                        <span><input type="checkbox" name="day" class="day">周二</span>
+                        <span><input type="checkbox" name="day" class="day">周三</span>
+                        <span><input type="checkbox" name="day" class="day">周四</span>
+                        <span><input type="checkbox" name="day" class="day">周五</span>
+                        <span><input type="checkbox" name="day" class="day">周六</span>
+                        <span><input type="checkbox" name="day" class="day">周日</span>
+                    </span>
+                </div>
+                <div id="timeOuter">
+                    <div>
+                        工作段：<span style="font-size: 12px;color: rgb(128,128,128)">[HTML时间选择器无法选择和显示24:00]</span>
+                    </div>
+                    <br>
+                    <span class="time" id="time">
+                        <div class="time">
+                            <input type="checkbox" name="time">
+                            <input type="time" disabled> -
+                            <input type="time" disabled>
+                        </div>
+                        <div class="time">
+                            <input type="checkbox" name="time">
+                            <input type="time"> -
+                            <input type="time">
+                        </div>
+                        <div class="time">
+                            <input type="checkbox" name="time">
+                            <input type="time"> -
+                            <input type="time">
+                        </div>
+                    </span>
+                </div>
+                <div id="background">
+                </div>
             </div>
-<!--            <center>-->
-<!--                <button id="save" onclick="save()">保存</button>-->
-<!--            </center>-->
-<!--            <center style="margin-top: 50px">-->
-<!--                <button id="screenCapture" onclick="screenCapture()">截屏</button>-->
-<!--                <div>-->
-<!--                    <img src="">-->
-<!--                </div>-->
-<!--            </center>-->
+            <center>
+                <button id="save" onclick="save()">保存</button>
+                <span id="tip" style="color: #5CB85C;font-size: 12px"></span>
+            </center>
+            <center style="margin-top: 50px">
+                <button id="screenCapture" onclick="screenCapture()">游戏截屏</button>
+                <div>
+                    <img src="">
+                </div>
+            </center>
         </div>
         <div id="right">
             <div id="log">

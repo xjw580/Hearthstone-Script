@@ -26,7 +26,7 @@ import java.util.Properties;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static club.xiaojiawei.data.ScriptStaticData.MAIN_ICO_NAME;
-import static club.xiaojiawei.enums.ConfigurationKeyEnum.DECK_KEY;
+import static club.xiaojiawei.enums.ConfigurationEnum.DECK;
 
 
 /**
@@ -96,7 +96,7 @@ public class UIApplication extends Application {
         }, show, quit);
     }
     private void afterInit(){
-        DeckEnum deckEnum = DeckEnum.valueOf(scriptConfiguration.getProperty(DECK_KEY.getKey()));
+        DeckEnum deckEnum = DeckEnum.valueOf(scriptConfiguration.getProperty(DECK.getKey()));
         log.info(deckEnum.getComment() + "卡组代码：" + deckEnum.getDeckCode());
         if (SystemUtil.pasteClipboard(deckEnum.getDeckCode())){
             log.info(deckEnum.getComment() + "卡组代码已经粘贴到剪切板");

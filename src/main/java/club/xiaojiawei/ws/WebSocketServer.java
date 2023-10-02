@@ -1,22 +1,21 @@
 package club.xiaojiawei.ws;
 
 import club.xiaojiawei.bean.WsResult;
-import club.xiaojiawei.enums.WsResultTypeEnum;
+import club.xiaojiawei.enums.*;
+import club.xiaojiawei.listener.WarCountListener;
+import club.xiaojiawei.status.War;
+import club.xiaojiawei.status.Work;
 import com.alibaba.fastjson.JSON;
 import javafx.beans.property.BooleanProperty;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeansException;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import javax.websocket.*;
 import javax.websocket.server.ServerEndpoint;
-import javax.websocket.server.ServerEndpointConfig;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.concurrent.CopyOnWriteArraySet;
@@ -39,10 +38,16 @@ public class WebSocketServer{
     private Session session;
 
     private static AtomicReference<BooleanProperty> isPause;
+    private static Properties scriptConfiguration;
 //
     @Resource
     public void setIsPause(AtomicReference<BooleanProperty> isPause) {
         WebSocketServer.isPause = isPause;
+    }
+
+    @Resource
+    public void setScriptConfiguration(Properties scriptConfiguration) {
+        WebSocketServer.scriptConfiguration = scriptConfiguration;
     }
 
     /**
@@ -62,9 +67,23 @@ public class WebSocketServer{
         this.session = session;
         webSocketSet.add(this);
         log.info("WebSocket建立连接完成,当前在线人数为：{}", webSocketSet.size());
+        DeckEnum currentDeck = DeckEnum.valueOf(scriptConfiguration.getProperty(ConfigurationEnum.DECK.getKey()));
+        ArrayList<String> modes = new ArrayList<>();
+        for (RunModeEnum modeEnum : RunModeEnum.values()) {
+            if (modeEnum.isEnable()){
+                modes.add(modeEnum.getComment());
+            }
+        }
         RemoteEndpoint.Basic remote = session.getBasicRemote();
+//        发送顺序不要改变!
         remote.sendText(JSON.toJSONString(WsResult.ofNew(WsResultTypeEnum.LOG, "WebSocket连接成功")));
         remote.sendText(JSON.toJSONString(WsResult.ofNew(WsResultTypeEnum.PAUSE, isPause.get().get())));
+        remote.sendText(JSON.toJSONString(WsResult.ofNew(WsResultTypeEnum.MODE_LIST, modes)));
+        remote.sendText(JSON.toJSONString(WsResult.ofNew(WsResultTypeEnum.MODE, currentDeck.getRunMode().getComment())));
+        remote.sendText(JSON.toJSONString(WsResult.ofNew(WsResultTypeEnum.DECK, currentDeck.getComment())));
+        remote.sendText(JSON.toJSONString(WsResult.ofNew(WsResultTypeEnum.GAME_COUNT, War.warCount.get())));
+        remote.sendText(JSON.toJSONString(WsResult.ofNew(WsResultTypeEnum.WINNING_PERCENTAGE, WarCountListener.getWinningPercentage())));
+        remote.sendText(JSON.toJSONString(WsResult.ofNew(WsResultTypeEnum.WORK_DATE, new String[][]{Work.getWorkDayFlagArr(), Work.getWorkTimeFlagArr(), Work.getWorkTimeArr()})));
     }
 
     /**

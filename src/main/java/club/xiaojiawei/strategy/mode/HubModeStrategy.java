@@ -2,9 +2,8 @@ package club.xiaojiawei.strategy.mode;
 
 import club.xiaojiawei.data.GameRationStaticData;
 import club.xiaojiawei.data.ScriptStaticData;
-import club.xiaojiawei.enums.ConfigurationKeyEnum;
+import club.xiaojiawei.enums.ConfigurationEnum;
 import club.xiaojiawei.enums.RunModeEnum;
-import club.xiaojiawei.listener.PowerLogListener;
 import club.xiaojiawei.strategy.AbstractModeStrategy;
 import club.xiaojiawei.utils.SystemUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -49,6 +48,6 @@ public class HubModeStrategy extends AbstractModeStrategy<Object> {
             SystemUtil.delay(500);
         }
         log.info("准备进入指定模式");
-        RunModeEnum.valueOf(scriptConfiguration.getProperty(ConfigurationKeyEnum.RUN_MODE_KEY.getKey())).getModeEnum().getAbstractModeStrategy().wantEnter();
+        RunModeEnum.valueOf(scriptConfiguration.getProperty(ConfigurationEnum.RUN_MODE.getKey())).getModeEnum().getAbstractModeStrategy().wantEnter();
     }
 }

@@ -1,14 +1,18 @@
 package club.xiaojiawei.controller;
 
 import club.xiaojiawei.bean.Release;
+import club.xiaojiawei.bean.WsResult;
 import club.xiaojiawei.controls.Switch;
 import club.xiaojiawei.enums.DeckEnum;
 import club.xiaojiawei.enums.RunModeEnum;
 import club.xiaojiawei.enums.StageEnum;
+import club.xiaojiawei.enums.WsResultTypeEnum;
 import club.xiaojiawei.listener.VersionListener;
 import club.xiaojiawei.status.Work;
-import club.xiaojiawei.utils.DashboardUtil;
 import club.xiaojiawei.utils.FrameUtil;
+import club.xiaojiawei.utils.PropertiesUtil;
+import club.xiaojiawei.utils.SystemUtil;
+import club.xiaojiawei.ws.WebSocketServer;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -39,7 +43,8 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import static club.xiaojiawei.data.ScriptStaticData.*;
-import static club.xiaojiawei.enums.ConfigurationKeyEnum.DECK_KEY;
+import static club.xiaojiawei.enums.ConfigurationEnum.DECK;
+import static club.xiaojiawei.enums.ConfigurationEnum.RUN_MODE;
 
 /**
  * @author zerg
@@ -87,13 +92,9 @@ public class JavaFXDashboardController implements Initializable {
     @Resource
     private AtomicReference<BooleanProperty> isPause;
     @Resource
+    private PropertiesUtil propertiesUtil;
+    @Resource
     private Properties scriptConfiguration;
-    @Resource
-    private JavaFXInitSettingsController javaFXInitSettingsController;
-    @Resource
-    private Work work;
-    @Resource
-    private DashboardUtil dashboardUtil;
     @Resource
     private ScheduledThreadPoolExecutor extraThreadPool;
     public void expandedLogPane(){
@@ -177,7 +178,7 @@ public class JavaFXDashboardController implements Initializable {
     protected void save(){
 //        检查挂机天
         ObservableList<Node> workDayChildren = workDay.getChildren();
-        String[] workDayFlagArr = work.getWorkDayFlagArr();
+        String[] workDayFlagArr = Work.getWorkDayFlagArr();
         for (int i = 0; i < workDayChildren.size(); i++) {
             CheckBox workDayChild = (CheckBox) workDayChildren.get(i);
             if (Objects.equals(workDayFlagArr[i] = String.valueOf(workDayChild.isSelected()), "true") && i > 0 && Objects.equals(workDayFlagArr[0], "true")){
@@ -187,8 +188,8 @@ public class JavaFXDashboardController implements Initializable {
         }
 //        检查挂机段
         ObservableList<Node> workTimeChildren = workTime.getChildren();
-        String[] workTimeFlagArr = work.getWorkTimeFlagArr();
-        String[] workTimeArr = work.getWorkTimeArr();
+        String[] workTimeFlagArr = Work.getWorkTimeFlagArr();
+        String[] workTimeArr = Work.getWorkTimeArr();
         for (int i = 0; i < workTimeChildren.size(); i++) {
             CheckBox workTimeChild = (CheckBox) workTimeChildren.get(i);
             workTimeFlagArr[i] = String.valueOf(workTimeChild.isSelected());
@@ -220,7 +221,6 @@ public class JavaFXDashboardController implements Initializable {
     public static Accordion accordionBack;
     public static Switch logSwitchBack;
     public static Button updateBack;
-    private static RunModeEnum currentRunMode;
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         logVBoxBack = logVBox;
@@ -228,13 +228,27 @@ public class JavaFXDashboardController implements Initializable {
         logSwitchBack = logSwitch;
         updateBack = update;
         version.setText("当前版本：" + VersionListener.getCurrentVersion());
-//        初始化模式和卡组
-        DeckEnum deckEnum = DeckEnum.valueOf(scriptConfiguration.getProperty(DECK_KEY.getKey()));
-        currentRunMode = deckEnum.getRunMode();
+        initModeAndDeck();
+        initWorkDate();
+//        是否在更新中监听
+        IS_UPDATING.addListener((observable, oldValue, newValue) -> update.setDisable(newValue));
+//        监听日志自动滑到底部
+        logVBox.heightProperty().addListener((observable, oldValue, newValue) -> logScrollPane.setVvalue(logScrollPane.getVmax()));
+    }
+    private static RunModeEnum currentRunMode;
+    private static DeckEnum currentDeck;
+    /**
+     * 初始化模式和卡组
+     */
+    private void initModeAndDeck(){
+        currentDeck = DeckEnum.valueOf(scriptConfiguration.getProperty(DECK.getKey()));
+        currentRunMode = currentDeck.getRunMode();
         ObservableList runModeBoxItems = runModeBox.getItems();
+        runModeBoxItems.clear();
         RunModeEnum[] values = RunModeEnum.values();
         DeckEnum[] deckEnums = DeckEnum.values();
         ObservableList deckBoxItems = deckBox.getItems();
+        deckBoxItems.clear();
         for (RunModeEnum value : values) {
             if (value.isEnable()){
                 runModeBoxItems.add(value.getComment());
@@ -248,61 +262,86 @@ public class JavaFXDashboardController implements Initializable {
                 }
             }
         }
-        deckBox.getSelectionModel().select(deckEnum.getComment());
-//        初始化挂机时间
-        String[] workDayFlagArr = work.getWorkDayFlagArr();
-        ObservableList<Node> workDayChildren = workDay.getChildren();
-        for (int i = 0; i < workDayFlagArr.length; i++) {
-            if (Objects.equals(workDayFlagArr[i], "true")){
-                CheckBox checkBox = (CheckBox) workDayChildren.get(i);
-                checkBox.setSelected(true);
-                if (i == 0){
-                    break;
-                }
-            }
-        }
-        String[] workTimeFlagArr = work.getWorkTimeFlagArr();
-        String[] workTimeArr = work.getWorkTimeArr();
-        ObservableList<Node> workTimeChildren = workTime.getChildren();
-        for (int i = 0; i < workTimeFlagArr.length; i++) {
-            if (!Objects.equals(workTimeArr[i], "null")){
-                CheckBox checkBox = (CheckBox) workTimeChildren.get(i);
-                ((TextField)checkBox.getGraphic()).setText(workTimeArr[i]);
-                if (Objects.equals(workTimeFlagArr[i], "true")){
-                    checkBox.setSelected(true);
-                }
-            }
-        }
-//        是否在更新中监听
-        IS_UPDATING.addListener((observable, oldValue, newValue) -> {
-            update.setDisable(newValue);
-        });
-//        模式更改监听
+        deckBox.getSelectionModel().select(currentDeck.getComment());
+        //        模式更改监听
         runModeBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             for (RunModeEnum value : RunModeEnum.values()) {
-                if (Objects.equals(value.getComment(), newValue)){
+                if (Objects.equals(value.getComment(), newValue)) {
                     currentRunMode = value;
                 }
             }
             deckBoxItems.clear();
             for (DeckEnum anEnum : deckEnums) {
-                if (anEnum.getRunMode() == currentRunMode){
+                if (anEnum.getRunMode() == currentRunMode) {
                     deckBoxItems.add(anEnum.getComment());
                 }
             }
         });
-//        卡组更改监听
+        //        卡组更改监听
         deckBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null){
-                dashboardUtil.changeDeck((String) newValue);
+                storeDeck((String) newValue);
             }
         });
-//        监听日志自动滑到底部
-        logVBox.heightProperty().addListener((observable, oldValue, newValue) -> logScrollPane.setVvalue(logScrollPane.getVmax()));
+    }
+
+    private void storeDeck(String deckComment){
+        if (!Objects.equals(DeckEnum.valueOf(scriptConfiguration.getProperty(DECK.getKey())).getComment(), deckComment)){
+            scriptConfiguration.setProperty(RUN_MODE.getKey(), currentRunMode.getValue());
+            for (DeckEnum anEnum : DeckEnum.values()) {
+                if (Objects.equals(deckComment, anEnum.getComment())){
+                    scriptConfiguration.setProperty(DECK.getKey(), (currentDeck = anEnum).getValue());
+                    break;
+                }
+            }
+            propertiesUtil.storeScriptProperties();
+            WebSocketServer.sendAllMessage(WsResult.ofNew(WsResultTypeEnum.MODE, currentRunMode.getComment()));
+            WebSocketServer.sendAllMessage(WsResult.ofNew(WsResultTypeEnum.DECK, currentDeck.getComment()));
+            SystemUtil.notice("挂机卡组改为：" + deckComment);
+            log.info("挂机卡组改为：" + deckComment);
+        }
+    }
+
+    /**
+     * 初始化挂机时间
+     */
+    public void initWorkDate(){
+        String[] workDayFlagArr = Work.getWorkDayFlagArr();
+        ObservableList<Node> workDayChildren = workDay.getChildren();
+        for (int i = 0; i < workDayFlagArr.length; i++) {
+            CheckBox checkBox = (CheckBox) workDayChildren.get(i);
+            if (Objects.equals(workDayFlagArr[i], "true")){
+                checkBox.setSelected(true);
+                if (i == 0){
+                    break;
+                }
+            }else {
+                checkBox.setSelected(false);
+            }
+        }
+        String[] workTimeFlagArr = Work.getWorkTimeFlagArr();
+        String[] workTimeArr = Work.getWorkTimeArr();
+        ObservableList<Node> workTimeChildren = workTime.getChildren();
+        for (int i = 0; i < workTimeFlagArr.length; i++) {
+            CheckBox checkBox = (CheckBox) workTimeChildren.get(i);
+            ((TextField)checkBox.getGraphic()).setText(Objects.equals(workTimeArr[i], "null")? null : workTimeArr[i]);
+            checkBox.setSelected(Objects.equals(workTimeFlagArr[i], "true"));
+        }
+    }
+    public void changeDeck(String deckComment){
+        for (DeckEnum value : DeckEnum.values()) {
+            if (Objects.equals(value.getComment(), deckComment)){
+                currentDeck = value;
+            }
+        }
+        currentRunMode = currentDeck.getRunMode();
+        Platform.runLater(() -> {
+            runModeBox.getSelectionModel().select(currentRunMode.getComment());
+            deckBox.getSelectionModel().select(currentDeck.getComment());
+        });
     }
     public void changeSwitch(boolean value){
         pauseButton.setDisable(value);
         startButton.setDisable(!value);
     }
-
 }

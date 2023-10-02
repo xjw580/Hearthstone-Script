@@ -1,9 +1,12 @@
 package club.xiaojiawei.config;
 
+import club.xiaojiawei.bean.WsResult;
 import club.xiaojiawei.controller.JavaFXDashboardController;
 import club.xiaojiawei.core.Core;
+import club.xiaojiawei.enums.WsResultTypeEnum;
 import club.xiaojiawei.status.Work;
 import club.xiaojiawei.utils.SystemUtil;
+import club.xiaojiawei.ws.WebSocketServer;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import lombok.extern.slf4j.Slf4j;
@@ -39,6 +42,7 @@ public class PauseConfig {
         booleanProperty.addListener((observable, oldValue, newValue) -> {
             log.info("当前处于" + (newValue? "停止" : "运行") + "状态");
             javaFXDashboardController.changeSwitch(newValue);
+            WebSocketServer.sendAllMessage(WsResult.ofNew(WsResultTypeEnum.PAUSE, newValue));
             if (newValue){
                 SystemUtil.cancelAllRunnable();
                 Work.setWorking(false);

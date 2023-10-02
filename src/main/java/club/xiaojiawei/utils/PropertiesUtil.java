@@ -2,7 +2,7 @@ package club.xiaojiawei.utils;
 
 import club.xiaojiawei.data.ScriptStaticData;
 import club.xiaojiawei.data.SpringData;
-import club.xiaojiawei.enums.ConfigurationKeyEnum;
+import club.xiaojiawei.enums.ConfigurationEnum;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -36,14 +36,14 @@ public class PropertiesUtil {
             if (!new File(path + "/" + ScriptStaticData.GAME_PROGRAM_NAME).exists()){
                 return false;
             }
-            scriptConfiguration.setProperty(ConfigurationKeyEnum.GAME_PATH_KEY.getKey(), path);
+            scriptConfiguration.setProperty(ConfigurationEnum.GAME_PATH.getKey(), path);
             storeScriptProperties();
             return true;
         }
         return false;
     }
     public void storePlatformPath(String path){
-        scriptConfiguration.setProperty(ConfigurationKeyEnum.PLATFORM_PATH_KEY.getKey(), path);
+        scriptConfiguration.setProperty(ConfigurationEnum.PLATFORM_PATH.getKey(), path);
         storeScriptProperties();
     }
     public boolean storePath(String gamePath, String platformPath){

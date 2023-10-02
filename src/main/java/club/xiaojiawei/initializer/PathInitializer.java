@@ -1,7 +1,7 @@
 package club.xiaojiawei.initializer;
 
 import club.xiaojiawei.data.ScriptStaticData;
-import club.xiaojiawei.enums.ConfigurationKeyEnum;
+import club.xiaojiawei.enums.ConfigurationEnum;
 import club.xiaojiawei.enums.RegCommonNameEnum;
 import club.xiaojiawei.utils.PropertiesUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -30,7 +30,7 @@ public class PathInitializer extends AbstractInitializer{
 
     @Override
     public void exec() {
-        if (Strings.isNotBlank(scriptConfiguration.getProperty(ConfigurationKeyEnum.GAME_PATH_KEY.getKey())) && Strings.isNotBlank(scriptConfiguration.getProperty(ConfigurationKeyEnum.PLATFORM_PATH_KEY.getKey()))){
+        if (Strings.isNotBlank(scriptConfiguration.getProperty(ConfigurationEnum.GAME_PATH.getKey())) && Strings.isNotBlank(scriptConfiguration.getProperty(ConfigurationEnum.PLATFORM_PATH.getKey()))){
             ScriptStaticData.setSetPath(true);
             if (nextInitializer != null){
                 nextInitializer.init();

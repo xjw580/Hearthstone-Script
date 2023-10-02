@@ -1,7 +1,7 @@
 package club.xiaojiawei.starter;
 
 import club.xiaojiawei.data.ScriptStaticData;
-import club.xiaojiawei.enums.ConfigurationKeyEnum;
+import club.xiaojiawei.enums.ConfigurationEnum;
 import club.xiaojiawei.utils.SystemUtil;
 import javafx.beans.property.BooleanProperty;
 import lombok.extern.slf4j.Slf4j;
@@ -47,7 +47,7 @@ public class PlatformStarter extends AbstractStarter{
         }
         log.info("开始检查" + ScriptStaticData.PLATFORM_CN_NAME);
         log.info("正在进入" + ScriptStaticData.PLATFORM_CN_NAME + ScriptStaticData.GAME_CN_NAME + "启动页");
-        String platformPath = scriptConfiguration.getProperty(ConfigurationKeyEnum.PLATFORM_PATH_KEY.getKey());
+        String platformPath = scriptConfiguration.getProperty(ConfigurationEnum.PLATFORM_PATH.getKey());
         try {
             Runtime.getRuntime().exec("\"" + platformPath + "\"" + " --exec=\"launch WTCG\"");
         } catch (IOException e) {
