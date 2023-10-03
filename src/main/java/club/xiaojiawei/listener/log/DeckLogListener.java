@@ -1,4 +1,4 @@
-package club.xiaojiawei.listener;
+package club.xiaojiawei.listener.log;
 
 import club.xiaojiawei.bean.Deck;
 import club.xiaojiawei.data.SpringData;
@@ -9,9 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 

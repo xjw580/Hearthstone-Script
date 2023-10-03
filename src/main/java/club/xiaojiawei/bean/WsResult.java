@@ -23,5 +23,4 @@ public class WsResult <T>{
         return new WsResult<>(wsResultType, msg);
     }
 
-
 }

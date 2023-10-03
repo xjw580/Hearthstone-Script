@@ -27,11 +27,15 @@ public class Result<T> {
     public static<T> Result <T>ofSuccess(){
         return new Result<>(SUCCESS, null);
     }
-
+    public static Result<Object> ofError(){
+        return ofError(null);
+    }
     public static Result<Object> ofError(Object data){
         return new Result<>(ERROR, data);
     }
-
+    public static Result<Object> ofFail(){
+        return ofFail(null);
+    }
     public static Result<Object> ofFail(Object data){
         return new Result<>(FAIL, data);
     }

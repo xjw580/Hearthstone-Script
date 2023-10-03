@@ -61,7 +61,7 @@ public class WebDashboardController {
         if (Strings.isBlank(psw)
                 ||
                 !Objects.equals(psw, scriptConfiguration.getProperty(VERIFY_PASSWORD.getKey()))) {
-            result = Result.ofFail(null);
+            result = Result.ofFail();
         }else {
             String value = ScriptStaticData.AUTHOR + System.currentTimeMillis();
             if (tokenSet.size() >= MAX_TOKEN){
@@ -87,7 +87,7 @@ public class WebDashboardController {
         }else {
             Cookie[] cookies = request.getCookies();
             if (cookies == null){
-                result = Result.ofFail(null);
+                result = Result.ofFail();
             }else {
                 Cookie cookie = null;
                 for (Cookie c : cookies) {
@@ -97,7 +97,7 @@ public class WebDashboardController {
                     }
                 }
                 if (cookie == null || !tokenSet.contains(cookie.getValue())){
-                    result = Result.ofFail(null);
+                    result = Result.ofFail();
                 }else {
                     result = Result.ofSuccess();
                 }

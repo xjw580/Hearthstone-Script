@@ -2,10 +2,10 @@ package club.xiaojiawei.starter;
 
 import club.xiaojiawei.data.SpringData;
 import club.xiaojiawei.enums.ConfigurationEnum;
-import club.xiaojiawei.listener.AbstractLogListener;
-import club.xiaojiawei.listener.DeckLogListener;
-import club.xiaojiawei.listener.PowerLogListener;
-import club.xiaojiawei.listener.ScreenLogListener;
+import club.xiaojiawei.listener.log.AbstractLogListener;
+import club.xiaojiawei.listener.log.DeckLogListener;
+import club.xiaojiawei.listener.log.PowerLogListener;
+import club.xiaojiawei.listener.log.ScreenLogListener;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -33,6 +33,8 @@ public class ListenStarter extends AbstractStarter{
     private PowerLogListener powerLogListener;
     @Resource
     protected SpringData springData;
+    @Resource
+    private AbstractLogListener logListener;
     @Override
     protected void exec() {
         File filePath = new File(scriptConfiguration.getProperty(ConfigurationEnum.GAME_PATH.getKey()) + springData.getGameLogPath());
@@ -44,9 +46,7 @@ public class ListenStarter extends AbstractStarter{
         Arrays.sort(files, Comparator.comparing(File::getName));
         AbstractLogListener.setLogDir(files[files.length - 1]);
         log.info("游戏日志目录读取成功：" + files[files.length - 1].getAbsoluteFile());
-        deckLogListener.listen();
-        screenLogListener.listen();
-        powerLogListener.listen();
+        logListener.listen();
         if (nextStarter != null){
             nextStarter.start();
         }

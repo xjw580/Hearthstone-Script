@@ -36,7 +36,7 @@ const common = {
         }
         ws.onmessage = function(e){
             const data = JSON.parse(e.data);
-            console.log(data)
+            let $mode = $("#mode");
             switch (data.type){
                 case wsStatus.LOG:
                     if (content.children().length > 200){
@@ -49,15 +49,16 @@ const common = {
                     common.changePause(data.data)
                     break
                 case wsStatus.MODE:
-                    $("#mode").val(data.data)
+                    $mode.val(data.data)
                     break
                 case wsStatus.DECK:
-                    common.getAllDeckByMode($("#mode").val(), res => {
-                        $("#deck").empty('')
+                    common.getAllDeckByMode($mode.val(), res => {
+                        let $deck = $("#deck");
+                        $deck.empty('')
                         for (let datum of res.data) {
-                            $("#deck").append(`<option value="${datum}">${datum}</option>`)
+                            $deck.append(`<option value="${datum}">${datum}</option>`)
                         }
-                        $("#deck").val(data.data)
+                        $deck.val(data.data)
                     })
                     break
                 case wsStatus.GAME_COUNT:
@@ -86,7 +87,7 @@ const common = {
                     break
                 case wsStatus.MODE_LIST:
                     for (let datum of data.data) {
-                        $("#mode").append(`<option value="${datum}">${datum}</option>`)
+                        $mode.append(`<option value="${datum}">${datum}</option>`)
                     }
                     break
 
@@ -169,7 +170,7 @@ function save(){
     let times = $("#time").children();
     for (let i = 0; i < times.length; i++){
         workTimeFlagArr[i] = times[i].children[0].checked + ""
-        if (times[i].children[1].value !== '' && times[i].children[2].value !== '' && times[i].children[1].value != times[i].children[2].value){
+        if (times[i].children[1].value !== '' && times[i].children[2].value !== '' && times[i].children[1].value !== times[i].children[2].value){
             if (i !== 0){
                 workTimeArr[i] = times[i].children[1].value + "-" + times[i].children[2].value + ""
             }
@@ -179,9 +180,6 @@ function save(){
             times[i].children[0].checked = false
         }
     }
-    console.log(workDayFlagArr)
-    console.log(workTimeFlagArr)
-    console.log(workTimeArr)
     $.get(`/dashboard/save?workDayFlagArr=${workDayFlagArr}&workTimeFlagArr=${workTimeFlagArr}&workTimeArr=${workTimeArr}`, {}, res => {
         $("#tip").text("保存成功")
         setTimeout(() => {

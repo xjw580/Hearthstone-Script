@@ -1,4 +1,4 @@
-package club.xiaojiawei.listener;
+package club.xiaojiawei.listener.log;
 
 import club.xiaojiawei.utils.SystemUtil;
 import javafx.beans.property.BooleanProperty;
@@ -36,6 +36,10 @@ public abstract class AbstractLogListener {
     protected long listenInitialDelay;
     protected long listenPeriod;
     protected TimeUnit listenTimeUnit;
+    protected AbstractLogListener nextLogListener;
+    public AbstractLogListener setNextLogListener(AbstractLogListener nextLogListener) {
+        return this.nextLogListener = nextLogListener;
+    }
 
     public AbstractLogListener(String logFileName,
                                long listenInitialDelay,
@@ -73,6 +77,9 @@ public abstract class AbstractLogListener {
             }
         }, listenInitialDelay, listenPeriod, listenTimeUnit);
         otherListen();
+        if (nextLogListener != null){
+            nextLogListener.listen();
+        }
     }
     private File createFile(){
         File logFile = new File(logDir.getAbsolutePath() + "/" + logFileName);

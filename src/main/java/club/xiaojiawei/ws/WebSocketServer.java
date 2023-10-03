@@ -39,7 +39,6 @@ public class WebSocketServer{
 
     private static AtomicReference<BooleanProperty> isPause;
     private static Properties scriptConfiguration;
-//
     @Resource
     public void setIsPause(AtomicReference<BooleanProperty> isPause) {
         WebSocketServer.isPause = isPause;

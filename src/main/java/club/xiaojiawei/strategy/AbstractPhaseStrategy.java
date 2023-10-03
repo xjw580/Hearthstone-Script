@@ -6,7 +6,7 @@ import club.xiaojiawei.bean.entity.TagChangeEntity;
 import club.xiaojiawei.enums.ConfigurationEnum;
 import club.xiaojiawei.enums.DeckEnum;
 import club.xiaojiawei.enums.StepEnum;
-import club.xiaojiawei.listener.PowerLogListener;
+import club.xiaojiawei.listener.log.PowerLogListener;
 import club.xiaojiawei.status.War;
 import club.xiaojiawei.utils.GameUtil;
 import club.xiaojiawei.utils.PowerLogUtil;

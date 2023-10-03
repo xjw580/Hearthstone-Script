@@ -92,6 +92,9 @@ public class PowerLogUtil {
             if (tagChangeEntity.getEntity() == null){
                 Player player = War.getPlayer(tagChangeEntity.getPlayerId());
                 Area area = CARD_AREA_MAP.get(tagChangeEntity.getEntityId());
+                if (area == null){
+                    return tagChangeEntity;
+                }
                 Card card = area.findByEntityId(tagChangeEntity.getEntityId());
 //            只列出可能被修改的属性
                 DealTagChange dealTagChange = tagChangeEntity.getTag().getDealTagChange();
