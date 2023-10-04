@@ -29,78 +29,82 @@ $(
 )
 const common = {
     wsListener: () => {
-        const content = $("#content");
-        ws = new WebSocket(window.location.href.replace("https", "ws").replace("http", "ws") + "/info");
-        ws.onopen = function(){
-            console.log("websocket连接成功");
-        }
-        ws.onmessage = function(e){
-            const data = JSON.parse(e.data);
-            let $mode = $("#mode");
-            switch (data.type){
-                case wsStatus.LOG:
-                    if (content.children().length > 200){
-                        content.empty('')
-                    }
-                    content.append(`<div class="scriptInfo">${data.data}</div>`)
-                    content.scrollTop(content.prop("scrollHeight"))
-                    break
-                case wsStatus.PAUSE:
-                    common.changePause(data.data)
-                    break
-                case wsStatus.MODE:
-                    $mode.val(data.data)
-                    break
-                case wsStatus.DECK:
-                    common.getAllDeckByMode($mode.val(), res => {
-                        let $deck = $("#deck");
-                        $deck.empty('')
-                        for (let datum of res.data) {
-                            $deck.append(`<option value="${datum}">${datum}</option>`)
-                        }
-                        $deck.val(data.data)
-                    })
-                    break
-                case wsStatus.GAME_COUNT:
-                    $("#warCount").text(data.data)
-                    break
-                case wsStatus.WINNING_PERCENTAGE:
-                    $("#winningPercentage").text(data.data)
-                    break
-                case wsStatus.WORK_DATE:
-                    let arr = data.data;
-                    let dayChildren = $("#day").children();
-                    for (let i = 0; i < arr[0].length; i++) {
-                        if (arr[0][i] === "true"){
-                            dayChildren[i].children[0].checked = true;
-                        }
-                    }
-                    let timeChildren = $("#time").children();
-                    for (let i = 0; i < arr[1].length; i++) {
-                        timeChildren[i].children[0].checked = arr[1][i] === "true";
-                        if (arr[2][i] !== "null"){
-                            let times = arr[2][i].split('-');
-                            timeChildren[i].children[1].value = times[0]
-                            timeChildren[i].children[2].value = times[1]
-                        }
-                    }
-                    break
-                case wsStatus.MODE_LIST:
-                    for (let datum of data.data) {
-                        $mode.append(`<option value="${datum}">${datum}</option>`)
-                    }
-                    break
-
+        if (window.WebSocket){
+            const content = $("#content");
+            ws = new WebSocket(window.location.href.replace("https", "ws").replace("http", "ws") + "/info");
+            ws.onopen = function(){
+                console.log("websocket连接成功");
             }
-        }
-        ws.onclose = function(e){
-            const msg = "websocket已断开";
-            console.log(msg, e);
-            content.append(`<div class="scriptInfo">${msg}</div>`)
-            content.scrollTop(content.prop("scrollHeight"))
-        }
-        ws.onerror = function(e){
-            console.log("websocket发生错误", e);
+            ws.onmessage = function(e){
+                const data = JSON.parse(e.data);
+                let $mode = $("#mode");
+                switch (data.type){
+                    case wsStatus.LOG:
+                        if (content.children().length > 200){
+                            content.empty('')
+                        }
+                        content.append(`<div class="scriptInfo">${data.data}</div>`)
+                        content.scrollTop(content.prop("scrollHeight"))
+                        break
+                    case wsStatus.PAUSE:
+                        common.changePause(data.data)
+                        break
+                    case wsStatus.MODE:
+                        $mode.val(data.data)
+                        break
+                    case wsStatus.DECK:
+                        common.getAllDeckByMode($mode.val(), res => {
+                            let $deck = $("#deck");
+                            $deck.empty('')
+                            for (let datum of res.data) {
+                                $deck.append(`<option value="${datum}">${datum}</option>`)
+                            }
+                            $deck.val(data.data)
+                        })
+                        break
+                    case wsStatus.GAME_COUNT:
+                        $("#warCount").text(data.data)
+                        break
+                    case wsStatus.WINNING_PERCENTAGE:
+                        $("#winningPercentage").text(data.data)
+                        break
+                    case wsStatus.WORK_DATE:
+                        let arr = data.data;
+                        let dayChildren = $("#day").children();
+                        for (let i = 0; i < arr[0].length; i++) {
+                            if (arr[0][i] === "true"){
+                                dayChildren[i].children[0].checked = true;
+                            }
+                        }
+                        let timeChildren = $("#time").children();
+                        for (let i = 0; i < arr[1].length; i++) {
+                            timeChildren[i].children[0].checked = arr[1][i] === "true";
+                            if (arr[2][i] !== "null"){
+                                let times = arr[2][i].split('-');
+                                timeChildren[i].children[1].value = times[0]
+                                timeChildren[i].children[2].value = times[1]
+                            }
+                        }
+                        break
+                    case wsStatus.MODE_LIST:
+                        for (let datum of data.data) {
+                            $mode.append(`<option value="${datum}">${datum}</option>`)
+                        }
+                        break
+
+                }
+            }
+            ws.onclose = function(e){
+                const msg = "websocket已断开";
+                console.log(msg, e);
+                content.append(`<div class="scriptInfo">${msg}</div>`)
+                content.scrollTop(content.prop("scrollHeight"))
+            }
+            ws.onerror = function(e){
+                console.log("websocket发生错误", e);
+            }
+        }else {
+            console.error("当前浏览器不支持WebSocket")
         }
     },
     changePause: pause => {

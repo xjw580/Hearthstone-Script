@@ -1,7 +1,10 @@
 package club.xiaojiawei.ws;
 
 import club.xiaojiawei.bean.WsResult;
-import club.xiaojiawei.enums.*;
+import club.xiaojiawei.enums.ConfigurationEnum;
+import club.xiaojiawei.enums.DeckEnum;
+import club.xiaojiawei.enums.RunModeEnum;
+import club.xiaojiawei.enums.WsResultTypeEnum;
 import club.xiaojiawei.listener.WarCountListener;
 import club.xiaojiawei.status.War;
 import club.xiaojiawei.status.Work;
@@ -61,11 +64,11 @@ public class WebSocketServer{
     @SneakyThrows
     @OnOpen
     public void onOpen(Session session) {
-        log.info("WebSocket建立连接中,连接用户ID：{}", session.getId());
+        log.info("WebSocket建立连接中,连接用户ID：【{}】", session.getId());
         // 建立连接
         this.session = session;
         webSocketSet.add(this);
-        log.info("WebSocket建立连接完成,当前在线人数为：{}", webSocketSet.size());
+        log.info("WebSocket建立连接完成,当前用户数：【{}】", webSocketSet.size());
         DeckEnum currentDeck = DeckEnum.valueOf(scriptConfiguration.getProperty(ConfigurationEnum.DECK.getKey()));
         ArrayList<String> modes = new ArrayList<>();
         for (RunModeEnum modeEnum : RunModeEnum.values()) {
@@ -101,7 +104,7 @@ public class WebSocketServer{
     @OnClose
     public void onClose() {
         webSocketSet.remove(this);
-        log.info("WebSocket连接断开,当前在线人数为：{}", webSocketSet.size());
+        log.info("WebSocket连接断开,断开用户ID：【{}】,当前在线人数为：【{}】", this.session.getId(), webSocketSet.size());
     }
 
     /**
@@ -111,7 +114,7 @@ public class WebSocketServer{
      */
     @OnMessage
     public void onMessage(String message) {
-        log.info("WebSocket收到客户端发来的消息：{}", message);
+        log.info("WebSocket收到用户ID【{}】发来的消息：【{}】", this.session.getId(), message);
     }
 
     /**
@@ -122,7 +125,7 @@ public class WebSocketServer{
             try {
                 webSocket.session.getBasicRemote().sendText(JSON.toJSONString(wsResult));
             } catch (IOException e) {
-                log.error("WebSocket群发消息发生错误：" + e.getMessage(), e);
+                log.error("WebSocket群发消息发生错误" , e);
             }
         }
     }

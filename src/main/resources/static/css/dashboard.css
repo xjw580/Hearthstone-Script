@@ -1,17 +1,20 @@
 body{
     background-color: #ebedee;
 }
+input{
+    max-width: calc(15vw - 82px);
+}
 #outer{
     width: 100%;
     height: 100%;
     display: flex;
 }
 #left{
-    width: 40vw;
+    width: 45vw;
     height: 100%;
 }
 #leftInner{
-    width: 40vw;
+    width: 45vw;
     height: 100%;
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -20,8 +23,7 @@ body{
 }
 #right{
     height: 100%;
-    margin-left: 5%;
-    width: 50vw;
+    width: 55vw;
 }
 #start{
     width: 60px;
@@ -51,10 +53,10 @@ select{
     padding: 3px;
 }
 #modeOuter, #warCountOuter{
-    margin-left: calc(100% - 160px);
+    margin-left: calc(100% - 155px);
 }
 #deckOuter, #winningPercentageOuter{
-    margin-left: 40px;
+    margin-left: 20px;
 }
 #dayOuter{
     padding-left: 20px;
@@ -75,9 +77,9 @@ select{
     z-index: -1;
     position: fixed;
     background-color:  #E8E8FF;
-    height: 200px;
-    width: 40vw;
-    top: 190px;
+    height: 220px;
+    width: calc(45vw - 15px);
+    top: 180px;
     border-radius: 1rem;
     border: 1px solid rgb(128, 128, 128);
 }
@@ -85,8 +87,6 @@ select{
     margin-top: 15px;
     width: 50px;
 }
-
-
 
 #log{
     margin-top: 2%;
