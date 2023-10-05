@@ -26,7 +26,7 @@ import java.util.Properties;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static club.xiaojiawei.data.ScriptStaticData.MAIN_ICO_NAME;
-import static club.xiaojiawei.enums.ConfigurationKeyEnum.DECK_KEY;
+import static club.xiaojiawei.enums.ConfigurationEnum.DECK;
 
 
 /**
@@ -58,11 +58,11 @@ public class UIApplication extends Application {
         return fxmlLoader;
     }
     private void setStyle(FXMLLoader fxmlLoader) throws IOException {
-        int width = 225, height = 650;
-        Scene scene = new Scene(fxmlLoader.load(), width, height);
+        final int WIDTH = 225, HEIGHT = 670;
+        Scene scene = new Scene(fxmlLoader.load(), WIDTH, HEIGHT);
         scene.getStylesheets().add(BootstrapFX.bootstrapFXStylesheet());
         scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("css/dashboard.css")).toExternalForm());
-        frame = FrameUtil.createAlwaysTopWindow(ScriptStaticData.SCRIPT_NAME, scene, width, height, ScriptStaticData.SCRIPT_ICON_PATH);
+        frame = FrameUtil.createAlwaysTopWindowFrame(ScriptStaticData.SCRIPT_NAME, scene, WIDTH, HEIGHT, ScriptStaticData.SCRIPT_ICON_PATH);
     }
     private void setTray(){
         MenuItem quit = new MenuItem("退出");
@@ -86,10 +86,17 @@ public class UIApplication extends Application {
                 });
             }
         });
-        SystemUtil.addTray(MAIN_ICO_NAME, ScriptStaticData.SCRIPT_NAME, show, quit);
+        SystemUtil.addTray(MAIN_ICO_NAME, ScriptStaticData.SCRIPT_NAME, e -> {
+//            确保左键点击
+            if (e.getButton() == 1){
+                if (!frame.get().isVisible()){
+                    frame.get().setVisible(true);
+                }
+            }
+        }, show, quit);
     }
     private void afterInit(){
-        DeckEnum deckEnum = DeckEnum.valueOf(scriptConfiguration.getProperty(DECK_KEY.getKey()));
+        DeckEnum deckEnum = DeckEnum.valueOf(scriptConfiguration.getProperty(DECK.getKey()));
         log.info(deckEnum.getComment() + "卡组代码：" + deckEnum.getDeckCode());
         if (SystemUtil.pasteClipboard(deckEnum.getDeckCode())){
             log.info(deckEnum.getComment() + "卡组代码已经粘贴到剪切板");

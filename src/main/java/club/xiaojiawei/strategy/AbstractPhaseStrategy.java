@@ -3,11 +3,10 @@ package club.xiaojiawei.strategy;
 import club.xiaojiawei.bean.entity.Card;
 import club.xiaojiawei.bean.entity.ExtraEntity;
 import club.xiaojiawei.bean.entity.TagChangeEntity;
-import club.xiaojiawei.enums.ConfigurationKeyEnum;
+import club.xiaojiawei.enums.ConfigurationEnum;
 import club.xiaojiawei.enums.DeckEnum;
 import club.xiaojiawei.enums.StepEnum;
-import club.xiaojiawei.enums.WarPhaseEnum;
-import club.xiaojiawei.listener.PowerLogListener;
+import club.xiaojiawei.listener.log.PowerLogListener;
 import club.xiaojiawei.status.War;
 import club.xiaojiawei.utils.GameUtil;
 import club.xiaojiawei.utils.PowerLogUtil;
@@ -76,7 +75,7 @@ public abstract class AbstractPhaseStrategy{
                         ){
                             log.info("触发发现动作");
                             lastDiscoverEntityId = cards.get(cards.size() - 1).getEntityId();
-                            DeckEnum.valueOf(scriptConfiguration.getProperty(ConfigurationKeyEnum.DECK_KEY.getKey())).getAbstractDeckStrategy().discoverChooseCard(cards.get(size - 3), cards.get(size - 2), cards.get(size - 1));
+                            DeckEnum.valueOf(scriptConfiguration.getProperty(ConfigurationEnum.DECK.getKey())).getAbstractDeckStrategy().discoverChooseCard(cards.get(size - 3), cards.get(size - 2), cards.get(size - 1));
                         }
                     }
                 }else if (powerLogListener.isRelevance(line)){

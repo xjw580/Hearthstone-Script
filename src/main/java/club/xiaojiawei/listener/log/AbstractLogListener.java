@@ -1,7 +1,5 @@
-package club.xiaojiawei.listener;
+package club.xiaojiawei.listener.log;
 
-import club.xiaojiawei.custom.LogRunnable;
-import club.xiaojiawei.data.ScriptStaticData;
 import club.xiaojiawei.utils.SystemUtil;
 import javafx.beans.property.BooleanProperty;
 import lombok.Getter;
@@ -34,19 +32,23 @@ public abstract class AbstractLogListener {
     @Getter
     protected RandomAccessFile accessFile;
     protected ScheduledFuture<?> logScheduledFuture;
-    protected String logName;
+    protected String logFileName;
     protected long listenInitialDelay;
     protected long listenPeriod;
-    protected TimeUnit listenUnit;
+    protected TimeUnit listenTimeUnit;
+    protected AbstractLogListener nextLogListener;
+    public AbstractLogListener setNextLogListener(AbstractLogListener nextLogListener) {
+        return this.nextLogListener = nextLogListener;
+    }
 
-    public AbstractLogListener(String logName,
+    public AbstractLogListener(String logFileName,
                                long listenInitialDelay,
                                long listenPeriod,
-                               TimeUnit listenUnit) {
-        this.logName = logName;
+                               TimeUnit listenTimeUnit) {
+        this.logFileName = logFileName;
         this.listenInitialDelay = listenInitialDelay;
         this.listenPeriod = listenPeriod;
-        this.listenUnit = listenUnit;
+        this.listenTimeUnit = listenTimeUnit;
     }
 
     protected abstract void readOldLog() throws Exception;
@@ -55,12 +57,12 @@ public abstract class AbstractLogListener {
     protected void cancelOtherListener(){};
     public synchronized void listen(){
         if (logScheduledFuture != null && !logScheduledFuture.isDone()){
-            log.warn(logName + "正在被监听，无法再次被监听");
+            log.warn(logFileName + "正在被监听，无法再次被监听");
             return;
         }
         closeLogStream();
         File logFile = createFile();
-        log.info("开始监听" + logName);
+        log.info("开始监听" + logFileName);
         try {
             accessFile = new RandomAccessFile(logFile, "r");
             readOldLog();
@@ -71,13 +73,16 @@ public abstract class AbstractLogListener {
             try {
                 listenLog();
             }catch (Exception e){
-                log.warn(logName + "监听器发生错误", e);
+                log.warn(logFileName + "监听器发生错误", e);
             }
-        }, listenInitialDelay, listenPeriod, listenUnit);
+        }, listenInitialDelay, listenPeriod, listenTimeUnit);
         otherListen();
+        if (nextLogListener != null){
+            nextLogListener.listen();
+        }
     }
     private File createFile(){
-        File logFile = new File(logDir.getAbsolutePath() + "/" + logName);
+        File logFile = new File(logDir.getAbsolutePath() + "/" + logFileName);
         if (!logFile.exists()){
             try(FileWriter fileWriter = new FileWriter(logFile)){
                 fileWriter.write("");
@@ -91,7 +96,6 @@ public abstract class AbstractLogListener {
         if (accessFile != null){
             try {
                 accessFile.close();
-                log.info("旧的" + logName + "文件流已关闭");
                 accessFile = null;
             } catch (IOException e) {
                 throw new RuntimeException(e);
@@ -101,7 +105,7 @@ public abstract class AbstractLogListener {
     public void cancelListener(){
         if (logScheduledFuture != null && !logScheduledFuture.isDone()){
             logScheduledFuture.cancel(true);
-            log.info("已停止监听" + logName);
+            log.info("已停止监听" + logFileName);
             SystemUtil.delay(2000);
         }
         cancelOtherListener();

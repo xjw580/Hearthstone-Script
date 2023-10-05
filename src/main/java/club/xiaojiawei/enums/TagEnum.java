@@ -46,17 +46,23 @@ public enum TagEnum {
      */
     RESOURCES("RESOURCES", "水晶数",
             (card, tagChangeEntity, player, area) -> {
-                War.getCurrentPlayer().setResources(Integer.parseInt(tagChangeEntity.getValue()));
+                if (War.getCurrentPlayer() != null){
+                    War.getCurrentPlayer().setResources(Integer.parseInt(tagChangeEntity.getValue()));
+                }
             },
             null),
     RESOURCES_USED("RESOURCES_USED", "已使用水晶数",
             (card, tagChangeEntity, player, area) -> {
-                War.getCurrentPlayer().setResourcesUsed(Integer.parseInt(tagChangeEntity.getValue()));
+                if (War.getCurrentPlayer() != null){
+                    War.getCurrentPlayer().setResourcesUsed(Integer.parseInt(tagChangeEntity.getValue()));
+                }
             },
             null),
     TEMP_RESOURCES("TEMP_RESOURCES", "临时水晶数",
             (card, tagChangeEntity, player, area) -> {
-                War.getCurrentPlayer().setTempResources(Integer.parseInt(tagChangeEntity.getValue()));
+                if (War.getCurrentPlayer() != null){
+                    War.getCurrentPlayer().setTempResources(Integer.parseInt(tagChangeEntity.getValue()));
+                }
             },
             null),
 //    设置游戏id
@@ -126,7 +132,9 @@ public enum TagEnum {
             null),
     TIMEOUT("TIMEOUT", "剩余时间",
             (card, tagChangeEntity, player, area) -> {
-                War.getCurrentPlayer().setTimeOut(Integer.parseInt(tagChangeEntity.getValue()));
+                if (War.getCurrentPlayer() != null){
+                    War.getCurrentPlayer().setTimeOut(Integer.parseInt(tagChangeEntity.getValue()));
+                }
             },
             null),
 //    回合结束后值改变
@@ -134,7 +142,7 @@ public enum TagEnum {
             (card, tagChangeEntity, player, area) -> {
                 if (Objects.equals(tagChangeEntity.getEntity(), "GameEntity")){
                     War.setWarTurn(Integer.parseInt(tagChangeEntity.getValue()));
-                }else {
+                }else if (War.getCurrentPlayer() != null){
                     War.getCurrentPlayer().setTurn(Integer.parseInt(tagChangeEntity.getValue()));
                 }
             },

@@ -10,13 +10,14 @@
     </parent>
     <groupId>club.xiaojiawei</groupId>
     <artifactId>HearthstoneScript</artifactId>
-    <version>v3.1.6-GA</version>
+    <version>v3.1.7-GA</version>
     <name>hearthstoneScript</name>
     <description>炉石传说脚本</description>
     <properties>
         <java.version>17</java.version>
         <javafx-version>17.0.2</javafx-version>
     </properties>
+
     <dependencies>
         <!-- 监听全局键鼠包 -->
         <dependency>

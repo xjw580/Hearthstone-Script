@@ -1,8 +1,11 @@
 package club.xiaojiawei.status;
 
+import club.xiaojiawei.bean.WsResult;
 import club.xiaojiawei.core.Core;
+import club.xiaojiawei.enums.WsResultTypeEnum;
 import club.xiaojiawei.utils.PropertiesUtil;
 import club.xiaojiawei.utils.SystemUtil;
+import club.xiaojiawei.ws.WebSocketServer;
 import javafx.beans.property.BooleanProperty;
 import lombok.Getter;
 import lombok.Setter;
@@ -19,7 +22,7 @@ import java.util.Objects;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static club.xiaojiawei.enums.ConfigurationKeyEnum.*;
+import static club.xiaojiawei.enums.ConfigurationEnum.*;
 
 /**
  * @author 肖嘉威
@@ -29,10 +32,19 @@ import static club.xiaojiawei.enums.ConfigurationKeyEnum.*;
 @Component
 @Slf4j
 public class Work {
+    /**
+     * 工作日标记
+     */
     @Getter
     private static String[] workDayFlagArr;
+    /**
+     * 工作时间标记
+     */
     @Getter
     private static String[] workTimeFlagArr;
+    /**
+     * 工作时间段
+     */
     @Getter
     private static String[] workTimeArr;
     private static PropertiesUtil propertiesUtil;
@@ -42,11 +54,11 @@ public class Work {
     @Resource
     public void setScriptProperties(Properties scriptConfiguration) {
         Work.scriptProperties = scriptConfiguration;
-        String workDayFlagStr = scriptConfiguration.getProperty(WORK_DAY_FLAG_KEY.getKey());
+        String workDayFlagStr = scriptConfiguration.getProperty(WORK_DAY_FLAG.getKey());
         workDayFlagArr = workDayFlagStr.split(",");
-        String workTimeFlagStr = scriptConfiguration.getProperty(WORK_TIME_FLAG_KEY.getKey());
+        String workTimeFlagStr = scriptConfiguration.getProperty(WORK_TIME_FLAG.getKey());
         workTimeFlagArr = workTimeFlagStr.split(",");
-        String workTimeStr = scriptConfiguration.getProperty(WORK_TIME_KEY.getKey());
+        String workTimeStr = scriptConfiguration.getProperty(WORK_TIME.getKey());
         workTimeArr = workTimeStr.split(",");
     }
     @Resource
@@ -64,10 +76,11 @@ public class Work {
     }
 
     public static void storeWorkDate(){
-        scriptProperties.setProperty(WORK_DAY_FLAG_KEY.getKey(), String.join(",", workDayFlagArr));
-        scriptProperties.setProperty(WORK_TIME_FLAG_KEY.getKey(), String.join(",", workTimeFlagArr));
-        scriptProperties.setProperty(WORK_TIME_KEY.getKey(), String.join(",", workTimeArr));
+        scriptProperties.setProperty(WORK_DAY_FLAG.getKey(), String.join(",", workDayFlagArr));
+        scriptProperties.setProperty(WORK_TIME_FLAG.getKey(), String.join(",", workTimeFlagArr));
+        scriptProperties.setProperty(WORK_TIME.getKey(), String.join(",", workTimeArr));
         propertiesUtil.storeScriptProperties();
+        WebSocketServer.sendAllMessage(WsResult.ofNew(WsResultTypeEnum.WORK_DATE, new String[][]{Work.getWorkDayFlagArr(), Work.getWorkTimeFlagArr(), Work.getWorkTimeArr()}));
         checkWork();
     }
 

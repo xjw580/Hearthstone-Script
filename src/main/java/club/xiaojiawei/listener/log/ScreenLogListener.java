@@ -1,15 +1,10 @@
-package club.xiaojiawei.listener;
+package club.xiaojiawei.listener.log;
 
 import club.xiaojiawei.core.Core;
 import club.xiaojiawei.custom.LogRunnable;
-import club.xiaojiawei.data.ScriptStaticData;
 import club.xiaojiawei.data.SpringData;
-import club.xiaojiawei.enums.ConfigurationKeyEnum;
 import club.xiaojiawei.enums.ModeEnum;
 import club.xiaojiawei.status.Mode;
-import club.xiaojiawei.status.Work;
-import club.xiaojiawei.utils.SystemUtil;
-import javafx.beans.property.BooleanProperty;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
@@ -18,13 +13,8 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.io.*;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Properties;
 import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicReference;
 
 import static club.xiaojiawei.data.ScriptStaticData.GAME_ALIVE_CMD;
 

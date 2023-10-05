@@ -6,6 +6,7 @@ import club.xiaojiawei.custom.LogRunnable;
 import club.xiaojiawei.data.ScriptStaticData;
 import club.xiaojiawei.enums.DeckEnum;
 import club.xiaojiawei.enums.ModeEnum;
+import club.xiaojiawei.enums.StageEnum;
 import club.xiaojiawei.enums.WarPhaseEnum;
 import club.xiaojiawei.initializer.AbstractInitializer;
 import club.xiaojiawei.starter.AbstractStarter;
@@ -13,6 +14,7 @@ import club.xiaojiawei.status.Work;
 import club.xiaojiawei.strategy.AbstractDeckStrategy;
 import club.xiaojiawei.strategy.AbstractModeStrategy;
 import club.xiaojiawei.strategy.AbstractPhaseStrategy;
+import club.xiaojiawei.utils.FrameUtil;
 import club.xiaojiawei.utils.SystemUtil;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
@@ -67,7 +69,7 @@ public class Core implements ApplicationRunner {
         coreThreadPool.execute(() -> {
             if (!ScriptStaticData.isSetPath()){
                 SystemUtil.notice("需要配置" + ScriptStaticData.GAME_CN_NAME + "和" + ScriptStaticData.PLATFORM_CN_NAME + "的路径");
-                Platform.runLater(() -> javaFXInitSettingsController.showStage());
+                Platform.runLater(() -> FrameUtil.showStage(StageEnum.SETTINGS));
                 isPause.get().set(true);
             }else if (!isPause.get().get()){
                 javaFXDashboardController.expandedLogPane();

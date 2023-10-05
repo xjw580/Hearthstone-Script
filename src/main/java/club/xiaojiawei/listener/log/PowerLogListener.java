@@ -1,4 +1,4 @@
-package club.xiaojiawei.listener;
+package club.xiaojiawei.listener.log;
 
 import club.xiaojiawei.core.Core;
 import club.xiaojiawei.data.SpringData;
@@ -52,12 +52,16 @@ public class PowerLogListener extends AbstractLogListener{
 
     private void resolveLog(String line) {
         switch (War.getCurrentPhase()){
-            case FILL_DECK_PHASE -> FILL_DECK_PHASE.getAbstractPhaseStrategy().deal(line);
+            case FILL_DECK_PHASE -> {
+                War.setStartTime(System.currentTimeMillis());
+                FILL_DECK_PHASE.getAbstractPhaseStrategy().deal(line);
+            }
             case DRAWN_INIT_CARD_PHASE -> DRAWN_INIT_CARD_PHASE.getAbstractPhaseStrategy().deal(line);
             case REPLACE_CARD_PHASE -> REPLACE_CARD_PHASE.getAbstractPhaseStrategy().deal(line);
             case SPECIAL_EFFECT_TRIGGER_PHASE -> SPECIAL_EFFECT_TRIGGER_PHASE.getAbstractPhaseStrategy().deal(line);
             case GAME_TURN_PHASE -> GAME_TURN_PHASE.getAbstractPhaseStrategy().deal(line);
             case GAME_OVER_PHASE -> {
+                War.setEndTime(War.getStartTime() == 0 ? 0 : System.currentTimeMillis());
                 GAME_OVER_PHASE.getAbstractPhaseStrategy().deal(line);
                 War.reset();
             }

@@ -2,7 +2,7 @@ package club.xiaojiawei.strategy.phase;
 
 import club.xiaojiawei.bean.entity.TagChangeEntity;
 import club.xiaojiawei.custom.LogRunnable;
-import club.xiaojiawei.enums.ConfigurationKeyEnum;
+import club.xiaojiawei.enums.ConfigurationEnum;
 import club.xiaojiawei.enums.DeckEnum;
 import club.xiaojiawei.enums.StepEnum;
 import club.xiaojiawei.enums.WarPhaseEnum;
@@ -56,7 +56,7 @@ public class ReplaceCardPhaseStrategy extends AbstractPhaseStrategy{
                     log.info("2号玩家牌库数量：" + War.getPlayer2().getDeckArea().getCards().size());
 //                    因为傻逼畸变模式导致开局动画增加，这又加了4.5秒
                     SystemUtil.delay(24_500);
-                    DeckEnum.valueOf(scriptConfiguration.getProperty(ConfigurationKeyEnum.DECK_KEY.getKey())).getAbstractDeckStrategy().changeCard();
+                    DeckEnum.valueOf(scriptConfiguration.getProperty(ConfigurationEnum.DECK.getKey())).getAbstractDeckStrategy().changeCard();
                 }))).start();
             }
         }else if (tagChangeEntity.getTag() == NEXT_STEP && Objects.equals(StepEnum.MAIN_READY.getValue(), tagChangeEntity.getValue())){

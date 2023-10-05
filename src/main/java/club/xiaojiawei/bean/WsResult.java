@@ -10,18 +10,17 @@ import lombok.Data;
 @Data
 public class WsResult <T>{
 
-    private WsResultTypeEnum wsResultType;
+    private WsResultTypeEnum type;
 
-    private T msg;
+    private T data;
 
-    public WsResult(WsResultTypeEnum wsResultType, T msg) {
-        this.wsResultType = wsResultType;
-        this.msg = msg;
+    public WsResult(WsResultTypeEnum type, T data) {
+        this.type = type;
+        this.data = data;
     }
 
     public static <T>WsResult<T> ofNew(WsResultTypeEnum wsResultType, T msg){
         return new WsResult<>(wsResultType, msg);
     }
-
 
 }

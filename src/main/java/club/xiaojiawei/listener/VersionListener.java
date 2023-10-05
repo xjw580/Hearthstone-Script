@@ -12,6 +12,9 @@ import org.springframework.web.client.RestTemplate;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import java.util.Objects;
+import java.util.Properties;
+
+import static club.xiaojiawei.enums.ConfigurationEnum.UPDATE_DEV;
 
 /**
  * @author 肖嘉威
@@ -22,13 +25,15 @@ import java.util.Objects;
 @Slf4j
 public class VersionListener {
     @Getter
-    private static Release release;
+    private static Release latestRelease;
     @Getter
     private static String currentVersion;
     @Resource
     private RestTemplate restTemplate;
     @Resource
     private SpringData springData;
+    @Resource
+    private Properties scriptConfiguration;
     @PostConstruct
     void init(){
           /*
@@ -47,20 +52,21 @@ public class VersionListener {
         }
         log.info("开始检查是否有更新");
         try {
-            release = restTemplate.getForObject("https://gitee.com/api/v5/repos/zergqueen/Hearthstone-Script/releases/latest", Release.class);
+            latestRelease = restTemplate.getForObject("https://gitee.com/api/v5/repos/zergqueen/Hearthstone-Script/releases/latest", Release.class);
         }catch (RuntimeException e){
             try {
-                release = restTemplate.getForObject("https://api.github.com/repos/xjw580/Hearthstone-Script/releases/latest", Release.class);
+//                todo 获取不到Github的预览版
+                latestRelease = restTemplate.getForObject("https://api.github.com/repos/xjw580/Hearthstone-Script/releases/latest", Release.class);
             }catch (RuntimeException e2){
                 log.warn("获取最新版本信息失败", e2);
             }
         }
-        if (release != null){
-            if (currentVersion.compareTo(release.getTagName()) < 0 && !release.isPreRelease()){
+        if (latestRelease != null){
+            if (currentVersion.compareTo(latestRelease.getTagName()) < 0 && (!latestRelease.isPreRelease() || Objects.equals(scriptConfiguration.getProperty(UPDATE_DEV.getKey()), "true"))){
                 JavaFXDashboardController.updateBack.setVisible(true);
-                log.info("有更新可用😊，当前版本：" + currentVersion + ", 最新版本：" + release.getTagName());
+                log.info("有更新可用😊，当前版本：" + currentVersion + ", 最新版本：" + latestRelease.getTagName());
             }else {
-                log.info("已是最新，当前版本：" + currentVersion + ", 最新版本：" + release.getTagName());
+                log.info("已是最新，当前版本：" + currentVersion);
             }
         }else {
             log.warn("没有任何最新版本");

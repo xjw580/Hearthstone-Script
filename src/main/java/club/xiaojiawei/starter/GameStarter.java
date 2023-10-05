@@ -59,17 +59,17 @@ public class GameStarter extends AbstractStarter{
                     }else if ((gameHWND = SystemUtil.findHWND(ScriptStaticData.GAME_CN_NAME)) != null){
                         commonExecute();
                     }else {
-                        log.info("正在打开" + ScriptStaticData.GAME_CN_NAME);
                         launchGame();
                     }
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
             }
-        }), 1, 4, TimeUnit.SECONDS);
+        }), 1, 10, TimeUnit.SECONDS);
     }
 
     private void launchGame(){
+        log.info("正在打开" + ScriptStaticData.GAME_CN_NAME);
         WinDef.HWND platformhwnd = SystemUtil.findHWND(ScriptStaticData.PLATFORM_CN_NAME);
         ScriptStaticData.setPlatformHWND(platformhwnd);
         mouseUtil.leftButtonClick(platformhwnd, 145, 120);

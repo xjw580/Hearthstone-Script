@@ -1,9 +1,7 @@
 package club.xiaojiawei.config;
 
 import club.xiaojiawei.data.SpringData;
-import club.xiaojiawei.enums.ConfigurationKeyEnum;
-import club.xiaojiawei.enums.RunModeEnum;
-import club.xiaojiawei.enums.DeckEnum;
+import club.xiaojiawei.enums.ConfigurationEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -60,22 +58,10 @@ public class ConfigurationConfig {
     }
 
     private void writeDefaultScriptProperties(FileWriter fileWriter, Properties properties){
-        for (ConfigurationKeyEnum configurationKeyEnum : ConfigurationKeyEnum.values()) {
-            if (!properties.containsKey(configurationKeyEnum.getKey())){
+        for (ConfigurationEnum configurationEnum : ConfigurationEnum.values()) {
+            if (!properties.containsKey(configurationEnum.getKey())){
                 try {
-                    fileWriter.write(configurationKeyEnum.getKey() + "=");
-                    switch (configurationKeyEnum){
-                        case AUTO_OPEN_KEY -> fileWriter.write("false\n");
-                        case RUN_MODE_KEY -> fileWriter.write(RunModeEnum.STANDARD.getValue() + "\n");
-                        case DECK_KEY -> fileWriter.write(DeckEnum.FREE.getValue() + "\n");
-                        case WORK_DAY_FLAG_KEY -> fileWriter.write("true,false,false,false,false,false,false,false\n");
-                        case WORK_TIME_FLAG_KEY -> fileWriter.write("true,false,false\n");
-                        case WORK_TIME_KEY -> fileWriter.write("00:00-24:00,null,null\n");
-                        case STRATEGY_KEY -> fileWriter.write("true\n");
-                        default -> {
-                            fileWriter.write("\n");
-                        }
-                    }
+                    fileWriter.write(configurationEnum.getKey() + "=" + configurationEnum.getDefaultValue() + "\n");
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }

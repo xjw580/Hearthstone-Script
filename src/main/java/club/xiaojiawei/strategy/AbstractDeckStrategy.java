@@ -1,8 +1,6 @@
 package club.xiaojiawei.strategy;
 
 import club.xiaojiawei.data.GameRationStaticData;
-import club.xiaojiawei.data.ScriptStaticData;
-import club.xiaojiawei.data.SpringData;
 import club.xiaojiawei.bean.BaseCard;
 import club.xiaojiawei.bean.entity.Card;
 import club.xiaojiawei.bean.Player;
@@ -22,7 +20,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import static club.xiaojiawei.data.ScriptStaticData.GAME_RECT;
 import static club.xiaojiawei.enums.CardTypeEnum.MINION;
-import static club.xiaojiawei.enums.ConfigurationKeyEnum.STRATEGY_KEY;
+import static club.xiaojiawei.enums.ConfigurationEnum.STRATEGY;
 
 /**
  * @author 肖嘉威
@@ -72,7 +70,7 @@ public abstract class AbstractDeckStrategy{
      */
     protected static final int ACTION_INTERVAL = 3500;
     public void changeCard() {
-        if (Boolean.parseBoolean(scriptConfiguration.getProperty(STRATEGY_KEY.getKey()))){
+        if (Boolean.parseBoolean(scriptConfiguration.getProperty(STRATEGY.getKey()))){
             try {
                 log.info("执行换牌策略");
                 assign();
@@ -106,7 +104,7 @@ public abstract class AbstractDeckStrategy{
     }
 
     public void outCard(){
-        if (Boolean.parseBoolean(scriptConfiguration.getProperty(STRATEGY_KEY.getKey()))){
+        if (Boolean.parseBoolean(scriptConfiguration.getProperty(STRATEGY.getKey()))){
             try{
                 log.info("执行出牌策略");
                 if (log.isDebugEnabled()){
@@ -126,7 +124,7 @@ public abstract class AbstractDeckStrategy{
         }
     }
     public void discoverChooseCard(Card...cards){
-        if (Boolean.parseBoolean(scriptConfiguration.getProperty(STRATEGY_KEY.getKey()))){
+        if (Boolean.parseBoolean(scriptConfiguration.getProperty(STRATEGY.getKey()))){
             SystemUtil.delay(1000);
             log.info("执行发现选牌策略");
             int index = executeDiscoverChooseCard(cards);
