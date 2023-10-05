@@ -37,6 +37,8 @@ public class WarCountListener {
     private void setJavaFXGUI(Number warCount){
         javaFXDashboardController.getGameCount().setText(warCount.toString());
         javaFXDashboardController.getWinningPercentage().setText(winningPercentage = String.format("%.0f", War.winCount.get() / warCount.doubleValue() * 100) + "%");
+        javaFXDashboardController.getGameTime().setText(String.valueOf(War.gameTime.get()));
+        javaFXDashboardController.getExp().setText(String.valueOf(War.exp.get()));
     }
     private void sendWSMsg(Number warCount){
         WebSocketServer.sendAllMessage(WsResult.ofNew(WsResultTypeEnum.GAME_COUNT, warCount.toString()));

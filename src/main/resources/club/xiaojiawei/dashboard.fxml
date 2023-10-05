@@ -107,7 +107,7 @@
                         <Tooltip text="预估值"/>
                     </tooltip>
                     <graphic>
-                        <Text text="?" fx:id="exp"/>
+                        <Text text="0" fx:id="exp"/>
                     </graphic>
                 </Label>
 

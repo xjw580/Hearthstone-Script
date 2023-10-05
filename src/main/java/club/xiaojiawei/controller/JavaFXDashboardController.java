@@ -78,6 +78,12 @@ public class JavaFXDashboardController implements Initializable {
     @FXML
     @Getter
     private Text winningPercentage;
+    @Getter
+    @FXML
+    private Text gameTime;
+    @Getter
+    @FXML
+    private Text exp;
     @FXML
     private Switch logSwitch;
     @FXML
@@ -227,10 +233,7 @@ public class JavaFXDashboardController implements Initializable {
     public static Button updateBack;
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        logVBoxBack = logVBox;
-        accordionBack = accordion;
-        logSwitchBack = logSwitch;
-        updateBack = update;
+        assign();
         version.setText("当前版本：" + VersionListener.getCurrentVersion());
         initModeAndDeck();
         initWorkDate();
@@ -243,6 +246,12 @@ public class JavaFXDashboardController implements Initializable {
     private static RunModeEnum currentRunMode;
     @Getter
     private static DeckEnum currentDeck;
+    private void assign(){
+        logVBoxBack = logVBox;
+        accordionBack = accordion;
+        logSwitchBack = logSwitch;
+        updateBack = update;
+    }
     /**
      * 初始化模式和卡组
      */
