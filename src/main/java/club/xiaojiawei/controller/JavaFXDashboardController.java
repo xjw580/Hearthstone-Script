@@ -8,6 +8,7 @@ import club.xiaojiawei.enums.RunModeEnum;
 import club.xiaojiawei.enums.StageEnum;
 import club.xiaojiawei.enums.WsResultTypeEnum;
 import club.xiaojiawei.listener.VersionListener;
+import club.xiaojiawei.status.War;
 import club.xiaojiawei.status.Work;
 import club.xiaojiawei.utils.FrameUtil;
 import club.xiaojiawei.utils.PropertiesUtil;
@@ -122,54 +123,50 @@ public class JavaFXDashboardController implements Initializable {
     private static final SimpleBooleanProperty IS_UPDATING = new SimpleBooleanProperty(false);
     @FXML
     protected void update() {
-        Release release = VersionListener.getRelease();
+        Release release = VersionListener.getLatestRelease();
         if (release != null && !IS_UPDATING.get()){
-            if (!new File(TEMP_PATH).exists()){
-                downloadRelease(release);
-            }
-            execUpdate(release.getTagName());
+            IS_UPDATING.set(true);
+            extraThreadPool.submit(() -> {
+                if (!new File(TEMP_PATH).exists()){
+                    downloadRelease(release);
+                }
+                execUpdate(release.getTagName());
+            });
         }
     }
 
     private void downloadRelease(Release release){
-        IS_UPDATING.set(true);
-        try {
-            extraThreadPool.submit(() -> {
-                try (
-                        InputStream inputStream = new URL(String.format("https://gitee.com/zergqueen/Hearthstone-Script/releases/download/%s/%s-%s.zip", release.getTagName(), REPO_NAME, release.getTagName()))
-                                .openConnection()
-                                .getInputStream();
-                        ZipInputStream zipInputStream = new ZipInputStream(inputStream);
-                ) {
-                    expandedLogPane();
-                    log.info("开始下载" + release.getTagName());
-                    ZipEntry nextEntry;
-                    while ((nextEntry = zipInputStream.getNextEntry()) != null) {
-                        File entryFile = new File(TEMP_PATH + nextEntry.getName());
-                        if (nextEntry.isDirectory()) {
-                            entryFile.mkdirs();
-                            log.info("created_dir：" + entryFile.getPath());
-                        } else {
-                            new File(entryFile.getPath().substring(0, entryFile.getPath().lastIndexOf("\\"))).mkdirs();
-                            try (BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(new FileOutputStream(entryFile))) {
-                                int l;
-                                byte[] bytes = new byte[1024];
-                                while ((l = zipInputStream.read(bytes)) != -1) {
-                                    bufferedOutputStream.write(bytes, 0, l);
-                                }
-                            }
-                            log.info("downloaded_file：" + entryFile.getPath());
+        try (
+                InputStream inputStream = new URL(String.format("https://gitee.com/zergqueen/Hearthstone-Script/releases/download/%s/%s-%s.zip", release.getTagName(), REPO_NAME, release.getTagName()))
+                        .openConnection()
+                        .getInputStream();
+                ZipInputStream zipInputStream = new ZipInputStream(inputStream);
+        ) {
+            expandedLogPane();
+            log.info("开始下载新版本：" + release.getTagName());
+            ZipEntry nextEntry;
+            while ((nextEntry = zipInputStream.getNextEntry()) != null) {
+                File entryFile = new File(TEMP_PATH + nextEntry.getName());
+                if (nextEntry.isDirectory()) {
+                    entryFile.mkdirs();
+                    log.info("created_dir：" + entryFile.getPath());
+                } else {
+                    new File(entryFile.getPath().substring(0, entryFile.getPath().lastIndexOf("\\"))).mkdirs();
+                    try (BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(new FileOutputStream(entryFile))) {
+                        int l;
+                        byte[] bytes = new byte[1024];
+                        while ((l = zipInputStream.read(bytes)) != -1) {
+                            bufferedOutputStream.write(bytes, 0, l);
                         }
                     }
-                    log.info(release.getTagName() + "下载完毕");
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                } finally {
-                    IS_UPDATING.set(false);
+                    log.info("downloaded_file：" + entryFile.getPath());
                 }
-            }).get();
-        } catch (InterruptedException | ExecutionException e) {
+            }
+            log.info(release.getTagName() + "下载完毕");
+        } catch (IOException e) {
             throw new RuntimeException(e);
+        } finally {
+            IS_UPDATING.set(false);
         }
     }
     private void execUpdate(String latestVersion){
@@ -182,7 +179,7 @@ public class JavaFXDashboardController implements Initializable {
             }finally {
                 IS_UPDATING.set(false);
             }
-        }, event -> IS_UPDATING.set(false), event -> IS_UPDATING.set(false)).show());
+        }, event -> IS_UPDATING.set(false), event -> IS_UPDATING.set(false), event -> IS_UPDATING.set(false)).show());
     }
     @FXML
     protected void save(){

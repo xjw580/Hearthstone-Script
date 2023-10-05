@@ -61,8 +61,8 @@ public class PowerLogListener extends AbstractLogListener{
             case SPECIAL_EFFECT_TRIGGER_PHASE -> SPECIAL_EFFECT_TRIGGER_PHASE.getAbstractPhaseStrategy().deal(line);
             case GAME_TURN_PHASE -> GAME_TURN_PHASE.getAbstractPhaseStrategy().deal(line);
             case GAME_OVER_PHASE -> {
-                GAME_OVER_PHASE.getAbstractPhaseStrategy().deal(line);
                 War.setEndTime(War.getStartTime() == 0 ? 0 : System.currentTimeMillis());
+                GAME_OVER_PHASE.getAbstractPhaseStrategy().deal(line);
                 War.reset();
             }
         }

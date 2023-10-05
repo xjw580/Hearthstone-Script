@@ -92,7 +92,24 @@ const common = {
                         }
                         break
                     case wsStatus.GAME_TIME:
-                        $("#gameTime").text(data.data)
+                        let time = data.data;
+                        if (time === 0){
+                        } else if (time < 60){
+                            time = `${time}m`
+                        }else if (time < 1440){
+                            if (time % 60 === 0){
+                                time = `${Math.trunc(time / 60)}h`
+                            }else {
+                                time = `${Math.trunc(time / 60)}h${time % 60}m`
+                            }
+                        }else {
+                            if (time % 1440 === 0){
+                                time = `${Math.trunc(time / 1440)}d`
+                            }else {
+                                time = `${Math.trunc(time / 1440)}d${Math.trunc(time % 1440 / 60)}h`
+                            }
+                        }
+                        $("#gameTime").text(time)
                         break
                     case wsStatus.EXP:
                         $("#exp").text(data.data)

@@ -97,6 +97,9 @@
 
                 <Label text="游戏时长：" GridPane.columnIndex="0" GridPane.rowIndex="4"
                        contentDisplay="RIGHT">
+                    <tooltip>
+                        <Tooltip text="分钟"/>
+                    </tooltip>
                     <graphic>
                         <Text text="0" fx:id="gameTime"/>
                     </graphic>

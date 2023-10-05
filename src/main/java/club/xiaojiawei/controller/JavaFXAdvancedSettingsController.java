@@ -87,6 +87,7 @@ public class JavaFXAdvancedSettingsController implements Initializable {
         updateDev.statusProperty().addListener((observable, oldValue, newValue) -> {
             scriptConfiguration.setProperty(UPDATE_DEV.getKey(), String.valueOf(newValue));
             propertiesUtil.storeScriptProperties();
+
         });
     }
 }

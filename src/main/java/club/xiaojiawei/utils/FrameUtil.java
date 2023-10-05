@@ -6,12 +6,11 @@ import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.event.EventType;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
@@ -68,7 +67,7 @@ public class FrameUtil {
         return atomFrame;
     }
 
-    public static Alert createAlert(String headerText, String contentText, EventHandler<ActionEvent> ok, EventHandler<ActionEvent> cancel, EventHandler<ActionEvent> close){
+    public static Alert createAlert(String headerText, String contentText, EventHandler<ActionEvent> ok, EventHandler<ActionEvent> cancel, EventHandler<ActionEvent> close, EventHandler<DialogEvent> windowsClose){
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle(ScriptStaticData.SCRIPT_NAME);
         alert.getButtonTypes().add(ButtonType.CLOSE);
@@ -80,10 +79,12 @@ public class FrameUtil {
         okButton.setOnAction(ok);
         cancelButton.setOnAction(cancel);
         closeButton.setOnAction(close);
+        alert.setOnCloseRequest(windowsClose);
         return alert;
     }
+
     public static Alert createAlert(String headerText, String contentText, EventHandler<ActionEvent> ok){
-        return createAlert(headerText, contentText, ok, null, null);
+        return createAlert(headerText, contentText, ok, null, null, null);
     }
 
     private final static Map<StageEnum, Stage> stageMap = new HashMap<>();

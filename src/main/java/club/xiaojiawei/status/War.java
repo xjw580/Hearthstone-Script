@@ -62,13 +62,14 @@ public class War {
     @Setter
     @Getter
     private volatile static long startTime;
+    @Getter
     @Setter
     private volatile static long endTime;
 
     public final static SimpleIntegerProperty warCount = new SimpleIntegerProperty();
     public final static AtomicInteger winCount = new AtomicInteger();
     /**
-     * 单位：s
+     * 单位：min
      */
     public final static AtomicInteger gameTime = new AtomicInteger();
     public final static AtomicInteger exp = new AtomicInteger();
@@ -98,9 +99,8 @@ public class War {
         if (War.getMe() != null){
             flag = printResult();
         }
-        int time = (int) ((endTime - startTime) / 1000);
-        gameTime.set(time + gameTime.get());
-        time /= 60;
+        long time = (endTime - startTime) / 1000 / 60;
+        gameTime.set((int) (time + gameTime.get()));
         int winExp, lostExp;
         switch (JavaFXDashboardController.getCurrentRunMode()){
             case STANDARD, WILD,CLASSIC, TWIST -> {
@@ -116,7 +116,7 @@ public class War {
                 lostExp = 0;
             }
         }
-        exp.set(exp.get() + Math.min(time, 30) * (flag? winExp : lostExp));
+        exp.set((int) (exp.get() + Math.min(time, 30) * (flag? winExp : lostExp)));
         warCount.set(warCount.get() + 1);
     }
     private static boolean printResult(){
