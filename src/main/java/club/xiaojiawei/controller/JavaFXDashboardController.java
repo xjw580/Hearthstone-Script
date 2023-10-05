@@ -239,7 +239,9 @@ public class JavaFXDashboardController implements Initializable {
 //        监听日志自动滑到底部
         logVBox.heightProperty().addListener((observable, oldValue, newValue) -> logScrollPane.setVvalue(logScrollPane.getVmax()));
     }
+    @Getter
     private static RunModeEnum currentRunMode;
+    @Getter
     private static DeckEnum currentDeck;
     /**
      * 初始化模式和卡组

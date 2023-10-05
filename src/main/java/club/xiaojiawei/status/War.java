@@ -5,6 +5,7 @@ import club.xiaojiawei.bean.entity.ExtraEntity;
 import club.xiaojiawei.bean.Player;
 import club.xiaojiawei.bean.entity.TagChangeEntity;
 import club.xiaojiawei.bean.area.Area;
+import club.xiaojiawei.controller.JavaFXDashboardController;
 import club.xiaojiawei.enums.StepEnum;
 import club.xiaojiawei.enums.WarPhaseEnum;
 import club.xiaojiawei.enums.ZoneEnum;
@@ -58,24 +59,32 @@ public class War {
     @Getter
     @Setter
     private volatile static String conceded;
-    public volatile static SimpleIntegerProperty warCount = new SimpleIntegerProperty();
+    @Setter
+    @Getter
+    private volatile static long startTime;
+    @Setter
+    private volatile static long endTime;
+
+    public final static SimpleIntegerProperty warCount = new SimpleIntegerProperty();
     public final static AtomicInteger winCount = new AtomicInteger();
+    /**
+     * 单位：s
+     */
+    public final static AtomicInteger gameTime = new AtomicInteger();
+    public final static AtomicInteger exp = new AtomicInteger();
     @Getter
     @Setter
     private volatile static boolean myTurn;
     public static void reset(){
-        currentPlayer = null;
         firstPlayerGameId = null;
         currentPhase = FILL_DECK_PHASE;
         currentTurnStep = null;
-        me = null;
-        rival = null;
+        currentPlayer = me = rival = null;
         player1 = new Player("1");
         player2 = new Player("2");
         warTurn = 0;
-        won = "";
-        lost = "";
-        conceded = "";
+        won = lost = conceded = "";
+        startTime = endTime = 0;
         CARD_AREA_MAP.clear();
         log.info("已重置游戏状态");
     }
@@ -84,13 +93,42 @@ public class War {
         log.info((War.currentTurnStep = currentTurnStep).getComment());
     }
 
-    private static void printResult(){
+    public static synchronized void increaseWarCount(){
+        boolean flag = false;
+        if (War.getMe() != null){
+            flag = printResult();
+        }
+        int time = (int) ((endTime - startTime) / 1000);
+        gameTime.set(time + gameTime.get());
+        time /= 60;
+        int winExp, lostExp;
+        switch (JavaFXDashboardController.getCurrentRunMode()){
+            case STANDARD, WILD,CLASSIC, TWIST -> {
+                winExp = 8;
+                lostExp = 6;
+            }
+            case CASUAL, BACON->{
+                winExp = 6;
+                lostExp = 4;
+            }
+            default -> {
+                winExp = 0;
+                lostExp = 0;
+            }
+        }
+        exp.set(exp.get() + Math.min(time, 30) * (flag? winExp : lostExp));
+        warCount.set(warCount.get() + 1);
+    }
+    private static boolean printResult(){
+        boolean flag = false;
         if (Objects.equals(War.getWon(), War.getMe().getGameId())){
             War.winCount.incrementAndGet();
+            flag = true;
         }
         log.info("本局游戏胜者：" + won);
         log.info("本局游戏败者：" + lost);
         log.info("本局游戏投降者：" + conceded);
+        return flag;
     }
 
     public static void setFirstPlayerGameId(String firstPlayerGameId) {
@@ -101,12 +139,6 @@ public class War {
         log.info((War.currentPlayer = currentPlayer).getGameId() + " 的回合");
     }
 
-    public static synchronized void increaseWarCount(){
-        if (War.getMe() != null){
-            printResult();
-        }
-        warCount.set(warCount.get() + 1);
-    }
     public static Card exchangeAreaOfCard(ExtraEntity extraEntity){
         Area sourceArea = CARD_AREA_MAP.get(extraEntity.getEntityId());
         if (sourceArea == null){

@@ -58,11 +58,11 @@ public class UIApplication extends Application {
         return fxmlLoader;
     }
     private void setStyle(FXMLLoader fxmlLoader) throws IOException {
-        int width = 225, height = 650;
-        Scene scene = new Scene(fxmlLoader.load(), width, height);
+        final int WIDTH = 225, HEIGHT = 670;
+        Scene scene = new Scene(fxmlLoader.load(), WIDTH, HEIGHT);
         scene.getStylesheets().add(BootstrapFX.bootstrapFXStylesheet());
         scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("css/dashboard.css")).toExternalForm());
-        frame = FrameUtil.createAlwaysTopWindowFrame(ScriptStaticData.SCRIPT_NAME, scene, width, height, ScriptStaticData.SCRIPT_ICON_PATH);
+        frame = FrameUtil.createAlwaysTopWindowFrame(ScriptStaticData.SCRIPT_NAME, scene, WIDTH, HEIGHT, ScriptStaticData.SCRIPT_ICON_PATH);
     }
     private void setTray(){
         MenuItem quit = new MenuItem("退出");

@@ -19,6 +19,8 @@ public enum WsResultTypeEnum {
     WINNING_PERCENTAGE(104, "胜率"),
     WORK_DATE(105, "工作时间"),
     MODE_LIST(106, "所有模式"),
+    GAME_TIME(107, "游戏时长"),
+    EXP(108, "经验"),
     LOG(200, "脚本日志"),
     ;
     private final int value;

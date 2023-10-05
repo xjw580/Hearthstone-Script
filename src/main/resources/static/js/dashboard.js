@@ -1,6 +1,6 @@
 let ws;
 const httpStatus = {SUCCESS: "SUCCESS", FAIL: "FAIL", ERROR: "ERROR"}
-const wsStatus = {LOG:"LOG", PAUSE: "PAUSE", MODE: "MODE", DECK: "DECK", GAME_COUNT: "GAME_COUNT", WINNING_PERCENTAGE: "WINNING_PERCENTAGE", WORK_DATE: "WORK_DATE", MODE_LIST: "MODE_LIST"}
+const wsStatus = {LOG:"LOG", PAUSE: "PAUSE", MODE: "MODE", DECK: "DECK", GAME_COUNT: "GAME_COUNT", WINNING_PERCENTAGE: "WINNING_PERCENTAGE", WORK_DATE: "WORK_DATE", MODE_LIST: "MODE_LIST", GAME_TIME: "GAME_TIME", EXP: "EXP"}
 const promiseAjax = params => {
     return new Promise((resolve, reject) => {
         $.ajax({
@@ -91,7 +91,12 @@ const common = {
                             $mode.append(`<option value="${datum}">${datum}</option>`)
                         }
                         break
-
+                    case wsStatus.GAME_TIME:
+                        $("#gameTime").text(data.data)
+                        break
+                    case wsStatus.EXP:
+                        $("#exp").text(data.data)
+                        break
                 }
             }
             ws.onclose = function(e){

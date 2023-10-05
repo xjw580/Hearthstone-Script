@@ -33,6 +33,7 @@
                     <RowConstraints minHeight="$space"/>
                     <RowConstraints minHeight="$space"/>
                     <RowConstraints minHeight="$space"/>
+                    <RowConstraints minHeight="$space"/>
                     <RowConstraints minHeight="60"/>
                     <RowConstraints minHeight="$space"/>
                 </rowConstraints>
@@ -94,13 +95,29 @@
                     </graphic>
                 </Label>
 
+                <Label text="游戏时长：" GridPane.columnIndex="0" GridPane.rowIndex="4"
+                       contentDisplay="RIGHT">
+                    <graphic>
+                        <Text text="0" fx:id="gameTime"/>
+                    </graphic>
+                </Label>
+                <Label text="经验：" GridPane.columnIndex="1" GridPane.rowIndex="4"
+                       contentDisplay="RIGHT">
+                    <tooltip>
+                        <Tooltip text="预估值"/>
+                    </tooltip>
+                    <graphic>
+                        <Text text="?" fx:id="exp"/>
+                    </graphic>
+                </Label>
+
                 <!--边框-->
-                <Label GridPane.rowIndex="3" GridPane.columnSpan="2" GridPane.rowSpan="4"
+                <Label GridPane.rowIndex="4" GridPane.columnSpan="2" GridPane.rowSpan="4"
                        style="-fx-border-width: 1;-fx-border-color: rgb(128,128,128); -fx-border-radius: 5%;-fx-background-color: #E8E8FF"
                        minHeight="250" minWidth="190" translateY="25">
                 </Label>
 
-                <Label text="工作天：" GridPane.columnIndex="0" GridPane.rowIndex="4" GridPane.columnSpan="2"
+                <Label text="工作天：" GridPane.columnIndex="0" GridPane.rowIndex="5" GridPane.columnSpan="2"
                        contentDisplay="RIGHT" translateX="$dateTranslateX">
                     <padding>
                         <Insets top="15" bottom="10"/>
@@ -126,7 +143,7 @@
                     </graphic>
                 </Label>
 
-                <Label text="工作段：" GridPane.columnIndex="0" GridPane.rowIndex="5" GridPane.columnSpan="2"
+                <Label text="工作段：" GridPane.columnIndex="0" GridPane.rowIndex="6" GridPane.columnSpan="2"
                        contentDisplay="RIGHT" translateX="$dateTranslateX">
                     <padding>
                         <Insets top="5" bottom="10"/>
@@ -162,10 +179,10 @@
                     </graphic>
                 </Label>
 
-                <Text fx:id="tip" GridPane.columnIndex="1" GridPane.rowIndex="6" translateX="18"/>
-                <Button text="保存" GridPane.columnIndex="0" GridPane.rowIndex="6" translateX="73" onAction="#save"/>
+                <Text fx:id="tip" GridPane.columnIndex="1" GridPane.rowIndex="7" translateX="18"/>
+                <Button text="保存" GridPane.columnIndex="0" GridPane.rowIndex="7" translateX="73" onAction="#save"/>
 
-                <Label fx:id="version" GridPane.columnIndex="0" GridPane.rowIndex="7" GridPane.columnSpan="2"
+                <Label fx:id="version" GridPane.columnIndex="0" GridPane.rowIndex="8" GridPane.columnSpan="2"
                        contentDisplay="RIGHT">
                     <graphic>
                         <Button onAction="#update" translateX="10" fx:id="update" style="-fx-background-radius: 100%" visible="false">
@@ -188,7 +205,7 @@
                     </graphic>
                 </Label>
 
-                <Button onAction="#showSettings" text="设置" GridPane.columnIndex="0" GridPane.rowIndex="8"
+                <Button onAction="#showSettings" text="设置" GridPane.columnIndex="0" GridPane.rowIndex="9"
                         styleClass="btn, btn-xs, btn-info" translateX="55">
                     <tooltip>
                         <Tooltip>

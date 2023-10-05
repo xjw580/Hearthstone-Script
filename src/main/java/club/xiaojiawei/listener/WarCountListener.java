@@ -5,6 +5,7 @@ import club.xiaojiawei.controller.JavaFXDashboardController;
 import club.xiaojiawei.enums.WsResultTypeEnum;
 import club.xiaojiawei.status.War;
 import club.xiaojiawei.ws.WebSocketServer;
+import com.alibaba.fastjson.JSON;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -29,10 +30,18 @@ public class WarCountListener {
     void init(){
         War.warCount.addListener((observable, oldValue, newValue) -> {
             log.info("已完成第 " + newValue + " 把游戏");
-            javaFXDashboardController.getGameCount().setText(newValue.toString());
-            javaFXDashboardController.getWinningPercentage().setText(winningPercentage = String.format("%.0f", War.winCount.get() / newValue.doubleValue() * 100) + "%");
-            WebSocketServer.sendAllMessage(WsResult.ofNew(WsResultTypeEnum.GAME_COUNT, War.warCount.get()));
-            WebSocketServer.sendAllMessage(WsResult.ofNew(WsResultTypeEnum.WINNING_PERCENTAGE, WarCountListener.getWinningPercentage()));
+            setJavaFXGUI(newValue);
+            sendWSMsg(newValue);
         });
+    }
+    private void setJavaFXGUI(Number warCount){
+        javaFXDashboardController.getGameCount().setText(warCount.toString());
+        javaFXDashboardController.getWinningPercentage().setText(winningPercentage = String.format("%.0f", War.winCount.get() / warCount.doubleValue() * 100) + "%");
+    }
+    private void sendWSMsg(Number warCount){
+        WebSocketServer.sendAllMessage(WsResult.ofNew(WsResultTypeEnum.GAME_COUNT, warCount.toString()));
+        WebSocketServer.sendAllMessage(WsResult.ofNew(WsResultTypeEnum.WINNING_PERCENTAGE, WarCountListener.getWinningPercentage()));
+        WebSocketServer.sendAllMessage(WsResult.ofNew(WsResultTypeEnum.GAME_TIME, War.gameTime.get()));
+        WebSocketServer.sendAllMessage(WsResult.ofNew(WsResultTypeEnum.EXP, War.exp.get()));
     }
 }

@@ -86,6 +86,8 @@ public class WebSocketServer{
         remote.sendText(JSON.toJSONString(WsResult.ofNew(WsResultTypeEnum.GAME_COUNT, War.warCount.get())));
         remote.sendText(JSON.toJSONString(WsResult.ofNew(WsResultTypeEnum.WINNING_PERCENTAGE, WarCountListener.getWinningPercentage())));
         remote.sendText(JSON.toJSONString(WsResult.ofNew(WsResultTypeEnum.WORK_DATE, new String[][]{Work.getWorkDayFlagArr(), Work.getWorkTimeFlagArr(), Work.getWorkTimeArr()})));
+        remote.sendText(JSON.toJSONString(WsResult.ofNew(WsResultTypeEnum.GAME_TIME, War.gameTime.get())));
+        remote.sendText(JSON.toJSONString(WsResult.ofNew(WsResultTypeEnum.EXP, War.exp.get())));
     }
 
     /**

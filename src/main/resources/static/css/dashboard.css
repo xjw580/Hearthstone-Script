@@ -52,10 +52,10 @@ select{
     border: 1px solid #ccc;
     padding: 3px;
 }
-#modeOuter, #warCountOuter{
+#modeOuter, #warCountOuter, #gameTimeOuter{
     margin-left: calc(100% - 155px);
 }
-#deckOuter, #winningPercentageOuter{
+#deckOuter, #winningPercentageOuter, #expOuter{
     margin-left: 20px;
 }
 #dayOuter{
@@ -79,7 +79,7 @@ select{
     background-color:  #E8E8FF;
     height: 220px;
     width: calc(45vw - 15px);
-    top: 180px;
+    top: 230px;
     border-radius: 1rem;
     border: 1px solid rgb(128, 128, 128);
 }
