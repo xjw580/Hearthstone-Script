@@ -2,7 +2,10 @@ package club.xiaojiawei.appender;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.UnsynchronizedAppenderBase;
+import club.xiaojiawei.bean.WsResult;
 import club.xiaojiawei.controller.JavaFXDashboardController;
+import club.xiaojiawei.enums.WsResultTypeEnum;
+import club.xiaojiawei.ws.WebSocketServer;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
@@ -13,12 +16,18 @@ import javafx.scene.text.Text;
  * @author 肖嘉威
  * @version 1.0
  * @date 2022/9/28 上午10:11
- * @msg 向GUI客户端发送消息
+ * @msg 发送日志消息
  */
-public class JavaFXLogAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
+public class LogAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
 
     @Override
     protected void append(ILoggingEvent event) {
+        appendJavaFX(event);
+        appendWS(event);
+
+    }
+
+    private void appendJavaFX(ILoggingEvent event){
         if (JavaFXDashboardController.logSwitchBack.statusProperty().get() && JavaFXDashboardController.logVBoxBack != null && JavaFXDashboardController.accordionBack!= null){
             Platform.runLater(() -> {
                 ObservableList<Node> list = JavaFXDashboardController.logVBoxBack.getChildren();
@@ -36,6 +45,9 @@ public class JavaFXLogAppender extends UnsynchronizedAppenderBase<ILoggingEvent>
                 list.add(text);
             });
         }
+    }
+    private void appendWS(ILoggingEvent event){
+        WebSocketServer.sendAllMessage(WsResult.ofNew(WsResultTypeEnum.LOG, event.getFormattedMessage()));
     }
 
 

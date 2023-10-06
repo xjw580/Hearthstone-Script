@@ -234,10 +234,7 @@ public class JavaFXDashboardController implements Initializable {
         version.setText("当前版本：" + VersionListener.getCurrentVersion());
         initModeAndDeck();
         initWorkDate();
-//        是否在更新中监听
-        IS_UPDATING.addListener((observable, oldValue, newValue) -> update.setDisable(newValue));
-//        监听日志自动滑到底部
-        logVBox.heightProperty().addListener((observable, oldValue, newValue) -> logScrollPane.setVvalue(logScrollPane.getVmax()));
+        listen();
     }
     @Getter
     private static RunModeEnum currentRunMode;
@@ -312,6 +309,12 @@ public class JavaFXDashboardController implements Initializable {
             SystemUtil.notice("挂机卡组改为：" + deckComment);
             log.info("挂机卡组改为：" + deckComment);
         }
+    }
+    private void listen(){
+        //        是否在更新中监听
+        IS_UPDATING.addListener((observable, oldValue, newValue) -> update.setDisable(newValue));
+//        监听日志自动滑到底部
+        logVBox.heightProperty().addListener((observable, oldValue, newValue) -> logScrollPane.setVvalue(logScrollPane.getVmax()));
     }
 
     /**

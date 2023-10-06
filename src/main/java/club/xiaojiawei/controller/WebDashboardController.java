@@ -42,7 +42,7 @@ import static club.xiaojiawei.enums.ConfigurationEnum.VERIFY_PASSWORD;
 @Slf4j
 public class WebDashboardController {
 
-    public static final LinkedHashSet<String> tokenSet = new LinkedHashSet<>();
+    public static final LinkedHashSet<String> TOKEN_SET = new LinkedHashSet<>();
     public static final int MAX_TOKEN = 3;
     @Resource
     private AtomicReference<BooleanProperty> isPause;
@@ -65,13 +65,13 @@ public class WebDashboardController {
             result = Result.ofFail();
         }else {
             String value = ScriptStaticData.AUTHOR + System.currentTimeMillis();
-            if (tokenSet.size() >= MAX_TOKEN){
-                for (String s : tokenSet) {
-                    tokenSet.remove(s);
+            if (TOKEN_SET.size() >= MAX_TOKEN){
+                for (String s : TOKEN_SET) {
+                    TOKEN_SET.remove(s);
                     break;
                 }
             }
-            tokenSet.add(value);
+            TOKEN_SET.add(value);
             Cookie cookie = new Cookie("token", value);
             cookie.setHttpOnly(true);
             response.addCookie(cookie);
@@ -97,7 +97,7 @@ public class WebDashboardController {
                         break;
                     }
                 }
-                if (cookie == null || !tokenSet.contains(cookie.getValue())){
+                if (cookie == null || !TOKEN_SET.contains(cookie.getValue())){
                     result = Result.ofFail();
                 }else {
                     result = Result.ofSuccess();

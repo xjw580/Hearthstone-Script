@@ -15,7 +15,6 @@ import javafx.scene.text.Text;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -35,17 +34,11 @@ import java.util.concurrent.TimeUnit;
 public class JavaFXInitSettingsController implements Initializable {
 
     @FXML
-    private Button apply;
-    @FXML
-    private Button save;
-    @FXML
     private Label game;
     @FXML
     private Label platform;
     @FXML
     private Text tip;
-    @Resource
-    private ApplicationContext context;
     @Resource
     private Properties scriptConfiguration;
     @Resource
@@ -101,10 +94,9 @@ public class JavaFXInitSettingsController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        AnchorPane.setBottomAnchor(apply, 15.0);
-        AnchorPane.setRightAnchor(apply, 15.0);
-        AnchorPane.setBottomAnchor(save, 15.0);
-        AnchorPane.setRightAnchor(save, 120.0);
+        initValue();
+    }
+    private void initValue(){
         game.setText(scriptConfiguration.getProperty(ConfigurationEnum.GAME_PATH.getKey()));
         platform.setText(scriptConfiguration.getProperty(ConfigurationEnum.PLATFORM_PATH.getKey()));
     }

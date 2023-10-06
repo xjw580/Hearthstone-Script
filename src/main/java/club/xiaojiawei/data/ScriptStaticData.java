@@ -53,10 +53,6 @@ public class ScriptStaticData {
      */
     public static final WinDef.RECT GAME_RECT = new WinDef.RECT();
     /**
-     * 平台窗口信息
-     */
-    public static final WinDef.RECT PLATFORM_RECT = new WinDef.RECT();
-    /**
      * 所有鼠标键盘模拟都需要此对象
      */
     public static final Robot ROBOT;
@@ -149,20 +145,19 @@ public class ScriptStaticData {
         DISPLAY_SCALE_Y = tx.getScaleY();
         WINDOW_TITLE_Y = (int) (33 / DISPLAY_SCALE_Y);
 
-        TAG_MAP = new HashMap<>(TagEnum.values().length);
+        Map<String, TagEnum> tagTempMap = new HashMap<>(TagEnum.values().length);
         for (TagEnum value : TagEnum.values()) {
-            TAG_MAP.put(value.getValue(), value);
+            tagTempMap.put(value.getValue(), value);
         }
+        TAG_MAP = Collections.unmodifiableMap(tagTempMap);
 
-        Map<String, CardRaceEnum> cardRaceTempMap;
-        cardRaceTempMap = new HashMap<>(CardRaceEnum.values().length);
+        Map<String, CardRaceEnum> cardRaceTempMap =  new HashMap<>(CardRaceEnum.values().length);
         for (CardRaceEnum value : CardRaceEnum.values()) {
             cardRaceTempMap.put(value.getValue(), value);
         }
         CARD_RACE_MAP = Collections.unmodifiableMap(cardRaceTempMap);
 
-        Map<String, CardTypeEnum> cardTypeTempMap;
-        cardTypeTempMap = new HashMap<>(CardTypeEnum.values().length);
+        Map<String, CardTypeEnum> cardTypeTempMap = new HashMap<>(CardTypeEnum.values().length);
         for (CardTypeEnum value : CardTypeEnum.values()) {
             cardTypeTempMap.put(value.getValue(), value);
         }

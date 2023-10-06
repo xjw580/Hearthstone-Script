@@ -1,19 +1,11 @@
 package club.xiaojiawei.core;
 
 import club.xiaojiawei.controller.JavaFXDashboardController;
-import club.xiaojiawei.controller.JavaFXInitSettingsController;
-import club.xiaojiawei.custom.LogRunnable;
 import club.xiaojiawei.data.ScriptStaticData;
-import club.xiaojiawei.enums.DeckEnum;
-import club.xiaojiawei.enums.ModeEnum;
 import club.xiaojiawei.enums.StageEnum;
-import club.xiaojiawei.enums.WarPhaseEnum;
 import club.xiaojiawei.initializer.AbstractInitializer;
 import club.xiaojiawei.starter.AbstractStarter;
 import club.xiaojiawei.status.Work;
-import club.xiaojiawei.strategy.AbstractDeckStrategy;
-import club.xiaojiawei.strategy.AbstractModeStrategy;
-import club.xiaojiawei.strategy.AbstractPhaseStrategy;
 import club.xiaojiawei.utils.FrameUtil;
 import club.xiaojiawei.utils.SystemUtil;
 import javafx.application.Platform;
@@ -21,15 +13,11 @@ import javafx.beans.property.BooleanProperty;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
-import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -52,8 +40,6 @@ public class Core implements ApplicationRunner {
     private AbstractInitializer initializer;
     @Resource
     private JavaFXDashboardController javaFXDashboardController;
-    @Resource
-    private JavaFXInitSettingsController javaFXInitSettingsController;
     @Resource
     private ThreadPoolExecutor coreThreadPool;
 

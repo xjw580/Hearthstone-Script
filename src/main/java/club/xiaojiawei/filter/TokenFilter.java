@@ -46,7 +46,7 @@ public class TokenFilter implements Filter {
                 response.setStatus(403);
                 return;
             }
-            if (WebDashboardController.tokenSet.contains(cookie.getValue())){
+            if (WebDashboardController.TOKEN_SET.contains(cookie.getValue())){
                 filterChain.doFilter(servletRequest, servletResponse);
             }else {
                 response.setStatus(403);

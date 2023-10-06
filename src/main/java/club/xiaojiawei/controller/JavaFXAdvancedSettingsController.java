@@ -44,6 +44,10 @@ public class JavaFXAdvancedSettingsController implements Initializable {
     private PropertiesUtil propertiesUtil;
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        initValue();
+        listen();
+    }
+    private void initValue(){
         if (Objects.equals(scriptConfiguration.getProperty(AUTO_OPEN_WEB.getKey()), "true")){
             webSwitch.setStatus(true);
         }
@@ -56,7 +60,9 @@ public class JavaFXAdvancedSettingsController implements Initializable {
         if (Objects.equals(scriptConfiguration.getProperty(UPDATE_DEV.getKey()), "true")){
             updateDev.setStatus(true);
         }
-//        监听web界面开关
+    }
+    private void listen(){
+        //        监听web界面开关
         webSwitch.statusProperty().addListener((observable, oldValue, newValue) -> {
             scriptConfiguration.setProperty(AUTO_OPEN_WEB.getKey(), String.valueOf(newValue));
             propertiesUtil.storeScriptProperties();
@@ -72,7 +78,7 @@ public class JavaFXAdvancedSettingsController implements Initializable {
                 String psw = this.psw.getText();
                 if (Strings.isNotBlank(psw)){
                     scriptConfiguration.setProperty(VERIFY_PASSWORD.getKey(), DigestUtils.md5DigestAsHex(psw.getBytes(StandardCharsets.UTF_8)));
-                    WebDashboardController.tokenSet.clear();
+                    WebDashboardController.TOKEN_SET.clear();
                     this.psw.setText("设置成功");
                 }else if (Strings.isBlank(scriptConfiguration.getProperty(VERIFY_PASSWORD.getKey()))){
                     verifySwitch.setStatus(false);
