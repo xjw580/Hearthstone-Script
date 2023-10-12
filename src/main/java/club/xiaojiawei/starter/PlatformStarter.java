@@ -56,7 +56,7 @@ public class PlatformStarter extends AbstractStarter{
         scheduledFuture = launchProgramThreadPool.scheduleAtFixedRate(() -> {
             if (isPause.get().get()){
                 cancelPlatformTimer();
-            }else if (SystemUtil.findHWND(ScriptStaticData.PLATFORM_CN_NAME) != null){
+            }else if (SystemUtil.findPlatformHWND() != null){
                 commonExecute();
             }
         }, 1, 4, TimeUnit.SECONDS);

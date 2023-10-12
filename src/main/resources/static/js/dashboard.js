@@ -172,6 +172,14 @@ function pause(){
         common.changePause(true)
     })
 }
+function closeGame(){
+    $.get("/dashboard/closeGame", {}, () => {
+    })
+}
+function closePlatform(){
+    $.get("/dashboard/closePlatform", {}, () => {
+    })
+}
 function getAllDeckByMode(){
     common.getAllDeckByMode($("#mode").val(), res => {
         let $deck = $("#deck");

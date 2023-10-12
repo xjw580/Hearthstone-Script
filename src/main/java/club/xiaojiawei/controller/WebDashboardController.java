@@ -5,6 +5,7 @@ import club.xiaojiawei.bean.Result;
 import club.xiaojiawei.data.ScriptStaticData;
 import club.xiaojiawei.enums.DeckEnum;
 import club.xiaojiawei.status.Work;
+import club.xiaojiawei.utils.SystemUtil;
 import javafx.beans.property.BooleanProperty;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
@@ -119,6 +120,20 @@ public class WebDashboardController {
     public Result<Object> start(){
         isPause.get().set(false);
         return Result.ofSuccess();
+    }
+
+    @RequestMapping("/dashboard/closeGame")
+    @ResponseBody
+    public Result<Object> closeGame(){
+        SystemUtil.killGame();
+        return Result.ofSuccess("游戏已关闭");
+    }
+
+    @RequestMapping("/dashboard/closePlatform")
+    @ResponseBody
+    public Result<Object> closePlatform(){
+        SystemUtil.killPlatform();
+        return Result.ofSuccess("战网已关闭");
     }
 
     @RequestMapping("/dashboard/save")

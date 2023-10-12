@@ -1,6 +1,7 @@
 package club.xiaojiawei.utils;
 
 import club.xiaojiawei.custom.MouseClickListener;
+import club.xiaojiawei.custom.dll.User32Dll;
 import club.xiaojiawei.data.ScriptStaticData;
 import club.xiaojiawei.enums.RegCommonNameEnum;
 import club.xiaojiawei.listener.log.DeckLogListener;
@@ -128,7 +129,27 @@ public class SystemUtil {
      * 更新游戏窗口信息
      */
     public static void updateGameRect(){
+        if (ScriptStaticData.getGameHWND() == null){
+            findGameHWND();
+        }
         updateRect(ScriptStaticData.getGameHWND(), ScriptStaticData.GAME_RECT);
+    }
+
+    public static void updatePlatformRect(){
+        if (ScriptStaticData.getPlatformHWND() == null){
+            findPlatformHWND();
+        }
+        updateRect(ScriptStaticData.getPlatformHWND(), ScriptStaticData.PLATFORM_RECT);
+    }
+
+    public static WinDef.HWND findGameHWND(){
+        ScriptStaticData.setGameHWND(SystemUtil.findHWND(ScriptStaticData.GAME_CN_NAME));
+        return ScriptStaticData.getGameHWND();
+    }
+
+    public static WinDef.HWND findPlatformHWND(){
+        ScriptStaticData.setPlatformHWND(SystemUtil.findHWND(ScriptStaticData.PLATFORM_CN_NAME));
+        return ScriptStaticData.getPlatformHWND();
     }
 
     /**
@@ -200,12 +221,27 @@ public class SystemUtil {
      * 通过此方式停止的游戏，screen.log监听器可能无法监测到游戏被关闭
      */
     public static void killGame(){
-        try {
-            Runtime.getRuntime().exec("cmd /c taskkill /f /t /im " + GAME_PROGRAM_NAME).waitFor();
-            SystemUtil.delay(1000);
-            log.info("游戏已关闭");
-        } catch (IOException | InterruptedException e) {
-            throw new RuntimeException(e);
+        WinDef.HWND gameHWND = findGameHWND();
+        if (gameHWND != null){
+            try {
+                Runtime.getRuntime().exec("cmd /c taskkill /f /t /im " + GAME_PROGRAM_NAME).waitFor();
+                SystemUtil.delay(1000);
+                log.info("炉石传说已关闭");
+            } catch (IOException | InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }else {
+            log.info("炉石传说不在运行");
+        }
+    }
+
+    public static void killPlatform(){
+        WinDef.HWND platformHWND = findPlatformHWND();
+        if (platformHWND != null){
+            User32Dll.INSTANCE.closeProgram(platformHWND);
+            log.info("战网已关闭");
+        }else {
+            log.info("战网不在运行");
         }
     }
 

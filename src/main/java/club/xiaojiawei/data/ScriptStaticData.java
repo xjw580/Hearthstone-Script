@@ -52,6 +52,7 @@ public class ScriptStaticData {
      * 游戏窗口信息
      */
     public static final WinDef.RECT GAME_RECT = new WinDef.RECT();
+    public static final WinDef.RECT PLATFORM_RECT = new WinDef.RECT();
     /**
      * 所有鼠标键盘模拟都需要此对象
      */
