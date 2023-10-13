@@ -35,14 +35,9 @@ public class ScriptStaticData {
     @Getter
     @Setter
     private static WinDef.HWND gameHWND;
-    /**
-     * 平台窗口句柄
-     */
-    @Getter
-    @Setter
-    private static WinDef.HWND platformHWND;
     public static final String GAME_CN_NAME = "炉石传说";
     public static final String PLATFORM_CN_NAME = "战网";
+    public static final String PLATFORM_LOGIN_CN_NAME = "战网登录";
     public static final String GAME_US_NAME = "Hearthstone";
     public static final String PLATFORM_US_NAME = "Battle.net";
     public static final String REPO_NAME = "HearthstoneScript";
@@ -52,7 +47,6 @@ public class ScriptStaticData {
      * 游戏窗口信息
      */
     public static final WinDef.RECT GAME_RECT = new WinDef.RECT();
-    public static final WinDef.RECT PLATFORM_RECT = new WinDef.RECT();
     /**
      * 所有鼠标键盘模拟都需要此对象
      */

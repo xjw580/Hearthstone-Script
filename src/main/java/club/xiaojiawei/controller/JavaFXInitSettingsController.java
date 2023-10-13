@@ -9,12 +9,15 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Text;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -39,6 +42,8 @@ public class JavaFXInitSettingsController implements Initializable {
     private Label platform;
     @FXML
     private Text tip;
+    @FXML
+    private PasswordField password;
     @Resource
     private Properties scriptConfiguration;
     @Resource
@@ -70,25 +75,27 @@ public class JavaFXInitSettingsController implements Initializable {
 
     @FXML
     protected void apply(){
+        scriptConfiguration.setProperty(ConfigurationEnum.PLATFORM_PASSWORD.getKey(), password.getText());
+        if(propertiesUtil.storePath(game.getText(), platform.getText())){
+            ScriptStaticData.setSetPath(true);
+            tip.setFill(Paint.valueOf("#00cc00"));
+            tip.setText("应用成功😊");
+            extraThreadPool.schedule(() -> tip.setText(""), 3, TimeUnit.SECONDS);
+        }else {
+            tip.setFill(Paint.valueOf("#ff3300"));
+            tip.setText(ScriptStaticData.GAME_CN_NAME + "安装路径不正确,请重新选择😩");
+            extraThreadPool.schedule(() -> tip.setText(""), 3, TimeUnit.SECONDS);
+        }
+    }
+    @FXML
+    protected void save(){
+        scriptConfiguration.setProperty(ConfigurationEnum.PLATFORM_PASSWORD.getKey(), password.getText());
         if(propertiesUtil.storePath(game.getText(), platform.getText())){
             ScriptStaticData.setSetPath(true);
             FrameUtil.hideStage(StageEnum.SETTINGS);
         }else {
             tip.setFill(Paint.valueOf("#ff3300"));
             tip.setText(ScriptStaticData.GAME_CN_NAME + "安装路径不正确,请重新选择");
-        }
-    }
-    @FXML
-    protected void save(){
-        if(propertiesUtil.storePath(game.getText(), platform.getText())){
-            ScriptStaticData.setSetPath(true);
-            tip.setFill(Paint.valueOf("#00cc00"));
-            tip.setText("保存成功😊");
-            extraThreadPool.schedule(() -> tip.setText(""), 3, TimeUnit.SECONDS);
-        }else {
-            tip.setFill(Paint.valueOf("#ff3300"));
-            tip.setText(ScriptStaticData.GAME_CN_NAME + "安装路径不正确,请重新选择😩");
-            extraThreadPool.schedule(() -> tip.setText(""), 3, TimeUnit.SECONDS);
         }
     }
 
@@ -99,5 +106,6 @@ public class JavaFXInitSettingsController implements Initializable {
     private void initValue(){
         game.setText(scriptConfiguration.getProperty(ConfigurationEnum.GAME_PATH.getKey()));
         platform.setText(scriptConfiguration.getProperty(ConfigurationEnum.PLATFORM_PATH.getKey()));
+        password.setText(scriptConfiguration.getProperty(ConfigurationEnum.PLATFORM_PASSWORD.getKey()));
     }
 }

@@ -135,6 +135,7 @@ public class MouseUtil {
             SystemUtil.delay(200);
         }
     }
+
     public void leftButtonClick(int[] pos){
         leftButtonClick(pos[0], pos[1]);
     }

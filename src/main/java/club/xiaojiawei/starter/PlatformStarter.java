@@ -36,19 +36,13 @@ public class PlatformStarter extends AbstractStarter{
     @Override
     public void exec() {
         try {
+//            检测炉石传说是否存活
             if (Strings.isNotBlank(new String(Runtime.getRuntime().exec(ScriptStaticData.GAME_ALIVE_CMD).getInputStream().readAllBytes()))) {
-                if (nextStarter != null){
-                    nextStarter.start();
-                }
+                startNextStarter();
                 return;
             }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        log.info("开始检查" + ScriptStaticData.PLATFORM_CN_NAME);
-        log.info("正在进入" + ScriptStaticData.PLATFORM_CN_NAME + ScriptStaticData.GAME_CN_NAME + "启动页");
-        String platformPath = scriptConfiguration.getProperty(ConfigurationEnum.PLATFORM_PATH.getKey());
-        try {
+            log.info("正在进入" + ScriptStaticData.PLATFORM_CN_NAME + ScriptStaticData.GAME_CN_NAME + "启动页");
+            String platformPath = scriptConfiguration.getProperty(ConfigurationEnum.PLATFORM_PATH.getKey());
             Runtime.getRuntime().exec("\"" + platformPath + "\"" + " --exec=\"launch WTCG\"");
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -56,8 +50,8 @@ public class PlatformStarter extends AbstractStarter{
         scheduledFuture = launchProgramThreadPool.scheduleAtFixedRate(() -> {
             if (isPause.get().get()){
                 cancelPlatformTimer();
-            }else if (SystemUtil.findPlatformHWND() != null){
-                commonExecute();
+            }else if (SystemUtil.findPlatformHWND() != null || SystemUtil.findLoginPlatformHWND() != null){
+                cancelAndStartNext();
             }
         }, 1, 4, TimeUnit.SECONDS);
     }
@@ -68,13 +62,10 @@ public class PlatformStarter extends AbstractStarter{
         }
     }
 
-    public void commonExecute(){
-        log.info(ScriptStaticData.PLATFORM_CN_NAME + "正在运行");
+    public void cancelAndStartNext(){
         extraThreadPool.schedule(() -> {
             cancelPlatformTimer();
-            if (nextStarter != null){
-                nextStarter.start();
-            }
+            startNextStarter();
         }, 1, TimeUnit.SECONDS);
     }
 

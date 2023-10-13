@@ -19,13 +19,15 @@ public class StarterConfig {
     @Resource
     private PlatformStarter platformStarter;
     @Resource
+    private LoginPlatformStarter loginPlatformStarter;
+    @Resource
     private GameStarter gameStarter;
     @Resource
-    private ListenStarter listenStarter;
+    private LogListenStarter logListenStarter;
 
     @Bean
     public AbstractStarter starter(){
-        clearStarter.setNextStarter(platformStarter).setNextStarter(gameStarter).setNextStarter(listenStarter);
+        clearStarter.setNextStarter(platformStarter).setNextStarter(loginPlatformStarter).setNextStarter(gameStarter).setNextStarter(logListenStarter);
         return clearStarter;
     }
 }

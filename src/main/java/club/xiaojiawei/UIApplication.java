@@ -98,7 +98,7 @@ public class UIApplication extends Application {
     private void afterInit(){
         DeckEnum deckEnum = DeckEnum.valueOf(scriptConfiguration.getProperty(DECK.getKey()));
         log.info(deckEnum.getComment() + "卡组代码：" + deckEnum.getDeckCode());
-        if (SystemUtil.pasteClipboard(deckEnum.getDeckCode())){
+        if (SystemUtil.copyToClipboard(deckEnum.getDeckCode())){
             log.info(deckEnum.getComment() + "卡组代码已经粘贴到剪切板");
             SystemUtil.notice(deckEnum.getComment() + "卡组代码已经粘贴到剪切板");
         }

@@ -55,9 +55,9 @@ public class GameStarter extends AbstractStarter{
                         if ((gameHWND = SystemUtil.findGameHWND()) == null){
                             return;
                         }
-                        commonExecute();
+                        cancelAndStartNext();
                     }else if ((gameHWND = SystemUtil.findGameHWND()) != null){
-                        commonExecute();
+                        cancelAndStartNext();
                     }else {
                         launchGame();
                     }
@@ -71,7 +71,6 @@ public class GameStarter extends AbstractStarter{
     private void launchGame(){
         log.info("正在打开" + ScriptStaticData.GAME_CN_NAME);
         WinDef.HWND platformhwnd = SystemUtil.findHWND(ScriptStaticData.PLATFORM_CN_NAME);
-        ScriptStaticData.setPlatformHWND(platformhwnd);
         mouseUtil.leftButtonClick(platformhwnd, 145, 120);
     }
 
@@ -81,7 +80,7 @@ public class GameStarter extends AbstractStarter{
             scheduledFuture.cancel(true);
         }
     }
-    public void commonExecute(){
+    public void cancelAndStartNext(){
         log.info(ScriptStaticData.GAME_CN_NAME + "正在运行");
         ScriptStaticData.setGameHWND(gameHWND);
         extraThreadPool.schedule(() -> {
