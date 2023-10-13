@@ -49,31 +49,31 @@ public class JavaFXAdvancedSettingsController implements Initializable {
     }
     private void initValue(){
         if (Objects.equals(scriptConfiguration.getProperty(AUTO_OPEN_WEB.getKey()), "true")){
-            webSwitch.setStatus(true);
+            webSwitch.setInitStatus(true);
         }
         if (Objects.equals(scriptConfiguration.getProperty(STRATEGY.getKey()), "true")){
-            strategySwitch.setStatus(true);
+            strategySwitch.setInitStatus(true);
         }
         if (Objects.equals(scriptConfiguration.getProperty(ENABLE_VERIFY.getKey()), "true")){
-            verifySwitch.setStatus(true);
+            verifySwitch.setInitStatus(true);
         }
         if (Objects.equals(scriptConfiguration.getProperty(UPDATE_DEV.getKey()), "true")){
-            updateDev.setStatus(true);
+            updateDev.setInitStatus(true);
         }
     }
     private void listen(){
         //        监听web界面开关
-        webSwitch.statusProperty().addListener((observable, oldValue, newValue) -> {
+        webSwitch.initStatusProperty().addListener((observable, oldValue, newValue) -> {
             scriptConfiguration.setProperty(AUTO_OPEN_WEB.getKey(), String.valueOf(newValue));
             propertiesUtil.storeScriptProperties();
         });
 //        监听策略开关
-        strategySwitch.statusProperty().addListener((observable, oldValue, newValue) -> {
+        strategySwitch.initStatusProperty().addListener((observable, oldValue, newValue) -> {
             scriptConfiguration.setProperty(STRATEGY.getKey(), String.valueOf(newValue));
             propertiesUtil.storeScriptProperties();
         });
 //        监听安全验证开关
-        verifySwitch.statusProperty().addListener((observable, oldValue, newValue) -> {
+        verifySwitch.initStatusProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue){
                 String psw = this.psw.getText();
                 if (Strings.isNotBlank(psw)){
@@ -81,7 +81,7 @@ public class JavaFXAdvancedSettingsController implements Initializable {
                     WebDashboardController.TOKEN_SET.clear();
                     this.psw.setText("设置成功");
                 }else if (Strings.isBlank(scriptConfiguration.getProperty(VERIFY_PASSWORD.getKey()))){
-                    verifySwitch.setStatus(false);
+                    verifySwitch.setInitStatus(false);
                     this.psw.requestFocus();
                     return;
                 }
@@ -90,7 +90,7 @@ public class JavaFXAdvancedSettingsController implements Initializable {
             propertiesUtil.storeScriptProperties();
         });
 //        监听更新开发版开关
-        updateDev.statusProperty().addListener((observable, oldValue, newValue) -> {
+        updateDev.initStatusProperty().addListener((observable, oldValue, newValue) -> {
             scriptConfiguration.setProperty(UPDATE_DEV.getKey(), String.valueOf(newValue));
             propertiesUtil.storeScriptProperties();
 

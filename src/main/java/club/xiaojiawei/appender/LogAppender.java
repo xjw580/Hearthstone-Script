@@ -28,7 +28,7 @@ public class LogAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
     }
 
     private void appendJavaFX(ILoggingEvent event){
-        if (JavaFXDashboardController.logSwitchBack.statusProperty().get() && JavaFXDashboardController.logVBoxBack != null && JavaFXDashboardController.accordionBack!= null){
+        if (JavaFXDashboardController.logSwitchBack.initStatusProperty().get() && JavaFXDashboardController.logVBoxBack != null && JavaFXDashboardController.accordionBack!= null){
             Platform.runLater(() -> {
                 ObservableList<Node> list = JavaFXDashboardController.logVBoxBack.getChildren();
                 //                大于二百五条就清空,防止内存泄露和性能问题

@@ -16,25 +16,25 @@
         </padding>
         <Label contentDisplay="RIGHT" text="自动打开Web界面：" style="-fx-border-width: 3;-fx-font-size: 13">
             <graphic>
-                <Switch fx:id="webSwitch" status="false"/>
+                <Switch fx:id="webSwitch" initStatus="false"/>
             </graphic>
         </Label>
         <Label contentDisplay="RIGHT" text="Web安全验证：" style="-fx-border-width: 3;-fx-font-size: 13">
             <graphic>
                 <HBox>
-                    <Switch fx:id="verifySwitch" status="false"/>
+                    <Switch fx:id="verifySwitch" initStatus="false"/>
                     <TextField fx:id="psw" translateX="10" promptText="验证密码" />
                 </HBox>
             </graphic>
         </Label>
         <Label contentDisplay="RIGHT" text="执行策略：" style="-fx-border-width: 3;-fx-font-size: 13">
             <graphic>
-                <Switch fx:id="strategySwitch" status="false"/>
+                <Switch fx:id="strategySwitch" initStatus="false"/>
             </graphic>
         </Label>
         <Label contentDisplay="RIGHT" text="更新开发版：" style="-fx-border-width: 3;-fx-font-size: 13">
             <graphic>
-                <Switch fx:id="updateDev" status="false"/>
+                <Switch fx:id="updateDev" initStatus="false"/>
             </graphic>
         </Label>
     </VBox>
