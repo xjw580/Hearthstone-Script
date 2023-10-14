@@ -1,11 +1,15 @@
 package club.xiaojiawei.status;
 
 import club.xiaojiawei.bean.WsResult;
+import club.xiaojiawei.controller.JavaFXDashboardController;
 import club.xiaojiawei.core.Core;
+import club.xiaojiawei.enums.ConfigurationEnum;
 import club.xiaojiawei.enums.WsResultTypeEnum;
+import club.xiaojiawei.listener.VersionListener;
 import club.xiaojiawei.utils.PropertiesUtil;
 import club.xiaojiawei.utils.SystemUtil;
 import club.xiaojiawei.ws.WebSocketServer;
+import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,6 +19,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import java.io.File;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -22,6 +27,7 @@ import java.util.Objects;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicReference;
 
+import static club.xiaojiawei.data.ScriptStaticData.TEMP_PATH;
 import static club.xiaojiawei.enums.ConfigurationEnum.*;
 
 /**
@@ -108,13 +114,25 @@ public class Work {
     }
 
     private static void checkWork(){
-        if (!isPause.get().get() && !working && canWork()){
+        if (!isPause.get().get() && !working && validateDate()){
             workLog();
             core.start();
         }
     }
 
     public static boolean canWork(){
+        //         版本校验，开启自动更新并且有更新可用时将停止工作以升级版本
+        if (Objects.equals(scriptProperties.getProperty(AUTO_UPDATE.getKey()), "true") && VersionListener.isCanUpdate()){
+            if (!new File(TEMP_PATH).exists()){
+                JavaFXDashboardController.downloadRelease(VersionListener.getLatestRelease());
+            }
+            Platform.runLater(JavaFXDashboardController::execUpdate);
+            return false;
+        }
+        return validateDate();
+    }
+
+    private static boolean validateDate(){
         //        天校验
         if (!Objects.equals(workDayFlagArr[0], "true") && Objects.equals(workDayFlagArr[LocalDate.now().getDayOfWeek().getValue()], "false")){
             return false;

@@ -1,5 +1,6 @@
 package club.xiaojiawei.core;
 
+import club.xiaojiawei.UIApplication;
 import club.xiaojiawei.controller.JavaFXDashboardController;
 import club.xiaojiawei.data.ScriptStaticData;
 import club.xiaojiawei.enums.StageEnum;
@@ -18,7 +19,9 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**

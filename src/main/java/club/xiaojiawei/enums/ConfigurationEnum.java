@@ -66,6 +66,7 @@ public enum ConfigurationEnum {
      * 战网密码
      */
     PLATFORM_PASSWORD("platformPassword", ""),
+    AUTO_UPDATE("autoUpdate", "false"),
     ;
     private final String key;
     private final String defaultValue;

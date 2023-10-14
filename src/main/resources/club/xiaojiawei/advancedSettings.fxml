@@ -37,5 +37,10 @@
                 <Switch fx:id="updateDev" initStatus="false"/>
             </graphic>
         </Label>
+        <Label contentDisplay="RIGHT" text="自动更新：" style="-fx-border-width: 3;-fx-font-size: 13">
+            <graphic>
+                <Switch fx:id="autoUpdate" initStatus="false"/>
+            </graphic>
+        </Label>
     </VBox>
 </AnchorPane>

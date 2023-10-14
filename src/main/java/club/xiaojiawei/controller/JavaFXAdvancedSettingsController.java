@@ -38,6 +38,8 @@ public class JavaFXAdvancedSettingsController implements Initializable {
     private TextField psw;
     @FXML
     private Switch updateDev;
+    @FXML
+    private Switch autoUpdate;
     @Resource
     private Properties scriptConfiguration;
     @Resource
@@ -59,6 +61,9 @@ public class JavaFXAdvancedSettingsController implements Initializable {
         }
         if (Objects.equals(scriptConfiguration.getProperty(UPDATE_DEV.getKey()), "true")){
             updateDev.setInitStatus(true);
+        }
+        if (Objects.equals(scriptConfiguration.getProperty(AUTO_UPDATE.getKey()), "true")){
+            autoUpdate.setInitStatus(true);
         }
     }
     private void listen(){
@@ -94,6 +99,11 @@ public class JavaFXAdvancedSettingsController implements Initializable {
             scriptConfiguration.setProperty(UPDATE_DEV.getKey(), String.valueOf(newValue));
             propertiesUtil.storeScriptProperties();
 
+        });
+//        监听自动更新开关
+        autoUpdate.initStatusProperty().addListener((observable, oldValue, newValue) -> {
+            scriptConfiguration.setProperty(AUTO_UPDATE.getKey(), String.valueOf(newValue));
+            propertiesUtil.storeScriptProperties();
         });
     }
 }

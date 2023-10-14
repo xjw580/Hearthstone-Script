@@ -1,5 +1,6 @@
 package club.xiaojiawei.controller;
 
+import club.xiaojiawei.UIApplication;
 import club.xiaojiawei.bean.Release;
 import club.xiaojiawei.bean.WsResult;
 import club.xiaojiawei.controls.Switch;
@@ -33,9 +34,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.Resource;
 import java.io.*;
 import java.net.URL;
-import java.util.Objects;
-import java.util.Properties;
-import java.util.ResourceBundle;
+import java.util.*;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
@@ -128,19 +127,21 @@ public class JavaFXDashboardController implements Initializable {
                 if (!new File(TEMP_PATH).exists()){
                     downloadRelease(release);
                 }
-                execUpdate(release.getTagName());
+                Platform.runLater(() -> FrameUtil.createAlert("新版本[" + release.getTagName() + "]下载完毕", "现在更新？", event -> {
+                    execUpdate();
+                }, event -> IS_UPDATING.set(false), event -> IS_UPDATING.set(false), event -> IS_UPDATING.set(false)).show());
             });
         }
     }
 
-    private void downloadRelease(Release release){
+    public static void downloadRelease(Release release){
         try (
                 InputStream inputStream = new URL(String.format("https://gitee.com/zergqueen/Hearthstone-Script/releases/download/%s/%s-%s.zip", release.getTagName(), REPO_NAME, release.getTagName()))
                         .openConnection()
                         .getInputStream();
                 ZipInputStream zipInputStream = new ZipInputStream(inputStream);
         ) {
-            expandedLogPane();
+//            todo 下载进度条
             log.info("开始下载新版本：" + release.getTagName());
             ZipEntry nextEntry;
             while ((nextEntry = zipInputStream.getNextEntry()) != null) {
@@ -167,17 +168,15 @@ public class JavaFXDashboardController implements Initializable {
             IS_UPDATING.set(false);
         }
     }
-    private void execUpdate(String latestVersion){
-        Platform.runLater(() -> FrameUtil.createAlert("新版本[" + latestVersion + "]下载完毕", "现在更新？", event -> {
-            try {
-                IS_UPDATING.set(true);
-                Runtime.getRuntime().exec("cmd /c start update.bat " + TEMP_DIR);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }finally {
-                IS_UPDATING.set(false);
-            }
-        }, event -> IS_UPDATING.set(false), event -> IS_UPDATING.set(false), event -> IS_UPDATING.set(false)).show());
+    public static void execUpdate(){
+        try {
+            IS_UPDATING.set(true);
+            Runtime.getRuntime().exec("cmd /c start update.bat " + TEMP_DIR);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }finally {
+            IS_UPDATING.set(false);
+        }
     }
     @FXML
     protected void save(){
