@@ -33,3 +33,4 @@ build/
 .vscode/
 /bfg.jar
 /gitStrip.bat
+/new_version_temp/

@@ -28,9 +28,9 @@ public class LogAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
     }
 
     private void appendJavaFX(ILoggingEvent event){
-        if (JavaFXDashboardController.logSwitchBack.initStatusProperty().get() && JavaFXDashboardController.logVBoxBack != null && JavaFXDashboardController.accordionBack!= null){
+        if (JavaFXDashboardController.staticLogSwitch.initStatusProperty().get() && JavaFXDashboardController.staticLogVBox != null && JavaFXDashboardController.staticAccordion!= null){
             Platform.runLater(() -> {
-                ObservableList<Node> list = JavaFXDashboardController.logVBoxBack.getChildren();
+                ObservableList<Node> list = JavaFXDashboardController.staticLogVBox.getChildren();
                 //                大于二百五条就清空,防止内存泄露和性能问题
                 if (list.size() > 250){
                     list.clear();
@@ -41,7 +41,7 @@ public class LogAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
                 }else {
                     text = new Text(event.getMessage() + "，查看脚本日志获取详细信息");
                 }
-                text.wrappingWidthProperty().bind(JavaFXDashboardController.accordionBack.widthProperty().subtract(15));
+                text.wrappingWidthProperty().bind(JavaFXDashboardController.staticAccordion.widthProperty().subtract(15));
                 list.add(text);
             });
         }

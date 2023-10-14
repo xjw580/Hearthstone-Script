@@ -36,26 +36,32 @@ public class LoginPlatformStarter extends AbstractStarter{
     private static ScheduledFuture<?> scheduledFuture;
     @Override
     protected void exec() {
-//        停顿三秒判断能否自动登录
-        SystemUtil.delay(3000);
-        WinDef.HWND hwnd;
-        if ((hwnd = SystemUtil.findLoginPlatformHWND()) != null){
-            SystemUtil.frontWindow(hwnd);
-            SystemUtil.delay(500);
-            if (!inputPassword()){
-                log.warn("未设置战网账号密码");
+        if (SystemUtil.findLoginPlatformHWND() == null){
+            startNextStarter();
+        }else {
+            //        停顿以判断能否自动登录
+            SystemUtil.delay(4000);
+            WinDef.HWND hwnd;
+            if ((hwnd = SystemUtil.findLoginPlatformHWND()) == null){
                 startNextStarter();
-                return;
-            }
-            SystemUtil.delay(500);
-            clickLoginButton();
-            scheduledFuture = extraThreadPool.scheduleAtFixedRate(() -> {
-                if (isPause.get().get()){
-                    cancelPlatformTimer();
-                }else if (SystemUtil.findPlatformHWND() != null){
-                    cancelAndStartNext();
+            }else {
+                SystemUtil.frontWindow(hwnd);
+                SystemUtil.delay(500);
+                if (!inputPassword()){
+                    log.warn("未设置战网账号密码");
+                    startNextStarter();
+                    return;
                 }
-            }, 2, 2, TimeUnit.SECONDS);
+                SystemUtil.delay(500);
+                clickLoginButton();
+                scheduledFuture = extraThreadPool.scheduleAtFixedRate(() -> {
+                    if (isPause.get().get()){
+                        cancelPlatformTimer();
+                    }else if (SystemUtil.findPlatformHWND() != null){
+                        cancelAndStartNext();
+                    }
+                }, 2, 2, TimeUnit.SECONDS);
+            }
         }
     }
 

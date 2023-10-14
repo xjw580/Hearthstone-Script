@@ -51,9 +51,9 @@ public class VersionListener {
     @Scheduled(fixedDelay = 1000 * 60 * 60 * 12)
     void checkVersion(){
 //        在idea中启动时就不要检查更新了
-        if (!Objects.equals(Objects.requireNonNull(this.getClass().getResource("")).getProtocol(), "jar")){
-            return;
-        }
+//        if (!Objects.equals(Objects.requireNonNull(this.getClass().getResource("")).getProtocol(), "jar")){
+//            return;
+//        }
         log.info("开始检查是否有更新");
         try {
             latestRelease = restTemplate.getForObject("https://gitee.com/api/v5/repos/zergqueen/Hearthstone-Script/releases/latest", Release.class);
@@ -68,7 +68,7 @@ public class VersionListener {
         if (latestRelease != null){
             if (currentVersion.compareTo(latestRelease.getTagName()) < 0 && (!latestRelease.isPreRelease() || Objects.equals(scriptConfiguration.getProperty(UPDATE_DEV.getKey()), "true"))){
                 canUpdate = true;
-                JavaFXDashboardController.updateBack.setVisible(true);
+                JavaFXDashboardController.staticUpdate.setVisible(true);
                 log.info("有更新可用😊，当前版本：" + currentVersion + ", 最新版本：" + latestRelease.getTagName());
             }else {
                 log.info("已是最新，当前版本：" + currentVersion);

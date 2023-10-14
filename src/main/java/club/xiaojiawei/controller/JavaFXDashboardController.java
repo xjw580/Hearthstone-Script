@@ -94,6 +94,8 @@ public class JavaFXDashboardController implements Initializable {
     private VBox workTime;
     @FXML
     private Text tip;
+    @FXML
+    private ProgressBar downloadProgress;
     @Resource
     private AtomicReference<BooleanProperty> isPause;
     @Resource
@@ -102,6 +104,7 @@ public class JavaFXDashboardController implements Initializable {
     private Properties scriptConfiguration;
     @Resource
     private ScheduledThreadPoolExecutor extraThreadPool;
+    private static ProgressBar staticDownloadProgress;
     public void expandedLogPane(){
         accordion.setExpandedPane(titledPaneLog);
     }
@@ -143,7 +146,10 @@ public class JavaFXDashboardController implements Initializable {
         ) {
 //            todo 下载进度条
             log.info("开始下载新版本：" + release.getTagName());
+            staticDownloadProgress.setProgress(0D);
+            staticDownloadProgress.setVisible(true);
             ZipEntry nextEntry;
+            double count = 0;
             while ((nextEntry = zipInputStream.getNextEntry()) != null) {
                 File entryFile = new File(TEMP_PATH + nextEntry.getName());
                 if (nextEntry.isDirectory()) {
@@ -160,11 +166,14 @@ public class JavaFXDashboardController implements Initializable {
                     }
                     log.info("downloaded_file：" + entryFile.getPath());
                 }
+                staticDownloadProgress.setProgress(++count / 70);
             }
+            staticDownloadProgress.setProgress(1D);
             log.info(release.getTagName() + "下载完毕");
         } catch (IOException e) {
             throw new RuntimeException(e);
         } finally {
+            staticDownloadProgress.setVisible(false);
             IS_UPDATING.set(false);
         }
     }
@@ -221,10 +230,10 @@ public class JavaFXDashboardController implements Initializable {
         extraThreadPool.schedule(() -> tip.setText(""), 3, TimeUnit.SECONDS);
         Work.storeWorkDate();
     }
-    public static VBox logVBoxBack;
-    public static Accordion accordionBack;
-    public static Switch logSwitchBack;
-    public static Button updateBack;
+    public static VBox staticLogVBox;
+    public static Accordion staticAccordion;
+    public static Switch staticLogSwitch;
+    public static Button staticUpdate;
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         assign();
@@ -238,10 +247,11 @@ public class JavaFXDashboardController implements Initializable {
     @Getter
     private static DeckEnum currentDeck;
     private void assign(){
-        logVBoxBack = logVBox;
-        accordionBack = accordion;
-        logSwitchBack = logSwitch;
-        updateBack = update;
+        staticLogVBox = logVBox;
+        staticAccordion = accordion;
+        staticLogSwitch = logSwitch;
+        staticUpdate = update;
+        staticDownloadProgress = downloadProgress;
     }
     /**
      * 初始化模式和卡组
