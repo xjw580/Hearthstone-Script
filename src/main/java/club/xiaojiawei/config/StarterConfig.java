@@ -9,7 +9,7 @@ import javax.annotation.Resource;
 /**
  * @author 肖嘉威
  * @date 2023/7/5 14:48
- * @msg
+ * @msg Starter的责任链配置
  */
 @Configuration
 public class StarterConfig {

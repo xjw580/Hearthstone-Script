@@ -67,7 +67,7 @@ public class JavaFXAdvancedSettingsController implements Initializable {
         }
     }
     private void listen(){
-        //        监听web界面开关
+//        监听web界面开关
         webSwitch.initStatusProperty().addListener((observable, oldValue, newValue) -> {
             scriptConfiguration.setProperty(AUTO_OPEN_WEB.getKey(), String.valueOf(newValue));
             propertiesUtil.storeScriptProperties();

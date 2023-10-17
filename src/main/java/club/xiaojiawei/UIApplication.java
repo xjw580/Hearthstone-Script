@@ -8,13 +8,9 @@ import club.xiaojiawei.utils.FrameUtil;
 import club.xiaojiawei.utils.SystemUtil;
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.concurrent.ScheduledService;
-import javafx.concurrent.Task;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.kordamp.bootstrapfx.BootstrapFX;
@@ -29,9 +25,6 @@ import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.util.Objects;
 import java.util.Properties;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
@@ -142,7 +135,7 @@ public class UIApplication extends Application {
         }
         log.info("脚本数据路径：" + springData.getScriptPath());
         JavaFXStartupController.complete();
-//        不延迟关闭会导致主页面空白，无法加载数据的情况
+//        TODO 不延迟关闭会导致主页面空白，无法加载数据的情况，需要找原因
         extraThreadPool.schedule(() -> Platform.runLater(() -> {
             UIApplication.getStartupStage().close();
         }), 500, TimeUnit.MILLISECONDS);

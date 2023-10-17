@@ -6,11 +6,13 @@ import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.event.EventType;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.DialogEvent;
 import javafx.scene.image.Image;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
@@ -29,7 +31,7 @@ import java.util.concurrent.atomic.AtomicReference;
 /**
  * @author 肖嘉威
  * @date 2023/2/10 19:42
- * @msg
+ * @msg 窗口工具类
  */
 @Component
 public class FrameUtil {
@@ -43,6 +45,12 @@ public class FrameUtil {
 
     /**
      * 创建永久置顶的窗口
+     * @param frameTitle
+     * @param scene
+     * @param frameWidth
+     * @param frameHeight
+     * @param frameIconPath
+     * @return
      */
     public static AtomicReference<JFrame> createAlwaysTopWindowFrame(String frameTitle, Scene scene, int frameWidth, int frameHeight, String frameIconPath){
         AtomicReference<JFrame> atomFrame = new AtomicReference<>();
@@ -67,6 +75,16 @@ public class FrameUtil {
         return atomFrame;
     }
 
+    /**
+     * 创建对话框
+     * @param headerText
+     * @param contentText
+     * @param ok
+     * @param cancel
+     * @param close
+     * @param windowsClose
+     * @return
+     */
     public static Alert createAlert(String headerText, String contentText, EventHandler<ActionEvent> ok, EventHandler<ActionEvent> cancel, EventHandler<ActionEvent> close, EventHandler<DialogEvent> windowsClose){
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle(ScriptStaticData.SCRIPT_NAME);
@@ -87,7 +105,7 @@ public class FrameUtil {
         return createAlert(headerText, contentText, ok, null, null, null);
     }
 
-    private final static Map<StageEnum, Stage> stageMap = new HashMap<>();
+    private final static Map<StageEnum, Stage> STAGE_MAP = new HashMap<>();
     public static void showStage(StageEnum stageEnum){
         Stage stage = getStage(stageEnum);
         if (stage.isShowing()){
@@ -107,10 +125,10 @@ public class FrameUtil {
         return getStage(stageEnum, true);
     }
     public static Stage getStage(StageEnum stageEnum, boolean createStage){
-        Stage stage = stageMap.get(stageEnum);
+        Stage stage = STAGE_MAP.get(stageEnum);
         if (stage == null && createStage){
             stage = createStage(stageEnum);
-            stageMap.put(stageEnum, stage);
+            STAGE_MAP.put(stageEnum, stage);
         }
         return stage;
     }

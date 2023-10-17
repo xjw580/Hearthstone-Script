@@ -121,7 +121,7 @@ public class SystemUtil {
         frontWindow(programHWND);
         User32.INSTANCE.GetWindowRect(programHWND, programRECT);
         if ((GAME_RECT.bottom - GAME_RECT.top) != DISPLAY_PIXEL_Y){
-            GAME_RECT.top += WINDOW_TITLE_Y;
+            GAME_RECT.top += WINDOW_TITLE_PIXEL_Y;
         }
     }
 

@@ -23,10 +23,10 @@ public class LogAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
     @Override
     protected void append(ILoggingEvent event) {
         appendJavaFX(event);
-        appendWS(event);
+        appendWebSocket(event);
 
     }
-
+    @SuppressWarnings("all")
     private void appendJavaFX(ILoggingEvent event){
         if (JavaFXDashboardController.staticLogSwitch.initStatusProperty().get() && JavaFXDashboardController.staticLogVBox != null && JavaFXDashboardController.staticAccordion!= null){
             Platform.runLater(() -> {
@@ -46,7 +46,7 @@ public class LogAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
             });
         }
     }
-    private void appendWS(ILoggingEvent event){
+    private void appendWebSocket(ILoggingEvent event){
         WebSocketServer.sendAllMessage(WsResult.ofNew(WsResultTypeEnum.LOG, event.getFormattedMessage()));
     }
 

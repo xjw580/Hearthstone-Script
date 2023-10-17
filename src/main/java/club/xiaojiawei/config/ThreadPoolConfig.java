@@ -10,7 +10,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * @author 肖嘉威
  * @date 2023/7/5 13:35
- * @msg
+ * @msg 线程池配置
  */
 @Configuration
 public class ThreadPoolConfig {

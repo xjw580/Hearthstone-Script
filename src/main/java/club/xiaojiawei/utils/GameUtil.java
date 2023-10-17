@@ -1,9 +1,7 @@
 package club.xiaojiawei.utils;
 
-import club.xiaojiawei.custom.LogRunnable;
 import club.xiaojiawei.data.GameRationStaticData;
 import club.xiaojiawei.data.ScriptStaticData;
-import club.xiaojiawei.status.War;
 import javafx.beans.property.BooleanProperty;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -17,6 +15,7 @@ import java.util.concurrent.atomic.AtomicReference;
 /**
  * @author 肖嘉威
  * @date 2022/11/27 1:42
+ * @msg 游戏工具类
  */
 @Component
 @Slf4j
@@ -29,6 +28,9 @@ public class GameUtil {
     private AtomicReference<BooleanProperty> isPause;
     private static ScheduledFuture<?> clickGameEndPageTask;
 
+    /**
+     * 点击炉石里的返回按钮
+     */
     public void clickBackButton(){
         mouseUtil.leftButtonClick(
                 (int) (((ScriptStaticData.GAME_RECT.right + ScriptStaticData.GAME_RECT.left) >> 1) + ((ScriptStaticData.GAME_RECT.bottom - ScriptStaticData.GAME_RECT.top) * GameRationStaticData.BACK_BUTTON_HORIZONTAL_TO_CENTER_RATION * GameRationStaticData.GAME_WINDOW_ASPECT_TO_HEIGHT_RATIO) + RandomUtil.getRandom(-5, 5)),

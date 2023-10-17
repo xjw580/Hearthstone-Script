@@ -71,7 +71,7 @@ public class GameStarter extends AbstractStarter{
     private void launchGame(){
         log.info("正在打开" + ScriptStaticData.GAME_CN_NAME);
         WinDef.HWND platformhwnd = SystemUtil.findHWND(ScriptStaticData.PLATFORM_CN_NAME);
-        mouseUtil.leftButtonClick(platformhwnd, 145, 120);
+        mouseUtil.leftButtonClickByUser32(platformhwnd, 145, 120);
     }
 
     public static void cancelGameTimer(){

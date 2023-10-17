@@ -33,7 +33,7 @@ public class PauseConfig {
     @Lazy
     private Core core;
     /**
-     * 脚本是否处于暂停中
+     * 脚本暂停状态
      * @return
      */
     @Bean

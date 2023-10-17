@@ -70,7 +70,7 @@ public class ScriptStaticData {
     /**
      * 窗口标题栏纵向高度
      */
-    public static final int WINDOW_TITLE_Y;
+    public static final int WINDOW_TITLE_PIXEL_Y;
     /**
      * 本脚本的程序名
      */
@@ -138,7 +138,7 @@ public class ScriptStaticData {
         AffineTransform tx = screenDevices[0].getDefaultConfiguration().getDefaultTransform();
         DISPLAY_SCALE_X = tx.getScaleX();
         DISPLAY_SCALE_Y = tx.getScaleY();
-        WINDOW_TITLE_Y = (int) (33 / DISPLAY_SCALE_Y);
+        WINDOW_TITLE_PIXEL_Y = (int) (33 / DISPLAY_SCALE_Y);
 
         Map<String, TagEnum> tagTempMap = new HashMap<>(TagEnum.values().length);
         for (TagEnum value : TagEnum.values()) {
