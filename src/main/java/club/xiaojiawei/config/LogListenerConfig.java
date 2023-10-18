@@ -4,7 +4,6 @@ import club.xiaojiawei.listener.log.AbstractLogListener;
 import club.xiaojiawei.listener.log.DeckLogListener;
 import club.xiaojiawei.listener.log.PowerLogListener;
 import club.xiaojiawei.listener.log.ScreenLogListener;
-import club.xiaojiawei.starter.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -13,7 +12,7 @@ import javax.annotation.Resource;
 /**
  * @author 肖嘉威
  * @date 2023/7/5 14:48
- * @msg
+ * @msg LogListener的责任链配置
  */
 @Configuration
 public class LogListenerConfig {

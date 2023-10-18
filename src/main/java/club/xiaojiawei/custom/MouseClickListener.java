@@ -7,7 +7,6 @@ import java.util.function.Consumer;
 /**
  * @author 肖嘉威
  * @date 2023/10/1 10:12
- * @question <a href=""/>
  */
 public class MouseClickListener implements MouseListener {
 

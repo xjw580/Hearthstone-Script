@@ -10,7 +10,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * @author 肖嘉威
  * @date 2023/7/5 13:35
- * @msg
+ * @msg 线程池配置
  */
 @Configuration
 public class ThreadPoolConfig {
@@ -39,7 +39,7 @@ public class ThreadPoolConfig {
 
     @Bean
     public ScheduledThreadPoolExecutor extraThreadPool(){
-        return new ScheduledThreadPoolExecutor(5, new ThreadFactory() {
+        return new ScheduledThreadPoolExecutor(6, new ThreadFactory() {
             private final AtomicInteger num = new AtomicInteger(0);
             @Override
             public Thread newThread(Runnable r) {

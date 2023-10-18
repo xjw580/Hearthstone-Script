@@ -10,7 +10,7 @@
     </parent>
     <groupId>club.xiaojiawei</groupId>
     <artifactId>HearthstoneScript</artifactId>
-    <version>v3.1.7-GA</version>
+    <version>v3.1.8-GA</version>
     <name>hearthstoneScript</name>
     <description>炉石传说脚本</description>
     <properties>
@@ -50,11 +50,6 @@
             <version>1.18.26</version>
             <scope>provided</scope>
         </dependency>
-        <!--springboot-->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter</artifactId>
-        </dependency>
         <!--javafx-->
         <dependency>
             <groupId>org.openjfx</groupId>
@@ -81,7 +76,7 @@
         <dependency>
             <groupId>club.xiaojiawei</groupId>
             <artifactId>javafx-ui</artifactId>
-            <version>0.0.1</version>
+            <version>0.0.4-SNAPSHOT</version>
         </dependency>
         <!--thymeleaf-->
         <dependency>

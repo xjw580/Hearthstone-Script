@@ -2,7 +2,10 @@ package club.xiaojiawei.appender;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.UnsynchronizedAppenderBase;
+import club.xiaojiawei.bean.WsResult;
 import club.xiaojiawei.controller.JavaFXDashboardController;
+import club.xiaojiawei.enums.WsResultTypeEnum;
+import club.xiaojiawei.ws.WebSocketServer;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
@@ -13,15 +16,21 @@ import javafx.scene.text.Text;
  * @author 肖嘉威
  * @version 1.0
  * @date 2022/9/28 上午10:11
- * @msg 向GUI客户端发送消息
+ * @msg 发送日志消息
  */
-public class JavaFXLogAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
+public class LogAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
 
     @Override
     protected void append(ILoggingEvent event) {
-        if (JavaFXDashboardController.logSwitchBack.statusProperty().get() && JavaFXDashboardController.logVBoxBack != null && JavaFXDashboardController.accordionBack!= null){
+        appendJavaFX(event);
+        appendWebSocket(event);
+
+    }
+    @SuppressWarnings("all")
+    private void appendJavaFX(ILoggingEvent event){
+        if (JavaFXDashboardController.staticLogSwitch.initStatusProperty().get() && JavaFXDashboardController.staticLogVBox != null && JavaFXDashboardController.staticAccordion!= null){
             Platform.runLater(() -> {
-                ObservableList<Node> list = JavaFXDashboardController.logVBoxBack.getChildren();
+                ObservableList<Node> list = JavaFXDashboardController.staticLogVBox.getChildren();
                 //                大于二百五条就清空,防止内存泄露和性能问题
                 if (list.size() > 250){
                     list.clear();
@@ -32,10 +41,13 @@ public class JavaFXLogAppender extends UnsynchronizedAppenderBase<ILoggingEvent>
                 }else {
                     text = new Text(event.getMessage() + "，查看脚本日志获取详细信息");
                 }
-                text.wrappingWidthProperty().bind(JavaFXDashboardController.accordionBack.widthProperty().subtract(15));
+                text.wrappingWidthProperty().bind(JavaFXDashboardController.staticAccordion.widthProperty().subtract(15));
                 list.add(text);
             });
         }
+    }
+    private void appendWebSocket(ILoggingEvent event){
+        WebSocketServer.sendAllMessage(WsResult.ofNew(WsResultTypeEnum.LOG, event.getFormattedMessage()));
     }
 
 

@@ -25,26 +25,38 @@ input{
     height: 100%;
     width: 55vw;
 }
-#start{
-    width: 60px;
-    height: 30px;
+.button{
     font-size: 15px;
-    background-color: #5CB85C;
-    color: white;
     cursor: pointer;
     border: none;
     border-radius: 0.3rem;
+}
+#start{
+    width: 60px;
+    height: 30px;
+    background-color: #5CB85C;
+    color: white;
     margin-left: calc(100% - 70px);
 }
 #pause{
     width: 60px;
     height: 30px;
-    font-size: 15px;
     background-color: #D9534F;
     color: white;
-    cursor: pointer;
-    border: none;
-    border-radius: 0.3rem;
+    margin-left: 10px;
+}
+#closeGame{
+    width: 100px;
+    height: 30px;
+    background-color: rgb(255, 188, 2);
+    color: white;
+    margin-left: calc(100% - 110px);
+}
+#closePlatform{
+    width: 100px;
+    height: 30px;
+    background-color: rgb(255, 188, 2);
+    color: white;
     margin-left: 10px;
 }
 select{
@@ -79,7 +91,7 @@ select{
     background-color:  #E8E8FF;
     height: 220px;
     width: calc(45vw - 15px);
-    top: 230px;
+    top: 290px;
     border-radius: 1rem;
     border: 1px solid rgb(128, 128, 128);
 }

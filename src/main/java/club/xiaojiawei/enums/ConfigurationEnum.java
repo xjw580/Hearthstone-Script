@@ -62,6 +62,11 @@ public enum ConfigurationEnum {
      * 更新开发版
      */
     UPDATE_DEV("updateDev", "false"),
+    /**
+     * 战网密码
+     */
+    PLATFORM_PASSWORD("platformPassword", ""),
+    AUTO_UPDATE("autoUpdate", "false"),
     ;
     private final String key;
     private final String defaultValue;

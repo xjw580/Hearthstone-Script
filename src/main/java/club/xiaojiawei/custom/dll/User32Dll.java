@@ -18,4 +18,5 @@ public interface User32Dll extends Library {
     void leftUp(WinDef.HWND hwnd, int x, int y);
     void rightDown(WinDef.HWND hwnd, int x, int y);
     void rightUp(WinDef.HWND hwnd, int x, int y);
+    void closeProgram(WinDef.HWND hwnd);
 }

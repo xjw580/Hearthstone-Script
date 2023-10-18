@@ -9,7 +9,7 @@ import javax.annotation.Resource;
 /**
  * @author 肖嘉威
  * @date 2023/7/5 14:48
- * @msg
+ * @msg Starter的责任链配置
  */
 @Configuration
 public class StarterConfig {
@@ -19,13 +19,15 @@ public class StarterConfig {
     @Resource
     private PlatformStarter platformStarter;
     @Resource
+    private LoginPlatformStarter loginPlatformStarter;
+    @Resource
     private GameStarter gameStarter;
     @Resource
-    private ListenStarter listenStarter;
+    private LogListenStarter logListenStarter;
 
     @Bean
     public AbstractStarter starter(){
-        clearStarter.setNextStarter(platformStarter).setNextStarter(gameStarter).setNextStarter(listenStarter);
+        clearStarter.setNextStarter(platformStarter).setNextStarter(loginPlatformStarter).setNextStarter(gameStarter).setNextStarter(logListenStarter);
         return clearStarter;
     }
 }

@@ -185,28 +185,32 @@
                 <Text fx:id="tip" GridPane.columnIndex="1" GridPane.rowIndex="7" translateX="18"/>
                 <Button text="保存" GridPane.columnIndex="0" GridPane.rowIndex="7" translateX="73" onAction="#save"/>
 
-                <Label fx:id="version" GridPane.columnIndex="0" GridPane.rowIndex="8" GridPane.columnSpan="2"
-                       contentDisplay="RIGHT">
-                    <graphic>
-                        <Button onAction="#update" translateX="10" fx:id="update" style="-fx-background-radius: 100%" visible="false">
-                            <tooltip>
-                                <Tooltip>
-                                    <showDelay>
-                                        <Duration millis="400"/>
-                                    </showDelay>
-                                    <text>
-                                        <String fx:value="更新"/>
-                                    </text>
-                                </Tooltip>
-                            </tooltip>
-                            <graphic>
-                                <ImageView fitHeight="$imageSize" fitWidth="12">
-                                    <Image url="@images/updates.png"/>
-                                </ImageView>
-                            </graphic>
-                        </Button>
-                    </graphic>
-                </Label>
+                <VBox GridPane.columnIndex="0" GridPane.rowIndex="8" GridPane.columnSpan="2" translateY="15">
+                    <Label fx:id="version"
+                           contentDisplay="RIGHT">
+                        <graphic>
+                            <Button onAction="#update" translateX="10" fx:id="update" style="-fx-background-radius: 100%" visible="false">
+                                <tooltip>
+                                    <Tooltip>
+                                        <showDelay>
+                                            <Duration millis="400"/>
+                                        </showDelay>
+                                        <text>
+                                            <String fx:value="更新"/>
+                                        </text>
+                                    </Tooltip>
+                                </tooltip>
+                                <graphic>
+                                    <ImageView fitHeight="$imageSize" fitWidth="12">
+                                        <Image url="@images/updates.png"/>
+                                    </ImageView>
+                                </graphic>
+                            </Button>
+                        </graphic>
+                    </Label>
+                    <ProgressBar fx:id="downloadProgress" progress="2" prefHeight="10" prefWidth="135" visible="false"/>
+                </VBox>
+
 
                 <Button onAction="#showSettings" text="设置" GridPane.columnIndex="0" GridPane.rowIndex="9"
                         styleClass="btn, btn-xs, btn-info" translateX="55">

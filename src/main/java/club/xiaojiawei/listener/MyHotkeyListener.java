@@ -3,10 +3,12 @@ package club.xiaojiawei.listener;
 import club.xiaojiawei.utils.SystemUtil;
 import com.melloware.jintellitype.HotkeyListener;
 import com.melloware.jintellitype.JIntellitype;
+import javafx.beans.property.BooleanProperty;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
 
 import javax.annotation.Resource;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * @author 肖嘉威
@@ -14,16 +16,16 @@ import javax.annotation.Resource;
  */
 @Slf4j
 @Configuration
-public class ExitHotkeyListener implements HotkeyListener {
-
+public class MyHotkeyListener implements HotkeyListener {
     @Resource
-    private PauseHotkeyListener pauseHotkeyListener;
-
+    private AtomicReference<BooleanProperty> isPause;
     private final static int HOT_KEY_EXIT = 111;
+    private final static int HOT_KEY_PAUSE = 222;
 
-    public ExitHotkeyListener(){
+    public MyHotkeyListener(){
         if (JIntellitype.isJIntellitypeSupported()) {
             JIntellitype.getInstance().registerHotKey(HOT_KEY_EXIT, JIntellitype.MOD_ALT, 'P');
+            JIntellitype.getInstance().registerHotKey(HOT_KEY_PAUSE, JIntellitype.MOD_CONTROL, 'P');
             JIntellitype.getInstance().addHotKeyListener(this);
         }
     }
@@ -39,8 +41,17 @@ public class ExitHotkeyListener implements HotkeyListener {
             log.info("捕捉到热键，关闭程序");
             SystemUtil.notice("捕捉到热键，关闭程序");
             JIntellitype.getInstance().removeHotKeyListener(this);
-            JIntellitype.getInstance().removeHotKeyListener(pauseHotkeyListener);
             System.exit(0);
+        }else if (i == HOT_KEY_PAUSE){
+            if (!isPause.get().get()){
+                log.info("捕捉到热键,停止脚本");
+                SystemUtil.notice("捕捉到热键,停止脚本");
+                isPause.get().set(true);
+            }else {
+                log.info("捕捉到热键,开始脚本");
+                SystemUtil.notice("捕捉到热键,开始脚本");
+                isPause.get().set(false);
+            }
         }
     }
 

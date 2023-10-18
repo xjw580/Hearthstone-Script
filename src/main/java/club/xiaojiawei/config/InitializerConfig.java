@@ -1,8 +1,12 @@
 package club.xiaojiawei.config;
 
 import club.xiaojiawei.initializer.*;
+import org.springframework.boot.ApplicationArguments;
+import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.core.annotation.Order;
 
 import javax.annotation.Resource;
 
@@ -12,7 +16,8 @@ import javax.annotation.Resource;
  * @msg Initializer的责任链配置
  */
 @Configuration
-public class InitializerConfig {
+@Order(520)
+public class InitializerConfig implements ApplicationRunner {
 
     @Resource
     private LogInitializer logInitializer;
@@ -22,6 +27,9 @@ public class InitializerConfig {
     private WebInitializer webInitializer;
     @Resource
     private DelTempInitializer delTempInitializer;
+    @Resource
+    @Lazy
+    private AbstractInitializer initializer;
     /**
      * Initializer责任链头对象
      * @return AbstractInitializer
@@ -32,4 +40,8 @@ public class InitializerConfig {
         return logInitializer;
     }
 
+    @Override
+    public void run(ApplicationArguments args){
+        initializer.init();
+    }
 }

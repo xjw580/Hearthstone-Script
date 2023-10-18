@@ -17,6 +17,7 @@ import static club.xiaojiawei.data.ScriptStaticData.UNKNOWN;
 /**
  * @author 肖嘉威
  * @date 2022/11/28 19:48
+ * @msg 区域抽象类
  */
 @Slf4j
 public abstract class Area {

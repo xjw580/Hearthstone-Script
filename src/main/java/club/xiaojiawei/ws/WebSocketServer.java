@@ -27,7 +27,6 @@ import java.util.concurrent.atomic.AtomicReference;
 /**
  * @author 肖嘉威
  * @date 2023/8/19 10:47
- * @since
  */
 @Slf4j
 @Component
@@ -61,14 +60,17 @@ public class WebSocketServer{
      * 建立WebSocket连接
      * @param session
      */
-    @SneakyThrows
     @OnOpen
     public void onOpen(Session session) {
-        log.info("WebSocket建立连接中,连接用户ID：【{}】", session.getId());
+        log.info(String.format("WebSocket建立连接中,连接用户ID：【%s】", session.getId()));
         // 建立连接
         this.session = session;
         webSocketSet.add(this);
-        log.info("WebSocket建立连接完成,当前用户数：【{}】", webSocketSet.size());
+        log.info(String.format("WebSocket建立连接完成,当前用户数：【%d】", webSocketSet.size()));
+        sendInitMsg();
+    }
+    @SneakyThrows(value = IOException.class)
+    private void sendInitMsg(){
         DeckEnum currentDeck = DeckEnum.valueOf(scriptConfiguration.getProperty(ConfigurationEnum.DECK.getKey()));
         ArrayList<String> modes = new ArrayList<>();
         for (RunModeEnum modeEnum : RunModeEnum.values()) {
@@ -106,7 +108,7 @@ public class WebSocketServer{
     @OnClose
     public void onClose() {
         webSocketSet.remove(this);
-        log.info("WebSocket连接断开,断开用户ID：【{}】,当前在线人数为：【{}】", this.session.getId(), webSocketSet.size());
+        log.info(String.format("WebSocket连接断开,断开用户ID：【%s】,当前在线人数为：【%d】", this.session.getId(), webSocketSet.size()));
     }
 
     /**
@@ -116,7 +118,7 @@ public class WebSocketServer{
      */
     @OnMessage
     public void onMessage(String message) {
-        log.info("WebSocket收到用户ID【{}】发来的消息：【{}】", this.session.getId(), message);
+        log.info(String.format("WebSocket收到用户ID【%s】发来的消息：【%d】", this.session.getId(), message));
     }
 
     /**

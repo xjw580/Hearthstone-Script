@@ -35,14 +35,9 @@ public class ScriptStaticData {
     @Getter
     @Setter
     private static WinDef.HWND gameHWND;
-    /**
-     * 平台窗口句柄
-     */
-    @Getter
-    @Setter
-    private static WinDef.HWND platformHWND;
     public static final String GAME_CN_NAME = "炉石传说";
     public static final String PLATFORM_CN_NAME = "战网";
+    public static final String PLATFORM_LOGIN_CN_NAME = "战网登录";
     public static final String GAME_US_NAME = "Hearthstone";
     public static final String PLATFORM_US_NAME = "Battle.net";
     public static final String REPO_NAME = "HearthstoneScript";
@@ -52,10 +47,6 @@ public class ScriptStaticData {
      * 游戏窗口信息
      */
     public static final WinDef.RECT GAME_RECT = new WinDef.RECT();
-    /**
-     * 平台窗口信息
-     */
-    public static final WinDef.RECT PLATFORM_RECT = new WinDef.RECT();
     /**
      * 所有鼠标键盘模拟都需要此对象
      */
@@ -79,7 +70,7 @@ public class ScriptStaticData {
     /**
      * 窗口标题栏纵向高度
      */
-    public static final int WINDOW_TITLE_Y;
+    public static final int WINDOW_TITLE_PIXEL_Y;
     /**
      * 本脚本的程序名
      */
@@ -147,22 +138,21 @@ public class ScriptStaticData {
         AffineTransform tx = screenDevices[0].getDefaultConfiguration().getDefaultTransform();
         DISPLAY_SCALE_X = tx.getScaleX();
         DISPLAY_SCALE_Y = tx.getScaleY();
-        WINDOW_TITLE_Y = (int) (33 / DISPLAY_SCALE_Y);
+        WINDOW_TITLE_PIXEL_Y = (int) (33 / DISPLAY_SCALE_Y);
 
-        TAG_MAP = new HashMap<>(TagEnum.values().length);
+        Map<String, TagEnum> tagTempMap = new HashMap<>(TagEnum.values().length);
         for (TagEnum value : TagEnum.values()) {
-            TAG_MAP.put(value.getValue(), value);
+            tagTempMap.put(value.getValue(), value);
         }
+        TAG_MAP = Collections.unmodifiableMap(tagTempMap);
 
-        Map<String, CardRaceEnum> cardRaceTempMap;
-        cardRaceTempMap = new HashMap<>(CardRaceEnum.values().length);
+        Map<String, CardRaceEnum> cardRaceTempMap =  new HashMap<>(CardRaceEnum.values().length);
         for (CardRaceEnum value : CardRaceEnum.values()) {
             cardRaceTempMap.put(value.getValue(), value);
         }
         CARD_RACE_MAP = Collections.unmodifiableMap(cardRaceTempMap);
 
-        Map<String, CardTypeEnum> cardTypeTempMap;
-        cardTypeTempMap = new HashMap<>(CardTypeEnum.values().length);
+        Map<String, CardTypeEnum> cardTypeTempMap = new HashMap<>(CardTypeEnum.values().length);
         for (CardTypeEnum value : CardTypeEnum.values()) {
             cardTypeTempMap.put(value.getValue(), value);
         }

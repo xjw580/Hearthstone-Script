@@ -3,9 +3,6 @@ package club.xiaojiawei.starter;
 import club.xiaojiawei.data.SpringData;
 import club.xiaojiawei.enums.ConfigurationEnum;
 import club.xiaojiawei.listener.log.AbstractLogListener;
-import club.xiaojiawei.listener.log.DeckLogListener;
-import club.xiaojiawei.listener.log.PowerLogListener;
-import club.xiaojiawei.listener.log.ScreenLogListener;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -22,15 +19,9 @@ import java.util.Properties;
  */
 @Slf4j
 @Component
-public class ListenStarter extends AbstractStarter{
+public class LogListenStarter extends AbstractStarter{
     @Resource
     protected Properties scriptConfiguration;
-    @Resource
-    private ScreenLogListener screenLogListener;
-    @Resource
-    private DeckLogListener deckLogListener;
-    @Resource
-    private PowerLogListener powerLogListener;
     @Resource
     protected SpringData springData;
     @Resource

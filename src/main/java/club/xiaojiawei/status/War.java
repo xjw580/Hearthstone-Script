@@ -100,6 +100,7 @@ public class War {
             flag = printResult();
         }
         long time = (endTime - startTime) / 1000 / 60;
+        log.info("本局游戏时长：" + time + "分钟");
         gameTime.set((int) (time + gameTime.get()));
         int winExp, lostExp;
         switch (JavaFXDashboardController.getCurrentRunMode()){
@@ -116,7 +117,9 @@ public class War {
                 lostExp = 0;
             }
         }
-        exp.set((int) (exp.get() + Math.min(time, 30) * (flag? winExp : lostExp)));
+        long earnExp = Math.min(time, 30) * (flag ? winExp : lostExp);
+        log.info("本局游戏获得经验值：" + earnExp);
+        exp.set((int) (exp.get() + earnExp));
         warCount.set(warCount.get() + 1);
     }
     private static boolean printResult(){

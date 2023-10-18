@@ -1,13 +1,13 @@
 package club.xiaojiawei.utils;
 
+import club.xiaojiawei.bean.Player;
+import club.xiaojiawei.bean.area.Area;
 import club.xiaojiawei.bean.entity.Card;
 import club.xiaojiawei.bean.entity.CommonEntity;
 import club.xiaojiawei.bean.entity.ExtraEntity;
 import club.xiaojiawei.bean.entity.TagChangeEntity;
 import club.xiaojiawei.custom.DealTagChange;
 import club.xiaojiawei.custom.ParseExtraEntity;
-import club.xiaojiawei.bean.*;
-import club.xiaojiawei.bean.area.Area;
 import club.xiaojiawei.enums.ZoneEnum;
 import club.xiaojiawei.status.War;
 import lombok.SneakyThrows;
@@ -16,15 +16,14 @@ import org.apache.logging.log4j.util.Strings;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.Objects;
 
 import static club.xiaojiawei.data.ScriptStaticData.*;
 import static club.xiaojiawei.enums.TagEnum.UNKNOWN;
 
 /**
- * 解析power.log日志的工具，非常非常非常重要
  * @author 肖嘉威
  * @date 2022/11/28 23:12
+ * @msg 解析power.log日志的工具，非常非常非常重要
  */
 @Slf4j
 public class PowerLogUtil {

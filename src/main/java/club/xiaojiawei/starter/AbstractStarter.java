@@ -23,4 +23,10 @@ public abstract class AbstractStarter {
     public AbstractStarter setNextStarter(AbstractStarter nextStarter) {
         return this.nextStarter = nextStarter;
     }
+
+    protected void startNextStarter(){
+        if (nextStarter != null){
+            nextStarter.start();
+        }
+    }
 }

@@ -32,8 +32,16 @@
                 </Label>
             </graphic>
         </Label>
+        <Label text="战网账号密码：" contentDisplay="RIGHT">
+            <graphic>
+                <PasswordField fx:id="password"/>
+            </graphic>
+            <tooltip>
+                <Tooltip text="自动登录失败的时用，非必填项"/>
+            </tooltip>
+        </Label>
         <Text fx:id="tip"/>
     </VBox>
-    <Button fx:id="apply" text="应用" styleClass="btn, btn-info, btn-sm" onAction="#apply"/>
-    <Button fx:id="save" text="保存" styleClass="btn, btn-success, btn-sm" onAction="#save"/>
+    <Button fx:id="apply" text="应用" styleClass="btn, btn-info, btn-sm" onAction="#apply" AnchorPane.bottomAnchor="15" AnchorPane.rightAnchor="15"/>
+    <Button fx:id="save" text="保存" styleClass="btn, btn-success, btn-sm" onAction="#save" AnchorPane.bottomAnchor="15" AnchorPane.rightAnchor="120"/>
 </AnchorPane>

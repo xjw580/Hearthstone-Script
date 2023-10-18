@@ -5,6 +5,7 @@ import club.xiaojiawei.bean.Result;
 import club.xiaojiawei.data.ScriptStaticData;
 import club.xiaojiawei.enums.DeckEnum;
 import club.xiaojiawei.status.Work;
+import club.xiaojiawei.utils.SystemUtil;
 import javafx.beans.property.BooleanProperty;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
@@ -42,7 +43,7 @@ import static club.xiaojiawei.enums.ConfigurationEnum.VERIFY_PASSWORD;
 @Slf4j
 public class WebDashboardController {
 
-    public static final LinkedHashSet<String> tokenSet = new LinkedHashSet<>();
+    public static final LinkedHashSet<String> TOKEN_SET = new LinkedHashSet<>();
     public static final int MAX_TOKEN = 3;
     @Resource
     private AtomicReference<BooleanProperty> isPause;
@@ -65,13 +66,13 @@ public class WebDashboardController {
             result = Result.ofFail();
         }else {
             String value = ScriptStaticData.AUTHOR + System.currentTimeMillis();
-            if (tokenSet.size() >= MAX_TOKEN){
-                for (String s : tokenSet) {
-                    tokenSet.remove(s);
+            if (TOKEN_SET.size() >= MAX_TOKEN){
+                for (String s : TOKEN_SET) {
+                    TOKEN_SET.remove(s);
                     break;
                 }
             }
-            tokenSet.add(value);
+            TOKEN_SET.add(value);
             Cookie cookie = new Cookie("token", value);
             cookie.setHttpOnly(true);
             response.addCookie(cookie);
@@ -97,7 +98,7 @@ public class WebDashboardController {
                         break;
                     }
                 }
-                if (cookie == null || !tokenSet.contains(cookie.getValue())){
+                if (cookie == null || !TOKEN_SET.contains(cookie.getValue())){
                     result = Result.ofFail();
                 }else {
                     result = Result.ofSuccess();
@@ -119,6 +120,20 @@ public class WebDashboardController {
     public Result<Object> start(){
         isPause.get().set(false);
         return Result.ofSuccess();
+    }
+
+    @RequestMapping("/dashboard/closeGame")
+    @ResponseBody
+    public Result<Object> closeGame(){
+        SystemUtil.killGame();
+        return Result.ofSuccess("游戏已关闭");
+    }
+
+    @RequestMapping("/dashboard/closePlatform")
+    @ResponseBody
+    public Result<Object> closePlatform(){
+        SystemUtil.killPlatform();
+        return Result.ofSuccess("战网已关闭");
     }
 
     @RequestMapping("/dashboard/save")

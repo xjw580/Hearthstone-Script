@@ -17,7 +17,7 @@ import javax.annotation.Resource;
 /**
  * @author 肖嘉威
  * @date 2023/9/19 9:47
- * @msg
+ * @msg 为枚举常量的属性赋值
  */
 @Configuration
 @Order(250)
@@ -26,7 +26,6 @@ public class EnumConfig implements ApplicationRunner {
     private ConfigurableApplicationContext springContext;
     @Override
     public void run(ApplicationArguments args) {
-        //        创建对象为枚举赋值
         for (WarPhaseEnum phase : WarPhaseEnum.values()) {
             Class<? extends AbstractPhaseStrategy> phaseStrategyClass = phase.getPhaseStrategyClass();
             if (phaseStrategyClass != null){

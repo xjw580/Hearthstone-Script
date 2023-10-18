@@ -8,7 +8,6 @@ import club.xiaojiawei.enums.RunModeEnum;
 import club.xiaojiawei.enums.StageEnum;
 import club.xiaojiawei.enums.WsResultTypeEnum;
 import club.xiaojiawei.listener.VersionListener;
-import club.xiaojiawei.status.War;
 import club.xiaojiawei.status.Work;
 import club.xiaojiawei.utils.FrameUtil;
 import club.xiaojiawei.utils.PropertiesUtil;
@@ -37,7 +36,6 @@ import java.net.URL;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.ResourceBundle;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
@@ -97,6 +95,8 @@ public class JavaFXDashboardController implements Initializable {
     private VBox workTime;
     @FXML
     private Text tip;
+    @FXML
+    private ProgressBar downloadProgress;
     @Resource
     private AtomicReference<BooleanProperty> isPause;
     @Resource
@@ -105,6 +105,7 @@ public class JavaFXDashboardController implements Initializable {
     private Properties scriptConfiguration;
     @Resource
     private ScheduledThreadPoolExecutor extraThreadPool;
+    private static ProgressBar staticDownloadProgress;
     public void expandedLogPane(){
         accordion.setExpandedPane(titledPaneLog);
     }
@@ -120,6 +121,7 @@ public class JavaFXDashboardController implements Initializable {
     protected void showSettings() {
         FrameUtil.showStage(StageEnum.SETTINGS);
     }
+    private static AtomicReference<BooleanProperty> staticIsPause;
     private static final SimpleBooleanProperty IS_UPDATING = new SimpleBooleanProperty(false);
     @FXML
     protected void update() {
@@ -130,21 +132,26 @@ public class JavaFXDashboardController implements Initializable {
                 if (!new File(TEMP_PATH).exists()){
                     downloadRelease(release);
                 }
-                execUpdate(release.getTagName());
+                Platform.runLater(() -> FrameUtil.createAlert("新版本[" + release.getTagName() + "]下载完毕", "现在更新？", event -> {
+                    execUpdate();
+                }, event -> IS_UPDATING.set(false), event -> IS_UPDATING.set(false), event -> IS_UPDATING.set(false)).show());
             });
         }
     }
 
-    private void downloadRelease(Release release){
+    public static void downloadRelease(Release release){
         try (
                 InputStream inputStream = new URL(String.format("https://gitee.com/zergqueen/Hearthstone-Script/releases/download/%s/%s-%s.zip", release.getTagName(), REPO_NAME, release.getTagName()))
                         .openConnection()
                         .getInputStream();
                 ZipInputStream zipInputStream = new ZipInputStream(inputStream);
         ) {
-            expandedLogPane();
+//            todo 下载进度条
             log.info("开始下载新版本：" + release.getTagName());
+            staticDownloadProgress.setProgress(0D);
+            staticDownloadProgress.setVisible(true);
             ZipEntry nextEntry;
+            double count = 0;
             while ((nextEntry = zipInputStream.getNextEntry()) != null) {
                 File entryFile = new File(TEMP_PATH + nextEntry.getName());
                 if (nextEntry.isDirectory()) {
@@ -161,25 +168,26 @@ public class JavaFXDashboardController implements Initializable {
                     }
                     log.info("downloaded_file：" + entryFile.getPath());
                 }
+                staticDownloadProgress.setProgress(++count / 70);
             }
+            staticDownloadProgress.setProgress(1D);
             log.info(release.getTagName() + "下载完毕");
         } catch (IOException e) {
             throw new RuntimeException(e);
         } finally {
+            staticDownloadProgress.setVisible(false);
             IS_UPDATING.set(false);
         }
     }
-    private void execUpdate(String latestVersion){
-        Platform.runLater(() -> FrameUtil.createAlert("新版本[" + latestVersion + "]下载完毕", "现在更新？", event -> {
-            try {
-                IS_UPDATING.set(true);
-                Runtime.getRuntime().exec("cmd /c start update.bat " + TEMP_DIR);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }finally {
-                IS_UPDATING.set(false);
-            }
-        }, event -> IS_UPDATING.set(false), event -> IS_UPDATING.set(false), event -> IS_UPDATING.set(false)).show());
+    public static void execUpdate(){
+        try {
+            IS_UPDATING.set(true);
+            Runtime.getRuntime().exec("cmd /c start update.bat " + TEMP_DIR + " " + staticIsPause.get().get());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }finally {
+            IS_UPDATING.set(false);
+        }
     }
     @FXML
     protected void save(){
@@ -224,30 +232,29 @@ public class JavaFXDashboardController implements Initializable {
         extraThreadPool.schedule(() -> tip.setText(""), 3, TimeUnit.SECONDS);
         Work.storeWorkDate();
     }
-    public static VBox logVBoxBack;
-    public static Accordion accordionBack;
-    public static Switch logSwitchBack;
-    public static Button updateBack;
+    public static VBox staticLogVBox;
+    public static Accordion staticAccordion;
+    public static Switch staticLogSwitch;
+    public static Button staticUpdate;
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         assign();
         version.setText("当前版本：" + VersionListener.getCurrentVersion());
         initModeAndDeck();
         initWorkDate();
-//        是否在更新中监听
-        IS_UPDATING.addListener((observable, oldValue, newValue) -> update.setDisable(newValue));
-//        监听日志自动滑到底部
-        logVBox.heightProperty().addListener((observable, oldValue, newValue) -> logScrollPane.setVvalue(logScrollPane.getVmax()));
+        listen();
     }
     @Getter
     private static RunModeEnum currentRunMode;
     @Getter
     private static DeckEnum currentDeck;
     private void assign(){
-        logVBoxBack = logVBox;
-        accordionBack = accordion;
-        logSwitchBack = logSwitch;
-        updateBack = update;
+        staticLogVBox = logVBox;
+        staticAccordion = accordion;
+        staticLogSwitch = logSwitch;
+        staticUpdate = update;
+        staticDownloadProgress = downloadProgress;
+        staticIsPause = isPause;
     }
     /**
      * 初始化模式和卡组
@@ -312,6 +319,12 @@ public class JavaFXDashboardController implements Initializable {
             SystemUtil.notice("挂机卡组改为：" + deckComment);
             log.info("挂机卡组改为：" + deckComment);
         }
+    }
+    private void listen(){
+        //        是否在更新中监听
+        IS_UPDATING.addListener((observable, oldValue, newValue) -> update.setDisable(newValue));
+//        监听日志自动滑到底部
+        logVBox.heightProperty().addListener((observable, oldValue, newValue) -> logScrollPane.setVvalue(logScrollPane.getVmax()));
     }
 
     /**
