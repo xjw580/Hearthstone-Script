@@ -8,6 +8,7 @@ import club.xiaojiawei.utils.FrameUtil;
 import club.xiaojiawei.utils.SystemUtil;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.beans.property.BooleanProperty;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -23,6 +24,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
+import java.util.List;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
@@ -51,6 +53,8 @@ public class UIApplication extends Application {
     private static Stage startupStage;
     @Resource
     private ScheduledThreadPoolExecutor extraThreadPool;
+    @Resource
+    private AtomicReference<BooleanProperty> isPause;
     @Override
     public void start(Stage stage) throws IOException {
         UIApplication.startupStage = stage;
@@ -138,6 +142,11 @@ public class UIApplication extends Application {
 //        TODO 不延迟关闭会导致主页面空白，无法加载数据的情况，需要找原因
         extraThreadPool.schedule(() -> Platform.runLater(() -> {
             UIApplication.getStartupStage().close();
-        }), 500, TimeUnit.MILLISECONDS);
+            List<String> args = this.getParameters().getRaw();
+            if (!args.isEmpty() && Objects.equals("false", args.get(0))){
+                isPause.get().set(false);
+            }
+
+        }), 550, TimeUnit.MILLISECONDS);
     }
 }

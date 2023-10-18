@@ -4,6 +4,6 @@ timeout /t 3
 del /Q *.jar
 del /s /Q lib\*.jar
 xcopy %1\* .\ /s /i /y
-cmd /c start start.bat
+cmd /c start start.bat %2
 timeout /t 3
 exit

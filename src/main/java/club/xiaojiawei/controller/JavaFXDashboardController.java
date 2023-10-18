@@ -1,6 +1,5 @@
 package club.xiaojiawei.controller;
 
-import club.xiaojiawei.UIApplication;
 import club.xiaojiawei.bean.Release;
 import club.xiaojiawei.bean.WsResult;
 import club.xiaojiawei.controls.Switch;
@@ -34,7 +33,9 @@ import org.springframework.stereotype.Component;
 import javax.annotation.Resource;
 import java.io.*;
 import java.net.URL;
-import java.util.*;
+import java.util.Objects;
+import java.util.Properties;
+import java.util.ResourceBundle;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
@@ -120,6 +121,7 @@ public class JavaFXDashboardController implements Initializable {
     protected void showSettings() {
         FrameUtil.showStage(StageEnum.SETTINGS);
     }
+    private static AtomicReference<BooleanProperty> staticIsPause;
     private static final SimpleBooleanProperty IS_UPDATING = new SimpleBooleanProperty(false);
     @FXML
     protected void update() {
@@ -180,7 +182,7 @@ public class JavaFXDashboardController implements Initializable {
     public static void execUpdate(){
         try {
             IS_UPDATING.set(true);
-            Runtime.getRuntime().exec("cmd /c start update.bat " + TEMP_DIR);
+            Runtime.getRuntime().exec("cmd /c start update.bat " + TEMP_DIR + " " + staticIsPause.get().get());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }finally {
@@ -252,6 +254,7 @@ public class JavaFXDashboardController implements Initializable {
         staticLogSwitch = logSwitch;
         staticUpdate = update;
         staticDownloadProgress = downloadProgress;
+        staticIsPause = isPause;
     }
     /**
      * 初始化模式和卡组
