@@ -1,9 +1,9 @@
 package club.xiaojiawei.data;
 
 /**
+ * 游戏常量
  * @author 肖嘉威
  * @date 2023/7/3 21:08
- * @msg 游戏变量
  */
 public class GameRationStaticData {
     /*我的屏幕高30.5*/

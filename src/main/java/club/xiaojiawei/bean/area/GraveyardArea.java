@@ -3,9 +3,9 @@ package club.xiaojiawei.bean.area;
 import club.xiaojiawei.bean.entity.Card;
 
 /**
+ * 墓地
  * @author 肖嘉威
  * @date 2022/11/27 15:02
- * @msg 墓地
  */
 public class GraveyardArea extends Area {
 

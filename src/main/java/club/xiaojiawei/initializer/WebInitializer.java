@@ -12,9 +12,9 @@ import java.util.Properties;
 import static club.xiaojiawei.enums.ConfigurationEnum.AUTO_OPEN_WEB;
 
 /**
+ * 打开Web页面
  * @author 肖嘉威
  * @date 2023/9/10 15:33
- * @msg
  */
 @Component
 @Slf4j

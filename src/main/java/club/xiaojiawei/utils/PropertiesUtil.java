@@ -12,9 +12,9 @@ import java.io.IOException;
 import java.util.Properties;
 
 /**
+ * 脚本配置工具类
  * @author 肖嘉威
  * @date 2023/7/9 2:26
- * @msg 脚本配置工具类
  */
 @Component
 public class PropertiesUtil {

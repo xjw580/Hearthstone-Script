@@ -18,9 +18,9 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
+ * 控制脚本的启动
  * @author 肖嘉威
  * @date 2023/7/5 13:15
- * @msg
  */
 @Component
 @Slf4j

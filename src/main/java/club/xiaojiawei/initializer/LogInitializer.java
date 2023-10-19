@@ -11,9 +11,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 /**
+ * 开启游戏日志输出
  * @author 肖嘉威
  * @date 2023/7/4 11:33
- * @msg 开启游戏日志输出
  */
 @Component
 @Slf4j

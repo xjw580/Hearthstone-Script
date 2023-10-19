@@ -25,6 +25,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
+ * WebScoket服务器
  * @author 肖嘉威
  * @date 2023/8/19 10:47
  */

@@ -1,6 +1,5 @@
 package club.xiaojiawei.controller;
 
-import com.alibaba.fastjson2.support.geo.Feature;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -15,7 +14,6 @@ import java.util.TimerTask;
 /**
  * @author 肖嘉威
  * @date 2023/10/14 12:43
- * @msg
  */
 public class JavaFXStartupController implements Initializable {
 

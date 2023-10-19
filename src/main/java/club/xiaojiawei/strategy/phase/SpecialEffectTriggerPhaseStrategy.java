@@ -13,6 +13,7 @@ import java.util.Objects;
 import static club.xiaojiawei.enums.StepEnum.MAIN_READY;
 
 /**
+ * 特殊效果触发阶段（如开局的狼王、巴库、大主教等）
  * @author 肖嘉威
  * @date 2022/11/26 17:23
  */

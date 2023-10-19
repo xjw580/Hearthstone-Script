@@ -6,7 +6,6 @@ import lombok.Data;
 /**
  * @author 肖嘉威
  * @date 2023/9/20 19:29
- * @msg
  */
 @Data
 @AllArgsConstructor

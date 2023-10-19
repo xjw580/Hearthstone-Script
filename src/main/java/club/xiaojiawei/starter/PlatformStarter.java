@@ -17,9 +17,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
+ * 启动战网
  * @author 肖嘉威
  * @date 2023/7/5 14:39
- * @msg
  */
 @Slf4j
 @Component

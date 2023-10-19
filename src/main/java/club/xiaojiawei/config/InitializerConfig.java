@@ -11,9 +11,9 @@ import org.springframework.core.annotation.Order;
 import javax.annotation.Resource;
 
 /**
+ * Initializer的责任链配置
  * @author 肖嘉威
  * @date 2023/7/4 15:08
- * @msg Initializer的责任链配置
  */
 @Configuration
 @Order(520)

@@ -5,9 +5,9 @@ import lombok.Getter;
 import lombok.ToString;
 
 /**
+ * 游戏回合阶段
  * @author 肖嘉威
  * @date 2022/11/29 20:28
- * @msg 游戏回合阶段
  */
 @Getter
 @ToString

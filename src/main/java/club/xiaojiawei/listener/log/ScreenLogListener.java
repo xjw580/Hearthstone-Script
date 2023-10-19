@@ -19,9 +19,9 @@ import java.util.concurrent.TimeUnit;
 import static club.xiaojiawei.data.ScriptStaticData.GAME_ALIVE_CMD;
 
 /**
+ * 游戏界面监听器
  * @author 肖嘉威
  * @date 2023/7/5 14:55
- * @msg
  */
 
 @Slf4j

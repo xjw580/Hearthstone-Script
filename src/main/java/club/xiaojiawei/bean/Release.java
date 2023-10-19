@@ -6,7 +6,6 @@ import lombok.Data;
 /**
  * @author 肖嘉威
  * @date 2023/9/16 20:05
- * @msg
  */
 @Data
 public class Release {

@@ -16,9 +16,9 @@ import java.util.concurrent.TimeUnit;
 import static club.xiaojiawei.enums.WarPhaseEnum.*;
 
 /**
+ * 对局日志监听器
  * @author 肖嘉威
  * @date 2023/7/5 20:40
- * @msg
  */
 @Slf4j
 @Component

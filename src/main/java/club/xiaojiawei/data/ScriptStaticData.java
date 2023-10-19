@@ -16,9 +16,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * 存储脚本常量
  * @author 肖嘉威
  * @date 2023/7/3 21:12
- * @msg 存储脚本内部变量
  */
 @Slf4j
 public class ScriptStaticData {

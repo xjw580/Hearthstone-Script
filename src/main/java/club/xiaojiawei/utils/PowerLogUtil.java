@@ -21,9 +21,9 @@ import static club.xiaojiawei.data.ScriptStaticData.*;
 import static club.xiaojiawei.enums.TagEnum.UNKNOWN;
 
 /**
+ * 解析power.log日志的工具，非常非常非常重要
  * @author 肖嘉威
  * @date 2022/11/28 23:12
- * @msg 解析power.log日志的工具，非常非常非常重要
  */
 @Slf4j
 public class PowerLogUtil {
@@ -83,6 +83,11 @@ public class PowerLogUtil {
         return extraEntity;
     }
 
+    /**
+     * 改变entity属性
+     * @param line
+     * @return
+     */
     public static TagChangeEntity dealTagChange(String line){
         TagChangeEntity tagChangeEntity = parseTagChange(line);
         tagChangeEntity.setLogType(TAG_CHANGE);

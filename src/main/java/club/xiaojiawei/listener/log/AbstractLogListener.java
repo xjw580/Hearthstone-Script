@@ -1,5 +1,6 @@
 package club.xiaojiawei.listener.log;
 
+import club.xiaojiawei.config.LogListenerConfig;
 import club.xiaojiawei.utils.SystemUtil;
 import javafx.beans.property.BooleanProperty;
 import lombok.Getter;
@@ -17,9 +18,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
+ * 在 {@link LogListenerConfig#logListener()} 添加新的LogListener
  * @author 肖嘉威
  * @date 2023/9/20 16:54
- * @msg
  */
 @Slf4j
 public abstract class AbstractLogListener {

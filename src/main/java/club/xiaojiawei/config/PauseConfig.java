@@ -18,9 +18,9 @@ import javax.annotation.Resource;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
+ * 脚本暂停状态
  * @author 肖嘉威
  * @date 2023/7/5 15:04
- * @msg
  */
 @Configuration
 @Slf4j
@@ -32,10 +32,6 @@ public class PauseConfig {
     @Resource
     @Lazy
     private Core core;
-    /**
-     * 脚本暂停状态
-     * @return
-     */
     @Bean
     public AtomicReference<BooleanProperty> isPause(){
         SimpleBooleanProperty booleanProperty = new SimpleBooleanProperty(true);

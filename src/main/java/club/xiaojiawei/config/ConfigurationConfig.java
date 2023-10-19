@@ -14,9 +14,9 @@ import java.io.IOException;
 import java.util.Properties;
 
 /**
+ * 脚本配置文件
  * @author 肖嘉威
  * @date 2023/7/4 14:12
- * @msg 脚本配置文件
  */
 @Configuration
 @Slf4j

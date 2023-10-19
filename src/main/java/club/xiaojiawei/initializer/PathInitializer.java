@@ -15,9 +15,9 @@ import java.util.Properties;
 import static club.xiaojiawei.utils.SystemUtil.registryGetStringValueForUserProgram;
 
 /**
+ * 获取炉石和战网安装路径
  * @author 肖嘉威
  * @date 2023/7/4 11:33
- * @msg 检查炉石和战网安装路径是否设置
  */
 @Component
 @Slf4j

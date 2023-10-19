@@ -7,6 +7,7 @@ import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 /**
+ * 启动类
  * @author 肖嘉威
  * @date 2022/11/24 13:34
  */

@@ -20,9 +20,9 @@ import java.util.ResourceBundle;
 import static club.xiaojiawei.enums.ConfigurationEnum.*;
 
 /**
+ *
  * @author 肖嘉威
  * @date 2023/9/10 15:07
- * @msg
  */
 @Component
 @Slf4j

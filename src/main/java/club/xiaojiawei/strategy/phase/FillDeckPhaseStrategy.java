@@ -12,6 +12,7 @@ import java.util.Objects;
 
 
 /**
+ * 起始填充牌库阶段
  * @author 肖嘉威
  * @date 2022/11/27 13:35
  */

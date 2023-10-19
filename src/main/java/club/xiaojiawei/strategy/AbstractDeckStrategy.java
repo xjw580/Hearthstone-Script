@@ -23,6 +23,7 @@ import static club.xiaojiawei.enums.CardTypeEnum.MINION;
 import static club.xiaojiawei.enums.ConfigurationEnum.STRATEGY;
 
 /**
+ * 卡牌策略抽象类
  * @author 肖嘉威
  * @date 2022/11/29 17:29
  */
@@ -35,23 +36,23 @@ public abstract class AbstractDeckStrategy{
     @Resource
     protected Properties scriptConfiguration;
 
-    protected static final float[] FIRST_HAND_CARD_HORIZONTAL_TO_CENTER_RATION = new float[]{
-            (float) 0.033, (float) 0.08, (float) 0.123, (float) 0.167, (float) 0.177, (float) 0.193, (float) 0.203, (float) 0.213, (float) 0.22, (float) 0.227
+    protected static final double[] FIRST_HAND_CARD_HORIZONTAL_TO_CENTER_RATION = new double[]{
+            0.033, 0.08, 0.123, 0.167, 0.177, 0.193, 0.203, 0.213, 0.22, 0.227
     };
-    protected static final float[] HAND_CARD_HORIZONTAL_CLEARANCE_RATION = new float[]{
-            0, (float) 0.09, (float) 0.09, (float) 0.087, (float) 0.07, (float) 0.057, (float) 0.05, (float) 0.042, (float) 0.037, (float) 0.034
+    protected static final double[] HAND_CARD_HORIZONTAL_CLEARANCE_RATION = new double[]{
+            0, 0.09, 0.09, 0.087, 0.07, 0.057, 0.05, 0.042, 0.037, 0.034
     };
-    protected static final float HAND_CARD_VERTICAL_TO_BOTTOM_RATION = (float) 0.059;
-    protected static final float RIVAL_HERO_VERTICAL_TO_BOTTOM_RATION = (float) 0.801;
-    protected static final float MY_HERO_VERTICAL_TO_BOTTOM_RATION = (float) 0.26;
-    protected static final float PLAY_CARD_HORIZONTAL_CLEARANCE_RATION = (float) 0.097;
-    protected static final float MY_PLAY_CARD_VERTICAL_TO_BOTTOM_RATION = (float) 0.45;
-    protected static final float RIVAL_PLAY_CARD_VERTICAL_TO_BOTTOM_RATION = (float) 0.62;
-    protected static final float POWER_VERTICAL_TO_BOTTOM_RATION = (float) 0.23;
-    protected static final float POWER_HORIZONTAL_TO_CENTER_RATION = (float) 0.133;
-    protected static final float TURN_OVER_BUTTON_VERTICAL_TO_BOTTOM_RATION = (float) 0.54;
-    protected static final float TURN_OVER_BUTTON_HORIZONTAL_TO_CENTER_RATION = (float) 0.417;
-    public static final float CONFIRM_BUTTON_VERTICAL_TO_BOTTOM_RATION = (float) 0.23;
+    protected static final double HAND_CARD_VERTICAL_TO_BOTTOM_RATION = 0.059;
+    protected static final double RIVAL_HERO_VERTICAL_TO_BOTTOM_RATION = 0.801;
+    protected static final double MY_HERO_VERTICAL_TO_BOTTOM_RATION = 0.26;
+    protected static final double PLAY_CARD_HORIZONTAL_CLEARANCE_RATION = 0.097;
+    protected static final double MY_PLAY_CARD_VERTICAL_TO_BOTTOM_RATION = 0.45;
+    protected static final double RIVAL_PLAY_CARD_VERTICAL_TO_BOTTOM_RATION = 0.62;
+    protected static final double POWER_VERTICAL_TO_BOTTOM_RATION = 0.23;
+    protected static final double POWER_HORIZONTAL_TO_CENTER_RATION = 0.133;
+    protected static final double TURN_OVER_BUTTON_VERTICAL_TO_BOTTOM_RATION = 0.54;
+    protected static final double TURN_OVER_BUTTON_HORIZONTAL_TO_CENTER_RATION = 0.417;
+    public static final double CONFIRM_BUTTON_VERTICAL_TO_BOTTOM_RATION = 0.23;
     protected static double BLOOD_WEIGHT = 0.4;
     protected static double ATC_WEIGHT = 0.6;
     protected static double FREE_EAT_MAX = 5;
@@ -74,7 +75,7 @@ public abstract class AbstractDeckStrategy{
             try {
                 log.info("执行换牌策略");
                 assign();
-                float clearance ,firstCardPos;
+                double clearance ,firstCardPos;
                 if (myHandCards.size() == 3){
                     clearance  = getFloatCardClearanceForThreeCard();
                     firstCardPos = getFloatCardFirstCardPosForThreeCard();
@@ -709,12 +710,12 @@ public abstract class AbstractDeckStrategy{
      * 点击悬浮卡牌，如发现,
      * @param clearance
      * @param firstCardPos
-     * @param floatCardIndex 0~2
+     * @param doubleCardIndex 0~2
      */
-    protected void clickFloatCard(float clearance, float firstCardPos, int floatCardIndex){
+    protected void clickFloatCard(double clearance, double firstCardPos, int doubleCardIndex){
         SystemUtil.updateGameRect();
         mouseUtil.leftButtonClick(
-                (int) (firstCardPos + floatCardIndex * clearance) + RandomUtil.getRandom(-10, 10),
+                (int) (firstCardPos + doubleCardIndex * clearance) + RandomUtil.getRandom(-10, 10),
                 (GAME_RECT.bottom + GAME_RECT.top >> 1) + RandomUtil.getRandom(-15, 15)
         );
         SystemUtil.delayShort();
@@ -958,16 +959,16 @@ public abstract class AbstractDeckStrategy{
     protected int getMyUsableResource(){
         return me.getResources() - me.getResourcesUsed() + me.getTempResources();
     }
-    protected float getFloatCardClearanceForFourCard(){
+    protected double getFloatCardClearanceForFourCard(){
         return GameRationStaticData.GAME_WINDOW_ASPECT_TO_HEIGHT_RATIO * GameRationStaticData.CARD_HORIZONTAL_CLEARANCE_WHEN_FOUR_CARD * (GAME_RECT.bottom - GAME_RECT.top);
     }
-    protected float getFloatCardClearanceForThreeCard(){
+    protected double getFloatCardClearanceForThreeCard(){
         return GameRationStaticData.GAME_WINDOW_ASPECT_TO_HEIGHT_RATIO * GameRationStaticData.CARD_HORIZONTAL_CLEARANCE_WHEN_THREE_CARD * (GAME_RECT.bottom - GAME_RECT.top);
     }
-    protected float getFloatCardFirstCardPosForFourCard(){
+    protected double getFloatCardFirstCardPosForFourCard(){
         return (GAME_RECT.left + GAME_RECT.right >> 1) - (GAME_RECT.bottom - GAME_RECT.top) * GameRationStaticData.FIRST_CARD_HORIZONTAL_TO_CENTER_WHEN_FOUR_CARD * GameRationStaticData.GAME_WINDOW_ASPECT_TO_HEIGHT_RATIO;
     }
-    protected float getFloatCardFirstCardPosForThreeCard(){
+    protected double getFloatCardFirstCardPosForThreeCard(){
         return (GAME_RECT.left + GAME_RECT.right >> 1) - (GAME_RECT.bottom - GAME_RECT.top) * GameRationStaticData.FIRST_CARD_HORIZONTAL_TO_CENTER_WHEN_THREE_CARD * GameRationStaticData.GAME_WINDOW_ASPECT_TO_HEIGHT_RATIO;
     }
 
@@ -978,7 +979,7 @@ public abstract class AbstractDeckStrategy{
      * @return
      */
     protected int[] getMyHandCardPos(int size, int handIndex){
-        float clearance = GameRationStaticData.GAME_WINDOW_ASPECT_TO_HEIGHT_RATIO * HAND_CARD_HORIZONTAL_CLEARANCE_RATION[size - 1] * (GAME_RECT.bottom - GAME_RECT.top),
+        double clearance = GameRationStaticData.GAME_WINDOW_ASPECT_TO_HEIGHT_RATIO * HAND_CARD_HORIZONTAL_CLEARANCE_RATION[size - 1] * (GAME_RECT.bottom - GAME_RECT.top),
                 firstCardPos = (GAME_RECT.left + GAME_RECT.right >> 1) - (GAME_RECT.bottom - GAME_RECT.top) * FIRST_HAND_CARD_HORIZONTAL_TO_CENTER_RATION[size - 1] * GameRationStaticData.GAME_WINDOW_ASPECT_TO_HEIGHT_RATIO;
         return new int[]{
                 (int) (firstCardPos + handIndex * clearance) + RandomUtil.getRandom(-5, 5),
@@ -998,8 +999,8 @@ public abstract class AbstractDeckStrategy{
         return calcPlayCardPos(size, playIndex, RIVAL_PLAY_CARD_VERTICAL_TO_BOTTOM_RATION);
     }
 
-    private int[] calcPlayCardPos(int size, int playIndex, float playCardVerticalToBottomRation) {
-        float clearance = (GAME_RECT.bottom - GAME_RECT.top) * GameRationStaticData.GAME_WINDOW_ASPECT_TO_HEIGHT_RATIO * PLAY_CARD_HORIZONTAL_CLEARANCE_RATION;
+    private int[] calcPlayCardPos(int size, int playIndex, double playCardVerticalToBottomRation) {
+        double clearance = (GAME_RECT.bottom - GAME_RECT.top) * GameRationStaticData.GAME_WINDOW_ASPECT_TO_HEIGHT_RATIO * PLAY_CARD_HORIZONTAL_CLEARANCE_RATION;
         int x;
         if ((size & 1) == 0){
             x =  (int) ((GAME_RECT.right + GAME_RECT.left >> 1) + (-(size >> 1) + 0.5 + playIndex) * clearance);

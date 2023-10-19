@@ -1,6 +1,5 @@
 package club.xiaojiawei.strategy;
 
-import club.xiaojiawei.data.ScriptStaticData;
 import club.xiaojiawei.status.Mode;
 import club.xiaojiawei.utils.GameUtil;
 import club.xiaojiawei.utils.MouseUtil;
@@ -13,6 +12,7 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
+ * 游戏模式抽象类
  * @author 肖嘉威
  * @date 2022/11/26 17:39
  */

@@ -3,9 +3,9 @@ package club.xiaojiawei.bean.area;
 import club.xiaojiawei.bean.entity.Card;
 
 /**
+ * 奥秘区
  * @author 肖嘉威
  * @date 2022/11/28 20:02
- * @msg 奥秘区
  */
 public class SecretArea extends Area{
     public SecretArea() {

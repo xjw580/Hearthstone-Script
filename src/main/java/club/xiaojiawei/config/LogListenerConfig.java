@@ -10,9 +10,9 @@ import org.springframework.context.annotation.Configuration;
 import javax.annotation.Resource;
 
 /**
+ * LogListener的责任链配置
  * @author 肖嘉威
  * @date 2023/7/5 14:48
- * @msg LogListener的责任链配置
  */
 @Configuration
 public class LogListenerConfig {

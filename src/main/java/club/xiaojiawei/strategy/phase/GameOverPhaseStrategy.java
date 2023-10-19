@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 
 /**
+ * 游戏结束阶段
  * @author 肖嘉威
  * @date 2022/11/27 13:44
  */

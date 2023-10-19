@@ -5,7 +5,6 @@ import lombok.Getter;
 /**
  * @author 肖嘉威
  * @date 2023/9/18 20:43
- * @msg
  */
 @Getter
 public enum MulliganStateEnum {

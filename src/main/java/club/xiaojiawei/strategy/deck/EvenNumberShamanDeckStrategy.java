@@ -18,6 +18,7 @@ import static club.xiaojiawei.enums.CardTypeEnum.MINION;
 import static club.xiaojiawei.strategy.deck.EvenNumberShamanDeckStrategy.EvenNumberShamanTemp.*;
 
 /**
+ * 偶数萨
  * @author 肖嘉威
  * @date 2023/7/8 22:02
  */

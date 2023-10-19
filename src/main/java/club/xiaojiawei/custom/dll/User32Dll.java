@@ -5,9 +5,9 @@ import com.sun.jna.Native;
 import com.sun.jna.platform.win32.WinDef;
 
 /**
+ * 加载自定义的user32包装dll
  * @author 肖嘉威
  * @date 2023/9/16 17:34
- * @msg
  */
 public interface User32Dll extends Library {
 

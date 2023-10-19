@@ -15,9 +15,9 @@ import java.util.Properties;
 import static club.xiaojiawei.enums.ConfigurationEnum.ENABLE_VERIFY;
 
 /**
+ * 鉴权
  * @author 肖嘉威
  * @date 2023/10/1 15:26
- * @msg
  */
 @WebFilter(urlPatterns = {"/dashboard/*", "/info"})
 public class TokenFilter implements Filter {

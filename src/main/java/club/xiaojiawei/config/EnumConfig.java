@@ -15,9 +15,9 @@ import org.springframework.core.annotation.Order;
 import javax.annotation.Resource;
 
 /**
+ * 为枚举常量的属性赋值
  * @author 肖嘉威
  * @date 2023/9/19 9:47
- * @msg 为枚举常量的属性赋值
  */
 @Configuration
 @Order(250)

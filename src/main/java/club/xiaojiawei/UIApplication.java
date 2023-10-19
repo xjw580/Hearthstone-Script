@@ -37,9 +37,9 @@ import static javafx.stage.StageStyle.UNDECORATED;
 
 
 /**
+ * javaFX启动器
  * @author 肖嘉威
  * @date 2023/7/6 9:46
- * @msg javafx启动器
  */
 @Component
 @Slf4j
@@ -72,7 +72,7 @@ public class UIApplication extends Application {
         }
     }
     private void showMainPage(){
-        new Thread(() -> {
+        Thread thread = new Thread(() -> {
             try {
                 setStyle(getMainPageLoader(launchSpringBoot()));
             } catch (IOException e) {
@@ -80,7 +80,9 @@ public class UIApplication extends Application {
             }
             setTray();
             afterInit();
-        }).start();
+        });
+        thread.setName("MainPage Thread");
+        thread.start();
     }
     private ConfigurableApplicationContext launchSpringBoot(){
         ConfigurableApplicationContext springContext = new SpringApplicationBuilder(ScriptApplication.class).headless(false).run();
@@ -96,8 +98,7 @@ public class UIApplication extends Application {
         final int WIDTH = 225, HEIGHT = 670;
         Scene scene = new Scene(fxmlLoader.load(), WIDTH, HEIGHT);
         scene.getStylesheets().add(BootstrapFX.bootstrapFXStylesheet());
-        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("css/dashboard.css")).toExternalForm());
-        frame = FrameUtil.createAlwaysTopWindowFrame(ScriptStaticData.SCRIPT_NAME, scene, WIDTH, HEIGHT, ScriptStaticData.SCRIPT_ICON_PATH);
+        frame = FrameUtil.createAlwaysTopWindowFrame(ScriptStaticData.SCRIPT_NAME, scene, WIDTH, HEIGHT);
     }
     private void setTray(){
         MenuItem quit = new MenuItem("退出");
@@ -134,8 +135,9 @@ public class UIApplication extends Application {
         DeckEnum deckEnum = DeckEnum.valueOf(scriptConfiguration.getProperty(DECK.getKey()));
         log.info(deckEnum.getComment() + "卡组代码：" + deckEnum.getDeckCode());
         if (SystemUtil.copyToClipboard(deckEnum.getDeckCode())){
-            log.info(deckEnum.getComment() + "卡组代码已经粘贴到剪切板");
-            SystemUtil.notice(deckEnum.getComment() + "卡组代码已经粘贴到剪切板");
+            String content = deckEnum.getComment() + "卡组代码已经复制到剪切板";
+            log.info(content);
+            SystemUtil.notice(content);
         }
         log.info("脚本数据路径：" + springData.getScriptPath());
         JavaFXStartupController.complete();

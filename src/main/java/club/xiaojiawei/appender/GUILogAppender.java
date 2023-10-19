@@ -13,12 +13,11 @@ import javafx.scene.text.Text;
 
 
 /**
- * @author 肖嘉威
- * @version 1.0
+ * GUI日志Appender
+ * @author 肖嘉威 xjw580@qq.com
  * @date 2022/9/28 上午10:11
- * @msg 发送日志消息
  */
-public class LogAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
+public class GUILogAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
 
     @Override
     protected void append(ILoggingEvent event) {

@@ -29,9 +29,9 @@ import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
+ * 窗口工具类
  * @author 肖嘉威
  * @date 2023/2/10 19:42
- * @msg 窗口工具类
  */
 @Component
 public class FrameUtil {
@@ -49,16 +49,15 @@ public class FrameUtil {
      * @param scene
      * @param frameWidth
      * @param frameHeight
-     * @param frameIconPath
      * @return
      */
-    public static AtomicReference<JFrame> createAlwaysTopWindowFrame(String frameTitle, Scene scene, int frameWidth, int frameHeight, String frameIconPath){
+    public static AtomicReference<JFrame> createAlwaysTopWindowFrame(String frameTitle, Scene scene, int frameWidth, int frameHeight){
         AtomicReference<JFrame> atomFrame = new AtomicReference<>();
 //        异步，所以用返回原子类
         SwingUtilities.invokeLater(() -> {
             try {
                 JFrame frame = new JFrame(frameTitle);
-                frame.setIconImage(new ImageIcon(Objects.requireNonNull(FrameUtil.class.getResourceAsStream(frameIconPath)).readAllBytes()).getImage());
+                frame.setIconImage(new ImageIcon(Objects.requireNonNull(FrameUtil.class.getResourceAsStream(ScriptStaticData.SCRIPT_ICON_PATH)).readAllBytes()).getImage());
                 frame.setSize(frameWidth, frameHeight);
                 Rectangle2D bounds = Screen.getPrimary().getBounds();
                 frame.setLocation((int) (bounds.getWidth() - frameWidth), (int) (bounds.getHeight() - frameHeight) >> 1);
@@ -79,13 +78,20 @@ public class FrameUtil {
      * 创建对话框
      * @param headerText
      * @param contentText
-     * @param ok
-     * @param cancel
-     * @param close
-     * @param windowsClose
+     * @param okHandler
+     * @param cancelHandler
+     * @param closeHandler
+     * @param windowCloseHandler
      * @return
      */
-    public static Alert createAlert(String headerText, String contentText, EventHandler<ActionEvent> ok, EventHandler<ActionEvent> cancel, EventHandler<ActionEvent> close, EventHandler<DialogEvent> windowsClose){
+    public static Alert createAlert(
+            String headerText,
+            String contentText,
+            EventHandler<ActionEvent> okHandler,
+            EventHandler<ActionEvent> cancelHandler,
+            EventHandler<ActionEvent> closeHandler,
+            EventHandler<DialogEvent> windowCloseHandler
+    ){
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle(ScriptStaticData.SCRIPT_NAME);
         alert.getButtonTypes().add(ButtonType.CLOSE);
@@ -94,15 +100,15 @@ public class FrameUtil {
         Button okButton = (Button) alert.getDialogPane().lookupButton(ButtonType.OK);
         Button cancelButton = (Button) alert.getDialogPane().lookupButton(ButtonType.CANCEL);
         Button closeButton = (Button) alert.getDialogPane().lookupButton(ButtonType.CLOSE);
-        okButton.setOnAction(ok);
-        cancelButton.setOnAction(cancel);
-        closeButton.setOnAction(close);
-        alert.setOnCloseRequest(windowsClose);
+        okButton.setOnAction(okHandler);
+        cancelButton.setOnAction(cancelHandler);
+        closeButton.setOnAction(closeHandler);
+        alert.setOnCloseRequest(windowCloseHandler);
         return alert;
     }
 
-    public static Alert createAlert(String headerText, String contentText, EventHandler<ActionEvent> ok){
-        return createAlert(headerText, contentText, ok, null, null, null);
+    public static Alert createAlert(String headerText, String contentText, EventHandler<ActionEvent> okHandler){
+        return createAlert(headerText, contentText, okHandler, null, null, null);
     }
 
     private final static Map<StageEnum, Stage> STAGE_MAP = new HashMap<>();
@@ -140,11 +146,11 @@ public class FrameUtil {
             Scene scene = new Scene(fxmlLoader.load());
             stage.setScene(scene);
             scene.getStylesheets().add(BootstrapFX.bootstrapFXStylesheet());
+            stage.setTitle(stageEnum.getTitle());
+            stage.getIcons().add(new Image(Objects.requireNonNull(FrameUtil.class.getResource(ScriptStaticData.SCRIPT_ICON_PATH)).toExternalForm()));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        stage.setTitle(stageEnum.getTitle());
-        stage.getIcons().add(new Image(Objects.requireNonNull(FrameUtil.class.getResource(ScriptStaticData.MAIN_PATH)).toExternalForm()));
         return stage;
     }
 }

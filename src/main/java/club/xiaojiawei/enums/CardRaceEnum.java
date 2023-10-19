@@ -5,9 +5,9 @@ import lombok.Getter;
 import lombok.ToString;
 
 /**
+ * 卡牌种族
  * @author 肖嘉威
  * @date 2023/9/19 13:17
- * @msg 卡牌种族
  */
 @Getter
 @ToString

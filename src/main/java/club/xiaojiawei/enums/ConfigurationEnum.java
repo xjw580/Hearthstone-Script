@@ -6,9 +6,9 @@ import lombok.Getter;
 import lombok.ToString;
 
 /**
+ * 脚本配置信息，在{@link ConfigurationConfig}里写入
  * @author 肖嘉威
  * @date 2023/7/5 11:26
- * @msg 脚本配置信息，在{@link ConfigurationConfig}里写入
  */
 @Getter
 @ToString

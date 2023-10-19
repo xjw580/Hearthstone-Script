@@ -8,9 +8,9 @@ import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
+ * 线程池配置
  * @author 肖嘉威
  * @date 2023/7/5 13:35
- * @msg 线程池配置
  */
 @Configuration
 public class ThreadPoolConfig {

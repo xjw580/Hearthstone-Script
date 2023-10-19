@@ -3,7 +3,6 @@ package club.xiaojiawei.status;
 import club.xiaojiawei.bean.WsResult;
 import club.xiaojiawei.controller.JavaFXDashboardController;
 import club.xiaojiawei.core.Core;
-import club.xiaojiawei.enums.ConfigurationEnum;
 import club.xiaojiawei.enums.WsResultTypeEnum;
 import club.xiaojiawei.listener.VersionListener;
 import club.xiaojiawei.utils.PropertiesUtil;
@@ -31,9 +30,9 @@ import static club.xiaojiawei.data.ScriptStaticData.TEMP_PATH;
 import static club.xiaojiawei.enums.ConfigurationEnum.*;
 
 /**
+ * 工作状态
  * @author 肖嘉威
  * @date 2023/9/10 22:04
- * @msg
  */
 @Component
 @Slf4j
@@ -90,6 +89,9 @@ public class Work {
         checkWork();
     }
 
+    /**
+     * 是否处于工作中
+     */
     @Setter
     @Getter
     private volatile static boolean working;

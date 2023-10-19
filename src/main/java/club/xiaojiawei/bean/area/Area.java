@@ -15,9 +15,9 @@ import static club.xiaojiawei.data.ScriptStaticData.CARD_AREA_MAP;
 import static club.xiaojiawei.data.ScriptStaticData.UNKNOWN;
 
 /**
+ * 区域抽象类
  * @author 肖嘉威
  * @date 2022/11/28 19:48
- * @msg 区域抽象类
  */
 @Slf4j
 public abstract class Area {

@@ -6,9 +6,9 @@ import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 
 /**
+ * 游戏当前模式（界面）
  * @author 肖嘉威
  * @date 2022/11/25 0:09
- * 当前模式
  */
 @ToString
 @Slf4j

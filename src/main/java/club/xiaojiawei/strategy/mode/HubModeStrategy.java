@@ -13,6 +13,7 @@ import javax.annotation.Resource;
 import java.util.Properties;
 
 /**
+ * 主界面
  * @author 肖嘉威
  * @date 2022/11/25 12:36
  */

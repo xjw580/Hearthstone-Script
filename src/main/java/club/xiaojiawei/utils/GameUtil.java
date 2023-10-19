@@ -13,9 +13,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
+ * 游戏工具类
  * @author 肖嘉威
  * @date 2022/11/27 1:42
- * @msg 游戏工具类
  */
 @Component
 @Slf4j

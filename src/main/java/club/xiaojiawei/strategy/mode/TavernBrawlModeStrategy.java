@@ -4,9 +4,9 @@ import club.xiaojiawei.strategy.AbstractModeStrategy;
 import org.springframework.stereotype.Component;
 
 /**
+ * 乱斗
  * @author 肖嘉威
  * @date 2023/7/8 15:29
- * @since
  */
 @Component
 public class TavernBrawlModeStrategy extends AbstractModeStrategy<Object> {

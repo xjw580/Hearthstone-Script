@@ -18,6 +18,7 @@ import static club.xiaojiawei.enums.StepEnum.BEGIN_MULLIGAN;
 import static club.xiaojiawei.enums.TagEnum.*;
 
 /**
+ * 抽起始牌阶段
  * @author 肖嘉威
  * @date 2022/11/27 13:35
  */

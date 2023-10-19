@@ -4,9 +4,9 @@ import club.xiaojiawei.config.StarterConfig;
 import lombok.extern.slf4j.Slf4j;
 
 /**
+ * 在 {@link StarterConfig#starter()} 添加新的Initializer
  * @author 肖嘉威
  * @date 2023/7/5 14:37
- * @msg 在 {@link StarterConfig#starter()} 添加新的Initializer
  */
 @Slf4j
 public abstract class AbstractStarter {

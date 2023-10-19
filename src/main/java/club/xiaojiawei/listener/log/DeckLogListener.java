@@ -14,9 +14,9 @@ import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 /**
+ * 套牌日志监听器
  * @author 肖嘉威
  * @date 2023/9/20 16:43
- * @msg
  */
 @Slf4j
 @Component

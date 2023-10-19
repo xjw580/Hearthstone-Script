@@ -6,20 +6,21 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import club.xiaojiawei.custom.MyButton?>
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="club.xiaojiawei.controller.JavaFXAdvancedSettingsController"
             prefHeight="400.0" prefWidth="600.0">
-    <VBox spacing="15">
+    <VBox spacing="15" style="-fx-border-width: 3;-fx-font-size: 13">
         <padding>
             <Insets top="10" left="10" bottom="10" right="10"/>
         </padding>
-        <Label contentDisplay="RIGHT" text="自动打开Web界面：" style="-fx-border-width: 3;-fx-font-size: 13">
+        <Label contentDisplay="RIGHT" text="自动打开Web界面：">
             <graphic>
-                <Switch fx:id="webSwitch" initStatus="false"/>
+                <Switch fx:id="webSwitch" initStatus="false" size="20"/>
             </graphic>
         </Label>
-        <Label contentDisplay="RIGHT" text="Web安全验证：" style="-fx-border-width: 3;-fx-font-size: 13">
+        <Label contentDisplay="RIGHT" text="Web安全验证：">
             <graphic>
                 <HBox>
                     <Switch fx:id="verifySwitch" initStatus="false"/>
@@ -27,17 +28,17 @@
                 </HBox>
             </graphic>
         </Label>
-        <Label contentDisplay="RIGHT" text="执行策略：" style="-fx-border-width: 3;-fx-font-size: 13">
+        <Label contentDisplay="RIGHT" text="执行策略：">
             <graphic>
                 <Switch fx:id="strategySwitch" initStatus="false"/>
             </graphic>
         </Label>
-        <Label contentDisplay="RIGHT" text="更新开发版：" style="-fx-border-width: 3;-fx-font-size: 13">
+        <Label contentDisplay="RIGHT" text="更新开发版：">
             <graphic>
                 <Switch fx:id="updateDev" initStatus="false"/>
             </graphic>
         </Label>
-        <Label contentDisplay="RIGHT" text="自动更新：" style="-fx-border-width: 3;-fx-font-size: 13">
+        <Label contentDisplay="RIGHT" text="自动更新：">
             <graphic>
                 <Switch fx:id="autoUpdate" initStatus="false"/>
             </graphic>

@@ -18,9 +18,9 @@ import static club.xiaojiawei.enums.ModeEnum.GAME_MODE;
 
 
 /**
+ * 冒险模式
  * @author 肖嘉威
  * @date 2022/11/25 12:41
- * 冒险模式
  */
 @Slf4j
 @Component

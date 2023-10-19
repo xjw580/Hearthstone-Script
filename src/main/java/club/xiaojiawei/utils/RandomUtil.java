@@ -3,9 +3,9 @@ package club.xiaojiawei.utils;
 import java.util.Random;
 
 /**
+ * 随机数生成工具
  * @author 肖嘉威
  * @date 2022/11/24 19:41
- * @msg 随机数生成工具
  */
 public class RandomUtil {
 

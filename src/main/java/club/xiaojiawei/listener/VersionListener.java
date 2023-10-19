@@ -18,9 +18,9 @@ import java.util.Properties;
 import static club.xiaojiawei.enums.ConfigurationEnum.UPDATE_DEV;
 
 /**
+ * 脚本版本监听器，定时查看是否需要更新
  * @author 肖嘉威
  * @date 2023/9/17 21:49
- * @msg
  */
 @Component
 @Slf4j

@@ -26,6 +26,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import static club.xiaojiawei.data.ScriptStaticData.*;
 
 /**
+ * 游戏阶段抽象类
  * @author 肖嘉威
  * @date 2022/11/26 17:59
  */

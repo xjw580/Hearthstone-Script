@@ -12,7 +12,6 @@ import java.nio.charset.StandardCharsets;
 /**
  * @author 肖嘉威
  * @date 2023/9/16 20:18
- * @msg
  */
 @Configuration
 public class RestTemplateConfig {

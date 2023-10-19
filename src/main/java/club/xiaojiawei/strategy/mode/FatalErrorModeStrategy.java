@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.Resource;
 
 /**
+ * 致命错误
  * @author 肖嘉威
  * @date 2022/12/10 22:35
  */

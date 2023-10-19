@@ -13,9 +13,9 @@ import java.util.Objects;
 import static club.xiaojiawei.enums.CardTypeEnum.*;
 
 /**
+ * 战场
  * @author 肖嘉威
  * @date 2022/11/27 15:02
- * @msg 战场
  */
 @Getter
 @Setter

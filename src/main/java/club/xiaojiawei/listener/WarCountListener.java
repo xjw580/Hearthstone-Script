@@ -5,7 +5,6 @@ import club.xiaojiawei.controller.JavaFXDashboardController;
 import club.xiaojiawei.enums.WsResultTypeEnum;
 import club.xiaojiawei.status.War;
 import club.xiaojiawei.ws.WebSocketServer;
-import com.alibaba.fastjson.JSON;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -14,9 +13,9 @@ import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
 /**
+ * 游戏局数监听器
  * @author 肖嘉威
  * @date 2023/9/11 16:49
- * @msg 监听局数
  */
 @Component
 @Slf4j

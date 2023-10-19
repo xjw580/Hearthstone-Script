@@ -1,7 +1,6 @@
 package club.xiaojiawei.starter;
 
 import club.xiaojiawei.enums.ConfigurationEnum;
-import club.xiaojiawei.utils.MouseUtil;
 import club.xiaojiawei.utils.SystemUtil;
 import com.sun.jna.platform.win32.WinDef;
 import javafx.beans.property.BooleanProperty;
@@ -11,7 +10,6 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.awt.event.KeyEvent;
-import java.security.Key;
 import java.util.Properties;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
@@ -19,9 +17,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
+ * 登录战网
  * @author 肖嘉威
  * @date 2023/10/13 22:24
- * @msg
  */
 @Component
 @Slf4j

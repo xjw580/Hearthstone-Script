@@ -6,9 +6,9 @@ import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
 /**
+ * 重写Spring的定时任务线程池，规范线程命名
  * @author 肖嘉威
  * @date 2023/9/17 22:10
- * @msg 重写Spring的定时任务线程池，规范线程命名
  */
 @Configuration
 public class SchedulingRewriteConfig {

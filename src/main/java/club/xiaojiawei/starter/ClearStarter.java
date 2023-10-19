@@ -6,9 +6,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 /**
+ * 关闭任务，状态重置
  * @author 肖嘉威
  * @date 2023/7/6 10:46
- * @msg
  */
 @Component
 @Slf4j

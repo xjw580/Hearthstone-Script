@@ -33,6 +33,7 @@ import java.util.function.Consumer;
 import static club.xiaojiawei.data.ScriptStaticData.*;
 
 /**
+ * 系统工具类
  * @author 肖嘉威
  * @date 2022/11/24 17:21
  */

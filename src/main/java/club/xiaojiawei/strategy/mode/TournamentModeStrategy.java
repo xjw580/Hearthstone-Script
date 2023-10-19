@@ -32,9 +32,9 @@ import static club.xiaojiawei.data.GameRationStaticData.FIRST_ROW_DECK_VERTICAL_
 
 
 /**
+ * 传统对战
  * @author 肖嘉威
  * @date 2022/11/25 12:39
- * 传统对战
  */
 @Slf4j
 @Component

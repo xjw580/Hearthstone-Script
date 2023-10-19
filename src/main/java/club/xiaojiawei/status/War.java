@@ -21,9 +21,9 @@ import static club.xiaojiawei.data.ScriptStaticData.CARD_AREA_MAP;
 import static club.xiaojiawei.enums.WarPhaseEnum.FILL_DECK_PHASE;
 
 /**
+ * 游戏对局状态
  * @author 肖嘉威
  * @date 2022/11/25 20:57
- * 对局状态
  */
 @Slf4j
 public class War {

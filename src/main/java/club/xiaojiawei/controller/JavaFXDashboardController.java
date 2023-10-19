@@ -47,7 +47,8 @@ import static club.xiaojiawei.enums.ConfigurationEnum.DECK;
 import static club.xiaojiawei.enums.ConfigurationEnum.RUN_MODE;
 
 /**
- * @author zerg
+ * @author 肖嘉威
+ * @date 2023/2/21 12:33
  */
 @Component
 @Slf4j

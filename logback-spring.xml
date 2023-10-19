@@ -45,7 +45,7 @@
         <appender-ref ref="file"/>
     </appender>
 
-    <appender name="other" class="club.xiaojiawei.appender.LogAppender"/>
+    <appender name="other" class="club.xiaojiawei.appender.GUILogAppender"/>
     <logger name="club.xiaojiawei" level="${logLevel}">
         <appender-ref ref="other"/>
     </logger>

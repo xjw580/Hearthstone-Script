@@ -11,6 +11,7 @@ import javax.annotation.Resource;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
+ * 热键监听器
  * @author 肖嘉威
  * @date 2022/12/11 11:23
  */

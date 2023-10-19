@@ -13,9 +13,9 @@ import java.util.Comparator;
 import java.util.Properties;
 
 /**
+ * 初始化和启动日志监听器
  * @author 肖嘉威
  * @date 2023/9/20 17:22
- * @msg
  */
 @Slf4j
 @Component

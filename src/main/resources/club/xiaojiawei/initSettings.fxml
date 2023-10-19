@@ -7,14 +7,12 @@
 <?import javafx.scene.text.Text?>
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
-            fx:id="anchor"
-            fx:controller="club.xiaojiawei.controller.JavaFXInitSettingsController"
-      >
-    <VBox spacing="15">
+            fx:controller="club.xiaojiawei.controller.JavaFXInitSettingsController">
+    <VBox spacing="15" style="-fx-font-size: 13">
         <padding>
             <Insets top="10" left="10" bottom="10" right="10"/>
         </padding>
-        <Label text="炉石传说安装路径：" contentDisplay="RIGHT" style="-fx-font-size: 13">
+        <Label text="炉石传说安装路径：" contentDisplay="RIGHT">
             <graphic>
                 <Label fx:id="game" translateX="5" contentDisplay="RIGHT" underline="true" >
                     <graphic>
@@ -23,7 +21,7 @@
                 </Label>
             </graphic>
         </Label>
-        <Label text="战网程序路径：" contentDisplay="RIGHT" style="-fx-font-size: 13">
+        <Label text="战网程序路径：" contentDisplay="RIGHT">
             <graphic>
                 <Label fx:id="platform" translateX="5" contentDisplay="RIGHT" underline="true" >
                     <graphic>

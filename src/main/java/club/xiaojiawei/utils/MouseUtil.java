@@ -1,7 +1,6 @@
 package club.xiaojiawei.utils;
 
 import club.xiaojiawei.custom.dll.User32Dll;
-import club.xiaojiawei.data.ScriptStaticData;
 import com.sun.jna.platform.win32.WinDef;
 import javafx.beans.property.BooleanProperty;
 import lombok.extern.slf4j.Slf4j;
@@ -10,13 +9,14 @@ import org.springframework.stereotype.Component;
 import javax.annotation.Resource;
 import java.util.concurrent.atomic.AtomicReference;
 
+import static club.xiaojiawei.data.ScriptStaticData.*;
 import static java.awt.event.InputEvent.BUTTON1_DOWN_MASK;
 import static java.awt.event.InputEvent.BUTTON3_DOWN_MASK;
 
 /**
+ * 鼠标工具类
  * @author 肖嘉威
  * @date 2022/11/24 110:18
- * @msg 鼠标工具类
  */
 @Slf4j
 @Component
@@ -50,18 +50,18 @@ public class MouseUtil {
             startY = transformScalePixelY(startY);
             endX = transformScalePixelX(endX);
             endY = transformScalePixelY(endY);
-            ScriptStaticData.ROBOT.mouseMove(startX, startY);
+            ROBOT.mouseMove(startX, startY);
             SystemUtil.delay(100);
-            ScriptStaticData.ROBOT.mousePress(BUTTON1_DOWN_MASK);
+            ROBOT.mousePress(BUTTON1_DOWN_MASK);
             SystemUtil.delayShort();
             for (int i = 0; i < 50; i++) {
-                ScriptStaticData.ROBOT.mouseMove(startX, --startY);
+                ROBOT.mouseMove(startX, --startY);
                 SystemUtil.delay(MOVE_INTERVAL);
             }
             SystemUtil.delayShort();
             moveMouseByLine(startX, startY, endX, endY);
             SystemUtil.delay(100);
-            ScriptStaticData.ROBOT.mouseRelease(BUTTON1_DOWN_MASK);
+            ROBOT.mouseRelease(BUTTON1_DOWN_MASK);
             SystemUtil.delay(100);
         }
     }
@@ -86,13 +86,13 @@ public class MouseUtil {
             startY = transformScalePixelY(startY);
             endX = transformScalePixelX(endX);
             endY = transformScalePixelY(endY);
-            ScriptStaticData.ROBOT.mouseMove(startX, startY);
+            ROBOT.mouseMove(startX, startY);
             SystemUtil.delay(100);
             moveMouseByLine(startX, startY, endX, endY);
             SystemUtil.delayShort();
-            ScriptStaticData.ROBOT.mousePress(BUTTON1_DOWN_MASK);
+            ROBOT.mousePress(BUTTON1_DOWN_MASK);
             SystemUtil.delay(100);
-            ScriptStaticData.ROBOT.mouseRelease(BUTTON1_DOWN_MASK);
+            ROBOT.mouseRelease(BUTTON1_DOWN_MASK);
             SystemUtil.delay(300);
         }
     }
@@ -112,11 +112,11 @@ public class MouseUtil {
         synchronized (MouseUtil.class){
             x = transformScalePixelX(x);
             y = transformScalePixelY(y);
-            ScriptStaticData.ROBOT.mouseMove(x, y);
+            ROBOT.mouseMove(x, y);
             SystemUtil.delay(100);
-            ScriptStaticData.ROBOT.mousePress(BUTTON1_DOWN_MASK);
+            ROBOT.mousePress(BUTTON1_DOWN_MASK);
             SystemUtil.delay(100);
-            ScriptStaticData.ROBOT.mouseRelease(BUTTON1_DOWN_MASK);
+            ROBOT.mouseRelease(BUTTON1_DOWN_MASK);
             SystemUtil.delay(200);
         }
     }
@@ -136,10 +136,10 @@ public class MouseUtil {
      * @return
      */
     public static int transformScalePixelX(int pixelX){
-        return (int) (pixelX / ScriptStaticData.DISPLAY_SCALE_X);
+        return (int) (pixelX / DISPLAY_SCALE_X);
     }
     public static int transformScalePixelY(int pixelY){
-        return (int) (pixelY / ScriptStaticData.DISPLAY_SCALE_Y);
+        return (int) (pixelY / DISPLAY_SCALE_Y);
     }
 
     /**
@@ -147,9 +147,9 @@ public class MouseUtil {
      */
     public static void cancel(){
         SystemUtil.delay(1000);
-        ScriptStaticData.ROBOT.mousePress(BUTTON3_DOWN_MASK);
+        ROBOT.mousePress(BUTTON3_DOWN_MASK);
         SystemUtil.delay(200);
-        ScriptStaticData.ROBOT.mouseRelease(BUTTON3_DOWN_MASK);
+        ROBOT.mouseRelease(BUTTON3_DOWN_MASK);
     }
 
     /**
@@ -170,14 +170,14 @@ public class MouseUtil {
     private void moveMouseByLine(int startX, int startY, int endX, int endY){
         if (Math.abs(startY - endY) <= 5){
             for (startX -= MOVE_DISTANCE; startX >= endX; startX -= MOVE_DISTANCE){
-                ScriptStaticData.ROBOT.mouseMove(startX, startY);
+                ROBOT.mouseMove(startX, startY);
                 SystemUtil.delay(MOVE_INTERVAL);
             }
         }else {
             double k = calcK(startX, startY, endX, endY);
             double b = startY - k * startX;
             for (startY -= MOVE_DISTANCE; startY >= endY; startY -= MOVE_DISTANCE){
-                ScriptStaticData.ROBOT.mouseMove((int) ((startY - b) / k), startY);
+                ROBOT.mouseMove((int) ((startY - b) / k), startY);
                 SystemUtil.delay(MOVE_INTERVAL);
             }
         }
