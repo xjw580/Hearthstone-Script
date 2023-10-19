@@ -55,6 +55,10 @@
 
 
 
+### [API文档](https://hearthstone-script-documentation.vercel.app/)
+
+
+
 ### 更新日志
 
 ##### v3.1.8-GA
