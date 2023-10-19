@@ -30,26 +30,25 @@ public class PathInitializer extends AbstractInitializer{
 
     @Override
     public void exec() {
-        if (Strings.isNotBlank(scriptConfiguration.getProperty(ConfigurationEnum.GAME_PATH.getKey())) && Strings.isNotBlank(scriptConfiguration.getProperty(ConfigurationEnum.PLATFORM_PATH.getKey()))){
-            ScriptStaticData.setSetPath(true);
-            if (nextInitializer != null){
-                nextInitializer.init();
-            }
+        String platformInstallLocation, gameInstallLocation, absolutePlatformPath;
+        if (Strings.isNotBlank(scriptConfiguration.getProperty(ConfigurationEnum.GAME_PATH.getKey()))
+                && Strings.isNotBlank(scriptConfiguration.getProperty(ConfigurationEnum.PLATFORM_PATH.getKey()))
+        ){
+            log.info("读取到战网和炉石传说路径");
+        }else if (Strings.isNotBlank(platformInstallLocation = registryGetStringValueForUserProgram(RegCommonNameEnum.INSTALL_LOCATION, ScriptStaticData.PLATFORM_US_NAME))
+                && new File(absolutePlatformPath = platformInstallLocation + "\\" + ScriptStaticData.PLATFORM_US_NAME + ".exe").exists()
+                && Strings.isNotBlank(gameInstallLocation = registryGetStringValueForUserProgram(RegCommonNameEnum.INSTALL_LOCATION, ScriptStaticData.GAME_US_NAME))
+                && propertiesUtil.storePath(gameInstallLocation, absolutePlatformPath)
+        ){
+            log.info("通过注册表获取到战网和炉石传说路径");
+
         }else {
-            String platformInstallLocation = registryGetStringValueForUserProgram(RegCommonNameEnum.INSTALL_LOCATION, ScriptStaticData.PLATFORM_US_NAME), absolutePlatformPath, gameInstallLocation;
-            if (Strings.isNotBlank(platformInstallLocation)
-                    && new File(absolutePlatformPath = platformInstallLocation + "\\" + ScriptStaticData.PLATFORM_US_NAME + ".exe").exists()
-                    && Strings.isNotBlank(gameInstallLocation = registryGetStringValueForUserProgram(RegCommonNameEnum.INSTALL_LOCATION, ScriptStaticData.GAME_US_NAME))
-                    && propertiesUtil.storePath(gameInstallLocation, absolutePlatformPath)
-            ){
-                log.info("通过注册表获取到战网和炉石传说路径");
-                ScriptStaticData.setSetPath(true);
-                if (nextInitializer != null){
-                    nextInitializer.init();
-                }
-            }else {
-                log.error("炉石传说或战网安装路径未正确配置，脚本无法运行");
-            }
+            log.warn("炉石传说或战网安装路径未正确配置，脚本无法运行");
+            return;
+        }
+        ScriptStaticData.setSetPath(true);
+        if (nextInitializer != null){
+            nextInitializer.init();
         }
     }
 }

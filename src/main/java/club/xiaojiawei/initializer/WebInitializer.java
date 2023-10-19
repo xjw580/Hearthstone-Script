@@ -26,7 +26,10 @@ public class WebInitializer extends AbstractInitializer{
     @Override
     public void exec(){
         if (Objects.equals(scriptConfiguration.getProperty(AUTO_OPEN_WEB.getKey()), "true")){
+            log.info("打开Web界面");
             SystemUtil.openUrlByBrowser("http://127.0.0.1:" + springData.getServerPort());
+        }else {
+            log.info("自动打开Web界面开关处于关闭状态");
         }
         if (nextInitializer != null){
             nextInitializer.init();

@@ -1,0 +1,6 @@
+.warn{
+    -fx-fill: #ff8000;
+}
+.error{
+    -fx-fill: #ff0000;
+}

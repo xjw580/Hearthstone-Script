@@ -95,10 +95,10 @@ public class UIApplication extends Application {
         return fxmlLoader;
     }
     private void setStyle(FXMLLoader fxmlLoader) throws IOException {
-        final int WIDTH = 225, HEIGHT = 670;
-        Scene scene = new Scene(fxmlLoader.load(), WIDTH, HEIGHT);
+        final int width = 225, height = 670;
+        Scene scene = new Scene(fxmlLoader.load(), width, height);
         scene.getStylesheets().add(BootstrapFX.bootstrapFXStylesheet());
-        frame = FrameUtil.createAlwaysTopWindowFrame(ScriptStaticData.SCRIPT_NAME, scene, WIDTH, HEIGHT);
+        frame = FrameUtil.createAlwaysTopWindowFrame(ScriptStaticData.SCRIPT_NAME, scene, width, height);
     }
     private void setTray(){
         MenuItem quit = new MenuItem("退出");
@@ -148,7 +148,6 @@ public class UIApplication extends Application {
             if (!args.isEmpty() && Objects.equals("false", args.get(0))){
                 isPause.get().set(false);
             }
-
         }), 550, TimeUnit.MILLISECONDS);
     }
 }
