@@ -544,7 +544,7 @@ public class EvenNumberShamanDeckStrategy extends AbstractDeckStrategy{
                 return;
             }else if (
                     (calcCardRaceCount(myPlayCards, CardRaceEnum.TOTEM, false) >= 2 && myPlayCards.size() < 5)
-                    || findByCardId(myPlayCards, 图腾巨像) != -1
+                    || (findByCardId(myPlayCards, 图腾巨像) != -1 && myPlayCards.size() < 4)
             ) {
                 dealZeroResource();
                 dealWeapon();

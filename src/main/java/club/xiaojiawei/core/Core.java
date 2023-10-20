@@ -32,8 +32,7 @@ public class Core{
     @Resource
     private AtomicReference<BooleanProperty> isPause;
     @Resource
-    @SuppressWarnings("all")
-    private JavaFXDashboardController javaFXDashboardController;
+    private JavaFXDashboardController javafxDashboardController;
     @Resource
     private ThreadPoolExecutor coreThreadPool;
 
@@ -52,7 +51,7 @@ public class Core{
                 Platform.runLater(() -> FrameUtil.showStage(StageEnum.SETTINGS));
                 isPause.get().set(true);
             }else if (!isPause.get().get()){
-                javaFXDashboardController.expandedLogPane();
+                javafxDashboardController.expandedLogPane();
                 log.info("热键：Ctrl+P 开始/停止程序,Alt+P 关闭程序");
                 starter.start();
             }

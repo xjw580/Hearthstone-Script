@@ -173,12 +173,14 @@ function pause(){
     })
 }
 function closeGame(){
-    $.get("/dashboard/closeGame", {}, () => {
-    })
+    if (confirm("确认关闭炉石吗？")){
+        $.get("/dashboard/closeGame", {}, () => {})
+    }
 }
 function closePlatform(){
-    $.get("/dashboard/closePlatform", {}, () => {
-    })
+    if (confirm("确认关闭战网吗？")){
+        $.get("/dashboard/closePlatform", {}, () => {})
+    }
 }
 function getAllDeckByMode(){
     common.getAllDeckByMode($("#mode").val(), res => {

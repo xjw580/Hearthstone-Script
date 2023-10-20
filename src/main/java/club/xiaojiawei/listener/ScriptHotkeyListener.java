@@ -17,17 +17,19 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 @Slf4j
 @Configuration
-public class MyHotkeyListener implements HotkeyListener {
+public class ScriptHotkeyListener implements HotkeyListener {
     @Resource
     private AtomicReference<BooleanProperty> isPause;
     private final static int HOT_KEY_EXIT = 111;
     private final static int HOT_KEY_PAUSE = 222;
 
-    public MyHotkeyListener(){
+    public ScriptHotkeyListener(){
         if (JIntellitype.isJIntellitypeSupported()) {
             JIntellitype.getInstance().registerHotKey(HOT_KEY_EXIT, JIntellitype.MOD_ALT, 'P');
             JIntellitype.getInstance().registerHotKey(HOT_KEY_PAUSE, JIntellitype.MOD_CONTROL, 'P');
             JIntellitype.getInstance().addHotKeyListener(this);
+        }else {
+            log.warn("当前系统不支持设置热键");
         }
     }
 
@@ -37,7 +39,6 @@ public class MyHotkeyListener implements HotkeyListener {
      */
     @Override
     public void onHotKey(int i) {
-        //如果是我指定的快捷键就执行指定的操作
         if(i == HOT_KEY_EXIT){
             log.info("捕捉到热键，关闭程序");
             SystemUtil.notice("捕捉到热键，关闭程序");

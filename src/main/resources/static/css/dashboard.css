@@ -133,3 +133,7 @@ select{
     height: 20px;
     border-radius: 0.2rem;
 }
+.normalButton{
+    /*height: 28px;*/
+    padding: 3px 9px;
+}

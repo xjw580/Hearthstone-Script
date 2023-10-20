@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8" />
     <title>炉石传说脚本控制台</title>
@@ -101,11 +101,14 @@
                 </div>
             </div>
             <center>
-                <button id="save" onclick="save()">保存</button>
+                <button id="save" onclick="save()" class="normalButton">保存</button>
                 <span id="tip" style="color: #5CB85C;font-size: 12px"></span>
             </center>
-            <center style="margin-top: 50px">
-                <button id="screenCapture" onclick="screenCapture()">截屏</button>
+            <center style="margin-top: 50px;font-size: 14px;">
+                <div th:text="${version}"></div>
+            </center>
+            <center style="margin-top: 40px">
+                <button id="screenCapture" onclick="screenCapture()" class="normalButton">截屏</button>
             </center>
         </div>
         <div id="right">

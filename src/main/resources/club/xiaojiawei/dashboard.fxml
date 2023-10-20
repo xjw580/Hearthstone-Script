@@ -12,7 +12,7 @@
 <Accordion xmlns:fx="http://javafx.com/fxml"
            expandedPane="$titledPaneControl"
            fx:id="accordion"
-           stylesheets="@css/dashboard.css"
+           stylesheets="@css/fxDashboard.css"
            fx:controller="club.xiaojiawei.controller.JavaFXDashboardController">
     <panes>
         <TitledPane text="控制" fx:id="titledPaneControl">

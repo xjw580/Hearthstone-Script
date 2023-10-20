@@ -28,7 +28,7 @@ public class PauseConfig {
 
     @Resource
     @Lazy
-    private JavaFXDashboardController javaFXDashboardController;
+    private JavaFXDashboardController javafxDashboardController;
     @Resource
     @Lazy
     private Core core;
@@ -37,7 +37,7 @@ public class PauseConfig {
         SimpleBooleanProperty booleanProperty = new SimpleBooleanProperty(true);
         booleanProperty.addListener((observable, oldValue, newValue) -> {
             log.info("当前处于" + (newValue? "停止" : "运行") + "状态");
-            javaFXDashboardController.changeSwitch(newValue);
+            javafxDashboardController.changeSwitch(newValue);
             WebSocketServer.sendAllMessage(WsResult.ofNew(WsResultTypeEnum.PAUSE, newValue));
             if (newValue){
                 SystemUtil.cancelAllRunnable();

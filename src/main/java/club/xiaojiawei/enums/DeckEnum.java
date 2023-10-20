@@ -3,6 +3,7 @@ package club.xiaojiawei.enums;
 import club.xiaojiawei.strategy.AbstractDeckStrategy;
 import club.xiaojiawei.strategy.deck.EvenNumberShamanDeckStrategy;
 import club.xiaojiawei.strategy.deck.FreeDeckStrategy;
+import club.xiaojiawei.strategy.deck.SwordfishRogueDeckStrategy;
 import club.xiaojiawei.strategy.deck.ZooDeckStrategy;
 import lombok.Getter;
 import lombok.ToString;
@@ -17,7 +18,8 @@ public enum DeckEnum {
 
     ZOO("ZOO", "动物园", DeckTypeEnum.CLASSIC, RunModeEnum.CLASSIC, "AAEDAcn1AgAP+5UEs5YE1ZYE7ZYEgaEErqEEsqEEw6EE06EE7qEEnaIEo6IEu6IEv6IEw6MEAA==", ZooDeckStrategy.class),
     FREE("FREE", "核心骑", DeckTypeEnum.STANDARD, RunModeEnum.STANDARD, "AAECAZ8FAp/UBLaeBg6hnwS1nwSWoASkoATHoATJoATWoASp1ASL7AW0ngbPngbQngbRngbUngYAAA==", FreeDeckStrategy.class),
-    EVEN_NUMBER_SHAMAN("EVEN_NUMBER_SHAMAN", "偶数萨", DeckTypeEnum.WILD, RunModeEnum.WILD, "AAEBAaoIBM30ArLBBLHZBOmhBg0zvgayFJTvAp2jA9qlA/mRBPq0BIbUBKrZBL3lBMGeBt+hBgAA", EvenNumberShamanDeckStrategy.class)
+    EVEN_NUMBER_SHAMAN("EVEN_NUMBER_SHAMAN", "偶数萨", DeckTypeEnum.WILD, RunModeEnum.WILD, "AAEBAaoIBM30ArLBBLHZBOmhBg0zvgayFJTvAp2jA9qlA/mRBPq0BIbUBKrZBL3lBMGeBt+hBgAA", EvenNumberShamanDeckStrategy.class),
+    SWORDFISH_ROGUE("SWORDFISH_ROGUE", "剑鱼贼",DeckTypeEnum.WILD, RunModeEnum.WILD, "AAEBAZurBASRvALl0QKvoATooAUNjALUBe4G+w+gvQLpsAO6tgOqywOKyQSa2wTXowXTsgW/9wUAAA==",SwordfishRogueDeckStrategy .class),
     ;
     private final String value;
     private final String comment;

@@ -22,7 +22,7 @@ import javax.annotation.Resource;
 public class WarCountListener {
 
     @Resource
-    private JavaFXDashboardController javaFXDashboardController;
+    private JavaFXDashboardController javafxDashboardController;
     @Getter
     private static String winningPercentage = "?";
     @PostConstruct
@@ -34,10 +34,10 @@ public class WarCountListener {
         });
     }
     private void setJavaFXGUI(Number warCount){
-        javaFXDashboardController.getGameCount().setText(warCount.toString());
-        javaFXDashboardController.getWinningPercentage().setText(winningPercentage = String.format("%.0f", War.winCount.get() / warCount.doubleValue() * 100) + "%");
-        javaFXDashboardController.getGameTime().setText(getTimeStr(War.gameTime.get()));
-        javaFXDashboardController.getExp().setText(String.valueOf(War.exp.get()));
+        javafxDashboardController.getGameCount().setText(warCount.toString());
+        javafxDashboardController.getWinningPercentage().setText(winningPercentage = String.format("%.0f", War.winCount.get() / warCount.doubleValue() * 100) + "%");
+        javafxDashboardController.getGameTime().setText(getTimeStr(War.gameTime.get()));
+        javafxDashboardController.getExp().setText(String.valueOf(War.exp.get()));
     }
 
     private static String getTimeStr(int time) {
