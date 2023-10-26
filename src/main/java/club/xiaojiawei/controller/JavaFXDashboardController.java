@@ -264,38 +264,31 @@ public class JavaFXDashboardController implements Initializable {
         currentDeck = DeckEnum.valueOf(scriptConfiguration.getProperty(DECK.getKey()));
         currentRunMode = currentDeck.getRunMode();
         ObservableList runModeBoxItems = runModeBox.getItems();
+        ObservableList deckBoxItems = deckBox.getItems();
         runModeBoxItems.clear();
+        deckBoxItems.clear();
         RunModeEnum[] values = RunModeEnum.values();
         DeckEnum[] deckEnums = DeckEnum.values();
-        ObservableList deckBoxItems = deckBox.getItems();
-        deckBoxItems.clear();
-        for (RunModeEnum value : values) {
-            if (value.isEnable()){
-                runModeBoxItems.add(value.getComment());
+//        初始化模式和卡组
+        for (RunModeEnum runMode : values) {
+            if (runMode.isEnable()){
+                runModeBoxItems.add(runMode.getComment());
             }
-            if (currentRunMode == value){
+            if (currentRunMode == runMode){
                 runModeBox.getSelectionModel().select(currentRunMode.getComment());
-                for (DeckEnum anEnum : deckEnums) {
-                    if (anEnum.getRunMode() == currentRunMode){
-                        deckBoxItems.add(anEnum.getComment());
-                    }
-                }
+                addDeck(deckBoxItems, deckEnums);
             }
         }
         deckBox.getSelectionModel().select(currentDeck.getComment());
         //        模式更改监听
         runModeBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            for (RunModeEnum value : RunModeEnum.values()) {
-                if (Objects.equals(value.getComment(), newValue)) {
-                    currentRunMode = value;
+            for (RunModeEnum runMode : RunModeEnum.values()) {
+                if (Objects.equals(runMode.getComment(), newValue)) {
+                    currentRunMode = runMode;
                 }
             }
             deckBoxItems.clear();
-            for (DeckEnum anEnum : deckEnums) {
-                if (anEnum.getRunMode() == currentRunMode) {
-                    deckBoxItems.add(anEnum.getComment());
-                }
-            }
+            addDeck(deckBoxItems, deckEnums);
         });
         //        卡组更改监听
         deckBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
@@ -303,6 +296,14 @@ public class JavaFXDashboardController implements Initializable {
                 storeDeck((String) newValue);
             }
         });
+    }
+
+    private void addDeck(ObservableList deckBoxItems, DeckEnum[] deckEnums){
+        for (DeckEnum deck : deckEnums) {
+            if (deck.getRunMode() == currentRunMode && deck.isEnable()) {
+                deckBoxItems.add(deck.getComment());
+            }
+        }
     }
 
     private void storeDeck(String deckComment){
@@ -332,27 +333,27 @@ public class JavaFXDashboardController implements Initializable {
      * 初始化挂机时间
      */
     public void initWorkDate(){
-        String[] workDayFlagArr = Work.getWorkDayFlagArr();
-        ObservableList<Node> workDayChildren = workDay.getChildren();
-        for (int i = 0; i < workDayFlagArr.length; i++) {
-            CheckBox checkBox = (CheckBox) workDayChildren.get(i);
-            if (Objects.equals(workDayFlagArr[i], "true")){
-                checkBox.setSelected(true);
-                if (i == 0){
-                    break;
-                }
-            }else {
-                checkBox.setSelected(false);
-            }
-        }
-        String[] workTimeFlagArr = Work.getWorkTimeFlagArr();
-        String[] workTimeArr = Work.getWorkTimeArr();
-        ObservableList<Node> workTimeChildren = workTime.getChildren();
-        for (int i = 0; i < workTimeFlagArr.length; i++) {
-            CheckBox checkBox = (CheckBox) workTimeChildren.get(i);
-            ((TextField)checkBox.getGraphic()).setText(Objects.equals(workTimeArr[i], "null")? null : workTimeArr[i]);
-            checkBox.setSelected(Objects.equals(workTimeFlagArr[i], "true"));
-        }
+//        String[] workDayFlagArr = Work.getWorkDayFlagArr();
+//        ObservableList<Node> workDayChildren = workDay.getChildren();
+//        for (int i = 0; i < workDayFlagArr.length; i++) {
+//            CheckBox checkBox = (CheckBox) workDayChildren.get(i);
+//            if (Objects.equals(workDayFlagArr[i], "true")){
+//                checkBox.setSelected(true);
+//                if (i == 0){
+//                    break;
+//                }
+//            }else {
+//                checkBox.setSelected(false);
+//            }
+//        }
+//        String[] workTimeFlagArr = Work.getWorkTimeFlagArr();
+//        String[] workTimeArr = Work.getWorkTimeArr();
+//        ObservableList<Node> workTimeChildren = workTime.getChildren();
+//        for (int i = 0; i < workTimeFlagArr.length; i++) {
+//            CheckBox checkBox = (CheckBox) workTimeChildren.get(i);
+//            ((TextField)checkBox.getGraphic()).setText(Objects.equals(workTimeArr[i], "null")? null : workTimeArr[i]);
+//            checkBox.setSelected(Objects.equals(workTimeFlagArr[i], "true"));
+//        }
     }
     public void changeDeck(String deckComment){
         for (DeckEnum value : DeckEnum.values()) {

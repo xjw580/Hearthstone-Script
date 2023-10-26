@@ -158,8 +158,8 @@ const common = {
             }
         }
     },
-    getAllDeckByMode: (mode, res) => {
-        $.get("/dashboard/getAllDeckByMode", {mode: mode}, res)
+    getAllDeckByMode: (runMode, res) => {
+        $.get("/dashboard/getAllDeckByRunMode", {runMode}, res)
     }
 }
 function start(){

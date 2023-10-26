@@ -20,7 +20,6 @@ import java.util.Objects;
  */
 @Slf4j
 @Component
-@Deprecated
 public class ZooDeckStrategy extends AbstractDeckStrategy{
 
     /**

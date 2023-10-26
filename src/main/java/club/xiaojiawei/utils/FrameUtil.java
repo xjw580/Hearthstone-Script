@@ -60,7 +60,7 @@ public class FrameUtil {
                 frame.setIconImage(new ImageIcon(Objects.requireNonNull(FrameUtil.class.getResourceAsStream(ScriptStaticData.SCRIPT_ICON_PATH)).readAllBytes()).getImage());
                 frame.setSize(frameWidth, frameHeight);
                 Rectangle2D bounds = Screen.getPrimary().getBounds();
-                frame.setLocation((int) (bounds.getWidth() - frameWidth), (int) (bounds.getHeight() - frameHeight) >> 1);
+                frame.setLocation((int) (bounds.getWidth() - frameWidth + 5), (int) (bounds.getHeight() - frameHeight) >> 1);
                 final JFXPanel fxPanel = new JFXPanel();
                 frame.add(fxPanel);
                 frame.setAlwaysOnTop(true);

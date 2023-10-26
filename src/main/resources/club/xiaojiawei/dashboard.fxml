@@ -9,6 +9,7 @@
 <?import javafx.util.Duration?>
 <?import java.lang.Double?>
 <?import java.lang.String?>
+<?import club.xiaojiawei.controls.Time?>
 <Accordion xmlns:fx="http://javafx.com/fxml"
            expandedPane="$titledPaneControl"
            fx:id="accordion"
@@ -24,7 +25,7 @@
                 <fx:define>
                     <Double fx:value="40" fx:id="space"/>
                     <Double fx:value="18" fx:id="imageSize"/>
-                    <Double fx:value="10" fx:id="dateTranslateX"/>
+                    <Double fx:value="7" fx:id="dateTranslateX"/>
                 </fx:define>
                 <rowConstraints>
                     <RowConstraints minHeight="$space"/>
@@ -115,10 +116,10 @@
                     </graphic>
                 </Label>
 
-                <!--边框-->
+                <!--边框背景-->
                 <Label GridPane.rowIndex="4" GridPane.columnSpan="2" GridPane.rowSpan="4"
                        style="-fx-border-width: 1;-fx-border-color: rgb(128,128,128); -fx-border-radius: 5%;-fx-background-color: #E8E8FF"
-                       minHeight="250" minWidth="190" translateY="25">
+                       prefHeight="250" prefWidth="205" translateY="25">
                 </Label>
 
                 <Label text="工作天：" GridPane.columnIndex="0" GridPane.rowIndex="5" GridPane.columnSpan="2"
@@ -127,7 +128,7 @@
                         <Insets top="15" bottom="10"/>
                     </padding>
                     <graphic>
-                        <FlowPane hgap="15" vgap="5" maxWidth="120" fx:id="workDay">
+                        <FlowPane hgap="20" vgap="5" maxWidth="120" fx:id="workDay">
                             <padding>
                                 <Insets top="25" bottom="30"/>
                             </padding>
@@ -159,11 +160,11 @@
                         <VBox spacing="5" fx:id="workTime">
                             <CheckBox>
                                 <graphic>
-                                    <TextField promptText="HH:mm-HH:mm" maxWidth="$maxWidth" text="00:00-24:00" disable="true">
-                                        <tooltip>
-                                            <Tooltip text="优先级最高"/>
-                                        </tooltip>
-                                    </TextField>
+                                    <AnchorPane>
+                                        <Time showSelector="false"/>
+                                        <Label text="-" translateX="51" translateY="3" style="-fx-font-weight: BOLD"/>
+                                        <Time showSelector="false" translateX="57"/>
+                                    </AnchorPane>
                                 </graphic>
                                 <tooltip>
                                     <Tooltip text="优先级最高"/>
@@ -171,12 +172,20 @@
                             </CheckBox>
                             <CheckBox>
                                 <graphic>
-                                    <TextField promptText="HH:mm-HH:mm" maxWidth="$maxWidth"/>
+                                    <AnchorPane>
+                                        <Time showSelector="false"/>
+                                        <Label text="-" translateX="51" translateY="3" style="-fx-font-weight: BOLD"/>
+                                        <Time showSelector="false" translateX="57"/>
+                                    </AnchorPane>
                                 </graphic>
                             </CheckBox>
                             <CheckBox>
                                 <graphic>
-                                    <TextField promptText="HH:mm-HH:mm" maxWidth="$maxWidth"/>
+                                    <AnchorPane>
+                                        <Time showSelector="false"/>
+                                        <Label text="-" translateX="51" translateY="3" style="-fx-font-weight: BOLD"/>
+                                        <Time showSelector="false" translateX="57"/>
+                                    </AnchorPane>
                                 </graphic>
                             </CheckBox>
                         </VBox>

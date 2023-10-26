@@ -18,6 +18,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 public class ScriptApplication{
 
     public static void main(String[] args) {
+//        todo
+//        String property = System.getProperty("java.version");
         Application.launch(UIApplication.class, args);
     }
 

@@ -10,7 +10,7 @@
     </parent>
     <groupId>club.xiaojiawei</groupId>
     <artifactId>HearthstoneScript</artifactId>
-    <version>v3.1.8.2-DEV</version>
+    <version>v3.1.8.3-DEV</version>
     <name>hearthstoneScript</name>
     <description>炉石传说脚本</description>
     <properties>
@@ -76,7 +76,7 @@
         <dependency>
             <groupId>club.xiaojiawei</groupId>
             <artifactId>javafx-ui</artifactId>
-            <version>0.0.4-SNAPSHOT</version>
+            <version>0.0.6-SNAPSHOT</version>
         </dependency>
         <!--thymeleaf-->
         <dependency>

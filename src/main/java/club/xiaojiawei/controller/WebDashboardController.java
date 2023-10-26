@@ -157,12 +157,12 @@ public class WebDashboardController {
         return Result.ofSuccess();
     }
 
-    @RequestMapping("/dashboard/getAllDeckByMode")
+    @RequestMapping("/dashboard/getAllDeckByRunMode")
     @ResponseBody
-    public Result<ArrayList<String>> getAllDeckByMode(@RequestParam("mode")String mode){
+    public Result<ArrayList<String>> getAllDeckByRunMode(@RequestParam("runMode")String runMode){
         ArrayList<String> result = new ArrayList<>();
         for (DeckEnum deck : DeckEnum.values()) {
-            if (Objects.equals(deck.getRunMode().getComment(), mode)){
+            if (Objects.equals(deck.getRunMode().getComment(), runMode) && deck.isEnable()){
                 result.add(deck.getComment());
             }
         }

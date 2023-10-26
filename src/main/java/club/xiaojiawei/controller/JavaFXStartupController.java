@@ -49,7 +49,7 @@ public class JavaFXStartupController implements Initializable {
         Platform.runLater(() -> {
             timer.cancel();
             staticTip.setText("HS-Assistant启动中......100%");
-            staticProgressBar.setProgress(1D);
+            staticProgressBar.setProgress(0.9999999D);
         });
     }
 }
