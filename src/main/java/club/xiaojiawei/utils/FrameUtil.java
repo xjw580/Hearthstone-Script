@@ -1,5 +1,6 @@
 package club.xiaojiawei.utils;
 
+import club.xiaojiawei.JavaFXUI;
 import club.xiaojiawei.data.ScriptStaticData;
 import club.xiaojiawei.enums.StageEnum;
 import javafx.application.Platform;
@@ -16,7 +17,6 @@ import javafx.scene.control.DialogEvent;
 import javafx.scene.image.Image;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
-import org.kordamp.bootstrapfx.BootstrapFX;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
@@ -145,7 +145,7 @@ public class FrameUtil {
             fxmlLoader.setControllerFactory(context::getBean);
             Scene scene = new Scene(fxmlLoader.load());
             stage.setScene(scene);
-            scene.getStylesheets().add(BootstrapFX.bootstrapFXStylesheet());
+            scene.getStylesheets().add(JavaFXUI.javafxUIStylesheet());
             stage.setTitle(stageEnum.getTitle());
             stage.getIcons().add(new Image(Objects.requireNonNull(FrameUtil.class.getResource(ScriptStaticData.SCRIPT_ICON_PATH)).toExternalForm()));
         } catch (IOException e) {

@@ -4,3 +4,14 @@
 .error{
     -fx-fill: #ff0000;
 }
+/*todo del*/
+.titled-pane > .title {
+    -fx-background-color: white;
+}
+.titled-pane > .content{
+    -fx-background-color: white;
+    -fx-border-width: 0;
+}
+.accordion{
+    -fx-background-color: white;
+}

@@ -14,7 +14,6 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.kordamp.bootstrapfx.BootstrapFX;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.stereotype.Component;
@@ -65,6 +64,7 @@ public class UIApplication extends Application {
     private void showStartupPage(){
         try {
             Scene scene = new Scene(new FXMLLoader(getClass().getResource("startup.fxml")).load());
+            scene.getStylesheets().add(JavaFXUI.javafxUIStylesheet());
             startupStage.setScene(scene);
             startupStage.show();
         } catch (IOException e) {
@@ -97,7 +97,7 @@ public class UIApplication extends Application {
     private void setStyle(FXMLLoader fxmlLoader) throws IOException {
         final int width = 225, height = 670;
         Scene scene = new Scene(fxmlLoader.load(), width, height);
-        scene.getStylesheets().add(BootstrapFX.bootstrapFXStylesheet());
+        scene.getStylesheets().add(JavaFXUI.javafxUIStylesheet());
         frame = FrameUtil.createAlwaysTopWindowFrame(ScriptStaticData.SCRIPT_NAME, scene, width, height);
     }
     private void setTray(){

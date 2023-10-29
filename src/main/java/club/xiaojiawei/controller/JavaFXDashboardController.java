@@ -65,8 +65,6 @@ public class JavaFXDashboardController implements Initializable {
     @FXML
     private Accordion accordion;
     @FXML
-    private TitledPane titledPaneControl;
-    @FXML
     private Button startButton;
     @FXML
     private Button pauseButton;

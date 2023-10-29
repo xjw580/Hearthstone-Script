@@ -8,6 +8,6 @@
     <ImageView fx:id="backgroundImage" fitHeight="400" fitWidth="683">
         <Image url="@images/rastakhan.jpg" />
     </ImageView>
-    <ProgressBar fx:id="progressBar" prefWidth="${backgroundImage.fitWidth}" progress="0" translateY="395"/>
+    <ProgressBar styleClass="progress-bar-ui" fx:id="progressBar" prefWidth="${backgroundImage.fitWidth}" progress="0" translateY="395"/>
     <Label fx:id="tip" text="HS-Assistant启动中......0%" translateY="375" translateX="5"/>
 </AnchorPane>
