@@ -1,18 +1,18 @@
 package club.xiaojiawei.controller;
 
+import club.xiaojiawei.controls.PasswordShowField;
 import club.xiaojiawei.controls.Switch;
+import club.xiaojiawei.controls.ico.OKIco;
 import club.xiaojiawei.utils.PropertiesUtil;
+import club.xiaojiawei.utils.TipUtil;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.TextField;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Component;
-import org.springframework.util.DigestUtils;
 
 import javax.annotation.Resource;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.ResourceBundle;
@@ -35,11 +35,13 @@ public class JavaFXAdvancedSettingsController implements Initializable {
     @FXML
     private Switch verifySwitch;
     @FXML
-    private TextField psw;
+    private PasswordShowField psw;
     @FXML
     private Switch updateDev;
     @FXML
     private Switch autoUpdate;
+    @FXML
+    private OKIco verifyOK;
     @Resource
     private Properties scriptConfiguration;
     @Resource
@@ -59,6 +61,7 @@ public class JavaFXAdvancedSettingsController implements Initializable {
         if (Objects.equals(scriptConfiguration.getProperty(ENABLE_VERIFY.getKey()), "true")){
             verifySwitch.setInitStatus(true);
         }
+        psw.setText(scriptConfiguration.getProperty(VERIFY_PASSWORD.getKey()));
         if (Objects.equals(scriptConfiguration.getProperty(UPDATE_DEV.getKey()), "true")){
             updateDev.setInitStatus(true);
         }
@@ -79,18 +82,6 @@ public class JavaFXAdvancedSettingsController implements Initializable {
         });
 //        监听安全验证开关
         verifySwitch.initStatusProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue){
-                String psw = this.psw.getText();
-                if (Strings.isNotBlank(psw)){
-                    scriptConfiguration.setProperty(VERIFY_PASSWORD.getKey(), DigestUtils.md5DigestAsHex(psw.getBytes(StandardCharsets.UTF_8)));
-                    WebDashboardController.TOKEN_SET.clear();
-                    this.psw.setText("设置成功");
-                }else if (Strings.isBlank(scriptConfiguration.getProperty(VERIFY_PASSWORD.getKey()))){
-                    verifySwitch.setInitStatus(false);
-                    this.psw.requestFocus();
-                    return;
-                }
-            }
             scriptConfiguration.setProperty(ENABLE_VERIFY.getKey(), String.valueOf(newValue));
             propertiesUtil.storeScriptProperties();
         });
@@ -105,5 +96,12 @@ public class JavaFXAdvancedSettingsController implements Initializable {
             scriptConfiguration.setProperty(AUTO_UPDATE.getKey(), String.valueOf(newValue));
             propertiesUtil.storeScriptProperties();
         });
+    }
+
+    @FXML protected void saveVerifyPassword(Event event){
+        scriptConfiguration.setProperty(VERIFY_PASSWORD.getKey(), psw.getText());
+        propertiesUtil.storeScriptProperties();
+        WebDashboardController.TOKEN_SET.clear();
+        TipUtil.show(verifyOK, 2);
     }
 }

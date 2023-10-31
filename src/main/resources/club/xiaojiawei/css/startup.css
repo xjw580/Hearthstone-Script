@@ -1,0 +1,7 @@
+#ok{
+    -fx-fill: white;
+}
+#root{
+    -fx-background-image: url("../images/rastakhan.jpg");
+    -fx-background-size: stretch;
+}

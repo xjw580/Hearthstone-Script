@@ -1,5 +1,6 @@
 package club.xiaojiawei.appender;
 
+import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.UnsynchronizedAppenderBase;
 import club.xiaojiawei.bean.WsResult;
@@ -27,7 +28,7 @@ public class GUILogAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
     }
     @SuppressWarnings("all")
     private void appendJavaFX(ILoggingEvent event){
-        if (JavaFXDashboardController.staticLogSwitch.initStatusProperty().get() && JavaFXDashboardController.staticLogVBox != null && JavaFXDashboardController.staticAccordion!= null){
+        if (JavaFXDashboardController.staticLogVBox != null && JavaFXDashboardController.staticAccordion!= null){
             Platform.runLater(() -> {
                 ObservableList<Node> list = JavaFXDashboardController.staticLogVBox.getChildren();
                 //                大于二百五条就清空,防止内存泄露和性能问题
@@ -35,10 +36,15 @@ public class GUILogAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
                     list.clear();
                 }
                 Text text;
-                if (event.getThrowableProxy() == null){
+                int levelInt = event.getLevel().levelInt;
+                if (event.getThrowableProxy() == null && levelInt <= Level.INFO_INT){
                     text = new Text(event.getMessage());
+                }else if (levelInt <= Level.WARN_INT){
+                    text = new Text(event.getMessage());
+                    text.getStyleClass().add("warn");
                 }else {
-                    text = new Text(event.getMessage() + "，查看脚本日志获取详细信息");
+                    text = new Text(event.getMessage() + "，查看脚本日志获取详细错误信息");
+                    text.getStyleClass().add("error");
                 }
                 text.wrappingWidthProperty().bind(JavaFXDashboardController.staticAccordion.widthProperty().subtract(15));
                 list.add(text);

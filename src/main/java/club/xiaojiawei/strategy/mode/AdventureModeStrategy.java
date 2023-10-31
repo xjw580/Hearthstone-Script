@@ -88,7 +88,6 @@ public class AdventureModeStrategy extends AbstractModeStrategy<Object> {
     }
 
     public void selectHero(){
-//        todo 选择要挑战的英雄
     }
 
 }

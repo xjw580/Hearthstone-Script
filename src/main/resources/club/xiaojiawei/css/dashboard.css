@@ -1,0 +1,15 @@
+.warn{
+    -fx-fill: #ff8000;
+}
+.error{
+    -fx-fill: #ff0000;
+}
+.accordion{
+    -fx-background-color: white;
+}
+.workVBox{
+    -fx-effect: innershadow(one-pass-box, rgba(128, 128, 128, 0.67), 5, 0, 1, 1);
+    -fx-padding: 10 0 10 5;
+    -fx-background-color: #E8E8FF;
+    -fx-background-radius: 10;
+}

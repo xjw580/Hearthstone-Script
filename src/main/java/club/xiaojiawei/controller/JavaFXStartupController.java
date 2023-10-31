@@ -3,8 +3,8 @@ package club.xiaojiawei.controller;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
+import javafx.scene.text.Text;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -20,14 +20,14 @@ public class JavaFXStartupController implements Initializable {
     @FXML
     private ProgressBar progressBar;
     @FXML
-    private Label tip;
+    private Text ok;
     private static int count;
-    private static Label staticTip;
+    private static Text staticTip;
     private static ProgressBar staticProgressBar;
     private static Timer timer;
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        staticTip = tip;
+        staticTip = ok;
         staticProgressBar = progressBar;
         timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask() {
@@ -37,19 +37,19 @@ public class JavaFXStartupController implements Initializable {
                     timer.cancel();
                 }else {
                     Platform.runLater(() -> {
-                        tip.setText(String.format("HS-Assistant启动中......%d%%", count));
+                        ok.setText(String.format("HS-Assistant启动中......%d%%", count));
                         progressBar.setProgress((double) count / 100);
                     });
                 }
             }
-        }, 400, 10);
+        }, 500, 10);
     }
 
     public static void complete(){
         Platform.runLater(() -> {
             timer.cancel();
             staticTip.setText("HS-Assistant启动中......100%");
-            staticProgressBar.setProgress(1D);
+            staticProgressBar.setProgress(0.9999999D);
         });
     }
 }

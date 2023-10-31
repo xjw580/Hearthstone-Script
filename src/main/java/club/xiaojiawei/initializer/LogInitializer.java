@@ -24,6 +24,9 @@ public class LogInitializer extends AbstractInitializer{
     @Override
     public void exec() {
         File logFile = new File(springData.getGameLogConfigurationPath());
+        if (!logFile.exists() && logFile.mkdirs() && logFile.delete()){
+            log.info(logFile.getName() + "文件父目录创建成功");
+        }
         try(BufferedWriter writer = new BufferedWriter(new FileWriter(logFile))){
             writer.write("""
                     [LoadingScreen]
@@ -63,7 +66,7 @@ public class LogInitializer extends AbstractInitializer{
                     ScreenPrinting=False
                     Verbose=True
                     """);
-            log.info("{}文件重写完成，游戏日志已打开，首次重写需要重启炉石传说", logFile.getName());
+            log.info(logFile.getName() + "文件重写完成，游戏日志已打开，首次重写需要重启炉石传说");
         } catch (IOException e) {
             throw new RuntimeException("文件重写失败，游戏日志未打开，脚本无法运行", e);
         }

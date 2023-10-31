@@ -20,9 +20,9 @@ public enum RunModeEnum {
     TWIST("TWIST", "幻变模式", ModeEnum.TOURNAMENT, false),
     BACON("BACON", "酒馆战棋", ModeEnum.BACON, false),
     ;
-    final private String value;
-    final private String comment;
-    final private ModeEnum modeEnum;
-    final private boolean enable;
+    private final String value;
+    private final String comment;
+    private final ModeEnum modeEnum;
+    private final boolean enable;
 
 }

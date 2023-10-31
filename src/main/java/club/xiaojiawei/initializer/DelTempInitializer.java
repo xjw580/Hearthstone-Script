@@ -24,8 +24,10 @@ public class DelTempInitializer extends AbstractInitializer{
                 Runtime.getRuntime().exec("cmd /c start rd /s /Q " + TEMP_DIR);
                 log.info("临时文件删除成功");
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                throw new RuntimeException("删除临时文件发生错误", e);
             }
+        }else {
+            log.info("没有临时文件，无需删除");
         }
         if (nextInitializer != null){
             nextInitializer.init();

@@ -4,12 +4,14 @@ package club.xiaojiawei.controller;
 import club.xiaojiawei.bean.Result;
 import club.xiaojiawei.data.ScriptStaticData;
 import club.xiaojiawei.enums.DeckEnum;
+import club.xiaojiawei.listener.VersionListener;
 import club.xiaojiawei.status.Work;
 import club.xiaojiawei.utils.SystemUtil;
 import javafx.beans.property.BooleanProperty;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -50,9 +52,10 @@ public class WebDashboardController {
     @Resource
     private Properties scriptConfiguration;
     @Resource
-    private JavaFXDashboardController javaFXDashboardController;
+    private JavaFXDashboardController javafxDashboardController;
     @RequestMapping("/")
-    public String index(){
+    public String index(Model model){
+        model.addAttribute("version", "当前版本号：" + VersionListener.getCurrentVersion());
         return "dashboard";
     }
 
@@ -143,23 +146,23 @@ public class WebDashboardController {
         System.arraycopy(workTimeFlagArr, 0, Work.getWorkTimeFlagArr(), 0, Work.getWorkTimeFlagArr().length);
         System.arraycopy(workTimeArr, 1, Work.getWorkTimeArr(), 1, Work.getWorkTimeArr().length - 1);
         Work.storeWorkDate();
-        javaFXDashboardController.initWorkDate();
+        javafxDashboardController.initWorkDate();
         return Result.ofSuccess();
     }
 
     @RequestMapping("/dashboard/changeDeck")
     @ResponseBody
     public Result<Object> changeDeck(@RequestParam("deckComment")String deckComment){
-        javaFXDashboardController.changeDeck(deckComment);
+        javafxDashboardController.changeDeck(deckComment);
         return Result.ofSuccess();
     }
 
-    @RequestMapping("/dashboard/getAllDeckByMode")
+    @RequestMapping("/dashboard/getAllDeckByRunMode")
     @ResponseBody
-    public Result<ArrayList<String>> getAllDeckByMode(@RequestParam("mode")String mode){
+    public Result<ArrayList<String>> getAllDeckByRunMode(@RequestParam("runMode")String runMode){
         ArrayList<String> result = new ArrayList<>();
         for (DeckEnum deck : DeckEnum.values()) {
-            if (Objects.equals(deck.getRunMode().getComment(), mode)){
+            if (Objects.equals(deck.getRunMode().getComment(), runMode) && deck.isEnable()){
                 result.add(deck.getComment());
             }
         }

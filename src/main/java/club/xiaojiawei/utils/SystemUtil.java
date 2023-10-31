@@ -98,7 +98,7 @@ public class SystemUtil {
         cancelAllTask();
         cancelAllProgramTimer();
         cancelAllListener();
-        delay(2000);
+        delay(1000);
     }
     public static void notice(String context){
         notice(SCRIPT_NAME, context);
@@ -266,7 +266,7 @@ public class SystemUtil {
      * @param trayName
      * @param menuItems
      */
-    public static void addTray(String trayIconName, String trayName, Consumer<MouseEvent> clickMouseListener, MenuItem... menuItems){
+    public static void addTray(String trayIconName, String trayName, Consumer<MouseEvent> mouseClickListener, MenuItem... menuItems){
         if (trayIcon != null){
             return;
         }
@@ -280,7 +280,7 @@ public class SystemUtil {
         trayIcon = new TrayIcon(image, trayName, popupMenu);
         trayIcon.setImageAutoSize(true);
         trayIcon.setToolTip(SCRIPT_NAME);
-        trayIcon.addMouseListener(new MouseClickListener(clickMouseListener));
+        trayIcon.addMouseListener(new MouseClickListener(mouseClickListener));
         try {
             TRAY.add(trayIcon);
         } catch (AWTException e) {

@@ -1,23 +1,19 @@
 package club.xiaojiawei.controller;
 
+import club.xiaojiawei.controls.PasswordShowField;
 import club.xiaojiawei.data.ScriptStaticData;
 import club.xiaojiawei.enums.ConfigurationEnum;
 import club.xiaojiawei.enums.StageEnum;
-import club.xiaojiawei.utils.FrameUtil;
 import club.xiaojiawei.utils.PropertiesUtil;
+import club.xiaojiawei.utils.TipUtil;
+import club.xiaojiawei.utils.WindowUtil;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.paint.Paint;
 import javafx.scene.text.Text;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -26,7 +22,6 @@ import java.net.URL;
 import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -37,13 +32,15 @@ import java.util.concurrent.TimeUnit;
 public class JavaFXInitSettingsController implements Initializable {
 
     @FXML
-    private Label game;
+    private Text game;
     @FXML
-    private Label platform;
+    private Text platform;
     @FXML
-    private Text tip;
+    private Label ok;
     @FXML
-    private PasswordField password;
+    private Label fail;
+    @FXML
+    private PasswordShowField password;
     @Resource
     private Properties scriptConfiguration;
     @Resource
@@ -78,13 +75,10 @@ public class JavaFXInitSettingsController implements Initializable {
         scriptConfiguration.setProperty(ConfigurationEnum.PLATFORM_PASSWORD.getKey(), password.getText());
         if(propertiesUtil.storePath(game.getText(), platform.getText())){
             ScriptStaticData.setSetPath(true);
-            tip.setFill(Paint.valueOf("#00cc00"));
-            tip.setText("应用成功😊");
-            extraThreadPool.schedule(() -> tip.setText(""), 3, TimeUnit.SECONDS);
+            TipUtil.show(ok);
+            TipUtil.show(ok);
         }else {
-            tip.setFill(Paint.valueOf("#ff3300"));
-            tip.setText(ScriptStaticData.GAME_CN_NAME + "安装路径不正确,请重新选择😩");
-            extraThreadPool.schedule(() -> tip.setText(""), 3, TimeUnit.SECONDS);
+            TipUtil.show(fail, ScriptStaticData.GAME_CN_NAME + "安装路径不正确,请重新选择", 5);
         }
     }
     @FXML
@@ -92,10 +86,9 @@ public class JavaFXInitSettingsController implements Initializable {
         scriptConfiguration.setProperty(ConfigurationEnum.PLATFORM_PASSWORD.getKey(), password.getText());
         if(propertiesUtil.storePath(game.getText(), platform.getText())){
             ScriptStaticData.setSetPath(true);
-            FrameUtil.hideStage(StageEnum.SETTINGS);
+            WindowUtil.hideStage(StageEnum.SETTINGS);
         }else {
-            tip.setFill(Paint.valueOf("#ff3300"));
-            tip.setText(ScriptStaticData.GAME_CN_NAME + "安装路径不正确,请重新选择");
+            TipUtil.show(fail, ScriptStaticData.GAME_CN_NAME + "安装路径不正确,请重新选择", 5);
         }
     }
 
@@ -108,4 +101,5 @@ public class JavaFXInitSettingsController implements Initializable {
         platform.setText(scriptConfiguration.getProperty(ConfigurationEnum.PLATFORM_PATH.getKey()));
         password.setText(scriptConfiguration.getProperty(ConfigurationEnum.PLATFORM_PASSWORD.getKey()));
     }
+
 }

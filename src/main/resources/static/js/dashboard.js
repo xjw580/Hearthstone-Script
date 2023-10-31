@@ -72,9 +72,7 @@ const common = {
                         let arr = data.data;
                         let dayChildren = $("#day").children();
                         for (let i = 0; i < arr[0].length; i++) {
-                            if (arr[0][i] === "true"){
-                                dayChildren[i].children[0].checked = true;
-                            }
+                            dayChildren[i].children[0].checked = arr[0][i] === "true";
                         }
                         let timeChildren = $("#time").children();
                         for (let i = 0; i < arr[1].length; i++) {
@@ -158,8 +156,8 @@ const common = {
             }
         }
     },
-    getAllDeckByMode: (mode, res) => {
-        $.get("/dashboard/getAllDeckByMode", {mode: mode}, res)
+    getAllDeckByMode: (runMode, res) => {
+        $.get("/dashboard/getAllDeckByRunMode", {runMode}, res)
     }
 }
 function start(){
@@ -173,12 +171,14 @@ function pause(){
     })
 }
 function closeGame(){
-    $.get("/dashboard/closeGame", {}, () => {
-    })
+    if (confirm("确认关闭炉石吗？")){
+        $.get("/dashboard/closeGame", {}, () => {})
+    }
 }
 function closePlatform(){
-    $.get("/dashboard/closePlatform", {}, () => {
-    })
+    if (confirm("确认关闭战网吗？")){
+        $.get("/dashboard/closePlatform", {}, () => {})
+    }
 }
 function getAllDeckByMode(){
     common.getAllDeckByMode($("#mode").val(), res => {
@@ -215,9 +215,9 @@ function save(){
         }
     }
     $.get(`/dashboard/save?workDayFlagArr=${workDayFlagArr}&workTimeFlagArr=${workTimeFlagArr}&workTimeArr=${workTimeArr}`, {}, res => {
-        $("#tip").text("保存成功")
+        $("#ok").text("保存成功")
         setTimeout(() => {
-            $("#tip").text("")
+            $("#ok").text("")
         }, 1500)
     })
 }
