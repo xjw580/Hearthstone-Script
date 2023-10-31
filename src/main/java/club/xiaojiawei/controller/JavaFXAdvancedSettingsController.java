@@ -1,10 +1,10 @@
 package club.xiaojiawei.controller;
 
+import club.xiaojiawei.controls.PasswordShowField;
 import club.xiaojiawei.controls.Switch;
 import club.xiaojiawei.utils.PropertiesUtil;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.TextField;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Component;
@@ -35,7 +35,7 @@ public class JavaFXAdvancedSettingsController implements Initializable {
     @FXML
     private Switch verifySwitch;
     @FXML
-    private TextField psw;
+    private PasswordShowField psw;
     @FXML
     private Switch updateDev;
     @FXML
@@ -84,7 +84,7 @@ public class JavaFXAdvancedSettingsController implements Initializable {
                 if (Strings.isNotBlank(psw)){
                     scriptConfiguration.setProperty(VERIFY_PASSWORD.getKey(), DigestUtils.md5DigestAsHex(psw.getBytes(StandardCharsets.UTF_8)));
                     WebDashboardController.TOKEN_SET.clear();
-                    this.psw.setText("设置成功");
+//                    TODO
                 }else if (Strings.isBlank(scriptConfiguration.getProperty(VERIFY_PASSWORD.getKey()))){
                     verifySwitch.setInitStatus(false);
                     this.psw.requestFocus();

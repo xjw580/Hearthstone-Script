@@ -95,7 +95,7 @@ public class UIApplication extends Application {
         return fxmlLoader;
     }
     private void setStyle(FXMLLoader fxmlLoader) throws IOException {
-        final int width = 225, height = 670;
+        final int width = 220, height = 670;
         Scene scene = new Scene(fxmlLoader.load(), width, height);
         scene.getStylesheets().add(JavaFXUI.javafxUIStylesheet());
         frame = FrameUtil.createAlwaysTopWindowFrame(ScriptStaticData.SCRIPT_NAME, scene, width, height);

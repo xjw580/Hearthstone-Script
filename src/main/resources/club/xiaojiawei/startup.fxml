@@ -3,11 +3,12 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<AnchorPane xmlns="http://javafx.com/javafx/17.0.2-ea" fx:controller="club.xiaojiawei.controller.JavaFXStartupController" xmlns:fx="http://javafx.com/fxml/1" stylesheets="@css/startup.css">
+<AnchorPane stylesheets="@css/startup.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="club.xiaojiawei.controller.JavaFXStartupController">
     <ImageView fx:id="backgroundImage" fitHeight="400" fitWidth="683">
         <Image url="@images/rastakhan.jpg" />
     </ImageView>
-    <ProgressBar styleClass="progress-bar-ui" fx:id="progressBar" prefWidth="${backgroundImage.fitWidth}" progress="0" translateY="395"/>
-    <Label fx:id="tip" text="HS-Assistant启动中......0%" translateY="375" translateX="5"/>
+    <ProgressBar fx:id="progressBar" prefWidth="${backgroundImage.fitWidth}" progress="0" styleClass="progress-bar-ui" translateY="395" />
+    <Text fx:id="tip" layoutX="5.0" layoutY="390.0" text="HS-Assistant启动中......0%" />
 </AnchorPane>

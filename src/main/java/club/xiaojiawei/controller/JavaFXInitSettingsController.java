@@ -1,5 +1,6 @@
 package club.xiaojiawei.controller;
 
+import club.xiaojiawei.controls.PasswordShowField;
 import club.xiaojiawei.data.ScriptStaticData;
 import club.xiaojiawei.enums.ConfigurationEnum;
 import club.xiaojiawei.enums.StageEnum;
@@ -7,17 +8,12 @@ import club.xiaojiawei.utils.FrameUtil;
 import club.xiaojiawei.utils.PropertiesUtil;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Text;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -43,7 +39,7 @@ public class JavaFXInitSettingsController implements Initializable {
     @FXML
     private Text tip;
     @FXML
-    private PasswordField password;
+    private PasswordShowField password;
     @Resource
     private Properties scriptConfiguration;
     @Resource

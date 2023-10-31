@@ -66,11 +66,11 @@
             <artifactId>javafx-fxml</artifactId>
             <version>${javafx-version}</version>
         </dependency>
-        <!--组件UI库-->
+        <!--JavaFX组件UI库-->
         <dependency>
             <groupId>club.xiaojiawei</groupId>
             <artifactId>javafx-ui</artifactId>
-            <version>0.0.7-SNAPSHOT</version>
+            <version>0.0.8-SNAPSHOT</version>
         </dependency>
         <!--thymeleaf-->
         <dependency>
@@ -83,11 +83,11 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-websocket</artifactId>
         </dependency>
+        <!--Web-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
-
     </dependencies>
 
     <build>

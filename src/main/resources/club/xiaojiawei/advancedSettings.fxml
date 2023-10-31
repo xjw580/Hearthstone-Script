@@ -1,17 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import club.xiaojiawei.controls.Switch?>
+<?import club.xiaojiawei.controls.*?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import club.xiaojiawei.custom.MyButton?>
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="club.xiaojiawei.controller.JavaFXAdvancedSettingsController"
             prefHeight="400.0" prefWidth="600.0">
-    <VBox spacing="15" style="-fx-border-width: 3;-fx-font-size: 13">
+    <VBox spacing="15" style="-fx-font-size: 13" alignment="CENTER_LEFT">
         <padding>
             <Insets top="10" left="10" bottom="10" right="10"/>
         </padding>
@@ -24,7 +23,7 @@
             <graphic>
                 <HBox>
                     <Switch fx:id="verifySwitch" initStatus="false"/>
-                    <TextField fx:id="psw" translateX="10" promptText="验证密码" />
+                    <PasswordShowField styleClass="password-show-field-ui, password-show-field-ui-small" fx:id="psw" translateX="10" promptText="验证密码"/>
                 </HBox>
             </graphic>
         </Label>

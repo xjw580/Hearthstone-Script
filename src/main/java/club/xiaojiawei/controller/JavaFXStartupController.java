@@ -3,8 +3,8 @@ package club.xiaojiawei.controller;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
+import javafx.scene.text.Text;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -20,9 +20,9 @@ public class JavaFXStartupController implements Initializable {
     @FXML
     private ProgressBar progressBar;
     @FXML
-    private Label tip;
+    private Text tip;
     private static int count;
-    private static Label staticTip;
+    private static Text staticTip;
     private static ProgressBar staticProgressBar;
     private static Timer timer;
     @Override

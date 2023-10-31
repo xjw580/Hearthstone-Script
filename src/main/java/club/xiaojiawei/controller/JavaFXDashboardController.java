@@ -2,7 +2,6 @@ package club.xiaojiawei.controller;
 
 import club.xiaojiawei.bean.Release;
 import club.xiaojiawei.bean.WsResult;
-import club.xiaojiawei.controls.Switch;
 import club.xiaojiawei.enums.DeckEnum;
 import club.xiaojiawei.enums.RunModeEnum;
 import club.xiaojiawei.enums.StageEnum;
@@ -21,7 +20,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Text;
@@ -54,48 +53,25 @@ import static club.xiaojiawei.enums.ConfigurationEnum.RUN_MODE;
 @Slf4j
 public class JavaFXDashboardController implements Initializable {
 
-    @FXML
-    private ScrollPane logScrollPane;
-    @FXML
-    private Button update;
-    @FXML
-    private Label version;
-    @FXML
-    private VBox logVBox;
-    @FXML
-    private Accordion accordion;
-    @FXML
-    private Button startButton;
-    @FXML
-    private Button pauseButton;
-    @FXML
-    private TitledPane titledPaneLog;
-    @FXML
-    @Getter
-    private Text gameCount;
-    @FXML
-    @Getter
-    private Text winningPercentage;
-    @Getter
-    @FXML
-    private Text gameTime;
-    @Getter
-    @FXML
-    private Text exp;
-    @FXML
-    private Switch logSwitch;
-    @FXML
-    private ComboBox runModeBox;
-    @FXML
-    private ComboBox deckBox;
-    @FXML
-    private FlowPane workDay;
-    @FXML
-    private VBox workTime;
-    @FXML
+    @FXML private ScrollPane logScrollPane;
+    @FXML private Button update;
+    @FXML private Label version;
+    @FXML private VBox logVBox;
+    @FXML private Accordion accordion;
+    @FXML private Button startButton;
+    @FXML private Button pauseButton;
+    @FXML private TitledPane titledPaneLog;
+    @FXML @Getter private Text gameCount;
+    @FXML @Getter private Text winningPercentage;
+    @FXML @Getter private Text gameTime;
+    @FXML @Getter private Text exp;
+    @FXML private ComboBox runModeBox;
+    @FXML private ComboBox deckBox;
+    @FXML private TilePane workDay;
+    @FXML private VBox workTime;
+//    TODO DEL
     private Text tip;
-    @FXML
-    private ProgressBar downloadProgress;
+    @FXML private ProgressBar downloadProgress;
     @Resource
     private AtomicReference<BooleanProperty> isPause;
     @Resource
@@ -108,22 +84,18 @@ public class JavaFXDashboardController implements Initializable {
     public void expandedLogPane(){
         accordion.setExpandedPane(titledPaneLog);
     }
-    @FXML
-    protected void start(){
+    @FXML protected void start(){
         isPause.get().set(false);
     }
-    @FXML
-    protected void pause(){
+    @FXML protected void pause(){
         isPause.get().set(true);
     }
-    @FXML
-    protected void showSettings() {
+    @FXML protected void showSettings() {
         FrameUtil.showStage(StageEnum.SETTINGS);
     }
     private static AtomicReference<BooleanProperty> staticIsPause;
     private static final SimpleBooleanProperty IS_UPDATING = new SimpleBooleanProperty(false);
-    @FXML
-    protected void update() {
+    @FXML protected void update() {
         Release release = VersionListener.getLatestRelease();
         if (release != null && !IS_UPDATING.get()){
             IS_UPDATING.set(true);
@@ -188,8 +160,7 @@ public class JavaFXDashboardController implements Initializable {
             IS_UPDATING.set(false);
         }
     }
-    @FXML
-    protected void save(){
+    @FXML protected void save(){
 //        检查挂机天
         ObservableList<Node> workDayChildren = workDay.getChildren();
         String[] workDayFlagArr = Work.getWorkDayFlagArr();
@@ -233,12 +204,11 @@ public class JavaFXDashboardController implements Initializable {
     }
     public static VBox staticLogVBox;
     public static Accordion staticAccordion;
-    public static Switch staticLogSwitch;
     public static Button staticUpdate;
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        assign();
         version.setText("当前版本：" + VersionListener.getCurrentVersion());
+        assign();
         initModeAndDeck();
         initWorkDate();
         listen();
@@ -250,7 +220,6 @@ public class JavaFXDashboardController implements Initializable {
     private void assign(){
         staticLogVBox = logVBox;
         staticAccordion = accordion;
-        staticLogSwitch = logSwitch;
         staticUpdate = update;
         staticDownloadProgress = downloadProgress;
         staticIsPause = isPause;

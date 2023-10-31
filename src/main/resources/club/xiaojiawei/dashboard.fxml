@@ -1,140 +1,107 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import club.xiaojiawei.controls.Switch?>
+<?import club.xiaojiawei.controls.ico.PauseIco?>
+<?import club.xiaojiawei.controls.ico.SettingsIco?>
+<?import club.xiaojiawei.controls.ico.StartIco?>
+<?import club.xiaojiawei.controls.*?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.text.Text?>
+<?import javafx.scene.text.*?>
 <?import javafx.util.Duration?>
-<?import java.lang.Double?>
 <?import java.lang.String?>
-<?import club.xiaojiawei.controls.Time?>
+<?import club.xiaojiawei.controls.ico.UpdateIco?>
 <Accordion xmlns:fx="http://javafx.com/fxml"
            expandedPane="$titledPaneControl"
            fx:id="accordion"
-           styleClass="accordion-ui"
+           styleClass="accordion-ui, accordion-ui-big"
            stylesheets="@css/fxDashboard.css"
            fx:controller="club.xiaojiawei.controller.JavaFXDashboardController">
     <panes>
         <TitledPane text="控制" fx:id="titledPaneControl">
-            <GridPane>
-                <columnConstraints>
-                    <ColumnConstraints hgrow="SOMETIMES"/>
-                    <ColumnConstraints hgrow="SOMETIMES"/>
-                </columnConstraints>
-                <fx:define>
-                    <Double fx:value="40" fx:id="height"/>
-                    <Double fx:value="18" fx:id="imageSize"/>
-                    <Double fx:value="7" fx:id="dateTranslateX"/>
-                </fx:define>
-                <rowConstraints>
-                    <RowConstraints minHeight="$height"/>
-                    <RowConstraints minHeight="$height"/>
-                    <RowConstraints minHeight="$height"/>
-                    <RowConstraints minHeight="$height"/>
-                    <RowConstraints minHeight="$height"/>
-                    <RowConstraints minHeight="$height"/>
-                    <RowConstraints minHeight="$height"/>
-                    <RowConstraints minHeight="$height"/>
-                    <RowConstraints minHeight="60"/>
-                    <RowConstraints minHeight="$height"/>
-                </rowConstraints>
+            <VBox styleClass="vBox" style="-fx-padding: 0 5 0 5">
+                <HBox styleClass="hBox">
+                    <Button fx:id="startButton" text="开始" styleClass="btn-ui, btn-ui-success-3d" onAction="#start">
+                        <tooltip>
+                            <Tooltip text="开始工作">
+                                <showDelay>
+                                    <Duration millis="400"/>
+                                </showDelay>
+                            </Tooltip>
+                        </tooltip>
+                        <graphic>
+                            <StartIco/>
+                        </graphic>
+                    </Button>
+                    <Button fx:id="pauseButton" disable="true" text="暂停"
+                            styleClass="btn-ui, btn-ui-error-3d" onAction="#pause">
+                        <tooltip>
+                            <Tooltip text="暂停工作">
+                                <showDelay>
+                                    <Duration millis="400"/>
+                                </showDelay>
+                            </Tooltip>
+                        </tooltip>
+                        <graphic>
+                            <PauseIco/>
+                        </graphic>
+                    </Button>
+                </HBox>
 
-                <Button fx:id="startButton" text="开始" styleClass="btn-ui, btn-ui-big, btn-ui-success-3d" onAction="#start">
-                    <tooltip>
-                        <Tooltip text="开始工作">
-                            <showDelay>
-                                <Duration millis="400"/>
-                            </showDelay>
-                        </Tooltip>
-                    </tooltip>
-                    <graphic>
-                        <!--TODO DEL-->
-<!--                        <ImageView fitHeight="$imageSize" fitWidth="$imageSize" translateX="-5">-->
-<!--                            <Image url="@images/start.png"/>-->
-<!--                        </ImageView>-->
-                    </graphic>
-                </Button>
-                <Button fx:id="pauseButton" disable="true" text="暂停" GridPane.columnIndex="1"
-                        styleClass="btn-ui, btn-ui-big, btn-ui-error-3d" onAction="#pause">
-                    <tooltip>
-                        <Tooltip text="暂停工作">
-                            <showDelay>
-                                <Duration millis="400"/>
-                            </showDelay>
-                        </Tooltip>
-                    </tooltip>
-                    <graphic>
-                        <!--TODO DEL-->
-<!--                        <ImageView fitHeight="$imageSize" fitWidth="$imageSize" translateX="-5">-->
-<!--                            <Image url="@images/pause.png"/>-->
-<!--                        </ImageView>-->
-                    </graphic>
-                </Button>
-
-                <Label text="模式：" GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.columnSpan="2"
+                <Label text="模式："
                        contentDisplay="RIGHT">
                     <graphic>
                         <ComboBox prefWidth="100" value="标准" styleClass="combo-box-ui, combo-box-ui-small, combo-box-ui-normal" fx:id="runModeBox"/>
                     </graphic>
                 </Label>
 
-                <Label text="卡组：" GridPane.columnIndex="0" GridPane.rowIndex="2" GridPane.columnSpan="2"
+                <Label text="卡组："
                        contentDisplay="RIGHT">
                     <graphic>
                         <ComboBox prefWidth="100" value="免费" styleClass="combo-box-ui, combo-box-ui-small, combo-box-ui-normal" fx:id="deckBox"/>
                     </graphic>
                 </Label>
 
-                <Label text="游戏局数：" GridPane.columnIndex="0" GridPane.rowIndex="3"
-                       contentDisplay="RIGHT">
-                    <graphic>
-                        <Text text="0" fx:id="gameCount"/>
-                    </graphic>
-                </Label>
-                <Label text="胜率：" GridPane.columnIndex="1" GridPane.rowIndex="3"
-                       contentDisplay="RIGHT">
-                    <graphic>
-                        <Text text="?" fx:id="winningPercentage"/>
-                    </graphic>
-                </Label>
+                <HBox styleClass="hBox">
+                    <Label text="游戏局数："
+                           contentDisplay="RIGHT">
+                        <graphic>
+                            <Text text="0" fx:id="gameCount"/>
+                        </graphic>
+                    </Label>
+                    <Label text="胜率："
+                           contentDisplay="RIGHT">
+                        <graphic>
+                            <Text text="?" fx:id="winningPercentage"/>
+                        </graphic>
+                    </Label>
+                </HBox>
 
-                <Label text="游戏时长：" GridPane.columnIndex="0" GridPane.rowIndex="4"
-                       contentDisplay="RIGHT">
-                    <tooltip>
-                        <Tooltip text="分钟"/>
-                    </tooltip>
-                    <graphic>
-                        <Text text="0" fx:id="gameTime"/>
-                    </graphic>
-                </Label>
-                <Label text="经验：" GridPane.columnIndex="1" GridPane.rowIndex="4"
-                       contentDisplay="RIGHT">
-                    <tooltip>
-                        <Tooltip text="预估值"/>
-                    </tooltip>
-                    <graphic>
-                        <Text text="0" fx:id="exp"/>
-                    </graphic>
-                </Label>
+                <HBox styleClass="hBox">
+                    <Label text="游戏时长："
+                           contentDisplay="RIGHT">
+                        <tooltip>
+                            <Tooltip text="分钟"/>
+                        </tooltip>
+                        <graphic>
+                            <Text text="0" fx:id="gameTime"/>
+                        </graphic>
+                    </Label>
+                    <Label text="经验："
+                           contentDisplay="RIGHT">
+                        <tooltip>
+                            <Tooltip text="预估值"/>
+                        </tooltip>
+                        <graphic>
+                            <Text text="0" fx:id="exp"/>
+                        </graphic>
+                    </Label>
+                </HBox>
 
-                <!--边框背景-->
-                <Label GridPane.rowIndex="4" GridPane.columnSpan="2" GridPane.rowSpan="4"
-                       style="-fx-border-width: 1;-fx-border-color: rgb(128,128,128); -fx-border-radius: 5%;-fx-background-color: #E8E8FF"
-                       prefHeight="250" prefWidth="205" translateY="25">
-                </Label>
-
-                <Label text="工作天：" GridPane.columnIndex="0" GridPane.rowIndex="5" GridPane.columnSpan="2"
-                       contentDisplay="RIGHT" translateX="$dateTranslateX">
-                    <padding>
-                        <Insets top="15" bottom="10"/>
-                    </padding>
-                    <graphic>
-                        <FlowPane hgap="20" vgap="5" maxWidth="120" fx:id="workDay">
-                            <padding>
-                                <Insets top="25" bottom="30"/>
-                            </padding>
+                <VBox alignment="CENTER" spacing="15" styleClass="workVBox">
+                    <HBox alignment="CENTER_LEFT" spacing="10">
+                        <Text text="工作天:"/>
+                        <TilePane hgap="20" vgap="5" fx:id="workDay" style="-fx-padding: 0">
                             <CheckBox styleClass="check-box-ui" text="每天">
                                 <tooltip>
                                     <Tooltip text="优先级最高"/>
@@ -147,27 +114,19 @@
                             <CheckBox styleClass="check-box-ui" text="周五"/>
                             <CheckBox styleClass="check-box-ui" text="周六"/>
                             <CheckBox styleClass="check-box-ui" text="周日"/>
-                        </FlowPane>
-                    </graphic>
-                </Label>
+                        </TilePane>
+                    </HBox>
 
-                <Label text="工作段：" GridPane.columnIndex="0" GridPane.rowIndex="6" GridPane.columnSpan="2"
-                       contentDisplay="RIGHT" translateX="$dateTranslateX">
-                    <padding>
-                        <Insets top="5" bottom="10"/>
-                    </padding>
-                    <fx:define>
-                        <Double fx:value="100" fx:id="maxWidth"/>
-                    </fx:define>
-                    <graphic>
+                    <HBox alignment="CENTER_LEFT" spacing="10">
+                        <Text text="工作段:"/>
                         <VBox spacing="5" fx:id="workTime">
                             <CheckBox styleClass="check-box-ui">
                                 <graphic>
-                                    <AnchorPane>
+                                    <HBox disable="true" translateX="2">
                                         <Time showSelector="false"/>
-                                        <Label text="-" translateX="51" translateY="3" style="-fx-font-weight: BOLD"/>
-                                        <Time showSelector="false" translateX="57"/>
-                                    </AnchorPane>
+                                        <Text text="-" translateY="3" style="-fx-font-weight: BOLD"/>
+                                        <Time showSelector="false"/>
+                                    </HBox>
                                 </graphic>
                                 <tooltip>
                                     <Tooltip text="优先级最高"/>
@@ -175,34 +134,36 @@
                             </CheckBox>
                             <CheckBox styleClass="check-box-ui">
                                 <graphic>
-                                    <AnchorPane>
+                                    <HBox translateX="2">
                                         <Time showSelector="false"/>
-                                        <Label text="-" translateX="51" translateY="3" style="-fx-font-weight: BOLD"/>
-                                        <Time showSelector="false" translateX="57"/>
-                                    </AnchorPane>
+                                        <Text text="-" translateY="3" style="-fx-font-weight: BOLD"/>
+                                        <Time showSelector="false"/>
+                                    </HBox>
                                 </graphic>
                             </CheckBox>
                             <CheckBox styleClass="check-box-ui">
                                 <graphic>
-                                    <AnchorPane>
+                                    <HBox translateX="2">
                                         <Time showSelector="false"/>
-                                        <Label text="-" translateX="51" translateY="3" style="-fx-font-weight: BOLD"/>
-                                        <Time showSelector="false" translateX="57"/>
-                                    </AnchorPane>
+                                        <Text text="-" translateY="3" style="-fx-font-weight: BOLD"/>
+                                        <Time showSelector="false"/>
+                                    </HBox>
                                 </graphic>
                             </CheckBox>
                         </VBox>
-                    </graphic>
-                </Label>
+                    </HBox>
 
-                <Text fx:id="tip" GridPane.columnIndex="1" GridPane.rowIndex="7" translateX="18"/>
-                <Button text="保存" styleClass="btn-ui, btn-ui-small" GridPane.columnIndex="0" GridPane.rowIndex="7" translateX="73" onAction="#save"/>
+                    <Button fx:id="saveButton" text="保存" styleClass="btn-ui, btn-ui-success" onAction="#save">
+                        <graphic>
+                        </graphic>
+                    </Button>
+                </VBox>
 
-                <VBox GridPane.columnIndex="0" GridPane.rowIndex="8" GridPane.columnSpan="2" translateY="15">
+                <VBox alignment="CENTER" spacing="5">
                     <Label fx:id="version"
                            contentDisplay="RIGHT">
                         <graphic>
-                            <Button onAction="#update" translateX="10" fx:id="update" style="-fx-background-radius: 100%" visible="false">
+                            <Button onAction="#update" fx:id="update" styleClass="btn-ui, btn-ui-small, btn-ui-normal" visible="false">
                                 <tooltip>
                                     <Tooltip>
                                         <showDelay>
@@ -214,19 +175,15 @@
                                     </Tooltip>
                                 </tooltip>
                                 <graphic>
-                                    <ImageView fitHeight="$imageSize" fitWidth="12">
-                                        <Image url="@images/updates.png"/>
-                                    </ImageView>
+                                    <UpdateIco/>
                                 </graphic>
                             </Button>
                         </graphic>
                     </Label>
-                    <ProgressBar fx:id="downloadProgress" progress="2" prefHeight="10" prefWidth="135" visible="false"/>
+                    <ProgressBar fx:id="downloadProgress" progress="1" styleClass="progress-bar-ui" prefWidth="${titledPaneControl.width}" visible="false" managed="false"/>
                 </VBox>
 
-
-                <Button onAction="#showSettings" text="设置" GridPane.columnIndex="0" GridPane.rowIndex="9"
-                        styleClass="btn-ui" translateX="55">
+                <Button fx:id="settingsButton" onAction="#showSettings" text="设置" styleClass="btn-ui">
                     <tooltip>
                         <Tooltip>
                             <showDelay>
@@ -237,30 +194,15 @@
                             </text>
                         </Tooltip>
                     </tooltip>
-                    <!--TODO DEL-->
-<!--                    <graphic>-->
-<!--                        <ImageView fitHeight="$imageSize" fitWidth="$imageSize" translateX="-5">-->
-<!--                            <Image url="@images/settings.png"/>-->
-<!--                        </ImageView>-->
-<!--                    </graphic>-->
+                    <graphic>
+                        <SettingsIco/>
+                    </graphic>
                 </Button>
-
-            </GridPane>
+            </VBox>
         </TitledPane>
         <TitledPane text="日志" fx:id="titledPaneLog">
             <ScrollPane fx:id="logScrollPane" hbarPolicy="NEVER" style="-fx-background:white">
-                <VBox spacing="15">
-                    <padding>
-                        <Insets left="5" right="5" top="10" bottom="20"/>
-                    </padding>
-                    <Label contentDisplay="RIGHT" text="日志输出：" style="-fx-border-width: 3;-fx-font-size: 16">
-                        <graphic>
-                            <Switch fx:id="logSwitch"/>
-                        </graphic>
-                    </Label>
-                    <VBox maxWidth="${accordion.width}" spacing="6" fx:id="logVBox">
-                    </VBox>
-                </VBox>
+                <VBox maxWidth="${accordion.width}" spacing="6" fx:id="logVBox" style="-fx-padding: 5"/>
             </ScrollPane>
         </TitledPane>
     </panes>

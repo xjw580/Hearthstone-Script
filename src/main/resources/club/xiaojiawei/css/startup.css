@@ -1,18 +1,3 @@
-/*.progress-bar {*/
-/*    -fx-accent: #0075FF;*/
-/*    -fx-pref-height: 4;*/
-/*}*/
-/*.progress-bar .bar {*/
-/*    -fx-background-insets: 0;*/
-/*    -fx-background-radius: 0;*/
-/*}*/
-/*.progress-bar > .track {*/
-/*    -fx-border-radius: 0;*/
-/*    -fx-background-radius: 0;*/
-/*    -fx-text-box-border: transparent;*/
-/*    -fx-control-inner-background: transparent;*/
-/*    -fx-background-color: transparent;*/
-/*}*/
 #tip{
-    -fx-text-fill: white;
+    -fx-fill: white;
 }

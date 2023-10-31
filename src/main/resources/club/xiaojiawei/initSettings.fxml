@@ -5,10 +5,12 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
+<?import club.xiaojiawei.controls.ico.FileIco?>
+<?import club.xiaojiawei.controls.PasswordShowField?>
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="club.xiaojiawei.controller.JavaFXInitSettingsController">
-    <VBox spacing="15" style="-fx-font-size: 13">
+    <VBox spacing="15" style="-fx-font-size: 13" alignment="CENTER_LEFT">
         <padding>
             <Insets top="10" left="10" bottom="10" right="10"/>
         </padding>
@@ -16,7 +18,11 @@
             <graphic>
                 <Label fx:id="game" translateX="5" contentDisplay="RIGHT" underline="true" >
                     <graphic>
-                        <Button styleClass="btn-ui, btn-ui-small" translateX="10" onAction="#gameClicked" text="选择"/>
+                        <Button styleClass="btn-ui, btn-ui-small" translateX="10" onAction="#gameClicked" text="选择">
+                            <graphic>
+                                <FileIco/>
+                            </graphic>
+                        </Button>
                     </graphic>
                 </Label>
             </graphic>
@@ -25,14 +31,18 @@
             <graphic>
                 <Label fx:id="platform" translateX="5" contentDisplay="RIGHT" underline="true" >
                     <graphic>
-                        <Button styleClass="btn-ui, btn-ui-small" translateX="10" onAction="#platformClicked" text="选择"/>
+                        <Button styleClass="btn-ui, btn-ui-small" translateX="10" onAction="#platformClicked" text="选择">
+                            <graphic>
+                                <FileIco/>
+                            </graphic>
+                        </Button>
                     </graphic>
                 </Label>
             </graphic>
         </Label>
         <Label text="战网账号密码：" contentDisplay="RIGHT">
             <graphic>
-                <PasswordField fx:id="password"/>
+                <PasswordShowField styleClass="password-show-field-ui, password-show-field-ui-small" fx:id="password"/>
             </graphic>
             <tooltip>
                 <Tooltip text="自动登录失败的时用，非必填项"/>
