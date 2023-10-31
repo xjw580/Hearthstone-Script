@@ -98,7 +98,7 @@ public class SystemUtil {
         cancelAllTask();
         cancelAllProgramTimer();
         cancelAllListener();
-        delay(2000);
+        delay(1000);
     }
     public static void notice(String context){
         notice(SCRIPT_NAME, context);

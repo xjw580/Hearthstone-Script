@@ -7,14 +7,6 @@
 .accordion{
     -fx-background-color: white;
 }
-.vBox{
-    -fx-alignment: CENTER;
-    -fx-spacing: 20;
-}
-.hBox{
-    -fx-alignment: CENTER;
-    -fx-spacing: 45;
-}
 .workVBox{
     -fx-effect: innershadow(one-pass-box, rgba(128, 128, 128, 0.67), 5, 0, 1, 1);
     -fx-padding: 10 0 10 5;

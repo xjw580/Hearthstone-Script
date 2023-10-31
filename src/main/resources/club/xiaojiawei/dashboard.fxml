@@ -1,26 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import club.xiaojiawei.controls.ico.PauseIco?>
-<?import club.xiaojiawei.controls.ico.SettingsIco?>
-<?import club.xiaojiawei.controls.ico.StartIco?>
+<?import club.xiaojiawei.controls.ico.*?>
 <?import club.xiaojiawei.controls.*?>
-<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 <?import javafx.util.Duration?>
-<?import java.lang.String?>
-<?import club.xiaojiawei.controls.ico.UpdateIco?>
 <Accordion xmlns:fx="http://javafx.com/fxml"
            expandedPane="$titledPaneControl"
            fx:id="accordion"
            styleClass="accordion-ui, accordion-ui-big"
-           stylesheets="@css/fxDashboard.css"
+           stylesheets="@css/dashboard.css"
            fx:controller="club.xiaojiawei.controller.JavaFXDashboardController">
     <panes>
         <TitledPane text="控制" fx:id="titledPaneControl">
-            <VBox styleClass="vBox" style="-fx-padding: 0 5 0 5">
-                <HBox styleClass="hBox">
+            <VBox alignment="CENTER" spacing="20" style="-fx-padding: 0 5 0 5">
+                <HBox alignment="CENTER" spacing="40">
                     <Button fx:id="startButton" text="开始" styleClass="btn-ui, btn-ui-success-3d" onAction="#start">
                         <tooltip>
                             <Tooltip text="开始工作">
@@ -62,31 +57,33 @@
                     </graphic>
                 </Label>
 
-                <HBox styleClass="hBox">
+                <HBox alignment="CENTER">
+                    <HBox HBox.hgrow="ALWAYS"/>
                     <Label text="游戏局数："
                            contentDisplay="RIGHT">
                         <graphic>
                             <Text text="0" fx:id="gameCount"/>
                         </graphic>
                     </Label>
+                    <HBox HBox.hgrow="ALWAYS"/>
                     <Label text="胜率："
                            contentDisplay="RIGHT">
                         <graphic>
                             <Text text="?" fx:id="winningPercentage"/>
                         </graphic>
                     </Label>
+                    <HBox HBox.hgrow="ALWAYS"/>
                 </HBox>
 
-                <HBox styleClass="hBox">
+                <HBox alignment="CENTER">
+                    <HBox HBox.hgrow="ALWAYS"/>
                     <Label text="游戏时长："
                            contentDisplay="RIGHT">
-                        <tooltip>
-                            <Tooltip text="分钟"/>
-                        </tooltip>
                         <graphic>
                             <Text text="0" fx:id="gameTime"/>
                         </graphic>
                     </Label>
+                    <HBox HBox.hgrow="ALWAYS"/>
                     <Label text="经验："
                            contentDisplay="RIGHT">
                         <tooltip>
@@ -96,17 +93,14 @@
                             <Text text="0" fx:id="exp"/>
                         </graphic>
                     </Label>
+                    <HBox HBox.hgrow="ALWAYS"/>
                 </HBox>
 
                 <VBox alignment="CENTER" spacing="15" styleClass="workVBox">
                     <HBox alignment="CENTER_LEFT" spacing="10">
                         <Text text="工作天:"/>
                         <TilePane hgap="20" vgap="5" fx:id="workDay" style="-fx-padding: 0">
-                            <CheckBox styleClass="check-box-ui" text="每天">
-                                <tooltip>
-                                    <Tooltip text="优先级最高"/>
-                                </tooltip>
-                            </CheckBox>
+                            <CheckBox styleClass="check-box-ui" text="每天"/>
                             <CheckBox styleClass="check-box-ui" text="周一"/>
                             <CheckBox styleClass="check-box-ui" text="周二"/>
                             <CheckBox styleClass="check-box-ui" text="周三"/>
@@ -153,47 +147,28 @@
                         </VBox>
                     </HBox>
 
-                    <Button fx:id="saveButton" text="保存" styleClass="btn-ui, btn-ui-success" onAction="#save">
-                        <graphic>
-                        </graphic>
-                    </Button>
+                    <HBox alignment="CENTER" spacing="6">
+                        <OKIco scaleX="1.3" scaleY="1.3" fx:id="ok" visible="false" managed="false"/>
+                        <Button fx:id="saveButton" text="保存" styleClass="btn-ui, btn-ui-success" onAction="#save"/>
+                    </HBox>
                 </VBox>
 
                 <VBox alignment="CENTER" spacing="5">
-                    <Label fx:id="version"
-                           contentDisplay="RIGHT">
-                        <graphic>
-                            <Button onAction="#update" fx:id="update" styleClass="btn-ui, btn-ui-small, btn-ui-normal" visible="false">
-                                <tooltip>
-                                    <Tooltip>
-                                        <showDelay>
-                                            <Duration millis="400"/>
-                                        </showDelay>
-                                        <text>
-                                            <String fx:value="更新"/>
-                                        </text>
-                                    </Tooltip>
-                                </tooltip>
-                                <graphic>
-                                    <UpdateIco/>
-                                </graphic>
-                            </Button>
-                        </graphic>
-                    </Label>
+                    <HBox spacing="5" alignment="CENTER">
+                        <Text fx:id="version"/>
+                        <Button onAction="#update" fx:id="update" styleClass="btn-ui, btn-ui-small, btn-ui-normal" visible="false" managed="false">
+                            <tooltip>
+                                <Tooltip text="下载更新"/>
+                            </tooltip>
+                            <graphic>
+                                <UpdateIco/>
+                            </graphic>
+                        </Button>
+                    </HBox>
                     <ProgressBar fx:id="downloadProgress" progress="1" styleClass="progress-bar-ui" prefWidth="${titledPaneControl.width}" visible="false" managed="false"/>
                 </VBox>
 
                 <Button fx:id="settingsButton" onAction="#showSettings" text="设置" styleClass="btn-ui">
-                    <tooltip>
-                        <Tooltip>
-                            <showDelay>
-                                <Duration millis="400"/>
-                            </showDelay>
-                            <text>
-                                <String fx:value="打开设置"/>
-                            </text>
-                        </Tooltip>
-                    </tooltip>
                     <graphic>
                         <SettingsIco/>
                     </graphic>

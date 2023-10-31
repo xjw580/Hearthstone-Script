@@ -2,15 +2,18 @@ package club.xiaojiawei.controller;
 
 import club.xiaojiawei.bean.Release;
 import club.xiaojiawei.bean.WsResult;
+import club.xiaojiawei.controls.Time;
+import club.xiaojiawei.controls.ico.OKIco;
 import club.xiaojiawei.enums.DeckEnum;
 import club.xiaojiawei.enums.RunModeEnum;
 import club.xiaojiawei.enums.StageEnum;
 import club.xiaojiawei.enums.WsResultTypeEnum;
 import club.xiaojiawei.listener.VersionListener;
 import club.xiaojiawei.status.Work;
-import club.xiaojiawei.utils.FrameUtil;
 import club.xiaojiawei.utils.PropertiesUtil;
 import club.xiaojiawei.utils.SystemUtil;
+import club.xiaojiawei.utils.TipUtil;
+import club.xiaojiawei.utils.WindowUtil;
 import club.xiaojiawei.ws.WebSocketServer;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
@@ -20,13 +23,12 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Paint;
 import javafx.scene.text.Text;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -36,7 +38,6 @@ import java.util.Objects;
 import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -55,7 +56,7 @@ public class JavaFXDashboardController implements Initializable {
 
     @FXML private ScrollPane logScrollPane;
     @FXML private Button update;
-    @FXML private Label version;
+    @FXML private Text version;
     @FXML private VBox logVBox;
     @FXML private Accordion accordion;
     @FXML private Button startButton;
@@ -69,8 +70,6 @@ public class JavaFXDashboardController implements Initializable {
     @FXML private ComboBox deckBox;
     @FXML private TilePane workDay;
     @FXML private VBox workTime;
-//    TODO DEL
-    private Text tip;
     @FXML private ProgressBar downloadProgress;
     @Resource
     private AtomicReference<BooleanProperty> isPause;
@@ -91,7 +90,7 @@ public class JavaFXDashboardController implements Initializable {
         isPause.get().set(true);
     }
     @FXML protected void showSettings() {
-        FrameUtil.showStage(StageEnum.SETTINGS);
+        WindowUtil.showStage(StageEnum.SETTINGS);
     }
     private static AtomicReference<BooleanProperty> staticIsPause;
     private static final SimpleBooleanProperty IS_UPDATING = new SimpleBooleanProperty(false);
@@ -103,7 +102,7 @@ public class JavaFXDashboardController implements Initializable {
                 if (!new File(TEMP_PATH).exists()){
                     downloadRelease(release);
                 }
-                Platform.runLater(() -> FrameUtil.createAlert("新版本[" + release.getTagName() + "]下载完毕", "现在更新？", event -> {
+                Platform.runLater(() -> WindowUtil.createAlert("新版本[" + release.getTagName() + "]下载完毕", "现在更新？", event -> {
                     execUpdate();
                 }, event -> IS_UPDATING.set(false), event -> IS_UPDATING.set(false), event -> IS_UPDATING.set(false)).show());
             });
@@ -117,10 +116,10 @@ public class JavaFXDashboardController implements Initializable {
                         .getInputStream();
                 ZipInputStream zipInputStream = new ZipInputStream(inputStream);
         ) {
-//            todo 下载进度条
             log.info("开始下载新版本：" + release.getTagName());
             staticDownloadProgress.setProgress(0D);
             staticDownloadProgress.setVisible(true);
+            staticDownloadProgress.setManaged(true);
             ZipEntry nextEntry;
             double count = 0;
             while ((nextEntry = zipInputStream.getNextEntry()) != null) {
@@ -147,6 +146,7 @@ public class JavaFXDashboardController implements Initializable {
             throw new RuntimeException(e);
         } finally {
             staticDownloadProgress.setVisible(false);
+            staticDownloadProgress.setManaged(false);
             IS_UPDATING.set(false);
         }
     }
@@ -165,46 +165,24 @@ public class JavaFXDashboardController implements Initializable {
         ObservableList<Node> workDayChildren = workDay.getChildren();
         String[] workDayFlagArr = Work.getWorkDayFlagArr();
         for (int i = 0; i < workDayChildren.size(); i++) {
-            CheckBox workDayChild = (CheckBox) workDayChildren.get(i);
-            if (Objects.equals(workDayFlagArr[i] = String.valueOf(workDayChild.isSelected()), "true") && i > 0 && Objects.equals(workDayFlagArr[0], "true")){
-                workDayFlagArr[i] = "false";
-                workDayChild.setSelected(false);
-            }
+            workDayFlagArr[i] = String.valueOf(((CheckBox) workDayChildren.get(i)).isSelected());
         }
 //        检查挂机段
         ObservableList<Node> workTimeChildren = workTime.getChildren();
         String[] workTimeFlagArr = Work.getWorkTimeFlagArr();
         String[] workTimeArr = Work.getWorkTimeArr();
         for (int i = 0; i < workTimeChildren.size(); i++) {
-            CheckBox workTimeChild = (CheckBox) workTimeChildren.get(i);
-            workTimeFlagArr[i] = String.valueOf(workTimeChild.isSelected());
-            TextField graphic = (TextField) workTimeChild.getGraphic();
-            if (i > 0 && Strings.isNotBlank(graphic.getText())){
-                if (!graphic.getText().matches("^\\d{2}:\\d{2}-\\d{2}:\\d{2}")){
-                    workTimeFlagArr[i] = "false";
-                    workTimeChild.setSelected(false);
-                    graphic.setText("格式错误！");
-                }else {
-                    String[] times = graphic.getText().split("-");
-                    workTimeArr[i] = graphic.getText();
-                    if (times[1].compareTo(times[0]) == 0){
-                        workTimeFlagArr[i] = "false";
-                        workTimeChild.setSelected(false);
-                        graphic.setText("不能相等！");
-                    }else {
-                        workTimeArr[i] = graphic.getText();
-                    }
-                }
-            }
+            CheckBox checkBox = (CheckBox) workTimeChildren.get(i);
+            ObservableList<Node> children = ((HBox) (checkBox).getGraphic()).getChildren();
+            workTimeArr[i] = String.join("-", ((Time)children.get(0)).getTime(), ((Time)children.get(2)).getTime());
+            workTimeFlagArr[i] = String.valueOf(checkBox.isSelected());
         }
-        tip.setFill(Paint.valueOf("#00cc00"));
-        tip.setText("保存成功😊");
-        extraThreadPool.schedule(() -> tip.setText(""), 3, TimeUnit.SECONDS);
         Work.storeWorkDate();
+        TipUtil.show(ok, 2);
     }
+    @FXML private OKIco ok;
     public static VBox staticLogVBox;
     public static Accordion staticAccordion;
-    public static Button staticUpdate;
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         version.setText("当前版本：" + VersionListener.getCurrentVersion());
@@ -220,7 +198,6 @@ public class JavaFXDashboardController implements Initializable {
     private void assign(){
         staticLogVBox = logVBox;
         staticAccordion = accordion;
-        staticUpdate = update;
         staticDownloadProgress = downloadProgress;
         staticIsPause = isPause;
     }
@@ -292,35 +269,41 @@ public class JavaFXDashboardController implements Initializable {
     private void listen(){
         //        是否在更新中监听
         IS_UPDATING.addListener((observable, oldValue, newValue) -> update.setDisable(newValue));
-//        监听日志自动滑到底部
+        //        监听日志自动滑到底部
         logVBox.heightProperty().addListener((observable, oldValue, newValue) -> logScrollPane.setVvalue(logScrollPane.getVmax()));
+        VersionListener.getCanUpdate().addListener((observable, oldValue, newValue) -> {
+            System.out.println(newValue);
+            if (newValue){
+                update.setVisible(true);
+                update.setManaged(true);
+            }
+        });
     }
 
     /**
      * 初始化挂机时间
      */
     public void initWorkDate(){
-//        String[] workDayFlagArr = Work.getWorkDayFlagArr();
-//        ObservableList<Node> workDayChildren = workDay.getChildren();
-//        for (int i = 0; i < workDayFlagArr.length; i++) {
-//            CheckBox checkBox = (CheckBox) workDayChildren.get(i);
-//            if (Objects.equals(workDayFlagArr[i], "true")){
-//                checkBox.setSelected(true);
-//                if (i == 0){
-//                    break;
-//                }
-//            }else {
-//                checkBox.setSelected(false);
-//            }
-//        }
-//        String[] workTimeFlagArr = Work.getWorkTimeFlagArr();
-//        String[] workTimeArr = Work.getWorkTimeArr();
-//        ObservableList<Node> workTimeChildren = workTime.getChildren();
-//        for (int i = 0; i < workTimeFlagArr.length; i++) {
-//            CheckBox checkBox = (CheckBox) workTimeChildren.get(i);
-//            ((TextField)checkBox.getGraphic()).setText(Objects.equals(workTimeArr[i], "null")? null : workTimeArr[i]);
-//            checkBox.setSelected(Objects.equals(workTimeFlagArr[i], "true"));
-//        }
+//        初始化挂机天
+        String[] workDayFlagArr = Work.getWorkDayFlagArr();
+        ObservableList<Node> workDayChildren = workDay.getChildren();
+        for (int i = 0; i < workDayFlagArr.length; i++) {
+            ((CheckBox) workDayChildren.get(i)).setSelected(Objects.equals(workDayFlagArr[i], "true"));
+        }
+//        初始化挂机段
+        String[] workTimeFlagArr = Work.getWorkTimeFlagArr();
+        String[] workTimeArr = Work.getWorkTimeArr();
+        ObservableList<Node> workTimeChildren = workTime.getChildren();
+        for (int i = 0; i < workTimeFlagArr.length; i++) {
+            CheckBox checkBox = (CheckBox) workTimeChildren.get(i);
+            ObservableList<Node> children = ((HBox) (checkBox).getGraphic()).getChildren();
+            if (workTimeArr[i] != null && !Objects.equals(workTimeArr[i], "null") && !workTimeArr[i].isBlank()){
+                String[] times = workTimeArr[i].split("-");
+                ((Time)children.get(0)).setTime(times[0]);
+                ((Time)children.get(2)).setTime(times[1]);
+                checkBox.setSelected(Objects.equals(workTimeFlagArr[i], "true"));
+            }
+        }
     }
     public void changeDeck(String deckComment){
         for (DeckEnum value : DeckEnum.values()) {

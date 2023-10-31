@@ -1,8 +1,9 @@
 package club.xiaojiawei.listener;
 
-import club.xiaojiawei.controller.JavaFXDashboardController;
-import club.xiaojiawei.data.SpringData;
 import club.xiaojiawei.bean.Release;
+import club.xiaojiawei.data.SpringData;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -37,7 +38,7 @@ public class VersionListener {
     private Properties scriptConfiguration;
     @Getter
     @Setter
-    private static boolean canUpdate;
+    private static BooleanProperty canUpdate = new SimpleBooleanProperty(false);
     @PostConstruct
     void init(){
           /*
@@ -48,7 +49,7 @@ public class VersionListener {
             currentVersion = springData.getVersion();
         }
     }
-    @Scheduled(fixedDelay = 1000 * 60 * 60 * 12)
+    @Scheduled(initialDelay = 500,fixedDelay = 1000 * 60 * 60 * 12)
     void checkVersion(){
 //        在idea中启动时就不要检查更新了
         if (!Objects.equals(Objects.requireNonNull(this.getClass().getResource("")).getProtocol(), "jar")){
@@ -67,8 +68,7 @@ public class VersionListener {
         }
         if (latestRelease != null){
             if (currentVersion.compareTo(latestRelease.getTagName()) < 0 && (!latestRelease.isPreRelease() || Objects.equals(scriptConfiguration.getProperty(UPDATE_DEV.getKey()), "true"))){
-                canUpdate = true;
-                JavaFXDashboardController.staticUpdate.setVisible(true);
+                canUpdate.set(true);
                 log.info("有更新可用😊，当前版本：" + currentVersion + ", 最新版本：" + latestRelease.getTagName());
             }else {
                 log.info("已是最新，当前版本：" + currentVersion);

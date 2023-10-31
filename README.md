@@ -47,7 +47,7 @@
 
   2. 点击开始按钮或者使用热键Ctrl+P
 
-     ![脚本程序页面](https://zergqueen.gitee.io/images/hearthstone/2023-10-18%20161549.png)
+     ![脚本程序页面](https://zergqueen.gitee.io/images/hearthstone/main.png)
 
 - **关闭脚本**
 
@@ -61,16 +61,13 @@
 
 ### 更新日志
 
-##### v3.1.8.2-DEV
+##### v3.1.9-GA
 
+- 界面UI优化
 - 优化偶数萨中分裂战斧使用条件
 - Web页面中显示脚本版本号
 - Web页面中关闭炉石和关闭战网添加确认弹窗，防止误触
-
-
-
-##### v3.1.8.1-DEV
-
+- 主界面创建方式由Swing改为JavaFX
 - 优化日志输出
 - 规范注释
 

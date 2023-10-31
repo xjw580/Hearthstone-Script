@@ -5,7 +5,7 @@ import club.xiaojiawei.data.ScriptStaticData;
 import club.xiaojiawei.enums.StageEnum;
 import club.xiaojiawei.starter.AbstractStarter;
 import club.xiaojiawei.status.Work;
-import club.xiaojiawei.utils.FrameUtil;
+import club.xiaojiawei.utils.WindowUtil;
 import club.xiaojiawei.utils.SystemUtil;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
@@ -48,7 +48,7 @@ public class Core{
         coreThreadPool.execute(() -> {
             if (!ScriptStaticData.isSetPath()){
                 SystemUtil.notice("需要配置" + ScriptStaticData.GAME_CN_NAME + "和" + ScriptStaticData.PLATFORM_CN_NAME + "的路径");
-                Platform.runLater(() -> FrameUtil.showStage(StageEnum.SETTINGS));
+                Platform.runLater(() -> WindowUtil.showStage(StageEnum.SETTINGS));
                 isPause.get().set(true);
             }else if (!isPause.get().get()){
                 javafxDashboardController.expandedLogPane();

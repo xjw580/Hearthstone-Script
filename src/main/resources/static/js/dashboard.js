@@ -72,9 +72,7 @@ const common = {
                         let arr = data.data;
                         let dayChildren = $("#day").children();
                         for (let i = 0; i < arr[0].length; i++) {
-                            if (arr[0][i] === "true"){
-                                dayChildren[i].children[0].checked = true;
-                            }
+                            dayChildren[i].children[0].checked = arr[0][i] === "true";
                         }
                         let timeChildren = $("#time").children();
                         for (let i = 0; i < arr[1].length; i++) {
@@ -217,9 +215,9 @@ function save(){
         }
     }
     $.get(`/dashboard/save?workDayFlagArr=${workDayFlagArr}&workTimeFlagArr=${workTimeFlagArr}&workTimeArr=${workTimeArr}`, {}, res => {
-        $("#tip").text("保存成功")
+        $("#ok").text("保存成功")
         setTimeout(() => {
-            $("#tip").text("")
+            $("#ok").text("")
         }, 1500)
     })
 }

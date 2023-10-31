@@ -13,6 +13,7 @@ import javafx.beans.property.BooleanProperty;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -56,8 +57,8 @@ public class Work {
     private static Properties scriptProperties;
     private static AtomicReference<BooleanProperty> isPause;
     private static Core core;
-    @Resource
-    public void setScriptProperties(Properties scriptConfiguration) {
+    @Autowired
+    private void set(Properties scriptConfiguration, AtomicReference<BooleanProperty> isPause, PropertiesUtil propertiesUtil){
         Work.scriptProperties = scriptConfiguration;
         String workDayFlagStr = scriptConfiguration.getProperty(WORK_DAY_FLAG.getKey());
         workDayFlagArr = workDayFlagStr.split(",");
@@ -65,13 +66,7 @@ public class Work {
         workTimeFlagArr = workTimeFlagStr.split(",");
         String workTimeStr = scriptConfiguration.getProperty(WORK_TIME.getKey());
         workTimeArr = workTimeStr.split(",");
-    }
-    @Resource
-    public void setIsPause(AtomicReference<BooleanProperty> isPause){
         Work.isPause = isPause;
-    }
-    @Resource
-    public void setPropertiesUtil(PropertiesUtil propertiesUtil){
         Work.propertiesUtil = propertiesUtil;
     }
     @Resource
@@ -124,7 +119,7 @@ public class Work {
 
     public static boolean canWork(){
         //         版本校验，开启自动更新并且有更新可用时将停止工作以升级版本
-        if (Objects.equals(scriptProperties.getProperty(AUTO_UPDATE.getKey()), "true") && VersionListener.isCanUpdate()){
+        if (Objects.equals(scriptProperties.getProperty(AUTO_UPDATE.getKey()), "true") && VersionListener.getCanUpdate().get()){
             if (!new File(TEMP_PATH).exists()){
                 JavaFXDashboardController.downloadRelease(VersionListener.getLatestRelease());
             }
@@ -133,7 +128,12 @@ public class Work {
         }
         return validateDate();
     }
+    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
 
+    /**
+     * 验证是否在工作时间内
+     * @return
+     */
     private static boolean validateDate(){
         //        天校验
         if (!Objects.equals(workDayFlagArr[0], "true") && Objects.equals(workDayFlagArr[LocalDate.now().getDayOfWeek().getValue()], "false")){
@@ -141,15 +141,17 @@ public class Work {
         }
         //        段校验
         LocalTime localTime = LocalTime.now();
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm");
         for (int i = 0; i < workTimeFlagArr.length; i++) {
             if (Objects.equals(workTimeFlagArr[i], "true") && !Objects.equals(workTimeArr[i],  "null")){
                 String[] time = workTimeArr[i].split("-");
-                String nowTime = dateTimeFormatter.format(localTime);
+                String start = time[0], end = time[1], nowTime = DATE_TIME_FORMATTER.format(localTime);
                 if (
-                        (time[1].compareTo(time[0]) > 0 && nowTime.compareTo(time[0]) >= 0 && nowTime.compareTo(time[1]) < 0)
+                        end.compareTo(start) == 0
                                 ||
-                                (time[0].compareTo(time[1]) > 0 && (nowTime.compareTo(time[0]) >= 0 || nowTime.compareTo(time[1]) < 0))
+                        (end.compareTo(start) > 0 && nowTime.compareTo(start) >= 0 && nowTime.compareTo(end) <= 0)
+                                ||
+                        (end.compareTo(start) < 0 && (nowTime.compareTo(start) >= 0 || nowTime.compareTo(end) <= 0))
+
                 ){
                     return true;
                 }
@@ -157,5 +159,4 @@ public class Work {
         }
         return false;
     }
-
 }

@@ -7,49 +7,48 @@
 <?import javafx.scene.text.Text?>
 <?import club.xiaojiawei.controls.ico.FileIco?>
 <?import club.xiaojiawei.controls.PasswordShowField?>
+<?import javafx.scene.layout.HBox?>
+<?import club.xiaojiawei.controls.ico.OKIco?>
+<?import club.xiaojiawei.controls.ico.FailIco?>
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
+            stylesheets="@css/initSettings.css"
             fx:controller="club.xiaojiawei.controller.JavaFXInitSettingsController">
-    <VBox spacing="15" style="-fx-font-size: 13" alignment="CENTER_LEFT">
-        <padding>
-            <Insets top="10" left="10" bottom="10" right="10"/>
-        </padding>
-        <Label text="炉石传说安装路径：" contentDisplay="RIGHT">
-            <graphic>
-                <Label fx:id="game" translateX="5" contentDisplay="RIGHT" underline="true" >
-                    <graphic>
-                        <Button styleClass="btn-ui, btn-ui-small" translateX="10" onAction="#gameClicked" text="选择">
-                            <graphic>
-                                <FileIco/>
-                            </graphic>
-                        </Button>
-                    </graphic>
-                </Label>
-            </graphic>
-        </Label>
-        <Label text="战网程序路径：" contentDisplay="RIGHT">
-            <graphic>
-                <Label fx:id="platform" translateX="5" contentDisplay="RIGHT" underline="true" >
-                    <graphic>
-                        <Button styleClass="btn-ui, btn-ui-small" translateX="10" onAction="#platformClicked" text="选择">
-                            <graphic>
-                                <FileIco/>
-                            </graphic>
-                        </Button>
-                    </graphic>
-                </Label>
-            </graphic>
-        </Label>
-        <Label text="战网账号密码：" contentDisplay="RIGHT">
-            <graphic>
-                <PasswordShowField styleClass="password-show-field-ui, password-show-field-ui-small" fx:id="password"/>
-            </graphic>
-            <tooltip>
-                <Tooltip text="自动登录失败的时用，非必填项"/>
-            </tooltip>
-        </Label>
-        <Text fx:id="tip"/>
+    <VBox styleClass="main">
+        <HBox styleClass="h-box">
+            <Text text="炉石传说安装路径："/>
+            <Text fx:id="game" underline="true"/>
+            <Button styleClass="btn-ui, btn-ui-small" translateX="10" onAction="#gameClicked" text="选择">
+                <graphic>
+                    <FileIco/>
+                </graphic>
+            </Button>
+        </HBox>
+        <HBox styleClass="h-box">
+            <Text text="战网程序路径："/>
+            <Text fx:id="platform" underline="true"/>
+            <Button styleClass="btn-ui, btn-ui-small" translateX="10" onAction="#platformClicked" text="选择">
+                <graphic>
+                    <FileIco/>
+                </graphic>
+            </Button>
+        </HBox>
+        <HBox styleClass="h-box">
+            <Text text="战网账号密码："/>
+            <PasswordShowField styleClass="password-show-field-ui, password-show-field-ui-small" fx:id="password" promptText="非必填项，防止登录失败用"/>
+        </HBox>
     </VBox>
-    <Button fx:id="apply" text="应用" styleClass="btn-ui, btn-ui-normal" onAction="#apply" AnchorPane.bottomAnchor="15" AnchorPane.rightAnchor="15"/>
-    <Button fx:id="save" text="保存" styleClass="btn-ui, btn-ui-success" onAction="#save" AnchorPane.bottomAnchor="15" AnchorPane.rightAnchor="120"/>
+    <HBox AnchorPane.bottomAnchor="15" AnchorPane.rightAnchor="15" spacing="20" alignment="CENTER">
+        <HBox spacing="5" alignment="CENTER">
+            <Label fx:id="ok" visible="false" managed="false">
+                <graphic><OKIco scaleX="1.3" scaleY="1.3"/></graphic>
+            </Label>
+            <Label fx:id="fail" visible="false" managed="false">
+                <graphic><FailIco scaleX="1.3" scaleY="1.3"/></graphic>
+            </Label>
+            <Button fx:id="apply" text="应用" styleClass="btn-ui, btn-ui-normal" onAction="#apply"/>
+        </HBox>
+        <HBox HBox.hgrow="ALWAYS"/>
+        <Button fx:id="save" text="保存" styleClass="btn-ui, btn-ui-success" onAction="#save" />
+    </HBox>
 </AnchorPane>

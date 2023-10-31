@@ -34,44 +34,13 @@ import java.util.concurrent.atomic.AtomicReference;
  * @date 2023/2/10 19:42
  */
 @Component
-public class FrameUtil {
+public class WindowUtil {
 
     private static ApplicationContext context;
 
     @Resource
     public void setContext(ApplicationContext context) {
-        FrameUtil.context = context;
-    }
-
-    /**
-     * 创建永久置顶的窗口
-     * @param frameTitle
-     * @param scene
-     * @param frameWidth
-     * @param frameHeight
-     * @return
-     */
-    public static AtomicReference<JFrame> createAlwaysTopWindowFrame(String frameTitle, Scene scene, int frameWidth, int frameHeight){
-        AtomicReference<JFrame> atomFrame = new AtomicReference<>();
-//        异步，所以用返回原子类
-        SwingUtilities.invokeLater(() -> {
-            try {
-                JFrame frame = new JFrame(frameTitle);
-                frame.setIconImage(new ImageIcon(Objects.requireNonNull(FrameUtil.class.getResourceAsStream(ScriptStaticData.SCRIPT_ICON_PATH)).readAllBytes()).getImage());
-                frame.setSize(frameWidth, frameHeight);
-                Rectangle2D bounds = Screen.getPrimary().getBounds();
-                frame.setLocation((int) (bounds.getWidth() - frameWidth + 5), (int) (bounds.getHeight() - frameHeight) >> 1);
-                final JFXPanel fxPanel = new JFXPanel();
-                frame.add(fxPanel);
-                frame.setAlwaysOnTop(true);
-                frame.setVisible(true);
-                Platform.runLater(() -> fxPanel.setScene(scene));
-                atomFrame.set(frame);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        });
-        return atomFrame;
+        WindowUtil.context = context;
     }
 
     /**
@@ -133,21 +102,24 @@ public class FrameUtil {
     public static Stage getStage(StageEnum stageEnum, boolean createStage){
         Stage stage = STAGE_MAP.get(stageEnum);
         if (stage == null && createStage){
-            stage = createStage(stageEnum);
-            STAGE_MAP.put(stageEnum, stage);
+            STAGE_MAP.put(stageEnum, stage = createStage(stageEnum));
         }
         return stage;
     }
     private static Stage createStage(StageEnum stageEnum){
         Stage stage = new Stage();
         try {
-            FXMLLoader fxmlLoader = new FXMLLoader(FrameUtil.class.getResource(ScriptStaticData.MAIN_PATH + stageEnum.getFxmlName()));
-            fxmlLoader.setControllerFactory(context::getBean);
+            FXMLLoader fxmlLoader = new FXMLLoader(WindowUtil.class.getResource(ScriptStaticData.MAIN_PATH + stageEnum.getFxmlName()));
+            if (context != null){
+                fxmlLoader.setControllerFactory(context::getBean);
+            }
             Scene scene = new Scene(fxmlLoader.load());
             stage.setScene(scene);
             scene.getStylesheets().add(JavaFXUI.javafxUIStylesheet());
             stage.setTitle(stageEnum.getTitle());
-            stage.getIcons().add(new Image(Objects.requireNonNull(FrameUtil.class.getResource(ScriptStaticData.SCRIPT_ICON_PATH)).toExternalForm()));
+            stage.getIcons().add(new Image(Objects.requireNonNull(WindowUtil.class.getResource(ScriptStaticData.SCRIPT_ICON_PATH)).toExternalForm()));
+            stage.setWidth(stageEnum.getWidth());
+            stage.setHeight(stageEnum.getHeight());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

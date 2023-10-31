@@ -20,14 +20,14 @@ public class JavaFXStartupController implements Initializable {
     @FXML
     private ProgressBar progressBar;
     @FXML
-    private Text tip;
+    private Text ok;
     private static int count;
     private static Text staticTip;
     private static ProgressBar staticProgressBar;
     private static Timer timer;
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        staticTip = tip;
+        staticTip = ok;
         staticProgressBar = progressBar;
         timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask() {
@@ -37,7 +37,7 @@ public class JavaFXStartupController implements Initializable {
                     timer.cancel();
                 }else {
                     Platform.runLater(() -> {
-                        tip.setText(String.format("HS-Assistant启动中......%d%%", count));
+                        ok.setText(String.format("HS-Assistant启动中......%d%%", count));
                         progressBar.setProgress((double) count / 100);
                     });
                 }
