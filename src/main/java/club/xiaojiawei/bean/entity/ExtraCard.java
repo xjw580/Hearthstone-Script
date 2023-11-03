@@ -9,10 +9,11 @@ import lombok.ToString;
  * @author 肖嘉威
  * @date 2022/11/30 12:33
  */
-@EqualsAndHashCode(callSuper = true)
 @Data
 @ToString(callSuper = true)
-public class ExtraCard extends Card{
+public class ExtraCard{
+
+    private Card card = new Card();
 
     private ZoneEnum zone;
 

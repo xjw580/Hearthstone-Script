@@ -42,7 +42,7 @@ public class JavaFXStartupController implements Initializable {
                     });
                 }
             }
-        }, 500, 10);
+        }, 700, 20);
     }
 
     public static void complete(){

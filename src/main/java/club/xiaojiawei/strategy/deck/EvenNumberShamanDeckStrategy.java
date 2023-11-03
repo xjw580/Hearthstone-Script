@@ -10,12 +10,14 @@ import club.xiaojiawei.utils.SystemUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 import static club.xiaojiawei.data.ScriptStaticData.COIN;
 import static club.xiaojiawei.enums.CardTypeEnum.MINION;
-import static club.xiaojiawei.strategy.deck.EvenNumberShamanDeckStrategy.EvenNumberShamanTemp.*;
+import static club.xiaojiawei.strategy.AbstractDeckStrategy.AbstractDeck.火舌图腾;
+import static club.xiaojiawei.strategy.deck.EvenNumberShamanDeckStrategy.EvenNumberShaman.*;
 
 /**
  * 偶数萨
@@ -51,36 +53,27 @@ public class EvenNumberShamanDeckStrategy extends AbstractDeckStrategy{
      AAEBAaoIBM30ArLBBLHZBOmhBg0zvgayFJTvAp2jA9qlA/mRBPq0BIbUBKrZBL3lBMGeBt+hBgAA
      #
      # 想要使用这副套牌，请先复制到剪贴板，然后在游戏中点击“新套牌”进行粘贴。
-
-     /**
-     * 这个类的目的是为了节省内存，使用时才加载
      */
-    static class EvenNumberShamanTemp {
-        static final BaseCard 图腾之力 = new BaseCard("EX1_244");
-        static final BaseCard 图腾潮涌 = new BaseCard("ULD_171");
-        static final BaseCard 冰霜撕咬 = new BaseCard("AV_259");
-        static final BaseCard 图腾魔像 = new BaseCard("AT_052");
-        static final BaseCard 海象人图腾师 = new BaseCard("WON_081");
-        static final BaseCard 即兴演奏 = new BaseCard("JAM_013");
-        static final BaseCard 异教低阶牧师 = new BaseCard("SCH_713");
-        static final BaseCard 深海融合怪 = new BaseCard("TSC_069");
-        static final BaseCard 火舌图腾 = new BaseCard("EX1_565");
-        static final BaseCard 石雕凿刀 = new BaseCard("REV_917");
-        static final BaseCard 笔记能手 = new BaseCard("SCH_236");
-        static final BaseCard 阴燃电鳗 = new BaseCard("GIL_530");
-        static final BaseCard 风怒 = new BaseCard("CS2_039");
-        static final BaseCard 驻锚图腾 = new BaseCard("TSC_922");
-        static final BaseCard 分裂战斧 = new BaseCard("ULD_413");
-        static final BaseCard 图腾团聚 = new BaseCard("WON_091");
-        static final BaseCard 锻石师 = new BaseCard("REV_921");
-        static final BaseCard 吉恩_格雷迈恩 = new BaseCard("GIL_692");
-        static final BaseCard 深渊魔物 = new BaseCard("OG_028");
-        static final BaseCard 图腾巨像 = new BaseCard("REV_838");
-        static final BaseCard 末日预言者 = new BaseCard("NEW1_021");
-        static final BaseCard 对空奥数法师 = new BaseCard("ULD_240");
-        static final BaseCard 健谈的调酒师 = new BaseCard("REV_513");
-        static final BaseCard 船载火炮 = new BaseCard("GVG_075");
-        static final BaseCard 刺豚拳手 = new BaseCard("TSC_002");
+    static class EvenNumberShaman {
+        public static final BaseCard 图腾之力 = new BaseCard("EX1_244");
+        public static final BaseCard 图腾潮涌 = new BaseCard("ULD_171");
+        public static final BaseCard 冰霜撕咬 = new BaseCard("AV_259");
+        public static final BaseCard 图腾魔像 = new BaseCard("AT_052");
+        public static final BaseCard 海象人图腾师 = new BaseCard("WON_081");
+        public static final BaseCard 即兴演奏 = new BaseCard("JAM_013");
+        public static final BaseCard 异教低阶牧师 = new BaseCard("SCH_713");
+        public static final BaseCard 深海融合怪 = new BaseCard("TSC_069");
+        public static final BaseCard 石雕凿刀 = new BaseCard("REV_917");
+        public static final BaseCard 笔记能手 = new BaseCard("SCH_236");
+        public static final BaseCard 阴燃电鳗 = new BaseCard("GIL_530");
+        public static final BaseCard 风怒 = new BaseCard("CS2_039");
+        public static final BaseCard 驻锚图腾 = new BaseCard("TSC_922");
+        public static final BaseCard 分裂战斧 = new BaseCard("ULD_413");
+        public static final BaseCard 图腾团聚 = new BaseCard("WON_091");
+        public static final BaseCard 锻石师 = new BaseCard("REV_921");
+        public static final BaseCard 吉恩_格雷迈恩 = new BaseCard("GIL_692");
+        public static final BaseCard 深渊魔物 = new BaseCard("OG_028");
+        public static final BaseCard 图腾巨像 = new BaseCard("REV_838");
     }
 
     @Override
@@ -120,123 +113,19 @@ public class EvenNumberShamanDeckStrategy extends AbstractDeckStrategy{
         }
         log.debug("法术斩杀未成功");
         dealResource();
-        int tauntIndex = -1;
 //        解嘲讽怪
-        for (int rivalIndex = rivalPlayCards.size() - 1; rivalIndex >= 0; rivalIndex--) {
-            if (rivalIndex < rivalPlayCards.size()){
-                Card rivalCard = rivalPlayCards.get(rivalIndex);
-                if (
-                        rivalCard.getCardType() == MINION
-                                && rivalCard.isTaunt()
-                                && canPointedToRival(rivalCard)
-                ){
-                    int heroAtc = calcMyHeroTotalAtc();
-                    List<Integer> result = calcEatRivalCard(rivalCard, Integer.MAX_VALUE, (heroAtc == 0 || myPlayArea.getHero().isExhausted())? 0 : heroAtc);
-                    if (result != null){
-                        log.info("解嘲讽怪：【entityId:" + rivalCard.getEntityId() + "，entityName:" + rivalCard.getEntityName() + "，cardId:" + rivalCard.getCardId() + "】");
-//                攻击嘲讽怪
-                        for (int j = result.size() - 2; j >= 0; j--) {
-                            myPlayPointToRivalPlay(result.get(j), rivalIndex);
-                        }
-                        if (!(heroAtc == 0 || myPlayArea.getHero().isExhausted())){
-                            myHeroPointToRivalPlay(rivalIndex);
-                        }
-                    }else {
-                        tauntIndex = rivalIndex;
-                    }
-                }
-            }
-        }
-        if (tauntIndex == -1){
+        boolean resultTaunt = cleanTaunt();
+        if (resultTaunt){
             log.debug("对面已无嘲讽怪");
 //        过墙成功
             dealWeapon();
             if (calcMyAllTotalAtc() >= calcRivalHeroBlood()){
                 log.debug("达到斩杀线，怪全部打脸");
                 //        怪全部打脸
-                for (int i = myPlayCards.size() - 1; i >= 0; i--) {
-                    Card card = myPlayCards.get(i);
-                    myPlayPointToRivalHero(i);
-                    if (card.isWindFury()){
-                        myPlayPointToRivalHero(i);
-                    }
-                }
+                allAtcRivalHero();
             }
-    //        能走到这说明斩杀不了，解光环怪
-            for (int rivalIndex = rivalPlayCards.size() - 1; rivalIndex >= 0; rivalIndex--) {
-                if (rivalIndex < rivalPlayCards.size()){
-                    Card rivalCard = rivalPlayCards.get(rivalIndex);
-                    if (
-                            rivalCard.getCardType() == MINION
-                            && canPointedToRival(rivalCard)
-                            && (
-                                    rivalCard.isTitan()
-                                    || rivalCard.isAura()
-                                    || rivalCard.isAdjacentBuff()
-                                    || cardEquals(rivalCard, 末日预言者)
-                                    || cardEquals(rivalCard, 对空奥数法师)
-                                    || cardEquals(rivalCard, 健谈的调酒师)
-                                    || cardEquals(rivalCard, 船载火炮)
-                                    || cardEquals(rivalCard, 刺豚拳手)
-                                 )
-                    ){
-                        int heroAtc = calcMyHeroTotalAtc();
-                        List<Integer> result = calcEatRivalCard(rivalCard, Integer.MAX_VALUE, (heroAtc == 0 || myPlayArea.getHero().isExhausted())? 0 : heroAtc);
-                        if (result != null){
-                            log.info("解光环怪：【entityId:" + rivalCard.getEntityId() + "，entityName:" + rivalCard.getEntityName() + "，cardId:" + rivalCard.getCardId() + "】");
-                            for (int j = result.size() - 2; j >= 0; j--) {
-                                myPlayPointToRivalPlay(result.get(j), rivalIndex);
-                            }
-                            if (!(heroAtc == 0 || myPlayArea.getHero().isExhausted())){
-                                myHeroPointToRivalPlay(rivalIndex);
-                            }
-                        }
-                    }
-                }
-            }
-//        怪解场或打脸
-            for (int i = myPlayCards.size() - 1; i >= 0; i--) {
-                log.debug("怪解场或打脸");
-                if (i < myPlayCards.size()){
-                    Card card = myPlayCards.get(i);
-                    if (card.getCardType() == MINION && canMove(card)){
-                        int rivalIndex;
-                        if (
-                                card.isAura()
-                                        || card.isAdjacentBuff()
-                        ){
-                            rivalIndex = calcMyCardFreeEat(card, false);
-                        }else {
-                            rivalIndex = calcMyCardFreeEat(card, true);
-                        }
-                        if (rivalIndex != -1){
-                            Card rivalCard = rivalPlayCards.get(rivalIndex);
-                            log.info("解怪：【entityId:" + rivalCard.getEntityId() + "，entityName:" + rivalCard.getEntityName() + "，cardId:" + rivalCard.getCardId() + "】");
-                            myPlayPointToRivalPlay(i, rivalIndex);
-                        }else {
-                            myPlayPointToRivalHero(i);
-                        }
-                        if (card.isWindFury() && !card.isExhausted()){
-                            i++;
-                        }
-                    }
-                }
-            }
-        }else if (
-                myPlayCards.size() > 5 && getMyUsableResource() > 1
-                || myPlayCards.size() > 4 && getMyUsableResource() > 2
-                || myPlayCards.size() > 3 && getMyUsableResource() > 4
-        ){
-            for (int i = myPlayCards.size() - 1; i >= 0; i--) {
-                if (i < myPlayCards.size()){
-                    Card card = myPlayCards.get(i);
-                    log.info("攻击嘲讽怪：【entityId:" + card.getEntityId() + "，entityName:" + card.getEntityName() + "，cardId:" + card.getCardId() + "】");
-                    myPlayPointToRivalPlay(i, tauntIndex);
-                    if (card.isWindFury() && !card.isExhausted()){
-                        i++;
-                    }
-                }
-            }
+            cleanPlay();
+            allAtcRivalHero();
         }
         dealResource();
         clickPower();
@@ -249,6 +138,12 @@ public class EvenNumberShamanDeckStrategy extends AbstractDeckStrategy{
                     MouseUtil.cancel();
                 }
             }
+        }
+        if (resultTaunt){
+            allAtcRivalHero();
+        }
+        for (Card card : exhaustedCard) {
+            card.setExhausted(false);
         }
         if (log.isDebugEnabled()){
             log.debug("myPlayCards:" + myPlayCards);
@@ -296,18 +191,14 @@ public class EvenNumberShamanDeckStrategy extends AbstractDeckStrategy{
     private boolean deal图腾巨像(int maxCost){
         index = findByCardId(myHandCards, 图腾巨像);
         if (index != -1 && myHandCards.get(index).getCost() <= maxCost){
-            if (myHandPointToMyPlay(index)){
-                return true;
-            }
+            return myHandPointToMyPlay(index);
         }
         return false;
     }
     private boolean deal深渊魔物(int maxCost){
         index = findByCardId(myHandCards, 深渊魔物);
         if (index != -1 && myHandCards.get(index).getCost() <= maxCost){
-            if (myHandPointToMyPlay(index)){
-                return true;
-            }
+            return myHandPointToMyPlay(index);
         }
         return false;
     }
@@ -316,21 +207,21 @@ public class EvenNumberShamanDeckStrategy extends AbstractDeckStrategy{
     }
     private boolean dealWeapon(){
         log.debug("尝试武器攻击");
-        if (canMove(myPlayArea.getHero()) && calcMyHeroTotalAtc() > 0){
+        if (canMove(myPlayArea.getHero()) && calcMyHeroAtc() > 0){
             log.debug("可以攻击");
             if ((otherIndex = findTauntCard(rivalPlayCards)) == -1){
                 log.debug("没有嘲讽");
                 if (calcCardRaceCount(myPlayCards, CardRaceEnum.TOTEM, true) * calcCardCount(myHandCards, 图腾潮涌) + calcMyAllTotalAtc() >= calcRivalHeroBlood()){
                     log.debug("可以斩杀，打脸");
                     return myHeroPointToRivalHero();
-                } else if ((otherIndex = findMaxAtcByBlood(rivalPlayCards, calcMyHeroTotalAtc(), calcMyHeroBlood() - 1, true)) != -1){
+                } else if ((otherIndex = findMaxAtcByBlood(rivalPlayCards, calcMyHeroAtc(), calcMyHeroBlood() - 1, true)) != -1){
                     log.debug("可以解场");
                     return myHeroPointToRivalPlay(otherIndex);
                 }else if (!cardEquals(myPlayArea.getWeapon(), 石雕凿刀) || !myPlayArea.isFull()){
                     log.debug("兜底：打脸");
                     return myHeroPointToRivalHero();
                 }
-            }else if (calcCardBlood(rivalPlayCards.get(otherIndex))  <= calcMyHeroTotalAtc()){
+            }else if (calcCardBlood(rivalPlayCards.get(otherIndex))  <= calcMyHeroAtc()){
                 log.debug("解嘲讽怪");
                 return myHeroPointToRivalPlay(otherIndex);
             }
@@ -373,17 +264,23 @@ public class EvenNumberShamanDeckStrategy extends AbstractDeckStrategy{
             }
         }
     }
+
+    @Override
+    protected boolean clickPower() {
+        boolean result = super.clickPower();
+        if (cardEquals(myPlayArea.getPower(), "HERO_02bp2") || cardEquals(myPlayArea.getPower(), "HERO_02fbp2")){
+            SystemUtil.delay(500);
+            clickFloatCard(getFloatCardClearanceForFourCard(), getFloatCardFirstCardPosForFourCard(), 3);
+        }
+        return result;
+    }
+
     private void dealOneResource(){
         if (!canExecute(1)){
             return;
         }
         dealZeroResource();
         if (clickPower()){
-//            todo 畸变导致获得奇数萨的技能，需要选图腾
-            if (Objects.equals(myPlayArea.getPower().getCardId(), "HERO_02bp2")){
-                SystemUtil.delay(500);
-                clickFloatCard(getFloatCardClearanceForFourCard(), getFloatCardFirstCardPosForFourCard(), 3);
-            }
             dealZeroResource();
             return;
         }
@@ -394,10 +291,15 @@ public class EvenNumberShamanDeckStrategy extends AbstractDeckStrategy{
         if (!canExecute(2)){
             return;
         }
-        index = findByCardId(myHandCards, COIN);
-        if (index != -1 && findByCost(myHandCards, 2) != -1){
+        if ((index = findByCardId(myHandCards, COIN)) != -1 && findByCost(myHandCards, 2) != -1){
             if (myHandPointToNoPlace(index)){
                 dealThreeResource();
+                return;
+            }
+        }
+        if ((index = findByCardId(myHandCards, 阴燃电鳗)) != -1){
+            if (calcMyAllTotalAtc() + 2 >= calcRivalHeroBlood() && myHandPointToMyPlayThenPointToRivalHero(index, myPlayCards.size())){
+                dealZeroResource();
                 return;
             }
         }
@@ -428,7 +330,14 @@ public class EvenNumberShamanDeckStrategy extends AbstractDeckStrategy{
             dealZeroResource();
             return;
         }
-        if (myPlayCards.size() < 6 && (index = findByCardId(myHandCards, 海象人图腾师)) != -1 && myHandPointToMyPlay(index)){
+        if ((index = findByCardId(myHandCards, 阴燃电鳗)) != -1
+                && (otherIndex = findMaxAtcByBlood(rivalPlayCards, 2, true)) != -1
+                && myHandPointToMyPlayThenPointToRivalPlay(index, myPlayCards.size(), otherIndex)
+        ){
+            dealZeroResource();
+            return;
+        }
+        if (myPlayCards.size() < 5 && (index = findByCardId(myHandCards, 海象人图腾师)) != -1 && myHandPointToMyPlay(index)){
             dealZeroResource();
             return;
         }
@@ -440,19 +349,13 @@ public class EvenNumberShamanDeckStrategy extends AbstractDeckStrategy{
             dealZeroResource();
             return;
         }
-        if ((index = findByCardId(myHandCards, 阴燃电鳗)) != -1){
-            if (calcMyAllTotalAtc() + 2 >= calcRivalHeroBlood() && myHandPointToMyPlayThenPointToRivalHero(index, myPlayCards.size())){
-                dealZeroResource();
-                return;
-            }
-            int rivalIndex = findMaxAtcByBlood(rivalPlayCards, 2, true);
-            if (rivalIndex != -1 && myHandPointToMyPlayThenPointToRivalPlay(index, myPlayCards.size(), rivalIndex)){
-                dealZeroResource();
-                return;
-            }else if (myHandPointToMyPlayThenPointToRivalHero(index, myPlayCards.size())){
-                dealZeroResource();
-                return;
-            }
+        if (myPlayCards.size() < 6 && (index = findByCardId(myHandCards, 海象人图腾师)) != -1 && myHandPointToMyPlay(index)){
+            dealZeroResource();
+            return;
+        }
+        if ((index = findByCardId(myHandCards, 阴燃电鳗)) != -1 && myHandPointToMyPlayThenPointToRivalHero(index, myPlayCards.size())){
+            dealZeroResource();
+            return;
         }
         if ((index = findByCardId(myHandCards, 驻锚图腾)) != -1){
             dealZeroResource();
@@ -466,7 +369,7 @@ public class EvenNumberShamanDeckStrategy extends AbstractDeckStrategy{
             }
         }
         if ((index = findByCardId(myHandCards, 冰霜撕咬)) != -1){
-            if (canSpellPointedToRival(rivalPlayArea.getHero()) && calcMyPlayTotalAtc() + (3 + calcMySpellPower()) >= calcRivalHeroBlood() && myHandPointToRivalHeroNoPlace(index)){
+            if (canSpellPointedToRival(rivalPlayArea.getHero()) && calcMyPlayAtc() + (3 + calcMySpellPower()) >= calcRivalHeroBlood() && myHandPointToRivalHeroNoPlace(index)){
                 dealZeroResource();
                 return;
             }
@@ -541,6 +444,7 @@ public class EvenNumberShamanDeckStrategy extends AbstractDeckStrategy{
                 dealZeroResource();
                 myHandPointToNoPlace(tempIndex);
                 dealWeapon();
+                deal分裂战斧Exhausted();
                 return;
             }else if (
                     (calcCardRaceCount(myPlayCards, CardRaceEnum.TOTEM, false) >= 2 && myPlayCards.size() < 5)
@@ -549,8 +453,8 @@ public class EvenNumberShamanDeckStrategy extends AbstractDeckStrategy{
                 dealZeroResource();
                 dealWeapon();
                 myHandPointToNoPlace(tempIndex);
-                SystemUtil.delayMedium();
                 dealWeapon();
+                deal分裂战斧Exhausted();
                 return;
             }
         }
@@ -572,6 +476,21 @@ public class EvenNumberShamanDeckStrategy extends AbstractDeckStrategy{
         }
         dealTwoResource();
         dealTwoResource();
+    }
+    private final List<Card> exhaustedCard = new ArrayList<>();
+    private void deal分裂战斧Exhausted(){
+        Card card = null;
+        for (Card myPlayCard : myPlayCards) {
+            if (card == null) {
+                card = myPlayCard;
+            } else if (card.getCardRace() == CardRaceEnum.TOTEM && Objects.equals(card.getCardId(), myPlayCard.getCardId())) {
+                myPlayCard.setExhausted(true);
+                exhaustedCard.add(myPlayCard);
+                card = null;
+            }else {
+                card = myPlayCard;
+            }
+        }
     }
     private void dealFiveResource(){
         if (!canExecute(5)){

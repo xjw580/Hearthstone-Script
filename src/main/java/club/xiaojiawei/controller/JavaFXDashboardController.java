@@ -143,7 +143,7 @@ public class JavaFXDashboardController implements Initializable {
             staticDownloadProgress.setProgress(1D);
             log.info(release.getTagName() + "下载完毕");
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            log.error("新版本下载失败", e);
         } finally {
             staticDownloadProgress.setVisible(false);
             staticDownloadProgress.setManaged(false);
@@ -155,7 +155,7 @@ public class JavaFXDashboardController implements Initializable {
             IS_UPDATING.set(true);
             Runtime.getRuntime().exec("cmd /c start update.bat " + TEMP_DIR + " " + staticIsPause.get().get());
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            log.error("执行版本更新失败", e);
         }finally {
             IS_UPDATING.set(false);
         }
@@ -263,6 +263,7 @@ public class JavaFXDashboardController implements Initializable {
             WebSocketServer.sendAllMessage(WsResult.ofNew(WsResultTypeEnum.MODE, currentRunMode.getComment()));
             WebSocketServer.sendAllMessage(WsResult.ofNew(WsResultTypeEnum.DECK, currentDeck.getComment()));
             SystemUtil.notice("挂机卡组改为：" + deckComment);
+            SystemUtil.copyToClipboard(currentDeck.getDeckCode());
             log.info("挂机卡组改为：" + deckComment);
         }
     }

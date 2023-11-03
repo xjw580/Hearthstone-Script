@@ -24,7 +24,6 @@ public class GUILogAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
     protected void append(ILoggingEvent event) {
         appendJavaFX(event);
         appendWebSocket(event);
-
     }
     @SuppressWarnings("all")
     private void appendJavaFX(ILoggingEvent event){
