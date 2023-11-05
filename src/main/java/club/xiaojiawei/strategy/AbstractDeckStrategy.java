@@ -1,3 +1,4 @@
+
 package club.xiaojiawei.strategy;
 
 import club.xiaojiawei.data.GameRationStaticData;
@@ -21,10 +22,11 @@ import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicReference;
 
+import static club.xiaojiawei.data.CommonBaseDeck.*;
+import static club.xiaojiawei.data.GameRationStaticData.*;
 import static club.xiaojiawei.data.ScriptStaticData.GAME_RECT;
 import static club.xiaojiawei.enums.CardTypeEnum.MINION;
 import static club.xiaojiawei.enums.ConfigurationEnum.STRATEGY;
-import static club.xiaojiawei.strategy.AbstractDeckStrategy.AbstractDeck.*;
 
 /**
  * 卡牌策略抽象类
@@ -42,23 +44,6 @@ public abstract class AbstractDeckStrategy{
     @Resource
     private GameUtil gameUtil;
 
-    protected static final double[] FIRST_HAND_CARD_HORIZONTAL_TO_CENTER_RATION = new double[]{
-            0.033, 0.08, 0.123, 0.167, 0.177, 0.193, 0.203, 0.213, 0.22, 0.227
-    };
-    protected static final double[] HAND_CARD_HORIZONTAL_CLEARANCE_RATION = new double[]{
-            0, 0.09, 0.09, 0.087, 0.07, 0.057, 0.05, 0.042, 0.037, 0.034
-    };
-    protected static final double HAND_CARD_VERTICAL_TO_BOTTOM_RATION = 0.059;
-    protected static final double RIVAL_HERO_VERTICAL_TO_BOTTOM_RATION = 0.801;
-    protected static final double MY_HERO_VERTICAL_TO_BOTTOM_RATION = 0.26;
-    protected static final double PLAY_CARD_HORIZONTAL_CLEARANCE_RATION = 0.097;
-    protected static final double MY_PLAY_CARD_VERTICAL_TO_BOTTOM_RATION = 0.45;
-    protected static final double RIVAL_PLAY_CARD_VERTICAL_TO_BOTTOM_RATION = 0.62;
-    protected static final double POWER_VERTICAL_TO_BOTTOM_RATION = 0.23;
-    protected static final double POWER_HORIZONTAL_TO_CENTER_RATION = 0.133;
-    protected static final double TURN_OVER_BUTTON_VERTICAL_TO_BOTTOM_RATION = 0.54;
-    protected static final double TURN_OVER_BUTTON_HORIZONTAL_TO_CENTER_RATION = 0.417;
-    public static final double CONFIRM_BUTTON_VERTICAL_TO_BOTTOM_RATION = 0.23;
     protected static double BLOOD_WEIGHT = 0.4;
     protected static double ATC_WEIGHT = 0.6;
     protected static double FREE_EAT_MAX = 5;
@@ -72,20 +57,7 @@ public abstract class AbstractDeckStrategy{
     protected List<Card> myPlayCards;
     protected List<Card> rivalHandCards;
     protected List<Card> rivalPlayCards;
-    public static class AbstractDeck{
-        public static final BaseCard 南海船长 = new BaseCard("NEW1_027");
-        public static final BaseCard 恐狼前锋 = new BaseCard("EX1_162");
-        public static final BaseCard 火舌图腾 = new BaseCard("EX1_565");
-        public static final BaseCard 末日预言者 = new BaseCard("NEW1_021");
-        public static final BaseCard 对空奥数法师 = new BaseCard("ULD_240");
-        public static final BaseCard 驻锚图腾 = new BaseCard("TSC_922");
-        public static final BaseCard 健谈的调酒师 = new BaseCard("REV_513");
-        public static final BaseCard 船载火炮 = new BaseCard("GVG_075");
-        public static final BaseCard 刺豚拳手 = new BaseCard("TSC_002");
-        public static final BaseCard 旗标骷髅 = new BaseCard("NX2_006");
-        public static final BaseCard 锈水海盗 = new BaseCard("AT_029");
-        public static final BaseCard 携刃信使 = new BaseCard("TSC_085");
-    }
+
     /**
      * 每次行动后停顿时间
      */

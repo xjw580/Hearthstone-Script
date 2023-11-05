@@ -14,10 +14,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import static club.xiaojiawei.data.CommonBaseDeck.*;
 import static club.xiaojiawei.data.ScriptStaticData.COIN;
 import static club.xiaojiawei.enums.CardTypeEnum.MINION;
-import static club.xiaojiawei.strategy.AbstractDeckStrategy.AbstractDeck.火舌图腾;
-import static club.xiaojiawei.strategy.AbstractDeckStrategy.AbstractDeck.驻锚图腾;
 import static club.xiaojiawei.strategy.deck.EvenNumberShamanDeckStrategy.EvenNumberShaman.*;
 
 /**
