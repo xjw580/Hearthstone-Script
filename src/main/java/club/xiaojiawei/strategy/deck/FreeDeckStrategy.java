@@ -32,7 +32,7 @@ public class FreeDeckStrategy extends AbstractDeckStrategy {
             if (!me.getPlayArea().isFull()){
                 log.info("not full");
                 Card card = handCards.get(i);
-                if (card.getCost() <= getMyUsableResource()){
+                if (card.getCost() <= calcMyUsableResource()){
                     log.info("play");
                     myHandPointToMyPlay(i);
                 }
@@ -40,7 +40,7 @@ public class FreeDeckStrategy extends AbstractDeckStrategy {
                 break;
             }
         }
-        if (getMyUsableResource() >= 2){
+        if (calcMyUsableResource() >= 2){
             clickPower();
         }
         boolean throughWall = true;

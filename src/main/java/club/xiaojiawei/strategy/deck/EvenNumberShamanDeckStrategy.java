@@ -73,9 +73,9 @@ public class EvenNumberShamanDeckStrategy extends AbstractDeckStrategy{
     }
 
     private void calcKillHero(){
-        int damageOf火舌图腾 = 0, damageOf冰霜撕咬 = Math.min(calcCardCount(myHandCards, 冰霜撕咬), getMyUsableResource() >> 1) * (3 + calcMySpellPower()), countOf火舌图腾 = 0;
+        int damageOf火舌图腾 = 0, damageOf冰霜撕咬 = Math.min(calcCardCount(myHandCards, 冰霜撕咬), calcMyUsableResource() >> 1) * (3 + calcMySpellPower()), countOf火舌图腾 = 0;
         if (!myPlayCards.isEmpty()){
-            countOf火舌图腾 = Math.min(calcCardCount(myHandCards, 火舌图腾), getMyUsableResource() >> 1);
+            countOf火舌图腾 = Math.min(calcCardCount(myHandCards, 火舌图腾), calcMyUsableResource() >> 1);
             if (countOf火舌图腾 == 1){
                 damageOf火舌图腾 = Math.min(myPlayCards.size(), 2) * 2;
             }else if (countOf火舌图腾 == 2){
@@ -83,11 +83,11 @@ public class EvenNumberShamanDeckStrategy extends AbstractDeckStrategy{
             }
         }
         int damageOfWeapon = 0;
-        if (calcMyHeroAtc() < 3 && getMyUsableResource() >= 4){
+        if (calcMyHeroAtc() < 3 && calcMyUsableResource() >= 4){
             if (findByCardId(myHandCards, 分裂战斧) != -1){
                 damageOfWeapon = 3 - calcMyHeroAtc();
             }
-        } else if (calcMyHeroAtc() == 0 && getMyUsableResource() >= 2){
+        } else if (calcMyHeroAtc() == 0 && calcMyUsableResource() >= 2){
             if (findByCardId(myHandCards, 石雕凿刀) != -1){
                 damageOfWeapon = 1;
             }
@@ -186,7 +186,7 @@ public class EvenNumberShamanDeckStrategy extends AbstractDeckStrategy{
         for (int i = myHandCards.size() - 1; i >= 0; i--) {
             Card card = myHandCards.get(i);
             if (card.getCardType() == MINION){
-                if (getMyUsableResource() >= myHandCards.get(i).getCost()){
+                if (calcMyUsableResource() >= myHandCards.get(i).getCost()){
                     myHandPointToMyPlay(i);
                     MouseUtil.cancel();
                 }
@@ -224,9 +224,9 @@ public class EvenNumberShamanDeckStrategy extends AbstractDeckStrategy{
 
     private void dealResource(){
         if (log.isDebugEnabled()){
-            log.debug("Resource:" + getMyUsableResource());
+            log.debug("Resource:" + calcMyUsableResource());
         }
-        switch (getMyUsableResource()){
+        switch (calcMyUsableResource()){
             case 0 -> dealZeroResource();
             case 1 -> dealOneResource();
             case 2 -> dealTwoResource();
@@ -379,7 +379,7 @@ public class EvenNumberShamanDeckStrategy extends AbstractDeckStrategy{
                 }
             }
         }
-        if (getMyUsableResource() > 2 && (index = findByCardId(myHandCards, 驻锚图腾)) != -1 && myHandPointToMyPlay(index)){
+        if (calcMyUsableResource() > 2 && (index = findByCardId(myHandCards, 驻锚图腾)) != -1 && myHandPointToMyPlay(index)){
             dealZeroResource();
             return;
         }
@@ -517,7 +517,7 @@ public class EvenNumberShamanDeckStrategy extends AbstractDeckStrategy{
                 (index = findByCardId(myHandCards, 图腾团聚)) != -1
                 && (( myPlayCards.size() <= 3 && findByCardId(myPlayCards, 驻锚图腾) != -1) || ( myPlayCards.size() >= rivalPlayCards.size() && myPlayCards.size() <= 2))
         ){
-            if (getMyUsableResource() > 5 && (otherIndex = findByCardId(myHandCards, 驻锚图腾)) != -1){
+            if (calcMyUsableResource() > 5 && (otherIndex = findByCardId(myHandCards, 驻锚图腾)) != -1){
                 myHandPointToMyPlay(otherIndex);
             }
             if (myHandPointToNoPlace(index)){
@@ -534,9 +534,9 @@ public class EvenNumberShamanDeckStrategy extends AbstractDeckStrategy{
         }
         if (
                 (index = findByCardId(myHandCards, 图腾团聚)) != -1
-                && (myPlayCards.size() == 3 && getMyUsableResource() == 4 || myPlayCards.size() < 3)
+                && (myPlayCards.size() == 3 && calcMyUsableResource() == 4 || myPlayCards.size() < 3)
         ){
-            if (getMyUsableResource() > 5 && (otherIndex = findByCardId(myHandCards, 驻锚图腾)) != -1){
+            if (calcMyUsableResource() > 5 && (otherIndex = findByCardId(myHandCards, 驻锚图腾)) != -1){
                 myHandPointToMyPlay(otherIndex);
             }
             if (myHandPointToNoPlace(index)){
