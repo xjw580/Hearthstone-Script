@@ -16,6 +16,7 @@ import org.apache.logging.log4j.util.Strings;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 
 import static club.xiaojiawei.data.ScriptStaticData.*;
 import static club.xiaojiawei.enums.TagEnum.UNKNOWN;
@@ -193,7 +194,6 @@ public class PowerLogUtil {
             commonEntity.setCardId(line.substring(cardIDIndex + 7).strip());
         }
         if (Strings.isBlank(commonEntity.getCardId())) {
-            //noinspection AlibabaLowerCamelCaseVariableNaming
             commonEntity.setCardId(line.substring(cardIdIndex + 7, playerIndex).strip());
         }
         commonEntity.setPlayerId(line.substring(playerIndex + 7, index).strip());
@@ -254,6 +254,6 @@ public class PowerLogUtil {
      * @param args
      */
     public static void main(String[] args) {
-        decontamination("S:\\Hearthstone\\Logs\\Hearthstone_2023_11_03_16_47_51", true);
+        decontamination("S:\\Hearthstone\\Logs\\Hearthstone_2023_11_05_01_48_00", true);
     }
 }

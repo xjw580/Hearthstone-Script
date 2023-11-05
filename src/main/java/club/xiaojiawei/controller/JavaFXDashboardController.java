@@ -3,6 +3,7 @@ package club.xiaojiawei.controller;
 import club.xiaojiawei.bean.Release;
 import club.xiaojiawei.bean.WsResult;
 import club.xiaojiawei.controls.Time;
+import club.xiaojiawei.controls.ico.FlushIco;
 import club.xiaojiawei.controls.ico.OKIco;
 import club.xiaojiawei.enums.DeckEnum;
 import club.xiaojiawei.enums.RunModeEnum;
@@ -15,10 +16,12 @@ import club.xiaojiawei.utils.SystemUtil;
 import club.xiaojiawei.utils.TipUtil;
 import club.xiaojiawei.utils.WindowUtil;
 import club.xiaojiawei.ws.WebSocketServer;
+import javafx.animation.RotateTransition;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
@@ -27,6 +30,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import javafx.util.Duration;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -56,6 +60,8 @@ public class JavaFXDashboardController implements Initializable {
 
     @FXML private ScrollPane logScrollPane;
     @FXML private Button update;
+    @FXML private Button flush;
+    @FXML private FlushIco flushIco;
     @FXML private Text version;
     @FXML private VBox logVBox;
     @FXML private Accordion accordion;
@@ -79,6 +85,8 @@ public class JavaFXDashboardController implements Initializable {
     private Properties scriptConfiguration;
     @Resource
     private ScheduledThreadPoolExecutor extraThreadPool;
+    @Resource
+    private VersionListener versionListener;
     private static ProgressBar staticDownloadProgress;
     public void expandedLogPane(){
         accordion.setExpandedPane(titledPaneLog);
@@ -275,6 +283,8 @@ public class JavaFXDashboardController implements Initializable {
         VersionListener.getCanUpdate().addListener((observable, oldValue, newValue) -> {
             System.out.println(newValue);
             if (newValue){
+                flush.setVisible(false);
+                flush.setManaged(false);
                 update.setVisible(true);
                 update.setManaged(true);
             }
@@ -321,5 +331,15 @@ public class JavaFXDashboardController implements Initializable {
     public void changeSwitch(boolean value){
         pauseButton.setDisable(value);
         startButton.setDisable(!value);
+    }
+
+    @FXML
+    protected void flush(ActionEvent actionEvent) {
+        RotateTransition transition = new RotateTransition(Duration.millis(1200), flushIco);
+        transition.setFromAngle(0);
+        transition.setToAngle(360);
+        transition.setCycleCount(4);
+        transition.play();
+        versionListener.checkVersion();
     }
 }

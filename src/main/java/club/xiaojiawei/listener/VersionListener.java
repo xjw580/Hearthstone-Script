@@ -50,7 +50,7 @@ public class VersionListener {
         }
     }
     @Scheduled(initialDelay = 500,fixedDelay = 1000 * 60 * 60 * 12)
-    void checkVersion(){
+    public void checkVersion(){
 //        在idea中启动时就不要检查更新了
         if (!Objects.equals(Objects.requireNonNull(this.getClass().getResource("")).getProtocol(), "jar")){
             return;

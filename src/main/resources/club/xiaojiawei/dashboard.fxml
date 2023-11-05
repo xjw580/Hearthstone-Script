@@ -164,6 +164,14 @@
                                 <UpdateIco/>
                             </graphic>
                         </Button>
+                        <Button onAction="#flush" fx:id="flush" styleClass="btn-ui, btn-ui-small, btn-ui-normal">
+                            <tooltip>
+                                <Tooltip text="检查更新"/>
+                            </tooltip>
+                            <graphic>
+                                <FlushIco fx:id="flushIco"/>
+                            </graphic>
+                        </Button>
                     </HBox>
                     <ProgressBar fx:id="downloadProgress" progress="1" styleClass="progress-bar-ui" prefWidth="${titledPaneControl.width}" visible="false" managed="false"/>
                 </VBox>
@@ -177,7 +185,7 @@
         </TitledPane>
         <TitledPane text="日志" fx:id="titledPaneLog">
             <ScrollPane fx:id="logScrollPane" hbarPolicy="NEVER" style="-fx-background:white">
-                <VBox maxWidth="${accordion.width}" spacing="6" fx:id="logVBox" style="-fx-padding: 5"/>
+                <VBox maxWidth="${accordion.width}" spacing="5" fx:id="logVBox" style="-fx-padding: 5"/>
             </ScrollPane>
         </TitledPane>
     </panes>

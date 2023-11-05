@@ -25,7 +25,7 @@ public class MouseUtil {
     /**
      * 鼠标每次移动后的间隔时间
      */
-    private static final int MOVE_INTERVAL = 6;
+    private static final int MOVE_INTERVAL = 7;
     /**
      * 鼠标每次移动的距离
      */
@@ -180,9 +180,9 @@ public class MouseUtil {
                 ROBOT.mouseMove((int) ((startY - b) / k), startY);
                 SystemUtil.delay(MOVE_INTERVAL);
             }
-            ROBOT.mouseMove(endX, endY);
-            SystemUtil.delay(MOVE_INTERVAL);
         }
+        ROBOT.mouseMove(endX, endY);
+        SystemUtil.delay(MOVE_INTERVAL);
     }
 
 }

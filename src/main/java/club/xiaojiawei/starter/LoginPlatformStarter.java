@@ -38,7 +38,7 @@ public class LoginPlatformStarter extends AbstractStarter{
             startNextStarter();
         }else {
             //        停顿以判断能否自动登录
-            SystemUtil.delay(5000);
+            SystemUtil.delay(10_000);
             WinDef.HWND hwnd;
             if ((hwnd = SystemUtil.findLoginPlatformHWND()) == null){
                 startNextStarter();

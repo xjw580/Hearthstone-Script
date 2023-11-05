@@ -74,13 +74,17 @@ public abstract class AbstractDeckStrategy{
     protected List<Card> rivalPlayCards;
     public static class AbstractDeck{
         public static final BaseCard 南海船长 = new BaseCard("NEW1_027");
-        public static final BaseCard 恐狼前锋 = new BaseCard("YOD_032");
+        public static final BaseCard 恐狼前锋 = new BaseCard("EX1_162");
         public static final BaseCard 火舌图腾 = new BaseCard("EX1_565");
         public static final BaseCard 末日预言者 = new BaseCard("NEW1_021");
         public static final BaseCard 对空奥数法师 = new BaseCard("ULD_240");
+        public static final BaseCard 驻锚图腾 = new BaseCard("TSC_922");
         public static final BaseCard 健谈的调酒师 = new BaseCard("REV_513");
         public static final BaseCard 船载火炮 = new BaseCard("GVG_075");
         public static final BaseCard 刺豚拳手 = new BaseCard("TSC_002");
+        public static final BaseCard 旗标骷髅 = new BaseCard("NX2_006");
+        public static final BaseCard 锈水海盗 = new BaseCard("AT_029");
+        public static final BaseCard 携刃信使 = new BaseCard("TSC_085");
     }
     /**
      * 每次行动后停顿时间
@@ -262,6 +266,18 @@ public abstract class AbstractDeckStrategy{
         return atc;
     }
     protected boolean cleanTaunt(){
+        return cleanTaunt(1.3D, 5D, 0.001D);
+    }
+    protected boolean cleanBuff(){
+        return cleanBuff(1.3D, 4D, 0.3D);
+    }
+    protected boolean cleanDanger(){
+        return cleanDanger(1.3D, 4D, 0.3D);
+    }
+    protected boolean cleanNormal(){
+        return cleanNormal(1.3D, 1.35D, 0.7D);
+    }
+    protected boolean cleanTaunt(double myAtcWeight, double rivalAtcWeight, double lazyLevel){
         int rivalCardEnableCount = 0;
         boolean[] rivalCardEnable = new boolean[rivalPlayCards.size()];
         for (int i = 0; i < rivalPlayCards.size(); i++) {
@@ -272,55 +288,14 @@ public abstract class AbstractDeckStrategy{
         }
         boolean result = true;
         if (rivalCardEnableCount > 0){
-            log.info("发现嘲讽，解嘲讽");
-            result = cleanPlay(1.3D, canMove(myPlayArea.getHero())? 2D : 1.5D, 1000D, myPlayCards, rivalPlayCards, rivalCardEnable, rivalCardEnableCount, false, 0.01D);
+            log.info("发现嘲讽怪，思考解嘲讽怪中...");
+            result = cleanPlay(myAtcWeight, rivalAtcWeight, copyListAndAddHero(myPlayCards, myPlayArea.getHero()), rivalPlayCards, rivalCardEnable, rivalCardEnableCount, lazyLevel);
         }
-        for (int rivalIndex = rivalPlayCards.size() - 1; rivalIndex >= 0; rivalIndex--) {
-            if (rivalIndex < rivalPlayCards.size()){
-                Card rivalCard = rivalPlayCards.get(rivalIndex);
-                if (
-                        rivalCard.getCardType() == MINION
-                                && rivalCard.isTaunt()
-                                && canPointedToRival(rivalCard)
-                ){
-                    int heroAtc = calcMyHeroAtc();
-                    List<Integer> list = calcEatRivalCard(rivalCard, Integer.MAX_VALUE, (heroAtc == 0 || myPlayArea.getHero().isExhausted())? 0 : heroAtc);
-                    if (list != null){
-//                攻击嘲讽怪
-                        for (int j = list.size() - 2; j >= 0; j--) {
-                            myPlayPointToRivalPlay(list.get(j), rivalIndex);
-                        }
-                        if (!(heroAtc == 0 || myPlayArea.getHero().isExhausted())){
-                            myHeroPointToRivalPlay(rivalIndex);
-                        }
-                    }else {
-                        result = false;
-                    }
-                }
-            }
-        }
-        return result;
+        return result && findTauntCard(rivalPlayCards) == -1;
     }
-    private void resetClean(List<Card> myCards, double myAtcWeight, List<Card> rivalCards, double rivalAtcWeight, boolean forceClean, double cleanScale){
-        finalWeight = forceClean? 0 : calcCanMoveWeight(myCards, myAtcWeight) * cleanScale + calcWeight(myCards, myAtcWeight) - calcWeight(rivalCards, rivalAtcWeight);
-        finalActFlag = new boolean[myPlayCards.size()][rivalPlayCards.size()];
-    }
-    private double calcCanMoveWeight(List<Card> cards, double atcWeight){
-        double weight = 0D;
-        for (Card card : cards) {
-            if (canMove(card)) {
-                weight += card.getAtc() * atcWeight;
-            }
-        }
-        return weight;
-    }
-
-    protected void cleanPlay(){
-        cleanPlay(1.3D, 1.25D, false, 0.2D, 8D);
-    }
-    protected void cleanPlay(double myAtcWeight, double rivalAtcWeight, boolean forceClean, double cleanScale, double maxOverWeight){
+    protected boolean cleanBuff(double myAtcWeight, double rivalAtcWeight, double lazyLevel){
         if (findTauntCard(rivalPlayCards) != -1){
-            return;
+            return false;
         }
         int rivalCardEnableCount = 0;
         boolean[] rivalCardEnable = new boolean[rivalPlayCards.size()];
@@ -330,40 +305,67 @@ public abstract class AbstractDeckStrategy{
                 rivalCardEnableCount++;
             }
         }
+        boolean result = true;
         if (rivalCardEnableCount > 0){
-            log.info("发现buff，解buff");
-            if (!cleanPlay(myAtcWeight, rivalAtcWeight + 1D, maxOverWeight + 7D, myPlayCards, rivalPlayCards, rivalCardEnable, rivalCardEnableCount, true, 0.05D)){
-                log.info("解buff失败");
+            log.info("发现Buff怪，思考解Buff怪中...");
+            result = cleanPlay(myAtcWeight, rivalAtcWeight, copyListAndAddHero(myPlayCards, myPlayArea.getHero()), rivalPlayCards, rivalCardEnable, rivalCardEnableCount, lazyLevel);
+        }
+        return result && !containsBuff(rivalPlayCards);
+    }
+    protected boolean cleanDanger(double myAtcWeight, double rivalAtcWeight, double lazyLevel){
+        if (findTauntCard(rivalPlayCards) != -1){
+            return false;
+        }
+        int rivalCardEnableCount = 0;
+        boolean[] rivalCardEnable = new boolean[rivalPlayCards.size()];
+        for (int i = 0; i < rivalPlayCards.size(); i++) {
+            if (isDanger(rivalPlayCards.get(i)) && canPointedToRival(rivalPlayCards.get(i))){
+                rivalCardEnable[i] = true;
+                rivalCardEnableCount++;
             }
         }
-
-        rivalCardEnable = new boolean[rivalPlayCards.size()];
-        rivalCardEnableCount = 0;
+        boolean result = true;
+        if (rivalCardEnableCount > 0){
+            log.info("发现威胁怪，思考解威胁怪中...");
+            result = cleanPlay(myAtcWeight, rivalAtcWeight, copyListAndAddHero(myPlayCards, myPlayArea.getHero()), rivalPlayCards, rivalCardEnable, rivalCardEnableCount, lazyLevel);
+        }
+        return result && !containsDanger(rivalPlayCards);
+    }
+    /**
+     * @param myAtcWeight 我方随从攻击力权重，大于1表示攻击力比生命值重要
+     * @param rivalAtcWeight 敌方随从攻击力权重，rivalAtcWeight/myAtcWeight小于1时认为我方随从更加厉害，防止出现我方2-2解对方2-2的情况
+     * @param lazyLevel 懒惰程度，越高则越偏向于随从不动
+     */
+    protected boolean cleanNormal(double myAtcWeight, double rivalAtcWeight, double lazyLevel){
+        if (findTauntCard(rivalPlayCards) != -1){
+            return false;
+        }
+        int rivalCardEnableCount = 0;
+        boolean[] rivalCardEnable = new boolean[rivalPlayCards.size()];
         for (int i = 0; i < rivalPlayCards.size(); i++) {
             if (canPointedToRival(rivalPlayCards.get(i))){
                 rivalCardEnable[i] = true;
                 rivalCardEnableCount++;
             }
         }
+        boolean result = true;
         if (rivalCardEnableCount > 0){
-            log.info("解普通怪");
-            if (!cleanPlay(myAtcWeight, rivalAtcWeight,  maxOverWeight, myPlayCards, rivalPlayCards, rivalCardEnable, rivalCardEnableCount, forceClean, cleanScale)){
-                log.info("解普通怪失败");
-            }
+            log.info("发现普通怪，思考解普通怪中...");
+            result = cleanPlay(myAtcWeight, rivalAtcWeight, copyListAndAddHero(myPlayCards, myPlayArea.getHero()), rivalPlayCards, rivalCardEnable, rivalCardEnableCount, lazyLevel);
         }
-
-
+        return result;
     }
     private volatile double finalWeight;
+    private volatile double initWeight;
     private volatile boolean[][] finalActFlag;
     @SneakyThrows(value = {InterruptedException.class,  ExecutionException.class})
     private boolean cleanPlay(
-            double myAtcWeight, double rivalAtcWeight, double maxOverWeight,
+            double myAtcWeight, double rivalAtcWeight,
             List<Card> myPlayCards, List<Card> rivalPlayCards,
             boolean[] rivalCardEnable, int rivalCardEnableCount,
-            boolean forceClean, double cleanScale
+            double lazyLevel
     ){
-//        存储我方哪些随从可以攻击；存储敌方随从哪些可以被攻击
+//        存储我方哪些随从可以攻击
         boolean[] myCardEnable = new boolean[myPlayCards.size()];
         int myCardEnableCount = 0, firstMyCardEnable = -1;
         for (int i = 0; i < myPlayCards.size(); i++) {
@@ -376,12 +378,13 @@ public abstract class AbstractDeckStrategy{
         }
 //        我方没有能动的，直接结束
         if (firstMyCardEnable == -1){
+            log.info("我方没有能动的随从");
             return false;
         }
-        resetClean(myPlayCards, myAtcWeight, rivalPlayCards, rivalAtcWeight, forceClean, cleanScale);
+        initWeight = finalWeight = calcInitWeight(myPlayCards, myAtcWeight, rivalPlayCards, rivalAtcWeight, lazyLevel);
         long start = System.currentTimeMillis();
         if (rivalCardEnableCount >= 5 && myCardEnableCount >= 6){
-            log.info("开启多线程计算");
+            log.info("场面复杂，已开启多线程计算");
             CompletableFuture[] futures = new CompletableFuture[rivalCardEnableCount];
             int index = 0, finalFirstMyCardEnable = firstMyCardEnable;
             for (int rivalPlayIndex = 0; rivalPlayIndex < rivalPlayCards.size(); rivalPlayIndex++) {
@@ -392,61 +395,58 @@ public abstract class AbstractDeckStrategy{
                     Card myCard = myPlayCardsCopy.get(finalFirstMyCardEnable), rivalCard = rivalPlayCardsCopy.get(rivalPlayIndex);
                     int finalRivalPlayIndex = rivalPlayIndex;
                     futures[index++] = CompletableFuture.runAsync(() -> {
-                        if ( (calcWeight(calcCardBlood(myCard), myCard.getAtc(), myAtcWeight) - calcWeight(calcCardBlood(rivalCard), rivalCard.getAtc(), rivalAtcWeight) < maxOverWeight || forceClean)){
-                            atcFlag[finalFirstMyCardEnable][finalRivalPlayIndex] = true;
-                            reduceHealth(myCard, rivalCard.getAtc());
-                            reduceHealth(rivalCard, myCard.getAtc());
-                            recursionCleanPlay(myAtcWeight, rivalAtcWeight, maxOverWeight, myPlayCardsCopy, rivalPlayCardsCopy, myCardEnable, rivalCardEnable, atcFlag, finalFirstMyCardEnable + 1, forceClean, cleanScale);
-                            reduceHealth(rivalCard, -myCard.getAtc());
-                            reduceHealth(myCard, -rivalCard.getAtc());
-                            atcFlag[finalFirstMyCardEnable][finalRivalPlayIndex] = false;
-                        }
-                        recursionCleanPlay(myAtcWeight, rivalAtcWeight, maxOverWeight, myPlayCardsCopy, rivalPlayCardsCopy, myCardEnable, rivalCardEnable, atcFlag, finalFirstMyCardEnable + 1, forceClean, cleanScale);
+                        atc(atcFlag, finalFirstMyCardEnable, myPlayCards, rivalPlayCards, finalRivalPlayIndex, myCard, rivalCard, myAtcWeight, rivalAtcWeight, myCardEnable, rivalCardEnable, lazyLevel);
+                        recursionCleanPlay(myAtcWeight, rivalAtcWeight, myPlayCardsCopy, rivalPlayCardsCopy, myCardEnable, rivalCardEnable, atcFlag, finalFirstMyCardEnable + 1, lazyLevel);
                     });
                 }
             }
             CompletableFuture.allOf(futures).get();
         }else {
             log.info("单线程计算");
-            recursionCleanPlay(myAtcWeight, rivalAtcWeight, maxOverWeight, myPlayCards, rivalPlayCards, myCardEnable, rivalCardEnable, new boolean[myPlayCards.size()][rivalPlayCards.size()], 0, forceClean, cleanScale);
+            recursionCleanPlay(myAtcWeight, rivalAtcWeight, myPlayCards, rivalPlayCards, myCardEnable, rivalCardEnable, new boolean[myPlayCards.size()][rivalPlayCards.size()], 0, lazyLevel);
         }
         log.info("思考解怪耗时：" + (System.currentTimeMillis() - start) + "ms");
-        if (finalWeight > (forceClean? 0 : calcCanMoveWeight(myPlayCards, myAtcWeight) * cleanScale) + calcWeight(myPlayCards, myAtcWeight) - calcWeight(rivalPlayCards, rivalAtcWeight)){
-            //        todo 攻击
-            HashMap<String, String> map = new HashMap<>();
+        if (finalWeight > initWeight){
+            HashMap<String, String> entityIdMap = new HashMap<>();
+            StringBuilder stringBuilder = new StringBuilder("结果：");
             for (int i = 0; i < finalActFlag.length; i++) {
                 boolean[] temp = finalActFlag[i];
                 for (int j = 0; j < temp.length; j++) {
                     if (finalActFlag[i][j]){
-                        map.put(myPlayCards.get(i).getEntityId(), rivalPlayCards.get(j).getEntityId());
+                        Card myCard = myPlayCards.get(i), rivalCard = rivalPlayCards.get(j);
+                        entityIdMap.put(myCard.getEntityId(), rivalCard.getEntityId());
+                        stringBuilder.append(myCard.getCardId()).append("攻击").append(rivalCard.getCardId()).append(", ");
                     }
                 }
             }
-            if (map.isEmpty()){
-                log.info("全都不动");
-                return false;
-            }
-            for (String s : map.keySet()) {
-                int myIndex = findByEntityId(myPlayCards, s);
-                if (myIndex != -1){
-                    int rivalIndex = findByEntityId(rivalPlayCards, map.get(s));
+            log.info(stringBuilder.toString());
+            if (!entityIdMap.isEmpty()){
+                for (String myEntityId : entityIdMap.keySet()) {
+                    int rivalIndex = findByEntityId(rivalPlayCards, entityIdMap.get(myEntityId));
                     if (rivalIndex != -1){
-                        myPlayPointToRivalPlay(myIndex, rivalIndex);
+                        int myIndex = findByEntityId(myPlayCards, myEntityId);
+                        if (myIndex != -1){
+                            myPlayPointToRivalPlay(myIndex, rivalIndex);
+                        }else if (Objects.equals(myPlayArea.getHero().getEntityId(), myEntityId)){
+                            myHeroPointToRivalPlay(rivalIndex);
+                        }
                     }
                 }
+                return true;
+            }else {
+                log.info("解不动");
             }
-            return true;
         }
         return false;
     }
     private void recursionCleanPlay(
-            double myAtcWeight, double rivalAtcWeight, double maxOverWeight,
+            double myAtcWeight, double rivalAtcWeight,
             List<Card> myPlayCards, List<Card> rivalPlayCards,
             boolean[] myCardEnable, boolean[] rivalCardEnable,
-            boolean[][] atcFlag, int myPlayIndex, boolean forceClean, double cleanScale
+            boolean[][] atcFlag, int myPlayIndex, double lazyLevel
     ){
         if (myPlayIndex == myPlayCards.size()){
-            double weight = calcWeight(myPlayCards, myAtcWeight) - calcWeight(rivalPlayCards, rivalAtcWeight) + (forceClean? 0 : calcCanMoveWeight(atcFlag, myCardEnable, myPlayCards, myAtcWeight) * cleanScale);
+            double weight = calcWeight(myPlayCards, myAtcWeight) - calcWeight(rivalPlayCards, rivalAtcWeight) + calcAtcWeight(myPlayCards, myAtcWeight, atcFlag, myCardEnable) * lazyLevel;
             if (weight >= finalWeight){
                 synchronized (AbstractDeckStrategy.class){
                     if (weight >=finalWeight){
@@ -462,35 +462,45 @@ public abstract class AbstractDeckStrategy{
                 Card rivalCard = rivalPlayCards.get(rivalIndex);
                 if (rivalCardEnable[rivalIndex]){
                     Card myCard = myPlayCards.get(myPlayIndex);
-                    if (
-                            calcCardBlood(rivalCard) > 0
-                            &&
-                            (calcWeight(calcCardBlood(myCard), myCard.getAtc(), myAtcWeight) - calcWeight(calcCardBlood(rivalCard), rivalCard.getAtc(), rivalAtcWeight) < maxOverWeight || forceClean)
-                    ){
-                        atcFlag[myPlayIndex][rivalIndex] = true;
-                        reduceHealth(myCard, rivalCard.getAtc());
-                        reduceHealth(rivalCard, myCard.getAtc());
-                        recursionCleanPlay(myAtcWeight, rivalAtcWeight, maxOverWeight, myPlayCards, rivalPlayCards, myCardEnable, rivalCardEnable, atcFlag, myPlayIndex + 1, forceClean, cleanScale);
-                        reduceHealth(rivalCard, -myCard.getAtc());
-                        reduceHealth(myCard, -rivalCard.getAtc());
-                        atcFlag[myPlayIndex][rivalIndex] = false;
-                    }
-                    recursionCleanPlay(myAtcWeight, rivalAtcWeight, maxOverWeight, myPlayCards, rivalPlayCards, myCardEnable, rivalCardEnable, atcFlag, myPlayIndex + 1, forceClean, cleanScale);
+                    atc(atcFlag, myPlayIndex, myPlayCards, rivalPlayCards, rivalIndex, myCard, rivalCard, myAtcWeight, rivalAtcWeight, myCardEnable, rivalCardEnable, lazyLevel);
+                    recursionCleanPlay(myAtcWeight, rivalAtcWeight, myPlayCards, rivalPlayCards, myCardEnable, rivalCardEnable, atcFlag, myPlayIndex + 1, lazyLevel);
                 }
             }
         }else {
-            recursionCleanPlay(myAtcWeight, rivalAtcWeight, maxOverWeight, myPlayCards, rivalPlayCards, myCardEnable, rivalCardEnable, atcFlag, myPlayIndex + 1, forceClean, cleanScale);
+            recursionCleanPlay(myAtcWeight, rivalAtcWeight, myPlayCards, rivalPlayCards, myCardEnable, rivalCardEnable, atcFlag, myPlayIndex + 1, lazyLevel);
         }
     }
-    private double calcWeight(List<Card> cards, double atcWeight){
-        double weight = 0D;
+    private int calcRivalTotalAtcForClean(List<Card> cards){
+        int atc = 0;
         for (Card card : cards) {
-            weight += calcWeight(calcCardBlood(card), card.getAtc(), atcWeight);
+            atc += card.getAtc() * (card.isWindFury()? 2 : 1);
         }
-        return weight;
+        atc += rivalPlayArea.getHero().getAtc() * (rivalPlayArea.getHero().isWindFury()? 2 :1);
+        return atc;
     }
-    private int reduceHealth(Card card, int damage){
-        int newHealth = card.getHealth() - damage;
+    private void atc(
+            boolean[][]atcFlag, int myPlayIndex,
+            List<Card> myPlayCards, List<Card> rivalPlayCards,
+            int rivalIndex, Card myCard, Card rivalCard,
+            double myAtcWeight, double rivalAtcWeight,
+            boolean[] myCardEnable, boolean[] rivalCardEnable, double cleanScale
+    ){
+        if (calcCardBlood(rivalCard) > 0 && (myPlayIndex != 0 || calcCardBlood(myCard) > calcRivalTotalAtcForClean(rivalPlayCards))){
+            atcFlag[myPlayIndex][rivalIndex] = true;
+            minusHealth(myCard, rivalCard.getAtc());
+            minusHealth(rivalCard, myCard.getAtc());
+            recursionCleanPlay(myAtcWeight, rivalAtcWeight, myPlayCards, rivalPlayCards, myCardEnable, rivalCardEnable, atcFlag, myPlayIndex + 1, cleanScale);
+            minusHealth(rivalCard, -myCard.getAtc());
+            minusHealth(myCard, -rivalCard.getAtc());
+            atcFlag[myPlayIndex][rivalIndex] = false;
+        }
+    }
+    private double calcInitWeight(List<Card> myCards, double myAtcWeight, List<Card> rivalCards, double rivalAtcWeight, double cleanScale){
+        return calcWeight(myCards, myAtcWeight) - calcWeight(rivalCards, rivalAtcWeight) + calcAtcWeight(myCards, myAtcWeight) * cleanScale;
+    }
+    @SuppressWarnings("all")
+    private int minusHealth(Card card, int health){
+        int newHealth = card.getHealth() - health;
         card.setHealth(newHealth);
         return newHealth;
     }
@@ -508,18 +518,35 @@ public abstract class AbstractDeckStrategy{
         }
         return cardsCopy;
     }
-    private double calcWeight(int blood, int atc, double actWeight){
+    private double calcWeight(List<Card> cards, double atcWeight){
+        double weight = 0D;
+        for (Card card : cards) {
+            weight += calcSingleWeight(calcCardBlood(card), card.getAtc(), atcWeight);
+        }
+        return weight;
+    }
+    private static final double PLUS_VALUE = 0.1D;
+    private double calcSingleWeight(int blood, int atc, double actWeight){
         if (blood > 0){
             atc = Math.max(0, atc);
-            return (blood + atc * actWeight) + atc * blood / 8D;
+            return ((blood + PLUS_VALUE) + (atc + PLUS_VALUE) * actWeight) + atc * blood / 8D;
         }
         return 0;
     }
-    private double calcCanMoveWeight(boolean[][] atcFlag, boolean[] myCardEnable, List<Card> cards, double myAtcWeight){
+    private double calcAtcWeight(List<Card> cards, double atcWeight){
+        double weight = 0D;
+        for (Card card : cards) {
+            if (canMove(card)) {
+                weight += (card.getAtc() + PLUS_VALUE) * atcWeight;
+            }
+        }
+        return weight;
+    }
+    private double calcAtcWeight(List<Card> cards, double atcWeight, boolean[][] atcFlag, boolean[] cardEnable){
         double weight = 0D;
         for (int i = 0; i < atcFlag.length; i++) {
             boolean[] temp = atcFlag[i];
-            if (myCardEnable[i]){
+            if (cardEnable[i]){
                 boolean flag = true;
                 for (boolean b : temp) {
                     if (b){
@@ -528,20 +555,56 @@ public abstract class AbstractDeckStrategy{
                     }
                 }
                 if (flag){
-                    weight += cards.get(i).getAtc() * myAtcWeight;
+                    weight += (cards.get(i).getAtc() + PLUS_VALUE) * atcWeight;
                 }
             }
         }
         return weight;
     }
+    protected List<Card> copyListAndAddHero(List<Card> cards, Card hero){
+        List<Card> newCard = copyList(cards);
+        newCard.add(0, hero);
+        return newCard;
+    }
+    protected boolean containsDanger(List<Card> cards){
+        for (Card card : cards) {
+            if (isDanger(card)){
+                return true;
+            }
+        }
+        return false;
+    }
+    protected boolean containsBuff(List<Card> cards){
+        for (Card card : cards) {
+            if (isBuff(card)){
+                return true;
+            }
+        }
+        return false;
+    }
+    protected boolean isDanger(Card card){
+        return  cardContains(card, 对空奥数法师)
+                || cardContains(card, 刺豚拳手)
+                || cardContains(card, 健谈的调酒师)
+                || cardContains(card, 驻锚图腾)
+                || cardContains(card, 携刃信使)
+                || cardContains(card, 锈水海盗)
+                || cardEquals(card, 旗标骷髅)
+                || cardContains(card, 船载火炮);
+    }
     private boolean isBuff(Card card){
-        return cardEquals(card, 南海船长)
-                || cardEquals(card, 火舌图腾)
-                || cardEquals(card, 对空奥数法师)
-                || cardEquals(card, 恐狼前锋)
-                || cardEquals(card, 刺豚拳手)
-                || cardEquals(card, 健谈的调酒师)
-                || cardEquals(card, 船载火炮);
+        return cardContains(card, 南海船长)
+                || cardContains(card, 火舌图腾)
+                || cardContains(card, 末日预言者)
+                || cardContains(card, 恐狼前锋);
+    }
+    protected int calcRivalTotalAtc(){
+        int atc = 0;
+        for (Card rivalPlayCard : rivalPlayCards) {
+            atc += rivalPlayCard.getAtc() * (rivalPlayCard.isWindFury()? 2 : 1);
+        }
+        atc += rivalPlayArea.getHero().getAtc() * (rivalPlayArea.getHero().isWindFury()? 2 : 1);
+        return atc;
     }
 
     /**
@@ -714,7 +777,7 @@ public abstract class AbstractDeckStrategy{
         );
     }
     protected boolean myHandPointToMyPlay(int handIndex){
-        if (handIndex >= myHandCards.size()){
+        if (handIndex < 0 || handIndex >= myHandCards.size()){
             return false;
         }
         Card card = myHandCards.get(handIndex);
@@ -731,7 +794,7 @@ public abstract class AbstractDeckStrategy{
         return false;
     }
     protected boolean myHandPointToMyPlay(int myHandIndex, int myPlayIndex){
-        if (myHandIndex >= myHandCards.size() || myPlayIndex >= myPlayCards.size()){
+        if (myHandIndex < 0 || myHandIndex >= myHandCards.size() || myPlayIndex >= myPlayCards.size()){
             return false;
         }
         Card card = myHandCards.get(myHandIndex);
@@ -748,7 +811,7 @@ public abstract class AbstractDeckStrategy{
         return false;
     }
     protected boolean myHandPointToMyPlayNoPlace(int myHandIndex, int myPlayIndex){
-        if (myHandIndex >= myHandCards.size() || myPlayIndex >= myPlayCards.size()){
+        if (myHandIndex < 0 || myHandIndex >= myHandCards.size() || myPlayIndex >= myPlayCards.size()){
             return false;
         }
         Card card = myHandCards.get(myHandIndex);
@@ -781,7 +844,7 @@ public abstract class AbstractDeckStrategy{
     }
 
     protected boolean myHandPointToRivalPlayNoPlace(int myHandIndex, int rivalPlayIndex){
-        if (myHandIndex >= myHandCards.size() || rivalPlayIndex >= rivalPlayCards.size()){
+        if (myHandIndex < 0 || rivalPlayIndex < 0 || myHandIndex >= myHandCards.size() || rivalPlayIndex >= rivalPlayCards.size()){
             return false;
         }
         Card card = myHandCards.get(myHandIndex);
@@ -799,7 +862,7 @@ public abstract class AbstractDeckStrategy{
         return false;
     }
     protected boolean myHandPointToRivalHeroNoPlace(int myHandIndex){
-        if (myHandIndex >= myHandCards.size()){
+        if (myHandIndex < 0 || myHandIndex >= myHandCards.size()){
             return false;
         }
         Card card = myHandCards.get(myHandIndex);
@@ -817,7 +880,7 @@ public abstract class AbstractDeckStrategy{
         return false;
     }
     protected boolean myHandPointToNoPlace(int myHandIndex){
-        if (myHandIndex >= myHandCards.size()){
+        if (myHandIndex < 0 || myHandIndex >= myHandCards.size()){
             return false;
         }
         Card card = myHandCards.get(myHandIndex);
@@ -868,15 +931,16 @@ public abstract class AbstractDeckStrategy{
 
     protected void allAtcRivalHero(){
         for (int i = myPlayCards.size() - 1; i >= 0; i--) {
-            Card card = myPlayCards.get(i);
-            myPlayPointToRivalHero(i);
-            if (card.isWindFury()){
+            if (myPlayPointToRivalHero(i)){
                 myPlayPointToRivalHero(i);
             }
         }
+        if (myHeroPointToRivalHero()){
+            myHeroPointToRivalHero();
+        }
     }
     protected boolean myPlayPointToRivalHero(int myPlayIndex){
-        if (myPlayIndex >= myPlayCards.size()){
+        if (myPlayIndex < 0 || myPlayIndex >= myPlayCards.size()){
             return false;
         }
         Card card = myPlayCards.get(myPlayIndex);
@@ -899,7 +963,7 @@ public abstract class AbstractDeckStrategy{
      * @param rivalPlayIndex
      */
     protected boolean myPlayPointToRivalPlay(int myPlayIndex, int rivalPlayIndex){
-        if (myPlayIndex >= myPlayCards.size() || rivalPlayIndex >= rivalPlayCards.size()){
+        if (myPlayIndex < 0 || rivalPlayIndex < 0 || myPlayIndex >= myPlayCards.size() || rivalPlayIndex >= rivalPlayCards.size()){
             return false;
         }
         Card card = myPlayCards.get(myPlayIndex);
@@ -945,7 +1009,7 @@ public abstract class AbstractDeckStrategy{
     }
 
     protected boolean myHandPointToMyPlayThenPointToMyPlay(int myHandIndex, int myPlayIndex, int thenMyPlayIndex){
-        if (myHandIndex >= myHandCards.size() || myPlayArea.isFull() || myPlayCards.get(thenMyPlayIndex).isDormantAwakenConditionEnchant() || myHandCards.get(myHandIndex).getCost() > getMyUsableResource()){
+        if (myHandIndex < 0 || myHandIndex >= myHandCards.size() || myPlayArea.isFull() || myPlayCards.get(thenMyPlayIndex).isDormantAwakenConditionEnchant() || myHandCards.get(myHandIndex).getCost() > getMyUsableResource()){
             return false;
         }
         Card card = myHandCards.get(myHandIndex);
@@ -969,7 +1033,7 @@ public abstract class AbstractDeckStrategy{
     }
 
     protected boolean myHandPointToMyPlayThenPointToRivalPlay(int myHandIndex, int myPlayIndex, int rivalPlayIndex){
-        if (myHandIndex >= myHandCards.size() || rivalPlayIndex >= rivalPlayCards.size() || myPlayArea.isFull() || !canPointedToRival(rivalPlayCards.get(rivalPlayIndex)) || myHandCards.get(myHandIndex).getCost() > getMyUsableResource()){
+        if (myHandIndex < 0 || myHandIndex >= myHandCards.size() || rivalPlayIndex >= rivalPlayCards.size() || myPlayArea.isFull() || !canPointedToRival(rivalPlayCards.get(rivalPlayIndex)) || myHandCards.get(myHandIndex).getCost() > getMyUsableResource()){
             return false;
         }
         Card card = myHandCards.get(myHandIndex);
@@ -990,7 +1054,7 @@ public abstract class AbstractDeckStrategy{
     }
 
     protected boolean myHandPointToMyPlayThenPointToRivalHero(int myHandIndex, int myPlayIndex){
-        if (myHandIndex >= myHandCards.size() || myPlayArea.isFull() || !canPointedToRival(rivalPlayArea.getHero()) || myHandCards.get(myHandIndex).getCost() > getMyUsableResource()){
+        if (myHandIndex < 0 || myHandIndex >= myHandCards.size() || myPlayArea.isFull() || !canPointedToRival(rivalPlayArea.getHero()) || myHandCards.get(myHandIndex).getCost() > getMyUsableResource()){
             return false;
         }
         Card card = myHandCards.get(myHandIndex);
@@ -1234,7 +1298,7 @@ public abstract class AbstractDeckStrategy{
      */
     protected int findTauntCard(List<Card> cards){
         for (int i = cards.size() - 1; i >= 0; i--) {
-            if (cards.get(i).isTaunt()){
+            if (cards.get(i).isTaunt() && canPointedToRival(cards.get(i)) && cards.get(i).getCardType() == MINION){
                 return i;
             }
         }
@@ -1341,11 +1405,17 @@ public abstract class AbstractDeckStrategy{
      * @param baseCard
      * @return
      */
+    protected boolean cardContains(Card longCard, BaseCard baseCard){
+        return cardContains(longCard, baseCard.cardId());
+    }
+    protected boolean cardContains(Card longCard, String baseCardId){
+        return longCard != null && longCard.getCardId() != null && longCard.getCardId().contains(baseCardId);
+    }
     protected boolean cardEquals(Card longCard, BaseCard baseCard){
         return cardEquals(longCard, baseCard.cardId());
     }
     protected boolean cardEquals(Card longCard, String baseCardId){
-        return longCard != null && longCard.getCardId() != null && longCard.getCardId().contains(baseCardId);
+        return longCard != null && Objects.equals(longCard.getCardId(), baseCardId);
     }
 
     /**

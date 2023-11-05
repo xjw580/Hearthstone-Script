@@ -2,12 +2,9 @@ package club.xiaojiawei.strategy.deck;
 
 import club.xiaojiawei.bean.BaseCard;
 import club.xiaojiawei.bean.entity.Card;
-import club.xiaojiawei.enums.CardRaceEnum;
 import club.xiaojiawei.strategy.AbstractDeckStrategy;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-
-import java.util.ArrayList;
 
 import static club.xiaojiawei.strategy.deck.SwordfishRogueDeckStrategy.SwordfishRogue.*;
 
@@ -39,18 +36,18 @@ public class SwordfishRogueDeckStrategy extends AbstractDeckStrategy {
     @Override
     protected boolean executeChangeCard(Card card, int index) {
         if (
-                cardEquals(card, 南海船工)
-                || cardEquals(card, 旗标骷髅)
-                || cardEquals(card, 鱼排斗士)
-                || cardEquals(card, 空降歹徒)
-                || cardEquals(card, 船载火炮)
+                cardContains(card, 南海船工)
+                || cardContains(card, 旗标骷髅)
+                || cardContains(card, 鱼排斗士)
+                || cardContains(card, 空降歹徒)
+                || cardContains(card, 船载火炮)
         ){
             return false;
         }
-        if (cardEquals(card, 奖品掠夺者)){
+        if (cardContains(card, 奖品掠夺者)){
             boolean exist = false;
             for (int i = 0; i < index; i++) {
-                if (cardEquals(myHandCards.get(i), 奖品掠夺者)){
+                if (cardContains(myHandCards.get(i), 奖品掠夺者)){
                     exist = true;
                     break;
                 }
@@ -58,14 +55,14 @@ public class SwordfishRogueDeckStrategy extends AbstractDeckStrategy {
             return exist;
         }
         if (
-                cardEquals(card, 洞穴探宝者)
-                || cardEquals(card, 剑鱼)
+                cardContains(card, 洞穴探宝者)
+                || cardContains(card, 剑鱼)
         ){
             boolean exist = false;
             for (int i = 0; i < index; i++) {
                 if (
-                        cardEquals(myHandCards.get(i), 洞穴探宝者)
-                        || cardEquals(myHandCards.get(i), 剑鱼)
+                        cardContains(myHandCards.get(i), 洞穴探宝者)
+                        || cardContains(myHandCards.get(i), 剑鱼)
                 ){
                     exist = true;
                     break;
@@ -86,27 +83,4 @@ public class SwordfishRogueDeckStrategy extends AbstractDeckStrategy {
         return 0;
     }
 
-    public static void main(String[] args) {
-        SwordfishRogueDeckStrategy swordfishRogueDeckStrategy = new SwordfishRogueDeckStrategy();
-        swordfishRogueDeckStrategy.rivalPlayCards = new ArrayList<>(){{
-            add(new Card(){{setAtc(2);setHealth(3);}});//0
-            add(new Card(){{setAtc(2);setHealth(3);}});//1
-            add(new Card(){{setAtc(2);setHealth(3);}});//2
-            add(new Card(){{setAtc(3);setHealth(6);setCardRace(CardRaceEnum.PIRATE);}});//3
-            add(new Card(){{setAtc(5);setHealth(3);setCardRace(CardRaceEnum.PIRATE);setCardId("NEW1_027");}});//4
-            add(new Card(){{setAtc(4);setHealth(3);setCardRace(CardRaceEnum.PIRATE);setEntityId("3");}});//5
-            add(new Card(){{setAtc(3);setHealth(4);setTaunt(true);setCardRace(CardRaceEnum.PIRATE);setEntityId("4");}});//6
-        }};
-        swordfishRogueDeckStrategy.myPlayCards = new ArrayList<>(){{
-            add(new Card(){{setAtc(3);setHealth(1);}});//0
-            add(new Card(){{setAtc(3);setHealth(1);}});//1
-            add(new Card(){{setAtc(2);setHealth(2);setEntityId("1");}});//2
-            add(new Card(){{setAtc(5);setHealth(5);setEntityId("2");}});//3
-            add(new Card(){{setAtc(8);setHealth(8);}});//4
-            add(new Card(){{setAtc(1);setHealth(1);}});//5
-            add(new Card(){{setAtc(3);setHealth(4);}});//6
-        }};
-//        swordfishRogueDeckStrategy.cleanRivalPlay(swordfishRogueDeckStrategy.myPlayCards, 1.3D, 1.1D, 0);
-//        swordfishRogueDeckStrategy.cleanPlay(1.2D, 1.3D);
-    }
 }
