@@ -495,6 +495,9 @@ public class EvenNumberShamanDeckStrategy extends AbstractDeckStrategy{
         if ((index = findByCardId(myHandCards, 分裂战斧)) != -1){
             int tempIndex = index;
             if (canMove(myPlayArea.getHero()) && calcMyAllTotalAtc() + 3 >= calcRivalHeroBlood()){
+                if (calcMyUsableResource() > 4 && myPlayCards.size() < 3){
+                    clickPower();
+                }
                 dealZeroResource();
                 myHandPointToNoPlace(tempIndex);
                 if (findByCardId(myPlayCards, 驻锚图腾) != -1){
