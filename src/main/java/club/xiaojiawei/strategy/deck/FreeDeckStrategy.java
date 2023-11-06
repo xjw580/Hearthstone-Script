@@ -28,19 +28,19 @@ public class FreeDeckStrategy extends AbstractDeckStrategy {
         List<Card> handCards = myHandArea.getCards();
         List<Card> playCards = myPlayArea.getCards();
         List<Card> rivalPlayCards = rivalPlayArea.getCards();
-        int resources = me.getResources();
         for (int i = handCards.size() - 1; i >= 0; i--) {
             if (!me.getPlayArea().isFull()){
+                log.info("not full");
                 Card card = handCards.get(i);
-                if (card.getCost() <= resources){
-                    resources -= card.getCost();
-                    myHandPointToMyPlay(i, playCards.size());
+                if (card.getCost() <= calcMyUsableResource()){
+                    log.info("play");
+                    myHandPointToMyPlay(i);
                 }
             }else {
                 break;
             }
         }
-        if (resources >= 2){
+        if (calcMyUsableResource() >= 2){
             clickPower();
         }
         boolean throughWall = true;

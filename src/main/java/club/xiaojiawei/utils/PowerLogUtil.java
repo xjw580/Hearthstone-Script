@@ -8,6 +8,7 @@ import club.xiaojiawei.bean.entity.ExtraEntity;
 import club.xiaojiawei.bean.entity.TagChangeEntity;
 import club.xiaojiawei.custom.DealTagChange;
 import club.xiaojiawei.custom.ParseExtraEntity;
+import club.xiaojiawei.enums.CardTypeEnum;
 import club.xiaojiawei.enums.ZoneEnum;
 import club.xiaojiawei.status.War;
 import lombok.SneakyThrows;
@@ -16,6 +17,7 @@ import org.apache.logging.log4j.util.Strings;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 
 import static club.xiaojiawei.data.ScriptStaticData.*;
 import static club.xiaojiawei.enums.TagEnum.UNKNOWN;
@@ -36,13 +38,11 @@ public class PowerLogUtil {
      */
     public static ExtraEntity dealShowEntity(String line, RandomAccessFile accessFile){
         ExtraEntity extraEntity = parseExtraEntity(line, accessFile, SHOW_ENTITY);
-        Card card;
         if (extraEntity.getZone() == extraEntity.getExtraCard().getZone() || extraEntity.getExtraCard().getZone() == null){
-            card = CARD_AREA_MAP.get(extraEntity.getEntityId()).findByEntityId(extraEntity.getEntityId());
+            CARD_AREA_MAP.get(extraEntity.getEntityId()).findByEntityId(extraEntity.getEntityId()).updateByExtraEntity(extraEntity);
         }else {
-            card = War.exchangeAreaOfCard(extraEntity);
+            War.exchangeAreaOfCard(extraEntity);
         }
-        card.updateByExtraEntity(extraEntity);
         return extraEntity;
     }
 
@@ -193,7 +193,6 @@ public class PowerLogUtil {
             commonEntity.setCardId(line.substring(cardIDIndex + 7).strip());
         }
         if (Strings.isBlank(commonEntity.getCardId())) {
-            //noinspection AlibabaLowerCamelCaseVariableNaming
             commonEntity.setCardId(line.substring(cardIdIndex + 7, playerIndex).strip());
         }
         commonEntity.setPlayerId(line.substring(playerIndex + 7, index).strip());
@@ -254,6 +253,6 @@ public class PowerLogUtil {
      * @param args
      */
     public static void main(String[] args) {
-        decontamination("D:\\soft\\game\\Hearthstone\\Logs\\Hearthstone_2023_09_21_22_49_34", true);
+        decontamination("S:\\Hearthstone\\Logs\\Hearthstone_2023_11_05_15_51_14", true);
     }
 }

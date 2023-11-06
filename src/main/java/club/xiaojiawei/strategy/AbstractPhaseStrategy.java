@@ -6,6 +6,7 @@ import club.xiaojiawei.bean.entity.TagChangeEntity;
 import club.xiaojiawei.enums.ConfigurationEnum;
 import club.xiaojiawei.enums.DeckEnum;
 import club.xiaojiawei.enums.StepEnum;
+import club.xiaojiawei.enums.WarPhaseEnum;
 import club.xiaojiawei.listener.log.PowerLogListener;
 import club.xiaojiawei.status.War;
 import club.xiaojiawei.utils.GameUtil;
@@ -112,10 +113,18 @@ public abstract class AbstractPhaseStrategy{
         }
     }
     protected void beforeDeal(){
-        log.info("当前处于：" + War.getCurrentPhase().getComment());
+        for (WarPhaseEnum value : WarPhaseEnum.values()) {
+            if (value.getPhaseStrategyClass() == this.getClass()){
+                log.info("当前处于：" + value.getComment());
+            }
+        }
     }
     protected void afterDeal(){
-        log.info(War.getCurrentPhase().getComment() + " -> 结束");
+        for (WarPhaseEnum value : WarPhaseEnum.values()) {
+            if (value.getPhaseStrategyClass() == this.getClass()){
+                log.info(value.getComment() + " -> 结束");
+            }
+        }
     }
 
     protected boolean dealTagChangeThenIsOver(String line, TagChangeEntity tagChangeEntity){

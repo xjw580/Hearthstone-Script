@@ -100,7 +100,7 @@ public enum TagEnum {
     CARDTYPE("CARDTYPE", "卡牌类型",
             null,
             (extraEntity, value) -> {
-                extraEntity.getExtraCard().setCardType(CARD_TYPE_MAP.getOrDefault(value, CardTypeEnum.UNKNOWN));
+                extraEntity.getExtraCard().getCard().setCardType(CARD_TYPE_MAP.getOrDefault(value, CardTypeEnum.UNKNOWN));
             }
     ),
     ZONE_POSITION("ZONE_POSITION", "区位置",
@@ -169,7 +169,7 @@ public enum TagEnum {
                 log(player, card, "生命值", tagChangeEntity.getValue());
             },
             (extraEntity, value) -> {
-                extraEntity.getExtraCard().setHealth(Integer.parseInt(value));
+                extraEntity.getExtraCard().getCard().setHealth(Integer.parseInt(value));
             }),
     ATK("ATK", "攻击力",
             (card, tagChangeEntity, player, area) -> {
@@ -177,7 +177,7 @@ public enum TagEnum {
                 log(player, card, "攻击力", tagChangeEntity.getValue());
             },
             (extraEntity, value) -> {
-                extraEntity.getExtraCard().setAtc(Integer.parseInt(value));
+                extraEntity.getExtraCard().getCard().setAtc(Integer.parseInt(value));
             }),
     COST("COST", "法力值",
             (card, tagChangeEntity, player, area) -> {
@@ -185,7 +185,7 @@ public enum TagEnum {
                 log(player, card, "法力值", tagChangeEntity.getValue());
             },
             (extraEntity, value) -> {
-                extraEntity.getExtraCard().setCost(Integer.parseInt(value));
+                extraEntity.getExtraCard().getCard().setCost(Integer.parseInt(value));
             }),
     FROZEN("FROZEN", "冻结",
             (card, tagChangeEntity, player, area) -> {
@@ -193,7 +193,7 @@ public enum TagEnum {
                 log(player, card, "冻结", tagChangeEntity.getValue());
             },
             (extraEntity, value) -> {
-                extraEntity.getExtraCard().setFrozen(isTrue(value));
+                extraEntity.getExtraCard().getCard().setFrozen(isTrue(value));
             }),
     EXHAUSTED("EXHAUSTED", "疲劳",
             (card, tagChangeEntity, player, area) -> {
@@ -201,7 +201,7 @@ public enum TagEnum {
                 log(player, card, "疲劳", tagChangeEntity.getValue());
             },
             (extraEntity, value) -> {
-                extraEntity.getExtraCard().setExhausted(isTrue(value));
+                extraEntity.getExtraCard().getCard().setExhausted(isTrue(value));
             }),
     DAMAGE("DAMAGE", "受到的伤害",
             (card, tagChangeEntity, player, area) -> {
@@ -215,7 +215,7 @@ public enum TagEnum {
                 log(player, card, "嘲讽", tagChangeEntity.getValue());
             },
             (extraEntity, value) -> {
-                extraEntity.getExtraCard().setTaunt(isTrue(value));
+                extraEntity.getExtraCard().getCard().setTaunt(isTrue(value));
             }),
     ARMOR("ARMOR", "护甲",
             (card, tagChangeEntity, player, area) -> {
@@ -223,7 +223,7 @@ public enum TagEnum {
                 log(player, card, "护甲", tagChangeEntity.getValue());
             },
             (extraEntity, value) -> {
-                extraEntity.getExtraCard().setArmor(Integer.parseInt(value));
+                extraEntity.getExtraCard().getCard().setArmor(Integer.parseInt(value));
             }),
     DIVINE_SHIELD("DIVINE_SHIELD", "圣盾",
             (card, tagChangeEntity, player, area) -> {
@@ -231,7 +231,7 @@ public enum TagEnum {
                 log(player, card, "圣盾", tagChangeEntity.getValue());
             },
             (extraEntity, value) -> {
-                extraEntity.getExtraCard().setDivineShield(isTrue(value));
+                extraEntity.getExtraCard().getCard().setDivineShield(isTrue(value));
             }),
     DEATHRATTLE("DEATHRATTLE", "亡语",
             (card, tagChangeEntity, player, area) -> {
@@ -239,7 +239,7 @@ public enum TagEnum {
                 log(player, card, "亡语", tagChangeEntity.getValue());
             },
             (extraEntity, value) -> {
-                extraEntity.getExtraCard().setDeathRattle(isTrue(value));
+                extraEntity.getExtraCard().getCard().setDeathRattle(isTrue(value));
             }),
     POISONOUS("POISONOUS", "剧毒",
             (card, tagChangeEntity, player, area) -> {
@@ -247,7 +247,7 @@ public enum TagEnum {
                 log(player, card, "剧毒", tagChangeEntity.getValue());
             },
             (extraEntity, value) -> {
-                extraEntity.getExtraCard().setPoisonous(isTrue(value));
+                extraEntity.getExtraCard().getCard().setPoisonous(isTrue(value));
             }),
     AURA("AURA", "光环",
             (card, tagChangeEntity, player, area) -> {
@@ -255,7 +255,7 @@ public enum TagEnum {
                 log(player, card, "光环", tagChangeEntity.getValue());
             },
             (extraEntity, value) -> {
-                extraEntity.getExtraCard().setAura(isTrue(value));
+                extraEntity.getExtraCard().getCard().setAura(isTrue(value));
             }),
     STEALTH("STEALTH", "潜行",
             (card, tagChangeEntity, player, area) -> {
@@ -263,7 +263,7 @@ public enum TagEnum {
                 log(player, card, "潜行", tagChangeEntity.getValue());
             },
             (extraEntity, value) -> {
-                extraEntity.getExtraCard().setStealth(isTrue(value));
+                extraEntity.getExtraCard().getCard().setStealth(isTrue(value));
             }),
     WINDFURY("WINDFURY", "风怒",
             (card, tagChangeEntity, player, area) -> {
@@ -271,7 +271,7 @@ public enum TagEnum {
                 log(player, card, "风怒", tagChangeEntity.getValue());
             },
             (extraEntity, value) -> {
-                extraEntity.getExtraCard().setWindFury(isTrue(value));
+                extraEntity.getExtraCard().getCard().setWindFury(isTrue(value));
             }),
     BATTLECRY("BATTLECRY", "战吼",
             (card, tagChangeEntity, player, area) -> {
@@ -279,7 +279,7 @@ public enum TagEnum {
                 log(player, card, "战吼", tagChangeEntity.getValue());
             },
             (extraEntity, value) -> {
-                extraEntity.getExtraCard().setBattlecry(isTrue(value));
+                extraEntity.getExtraCard().getCard().setBattlecry(isTrue(value));
             }),
     DISCOVER("DISCOVER", "发现",
             (card, tagChangeEntity, player, area) -> {
@@ -287,7 +287,7 @@ public enum TagEnum {
                 log(player, card, "发现", tagChangeEntity.getValue());
             },
             (extraEntity, value) -> {
-                extraEntity.getExtraCard().setDiscover(isTrue(value));
+                extraEntity.getExtraCard().getCard().setDiscover(isTrue(value));
             }),
     ADJACENT_BUFF("ADJACENT_BUFF", "相邻增益",
             (card, tagChangeEntity, player, area) -> {
@@ -295,7 +295,7 @@ public enum TagEnum {
                 log(player, card, "相邻增益", tagChangeEntity.getValue());
             },
             (extraEntity, value) -> {
-                extraEntity.getExtraCard().setAdjacentBuff(isTrue(value));
+                extraEntity.getExtraCard().getCard().setAdjacentBuff(isTrue(value));
             }),
     CANT_BE_TARGETED_BY_SPELLS("CANT_BE_TARGETED_BY_SPELLS", "不能被法术指向",
             (card, tagChangeEntity, player, area) -> {
@@ -303,7 +303,7 @@ public enum TagEnum {
                 log(player, card, "不能被法术指向", tagChangeEntity.getValue());
             },
             (extraEntity, value) -> {
-                extraEntity.getExtraCard().setCantBeTargetedBySpells(isTrue(value));
+                extraEntity.getExtraCard().getCard().setCantBeTargetedBySpells(isTrue(value));
             }),
     CANT_BE_TARGETED_BY_HERO_POWERS("CANT_BE_TARGETED_BY_HERO_POWERS", "不能被英雄技能指向",
             (card, tagChangeEntity, player, area) -> {
@@ -311,12 +311,12 @@ public enum TagEnum {
                 log(player, card, "不能被英雄技能指向", tagChangeEntity.getValue());
             },
             (extraEntity, value) -> {
-                extraEntity.getExtraCard().setCantBeTargetedByHeroPowers(isTrue(value));
+                extraEntity.getExtraCard().getCard().setCantBeTargetedByHeroPowers(isTrue(value));
             }),
     SPAWN_TIME_COUNT("SPAWN_TIME_COUNT", "刷出时间计数",
             null,
             (extraEntity, value) -> {
-                extraEntity.getExtraCard().setSpawnTimeCount(isTrue(value));
+                extraEntity.getExtraCard().getCard().setSpawnTimeCount(isTrue(value));
             }),
     DORMANT_AWAKEN_CONDITION_ENCHANT("DORMANT_AWAKEN_CONDITION_ENCHANT", "休眠",
             (card, tagChangeEntity, player, area) -> {
@@ -324,7 +324,7 @@ public enum TagEnum {
                 log(player, card, "休眠", tagChangeEntity.getValue());
             },
             (extraEntity, value) -> {
-                extraEntity.getExtraCard().setDormantAwakenConditionEnchant(isTrue(value));
+                extraEntity.getExtraCard().getCard().setDormantAwakenConditionEnchant(isTrue(value));
             }),
     IMMUNE("IMMUNE", "免疫",
             (card, tagChangeEntity, player, area) -> {
@@ -332,7 +332,7 @@ public enum TagEnum {
                 log(player, card, "免疫", tagChangeEntity.getValue());
             },
             (extraEntity, value) -> {
-                extraEntity.getExtraCard().setImmune(isTrue(value));
+                extraEntity.getExtraCard().getCard().setImmune(isTrue(value));
             }),
     CARDRACE("CARDRACE", "种族",
             (card, tagChangeEntity, player, area) -> {
@@ -340,12 +340,12 @@ public enum TagEnum {
                 log(player, card, "种族", tagChangeEntity.getValue());
             },
             (extraEntity, value) -> {
-                extraEntity.getExtraCard().setCardRace(CARD_RACE_MAP.getOrDefault(value, CardRaceEnum.UNKNOWN));
+                extraEntity.getExtraCard().getCard().setCardRace(CARD_RACE_MAP.getOrDefault(value, CardRaceEnum.UNKNOWN));
             }),
     PREMIUM("PREMIUM", "衍生物",
             null,
             (extraEntity, value) -> {
-                extraEntity.getExtraCard().setPremium(isTrue(value));
+                extraEntity.getExtraCard().getCard().setPremium(isTrue(value));
             }),
     MODULAR("MODULAR", "磁力",
             (card, tagChangeEntity, player, area) -> {
@@ -353,7 +353,7 @@ public enum TagEnum {
                 log(player, card, "磁力", tagChangeEntity.getValue());
             },
             (extraEntity, value) -> {
-                extraEntity.getExtraCard().setModular(isTrue(value));
+                extraEntity.getExtraCard().getCard().setModular(isTrue(value));
             }),
     CONTROLLER("CONTROLLER", "控制者",
             (card, tagChangeEntity, player, area) -> {
@@ -364,17 +364,17 @@ public enum TagEnum {
                 log(player, card, "控制者", tagChangeEntity.getValue());
             },
             (extraEntity, value) -> {
-                extraEntity.getExtraCard().setModular(isTrue(value));
+                extraEntity.getExtraCard().getCard().setModular(isTrue(value));
             }),
     CREATOR("CREATOR", "创建者",
             null,
             (extraEntity, value) -> {
-                extraEntity.getExtraCard().setCreator(value);
+                extraEntity.getExtraCard().getCard().setCreator(value);
             }),
     TITAN("TITAN", "泰坦",
             null,
             (extraEntity, value) -> {
-                extraEntity.getExtraCard().setTitan(isTrue(value));
+                extraEntity.getExtraCard().getCard().setTitan(isTrue(value));
             }),
     SPELLPOWER("SPELLPOWER", "法强",
             (card, tagChangeEntity, player, area) -> {
@@ -382,7 +382,12 @@ public enum TagEnum {
                 log(player, card, "法强", tagChangeEntity.getValue());
             },
             (extraEntity, value) -> {
-                extraEntity.getExtraCard().setSpellPower(Integer.parseInt(value));
+                extraEntity.getExtraCard().getCard().setSpellPower(Integer.parseInt(value));
+            }),
+    DORMANT("DORMANT", "休眠",
+            null,
+            (extraEntity, value) -> {
+                extraEntity.getExtraCard().getCard().setDormant(isTrue(value));
             }),
     /*+++++++++++++++++++++++++++++++++++++++++++++++*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
     UNKNOWN("UNKNOWN", "未知",
@@ -400,7 +405,9 @@ public enum TagEnum {
             cardId = card.getCardId();
             entityName = Objects.equals(ScriptStaticData.UNKNOWN, card.getEntityName())? "" : card.getEntityName();
         }
-        log.info("【玩家" + playerId + ":" + gameId + "，entityId:" + entityId+ "，entityName:" + entityName + "，cardId:" + cardId + "】的【" + tagComment + "】发生变化:" + value);
+        if (log.isDebugEnabled()){
+            log.debug("【玩家" + playerId + ":" + gameId + "，entityId:" + entityId+ "，entityName:" + entityName + "，cardId:" + cardId + "】的【" + tagComment + "】发生变化:" + value);
+        }
     }
     private static boolean isTrue(String s){
         return Objects.equals(s, "1");

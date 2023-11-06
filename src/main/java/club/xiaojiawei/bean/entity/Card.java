@@ -14,7 +14,7 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @ToString(callSuper = true)
-public class Card extends Entity{
+public class Card extends Entity implements Cloneable{
 
     private CardTypeEnum cardType;
     private volatile int cost;
@@ -114,6 +114,7 @@ public class Card extends Entity{
      */
     private boolean titan;
     private int spellPower;
+    private boolean dormant;
     public Card() {
     }
     public Card(CommonEntity commonEntity) {
@@ -123,42 +124,61 @@ public class Card extends Entity{
     }
 
     public void updateByExtraEntity(ExtraEntity extraEntity){
-        ExtraCard extraCard = extraEntity.getExtraCard();
+        Card card = extraEntity.getExtraCard().getCard();
         cardId = extraEntity.cardId;
         entityId = extraEntity.entityId;
         entityName = extraEntity.entityName;
-        cardType = extraCard.getCardType();
-        cost = extraCard.getCost();
-        atc = extraCard.getAtc();
-        health = extraCard.getHealth();
-        adjacentBuff = extraCard.isAdjacentBuff();
-        poisonous = extraCard.isPoisonous();
-        deathRattle = extraCard.isDeathRattle();
-        creatorEntityId = extraCard.getCreatorEntityId();
-        frozen = extraCard.isFrozen();
-        exhausted = extraCard.isExhausted();
-        taunt = extraCard.isTaunt();
-        armor = extraCard.getArmor();
-        divineShield = extraCard.isDivineShield();
-        aura = extraCard.isAura();
-        stealth = extraCard.isStealth();
-        frozen = extraCard.isFrozen();
-        exhausted = extraCard.isExhausted();
-        windFury = extraCard.isWindFury();
-        battlecry = extraCard.isBattlecry();
-        discover = extraCard.isDiscover();
-        cantBeTargetedBySpells = extraCard.isCantBeTargetedBySpells();
-        cantBeTargetedByHeroPowers = extraCard.isCantBeTargetedByHeroPowers();
-        spawnTimeCount = extraCard.isSpawnTimeCount();
-        dormantAwakenConditionEnchant = extraCard.isDormantAwakenConditionEnchant();
-        immune = extraCard.isImmune();
-        cardRace = extraCard.getCardRace();
-        premium = extraCard.isPremium();
-        modular = extraCard.isModular();
-        controller = extraCard.getController();
-        creator = extraCard.getCreator();
-        titan = extraCard.isTitan();
-        spellPower = extraCard.getSpellPower();
+
+        cardType = card.getCardType();
+        cost = card.getCost();
+        atc = card.getAtc();
+        health = card.getHealth();
+        adjacentBuff = card.isAdjacentBuff();
+        poisonous = card.isPoisonous();
+        deathRattle = card.isDeathRattle();
+        creatorEntityId = card.getCreatorEntityId();
+        frozen = card.isFrozen();
+        exhausted = card.isExhausted();
+        taunt = card.isTaunt();
+        armor = card.getArmor();
+        divineShield = card.isDivineShield();
+        aura = card.isAura();
+        stealth = card.isStealth();
+        frozen = card.isFrozen();
+        exhausted = card.isExhausted();
+        windFury = card.isWindFury();
+        battlecry = card.isBattlecry();
+        discover = card.isDiscover();
+        cantBeTargetedBySpells = card.isCantBeTargetedBySpells();
+        cantBeTargetedByHeroPowers = card.isCantBeTargetedByHeroPowers();
+        spawnTimeCount = card.isSpawnTimeCount();
+        dormantAwakenConditionEnchant = card.isDormantAwakenConditionEnchant();
+        immune = card.isImmune();
+        cardRace = card.getCardRace();
+        premium = card.isPremium();
+        modular = card.isModular();
+        controller = card.getController();
+        creator = card.getCreator();
+        titan = card.isTitan();
+        spellPower = card.getSpellPower();
+        dormant = card.isDormant();
     }
 
+    @Override
+    public Card clone() {
+        try {
+            Card clone = (Card) super.clone();
+            ExtraEntity extraEntity = new ExtraEntity();
+            ExtraCard extraCard = new ExtraCard();
+            extraCard.setCard(this);
+            extraEntity.setExtraCard(extraCard);
+            extraEntity.setCardId(this.getCardId());
+            extraEntity.setEntityId(this.getEntityId());
+            extraEntity.setEntityName(this.getEntityName());
+            clone.updateByExtraEntity(extraEntity);
+            return clone;
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
+        }
+    }
 }

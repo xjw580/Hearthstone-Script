@@ -2,31 +2,25 @@ package club.xiaojiawei.utils;
 
 import club.xiaojiawei.JavaFXUI;
 import club.xiaojiawei.data.ScriptStaticData;
-import club.xiaojiawei.enums.StageEnum;
-import javafx.application.Platform;
-import javafx.embed.swing.JFXPanel;
+import club.xiaojiawei.enums.WindowEnum;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.DialogEvent;
 import javafx.scene.image.Image;
-import javafx.stage.Screen;
 import javafx.stage.Stage;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import javax.swing.*;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * 窗口工具类
@@ -80,46 +74,55 @@ public class WindowUtil {
         return createAlert(headerText, contentText, okHandler, null, null, null);
     }
 
-    private final static Map<StageEnum, Stage> STAGE_MAP = new HashMap<>();
-    public static void showStage(StageEnum stageEnum){
-        Stage stage = getStage(stageEnum);
+    private final static Map<WindowEnum, Stage> STAGE_MAP = new HashMap<>();
+    public static void showStage(WindowEnum windowEnum){
+        Stage stage = getStage(windowEnum);
         if (stage.isShowing()){
+            SystemUtil.frontWindow(SystemUtil.findHWND(windowEnum.getTitle()));
             stage.requestFocus();
         }else {
             stage.show();
         }
     }
-    public static void hideStage(StageEnum stageEnum){
-        Stage stage = getStage(stageEnum, false);
+    public static void hideStage(WindowEnum windowEnum){
+        Stage stage = getStage(windowEnum, false);
         if (stage != null && stage.isShowing()){
             stage.hide();
         }
     }
 
-    public static Stage getStage(StageEnum stageEnum){
-        return getStage(stageEnum, true);
+    public static Stage getStage(WindowEnum windowEnum){
+        return getStage(windowEnum, true);
     }
-    public static Stage getStage(StageEnum stageEnum, boolean createStage){
-        Stage stage = STAGE_MAP.get(stageEnum);
+    public static Stage getStage(WindowEnum windowEnum, boolean createStage){
+        Stage stage = STAGE_MAP.get(windowEnum);
         if (stage == null && createStage){
-            STAGE_MAP.put(stageEnum, stage = createStage(stageEnum));
+            STAGE_MAP.put(windowEnum, stage = createStage(windowEnum));
         }
         return stage;
     }
-    private static Stage createStage(StageEnum stageEnum){
+    private static Stage createStage(WindowEnum windowEnum){
         Stage stage = new Stage();
         try {
-            FXMLLoader fxmlLoader = new FXMLLoader(WindowUtil.class.getResource(ScriptStaticData.MAIN_PATH + stageEnum.getFxmlName()));
+            FXMLLoader fxmlLoader = new FXMLLoader(WindowUtil.class.getResource(ScriptStaticData.MAIN_PATH + windowEnum.getFxmlName()));
             if (context != null){
                 fxmlLoader.setControllerFactory(context::getBean);
             }
             Scene scene = new Scene(fxmlLoader.load());
             stage.setScene(scene);
             scene.getStylesheets().add(JavaFXUI.javafxUIStylesheet());
-            stage.setTitle(stageEnum.getTitle());
+            stage.setTitle(windowEnum.getTitle());
             stage.getIcons().add(new Image(Objects.requireNonNull(WindowUtil.class.getResource(ScriptStaticData.SCRIPT_ICON_PATH)).toExternalForm()));
-            stage.setWidth(stageEnum.getWidth());
-            stage.setHeight(stageEnum.getHeight());
+            stage.setWidth(windowEnum.getWidth());
+            stage.setHeight(windowEnum.getHeight());
+            if (windowEnum.getX() != -1){
+                stage.setX(windowEnum.getX());
+            }
+            if (windowEnum.getY() != -1){
+                stage.setY(windowEnum.getY());
+            }
+            stage.setAlwaysOnTop(windowEnum.isAlwaysOnTop());
+            stage.initStyle(windowEnum.getInitStyle());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

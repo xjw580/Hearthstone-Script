@@ -108,7 +108,7 @@ public class ZooDeckStrategy extends AbstractDeckStrategy{
         }
         dealResource();
 //        算斩杀
-        int allAtc = calcMyPlayTotalAtc();
+        int allAtc = calcMyPlayAtc();
         int blood = rivalPlayArea.getHero().getHealth() + rivalPlayArea.getHero().getArmor() - rivalPlayArea.getHero().getDamage();
         int soulFireCount = 0;
         if (throughWall){
@@ -222,7 +222,7 @@ public class ZooDeckStrategy extends AbstractDeckStrategy{
     private final static double soulFireWeight = 3.6;
 
     private void dealResource(){
-        switch (getMyUsableResource()){
+        switch (calcMyUsableResource()){
             case 1 -> dealOneResource();
             case 2 -> dealTwoResource();
             case 3 -> dealThreeResource();
@@ -241,7 +241,7 @@ public class ZooDeckStrategy extends AbstractDeckStrategy{
      * @return
      */
     private boolean canUsePower(){
-        return  myPlayArea.getHero().getHealth() - myPlayArea.getHero().getDamage() - calcTotalAtc(rivalPlayCards) > 3;
+        return  myPlayArea.getHero().getHealth() - myPlayArea.getHero().getDamage() - calcAtc(rivalPlayCards) > 3;
     }
 
 
@@ -249,7 +249,7 @@ public class ZooDeckStrategy extends AbstractDeckStrategy{
         if (War.isMyTurn()){
             return;
         }
-        if (getMyUsableResource() < 1){
+        if (calcMyUsableResource() < 1){
             return;
         }
         if (!myPlayArea.isFull()){
@@ -297,7 +297,7 @@ public class ZooDeckStrategy extends AbstractDeckStrategy{
             }
             if (!myPlayArea.isFull()){
                 if (coinIndex != -1
-                        && (existByCost(myHandCards, 2) || !existByCost(myHandCards, 3))
+                        && (existCardByCost(myHandCards, 2) || !existCardByCost(myHandCards, 3))
                         && ((index1 = findByCardId(myHandCards, "VAN_EX1_319")) != -1
                         || (index1 = findByCardId(myHandCards, "VAN_CS2_065")) != -1
                         || (index1 = findByCardId(myHandCards, "VAN_EX1_004")) != -1
@@ -316,7 +316,7 @@ public class ZooDeckStrategy extends AbstractDeckStrategy{
         if (War.isMyTurn()){
             return;
         }
-        if (getMyUsableResource() < 2){
+        if (calcMyUsableResource() < 2){
             dealOneResource();
             return;
         }
@@ -349,7 +349,7 @@ public class ZooDeckStrategy extends AbstractDeckStrategy{
             dealOneResource();
             dealOneResource();
         }
-        if (canUsePower() && getMyUsableResource() >= 2 && !usedPower){
+        if (canUsePower() && calcMyUsableResource() >= 2 && !usedPower){
             usedPower = true;
             clickPower();
         }
@@ -358,7 +358,7 @@ public class ZooDeckStrategy extends AbstractDeckStrategy{
         if(War.isMyTurn()){
             return;
         }
-        if (getMyUsableResource() < 3){
+        if (calcMyUsableResource() < 3){
             dealTwoResource();
             return;
         }
@@ -415,7 +415,7 @@ public class ZooDeckStrategy extends AbstractDeckStrategy{
             dealTwoResource();
             dealOneResource();
         }
-        if (canUsePower() && getMyUsableResource() >= 2 && !usedPower){
+        if (canUsePower() && calcMyUsableResource() >= 2 && !usedPower){
             usedPower = true;
             clickPower();
             dealOneResource();
@@ -425,7 +425,7 @@ public class ZooDeckStrategy extends AbstractDeckStrategy{
         if(War.isMyTurn()){
             return;
         }
-        if (getMyUsableResource() < 4){
+        if (calcMyUsableResource() < 4){
             dealThreeResource();
             return;
         }
@@ -489,7 +489,7 @@ public class ZooDeckStrategy extends AbstractDeckStrategy{
             }
             dealOneResource();
         }
-        if (canUsePower() && getMyUsableResource() >= 2 && !usedPower){
+        if (canUsePower() && calcMyUsableResource() >= 2 && !usedPower){
             usedPower = true;
             clickPower();
             dealTwoResource();
@@ -499,13 +499,13 @@ public class ZooDeckStrategy extends AbstractDeckStrategy{
         if(War.isMyTurn()){
             return;
         }
-        if (getMyUsableResource() < 5){
+        if (calcMyUsableResource() < 5){
             dealFourResource();
             return;
         }
         if (!myPlayArea.isFull()){
             int blood = rivalPlayArea.getHero().getHealth() + rivalPlayArea.getHero().getArmor() - rivalPlayArea.getHero().getDamage();
-            int myPlayAtc = calcMyPlayTotalAtc();
+            int myPlayAtc = calcMyPlayAtc();
 //        57大哥
             if ((index1 = findByCardId(myHandCards, "VAN_EX1_310")) != -1 && (myHandCards.size() <= 2
                     || blood - myPlayAtc <= 10 || myHandCards.size() > 4)
@@ -532,7 +532,7 @@ public class ZooDeckStrategy extends AbstractDeckStrategy{
             dealTwoResource();
             dealOneResource();
         }
-        if (canUsePower() && getMyUsableResource() >= 2 && !usedPower){
+        if (canUsePower() && calcMyUsableResource() >= 2 && !usedPower){
             usedPower = true;
             clickPower();
             dealThreeResource();
@@ -542,7 +542,7 @@ public class ZooDeckStrategy extends AbstractDeckStrategy{
         if(War.isMyTurn()){
             return;
         }
-        if (getMyUsableResource() < 6){
+        if (calcMyUsableResource() < 6){
             dealFiveResource();
             return;
         }
@@ -553,7 +553,7 @@ public class ZooDeckStrategy extends AbstractDeckStrategy{
             dealFourResource();
             dealThreeResource();
         }
-        if (canUsePower() && getMyUsableResource() >= 2 && !usedPower){
+        if (canUsePower() && calcMyUsableResource() >= 2 && !usedPower){
             usedPower = true;
             clickPower();
             dealFourResource();
@@ -563,7 +563,7 @@ public class ZooDeckStrategy extends AbstractDeckStrategy{
         if(War.isMyTurn()){
             return;
         }
-        if (getMyUsableResource() < 7){
+        if (calcMyUsableResource() < 7){
             dealSixResource();
             return;
         }
@@ -575,7 +575,7 @@ public class ZooDeckStrategy extends AbstractDeckStrategy{
             dealThreeResource();
             dealTwoResource();
         }
-        if (canUsePower() && getMyUsableResource() >= 2 && !usedPower){
+        if (canUsePower() && calcMyUsableResource() >= 2 && !usedPower){
             usedPower = true;
             clickPower();
             dealFiveResource();
@@ -585,7 +585,7 @@ public class ZooDeckStrategy extends AbstractDeckStrategy{
         if(War.isMyTurn()){
             return;
         }
-        if (getMyUsableResource() < 7){
+        if (calcMyUsableResource() < 7){
             dealSevenResource();
             return;
         }
@@ -597,7 +597,7 @@ public class ZooDeckStrategy extends AbstractDeckStrategy{
             dealThreeResource();
             dealTwoResource();
         }
-        if (canUsePower() && getMyUsableResource() >= 2 && !usedPower){
+        if (canUsePower() && calcMyUsableResource() >= 2 && !usedPower){
             usedPower = true;
             clickPower();
             dealSixResource();
@@ -607,7 +607,7 @@ public class ZooDeckStrategy extends AbstractDeckStrategy{
         if(War.isMyTurn()){
             return;
         }
-        if (getMyUsableResource() < 9){
+        if (calcMyUsableResource() < 9){
             dealEightResource();
             return;
         }
@@ -619,7 +619,7 @@ public class ZooDeckStrategy extends AbstractDeckStrategy{
             dealThreeResource();
             dealTwoResource();
         }
-        if (canUsePower() && getMyUsableResource() >= 2 && !usedPower){
+        if (canUsePower() && calcMyUsableResource() >= 2 && !usedPower){
             usedPower = true;
             clickPower();
             dealSevenResource();
@@ -634,7 +634,7 @@ public class ZooDeckStrategy extends AbstractDeckStrategy{
             dealThreeResource();
             dealTwoResource();
         }
-        if (canUsePower() && getMyUsableResource() >= 2 && !usedPower){
+        if (canUsePower() && calcMyUsableResource() >= 2 && !usedPower){
             usedPower = true;
             clickPower();
             dealEightResource();

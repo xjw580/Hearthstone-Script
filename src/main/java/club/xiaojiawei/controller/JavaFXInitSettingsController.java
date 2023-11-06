@@ -3,7 +3,7 @@ package club.xiaojiawei.controller;
 import club.xiaojiawei.controls.PasswordShowField;
 import club.xiaojiawei.data.ScriptStaticData;
 import club.xiaojiawei.enums.ConfigurationEnum;
-import club.xiaojiawei.enums.StageEnum;
+import club.xiaojiawei.enums.WindowEnum;
 import club.xiaojiawei.utils.PropertiesUtil;
 import club.xiaojiawei.utils.TipUtil;
 import club.xiaojiawei.utils.WindowUtil;
@@ -86,7 +86,7 @@ public class JavaFXInitSettingsController implements Initializable {
         scriptConfiguration.setProperty(ConfigurationEnum.PLATFORM_PASSWORD.getKey(), password.getText());
         if(propertiesUtil.storePath(game.getText(), platform.getText())){
             ScriptStaticData.setSetPath(true);
-            WindowUtil.hideStage(StageEnum.SETTINGS);
+            WindowUtil.hideStage(WindowEnum.SETTINGS);
         }else {
             TipUtil.show(fail, ScriptStaticData.GAME_CN_NAME + "安装路径不正确,请重新选择", 5);
         }
