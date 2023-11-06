@@ -46,7 +46,7 @@ public class BaseDeckStrategy {
     }
 
     /**
-     * 卡id是否相同
+     * 卡id是否相同包含
      * @param longCard
      * @param baseCard
      * @return
@@ -57,6 +57,12 @@ public class BaseDeckStrategy {
     protected boolean cardContains(Card longCard, String baseCardId){
         return longCard != null && longCard.getCardId() != null && longCard.getCardId().contains(baseCardId);
     }
+    /**
+     * 卡id是否相同
+     * @param longCard
+     * @param baseCard
+     * @return
+     */
     protected boolean cardEquals(Card longCard, BaseCard baseCard){
         return cardEquals(longCard, baseCard.cardId());
     }
@@ -69,8 +75,8 @@ public class BaseDeckStrategy {
      * @param card
      * @return
      */
-    protected boolean canSpellPointedToRival(Card card){
-        return canPointedToRival(card) && !isImmunityMagic(card);
+    protected boolean canSpellPointedByRival(Card card){
+        return canPointedByRival(card) && !isImmunityMagic(card);
     }
 
     /**
@@ -78,8 +84,8 @@ public class BaseDeckStrategy {
      * @param card
      * @return
      */
-    protected boolean canSpellPointedToMe(Card card){
-        return canPointedToMe(card) && !isImmunityMagic(card);
+    protected boolean canSpellPointedByMe(Card card){
+        return canPointedByMe(card) && !isImmunityMagic(card);
     }
 
     /**
@@ -87,7 +93,7 @@ public class BaseDeckStrategy {
      * @param card
      * @return
      */
-    protected boolean canPointedToRival(Card card){
+    protected boolean canPointedByRival(Card card){
         return !(card.isImmune() || card.isStealth() || card.isDormantAwakenConditionEnchant());
     }
 
@@ -96,7 +102,7 @@ public class BaseDeckStrategy {
      * @param card
      * @return
      */
-    protected boolean canPointedToMe(Card card){
+    protected boolean canPointedByMe(Card card){
         return !(card.isImmune() || card.isDormantAwakenConditionEnchant() || isImmunityMagic(card));
     }
 

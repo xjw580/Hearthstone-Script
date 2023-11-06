@@ -200,7 +200,7 @@ public class FindDeckStrategy extends CalcDeckStrategy{
      * @param cost
      * @return
      */
-    protected List<Card> findAllByCost(List<Card> cards, int cost){
+    protected List<Card> findAllCardByCost(List<Card> cards, int cost){
         ArrayList<Card> list = new ArrayList<>();
         for (Card card : cards) {
             if (card.getCost() == cost){
@@ -216,7 +216,7 @@ public class FindDeckStrategy extends CalcDeckStrategy{
      */
     protected int findTauntCard(List<Card> cards){
         for (int i = cards.size() - 1; i >= 0; i--) {
-            if (cards.get(i).isTaunt() && canPointedToRival(cards.get(i)) && cards.get(i).getCardType() == MINION){
+            if (cards.get(i).isTaunt() && canPointedByRival(cards.get(i)) && cards.get(i).getCardType() == MINION){
                 return i;
             }
         }
@@ -235,9 +235,9 @@ public class FindDeckStrategy extends CalcDeckStrategy{
         }
         return -1;
     }
-    protected int findCanSpellPointedToMe(List<Card> cards){
+    protected int findCanSpellPointedByMe(List<Card> cards){
         for (int i = 0; i < cards.size(); i++) {
-            if (canSpellPointedToMe(cards.get(i))){
+            if (canSpellPointedByMe(cards.get(i))){
                 return i;
             }
         }
@@ -249,7 +249,7 @@ public class FindDeckStrategy extends CalcDeckStrategy{
      * @param cost
      * @return
      */
-    protected boolean existByCost(List<Card> cards, int cost){
+    protected boolean existCardByCost(List<Card> cards, int cost){
         return findByCost(cards, cost) != -1;
     }
 }

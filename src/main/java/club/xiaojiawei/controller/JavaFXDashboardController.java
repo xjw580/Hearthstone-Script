@@ -7,7 +7,7 @@ import club.xiaojiawei.controls.ico.FlushIco;
 import club.xiaojiawei.controls.ico.OKIco;
 import club.xiaojiawei.enums.DeckEnum;
 import club.xiaojiawei.enums.RunModeEnum;
-import club.xiaojiawei.enums.StageEnum;
+import club.xiaojiawei.enums.WindowEnum;
 import club.xiaojiawei.enums.WsResultTypeEnum;
 import club.xiaojiawei.listener.VersionListener;
 import club.xiaojiawei.status.Work;
@@ -98,7 +98,7 @@ public class JavaFXDashboardController implements Initializable {
         isPause.get().set(true);
     }
     @FXML protected void showSettings() {
-        WindowUtil.showStage(StageEnum.SETTINGS);
+        WindowUtil.showStage(WindowEnum.SETTINGS);
     }
     private static AtomicReference<BooleanProperty> staticIsPause;
     private static final SimpleBooleanProperty IS_UPDATING = new SimpleBooleanProperty(false);

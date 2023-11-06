@@ -2,7 +2,7 @@ package club.xiaojiawei.core;
 
 import club.xiaojiawei.controller.JavaFXDashboardController;
 import club.xiaojiawei.data.ScriptStaticData;
-import club.xiaojiawei.enums.StageEnum;
+import club.xiaojiawei.enums.WindowEnum;
 import club.xiaojiawei.starter.AbstractStarter;
 import club.xiaojiawei.status.Work;
 import club.xiaojiawei.utils.WindowUtil;
@@ -48,7 +48,7 @@ public class Core{
         coreThreadPool.execute(() -> {
             if (!ScriptStaticData.isSetPath()){
                 SystemUtil.notice("需要配置" + ScriptStaticData.GAME_CN_NAME + "和" + ScriptStaticData.PLATFORM_CN_NAME + "的路径");
-                Platform.runLater(() -> WindowUtil.showStage(StageEnum.SETTINGS));
+                Platform.runLater(() -> WindowUtil.showStage(WindowEnum.SETTINGS));
                 isPause.get().set(true);
             }else if (!isPause.get().get()){
                 javafxDashboardController.expandedLogPane();

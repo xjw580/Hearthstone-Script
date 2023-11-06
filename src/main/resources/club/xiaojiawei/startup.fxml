@@ -3,8 +3,13 @@
 <?import javafx.scene.control.ProgressBar?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Text?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
 <AnchorPane xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="club.xiaojiawei.controller.JavaFXStartupController" stylesheets="@css/startup.css" fx:id="root">
+    <ImageView fitHeight="20" fitWidth="20" AnchorPane.bottomAnchor="10" AnchorPane.leftAnchor="5">
+        <Image url="@images/main.png"/>
+    </ImageView>
     <ProgressBar fx:id="progressBar" prefWidth="${root.width}" progress="0" styleClass="progress-bar-ui" AnchorPane.bottomAnchor="0" />
-    <Text fx:id="ok" AnchorPane.bottomAnchor="8" AnchorPane.leftAnchor="5" text="HS-Assistant启动中......0%" />
+    <Text fx:id="ok" AnchorPane.bottomAnchor="8" AnchorPane.leftAnchor="30" text="HS-Assistant启动中......0%" />
 </AnchorPane>

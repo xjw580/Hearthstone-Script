@@ -297,7 +297,7 @@ public class ZooDeckStrategy extends AbstractDeckStrategy{
             }
             if (!myPlayArea.isFull()){
                 if (coinIndex != -1
-                        && (existByCost(myHandCards, 2) || !existByCost(myHandCards, 3))
+                        && (existCardByCost(myHandCards, 2) || !existCardByCost(myHandCards, 3))
                         && ((index1 = findByCardId(myHandCards, "VAN_EX1_319")) != -1
                         || (index1 = findByCardId(myHandCards, "VAN_CS2_065")) != -1
                         || (index1 = findByCardId(myHandCards, "VAN_EX1_004")) != -1

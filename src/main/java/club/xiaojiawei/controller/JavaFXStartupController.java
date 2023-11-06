@@ -1,5 +1,6 @@
 package club.xiaojiawei.controller;
 
+import club.xiaojiawei.data.ScriptStaticData;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -37,18 +38,18 @@ public class JavaFXStartupController implements Initializable {
                     timer.cancel();
                 }else {
                     Platform.runLater(() -> {
-                        ok.setText(String.format("HS-Assistant启动中......%d%%", count));
+                        ok.setText(String.format(ScriptStaticData.SCRIPT_NAME + "启动中......%d%%", count));
                         progressBar.setProgress((double) count / 100);
                     });
                 }
             }
-        }, 600, 15);
+        }, 600, 13);
     }
 
     public static void complete(){
         Platform.runLater(() -> {
             timer.cancel();
-            staticTip.setText("HS-Assistant启动中......100%");
+            staticTip.setText(ScriptStaticData.SCRIPT_NAME + "启动中......100%");
             staticProgressBar.setProgress(0.9999999D);
         });
     }

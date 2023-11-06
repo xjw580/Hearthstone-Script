@@ -72,93 +72,6 @@ public class EvenNumberShamanDeckStrategy extends AbstractDeckStrategy{
         return true;
     }
 
-    private void calcKillHero(){
-        int damageOf火舌图腾 = 0, damageOf冰霜撕咬 = Math.min(calcCardCount(myHandCards, 冰霜撕咬), calcMyUsableResource() >> 1) * (3 + calcMySpellPower()), countOf火舌图腾 = 0;
-        if (!myPlayCards.isEmpty()){
-            countOf火舌图腾 = Math.min(calcCardCount(myHandCards, 火舌图腾), calcMyUsableResource() >> 1);
-            if (countOf火舌图腾 == 1){
-                damageOf火舌图腾 = Math.min(myPlayCards.size(), 2) * 2;
-            }else if (countOf火舌图腾 == 2){
-                damageOf火舌图腾 = (myPlayCards.size() > 2? 4 : 2) * 2;
-            }
-        }
-        int damageOfWeapon = 0;
-        if (calcMyHeroAtc() < 3 && calcMyUsableResource() >= 4){
-            if (findByCardId(myHandCards, 分裂战斧) != -1){
-                damageOfWeapon = 3 - calcMyHeroAtc();
-            }
-        } else if (calcMyHeroAtc() == 0 && calcMyUsableResource() >= 2){
-            if (findByCardId(myHandCards, 石雕凿刀) != -1){
-                damageOfWeapon = 1;
-            }
-        }
-        int mark = -1;
-        if (damageOfWeapon > damageOf冰霜撕咬){
-            if (damageOfWeapon > damageOf火舌图腾){
-                mark = 0;
-            }else if (damageOfWeapon < damageOf火舌图腾){
-                mark = 1;
-            }
-        }else if (damageOfWeapon < damageOf冰霜撕咬){
-            if (damageOf冰霜撕咬 > damageOf火舌图腾){
-                mark = 2;
-            }else if (damageOf冰霜撕咬 < damageOf火舌图腾){
-                mark = 1;
-            }
-        }
-        int rivalHeroBlood = calcRivalHeroBlood(), myTotalAtc = calcMyTotalAtc() + Math.max(Math.max(damageOf冰霜撕咬, damageOf火舌图腾), damageOfWeapon), tauntIndex = findTauntCard(rivalPlayCards);
-        if (myTotalAtc >= rivalHeroBlood){
-            if (tauntIndex == -1){
-                switch (mark){
-                    case 0:{
-                        if (damageOfWeapon > 1){
-                            myHandPointToNoPlace(findByCardId(myHandCards, 分裂战斧));
-                        }else {
-                            myHandPointToNoPlace(findByCardId(myHandCards, 石雕凿刀));
-                        }
-                    }
-                    case 1:{
-                        if (countOf火舌图腾 == 2){
-                            myHandPointToMyPlay(findByCardId(myHandCards, 火舌图腾), 2);
-                        }
-                        myHandPointToMyPlay(findByCardId(myHandCards, 火舌图腾), 1);
-                    }
-                    case 2:{
-                        if (myHandPointToRivalHeroNoPlace(findByCardId(myHandCards, 冰霜撕咬))){
-                            myHandPointToRivalHeroNoPlace(findByCardId(myHandCards, 冰霜撕咬));
-                        }
-                    }
-                }
-                allAtcRivalHero();
-            }else {
-                if (cleanTaunt(1.3D, 2D, 0.01D)){
-                    if (calcMyTotalAtc() + Math.max(damageOf冰霜撕咬, damageOf火舌图腾) > rivalHeroBlood){
-                        switch (mark){
-                            case 0:{
-                                if (damageOfWeapon > 1){
-                                    myHandPointToNoPlace(findByCardId(myHandCards, 分裂战斧));
-                                }else {
-                                    myHandPointToNoPlace(findByCardId(myHandCards, 石雕凿刀));
-                                }
-                            }
-                            case 1:{
-                                if (countOf火舌图腾 == 2){
-                                    myHandPointToMyPlay(findByCardId(myHandCards, 火舌图腾), 2);
-                                }
-                                myHandPointToMyPlay(findByCardId(myHandCards, 火舌图腾), 1);
-                            }
-                            case 2:{
-                                if (myHandPointToRivalHeroNoPlace(findByCardId(myHandCards, 冰霜撕咬))){
-                                    myHandPointToRivalHeroNoPlace(findByCardId(myHandCards, 冰霜撕咬));
-                                }
-                            }
-                        }
-                        allAtcRivalHero();
-                    }
-                }
-            }
-        }
-    }
     @Override
     protected void executeOutCard() {
         calcKillHero();
@@ -181,6 +94,7 @@ public class EvenNumberShamanDeckStrategy extends AbstractDeckStrategy{
                 cleanNormal(1.3D, 1.35D + plusRivalAtcWeight, 0.7D + minusLazyLevel);
             }
             dealWeapon();
+            dealZeroResource();
             allAtcRivalHero();
         }
         dealResource();
@@ -427,7 +341,7 @@ public class EvenNumberShamanDeckStrategy extends AbstractDeckStrategy{
             }
         }
         if ((index = findByCardId(myHandCards, 冰霜撕咬)) != -1){
-            if (canSpellPointedToRival(rivalPlayArea.getHero()) && calcMyPlayAtc() + (3 + calcMySpellPower()) >= calcRivalHeroBlood() && myHandPointToRivalHeroNoPlace(index)){
+            if (canSpellPointedByRival(rivalPlayArea.getHero()) && calcMyPlayAtc() + (3 + calcMySpellPower()) >= calcRivalHeroBlood() && myHandPointToRivalHeroNoPlace(index)){
                 dealZeroResource();
                 return;
             }
@@ -458,12 +372,13 @@ public class EvenNumberShamanDeckStrategy extends AbstractDeckStrategy{
             return;
         }
         if (!myPlayCards.isEmpty() && (index = findByCardId(myHandCards, 即兴演奏)) != -1){
-            if ((other = findCountByBlood(myPlayCards, 1)) + 1 < findCountByBlood(rivalPlayCards, 1)){
+            if ((other = findCountByBlood(myPlayCards, calcMySpellPower() + 1)) + 1 <= findCountByBlood(rivalPlayCards, calcMySpellPower() + 1) || other == 0){
                 int pointIndex = findNotExhaustedCard(myPlayCards);
-                if (pointIndex == -1 || canSpellPointedToMe(myPlayCards.get(pointIndex))){
-                    pointIndex = findCanSpellPointedToMe(myPlayCards);
+                if (pointIndex == -1 || canSpellPointedByMe(myPlayCards.get(pointIndex))){
+                    pointIndex = findCanSpellPointedByMe(myPlayCards);
                 }
                 if (myHandPointToMyPlayNoPlace(index, pointIndex)){
+                    SystemUtil.delay(2000);
                     dealZeroResource();
                     return;
                 }
@@ -627,6 +542,93 @@ public class EvenNumberShamanDeckStrategy extends AbstractDeckStrategy{
                 card = null;
             }else {
                 card = myPlayCard;
+            }
+        }
+    }
+    private void calcKillHero(){
+        int damageOf火舌图腾 = 0, damageOf冰霜撕咬 = Math.min(calcCardCount(myHandCards, 冰霜撕咬), calcMyUsableResource() >> 1) * (3 + calcMySpellPower()), countOf火舌图腾 = 0;
+        if (!myPlayCards.isEmpty()){
+            countOf火舌图腾 = Math.min(calcCardCount(myHandCards, 火舌图腾), calcMyUsableResource() >> 1);
+            if (countOf火舌图腾 == 1){
+                damageOf火舌图腾 = Math.min(myPlayCards.size(), 2) * 2;
+            }else if (countOf火舌图腾 == 2){
+                damageOf火舌图腾 = (myPlayCards.size() > 2? 4 : 2) * 2;
+            }
+        }
+        int damageOfWeapon = 0;
+        if (calcMyHeroAtc() < 3 && calcMyUsableResource() >= 4){
+            if (findByCardId(myHandCards, 分裂战斧) != -1){
+                damageOfWeapon = 3 - calcMyHeroAtc();
+            }
+        } else if (calcMyHeroAtc() == 0 && calcMyUsableResource() >= 2){
+            if (findByCardId(myHandCards, 石雕凿刀) != -1){
+                damageOfWeapon = 1;
+            }
+        }
+        int mark = -1;
+        if (damageOfWeapon > damageOf冰霜撕咬){
+            if (damageOfWeapon > damageOf火舌图腾){
+                mark = 0;
+            }else if (damageOfWeapon < damageOf火舌图腾){
+                mark = 1;
+            }
+        }else if (damageOfWeapon < damageOf冰霜撕咬){
+            if (damageOf冰霜撕咬 > damageOf火舌图腾){
+                mark = 2;
+            }else if (damageOf冰霜撕咬 < damageOf火舌图腾){
+                mark = 1;
+            }
+        }
+        int rivalHeroBlood = calcRivalHeroBlood(), myTotalAtc = calcMyTotalAtc() + Math.max(Math.max(damageOf冰霜撕咬, damageOf火舌图腾), damageOfWeapon), tauntIndex = findTauntCard(rivalPlayCards);
+        if (myTotalAtc >= rivalHeroBlood){
+            if (tauntIndex == -1){
+                switch (mark){
+                    case 0:{
+                        if (damageOfWeapon > 1){
+                            myHandPointToNoPlace(findByCardId(myHandCards, 分裂战斧));
+                        }else {
+                            myHandPointToNoPlace(findByCardId(myHandCards, 石雕凿刀));
+                        }
+                    }
+                    case 1:{
+                        if (countOf火舌图腾 == 2){
+                            myHandPointToMyPlay(findByCardId(myHandCards, 火舌图腾), 2);
+                        }
+                        myHandPointToMyPlay(findByCardId(myHandCards, 火舌图腾), 1);
+                    }
+                    case 2:{
+                        if (myHandPointToRivalHeroNoPlace(findByCardId(myHandCards, 冰霜撕咬))){
+                            myHandPointToRivalHeroNoPlace(findByCardId(myHandCards, 冰霜撕咬));
+                        }
+                    }
+                }
+                allAtcRivalHero();
+            }else {
+                if (cleanTaunt(1.3D, 2D, 0.01D)){
+                    if (calcMyTotalAtc() + Math.max(damageOf冰霜撕咬, damageOf火舌图腾) > rivalHeroBlood){
+                        switch (mark){
+                            case 0:{
+                                if (damageOfWeapon > 1){
+                                    myHandPointToNoPlace(findByCardId(myHandCards, 分裂战斧));
+                                }else {
+                                    myHandPointToNoPlace(findByCardId(myHandCards, 石雕凿刀));
+                                }
+                            }
+                            case 1:{
+                                if (countOf火舌图腾 == 2){
+                                    myHandPointToMyPlay(findByCardId(myHandCards, 火舌图腾), 2);
+                                }
+                                myHandPointToMyPlay(findByCardId(myHandCards, 火舌图腾), 1);
+                            }
+                            case 2:{
+                                if (myHandPointToRivalHeroNoPlace(findByCardId(myHandCards, 冰霜撕咬))){
+                                    myHandPointToRivalHeroNoPlace(findByCardId(myHandCards, 冰霜撕咬));
+                                }
+                            }
+                        }
+                        allAtcRivalHero();
+                    }
+                }
             }
         }
     }

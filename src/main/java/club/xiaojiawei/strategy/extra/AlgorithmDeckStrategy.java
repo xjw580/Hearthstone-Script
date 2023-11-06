@@ -38,7 +38,7 @@ public class AlgorithmDeckStrategy extends ActionDeckStrategy{
         int rivalCardEnableCount = 0;
         boolean[] rivalCardEnable = new boolean[rivalPlayCards.size()];
         for (int i = 0; i < rivalPlayCards.size(); i++) {
-            if (rivalPlayCards.get(i).isTaunt() && canPointedToRival(rivalPlayCards.get(i)) && rivalPlayCards.get(i).getCardType() == MINION){
+            if (rivalPlayCards.get(i).isTaunt() && canPointedByRival(rivalPlayCards.get(i)) && rivalPlayCards.get(i).getCardType() == MINION){
                 rivalCardEnable[i] = true;
                 rivalCardEnableCount++;
             }
@@ -57,7 +57,7 @@ public class AlgorithmDeckStrategy extends ActionDeckStrategy{
         int rivalCardEnableCount = 0;
         boolean[] rivalCardEnable = new boolean[rivalPlayCards.size()];
         for (int i = 0; i < rivalPlayCards.size(); i++) {
-            if (isBuff(rivalPlayCards.get(i)) && canPointedToRival(rivalPlayCards.get(i))){
+            if (isBuff(rivalPlayCards.get(i)) && canPointedByRival(rivalPlayCards.get(i))){
                 rivalCardEnable[i] = true;
                 rivalCardEnableCount++;
             }
@@ -76,7 +76,7 @@ public class AlgorithmDeckStrategy extends ActionDeckStrategy{
         int rivalCardEnableCount = 0;
         boolean[] rivalCardEnable = new boolean[rivalPlayCards.size()];
         for (int i = 0; i < rivalPlayCards.size(); i++) {
-            if (isDanger(rivalPlayCards.get(i)) && canPointedToRival(rivalPlayCards.get(i))){
+            if (isDanger(rivalPlayCards.get(i)) && canPointedByRival(rivalPlayCards.get(i))){
                 rivalCardEnable[i] = true;
                 rivalCardEnableCount++;
             }
@@ -100,7 +100,7 @@ public class AlgorithmDeckStrategy extends ActionDeckStrategy{
         int rivalCardEnableCount = 0;
         boolean[] rivalCardEnable = new boolean[rivalPlayCards.size()];
         for (int i = 0; i < rivalPlayCards.size(); i++) {
-            if (canPointedToRival(rivalPlayCards.get(i))){
+            if (canPointedByRival(rivalPlayCards.get(i))){
                 rivalCardEnable[i] = true;
                 rivalCardEnableCount++;
             }
@@ -200,6 +200,8 @@ public class AlgorithmDeckStrategy extends ActionDeckStrategy{
                 }
                 return true;
             }
+        }else {
+            log.info("没啥好解的");
         }
         return false;
     }
@@ -380,7 +382,7 @@ public class AlgorithmDeckStrategy extends ActionDeckStrategy{
 //        寻找能白吃的
         for (int i = rivalPlayCards.size() - 1; i >= 0 ; i--) {
             Card rivalCard = rivalPlayCards.get(i);
-            if (canPointedToRival(rivalCard) && rivalCard.getCardType() == MINION && calcCardBlood(rivalCard) <= myAtc && (rivalCard.getAtc() < myBlood || myPlayCard.isDivineShield())){
+            if (canPointedByRival(rivalCard) && rivalCard.getCardType() == MINION && calcCardBlood(rivalCard) <= myAtc && (rivalCard.getAtc() < myBlood || myPlayCard.isDivineShield())){
                 double newWeight = calcCardBlood(rivalCard) * BLOOD_WEIGHT + rivalCard.getAtc() * ATC_WEIGHT;
 //                寻找最优白吃方法，既要白吃又不能白吃过头忽略打脸，如55白吃11这种
                 if (newWeight > weight && myWeight - newWeight < FREE_EAT_MAX){
@@ -395,7 +397,7 @@ public class AlgorithmDeckStrategy extends ActionDeckStrategy{
             weight = 0;
             for (int i = rivalPlayCards.size() - 1; i >= 0 ; i--) {
                 Card card = rivalPlayCards.get(i);
-                if (canPointedToRival(card) && card.getCardType() == MINION && calcCardBlood(card) <= myAtc){
+                if (canPointedByRival(card) && card.getCardType() == MINION && calcCardBlood(card) <= myAtc){
                     double newWeight = calcCardBlood(card) * BLOOD_WEIGHT + card.getAtc() * ATC_WEIGHT;
                     if (newWeight >= myWeightPlus && newWeight > weight){
                         rivalIndex = i;

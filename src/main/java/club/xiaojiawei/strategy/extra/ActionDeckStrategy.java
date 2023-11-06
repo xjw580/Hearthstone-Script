@@ -148,7 +148,7 @@ public class ActionDeckStrategy extends FindDeckStrategy{
             return false;
         }
         Card card = myHandCards.get(myHandIndex);
-        if (card.getCost() > calcMyUsableResource() || !canSpellPointedToMe(myPlayCards.get(myPlayIndex))){
+        if (card.getCost() > calcMyUsableResource() || !canSpellPointedByMe(myPlayCards.get(myPlayIndex))){
             return false;
         }
         myHandPointToMyPlayForBase(myHandIndex, myPlayIndex, false);
@@ -181,7 +181,7 @@ public class ActionDeckStrategy extends FindDeckStrategy{
             return false;
         }
         Card card = myHandCards.get(myHandIndex);
-        if (card.getCost() > calcMyUsableResource() || !canSpellPointedToRival(rivalPlayCards.get(rivalPlayIndex))){
+        if (card.getCost() > calcMyUsableResource() || !canSpellPointedByRival(rivalPlayCards.get(rivalPlayIndex))){
             return false;
         }
         SystemUtil.updateGameRect();
@@ -199,7 +199,7 @@ public class ActionDeckStrategy extends FindDeckStrategy{
             return false;
         }
         Card card = myHandCards.get(myHandIndex);
-        if (card.getCost() > calcMyUsableResource() || !canSpellPointedToRival(rivalPlayArea.getHero())){
+        if (card.getCost() > calcMyUsableResource() || !canSpellPointedByRival(rivalPlayArea.getHero())){
             return false;
         }
         SystemUtil.updateGameRect();
@@ -231,7 +231,7 @@ public class ActionDeckStrategy extends FindDeckStrategy{
     }
 
     protected boolean myHeroPointToRivalHero(){
-        if (!canPointedToRival(rivalPlayArea.getHero()) || !canMove(myPlayArea.getHero()) || calcMyHeroAtc() <= 0){
+        if (!canPointedByRival(rivalPlayArea.getHero()) || !canMove(myPlayArea.getHero()) || calcMyHeroAtc() <= 0){
             return false;
         }
         SystemUtil.updateGameRect();
@@ -242,7 +242,7 @@ public class ActionDeckStrategy extends FindDeckStrategy{
     protected boolean myHeroPointToRivalPlay(int rivalPlayIndex){
         if (
                 rivalPlayIndex >= rivalPlayCards.size()
-                        || !canPointedToRival(rivalPlayCards.get(rivalPlayIndex))
+                        || !canPointedByRival(rivalPlayCards.get(rivalPlayIndex))
                         || !canMove(myPlayArea.getHero())
                         || calcMyHeroAtc() <= 0
                         || calcCardBlood(myPlayArea.getHero()) <= rivalPlayCards.get(rivalPlayIndex).getAtc()
@@ -277,7 +277,7 @@ public class ActionDeckStrategy extends FindDeckStrategy{
             return false;
         }
         Card card = myPlayCards.get(myPlayIndex);
-        if (!canPointedToRival(rivalPlayArea.getHero()) || !canMove(card)){
+        if (!canPointedByRival(rivalPlayArea.getHero()) || !canMove(card)){
             return false;
         }
         SystemUtil.updateGameRect();
@@ -301,7 +301,7 @@ public class ActionDeckStrategy extends FindDeckStrategy{
             return false;
         }
         Card card = myPlayCards.get(myPlayIndex);
-        if (!canPointedToRival(rivalPlayCards.get(rivalPlayIndex)) || !canMove(card)){
+        if (!canPointedByRival(rivalPlayCards.get(rivalPlayIndex)) || !canMove(card)){
             log.info("动不了");
             return false;
         }
@@ -368,7 +368,7 @@ public class ActionDeckStrategy extends FindDeckStrategy{
     }
 
     protected boolean myHandPointToMyPlayThenPointToRivalPlay(int myHandIndex, int myPlayIndex, int rivalPlayIndex){
-        if (myHandIndex < 0 || myHandIndex >= myHandCards.size() || rivalPlayIndex >= rivalPlayCards.size() || myPlayArea.isFull() || !canPointedToRival(rivalPlayCards.get(rivalPlayIndex)) || myHandCards.get(myHandIndex).getCost() > calcMyUsableResource()){
+        if (myHandIndex < 0 || myHandIndex >= myHandCards.size() || rivalPlayIndex >= rivalPlayCards.size() || myPlayArea.isFull() || !canPointedByRival(rivalPlayCards.get(rivalPlayIndex)) || myHandCards.get(myHandIndex).getCost() > calcMyUsableResource()){
             return false;
         }
         Card card = myHandCards.get(myHandIndex);
@@ -389,7 +389,7 @@ public class ActionDeckStrategy extends FindDeckStrategy{
     }
 
     protected boolean myHandPointToMyPlayThenPointToRivalHero(int myHandIndex, int myPlayIndex){
-        if (myHandIndex < 0 || myHandIndex >= myHandCards.size() || myPlayArea.isFull() || !canPointedToRival(rivalPlayArea.getHero()) || myHandCards.get(myHandIndex).getCost() > calcMyUsableResource()){
+        if (myHandIndex < 0 || myHandIndex >= myHandCards.size() || myPlayArea.isFull() || !canPointedByRival(rivalPlayArea.getHero()) || myHandCards.get(myHandIndex).getCost() > calcMyUsableResource()){
             return false;
         }
         Card card = myHandCards.get(myHandIndex);
