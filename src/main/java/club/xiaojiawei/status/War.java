@@ -149,6 +149,7 @@ public class War {
         }
         Area targetArea = War.getPlayer(extraEntity.getPlayerId()).getArea(extraEntity.getExtraCard().getZone());
         Card card = sourceArea.removeByEntityId(extraEntity.getEntityId());
+        card.updateByExtraEntity(extraEntity);
         targetArea.add(card, extraEntity.getExtraCard().getZonePos());
         return card;
     }

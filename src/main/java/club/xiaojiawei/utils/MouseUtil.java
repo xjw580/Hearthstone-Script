@@ -156,7 +156,7 @@ public class MouseUtil {
      * 计算斜率
      * @return double 斜率
      */
-    private double calcK(int startX, int startY, int endX, int endY){
+    private static double calcK(int startX, int startY, int endX, int endY){
         return (double)(startY - endY) / (startX - endX);
     }
 
@@ -167,13 +167,19 @@ public class MouseUtil {
      * @param endX
      * @param endY
      */
-    private void moveMouseByLine(int startX, int startY, int endX, int endY){
+    private static void moveMouseByLine(int startX, int startY, int endX, int endY){
         if (Math.abs(startY - endY) <= 5){
             for (startX -= MOVE_DISTANCE; startX >= endX; startX -= MOVE_DISTANCE){
                 ROBOT.mouseMove(startX, startY);
                 SystemUtil.delay(MOVE_INTERVAL);
             }
-        }else {
+        }else if (Math.abs(startX - endX) <= 5){
+            for (startY -= MOVE_DISTANCE; startY >= endY; startY -= MOVE_DISTANCE){
+                ROBOT.mouseMove(startX, startY);
+                SystemUtil.delay(MOVE_INTERVAL);
+            }
+        }
+        else {
             double k = calcK(startX, startY, endX, endY);
             double b = startY - k * startX;
             for (startY -= MOVE_DISTANCE; startY >= endY; startY -= MOVE_DISTANCE){
@@ -184,5 +190,4 @@ public class MouseUtil {
         ROBOT.mouseMove(endX, endY);
         SystemUtil.delay(MOVE_INTERVAL);
     }
-
 }

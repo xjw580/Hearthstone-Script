@@ -18,7 +18,7 @@ public enum DeckEnum {
 
     ZOO("ZOO", "动物园", DeckTypeEnum.CLASSIC, RunModeEnum.CLASSIC, "AAEDAcn1AgAP+5UEs5YE1ZYE7ZYEgaEErqEEsqEEw6EE06EE7qEEnaIEo6IEu6IEv6IEw6MEAA==", ZooDeckStrategy.class, false),
     FREE("FREE", "核心骑", DeckTypeEnum.STANDARD, RunModeEnum.STANDARD, "AAECAZ8FAp/UBLaeBg6hnwS1nwSWoASkoATHoATJoATWoASp1ASL7AW0ngbPngbQngbRngbUngYAAA==", FreeDeckStrategy.class, true),
-    EVEN_NUMBER_SHAMAN("EVEN_NUMBER_SHAMAN", "偶数萨", DeckTypeEnum.WILD, RunModeEnum.WILD, "AAEBAaoIBM30ArLBBLHZBOmhBg0zvgayFJTvAp2jA9qlA/mRBPq0BIbUBKrZBL3lBMGeBt+hBgAA", EvenNumberShamanDeckStrategy.class, true),
+    EVEN_NUMBER_SHAMAN("EVEN_NUMBER_SHAMAN", "偶数萨", DeckTypeEnum.WILD, RunModeEnum.WILD, "AAEBAdL8BQQzzfQCsdkE9PIFDb4GshSU7wKdowPapQP5kQT6tASG1ASq2QS95QTBngbfoQbpoQYAAA==", EvenNumberShamanDeckStrategy.class, true),
     SWORDFISH_ROGUE("SWORDFISH_ROGUE", "剑鱼贼",DeckTypeEnum.WILD, RunModeEnum.WILD, "AAEBAZurBASRvALl0QKvoATooAUNjALUBe4G+w+gvQLpsAO6tgOqywOKyQSa2wTXowXTsgW/9wUAAA==",SwordfishRogueDeckStrategy .class, false),
     ;
     private final String value;

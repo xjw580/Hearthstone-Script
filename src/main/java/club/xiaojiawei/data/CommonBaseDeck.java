@@ -20,4 +20,6 @@ public class CommonBaseDeck {
     public static final BaseCard 旗标骷髅 = new BaseCard("NX2_006");
     public static final BaseCard 锈水海盗 = new BaseCard("AT_029");
     public static final BaseCard 携刃信使 = new BaseCard("TSC_085");
+    public static final BaseCard 农夫 = new BaseCard("SW_319");
+    public static final BaseCard 火焰术士弗洛格尔 = new BaseCard("BAR_860");
 }

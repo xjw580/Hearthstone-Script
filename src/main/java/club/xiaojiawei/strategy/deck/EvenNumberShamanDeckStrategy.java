@@ -174,7 +174,8 @@ public class EvenNumberShamanDeckStrategy extends AbstractDeckStrategy{
                 plusRivalAtcWeight = 5D;
                 minusLazyLevel = -1.5D;
             }
-            if (Objects.equals(rivalPlayArea.getHero().getCardId(), "HERO_02fbp")){
+            if (Objects.equals(rivalPlayArea.getHero().getCardId(), "HERO_02fbp") && rivalPlayArea.getPower().getCost() < 2){
+                log.info("解场优先级提高");
                 cleanNormal(1.3D, 1.35D + plusRivalAtcWeight, 0.5D + minusLazyLevel);
             }else {
                 cleanNormal(1.3D, 1.35D + plusRivalAtcWeight, 0.7D + minusLazyLevel);
@@ -242,7 +243,7 @@ public class EvenNumberShamanDeckStrategy extends AbstractDeckStrategy{
         dealZeroResource();
     }
     int index;
-    int otherIndex;
+    int other;
     private boolean deal图腾巨像(int maxCost){
         index = findByCardId(myHandCards, 图腾巨像);
         if (index != -1 && myHandCards.get(index).getCost() <= maxCost){
@@ -264,21 +265,21 @@ public class EvenNumberShamanDeckStrategy extends AbstractDeckStrategy{
         log.debug("尝试武器攻击");
         if (canMove(myPlayArea.getHero()) && calcMyHeroAtc() > 0){
             log.debug("可以攻击");
-            if ((otherIndex = findTauntCard(rivalPlayCards)) == -1){
+            if ((other = findTauntCard(rivalPlayCards)) == -1){
                 log.debug("没有嘲讽");
                 if (calcCardRaceCount(myPlayCards, CardRaceEnum.TOTEM, true) * calcCardCount(myHandCards, 图腾潮涌) + calcMyAllTotalAtc() >= calcRivalHeroBlood()){
                     log.debug("可以斩杀，打脸");
                     return myHeroPointToRivalHero();
-                } else if ((otherIndex = findMaxAtcByBlood(rivalPlayCards, calcMyHeroAtc(), calcMyHeroBlood() - 1, true)) != -1){
+                } else if ((other = findMaxAtcByBlood(rivalPlayCards, calcMyHeroAtc(), calcMyHeroBlood() - 1, true)) != -1){
                     log.debug("可以解场");
-                    return myHeroPointToRivalPlay(otherIndex);
+                    return myHeroPointToRivalPlay(other);
                 }else if (!cardContains(myPlayArea.getWeapon(), 石雕凿刀) || !myPlayArea.isFull()){
                     log.debug("兜底：打脸");
                     return myHeroPointToRivalHero();
                 }
-            }else if (calcCardBlood(rivalPlayCards.get(otherIndex))  <= calcMyHeroAtc()){
+            }else if (calcCardBlood(rivalPlayCards.get(other))  <= calcMyHeroAtc()){
                 log.debug("解嘲讽怪");
-                return myHeroPointToRivalPlay(otherIndex);
+                return myHeroPointToRivalPlay(other);
             }
         }
         return false;
@@ -334,11 +335,11 @@ public class EvenNumberShamanDeckStrategy extends AbstractDeckStrategy{
         if (!canExecute(1)){
             return;
         }
-        dealZeroResource();
         if (clickPower()){
             dealZeroResource();
             return;
         }
+        dealZeroResource();
         deal图腾巨像(1);
         deal深渊魔物(1);
     }
@@ -384,8 +385,8 @@ public class EvenNumberShamanDeckStrategy extends AbstractDeckStrategy{
             return;
         }
         if ((index = findByCardId(myHandCards, 阴燃电鳗)) != -1
-                && (otherIndex = findMaxAtcByBlood(rivalPlayCards, 2, true)) != -1
-                && myHandPointToMyPlayThenPointToRivalPlay(index, myPlayCards.size(), otherIndex)
+                && (other = findMaxAtcByBlood(rivalPlayCards, 2, true)) != -1
+                && myHandPointToMyPlayThenPointToRivalPlay(index, myPlayCards.size(), other)
         ){
             dealZeroResource();
             return;
@@ -436,7 +437,7 @@ public class EvenNumberShamanDeckStrategy extends AbstractDeckStrategy{
                 return;
             }
         }
-        if ((index = findByCardId(myHandCards, 深海融合怪)) != -1 && (otherIndex = findCardByCardRace(myPlayCards, CardRaceEnum.TOTEM, CardRaceEnum.ALL, CardRaceEnum.PET)) != -1 && myHandPointToMyPlayThenPointToMyPlay(index, myPlayCards.size(), otherIndex)){
+        if ((index = findByCardId(myHandCards, 深海融合怪)) != -1 && (other = findCardByCardRace(myPlayCards, CardRaceEnum.TOTEM, CardRaceEnum.ALL, CardRaceEnum.PET)) != -1 && myHandPointToMyPlayThenPointToMyPlay(index, myPlayCards.size(), other)){
             SystemUtil.delay(ACTION_INTERVAL + 1000);
             dealZeroResource();
             return;
@@ -457,12 +458,12 @@ public class EvenNumberShamanDeckStrategy extends AbstractDeckStrategy{
             return;
         }
         if (!myPlayCards.isEmpty() && (index = findByCardId(myHandCards, 即兴演奏)) != -1){
-            if (findCountByBlood(myPlayCards, 1) == 0){
+            if ((other = findCountByBlood(myPlayCards, 1)) + 1 < findCountByBlood(rivalPlayCards, 1)){
                 int pointIndex = findNotExhaustedCard(myPlayCards);
                 if (pointIndex == -1 || canSpellPointedToMe(myPlayCards.get(pointIndex))){
-                    pointIndex = 0;
+                    pointIndex = findCanSpellPointedToMe(myPlayCards);
                 }
-                if (!canSpellPointedToMe(myPlayCards.get(pointIndex)) && myHandPointToMyPlayNoPlace(index, pointIndex)){
+                if (myHandPointToMyPlayNoPlace(index, pointIndex)){
                     dealZeroResource();
                     return;
                 }
@@ -520,8 +521,8 @@ public class EvenNumberShamanDeckStrategy extends AbstractDeckStrategy{
                 (index = findByCardId(myHandCards, 图腾团聚)) != -1
                 && (( myPlayCards.size() <= 3 && findByCardId(myPlayCards, 驻锚图腾) != -1) || ( myPlayCards.size() >= rivalPlayCards.size() && myPlayCards.size() <= 2))
         ){
-            if (calcMyUsableResource() > 5 && (otherIndex = findByCardId(myHandCards, 驻锚图腾)) != -1){
-                myHandPointToMyPlay(otherIndex);
+            if (calcMyUsableResource() > 5 && (other = findByCardId(myHandCards, 驻锚图腾)) != -1){
+                myHandPointToMyPlay(other);
             }
             if (myHandPointToNoPlace(index)){
                 if (findByCardId(myPlayCards, 驻锚图腾) != -1){
@@ -539,8 +540,8 @@ public class EvenNumberShamanDeckStrategy extends AbstractDeckStrategy{
                 (index = findByCardId(myHandCards, 图腾团聚)) != -1
                 && (myPlayCards.size() == 3 && calcMyUsableResource() == 4 || myPlayCards.size() < 3)
         ){
-            if (calcMyUsableResource() > 5 && (otherIndex = findByCardId(myHandCards, 驻锚图腾)) != -1){
-                myHandPointToMyPlay(otherIndex);
+            if (calcMyUsableResource() > 5 && (other = findByCardId(myHandCards, 驻锚图腾)) != -1){
+                myHandPointToMyPlay(other);
             }
             if (myHandPointToNoPlace(index)){
                 if (findByCardId(myPlayCards, 驻锚图腾) != -1){

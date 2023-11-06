@@ -27,6 +27,7 @@ public enum ModeEnum {
     FATAL_ERROR("FATAL_ERROR", "致命错误", FatalErrorModeStrategy.class),
     DRAFT("DRAFT", "竞技场界面", DraftModeStrategy.class),
     PVP_DUNGEON_RUN("PVP_DUNGEON_RUN", "对决界面", PvpDungeonRunModeStrategy.class),
+    FRIENDLY("FRIENDLY", "友谊赛界面", FriendlyModeStrategy.class),
     TAVERN_BRAWL("TAVERN_BRAWL", "乱斗界面", TavernBrawlModeStrategy.class)
     ;
     private final String value;

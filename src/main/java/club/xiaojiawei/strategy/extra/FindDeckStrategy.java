@@ -235,6 +235,14 @@ public class FindDeckStrategy extends CalcDeckStrategy{
         }
         return -1;
     }
+    protected int findCanSpellPointedToMe(List<Card> cards){
+        for (int i = 0; i < cards.size(); i++) {
+            if (canSpellPointedToMe(cards.get(i))){
+                return i;
+            }
+        }
+        return -1;
+    }
     /**
      * 是否存在指定费用的牌
      * @param cards

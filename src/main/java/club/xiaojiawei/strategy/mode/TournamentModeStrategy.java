@@ -151,7 +151,7 @@ public class TournamentModeStrategy extends AbstractModeStrategy<Object> {
         }
     }
 
-    private void selectDeck(DeckEnum currentDeck){
+    public void selectDeck(DeckEnum currentDeck){
         List<Deck> decks = DeckLogListener.getDecks();
         for (int i = decks.size() - 1; i >= 0; i--) {
             Deck d = decks.get(i);
@@ -201,7 +201,7 @@ public class TournamentModeStrategy extends AbstractModeStrategy<Object> {
         );
     }
 
-    private void startMatching(){
+    public void startMatching(){
         log.info("开始匹配");
         //        重置游戏
         mouseUtil.leftButtonClick(

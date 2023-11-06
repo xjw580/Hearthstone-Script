@@ -22,8 +22,10 @@ public class GUILogAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
 
     @Override
     protected void append(ILoggingEvent event) {
-        appendJavaFX(event);
-        appendWebSocket(event);
+        if (event.getLevel().levelInt >= Level.INFO_INT){
+            appendJavaFX(event);
+            appendWebSocket(event);
+        }
     }
     @SuppressWarnings("all")
     private void appendJavaFX(ILoggingEvent event){

@@ -8,6 +8,7 @@ import club.xiaojiawei.bean.entity.ExtraEntity;
 import club.xiaojiawei.bean.entity.TagChangeEntity;
 import club.xiaojiawei.custom.DealTagChange;
 import club.xiaojiawei.custom.ParseExtraEntity;
+import club.xiaojiawei.enums.CardTypeEnum;
 import club.xiaojiawei.enums.ZoneEnum;
 import club.xiaojiawei.status.War;
 import lombok.SneakyThrows;
@@ -37,13 +38,11 @@ public class PowerLogUtil {
      */
     public static ExtraEntity dealShowEntity(String line, RandomAccessFile accessFile){
         ExtraEntity extraEntity = parseExtraEntity(line, accessFile, SHOW_ENTITY);
-        Card card;
         if (extraEntity.getZone() == extraEntity.getExtraCard().getZone() || extraEntity.getExtraCard().getZone() == null){
-            card = CARD_AREA_MAP.get(extraEntity.getEntityId()).findByEntityId(extraEntity.getEntityId());
+            CARD_AREA_MAP.get(extraEntity.getEntityId()).findByEntityId(extraEntity.getEntityId()).updateByExtraEntity(extraEntity);
         }else {
-            card = War.exchangeAreaOfCard(extraEntity);
+            War.exchangeAreaOfCard(extraEntity);
         }
-        card.updateByExtraEntity(extraEntity);
         return extraEntity;
     }
 
@@ -254,6 +253,6 @@ public class PowerLogUtil {
      * @param args
      */
     public static void main(String[] args) {
-        decontamination("S:\\Hearthstone\\Logs\\Hearthstone_2023_11_05_01_48_00", true);
+        decontamination("S:\\Hearthstone\\Logs\\Hearthstone_2023_11_05_15_51_14", true);
     }
 }

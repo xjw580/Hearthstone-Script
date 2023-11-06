@@ -35,10 +35,10 @@ public abstract class AbstractDeckStrategy extends AlgorithmDeckStrategy {
     private GameUtil gameUtil;
 
     public void changeCard() {
+        assign();
         if (Boolean.parseBoolean(scriptConfiguration.getProperty(STRATEGY.getKey()))){
             try {
                 log.info("执行换牌策略");
-                assign();
                 double clearance ,firstCardPos;
                 if (myHandCards.size() == 3){
                     clearance  = getFloatCardClearanceForThreeCard();

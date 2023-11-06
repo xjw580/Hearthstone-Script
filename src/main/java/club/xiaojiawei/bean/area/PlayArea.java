@@ -43,7 +43,6 @@ public class PlayArea extends Area {
 //            TODO 设置powerType
             addZoneAndLog("技能", card);
         }else if (card.getCardType() == HERO){
-            log.info("添加英雄");
 //            TODO 设置heroType
             heroHide = hero;
             hero = card;
@@ -116,12 +115,4 @@ public class PlayArea extends Area {
         super(7);
     }
 
-    @Override
-    protected void addZeroCard(Card card) {
-        if (card.getCardType() == HERO){
-            add(card);
-        }else {
-            super.addZeroCard(card);
-        }
-    }
 }

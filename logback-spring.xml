@@ -46,10 +46,10 @@
     </appender>
 
     <appender name="other" class="club.xiaojiawei.appender.GUILogAppender"/>
-    <logger name="club.xiaojiawei" level="info">
+    <logger name="club.xiaojiawei" level="${logLevel}">
         <appender-ref ref="other"/>
     </logger>
-
+    <logger name="org.springframework" level="info"/>
     <root level="${logLevel}">
         <appender-ref ref="console"/>
         <appender-ref ref="file_async"/>

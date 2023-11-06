@@ -144,7 +144,7 @@ public class ActionDeckStrategy extends FindDeckStrategy{
         return false;
     }
     protected boolean myHandPointToMyPlayNoPlace(int myHandIndex, int myPlayIndex){
-        if (myHandIndex < 0 || myHandIndex >= myHandCards.size() || myPlayIndex >= myPlayCards.size()){
+        if (myPlayIndex < 0 || myHandIndex < 0 || myHandIndex >= myHandCards.size() || myPlayIndex >= myPlayCards.size()){
             return false;
         }
         Card card = myHandCards.get(myHandIndex);
@@ -297,10 +297,12 @@ public class ActionDeckStrategy extends FindDeckStrategy{
      */
     protected boolean myPlayPointToRivalPlay(int myPlayIndex, int rivalPlayIndex){
         if (myPlayIndex < 0 || rivalPlayIndex < 0 || myPlayIndex >= myPlayCards.size() || rivalPlayIndex >= rivalPlayCards.size()){
+            log.info("下标错误");
             return false;
         }
         Card card = myPlayCards.get(myPlayIndex);
         if (!canPointedToRival(rivalPlayCards.get(rivalPlayIndex)) || !canMove(card)){
+            log.info("动不了");
             return false;
         }
         SystemUtil.updateGameRect();

@@ -23,7 +23,7 @@ public class AlgorithmDeckStrategy extends ActionDeckStrategy{
     protected static double ATC_WEIGHT = 0.6;
     protected static double FREE_EAT_MAX = 5;
     protected boolean cleanTaunt(){
-        return cleanTaunt(1.3D, 5D, 0.001D);
+        return cleanTaunt(1.3D, 10D, 0.001D);
     }
     protected boolean cleanBuff(){
         return cleanBuff(1.3D, 4D, 0.3D);
@@ -163,9 +163,9 @@ public class AlgorithmDeckStrategy extends ActionDeckStrategy{
             recursionCleanPlay(myAtcWeight, rivalAtcWeight, myPlayCards, rivalPlayCards, myCardEnable, rivalCardEnable, new boolean[myPlayCards.size()][rivalPlayCards.size()], 0, lazyLevel);
         }
         log.info("思考解怪耗时：" + (System.currentTimeMillis() - start) + "ms");
-        return cleanAction();
+        return cleanAction(myPlayCards, rivalPlayCards);
     }
-    private boolean cleanAction(){
+    private boolean cleanAction(List<Card> myPlayCards, List<Card> rivalPlayCards){
         if (finalWeight > initWeight){
             HashMap<String, String> entityIdMap = new HashMap<>();
             StringBuilder stringBuilder = new StringBuilder("结果：");
@@ -180,21 +180,25 @@ public class AlgorithmDeckStrategy extends ActionDeckStrategy{
                 }
             }
             log.info(stringBuilder.toString());
-            if (!entityIdMap.isEmpty()){
-                for (String myEntityId : entityIdMap.keySet()) {
-                    int rivalIndex = findByEntityId(rivalPlayCards, entityIdMap.get(myEntityId));
-                    if (rivalIndex != -1){
-                        int myIndex = findByEntityId(myPlayCards, myEntityId);
+            if (entityIdMap.isEmpty()){
+                log.info("解不动");
+            }else {
+                for (Map.Entry<String, String> entry : entityIdMap.entrySet()) {
+                    int rivalIndex = findByEntityId(this.rivalPlayCards, entry.getValue());
+                    if (rivalIndex == -1){
+                        log.info("找不到被攻击的敌方随从：" + entry.getValue());
+                    }else {
+                        int myIndex = findByEntityId(this.myPlayCards, entry.getKey());
                         if (myIndex != -1){
                             myPlayPointToRivalPlay(myIndex, rivalIndex);
-                        }else if (Objects.equals(myPlayArea.getHero().getEntityId(), myEntityId)){
+                        }else if (Objects.equals(this.myPlayArea.getHero().getEntityId(), entry.getKey())){
                             myHeroPointToRivalPlay(rivalIndex);
+                        }else {
+                            log.info("找不到攻击的我方随从：" + entry.getKey());
                         }
                     }
                 }
                 return true;
-            }else {
-                log.info("解不动");
             }
         }
         return false;
@@ -350,6 +354,8 @@ public class AlgorithmDeckStrategy extends ActionDeckStrategy{
                 || cardContains(card, 携刃信使)
                 || cardContains(card, 锈水海盗)
                 || cardEquals(card, 旗标骷髅)
+                || cardEquals(card, 农夫)
+                || cardEquals(card, 火焰术士弗洛格尔)
                 || cardContains(card, 船载火炮);
     }
     private boolean isBuff(Card card){
