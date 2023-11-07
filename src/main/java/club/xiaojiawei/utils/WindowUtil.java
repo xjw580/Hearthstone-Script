@@ -109,8 +109,8 @@ public class WindowUtil {
                 fxmlLoader.setControllerFactory(context::getBean);
             }
             Scene scene = new Scene(fxmlLoader.load());
-            stage.setScene(scene);
             scene.getStylesheets().add(JavaFXUI.javafxUIStylesheet());
+            stage.setScene(scene);
             stage.setTitle(windowEnum.getTitle());
             stage.getIcons().add(new Image(Objects.requireNonNull(WindowUtil.class.getResource(ScriptStaticData.SCRIPT_ICON_PATH)).toExternalForm()));
             stage.setWidth(windowEnum.getWidth());

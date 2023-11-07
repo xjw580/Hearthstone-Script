@@ -21,15 +21,14 @@ public class JavaFXStartupController implements Initializable {
     @FXML
     private ProgressBar progressBar;
     @FXML
-    private Text ok;
+    private Text tip;
     private static int count;
-    private static Text staticTip;
     private static ProgressBar staticProgressBar;
     private static Timer timer;
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        staticTip = ok;
         staticProgressBar = progressBar;
+        tip.setText(ScriptStaticData.SCRIPT_NAME + "启动中......");
         timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
@@ -37,20 +36,14 @@ public class JavaFXStartupController implements Initializable {
                 if (++count == 100){
                     timer.cancel();
                 }else {
-                    Platform.runLater(() -> {
-                        ok.setText(String.format(ScriptStaticData.SCRIPT_NAME + "启动中......%d%%", count));
-                        progressBar.setProgress((double) count / 100);
-                    });
+                    Platform.runLater(() -> progressBar.setProgress((double) count / 100));
                 }
             }
         }, 600, 13);
     }
 
     public static void complete(){
-        Platform.runLater(() -> {
-            timer.cancel();
-            staticTip.setText(ScriptStaticData.SCRIPT_NAME + "启动中......100%");
-            staticProgressBar.setProgress(0.9999999D);
-        });
+        timer.cancel();
+        staticProgressBar.setProgress(1D);
     }
 }

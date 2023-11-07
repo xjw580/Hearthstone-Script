@@ -215,9 +215,9 @@ function save(){
         }
     }
     $.get(`/dashboard/save?workDayFlagArr=${workDayFlagArr}&workTimeFlagArr=${workTimeFlagArr}&workTimeArr=${workTimeArr}`, {}, res => {
-        $("#ok").text("保存成功")
+        $("#tip").text("保存成功")
         setTimeout(() => {
-            $("#ok").text("")
+            $("#tip").text("")
         }, 1500)
     })
 }

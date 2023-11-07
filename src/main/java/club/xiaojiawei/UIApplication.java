@@ -5,19 +5,22 @@ import club.xiaojiawei.data.ScriptStaticData;
 import club.xiaojiawei.data.SpringData;
 import club.xiaojiawei.enums.DeckEnum;
 import club.xiaojiawei.enums.WindowEnum;
+import club.xiaojiawei.initializer.AbstractInitializer;
 import club.xiaojiawei.utils.SystemUtil;
 import club.xiaojiawei.utils.WindowUtil;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
-import javafx.stage.Screen;
 import javafx.stage.Stage;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.ApplicationArguments;
+import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -32,7 +35,6 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import static club.xiaojiawei.data.ScriptStaticData.MAIN_ICO_NAME;
 import static club.xiaojiawei.enums.ConfigurationEnum.DECK;
-import static javafx.stage.StageStyle.UNDECORATED;
 
 
 /**
@@ -40,15 +42,19 @@ import static javafx.stage.StageStyle.UNDECORATED;
  * @author 肖嘉威
  * @date 2023/7/6 9:46
  */
-@Component
 @Slf4j
-public class UIApplication extends Application {
+@Order(520)
+@Component
+public class UIApplication extends Application implements ApplicationRunner {
     @Resource
     private Properties scriptConfiguration;
     @Resource
     private SpringData springData;
     @Resource
     private AtomicReference<BooleanProperty> isPause;
+    @Lazy
+    @Resource
+    private AbstractInitializer initializer;
     @Override
     public void start(Stage stage) throws IOException {
         Platform.setImplicitExit(false);
@@ -60,16 +66,13 @@ public class UIApplication extends Application {
     }
     private void showMainPage(){
         Thread thread = new Thread(() -> {
-            try {
-                setStyle(getMainPageLoader(launchSpringBoot()));
-                Platform.runLater(() -> {
-                    WindowUtil.showStage(WindowEnum.DASHBOARD);
-                });
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+            launchSpringBoot();
             setTray();
-            afterInit();
+            Platform.runLater(() -> {
+                WindowUtil.showStage(WindowEnum.DASHBOARD);
+                afterShowing();
+            });
+
         });
         thread.setName("MainPage Thread");
         thread.start();
@@ -113,9 +116,9 @@ public class UIApplication extends Application {
             }
         }, show, quit);
     }
-    private void afterInit(){
+    private void afterShowing(){
         JavaFXStartupController.complete();
-        Platform.runLater(() -> WindowUtil.hideStage(WindowEnum.STARTUP));
+        WindowUtil.hideStage(WindowEnum.STARTUP);
         DeckEnum deckEnum = DeckEnum.valueOf(scriptConfiguration.getProperty(DECK.getKey()));
         log.info(deckEnum.getComment() + "卡组代码：" + deckEnum.getDeckCode());
         if (SystemUtil.copyToClipboard(deckEnum.getDeckCode())){
@@ -128,5 +131,10 @@ public class UIApplication extends Application {
         if (!args.isEmpty() && Objects.equals("false", args.get(0))){
             isPause.get().set(false);
         }
+    }
+
+    @Override
+    public void run(ApplicationArguments args) {
+        initializer.init();
     }
 }
