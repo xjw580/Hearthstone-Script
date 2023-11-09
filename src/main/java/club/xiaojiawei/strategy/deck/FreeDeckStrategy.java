@@ -25,48 +25,21 @@ public class FreeDeckStrategy extends AbstractDeckStrategy {
 
     @Override
     protected void executeOutCard() {
-        List<Card> handCards = myHandArea.getCards();
-        List<Card> playCards = myPlayArea.getCards();
-        List<Card> rivalPlayCards = rivalPlayArea.getCards();
-        for (int i = handCards.size() - 1; i >= 0; i--) {
-            if (!me.getPlayArea().isFull()){
-                log.info("not full");
-                Card card = handCards.get(i);
-                if (card.getCost() <= calcMyUsableResource()){
-                    log.info("play");
-                    myHandPointToMyPlay(i);
-                }
-            }else {
-                break;
-            }
+        for (int i = myHandCards.size() - 1; i >= 0; i--) {
+            myHandPointToMyPlay(i);
+        }
+        boolean cleanTaunt = cleanTaunt();
+        if (cleanTaunt){
+            cleanBuff();
+            cleanDanger();
+            cleanNormal();
+            allAtcRivalHero();
+        }
+        for (int i = myHandCards.size() - 1; i >= 0; i--) {
+            myHandPointToMyPlay(i);
         }
         if (calcMyUsableResource() >= 2){
             clickPower();
-        }
-        boolean throughWall = true;
-//        解嘲讽怪
-        for (int i = rivalPlayCards.size() - 1; i >= 0; i--) {
-            Card card = rivalPlayCards.get(i);
-            if (card.isTaunt() && !card.isStealth()){
-                List<Integer> result = calcEatRivalCard(card);
-                if (result == null){
-//                    过墙失败
-                    throughWall = false;
-                    continue;
-                }
-                for (int j = result.size() - 2; j >= 0; j--) {
-                    Integer integer = result.get(j);
-                    myPlayPointToRivalPlay(integer, i);
-                }
-            }
-        }
-        if (throughWall){
-            for (int i = playCards.size() - 1; i >= 0; i--) {
-                Card card = playCards.get(i);
-                if (!card.isExhausted() && card.getAtc() > 0 && !card.isFrozen()){
-                    myPlayPointToRivalHero(i);
-                }
-            }
         }
     }
 

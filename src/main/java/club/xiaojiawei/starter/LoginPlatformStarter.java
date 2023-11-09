@@ -2,7 +2,6 @@ package club.xiaojiawei.starter;
 
 import club.xiaojiawei.enums.ConfigurationEnum;
 import club.xiaojiawei.utils.SystemUtil;
-import com.sun.jna.platform.win32.WinDef;
 import javafx.beans.property.BooleanProperty;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
@@ -36,8 +35,8 @@ public class LoginPlatformStarter extends AbstractStarter{
     protected void exec() {
         scheduledFuture = extraThreadPool.scheduleAtFixedRate(() -> {
             if (isPause.get().get()){
-                cancelPlatformTimer();
-            }else if (SystemUtil.findPlatformHWND() != null){
+                cancelLoginPlatformTimer();
+            }else if (SystemUtil.findLoginPlatformHWND() == null){
                 cancelAndStartNext();
             }else {
                 SystemUtil.frontWindow(SystemUtil.findLoginPlatformHWND());
@@ -50,10 +49,10 @@ public class LoginPlatformStarter extends AbstractStarter{
                 SystemUtil.delay(1000);
                 clickLoginButton();
             }
-        }, 5, 10, TimeUnit.SECONDS);
+        }, 5, 30, TimeUnit.SECONDS);
     }
 
-    public static void cancelPlatformTimer(){
+    public static void cancelLoginPlatformTimer(){
         if (scheduledFuture != null && !scheduledFuture.isDone()){
             log.info("已取消战网登录定时器");
             scheduledFuture.cancel(true);
@@ -81,7 +80,7 @@ public class LoginPlatformStarter extends AbstractStarter{
 
     public void cancelAndStartNext(){
         extraThreadPool.schedule(() -> {
-            cancelPlatformTimer();
+            cancelLoginPlatformTimer();
             startNextStarter();
         }, 1, TimeUnit.SECONDS);
     }

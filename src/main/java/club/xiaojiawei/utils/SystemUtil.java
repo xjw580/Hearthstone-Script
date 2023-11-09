@@ -252,8 +252,10 @@ public class SystemUtil {
 
     public static void killPlatform(){
         WinDef.HWND platformHWND = findPlatformHWND();
-        if (platformHWND != null){
+        WinDef.HWND loginPlatformHWND = findLoginPlatformHWND();
+        if (platformHWND != null || loginPlatformHWND != null){
             User32Dll.INSTANCE.closeProgram(platformHWND);
+            User32Dll.INSTANCE.closeProgram(loginPlatformHWND);
             log.info("战网已关闭");
         }else {
             log.info("战网不在运行");
