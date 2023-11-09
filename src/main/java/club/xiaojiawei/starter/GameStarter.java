@@ -65,7 +65,7 @@ public class GameStarter extends AbstractStarter{
                     throw new RuntimeException(e);
                 }
             }
-        }), 1, 30, TimeUnit.SECONDS);
+        }), 3, 30, TimeUnit.SECONDS);
     }
 
     private void launchGame(){

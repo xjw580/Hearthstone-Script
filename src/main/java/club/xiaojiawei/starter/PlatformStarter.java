@@ -53,7 +53,7 @@ public class PlatformStarter extends AbstractStarter{
             }else if (SystemUtil.findPlatformHWND() != null || SystemUtil.findLoginPlatformHWND() != null){
                 cancelAndStartNext();
             }
-        }, 1, 4, TimeUnit.SECONDS);
+        }, 1, 3, TimeUnit.SECONDS);
     }
     public static void cancelPlatformTimer(){
         if (scheduledFuture != null && !scheduledFuture.isDone()){
