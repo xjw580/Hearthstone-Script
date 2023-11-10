@@ -33,6 +33,10 @@ public class LoginPlatformStarter extends AbstractStarter{
     private static ScheduledFuture<?> scheduledFuture;
     @Override
     protected void exec() {
+        if (SystemUtil.findLoginPlatformHWND() == null){
+            cancelAndStartNext();
+            return;
+        }
         scheduledFuture = extraThreadPool.scheduleAtFixedRate(() -> {
             if (isPause.get().get()){
                 cancelLoginPlatformTimer();
@@ -40,16 +44,16 @@ public class LoginPlatformStarter extends AbstractStarter{
                 cancelAndStartNext();
             }else {
                 SystemUtil.frontWindow(SystemUtil.findLoginPlatformHWND());
-                SystemUtil.delay(1000);
+                SystemUtil.delay(500);
                 if (!inputPassword()){
                     log.warn("未设置战网账号密码");
                     startNextStarter();
                     return;
                 }
-                SystemUtil.delay(1000);
+                SystemUtil.delay(500);
                 clickLoginButton();
             }
-        }, 5, 30, TimeUnit.SECONDS);
+        }, 5, 15, TimeUnit.SECONDS);
     }
 
     public static void cancelLoginPlatformTimer(){

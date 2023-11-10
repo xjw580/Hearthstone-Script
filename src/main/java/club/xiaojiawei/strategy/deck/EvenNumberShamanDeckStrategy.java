@@ -47,6 +47,7 @@ public class EvenNumberShamanDeckStrategy extends AbstractDeckStrategy{
         public static final BaseCard 吉恩_格雷迈恩 = new BaseCard("GIL_692");
         public static final BaseCard 深渊魔物 = new BaseCard("OG_028");
         public static final BaseCard 图腾巨像 = new BaseCard("REV_838");
+        public static final BaseCard 远古图腾 = new BaseCard("TTN_710");
     }
 
     @Override
@@ -200,6 +201,10 @@ public class EvenNumberShamanDeckStrategy extends AbstractDeckStrategy{
     }
     private void dealZeroResource(){
         if (!canExecute(0)){
+            return;
+        }
+        if ((index = findByCardId(myHandCards, 远古图腾)) !=-1 && myHandPointToMyPlay(index)){
+            dealZeroResource();
             return;
         }
         if (deal图腾巨像(0)){
