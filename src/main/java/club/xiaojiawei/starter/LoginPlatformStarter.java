@@ -5,6 +5,7 @@ import club.xiaojiawei.utils.SystemUtil;
 import javafx.beans.property.BooleanProperty;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -13,6 +14,7 @@ import java.util.Properties;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -30,7 +32,11 @@ public class LoginPlatformStarter extends AbstractStarter{
     private ScheduledThreadPoolExecutor extraThreadPool;
     @Resource
     private AtomicReference<BooleanProperty> isPause;
+    @Lazy
+    @Resource
+    private AbstractStarter starter;
     private static ScheduledFuture<?> scheduledFuture;
+    private static final AtomicInteger COUNT = new AtomicInteger();
     @Override
     protected void exec() {
         if (SystemUtil.findLoginPlatformHWND() == null){
@@ -43,6 +49,15 @@ public class LoginPlatformStarter extends AbstractStarter{
             }else if (SystemUtil.findLoginPlatformHWND() == null){
                 cancelAndStartNext();
             }else {
+                if (COUNT.incrementAndGet() == 5){
+                    log.info("登录战网失败次数过多，重新执行启动器链");
+                    COUNT.set(0);
+                    extraThreadPool.schedule(() -> {
+                        cancelLoginPlatformTimer();
+                        starter.start();
+                    }, 1, TimeUnit.SECONDS);
+                    return;
+                }
                 SystemUtil.frontWindow(SystemUtil.findLoginPlatformHWND());
                 SystemUtil.delay(500);
                 if (!inputPassword()){
