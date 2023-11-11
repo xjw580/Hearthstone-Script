@@ -78,7 +78,7 @@ public class EvenNumberShamanDeckStrategy extends AbstractDeckStrategy{
         calcKillHero();
         dealResource();
         calcKillHero();
-        boolean cleanTaunt = cleanTaunt();
+        boolean cleanTaunt = (cleanTaunt() || cleanTaunt());
         if (cleanTaunt){
             cleanBuff();
             cleanDanger();

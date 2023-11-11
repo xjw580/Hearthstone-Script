@@ -28,7 +28,7 @@ public class FreeDeckStrategy extends AbstractDeckStrategy {
         for (int i = myHandCards.size() - 1; i >= 0; i--) {
             myHandPointToMyPlay(i);
         }
-        boolean cleanTaunt = cleanTaunt();
+        boolean cleanTaunt = (cleanTaunt() || cleanTaunt());
         if (cleanTaunt){
             cleanBuff();
             cleanDanger();
