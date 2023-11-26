@@ -59,6 +59,9 @@ public abstract class AbstractLogListener {
     public synchronized void listen(){
         if (logScheduledFuture != null && !logScheduledFuture.isDone()){
             log.warn(logFileName + "正在被监听，无法再次被监听");
+            if (nextLogListener != null){
+                nextLogListener.listen();
+            }
             return;
         }
         closeLogStream();

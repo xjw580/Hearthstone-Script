@@ -7,6 +7,7 @@ import club.xiaojiawei.listener.log.DeckLogListener;
 import club.xiaojiawei.listener.log.PowerLogListener;
 import club.xiaojiawei.listener.log.ScreenLogListener;
 import club.xiaojiawei.starter.GameStarter;
+import club.xiaojiawei.starter.LoginPlatformStarter;
 import club.xiaojiawei.starter.PlatformStarter;
 import club.xiaojiawei.strategy.mode.LoginModeStrategy;
 import club.xiaojiawei.strategy.mode.TournamentModeStrategy;
@@ -90,6 +91,7 @@ public class SystemUtil {
     public static void cancelAllProgramTimer(){
         log.info("终止所有程序启动定时器");
         PlatformStarter.cancelPlatformTimer();
+        LoginPlatformStarter.cancelLoginPlatformTimer();
         GameStarter.cancelGameTimer();
     }
 
@@ -252,8 +254,10 @@ public class SystemUtil {
 
     public static void killPlatform(){
         WinDef.HWND platformHWND = findPlatformHWND();
-        if (platformHWND != null){
+        WinDef.HWND loginPlatformHWND = findLoginPlatformHWND();
+        if (platformHWND != null || loginPlatformHWND != null){
             User32Dll.INSTANCE.closeProgram(platformHWND);
+            User32Dll.INSTANCE.closeProgram(loginPlatformHWND);
             log.info("战网已关闭");
         }else {
             log.info("战网不在运行");

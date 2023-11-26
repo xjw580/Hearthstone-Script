@@ -47,6 +47,8 @@ public class EvenNumberShamanDeckStrategy extends AbstractDeckStrategy{
         public static final BaseCard 吉恩_格雷迈恩 = new BaseCard("GIL_692");
         public static final BaseCard 深渊魔物 = new BaseCard("OG_028");
         public static final BaseCard 图腾巨像 = new BaseCard("REV_838");
+        public static final BaseCard 远古图腾 = new BaseCard("TTN_710");
+        public static final BaseCard 可靠陪伴 = new BaseCard("WW_027");
     }
 
     @Override
@@ -59,6 +61,7 @@ public class EvenNumberShamanDeckStrategy extends AbstractDeckStrategy{
                 || cardContains(card, 图腾潮涌)
                 || cardContains(card, 图腾魔像)
                 || cardContains(card, 海象人图腾师)
+                || cardContains(card, 可靠陪伴)
         ){
             return false;
         }
@@ -77,7 +80,7 @@ public class EvenNumberShamanDeckStrategy extends AbstractDeckStrategy{
         calcKillHero();
         dealResource();
         calcKillHero();
-        boolean cleanTaunt = cleanTaunt();
+        boolean cleanTaunt = (cleanTaunt() || cleanTaunt());
         if (cleanTaunt){
             cleanBuff();
             cleanDanger();
@@ -202,6 +205,10 @@ public class EvenNumberShamanDeckStrategy extends AbstractDeckStrategy{
         if (!canExecute(0)){
             return;
         }
+        if ((index = findByCardId(myHandCards, 远古图腾)) !=-1 && myHandPointToMyPlay(index)){
+            dealZeroResource();
+            return;
+        }
         if (deal图腾巨像(0)){
             dealZeroResource();
             return;
@@ -267,6 +274,10 @@ public class EvenNumberShamanDeckStrategy extends AbstractDeckStrategy{
                 return;
             }
         }
+        if (calcMyAllTotalAtc() + 2 >= calcRivalHeroBlood() && (index = findByCardId(myHandCards, 可靠陪伴)) != -1 && (other = findNotExhaustedCard(myPlayCards)) != -1 && myHandPointToMyPlayNoPlace(index, other)){
+            dealZeroResource();
+            return;
+        }
         if ((index = findByCardId(myHandCards, 阴燃电鳗)) != -1){
             if (calcMyAllTotalAtc() + 2 >= calcRivalHeroBlood() && myHandPointToMyPlayThenPointToRivalHero(index, myPlayCards.size())){
                 dealZeroResource();
@@ -305,6 +316,10 @@ public class EvenNumberShamanDeckStrategy extends AbstractDeckStrategy{
             dealZeroResource();
             return;
         }
+        if ((index = findByCardId(myHandCards, 可靠陪伴)) != -1 && (other = findCardByCardRace(myPlayCards, CardRaceEnum.TOTEM)) != -1 && myHandPointToMyPlayNoPlace(index, other)){
+            dealZeroResource();
+            return;
+        }
         if (myPlayCards.size() > 2 && (index = findByCardId(myHandCards, 火舌图腾)) != -1 && myHandPointToMyPlay(index, (myPlayCards.size() + 1) >> 1)){
             dealZeroResource();
             return;
@@ -313,11 +328,19 @@ public class EvenNumberShamanDeckStrategy extends AbstractDeckStrategy{
             dealZeroResource();
             return;
         }
+        if ((index = findByCardId(myHandCards, 可靠陪伴)) != -1 && (other = findNotExhaustedCard(myPlayCards)) != -1 && myHandPointToMyPlayNoPlace(index, other)){
+            dealZeroResource();
+            return;
+        }
         if ((index = findByCardId(myHandCards, 图腾魔像)) != -1 && myHandPointToMyPlay(index)){
             dealZeroResource();
             return;
         }
         if (myPlayCards.size() > 1 && (index = findByCardId(myHandCards, 火舌图腾)) != -1 && myHandPointToMyPlay(index, (myPlayCards.size() + 1) >> 1)){
+            dealZeroResource();
+            return;
+        }
+        if ((index = findByCardId(myHandCards, 可靠陪伴)) != -1 && !myPlayCards.isEmpty() && myHandPointToMyPlayNoPlace(index, 0)){
             dealZeroResource();
             return;
         }

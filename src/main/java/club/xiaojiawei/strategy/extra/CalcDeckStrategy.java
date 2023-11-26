@@ -68,15 +68,17 @@ public class CalcDeckStrategy extends BaseDeckStrategy{
         return calcCardBlood(myPlayArea.getHero());
     }
     protected int calcMyPlayAtc(){
-        return calcAtc(myPlayCards);
+        return calcCanMoveAtc(myPlayCards);
     }
     protected int calcMyTotalAtc(){
         return calcMyPlayAtc() + calcMyHeroAtc();
     }
-    protected int calcAtc(List<Card> cards){
+    protected int calcCanMoveAtc(List<Card> cards){
         int atc = 0;
         for (Card card : cards) {
-            atc += card.getAtc() * (card.isWindFury()? 2 : 1);
+            if (canMove(card)){
+                atc += card.getAtc() * (card.isWindFury()? 2 : 1);
+            }
         }
         return atc;
     }

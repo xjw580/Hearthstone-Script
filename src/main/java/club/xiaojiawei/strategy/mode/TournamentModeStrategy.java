@@ -48,15 +48,15 @@ public class TournamentModeStrategy extends AbstractModeStrategy<Object> {
     private Core core;
     private static ScheduledFuture<?> scheduledFuture;
     private static ScheduledFuture<?> errorScheduledFuture;
-    private static final float TOURNAMENT_MODE_BUTTON_VERTICAL_TO_BOTTOM_RATIO = (float) 0.7;
-    private static final float FIRST_DECK_BUTTON_HORIZONTAL_TO_CENTER_RATIO = (float) (0.333);
-    private static final float ERROR_BUTTON_VERTICAL_TO_BOTTOM_RATION = (float) 0.395;
-    private static final float CHANGE_MODE_BUTTON_VERTICAL_TO_BOTTOM_RATION = (float) 0.963;
-    private static final float CHANGE_MODE_BUTTON_HORIZONTAL_TO_CENTER_RATION = (float) 0.313;
-    private static final float CLASSIC_BUTTON_VERTICAL_TO_BOTTOM_RATION = (float) 0.581;
-    private static final float CLASSIC_BUTTON_HORIZONTAL_TO_CENTER_RATION = (float) 0.34;
-    private static final float STANDARD_BUTTON_VERTICAL_TO_BOTTOM_RATION = (float) 0.714;
-    private static final float STANDARD_BUTTON_HORIZONTAL_TO_CENTER_RATION = (float) 0.11;
+    private static final float TOURNAMENT_MODE_BUTTON_VERTICAL_TO_BOTTOM_RATIO = 0.7F;
+    private static final float FIRST_DECK_BUTTON_HORIZONTAL_TO_CENTER_RATIO = 0.333F;
+    private static final float ERROR_BUTTON_VERTICAL_TO_BOTTOM_RATION = 0.395F;
+    private static final float CHANGE_MODE_BUTTON_VERTICAL_TO_BOTTOM_RATION = 0.963F;
+    private static final float CHANGE_MODE_BUTTON_HORIZONTAL_TO_CENTER_RATION = 0.313F;
+    private static final float CLASSIC_BUTTON_VERTICAL_TO_BOTTOM_RATION = 0.581F;
+    private static final float CLASSIC_BUTTON_HORIZONTAL_TO_CENTER_RATION = 0.34F;
+    private static final float STANDARD_BUTTON_VERTICAL_TO_BOTTOM_RATION = 0.714F;
+    private static final float STANDARD_BUTTON_HORIZONTAL_TO_CENTER_RATION = 0.11F;
     public static void cancelTask(){
         if (scheduledFuture != null && !scheduledFuture.isDone()){
             log.info("已取消点击天梯模式按钮任务");

@@ -2,10 +2,10 @@ package club.xiaojiawei.starter;
 
 import club.xiaojiawei.enums.ConfigurationEnum;
 import club.xiaojiawei.utils.SystemUtil;
-import com.sun.jna.platform.win32.WinDef;
 import javafx.beans.property.BooleanProperty;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -14,6 +14,7 @@ import java.util.Properties;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -31,19 +32,33 @@ public class LoginPlatformStarter extends AbstractStarter{
     private ScheduledThreadPoolExecutor extraThreadPool;
     @Resource
     private AtomicReference<BooleanProperty> isPause;
+    @Lazy
+    @Resource
+    private AbstractStarter starter;
     private static ScheduledFuture<?> scheduledFuture;
+    private static final AtomicInteger COUNT = new AtomicInteger();
     @Override
     protected void exec() {
         if (SystemUtil.findLoginPlatformHWND() == null){
-            startNextStarter();
-        }else {
-            //        停顿以判断能否自动登录
-            SystemUtil.delay(10_000);
-            WinDef.HWND hwnd;
-            if ((hwnd = SystemUtil.findLoginPlatformHWND()) == null){
-                startNextStarter();
+            cancelAndStartNext();
+            return;
+        }
+        scheduledFuture = extraThreadPool.scheduleAtFixedRate(() -> {
+            if (isPause.get().get()){
+                cancelLoginPlatformTimer();
+            }else if (SystemUtil.findLoginPlatformHWND() == null){
+                cancelAndStartNext();
             }else {
-                SystemUtil.frontWindow(hwnd);
+                if (COUNT.incrementAndGet() == 5){
+                    log.info("登录战网失败次数过多，重新执行启动器链");
+                    COUNT.set(0);
+                    extraThreadPool.schedule(() -> {
+                        cancelLoginPlatformTimer();
+                        starter.start();
+                    }, 1, TimeUnit.SECONDS);
+                    return;
+                }
+                SystemUtil.frontWindow(SystemUtil.findLoginPlatformHWND());
                 SystemUtil.delay(500);
                 if (!inputPassword()){
                     log.warn("未设置战网账号密码");
@@ -52,18 +67,11 @@ public class LoginPlatformStarter extends AbstractStarter{
                 }
                 SystemUtil.delay(500);
                 clickLoginButton();
-                scheduledFuture = extraThreadPool.scheduleAtFixedRate(() -> {
-                    if (isPause.get().get()){
-                        cancelPlatformTimer();
-                    }else if (SystemUtil.findPlatformHWND() != null){
-                        cancelAndStartNext();
-                    }
-                }, 2, 2, TimeUnit.SECONDS);
             }
-        }
+        }, 5, 15, TimeUnit.SECONDS);
     }
 
-    public static void cancelPlatformTimer(){
+    public static void cancelLoginPlatformTimer(){
         if (scheduledFuture != null && !scheduledFuture.isDone()){
             log.info("已取消战网登录定时器");
             scheduledFuture.cancel(true);
@@ -91,7 +99,7 @@ public class LoginPlatformStarter extends AbstractStarter{
 
     public void cancelAndStartNext(){
         extraThreadPool.schedule(() -> {
-            cancelPlatformTimer();
+            cancelLoginPlatformTimer();
             startNextStarter();
         }, 1, TimeUnit.SECONDS);
     }

@@ -241,7 +241,7 @@ public class ZooDeckStrategy extends AbstractDeckStrategy{
      * @return
      */
     private boolean canUsePower(){
-        return  myPlayArea.getHero().getHealth() - myPlayArea.getHero().getDamage() - calcAtc(rivalPlayCards) > 3;
+        return  myPlayArea.getHero().getHealth() - myPlayArea.getHero().getDamage() - calcCanMoveAtc(rivalPlayCards) > 3;
     }
 
 

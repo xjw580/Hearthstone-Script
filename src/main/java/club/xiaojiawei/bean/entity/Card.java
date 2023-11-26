@@ -1,10 +1,13 @@
 package club.xiaojiawei.bean.entity;
 
+import club.xiaojiawei.custom.CustomToStringGenerator;
 import club.xiaojiawei.enums.CardRaceEnum;
 import club.xiaojiawei.enums.CardTypeEnum;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+
+import static club.xiaojiawei.data.ScriptStaticData.ROBOT;
 
 /**
  * 属性来源于{@link club.xiaojiawei.enums.TagEnum}
@@ -13,31 +16,30 @@ import lombok.ToString;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
-@ToString(callSuper = true)
 public class Card extends Entity implements Cloneable{
 
-    private CardTypeEnum cardType;
+    private volatile CardTypeEnum cardType;
     private volatile int cost;
-    private int atc;
-    private int health;
-    private int armor;
-    private int damage;
+    private volatile int atc;
+    private volatile int health;
+    private volatile int armor;
+    private volatile int damage;
     /**
      * 相邻增益
      */
-    private boolean adjacentBuff;
+    private volatile boolean adjacentBuff;
     /**
      * 剧毒
      */
-    private boolean poisonous;
+    private volatile boolean poisonous;
     /**
      * 亡语
      */
-    private boolean deathRattle;
+    private volatile boolean deathRattle;
     /**
      * 创建者id
      */
-    private String creatorEntityId;
+    private volatile String creatorEntityId;
     /**
      * 嘲讽
      */
@@ -49,7 +51,7 @@ public class Card extends Entity implements Cloneable{
     /**
      * 光环
      */
-    private boolean aura;
+    private volatile boolean aura;
     /**
      * 潜行
      */
@@ -69,52 +71,52 @@ public class Card extends Entity implements Cloneable{
     /**
      * 战吼
      */
-    private boolean battlecry;
+    private volatile boolean battlecry;
     /**
      * 发现
      */
-    private boolean discover;
+    private volatile boolean discover;
     /**
      * 不能被法术指向
      */
-    private boolean cantBeTargetedBySpells;
+    private volatile boolean cantBeTargetedBySpells;
     /**
      * 不能被英雄技能指向
      */
-    private boolean cantBeTargetedByHeroPowers;
+    private volatile boolean cantBeTargetedByHeroPowers;
     /**
      * 刷出时间计数
      */
-    private boolean spawnTimeCount;
+    private volatile boolean spawnTimeCount;
     /**
      * 休眠
      */
-    private boolean dormantAwakenConditionEnchant;
+    private volatile boolean dormantAwakenConditionEnchant;
     /**
      * 免疫
      */
-    private boolean immune;
+    private volatile boolean immune;
     /**
      * 种族
      */
-    private CardRaceEnum cardRace;
+    private volatile CardRaceEnum cardRace;
     /**
      * 磁力
      */
-    private boolean modular;
-    private String creator;
+    private volatile boolean modular;
+    private volatile String creator;
     /**
      * 衍生物
      */
-    private boolean premium;
+    private volatile boolean premium;
 
-    private String controller;
+    private volatile String controller;
     /**
      * 泰坦
      */
-    private boolean titan;
-    private int spellPower;
-    private boolean dormant;
+    private volatile boolean titan;
+    private volatile int spellPower;
+    private volatile boolean dormant;
     public Card() {
     }
     public Card(CommonEntity commonEntity) {
@@ -181,4 +183,10 @@ public class Card extends Entity implements Cloneable{
             throw new AssertionError();
         }
     }
+
+    @Override
+    public String toString() {
+        return CustomToStringGenerator.generateToString(this);
+    }
+
 }
