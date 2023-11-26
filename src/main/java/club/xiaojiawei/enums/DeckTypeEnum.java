@@ -13,13 +13,12 @@ import lombok.ToString;
 @AllArgsConstructor
 public enum DeckTypeEnum {
 
-    STANDARD("STANDARD", "标准"),
-    WILD("WILD", "狂野"),
-    CLASSIC("CLASSIC", "经典"),
-    CASUAL("CASUAL", "休闲"),
-    TWIST("TWIST", "幻变")
+    STANDARD("标准"),
+    WILD("狂野"),
+    CLASSIC("经典"),
+    CASUAL("休闲"),
+    TWIST("幻变")
     ;
-    private final String value;
     private final String comment;
 
 }

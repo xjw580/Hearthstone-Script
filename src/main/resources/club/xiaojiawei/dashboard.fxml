@@ -46,14 +46,14 @@
                 <Label text="模式："
                        contentDisplay="RIGHT">
                     <graphic>
-                        <ComboBox prefWidth="100" value="标准" styleClass="combo-box-ui, combo-box-ui-small, combo-box-ui-normal" fx:id="runModeBox"/>
+                        <ComboBox prefWidth="110" styleClass="combo-box-ui, combo-box-ui-small, combo-box-ui-normal" fx:id="runModeBox"/>
                     </graphic>
                 </Label>
 
                 <Label text="卡组："
                        contentDisplay="RIGHT">
                     <graphic>
-                        <ComboBox prefWidth="100" value="免费" styleClass="combo-box-ui, combo-box-ui-small, combo-box-ui-normal" fx:id="deckBox"/>
+                        <ComboBox prefWidth="110" styleClass="combo-box-ui, combo-box-ui-small, combo-box-ui-normal" fx:id="deckBox"/>
                     </graphic>
                 </Label>
 

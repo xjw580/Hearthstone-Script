@@ -13,14 +13,13 @@ import lombok.ToString;
 @ToString
 @AllArgsConstructor
 public enum RunModeEnum {
-    STANDARD("STANDARD", "标准模式", ModeEnum.TOURNAMENT, true),
-    WILD("WILD", "狂野模式", ModeEnum.TOURNAMENT, true),
-    CASUAL("CASUAL", "休闲模式", ModeEnum.TOURNAMENT, true),
-    CLASSIC("CLASSIC", "经典模式", ModeEnum.TOURNAMENT, false),
-    TWIST("TWIST", "幻变模式", ModeEnum.TOURNAMENT, false),
-    BACON("BACON", "酒馆战棋", ModeEnum.BACON, false),
+    STANDARD("标准模式", ModeEnum.TOURNAMENT, true),
+    WILD("狂野模式", ModeEnum.TOURNAMENT, true),
+    CASUAL("休闲模式", ModeEnum.TOURNAMENT, true),
+    CLASSIC("经典模式", ModeEnum.TOURNAMENT, false),
+    TWIST("幻变模式", ModeEnum.TOURNAMENT, false),
+    BACON("酒馆战棋", ModeEnum.BACON, false),
     ;
-    private final String value;
     private final String comment;
     private final ModeEnum modeEnum;
     private final boolean enable;

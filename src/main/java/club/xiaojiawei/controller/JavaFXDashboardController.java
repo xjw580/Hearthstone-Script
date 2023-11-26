@@ -260,10 +260,10 @@ public class JavaFXDashboardController implements Initializable {
 
     private void storeDeck(String deckComment){
         if (!Objects.equals(DeckEnum.valueOf(scriptConfiguration.getProperty(DECK.getKey())).getComment(), deckComment)){
-            scriptConfiguration.setProperty(RUN_MODE.getKey(), currentRunMode.getValue());
+            scriptConfiguration.setProperty(RUN_MODE.getKey(), currentRunMode.name());
             for (DeckEnum anEnum : DeckEnum.values()) {
                 if (Objects.equals(deckComment, anEnum.getComment())){
-                    scriptConfiguration.setProperty(DECK.getKey(), (currentDeck = anEnum).getValue());
+                    scriptConfiguration.setProperty(DECK.getKey(), (currentDeck = anEnum).name());
                     break;
                 }
             }

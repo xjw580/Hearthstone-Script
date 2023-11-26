@@ -96,7 +96,7 @@ public class TournamentModeStrategy extends AbstractModeStrategy<Object> {
             if (ModeEnum.TOURNAMENT == RunModeEnum.valueOf(scriptConfiguration.getProperty(ConfigurationEnum.RUN_MODE.getKey())).getModeEnum()){
                 DeckEnum currentDeck = DeckEnum.valueOf(scriptConfiguration.getProperty(ConfigurationEnum.DECK.getKey()));
                 if (!currentDeck.getRunMode().isEnable()){
-                    log.warn("不可用或不支持的模式：" + currentDeck.getValue());
+                    log.warn("不可用或不支持的模式：" + currentDeck.name());
                     return;
                 }
                 if (!(checkPowerLogSize())){
