@@ -2,7 +2,9 @@ package club.xiaojiawei.controller;
 
 import club.xiaojiawei.bean.Release;
 import club.xiaojiawei.bean.WsResult;
+import club.xiaojiawei.config.ThreadPoolConfig;
 import club.xiaojiawei.controls.Time;
+import club.xiaojiawei.controls.TimeSelector;
 import club.xiaojiawei.controls.ico.FlushIco;
 import club.xiaojiawei.controls.ico.OKIco;
 import club.xiaojiawei.enums.DeckEnum;
@@ -72,8 +74,8 @@ public class JavaFXDashboardController implements Initializable {
     @FXML @Getter private Text winningPercentage;
     @FXML @Getter private Text gameTime;
     @FXML @Getter private Text exp;
-    @FXML private ComboBox runModeBox;
-    @FXML private ComboBox deckBox;
+    @FXML private ComboBox<String> runModeBox;
+    @FXML private ComboBox<String> deckBox;
     @FXML private TilePane workDay;
     @FXML private VBox workTime;
     @FXML private ProgressBar downloadProgress;
@@ -215,8 +217,8 @@ public class JavaFXDashboardController implements Initializable {
     private void initModeAndDeck(){
         currentDeck = DeckEnum.valueOf(scriptConfiguration.getProperty(DECK.getKey()));
         currentRunMode = currentDeck.getRunMode();
-        ObservableList runModeBoxItems = runModeBox.getItems();
-        ObservableList deckBoxItems = deckBox.getItems();
+        ObservableList<String> runModeBoxItems = runModeBox.getItems();
+        ObservableList<String> deckBoxItems = deckBox.getItems();
         runModeBoxItems.clear();
         deckBoxItems.clear();
         RunModeEnum[] values = RunModeEnum.values();
@@ -250,7 +252,7 @@ public class JavaFXDashboardController implements Initializable {
         });
     }
 
-    private void addDeck(ObservableList deckBoxItems, DeckEnum[] deckEnums){
+    private void addDeck(ObservableList<String> deckBoxItems, DeckEnum[] deckEnums){
         for (DeckEnum deck : deckEnums) {
             if (deck.getRunMode() == currentRunMode && deck.isEnable()) {
                 deckBoxItems.add(deck.getComment());
