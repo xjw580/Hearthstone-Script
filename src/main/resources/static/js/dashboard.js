@@ -31,7 +31,7 @@ const common = {
     wsListener: () => {
         if (window.WebSocket){
             const content = $("#content");
-            ws = new WebSocket(window.location.href.replace("https", "ws").replace("http", "ws") + "/info");
+            ws = new WebSocket(window.location.href.replace("https", "wss").replace("http", "ws") + "/info");
             ws.onopen = function(){
                 console.log("websocket连接成功");
             }
