@@ -145,7 +145,8 @@ public class SystemUtil {
     }
 
     public static WinDef.HWND findPlatformHWND(){
-        return SystemUtil.findHWND(PLATFORM_CN_NAME);
+        WinDef.HWND hwnd;
+        return (hwnd = SystemUtil.findHWND(PLATFORM_CN_NAME)) == null? SystemUtil.findHWND(PLATFORM_US_NAME) : hwnd;
     }
 
     public static WinDef.HWND findLoginPlatformHWND(){

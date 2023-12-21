@@ -122,8 +122,8 @@ public class TournamentModeStrategy extends AbstractModeStrategy<Object> {
     private static final int MAX_SIZE = 10000 * 1024;
     private boolean checkPowerLogSize(){
         try {
-            if (powerLogListener.getAccessFile() != null && powerLogListener.getAccessFile().length() + RESERVE_SIZE > MAX_SIZE){
-                log.info("power.log即将达到10000KB，准备重启游戏");
+            if (powerLogListener.getAccessFile() != null && powerLogListener.getAccessFile().length() + RESERVE_SIZE >= MAX_SIZE){
+                log.info("power.log即将达到" + (MAX_SIZE / 1024) + "KB，准备重启游戏");
                 core.restart();
                 return false;
             }
