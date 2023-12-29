@@ -67,6 +67,10 @@ public enum ConfigurationEnum {
      */
     PLATFORM_PASSWORD("platformPassword", ""),
     AUTO_UPDATE("autoUpdate", "false"),
+    /**
+     * 鼠标操作完后回到原位置
+     */
+    STATIC_CURSOR("staticCursor", "false"),
     ;
     private final String key;
     private final String defaultValue;

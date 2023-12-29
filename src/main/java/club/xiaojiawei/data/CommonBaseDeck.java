@@ -6,6 +6,7 @@ import club.xiaojiawei.bean.BaseCard;
  * @author 肖嘉威 xjw580@qq.com
  * @date 2023/11/5 22:03
  */
+@SuppressWarnings("all")
 public class CommonBaseDeck {
 
     public static final BaseCard 南海船长 = new BaseCard("NEW1_027");

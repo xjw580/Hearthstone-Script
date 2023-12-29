@@ -41,6 +41,8 @@ public class JavaFXAdvancedSettingsController implements Initializable {
     @FXML
     private Switch autoUpdate;
     @FXML
+    private Switch staticCursor;
+    @FXML
     private OKIco verifyOK;
     @Resource
     private Properties scriptConfiguration;
@@ -52,22 +54,13 @@ public class JavaFXAdvancedSettingsController implements Initializable {
         listen();
     }
     private void initValue(){
-        if (Objects.equals(scriptConfiguration.getProperty(AUTO_OPEN_WEB.getKey()), "true")){
-            webSwitch.setInitStatus(true);
-        }
-        if (Objects.equals(scriptConfiguration.getProperty(STRATEGY.getKey()), "true")){
-            strategySwitch.setInitStatus(true);
-        }
-        if (Objects.equals(scriptConfiguration.getProperty(ENABLE_VERIFY.getKey()), "true")){
-            verifySwitch.setInitStatus(true);
-        }
+        webSwitch.setInitStatus(Objects.equals(scriptConfiguration.getProperty(AUTO_OPEN_WEB.getKey()), "true"));
+        strategySwitch.setInitStatus(Objects.equals(scriptConfiguration.getProperty(STRATEGY.getKey()), "true"));
+        verifySwitch.setInitStatus(Objects.equals(scriptConfiguration.getProperty(ENABLE_VERIFY.getKey()), "true"));
         psw.setText(scriptConfiguration.getProperty(VERIFY_PASSWORD.getKey()));
-        if (Objects.equals(scriptConfiguration.getProperty(UPDATE_DEV.getKey()), "true")){
-            updateDev.setInitStatus(true);
-        }
-        if (Objects.equals(scriptConfiguration.getProperty(AUTO_UPDATE.getKey()), "true")){
-            autoUpdate.setInitStatus(true);
-        }
+        updateDev.setInitStatus(Objects.equals(scriptConfiguration.getProperty(UPDATE_DEV.getKey()), "true"));
+        autoUpdate.setInitStatus(Objects.equals(scriptConfiguration.getProperty(AUTO_UPDATE.getKey()), "true"));
+        staticCursor.setInitStatus(Objects.equals(scriptConfiguration.getProperty(AUTO_UPDATE.getKey()), "true"));
     }
     private void listen(){
 //        监听web界面开关
@@ -94,6 +87,11 @@ public class JavaFXAdvancedSettingsController implements Initializable {
 //        监听自动更新开关
         autoUpdate.initStatusProperty().addListener((observable, oldValue, newValue) -> {
             scriptConfiguration.setProperty(AUTO_UPDATE.getKey(), String.valueOf(newValue));
+            propertiesUtil.storeScriptProperties();
+        });
+//        监听静态光标开关
+        staticCursor.initStatusProperty().addListener((observable, oldValue, newValue) -> {
+            scriptConfiguration.setProperty(STATIC_CURSOR.getKey(), String.valueOf(newValue));
             propertiesUtil.storeScriptProperties();
         });
     }

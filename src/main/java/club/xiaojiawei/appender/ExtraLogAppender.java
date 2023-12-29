@@ -14,11 +14,11 @@ import javafx.scene.text.Text;
 
 
 /**
- * GUI日志Appender
+ * 额外的日志Appender
  * @author 肖嘉威 xjw580@qq.com
  * @date 2022/9/28 上午10:11
  */
-public class GUILogAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
+public class ExtraLogAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
 
     @Override
     protected void append(ILoggingEvent event) {
@@ -38,6 +38,7 @@ public class GUILogAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
                 }
                 Text text;
                 int levelInt = event.getLevel().levelInt;
+                /*为日志上颜色*/
                 if (event.getThrowableProxy() == null && levelInt <= Level.INFO_INT){
                     text = new Text(event.getMessage());
                 }else if (levelInt <= Level.WARN_INT){
@@ -55,6 +56,5 @@ public class GUILogAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
     private void appendWebSocket(ILoggingEvent event){
         WebSocketServer.sendAllMessage(WsResult.ofNew(WsResultTypeEnum.LOG, event.getFormattedMessage()));
     }
-
 
 }

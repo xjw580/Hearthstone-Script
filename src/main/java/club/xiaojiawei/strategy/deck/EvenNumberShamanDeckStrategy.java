@@ -106,7 +106,7 @@ public class EvenNumberShamanDeckStrategy extends AbstractDeckStrategy{
             if (card.getCardType() == MINION){
                 if (calcMyUsableResource() >= myHandCards.get(i).getCost()){
                     myHandPointToMyPlay(i);
-                    MouseUtil.cancel();
+                    MouseUtil.gameCancel();
                 }
             }
         }

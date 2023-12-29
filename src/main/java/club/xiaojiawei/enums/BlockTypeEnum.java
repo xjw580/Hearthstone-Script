@@ -13,18 +13,17 @@ import lombok.ToString;
 @AllArgsConstructor
 public enum BlockTypeEnum {
 
-    TRIGGER("TRIGGER", "触发"),
-    PLAY("PLAY", "打出"),
-    POWER("POWER", "卡牌效果结算"),
-    ATTACK("ATTACK", "攻击"),
-    DEATHS("DEATHS", "死亡"),
-    FATIGUE("FATIGUE", "疲劳"),
-    ACTION("ACTION", "行动"),
-    CONTINUOUS("CONTINUOUS", "连续"),
-    GAME_RESET("GAME_RESET", "游戏复位"),
-    INVALID("INVALID", "无效"),
+    TRIGGER("触发"),
+    PLAY("打出"),
+    POWER("卡牌效果结算"),
+    ATTACK("攻击"),
+    DEATHS("死亡"),
+    FATIGUE("疲劳"),
+    ACTION("行动"),
+    CONTINUOUS("连续"),
+    GAME_RESET("游戏复位"),
+    INVALID("无效"),
     ;
-    private final String value;
     private final String comment;
 
 }

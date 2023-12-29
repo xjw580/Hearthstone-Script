@@ -1,9 +1,12 @@
 package club.xiaojiawei.custom;
 
+import club.xiaojiawei.data.ScriptStaticData;
 import lombok.extern.slf4j.Slf4j;
 import java.lang.reflect.Field;
+import java.util.Objects;
+
 /**
- * 自定义 toString方法：跳过 null、""、0、false的属性的输出
+ * 自定义 toString方法：跳过值为 null、""、0、false的属性
  * @author 肖嘉威 xjw580@qq.com
  * @date 2023/11/9 13:06
  */
@@ -14,6 +17,9 @@ public class CustomToStringGenerator {
         StringBuilder sb = new StringBuilder(clazz.getSimpleName() + "{");
         Field[] fields = clazz.getDeclaredFields();
         for (Field field : fields) {
+            if (Objects.equals(field.getName(), ScriptStaticData.LOG_FIELD_NAME)){
+                continue;
+            }
             field.setAccessible(true);
             try {
                 Object value = field.get(obj);
@@ -26,7 +32,7 @@ public class CustomToStringGenerator {
             }
         }
         if (sb.charAt(sb.length() - 2) == ',') {
-            // Remove the trailing comma and space
+            // 去掉后面的逗号和空格
             sb.setLength(sb.length() - 2);
         }
         sb.append("}");

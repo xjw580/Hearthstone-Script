@@ -46,7 +46,7 @@ public class GameTurnPhaseStrategy extends AbstractPhaseStrategy{
     @Override
     protected boolean dealTagChangeThenIsOver(String line, TagChangeEntity tagChangeEntity) {
         if (tagChangeEntity.getTag() == STEP){
-            if (Objects.equals(tagChangeEntity.getValue(), MAIN_ACTION.getValue())){
+            if (Objects.equals(tagChangeEntity.getValue(), MAIN_ACTION.name())){
                 if (War.getMe() == War.getCurrentPlayer()){
                     log.info("我方回合");
                     SystemUtil.updateGameRect();
@@ -61,7 +61,7 @@ public class GameTurnPhaseStrategy extends AbstractPhaseStrategy{
                 }else {
                     log.info("对方回合");
                 }
-            }else if (Objects.equals(tagChangeEntity.getValue(), MAIN_END.getValue())){
+            }else if (Objects.equals(tagChangeEntity.getValue(), MAIN_END.name())){
                 War.setMyTurn(false);
                 stopThread();
             }

@@ -23,7 +23,7 @@ public class SpecialEffectTriggerPhaseStrategy extends AbstractPhaseStrategy{
 
     @Override
     protected boolean dealTagChangeThenIsOver(String line, TagChangeEntity tagChangeEntity) {
-        if (tagChangeEntity.getTag() == TagEnum.STEP && Objects.equals(tagChangeEntity.getValue(), MAIN_READY.getValue())){
+        if (tagChangeEntity.getTag() == TagEnum.STEP && Objects.equals(tagChangeEntity.getValue(), MAIN_READY.name())){
             War.setCurrentPhase(WarPhaseEnum.GAME_TURN_PHASE);
             return true;
         }

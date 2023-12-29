@@ -47,7 +47,7 @@ public class ReplaceCardPhaseStrategy extends AbstractPhaseStrategy{
 
     @Override
     protected boolean dealTagChangeThenIsOver(String line, TagChangeEntity tagChangeEntity) {
-        if (tagChangeEntity.getTag() == MULLIGAN_STATE && Objects.equals(tagChangeEntity.getValue(), INPUT.getValue())){
+        if (tagChangeEntity.getTag() == MULLIGAN_STATE && Objects.equals(tagChangeEntity.getValue(), INPUT.name())){
             String gameId = tagChangeEntity.getEntity();
             if (Objects.equals(War.getMe().getGameId(), gameId) || (War.getRival().getGameId() != null && !Objects.equals(War.getRival().getGameId(), gameId))){
                 stopThread();
@@ -60,7 +60,7 @@ public class ReplaceCardPhaseStrategy extends AbstractPhaseStrategy{
                     DeckEnum.valueOf(scriptConfiguration.getProperty(ConfigurationEnum.DECK.getKey())).getAbstractDeckStrategy().changeCard();
                 }))).start();
             }
-        }else if (tagChangeEntity.getTag() == NEXT_STEP && Objects.equals(StepEnum.MAIN_READY.getValue(), tagChangeEntity.getValue())){
+        }else if (tagChangeEntity.getTag() == NEXT_STEP && Objects.equals(StepEnum.MAIN_READY.name(), tagChangeEntity.getValue())){
             War.setCurrentPhase(WarPhaseEnum.SPECIAL_EFFECT_TRIGGER_PHASE);
             return true;
         }

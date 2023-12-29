@@ -13,19 +13,18 @@ import lombok.ToString;
 @ToString
 @AllArgsConstructor
 public enum CardRaceEnum {
-    ALL("ALL", "全部"),
-    TOTEM("TOTEM", "图腾"),
-    PET("PET", "野兽"),
-    PIRATE("PIRATE", "海盗"),
-    DEMON("DEMON", "恶魔"),
-    MECHANICAL("MECHANICAL", "机械"),
-    UNDEAD("UNDEAD", "亡灵"),
-    DRAGON("DRAGON", "龙"),
-    ELEMENTAL("ELEMENTAL", "元素"),
-    QUILBOAR("QUILBOAR", "野猪人"),
-    NAGA("NAGA", "娜迦"),
-    UNKNOWN("UNKNOWN", "未知"),
+    ALL("全部"),
+    TOTEM("图腾"),
+    PET("野兽"),
+    PIRATE("海盗"),
+    DEMON("恶魔"),
+    MECHANICAL("机械"),
+    UNDEAD("亡灵"),
+    DRAGON("龙"),
+    ELEMENTAL("元素"),
+    QUILBOAR("野猪人"),
+    NAGA("娜迦"),
+    UNKNOWN("未知"),
     ;
-    private final String value;
     private final String comment;
 }

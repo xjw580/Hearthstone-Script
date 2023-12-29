@@ -123,7 +123,7 @@ public class ActionDeckStrategy extends FindDeckStrategy{
         if (findByEntityId(myHandCards, card) == -1){
             return true;
         }
-        MouseUtil.cancel();
+        MouseUtil.gameCancel();
         return false;
     }
     protected boolean myHandPointToMyPlay(int myHandIndex, int myPlayIndex){
@@ -140,7 +140,7 @@ public class ActionDeckStrategy extends FindDeckStrategy{
         if (findByEntityId(myHandCards, card) == -1){
             return true;
         }
-        MouseUtil.cancel();
+        MouseUtil.gameCancel();
         return false;
     }
     protected boolean myHandPointToMyPlayNoPlace(int myHandIndex, int myPlayIndex){
@@ -157,7 +157,7 @@ public class ActionDeckStrategy extends FindDeckStrategy{
         if (findByEntityId(myHandCards, card) == -1){
             return true;
         }
-        MouseUtil.cancel();
+        MouseUtil.gameCancel();
         return false;
     }
 
@@ -191,7 +191,7 @@ public class ActionDeckStrategy extends FindDeckStrategy{
         if (findByEntityId(myHandCards, card) == -1){
             return true;
         }
-        MouseUtil.cancel();
+        MouseUtil.gameCancel();
         return false;
     }
     protected boolean myHandPointToRivalHeroNoPlace(int myHandIndex){
@@ -209,7 +209,7 @@ public class ActionDeckStrategy extends FindDeckStrategy{
         if (findByEntityId(myHandCards, card) == -1){
             return true;
         }
-        MouseUtil.cancel();
+        MouseUtil.gameCancel();
         return false;
     }
     protected boolean myHandPointToNoPlace(int myHandIndex){
@@ -226,7 +226,7 @@ public class ActionDeckStrategy extends FindDeckStrategy{
         if (findByEntityId(myHandCards, card) == -1){
             return true;
         }
-        MouseUtil.cancel();
+        MouseUtil.gameCancel();
         return false;
     }
 
@@ -363,7 +363,7 @@ public class ActionDeckStrategy extends FindDeckStrategy{
         if (findByEntityId(myHandCards, card) == -1){
             return true;
         }
-        MouseUtil.cancel();
+        MouseUtil.gameCancel();
         return false;
     }
 
@@ -384,7 +384,7 @@ public class ActionDeckStrategy extends FindDeckStrategy{
         if (findByEntityId(myHandCards, card) == -1){
             return true;
         }
-        MouseUtil.cancel();
+        MouseUtil.gameCancel();
         return false;
     }
 
@@ -405,7 +405,7 @@ public class ActionDeckStrategy extends FindDeckStrategy{
         if (findByEntityId(myHandCards, card) == -1){
             return true;
         }
-        MouseUtil.cancel();
+        MouseUtil.gameCancel();
         return false;
     }
     /**

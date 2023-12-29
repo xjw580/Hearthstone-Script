@@ -1,6 +1,5 @@
 package club.xiaojiawei.bean.entity;
 
-import club.xiaojiawei.bean.entity.CommonEntity;
 import club.xiaojiawei.enums.TagEnum;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

@@ -8,16 +8,14 @@ import lombok.Getter;
  */
 @Getter
 public enum MulliganStateEnum {
-    INPUT("INPUT", "等待用户输入"),
-    DEALING("DEALING", "处理中"),
-    WAITING("WAITING", "等待中"),
-    DONE("DONE", "结束"),
+    INPUT("等待用户输入"),
+    DEALING("处理中"),
+    WAITING("等待中"),
+    DONE("结束"),
     ;
-    private final String value;
     private final String comment;
 
-    MulliganStateEnum(String value, String comment) {
-        this.value = value;
+    MulliganStateEnum(String comment) {
         this.comment = comment;
     }
 }

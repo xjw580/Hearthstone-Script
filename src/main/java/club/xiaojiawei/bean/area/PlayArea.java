@@ -59,7 +59,7 @@ public class PlayArea extends Area {
 
     private void addZoneAndLog(String name, Card card){
         addZone(card);
-        logInfo(card, name);
+        log.info(getLogText(card, name));
     }
 
     @Override

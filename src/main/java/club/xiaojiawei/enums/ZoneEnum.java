@@ -13,14 +13,13 @@ import lombok.ToString;
 @AllArgsConstructor
 public enum ZoneEnum {
 
-    DECK("DECK", "牌库区"),
-    HAND("HAND", "手牌区"),
-    PLAY("PLAY", "战场"),
-    SETASIDE("SETASIDE", "除外区"),
-    SECRET("SECRET", "奥秘区"),
-    GRAVEYARD("GRAVEYARD", "墓地"),
-    REMOVEDFROMGAME("REMOVEDFROMGAME", "移除区")
+    DECK("牌库区"),
+    HAND("手牌区"),
+    PLAY("战场"),
+    SETASIDE("除外区"),
+    SECRET("奥秘区"),
+    GRAVEYARD("墓地"),
+    REMOVEDFROMGAME("移除区")
     ;
-    private final String value;
     private final String comment;
 }

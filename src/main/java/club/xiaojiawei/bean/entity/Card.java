@@ -1,13 +1,15 @@
 package club.xiaojiawei.bean.entity;
 
 import club.xiaojiawei.custom.CustomToStringGenerator;
+import club.xiaojiawei.data.ScriptStaticData;
 import club.xiaojiawei.enums.CardRaceEnum;
 import club.xiaojiawei.enums.CardTypeEnum;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 
-import static club.xiaojiawei.data.ScriptStaticData.ROBOT;
+import java.lang.reflect.Field;
+import java.util.Objects;
 
 /**
  * 属性来源于{@link club.xiaojiawei.enums.TagEnum}
@@ -16,6 +18,7 @@ import static club.xiaojiawei.data.ScriptStaticData.ROBOT;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
+@Slf4j
 public class Card extends Entity implements Cloneable{
 
     private volatile CardTypeEnum cardType;
@@ -130,55 +133,38 @@ public class Card extends Entity implements Cloneable{
         cardId = extraEntity.cardId;
         entityId = extraEntity.entityId;
         entityName = extraEntity.entityName;
-
-        cardType = card.getCardType();
-        cost = card.getCost();
-        atc = card.getAtc();
-        health = card.getHealth();
-        adjacentBuff = card.isAdjacentBuff();
-        poisonous = card.isPoisonous();
-        deathRattle = card.isDeathRattle();
-        creatorEntityId = card.getCreatorEntityId();
-        frozen = card.isFrozen();
-        exhausted = card.isExhausted();
-        taunt = card.isTaunt();
-        armor = card.getArmor();
-        divineShield = card.isDivineShield();
-        aura = card.isAura();
-        stealth = card.isStealth();
-        frozen = card.isFrozen();
-        exhausted = card.isExhausted();
-        windFury = card.isWindFury();
-        battlecry = card.isBattlecry();
-        discover = card.isDiscover();
-        cantBeTargetedBySpells = card.isCantBeTargetedBySpells();
-        cantBeTargetedByHeroPowers = card.isCantBeTargetedByHeroPowers();
-        spawnTimeCount = card.isSpawnTimeCount();
-        dormantAwakenConditionEnchant = card.isDormantAwakenConditionEnchant();
-        immune = card.isImmune();
-        cardRace = card.getCardRace();
-        premium = card.isPremium();
-        modular = card.isModular();
-        controller = card.getController();
-        creator = card.getCreator();
-        titan = card.isTitan();
-        spellPower = card.getSpellPower();
-        dormant = card.isDormant();
+        updateFields(card, this);
+    }
+    private void updateFields(Card source, Card destination){
+        Class<? extends Card> sourceClass = source.getClass();
+        Class<? extends Card> destinationClass = destination.getClass();
+        Field[] sourceFields = sourceClass.getDeclaredFields();
+        for (Field sourceField : sourceFields) {
+            if (Objects.equals(sourceField.getName(), ScriptStaticData.LOG_FIELD_NAME)){
+                continue;
+            }
+            sourceField.setAccessible(true);
+            Field destinationField;
+            try {
+                destinationField = destinationClass.getDeclaredField(sourceField.getName());
+                destinationField.setAccessible(true);
+                // 更新目标对象的字段值
+                destinationField.set(destination, sourceField.get(source));
+            } catch (NoSuchFieldException e) {
+                // 如果目标对象没有对应的字段，则忽略
+                log.warn(sourceField.getName() + "字段未找到", e);
+            } catch (IllegalAccessException e) {
+                log.error(sourceField.getName() + "字段非法访问", e);
+            }
+        }
     }
 
     @Override
     public Card clone() {
         try {
-            Card clone = (Card) super.clone();
-            ExtraEntity extraEntity = new ExtraEntity();
-            ExtraCard extraCard = new ExtraCard();
-            extraCard.setCard(this);
-            extraEntity.setExtraCard(extraCard);
-            extraEntity.setCardId(this.getCardId());
-            extraEntity.setEntityId(this.getEntityId());
-            extraEntity.setEntityName(this.getEntityName());
-            clone.updateByExtraEntity(extraEntity);
-            return clone;
+            Card cloneCard = (Card) super.clone();
+            updateFields(this, cloneCard);
+            return cloneCard;
         } catch (CloneNotSupportedException e) {
             throw new AssertionError();
         }

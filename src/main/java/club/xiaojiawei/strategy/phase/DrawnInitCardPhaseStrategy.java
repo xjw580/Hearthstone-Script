@@ -57,7 +57,7 @@ public class DrawnInitCardPhaseStrategy extends AbstractPhaseStrategy{
     protected boolean dealTagChangeThenIsOver(String line, TagChangeEntity tagChangeEntity) {
         if (tagChangeEntity.getTag() == ZONE){
             verifyPlayer(tagChangeEntity.getPlayerId(), true);
-        }else if (tagChangeEntity.getTag() == NEXT_STEP && Objects.equals(tagChangeEntity.getValue(), BEGIN_MULLIGAN.getValue())){
+        }else if (tagChangeEntity.getTag() == NEXT_STEP && Objects.equals(tagChangeEntity.getValue(), BEGIN_MULLIGAN.name())){
             War.setCurrentPhase(WarPhaseEnum.REPLACE_CARD_PHASE);
             return true;
         }

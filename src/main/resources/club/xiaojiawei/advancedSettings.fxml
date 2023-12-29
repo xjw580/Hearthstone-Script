@@ -12,26 +12,30 @@
     <VBox styleClass="main">
         <HBox styleClass="h-box">
             <Text text="自动打开Web界面："/>
-            <Switch fx:id="webSwitch" initStatus="false" size="20"/>
+            <Switch fx:id="webSwitch" size="20"/>
         </HBox>
         <HBox styleClass="h-box">
             <Text text="Web安全验证："/>
-            <Switch fx:id="verifySwitch" initStatus="false"/>
+            <Switch fx:id="verifySwitch"/>
             <PasswordShowField prefWidth="50" styleClass="password-show-field-ui, password-show-field-ui-small" fx:id="psw" promptText="验证密码"/>
             <Button styleClass="btn-ui, btn-ui-success, btn-ui-small" text="保存密码" onMouseClicked="#saveVerifyPassword"/>
             <OKIco scaleY="1.3" scaleX="1.3" fx:id="verifyOK" managed="false" visible="false"/>
         </HBox>
         <HBox styleClass="h-box">
             <Text text="执行策略："/>
-            <Switch fx:id="strategySwitch" initStatus="false"/>
+            <Switch fx:id="strategySwitch"/>
         </HBox>
         <HBox styleClass="h-box">
             <Text text="更新开发版："/>
-            <Switch fx:id="updateDev" initStatus="false"/>
+            <Switch fx:id="updateDev"/>
         </HBox>
         <HBox styleClass="h-box">
             <Text text="自动更新："/>
-            <Switch fx:id="autoUpdate" initStatus="false"/>
+            <Switch fx:id="autoUpdate"/>
+        </HBox>
+        <HBox styleClass="h-box">
+            <Text text="静态光标："/>
+            <Switch fx:id="staticCursor"/>
         </HBox>
     </VBox>
 </AnchorPane>

@@ -87,7 +87,7 @@ public abstract class AbstractDeckStrategy extends AlgorithmDeckStrategy {
                 executeOutCard();
                 log.info("执行出牌策略完毕");
             }finally {
-                MouseUtil.cancel();
+                MouseUtil.gameCancel();
                 clickTurnOverButton();
             }
         }

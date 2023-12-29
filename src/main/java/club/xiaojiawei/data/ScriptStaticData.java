@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
+import java.io.File;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -42,7 +43,7 @@ public class ScriptStaticData {
     public static final String PLATFORM_US_NAME = "Battle.net";
     public static final String REPO_NAME = "HearthstoneScript";
     public static final String TEMP_DIR = "new_version_temp";
-    public static final String TEMP_PATH = System.getProperty("user.dir") + "\\" + TEMP_DIR + "\\";
+    public static final String TEMP_PATH = System.getProperty("user.dir") + File.separator + TEMP_DIR + File.separator;
     /**
      * 游戏窗口信息
      */
@@ -80,13 +81,14 @@ public class ScriptStaticData {
      */
     public static final String GAME_PROGRAM_NAME = "Hearthstone.exe";
     /**
-     * 炉石传说进程是否存活命令
+     * 检测炉石传说进程是否存活命令
      */
     public static final String GAME_ALIVE_CMD = "cmd /c tasklist | find \"" + GAME_PROGRAM_NAME + "\"";
     /**
      * 作者
      */
     public static final String AUTHOR = "XiaoJiawei";
+    /*主路径*/
     public static final String MAIN_PATH = "/club/xiaojiawei/";
     /**
      * 图片路径
@@ -113,6 +115,7 @@ public class ScriptStaticData {
     public static final String CONCEDED = "CONCEDED";
     public static final String COIN = "COIN";
     public static final String UNKNOWN = "UNKNOWN ENTITY";
+    public static final String LOG_FIELD_NAME = "log";
 
     /*游戏数据相关*/
 //为什么用Map取枚举而不用valueOf()?因为用valueOf()传入的数据不在枚举中时会直接报错，影响后续运行，而map返回null不影响后续操作
@@ -133,7 +136,7 @@ public class ScriptStaticData {
         }
         GraphicsDevice[] screenDevices = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices();
         if (screenDevices.length > 1){
-            log.info("检测到有多台显示器，请将炉石传说和战网放到主显示器运行");
+            log.info("检测到有多台显示器，请将炉石传说放到主显示器运行");
         }
         AffineTransform tx = screenDevices[0].getDefaultConfiguration().getDefaultTransform();
         DISPLAY_SCALE_X = tx.getScaleX();
@@ -142,19 +145,19 @@ public class ScriptStaticData {
 
         Map<String, TagEnum> tagTempMap = new HashMap<>(TagEnum.values().length);
         for (TagEnum value : TagEnum.values()) {
-            tagTempMap.put(value.getValue(), value);
+            tagTempMap.put(value.name(), value);
         }
         TAG_MAP = Collections.unmodifiableMap(tagTempMap);
 
         Map<String, CardRaceEnum> cardRaceTempMap =  new HashMap<>(CardRaceEnum.values().length);
         for (CardRaceEnum value : CardRaceEnum.values()) {
-            cardRaceTempMap.put(value.getValue(), value);
+            cardRaceTempMap.put(value.name(), value);
         }
         CARD_RACE_MAP = Collections.unmodifiableMap(cardRaceTempMap);
 
         Map<String, CardTypeEnum> cardTypeTempMap = new HashMap<>(CardTypeEnum.values().length);
         for (CardTypeEnum value : CardTypeEnum.values()) {
-            cardTypeTempMap.put(value.getValue(), value);
+            cardTypeTempMap.put(value.name(), value);
         }
         CARD_TYPE_MAP = Collections.unmodifiableMap(cardTypeTempMap);
     }

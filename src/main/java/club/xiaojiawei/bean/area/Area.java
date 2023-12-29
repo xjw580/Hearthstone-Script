@@ -45,7 +45,7 @@ public abstract class Area {
         zeroCards.put(card.getEntityId(), card);
         addZone(card);
         if (log.isDebugEnabled()){
-            logDebug(card, "zeroArea");
+            log.debug(getLogText(card, "zeroArea"));
         }
     }
     protected void addCard(Card card, int pos){
@@ -55,21 +55,24 @@ public abstract class Area {
             cards.add(pos, card);
         }
         addZone(card);
-        logInfo(card, "");
+        log.info(getLogText(card, ""));
     }
-    protected void logInfo(Card card, String name){
+
+    protected String getLogText(Card card, String name){
         Player player = War.getPlayerByArea(this);
         if (Strings.isNotEmpty(name)){
-            name = "的【" + name + "】";
+            name = String.format("的【%s】", name);
         }
-        log.info("向玩家" + player.getPlayerId() + "【" + player.getGameId() + "】的【" + ZoneEnum.valueOf(this.getClass().getSimpleName().substring(0, this.getClass().getSimpleName().length() - 4).toUpperCase()).getComment() + "】" + name + "添加卡牌，entityId:" + card.getEntityId() + "，entityName:" + (Objects.equals(card.getEntityName(), UNKNOWN)? "" : card.getEntityName()) + "，cardId:" + card.getCardId() + "，size:" + cards.size());
-    }
-    protected void logDebug(Card card, String name){
-        Player player = War.getPlayerByArea(this);
-        if (Strings.isNotEmpty(name)){
-            name = "的【" + name + "】";
-        }
-        log.debug("向玩家" + player.getPlayerId() + "【" + player.getGameId() + "】的【" + ZoneEnum.valueOf(this.getClass().getSimpleName().substring(0, this.getClass().getSimpleName().length() - 4).toUpperCase()).getComment() + "】" + name + "添加卡牌，entityId:" + card.getEntityId() + "，entityName:" + (Objects.equals(card.getEntityName(), UNKNOWN)? "" : card.getEntityName()) + "，cardId:" + card.getCardId() + "，size:" + cards.size());
+        return String.format("向玩家%s【%s】的【%s】%s添加卡牌，entityId:%s，entityName:%s，cardId:%s，size:%d",
+                player.getPlayerId(),
+                player.getGameId(),
+                ZoneEnum.valueOf(this.getClass().getSimpleName().substring(0, this.getClass().getSimpleName().length() - 4).toUpperCase()).getComment(),
+                name,
+                card.getEntityId(),
+                (Objects.equals(card.getEntityName(), UNKNOWN)? "" : card.getEntityName()),
+                card.getCardId(),
+                cards.size()
+        );
     }
 
     /**

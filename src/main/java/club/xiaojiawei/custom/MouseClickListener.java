@@ -10,7 +10,7 @@ import java.util.function.Consumer;
  */
 public class MouseClickListener implements MouseListener {
 
-    private Consumer<MouseEvent> consumer;
+    private final Consumer<MouseEvent> consumer;
 
     public MouseClickListener(Consumer<MouseEvent> consumer) {
         this.consumer = consumer;

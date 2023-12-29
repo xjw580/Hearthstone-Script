@@ -159,7 +159,7 @@ public class PowerLogUtil {
                 String value = line.substring(tagIndex + 4, valueIndex - 1).strip();
                 if (log.isDebugEnabled()){
                     log.debug(line);
-                    log.debug("tag:"  + TAG_MAP.getOrDefault(value, UNKNOWN).getValue());
+                    log.debug("tag:"  + TAG_MAP.getOrDefault(value, UNKNOWN).name());
                     log.debug("extraEntity:" + extraEntity);
                 }
                 ParseExtraEntity parseExtraEntity = TAG_MAP.getOrDefault(value, UNKNOWN).getParseExtraEntity();
