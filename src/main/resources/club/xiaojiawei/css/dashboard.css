@@ -13,3 +13,7 @@
     -fx-background-color: #E8E8FF;
     -fx-background-radius: 10;
 }
+.timeHBox{
+    -fx-spacing: 3;
+    -fx-alignment: CENTER;
+}

@@ -182,10 +182,18 @@ public class JavaFXDashboardController implements Initializable {
         String[] workTimeFlagArr = Work.getWorkTimeFlagArr();
         String[] workTimeArr = Work.getWorkTimeArr();
         for (int i = 0; i < workTimeChildren.size(); i++) {
-            CheckBox checkBox = (CheckBox) workTimeChildren.get(i);
-            ObservableList<Node> children = ((HBox) (checkBox).getGraphic()).getChildren();
-            workTimeArr[i] = String.join("-", ((Time)children.get(0)).getTime(), ((Time)children.get(2)).getTime());
-            workTimeFlagArr[i] = String.valueOf(checkBox.isSelected());
+            HBox hBox = (HBox) workTimeChildren.get(i);
+            ObservableList<Node> children = ((HBox) hBox.getChildren().get(1)).getChildren();
+            Time startTime = (Time) children.get(0), endTime = (Time) children.get(2);
+            CheckBox timeCheckBox = (CheckBox) hBox.getChildren().get(0);
+            if (startTime.timeProperty().get() != null && endTime.timeProperty().get() != null){
+                workTimeArr[i] = String.join("-", startTime.getTime(), endTime.getTime());
+                workTimeFlagArr[i] = String.valueOf(timeCheckBox.isSelected());
+            }else {
+                timeCheckBox.setSelected(false);
+            }
+            startTime.refresh();
+            endTime.refresh();
         }
         Work.storeWorkDate();
         TipUtil.show(ok, 2);
@@ -308,13 +316,13 @@ public class JavaFXDashboardController implements Initializable {
         String[] workTimeArr = Work.getWorkTimeArr();
         ObservableList<Node> workTimeChildren = workTime.getChildren();
         for (int i = 0; i < workTimeFlagArr.length; i++) {
-            CheckBox checkBox = (CheckBox) workTimeChildren.get(i);
-            ObservableList<Node> children = ((HBox) (checkBox).getGraphic()).getChildren();
+            HBox timeHBox = (HBox) workTimeChildren.get(i);
+            ObservableList<Node> timeControls = ((HBox) timeHBox.getChildren().get(1)).getChildren();
             if (workTimeArr[i] != null && !Objects.equals(workTimeArr[i], "null") && !workTimeArr[i].isBlank()){
                 String[] times = workTimeArr[i].split("-");
-                ((Time)children.get(0)).setTime(times[0]);
-                ((Time)children.get(2)).setTime(times[1]);
-                checkBox.setSelected(Objects.equals(workTimeFlagArr[i], "true"));
+                ((Time)timeControls.get(0)).setTime(times[0]);
+                ((Time)timeControls.get(2)).setTime(times[1]);
+                ((CheckBox)timeHBox.getChildren().get(0)).setSelected(Objects.equals(workTimeFlagArr[i], "true"));
             }
         }
     }

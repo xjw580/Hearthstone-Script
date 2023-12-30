@@ -114,36 +114,34 @@
                     <HBox alignment="CENTER_LEFT" spacing="10">
                         <Text text="工作段:"/>
                         <VBox spacing="5" fx:id="workTime">
-                            <CheckBox styleClass="check-box-ui, check-box-ui-main">
-                                <graphic>
-                                    <HBox disable="true" translateX="2">
-                                        <Time showSelector="false"/>
-                                        <Text text="-" translateY="3" style="-fx-font-weight: BOLD"/>
-                                        <Time showSelector="false"/>
-                                    </HBox>
-                                </graphic>
-                                <tooltip>
-                                    <Tooltip text="优先级最高"/>
-                                </tooltip>
-                            </CheckBox>
-                            <CheckBox styleClass="check-box-ui, check-box-ui-main">
-                                <graphic>
-                                    <HBox translateX="2">
-                                        <Time showSelector="false"/>
-                                        <Text text="-" translateY="3" style="-fx-font-weight: BOLD"/>
-                                        <Time showSelector="false"/>
-                                    </HBox>
-                                </graphic>
-                            </CheckBox>
-                            <CheckBox styleClass="check-box-ui, check-box-ui-main">
-                                <graphic>
-                                    <HBox translateX="2">
-                                        <Time showSelector="false"/>
-                                        <Text text="-" translateY="3" style="-fx-font-weight: BOLD"/>
-                                        <Time showSelector="false"/>
-                                    </HBox>
-                                </graphic>
-                            </CheckBox>
+                            <HBox styleClass="timeHBox">
+                                <CheckBox styleClass="check-box-ui, check-box-ui-main">
+                                    <tooltip>
+                                        <Tooltip text="优先级最高"/>
+                                    </tooltip>
+                                </CheckBox>
+                                <HBox disable="true">
+                                    <Time showSelector="false"/>
+                                    <Text text="-" translateY="3" style="-fx-font-weight: BOLD"/>
+                                    <Time showSelector="false"/>
+                                </HBox>
+                            </HBox>
+                            <HBox styleClass="timeHBox">
+                                <CheckBox styleClass="check-box-ui, check-box-ui-main"/>
+                                <HBox>
+                                    <Time showSelector="false"/>
+                                    <Text text="-" translateY="3" style="-fx-font-weight: BOLD"/>
+                                    <Time showSelector="false"/>
+                                </HBox>
+                            </HBox>
+                            <HBox styleClass="timeHBox">
+                                <CheckBox styleClass="check-box-ui, check-box-ui-main"/>
+                                <HBox>
+                                    <Time showSelector="false"/>
+                                    <Text text="-" translateY="3" style="-fx-font-weight: BOLD"/>
+                                    <Time showSelector="false"/>
+                                </HBox>
+                            </HBox>
                         </VBox>
                     </HBox>
 

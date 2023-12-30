@@ -49,7 +49,7 @@ public enum ConfigurationEnum {
     /**
      * 工作时间，具体时间段
      */
-    WORK_TIME("workTime", "00:00-24:00,null,null"),
+    WORK_TIME("workTime", "00:00-00:00,null,null"),
     /**
      * WEB访问密码
      */

@@ -26,7 +26,7 @@ public class PropertiesUtil {
 
     public void storeScriptProperties(){
         try(FileOutputStream fileOutputStream = new FileOutputStream(springData.getScriptConfigurationFile())){
-            scriptConfiguration.store(fileOutputStream, ScriptStaticData.AUTHOR);
+            scriptConfiguration.store(fileOutputStream, ScriptStaticData.SCRIPT_NAME);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
