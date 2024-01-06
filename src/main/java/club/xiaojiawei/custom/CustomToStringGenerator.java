@@ -3,6 +3,7 @@ package club.xiaojiawei.custom;
 import club.xiaojiawei.data.ScriptStaticData;
 import lombok.extern.slf4j.Slf4j;
 import java.lang.reflect.Field;
+import java.util.Arrays;
 import java.util.Objects;
 
 /**
@@ -12,10 +13,31 @@ import java.util.Objects;
  */
 @Slf4j
 public class CustomToStringGenerator {
-    public static String generateToString(Object obj) {
+
+    public static String generateToString(Object obj, boolean includeSuperClass) {
         Class<?> clazz = obj.getClass();
         StringBuilder sb = new StringBuilder(clazz.getSimpleName() + "{");
-        Field[] fields = clazz.getDeclaredFields();
+        if (includeSuperClass){
+            generateSuperToString(clazz.getSuperclass(), obj, sb);
+        }
+        appendFields(clazz.getDeclaredFields(), obj, sb);
+        if (sb.charAt(sb.length() - 2) == ',') {
+            // 去掉后面的逗号和空格
+            sb.setLength(sb.length() - 2);
+        }
+        sb.append("}");
+        return sb.toString();
+    }
+
+    private static void generateSuperToString(Class<?> clazz, Object obj, StringBuilder sb){
+        if (clazz == null){
+            return;
+        }
+        generateSuperToString(clazz.getSuperclass(), obj, sb);
+        appendFields(clazz.getDeclaredFields(), obj, sb);
+    }
+
+    private static void appendFields(Field[] fields, Object obj, StringBuilder sb){
         for (Field field : fields) {
             if (Objects.equals(field.getName(), ScriptStaticData.LOG_FIELD_NAME)){
                 continue;
@@ -31,13 +53,8 @@ public class CustomToStringGenerator {
                 log.error("生成toString失败", e);
             }
         }
-        if (sb.charAt(sb.length() - 2) == ',') {
-            // 去掉后面的逗号和空格
-            sb.setLength(sb.length() - 2);
-        }
-        sb.append("}");
-        return sb.toString();
     }
+
     private static boolean isDefaultValue(Object value) {
         if (value instanceof Byte || value instanceof Short || value instanceof Integer || value instanceof Long) {
             return ((Number) value).longValue() == 0;

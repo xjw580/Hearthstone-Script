@@ -1,6 +1,8 @@
 package club.xiaojiawei.bean.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.Objects;
 
@@ -9,13 +11,15 @@ import java.util.Objects;
  * @date 2022/11/28 19:18
  */
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public abstract class Entity {
 
-    protected String entityId;
+    private String entityId;
 
-    protected String entityName;
+    private String entityName;
 
-    protected String cardId;
+    private String cardId;
 
     @Override
     public boolean equals(Object o) {

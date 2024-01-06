@@ -76,7 +76,7 @@ public class WindowUtil {
 
     private final static Map<WindowEnum, Stage> STAGE_MAP = new HashMap<>();
     public static void showStage(WindowEnum windowEnum){
-        Stage stage = getStage(windowEnum);
+        Stage stage = buildStage(windowEnum);
         if (stage.isShowing()){
             SystemUtil.frontWindow(SystemUtil.findHWND(windowEnum.getTitle()));
             stage.requestFocus();
@@ -85,16 +85,21 @@ public class WindowUtil {
         }
     }
     public static void hideStage(WindowEnum windowEnum){
-        Stage stage = getStage(windowEnum, false);
+        Stage stage = buildStage(windowEnum, false);
         if (stage != null && stage.isShowing()){
             stage.hide();
         }
     }
 
-    public static Stage getStage(WindowEnum windowEnum){
-        return getStage(windowEnum, true);
+    public static void hideAllStage(){
+        for (WindowEnum value : WindowEnum.values()) {
+            hideStage(value);
+        }
     }
-    public static Stage getStage(WindowEnum windowEnum, boolean createStage){
+    public static Stage buildStage(WindowEnum windowEnum){
+        return buildStage(windowEnum, true);
+    }
+    public static Stage buildStage(WindowEnum windowEnum, boolean createStage){
         Stage stage = STAGE_MAP.get(windowEnum);
         if (stage == null && createStage){
             STAGE_MAP.put(windowEnum, stage = createStage(windowEnum));

@@ -2,9 +2,8 @@ package club.xiaojiawei.controller;
 
 import club.xiaojiawei.bean.Release;
 import club.xiaojiawei.bean.WsResult;
-import club.xiaojiawei.config.ThreadPoolConfig;
+import club.xiaojiawei.controls.NotificationManager;
 import club.xiaojiawei.controls.Time;
-import club.xiaojiawei.controls.TimeSelector;
 import club.xiaojiawei.controls.ico.FlushIco;
 import club.xiaojiawei.controls.ico.OKIco;
 import club.xiaojiawei.enums.DeckEnum;
@@ -15,7 +14,6 @@ import club.xiaojiawei.listener.VersionListener;
 import club.xiaojiawei.status.Work;
 import club.xiaojiawei.utils.PropertiesUtil;
 import club.xiaojiawei.utils.SystemUtil;
-import club.xiaojiawei.utils.TipUtil;
 import club.xiaojiawei.utils.WindowUtil;
 import club.xiaojiawei.ws.WebSocketServer;
 import javafx.animation.RotateTransition;
@@ -23,7 +21,6 @@ import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
@@ -60,6 +57,7 @@ import static club.xiaojiawei.enums.ConfigurationEnum.RUN_MODE;
 @Slf4j
 public class JavaFXDashboardController implements Initializable {
 
+    @FXML private NotificationManager notificationManger;
     @FXML private ScrollPane logScrollPane;
     @FXML private Button update;
     @FXML private Button flush;
@@ -79,44 +77,22 @@ public class JavaFXDashboardController implements Initializable {
     @FXML private TilePane workDay;
     @FXML private VBox workTime;
     @FXML private ProgressBar downloadProgress;
-    @Resource
-    private AtomicReference<BooleanProperty> isPause;
-    @Resource
-    private PropertiesUtil propertiesUtil;
-    @Resource
-    private Properties scriptConfiguration;
-    @Resource
-    private ScheduledThreadPoolExecutor extraThreadPool;
-    @Resource
-    private VersionListener versionListener;
+    @Resource private AtomicReference<BooleanProperty> isPause;
+    @Resource private PropertiesUtil propertiesUtil;
+    @Resource private Properties scriptConfiguration;
+    @Resource private ScheduledThreadPoolExecutor extraThreadPool;
+    @Resource private VersionListener versionListener;
+    @Getter private static RunModeEnum currentRunMode;
+    @Getter private static DeckEnum currentDeck;
+    @Getter private static VBox staticLogVBox;
+    @Getter private static Accordion staticAccordion;
     private static ProgressBar staticDownloadProgress;
-    public void expandedLogPane(){
-        accordion.setExpandedPane(titledPaneLog);
-    }
-    @FXML protected void start(){
-        isPause.get().set(false);
-    }
-    @FXML protected void pause(){
-        isPause.get().set(true);
-    }
-    @FXML protected void showSettings() {
-        WindowUtil.showStage(WindowEnum.SETTINGS);
-    }
     private static AtomicReference<BooleanProperty> staticIsPause;
     private static final SimpleBooleanProperty IS_UPDATING = new SimpleBooleanProperty(false);
-    @FXML protected void update() {
-        Release release = VersionListener.getLatestRelease();
-        if (release != null && !IS_UPDATING.get()){
-            IS_UPDATING.set(true);
-            extraThreadPool.submit(() -> {
-                if (!new File(TEMP_PATH).exists()){
-                    downloadRelease(release);
-                }
-                Platform.runLater(() -> WindowUtil.createAlert("新版本[" + release.getTagName() + "]下载完毕", "现在更新？", event -> {
-                    execUpdate();
-                }, event -> IS_UPDATING.set(false), event -> IS_UPDATING.set(false), event -> IS_UPDATING.set(false)).show());
-            });
-        }
+    private boolean isNotHoverLog = true;
+
+    public void expandedLogPane(){
+        accordion.setExpandedPane(titledPaneLog);
     }
 
     public static void downloadRelease(Release release){
@@ -160,6 +136,7 @@ public class JavaFXDashboardController implements Initializable {
             IS_UPDATING.set(false);
         }
     }
+
     public static void execUpdate(){
         try {
             IS_UPDATING.set(true);
@@ -170,49 +147,7 @@ public class JavaFXDashboardController implements Initializable {
             IS_UPDATING.set(false);
         }
     }
-    @FXML protected void save(){
-//        检查挂机天
-        ObservableList<Node> workDayChildren = workDay.getChildren();
-        String[] workDayFlagArr = Work.getWorkDayFlagArr();
-        for (int i = 0; i < workDayChildren.size(); i++) {
-            workDayFlagArr[i] = String.valueOf(((CheckBox) workDayChildren.get(i)).isSelected());
-        }
-//        检查挂机段
-        ObservableList<Node> workTimeChildren = workTime.getChildren();
-        String[] workTimeFlagArr = Work.getWorkTimeFlagArr();
-        String[] workTimeArr = Work.getWorkTimeArr();
-        for (int i = 0; i < workTimeChildren.size(); i++) {
-            HBox hBox = (HBox) workTimeChildren.get(i);
-            ObservableList<Node> children = ((HBox) hBox.getChildren().get(1)).getChildren();
-            Time startTime = (Time) children.get(0), endTime = (Time) children.get(2);
-            CheckBox timeCheckBox = (CheckBox) hBox.getChildren().get(0);
-            if (startTime.timeProperty().get() != null && endTime.timeProperty().get() != null){
-                workTimeArr[i] = String.join("-", startTime.getTime(), endTime.getTime());
-                workTimeFlagArr[i] = String.valueOf(timeCheckBox.isSelected());
-            }else {
-                timeCheckBox.setSelected(false);
-            }
-            startTime.refresh();
-            endTime.refresh();
-        }
-        Work.storeWorkDate();
-        TipUtil.show(ok, 2);
-    }
-    @FXML private OKIco ok;
-    public static VBox staticLogVBox;
-    public static Accordion staticAccordion;
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
-        version.setText("当前版本：" + VersionListener.getCurrentVersion());
-        assign();
-        initModeAndDeck();
-        initWorkDate();
-        listen();
-    }
-    @Getter
-    private static RunModeEnum currentRunMode;
-    @Getter
-    private static DeckEnum currentDeck;
+
     private void assign(){
         staticLogVBox = logVBox;
         staticAccordion = accordion;
@@ -285,11 +220,15 @@ public class JavaFXDashboardController implements Initializable {
             log.info("挂机卡组改为：" + deckComment);
         }
     }
-    private void listen(){
+    private void addListener(){
         //        是否在更新中监听
         IS_UPDATING.addListener((observable, oldValue, newValue) -> update.setDisable(newValue));
         //        监听日志自动滑到底部
-        logVBox.heightProperty().addListener((observable, oldValue, newValue) -> logScrollPane.setVvalue(logScrollPane.getVmax()));
+        logVBox.heightProperty().addListener((observable, oldValue, newValue) -> {
+            if (isNotHoverLog){
+                logScrollPane.setVvalue(logScrollPane.getVmax());
+            }
+        });
         VersionListener.getCanUpdate().addListener((observable, oldValue, newValue) -> {
             System.out.println(newValue);
             if (newValue){
@@ -343,13 +282,84 @@ public class JavaFXDashboardController implements Initializable {
         startButton.setDisable(!value);
     }
 
-    @FXML
-    protected void flush(ActionEvent actionEvent) {
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        version.setText("当前版本：" + VersionListener.getCurrentVersion());
+        assign();
+        initModeAndDeck();
+        initWorkDate();
+        addListener();
+    }
+
+    @FXML protected void flushVersion() {
         RotateTransition transition = new RotateTransition(Duration.millis(1200), flushIco);
         transition.setFromAngle(0);
         transition.setToAngle(360);
         transition.setCycleCount(4);
         transition.play();
         versionListener.checkVersion();
+    }
+
+    @FXML protected void startScript(){
+        isPause.get().set(false);
+    }
+
+    @FXML protected void pauseScript(){
+        isPause.get().set(true);
+    }
+
+    @FXML protected void openSettings() {
+        WindowUtil.showStage(WindowEnum.SETTINGS);
+    }
+
+    @FXML protected void updateVersion() {
+        Release release = VersionListener.getLatestRelease();
+        if (release != null && !IS_UPDATING.get()){
+            IS_UPDATING.set(true);
+            extraThreadPool.submit(() -> {
+                if (!new File(TEMP_PATH).exists()){
+                    downloadRelease(release);
+                }
+                Platform.runLater(() -> WindowUtil.createAlert("新版本[" + release.getTagName() + "]下载完毕", "现在更新？", event -> {
+                    execUpdate();
+                }, event -> IS_UPDATING.set(false), event -> IS_UPDATING.set(false), event -> IS_UPDATING.set(false)).show());
+            });
+        }
+    }
+
+    @FXML protected void saveTime(){
+//        检查挂机天
+        ObservableList<Node> workDayChildren = workDay.getChildren();
+        String[] workDayFlagArr = Work.getWorkDayFlagArr();
+        for (int i = 0; i < workDayChildren.size(); i++) {
+            workDayFlagArr[i] = String.valueOf(((CheckBox) workDayChildren.get(i)).isSelected());
+        }
+//        检查挂机段
+        ObservableList<Node> workTimeChildren = workTime.getChildren();
+        String[] workTimeFlagArr = Work.getWorkTimeFlagArr();
+        String[] workTimeArr = Work.getWorkTimeArr();
+        for (int i = 0; i < workTimeChildren.size(); i++) {
+            HBox hBox = (HBox) workTimeChildren.get(i);
+            ObservableList<Node> children = ((HBox) hBox.getChildren().get(1)).getChildren();
+            Time startTime = (Time) children.get(0), endTime = (Time) children.get(2);
+            CheckBox timeCheckBox = (CheckBox) hBox.getChildren().get(0);
+            if (startTime.timeProperty().get() != null && endTime.timeProperty().get() != null){
+                workTimeArr[i] = String.join("-", startTime.getTime(), endTime.getTime());
+                workTimeFlagArr[i] = String.valueOf(timeCheckBox.isSelected());
+            }else {
+                timeCheckBox.setSelected(false);
+            }
+            startTime.refresh();
+            endTime.refresh();
+        }
+        Work.storeWorkDate();
+        notificationManger.showSuccess("工作时间保存成功", 2);
+    }
+
+    @FXML protected void mouseEnteredLog(){
+        isNotHoverLog = false;
+    }
+    @FXML protected void mouseExitedLog(){
+        isNotHoverLog = true;
     }
 }

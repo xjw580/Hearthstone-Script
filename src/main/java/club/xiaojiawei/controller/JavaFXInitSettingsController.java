@@ -1,15 +1,15 @@
 package club.xiaojiawei.controller;
 
+import club.xiaojiawei.controls.NotificationManager;
 import club.xiaojiawei.controls.PasswordShowField;
 import club.xiaojiawei.data.ScriptStaticData;
 import club.xiaojiawei.enums.ConfigurationEnum;
 import club.xiaojiawei.enums.WindowEnum;
+import club.xiaojiawei.factory.NotificationFactory;
 import club.xiaojiawei.utils.PropertiesUtil;
-import club.xiaojiawei.utils.TipUtil;
 import club.xiaojiawei.utils.WindowUtil;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Label;
 import javafx.scene.text.Text;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
@@ -21,7 +21,6 @@ import java.io.File;
 import java.net.URL;
 import java.util.Properties;
 import java.util.ResourceBundle;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 
 /**
@@ -32,28 +31,24 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 public class JavaFXInitSettingsController implements Initializable {
 
     @FXML
-    private Text game;
+    private NotificationManager notificationManager;
     @FXML
-    private Text platform;
+    private Text gamePath;
     @FXML
-    private Label ok;
-    @FXML
-    private Label fail;
+    private Text platformPath;
     @FXML
     private PasswordShowField password;
     @Resource
     private Properties scriptConfiguration;
     @Resource
     private PropertiesUtil propertiesUtil;
-    @Resource
-    private ScheduledThreadPoolExecutor extraThreadPool;
     @FXML
     protected void gameClicked(){
         DirectoryChooser directoryChooser = new DirectoryChooser();
         directoryChooser.setTitle("选择" + ScriptStaticData.GAME_CN_NAME + "安装路径");
         File file = directoryChooser.showDialog(new Stage());
         if (file != null){
-            game.setText(file.getAbsolutePath());
+            gamePath.setText(file.getAbsolutePath());
         }
     }
 
@@ -66,29 +61,30 @@ public class JavaFXInitSettingsController implements Initializable {
         );
         File chooseFile = fileChooser.showOpenDialog(new Stage());
         if (chooseFile != null){
-            platform.setText(chooseFile.getAbsolutePath());
+            platformPath.setText(chooseFile.getAbsolutePath());
         }
     }
 
     @FXML
     protected void apply(){
         scriptConfiguration.setProperty(ConfigurationEnum.PLATFORM_PASSWORD.getKey(), password.getText());
-        if(propertiesUtil.storePath(game.getText(), platform.getText())){
+        if(propertiesUtil.storePath(gamePath.getText(), platformPath.getText())){
             ScriptStaticData.setSetPath(true);
-            TipUtil.show(ok);
-            TipUtil.show(ok);
+            notificationManager.showSuccess("应用成功", 2);
         }else {
-            TipUtil.show(fail, ScriptStaticData.GAME_CN_NAME + "安装路径不正确,请重新选择", 5);
+            notificationManager.showError("安装路径不正确,请重新选择", 3);
+            initValue();
         }
     }
     @FXML
     protected void save(){
         scriptConfiguration.setProperty(ConfigurationEnum.PLATFORM_PASSWORD.getKey(), password.getText());
-        if(propertiesUtil.storePath(game.getText(), platform.getText())){
+        if(propertiesUtil.storePath(gamePath.getText(), platformPath.getText())){
             ScriptStaticData.setSetPath(true);
             WindowUtil.hideStage(WindowEnum.SETTINGS);
         }else {
-            TipUtil.show(fail, ScriptStaticData.GAME_CN_NAME + "安装路径不正确,请重新选择", 5);
+            notificationManager.showError("安装路径不正确,请重新选择", 3);
+            initValue();
         }
     }
 
@@ -97,8 +93,8 @@ public class JavaFXInitSettingsController implements Initializable {
         initValue();
     }
     private void initValue(){
-        game.setText(scriptConfiguration.getProperty(ConfigurationEnum.GAME_PATH.getKey()));
-        platform.setText(scriptConfiguration.getProperty(ConfigurationEnum.PLATFORM_PATH.getKey()));
+        gamePath.setText(scriptConfiguration.getProperty(ConfigurationEnum.GAME_PATH.getKey()));
+        platformPath.setText(scriptConfiguration.getProperty(ConfigurationEnum.PLATFORM_PATH.getKey()));
         password.setText(scriptConfiguration.getProperty(ConfigurationEnum.PLATFORM_PASSWORD.getKey()));
     }
 

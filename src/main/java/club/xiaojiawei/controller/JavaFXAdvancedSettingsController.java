@@ -1,10 +1,10 @@
 package club.xiaojiawei.controller;
 
+import club.xiaojiawei.controls.NotificationManager;
 import club.xiaojiawei.controls.PasswordShowField;
 import club.xiaojiawei.controls.Switch;
 import club.xiaojiawei.controls.ico.OKIco;
 import club.xiaojiawei.utils.PropertiesUtil;
-import club.xiaojiawei.utils.TipUtil;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -29,6 +29,8 @@ import static club.xiaojiawei.enums.ConfigurationEnum.*;
 public class JavaFXAdvancedSettingsController implements Initializable {
 
     @FXML
+    private NotificationManager notificationManager;
+    @FXML
     private Switch webSwitch;
     @FXML
     private Switch strategySwitch;
@@ -42,8 +44,6 @@ public class JavaFXAdvancedSettingsController implements Initializable {
     private Switch autoUpdate;
     @FXML
     private Switch staticCursor;
-    @FXML
-    private OKIco verifyOK;
     @Resource
     private Properties scriptConfiguration;
     @Resource
@@ -54,43 +54,43 @@ public class JavaFXAdvancedSettingsController implements Initializable {
         listen();
     }
     private void initValue(){
-        webSwitch.setInitStatus(Objects.equals(scriptConfiguration.getProperty(AUTO_OPEN_WEB.getKey()), "true"));
-        strategySwitch.setInitStatus(Objects.equals(scriptConfiguration.getProperty(STRATEGY.getKey()), "true"));
-        verifySwitch.setInitStatus(Objects.equals(scriptConfiguration.getProperty(ENABLE_VERIFY.getKey()), "true"));
+        webSwitch.setStatus(Objects.equals(scriptConfiguration.getProperty(AUTO_OPEN_WEB.getKey()), "true"));
+        strategySwitch.setStatus(Objects.equals(scriptConfiguration.getProperty(STRATEGY.getKey()), "true"));
+        verifySwitch.setStatus(Objects.equals(scriptConfiguration.getProperty(ENABLE_VERIFY.getKey()), "true"));
         psw.setText(scriptConfiguration.getProperty(VERIFY_PASSWORD.getKey()));
-        updateDev.setInitStatus(Objects.equals(scriptConfiguration.getProperty(UPDATE_DEV.getKey()), "true"));
-        autoUpdate.setInitStatus(Objects.equals(scriptConfiguration.getProperty(AUTO_UPDATE.getKey()), "true"));
-        staticCursor.setInitStatus(Objects.equals(scriptConfiguration.getProperty(AUTO_UPDATE.getKey()), "true"));
+        updateDev.setStatus(Objects.equals(scriptConfiguration.getProperty(UPDATE_DEV.getKey()), "true"));
+        autoUpdate.setStatus(Objects.equals(scriptConfiguration.getProperty(AUTO_UPDATE.getKey()), "true"));
+        staticCursor.setStatus(Objects.equals(scriptConfiguration.getProperty(AUTO_UPDATE.getKey()), "true"));
     }
     private void listen(){
 //        监听web界面开关
-        webSwitch.initStatusProperty().addListener((observable, oldValue, newValue) -> {
+        webSwitch.statusProperty().addListener((observable, oldValue, newValue) -> {
             scriptConfiguration.setProperty(AUTO_OPEN_WEB.getKey(), String.valueOf(newValue));
             propertiesUtil.storeScriptProperties();
         });
 //        监听策略开关
-        strategySwitch.initStatusProperty().addListener((observable, oldValue, newValue) -> {
+        strategySwitch.statusProperty().addListener((observable, oldValue, newValue) -> {
             scriptConfiguration.setProperty(STRATEGY.getKey(), String.valueOf(newValue));
             propertiesUtil.storeScriptProperties();
         });
 //        监听安全验证开关
-        verifySwitch.initStatusProperty().addListener((observable, oldValue, newValue) -> {
+        verifySwitch.statusProperty().addListener((observable, oldValue, newValue) -> {
             scriptConfiguration.setProperty(ENABLE_VERIFY.getKey(), String.valueOf(newValue));
             propertiesUtil.storeScriptProperties();
         });
 //        监听更新开发版开关
-        updateDev.initStatusProperty().addListener((observable, oldValue, newValue) -> {
+        updateDev.statusProperty().addListener((observable, oldValue, newValue) -> {
             scriptConfiguration.setProperty(UPDATE_DEV.getKey(), String.valueOf(newValue));
             propertiesUtil.storeScriptProperties();
 
         });
 //        监听自动更新开关
-        autoUpdate.initStatusProperty().addListener((observable, oldValue, newValue) -> {
+        autoUpdate.statusProperty().addListener((observable, oldValue, newValue) -> {
             scriptConfiguration.setProperty(AUTO_UPDATE.getKey(), String.valueOf(newValue));
             propertiesUtil.storeScriptProperties();
         });
 //        监听静态光标开关
-        staticCursor.initStatusProperty().addListener((observable, oldValue, newValue) -> {
+        staticCursor.statusProperty().addListener((observable, oldValue, newValue) -> {
             scriptConfiguration.setProperty(STATIC_CURSOR.getKey(), String.valueOf(newValue));
             propertiesUtil.storeScriptProperties();
         });
@@ -100,6 +100,6 @@ public class JavaFXAdvancedSettingsController implements Initializable {
         scriptConfiguration.setProperty(VERIFY_PASSWORD.getKey(), psw.getText());
         propertiesUtil.storeScriptProperties();
         WebDashboardController.TOKEN_SET.clear();
-        TipUtil.show(verifyOK, 2);
+        notificationManager.showSuccess("Web密码保存成功", 2);
     }
 }

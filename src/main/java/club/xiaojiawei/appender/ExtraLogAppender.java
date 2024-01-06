@@ -29,9 +29,9 @@ public class ExtraLogAppender extends UnsynchronizedAppenderBase<ILoggingEvent> 
     }
     @SuppressWarnings("all")
     private void appendJavaFX(ILoggingEvent event){
-        if (JavaFXDashboardController.staticLogVBox != null && JavaFXDashboardController.staticAccordion!= null){
+        if (JavaFXDashboardController.getStaticLogVBox() != null && JavaFXDashboardController.getStaticAccordion()!= null){
             Platform.runLater(() -> {
-                ObservableList<Node> list = JavaFXDashboardController.staticLogVBox.getChildren();
+                ObservableList<Node> list = JavaFXDashboardController.getStaticLogVBox().getChildren();
                 //                大于二百五条就清空,防止内存泄露和性能问题
                 if (list.size() > 250){
                     list.clear();
@@ -48,7 +48,7 @@ public class ExtraLogAppender extends UnsynchronizedAppenderBase<ILoggingEvent> 
                     text = new Text(event.getMessage() + "，查看脚本日志获取详细错误信息");
                     text.getStyleClass().add("error");
                 }
-                text.wrappingWidthProperty().bind(JavaFXDashboardController.staticAccordion.widthProperty().subtract(15));
+                text.wrappingWidthProperty().bind(JavaFXDashboardController.getStaticAccordion().widthProperty().subtract(15));
                 list.add(text);
             });
         }

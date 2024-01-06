@@ -2,21 +2,17 @@
 <configuration debug="false">
     <springProperty scope="context" name="logLevel" source="log.level"/>
     <springProperty scope="context" name="logPath" source="log.path"/>
-
-    <!-- 彩色日志配置 -->
-    <!-- 彩色日志依赖的渲染类 -->
-    <conversionRule conversionWord="clr" converterClass="org.springframework.boot.logging.logback.ColorConverter" />
-    <conversionRule conversionWord="wex" converterClass="org.springframework.boot.logging.logback.WhitespaceThrowableProxyConverter" />
-    <conversionRule conversionWord="wEx" converterClass="org.springframework.boot.logging.logback.ExtendedWhitespaceThrowableProxyConverter" />
-    <!-- 彩色日志格式 -->
-    <property name="CONSOLE_LOG_PATTERN" value="${CONSOLE_LOG_PATTERN:-%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){green} %clr([${PID:-}]){magenta} %clr([%26.26t]){yellow} %clr([${LOG_LEVEL_PATTERN:-%5p ]}){red} %clr(%-40.40logger{39}){blue} %clr(:){cyan} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}}" />
-
+    <!--控制台日志格式-->
+    <property name="log_pattern_console"
+              value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%boldYellow(%thread)] \\(%file:%line\\) %highlight(%-5level) %msg%n"/>
+    <!--文件日志格式-->
+    <property name="log_pattern_file"
+              value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] [%logger{36}:%line] %-5level %logger{0} %msg%n"/>
     <!--CONSOLE-->
     <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
         <layout class="ch.qos.logback.classic.PatternLayout">
             <pattern>
-                <!--%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread]  %-5level %logger{50} - %msg%n-->
-                ${CONSOLE_LOG_PATTERN}
+                ${log_pattern_console}
             </pattern>
         </layout>
     </appender>
@@ -37,7 +33,7 @@
         </rollingPolicy>
         <encoder>
             <!--            <pattern>%-5p [%d %C:%L - %m %n</pattern>-->
-            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread]  %-5level %logger{50} - %msg%n</pattern>
+            <pattern>${log_pattern_file}</pattern>
             <charset>UTF-8</charset>
         </encoder>
     </appender>

@@ -17,3 +17,9 @@
     -fx-spacing: 3;
     -fx-alignment: CENTER;
 }
+#logScrollPane{
+    -fx-background: white;
+}
+#logVBox{
+    -fx-padding: 5;
+}

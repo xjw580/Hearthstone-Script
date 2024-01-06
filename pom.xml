@@ -10,15 +10,26 @@
     </parent>
     <groupId>club.xiaojiawei</groupId>
     <artifactId>HearthstoneScript</artifactId>
-    <version>v3.2.1.4-DEV</version>
+    <version>v3.2.2-GA</version>
     <name>hearthstoneScript</name>
     <description>炉石传说脚本</description>
     <properties>
         <java.version>17</java.version>
         <javafx-version>17.0.2</javafx-version>
+        <mapstruct-version>1.6.0.Beta1</mapstruct-version>
+        <lombok-version>1.18.26</lombok-version>
+        <jna-version>5.12.1</jna-version>
+        <javafx-ui-version>0.2.0</javafx-ui-version>
     </properties>
 
     <dependencies>
+        <!--bean转换包-->
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct</artifactId>
+            <version>${mapstruct-version}</version>
+            <scope>provided</scope>
+        </dependency>
         <!-- 监听全局键鼠包 -->
         <dependency>
             <groupId>com.melloware</groupId>
@@ -35,19 +46,19 @@
         <dependency>
             <groupId>net.java.dev.jna</groupId>
             <artifactId>jna</artifactId>
-            <version>5.12.1</version>
+            <version>${jna-version}</version>
         </dependency>
         <!--访问系统本地库依赖-->
         <dependency>
             <groupId>net.java.dev.jna</groupId>
             <artifactId>jna-platform</artifactId>
-            <version>5.12.1</version>
+            <version>${jna-version}</version>
         </dependency>
         <!--lombok-->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.26</version>
+            <version>${lombok-version}</version>
             <scope>provided</scope>
         </dependency>
         <!--javafx-->
@@ -65,7 +76,7 @@
         <dependency>
             <groupId>club.xiaojiawei</groupId>
             <artifactId>javafx-ui</artifactId>
-            <version>0.1.8</version>
+            <version>${javafx-ui-version}</version>
         </dependency>
         <!--thymeleaf-->
         <dependency>
@@ -131,6 +142,27 @@
                             <Class-Path>resources/</Class-Path>
                         </manifestEntries>
                     </archive>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.5.1</version>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>${lombok-version}</version>
+                        </path>
+                        <path>
+                            <groupId>org.mapstruct</groupId>
+                            <artifactId>mapstruct-processor</artifactId>
+                            <version>${mapstruct-version}</version>
+                        </path>
+                    </annotationProcessorPaths>
                 </configuration>
             </plugin>
         </plugins>

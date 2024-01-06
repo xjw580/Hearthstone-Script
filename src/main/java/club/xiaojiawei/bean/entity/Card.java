@@ -1,11 +1,14 @@
 package club.xiaojiawei.bean.entity;
 
+import club.xiaojiawei.bean.CardMapper;
+import club.xiaojiawei.bean.EntityMapper;
 import club.xiaojiawei.custom.CustomToStringGenerator;
 import club.xiaojiawei.data.ScriptStaticData;
 import club.xiaojiawei.enums.CardRaceEnum;
 import club.xiaojiawei.enums.CardTypeEnum;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Field;
@@ -120,59 +123,32 @@ public class Card extends Entity implements Cloneable{
     private volatile boolean titan;
     private volatile int spellPower;
     private volatile boolean dormant;
+
     public Card() {
     }
     public Card(CommonEntity commonEntity) {
-        entityId = commonEntity.getEntityId();
-        entityName = commonEntity.getEntityName();
-        cardId = commonEntity.getCardId();
+        super(commonEntity.getEntityId(), commonEntity.getEntityName(), commonEntity.getCardId());
     }
 
     public void updateByExtraEntity(ExtraEntity extraEntity){
-        Card card = extraEntity.getExtraCard().getCard();
-        cardId = extraEntity.cardId;
-        entityId = extraEntity.entityId;
-        entityName = extraEntity.entityName;
-        updateFields(card, this);
-    }
-    private void updateFields(Card source, Card destination){
-        Class<? extends Card> sourceClass = source.getClass();
-        Class<? extends Card> destinationClass = destination.getClass();
-        Field[] sourceFields = sourceClass.getDeclaredFields();
-        for (Field sourceField : sourceFields) {
-            if (Objects.equals(sourceField.getName(), ScriptStaticData.LOG_FIELD_NAME)){
-                continue;
-            }
-            sourceField.setAccessible(true);
-            Field destinationField;
-            try {
-                destinationField = destinationClass.getDeclaredField(sourceField.getName());
-                destinationField.setAccessible(true);
-                // 更新目标对象的字段值
-                destinationField.set(destination, sourceField.get(source));
-            } catch (NoSuchFieldException e) {
-                // 如果目标对象没有对应的字段，则忽略
-                log.warn(sourceField.getName() + "字段未找到", e);
-            } catch (IllegalAccessException e) {
-                log.error(sourceField.getName() + "字段非法访问", e);
-            }
-        }
+        CardMapper.INSTANCE.update(extraEntity.getExtraCard().getCard(), this);
+        EntityMapper.INSTANCE.update(extraEntity, this);
     }
 
     @Override
     public Card clone() {
         try {
-            Card cloneCard = (Card) super.clone();
-            updateFields(this, cloneCard);
-            return cloneCard;
+            Card card = (Card) super.clone();
+            CardMapper.INSTANCE.update(this, card);
+            return card;
         } catch (CloneNotSupportedException e) {
-            throw new AssertionError();
+            throw new RuntimeException(e);
         }
     }
 
     @Override
     public String toString() {
-        return CustomToStringGenerator.generateToString(this);
+        return CustomToStringGenerator.generateToString(this, true);
     }
 
 }

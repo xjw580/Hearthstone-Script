@@ -5,22 +5,15 @@ import club.xiaojiawei.data.ScriptStaticData;
 import club.xiaojiawei.data.SpringData;
 import club.xiaojiawei.enums.DeckEnum;
 import club.xiaojiawei.enums.WindowEnum;
-import club.xiaojiawei.initializer.AbstractInitializer;
 import club.xiaojiawei.utils.SystemUtil;
 import club.xiaojiawei.utils.WindowUtil;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
 import javafx.stage.Stage;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.ApplicationArguments;
-import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -36,40 +29,45 @@ import java.util.concurrent.atomic.AtomicReference;
 import static club.xiaojiawei.data.ScriptStaticData.MAIN_ICO_NAME;
 import static club.xiaojiawei.enums.ConfigurationEnum.DECK;
 
-
 /**
  * javaFX启动器
  * @author 肖嘉威
  * @date 2023/7/6 9:46
  */
 @Slf4j
-@Order(520)
 @Component
-public class UIApplication extends Application implements ApplicationRunner {
+public class UIApplication extends Application{
+
     @Resource
     private Properties scriptConfiguration;
     @Resource
     private SpringData springData;
     @Resource
     private AtomicReference<BooleanProperty> isPause;
-    @Lazy
-    @Resource
-    private AbstractInitializer initializer;
+
     @Override
     public void start(Stage stage) throws IOException {
         Platform.setImplicitExit(false);
         showStartupPage();
         showMainPage();
     }
+
     private void showStartupPage(){
         WindowUtil.showStage(WindowEnum.STARTUP);
     }
+
     private void showMainPage(){
         Thread thread = new Thread(() -> {
             launchSpringBoot();
             setTray();
             Platform.runLater(() -> {
-                WindowUtil.showStage(WindowEnum.DASHBOARD);
+                Stage stage = WindowUtil.buildStage(WindowEnum.DASHBOARD);
+                stage.showingProperty().addListener((observableValue, aBoolean, t1) -> {
+                    if (!t1){
+                        WindowUtil.hideAllStage();
+                    }
+                });
+                stage.show();
                 afterShowing();
             });
 
@@ -77,20 +75,12 @@ public class UIApplication extends Application implements ApplicationRunner {
         thread.setName("MainPage Thread");
         thread.start();
     }
-    private ConfigurableApplicationContext launchSpringBoot(){
+
+    private void launchSpringBoot(){
         ConfigurableApplicationContext springContext = new SpringApplicationBuilder(ScriptApplication.class).headless(false).run();
         springContext.getAutowireCapableBeanFactory().autowireBean(this);
-        return springContext;
     }
-    private FXMLLoader getMainPageLoader(ConfigurableApplicationContext springContext){
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("dashboard.fxml"));
-        fxmlLoader.setControllerFactory(springContext::getBean);
-        return fxmlLoader;
-    }
-    private void setStyle(FXMLLoader fxmlLoader) throws IOException {
-        Scene scene = new Scene(fxmlLoader.load());
-        scene.getStylesheets().add(JavaFXUI.javafxUIStylesheet());
-    }
+
     private void setTray(){
         MenuItem quit = new MenuItem("退出");
         MenuItem show = new MenuItem("显示");
@@ -116,6 +106,7 @@ public class UIApplication extends Application implements ApplicationRunner {
             }
         }, show, quit);
     }
+
     private void afterShowing(){
         JavaFXStartupController.complete();
         WindowUtil.hideStage(WindowEnum.STARTUP);
@@ -133,8 +124,4 @@ public class UIApplication extends Application implements ApplicationRunner {
         }
     }
 
-    @Override
-    public void run(ApplicationArguments args) {
-        initializer.init();
-    }
 }

@@ -6,185 +6,189 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 <?import javafx.util.Duration?>
-<Accordion xmlns:fx="http://javafx.com/fxml"
-           expandedPane="$titledPaneControl"
-           fx:id="accordion"
-           styleClass="accordion-ui, accordion-ui-big"
+<?import club.xiaojiawei.factory.NotificationFactory?>
+<StackPane xmlns:fx="http://javafx.com/fxml"
            stylesheets="@css/dashboard.css"
            fx:controller="club.xiaojiawei.controller.JavaFXDashboardController">
-    <panes>
-        <TitledPane text="控制" fx:id="titledPaneControl">
-            <VBox alignment="TOP_CENTER" spacing="20" style="-fx-padding: 5 5 0 5">
-                <HBox alignment="CENTER" spacing="40">
-                    <Button fx:id="startButton" text="开始" styleClass="btn-ui, btn-ui-small, btn-ui-success-3d" onAction="#start">
-                        <tooltip>
-                            <Tooltip text="开始工作">
-                                <showDelay>
-                                    <Duration millis="400"/>
-                                </showDelay>
-                            </Tooltip>
-                        </tooltip>
-                        <graphic>
-                            <StartIco/>
-                        </graphic>
-                    </Button>
-                    <Button fx:id="pauseButton" disable="true" text="暂停"
-                            styleClass="btn-ui, btn-ui-small, btn-ui-error-3d" onAction="#pause">
-                        <tooltip>
-                            <Tooltip text="暂停工作">
-                                <showDelay>
-                                    <Duration millis="400"/>
-                                </showDelay>
-                            </Tooltip>
-                        </tooltip>
-                        <graphic>
-                            <PauseIco/>
-                        </graphic>
-                    </Button>
-                </HBox>
-
-                <Label text="模式："
-                       contentDisplay="RIGHT">
-                    <graphic>
-                        <ComboBox prefWidth="110" styleClass="combo-box-ui, combo-box-ui-small, combo-box-ui-normal" fx:id="runModeBox"/>
-                    </graphic>
-                </Label>
-
-                <Label text="卡组："
-                       contentDisplay="RIGHT">
-                    <graphic>
-                        <ComboBox prefWidth="110" styleClass="combo-box-ui, combo-box-ui-small, combo-box-ui-normal" fx:id="deckBox"/>
-                    </graphic>
-                </Label>
-
-                <HBox alignment="CENTER">
-                    <HBox HBox.hgrow="ALWAYS"/>
-                    <Label text="游戏局数："
-                           contentDisplay="RIGHT">
-                        <graphic>
-                            <Text text="0" fx:id="gameCount"/>
-                        </graphic>
-                    </Label>
-                    <HBox HBox.hgrow="ALWAYS"/>
-                    <Label text="胜率："
-                           contentDisplay="RIGHT">
-                        <graphic>
-                            <Text text="?" fx:id="winningPercentage"/>
-                        </graphic>
-                    </Label>
-                    <HBox HBox.hgrow="ALWAYS"/>
-                </HBox>
-
-                <HBox alignment="CENTER">
-                    <HBox HBox.hgrow="ALWAYS"/>
-                    <Label text="游戏时长："
-                           contentDisplay="RIGHT">
-                        <graphic>
-                            <Text text="0" fx:id="gameTime"/>
-                        </graphic>
-                    </Label>
-                    <HBox HBox.hgrow="ALWAYS"/>
-                    <Label text="经验："
-                           contentDisplay="RIGHT">
-                        <tooltip>
-                            <Tooltip text="预估值"/>
-                        </tooltip>
-                        <graphic>
-                            <Text text="0" fx:id="exp"/>
-                        </graphic>
-                    </Label>
-                    <HBox HBox.hgrow="ALWAYS"/>
-                </HBox>
-
-                <VBox alignment="CENTER" spacing="15" styleClass="workVBox">
-                    <HBox alignment="CENTER_LEFT" spacing="10">
-                        <Text text="工作天:"/>
-                        <TilePane hgap="20" vgap="5" fx:id="workDay" style="-fx-padding: 0">
-                            <CheckBox styleClass="check-box-ui, check-box-ui-main" text="每天"/>
-                            <CheckBox styleClass="check-box-ui, check-box-ui-main" text="周一"/>
-                            <CheckBox styleClass="check-box-ui, check-box-ui-main" text="周二"/>
-                            <CheckBox styleClass="check-box-ui, check-box-ui-main" text="周三"/>
-                            <CheckBox styleClass="check-box-ui, check-box-ui-main" text="周四"/>
-                            <CheckBox styleClass="check-box-ui, check-box-ui-main" text="周五"/>
-                            <CheckBox styleClass="check-box-ui, check-box-ui-main" text="周六"/>
-                            <CheckBox styleClass="check-box-ui, check-box-ui-main" text="周日"/>
-                        </TilePane>
-                    </HBox>
-
-                    <HBox alignment="CENTER_LEFT" spacing="10">
-                        <Text text="工作段:"/>
-                        <VBox spacing="5" fx:id="workTime">
-                            <HBox styleClass="timeHBox">
-                                <CheckBox styleClass="check-box-ui, check-box-ui-main">
-                                    <tooltip>
-                                        <Tooltip text="优先级最高"/>
-                                    </tooltip>
-                                </CheckBox>
-                                <HBox disable="true">
-                                    <Time showSelector="false"/>
-                                    <Text text="-" translateY="3" style="-fx-font-weight: BOLD"/>
-                                    <Time showSelector="false"/>
-                                </HBox>
-                            </HBox>
-                            <HBox styleClass="timeHBox">
-                                <CheckBox styleClass="check-box-ui, check-box-ui-main"/>
-                                <HBox>
-                                    <Time showSelector="false"/>
-                                    <Text text="-" translateY="3" style="-fx-font-weight: BOLD"/>
-                                    <Time showSelector="false"/>
-                                </HBox>
-                            </HBox>
-                            <HBox styleClass="timeHBox">
-                                <CheckBox styleClass="check-box-ui, check-box-ui-main"/>
-                                <HBox>
-                                    <Time showSelector="false"/>
-                                    <Text text="-" translateY="3" style="-fx-font-weight: BOLD"/>
-                                    <Time showSelector="false"/>
-                                </HBox>
-                            </HBox>
-                        </VBox>
-                    </HBox>
-
-                    <HBox alignment="CENTER" spacing="6">
-                        <OKIco scaleX="1.3" scaleY="1.3" fx:id="ok" visible="false" managed="false"/>
-                        <Button fx:id="saveButton" text="保存" styleClass="btn-ui, btn-ui-small, btn-ui-success" onAction="#save"/>
-                    </HBox>
-                </VBox>
-
-                <VBox alignment="CENTER" spacing="5">
-                    <HBox spacing="5" alignment="CENTER">
-                        <Text fx:id="version"/>
-                        <Button onAction="#update" fx:id="update" styleClass="btn-ui, btn-ui-small, btn-ui-normal" visible="false" managed="false">
+    <Accordion fx:id="accordion" styleClass="accordion-ui, accordion-ui-big" expandedPane="$titledPaneControl">
+        <panes>
+            <TitledPane text="控制" fx:id="titledPaneControl">
+                <VBox alignment="TOP_CENTER" spacing="20" style="-fx-padding: 5 5 0 5">
+                    <HBox alignment="CENTER" spacing="40">
+                        <Button fx:id="startButton" text="开始" styleClass="btn-ui, btn-ui-small, btn-ui-success-3d" onAction="#startScript">
                             <tooltip>
-                                <Tooltip text="下载更新"/>
+                                <Tooltip text="开始工作">
+                                    <showDelay>
+                                        <Duration millis="400"/>
+                                    </showDelay>
+                                </Tooltip>
                             </tooltip>
                             <graphic>
-                                <UpdateIco/>
+                                <StartIco/>
                             </graphic>
                         </Button>
-                        <Button onAction="#flush" fx:id="flush" styleClass="btn-ui, btn-ui-small, btn-ui-normal">
+                        <Button fx:id="pauseButton" disable="true" text="暂停"
+                                styleClass="btn-ui, btn-ui-small, btn-ui-error-3d" onAction="#pauseScript">
                             <tooltip>
-                                <Tooltip text="检查更新"/>
+                                <Tooltip text="暂停工作">
+                                    <showDelay>
+                                        <Duration millis="400"/>
+                                    </showDelay>
+                                </Tooltip>
                             </tooltip>
                             <graphic>
-                                <FlushIco fx:id="flushIco"/>
+                                <PauseIco/>
                             </graphic>
                         </Button>
                     </HBox>
-                    <ProgressBar fx:id="downloadProgress" progress="1" styleClass="progress-bar-ui" prefWidth="${titledPaneControl.width}" visible="false" managed="false"/>
-                </VBox>
 
-                <Button fx:id="settingsButton" onAction="#showSettings" text="设置" styleClass="btn-ui, btn-ui-small">
-                    <graphic>
-                        <SettingsIco/>
-                    </graphic>
-                </Button>
-            </VBox>
-        </TitledPane>
-        <TitledPane text="日志" fx:id="titledPaneLog">
-            <ScrollPane fx:id="logScrollPane" hbarPolicy="NEVER" style="-fx-background:white">
-                <VBox maxWidth="${accordion.width}" spacing="5" fx:id="logVBox" style="-fx-padding: 5"/>
-            </ScrollPane>
-        </TitledPane>
-    </panes>
-</Accordion>
+                    <Label text="模式："
+                           contentDisplay="RIGHT">
+                        <graphic>
+                            <ComboBox prefWidth="110" styleClass="combo-box-ui, combo-box-ui-small, combo-box-ui-normal" fx:id="runModeBox"/>
+                        </graphic>
+                    </Label>
+
+                    <Label text="卡组："
+                           contentDisplay="RIGHT">
+                        <graphic>
+                            <ComboBox prefWidth="110" styleClass="combo-box-ui, combo-box-ui-small, combo-box-ui-normal" fx:id="deckBox"/>
+                        </graphic>
+                    </Label>
+
+                    <HBox alignment="CENTER">
+                        <HBox HBox.hgrow="ALWAYS"/>
+                        <Label text="游戏局数："
+                               contentDisplay="RIGHT">
+                            <graphic>
+                                <Text text="0" fx:id="gameCount"/>
+                            </graphic>
+                        </Label>
+                        <HBox HBox.hgrow="ALWAYS"/>
+                        <Label text="胜率："
+                               contentDisplay="RIGHT">
+                            <graphic>
+                                <Text text="?" fx:id="winningPercentage"/>
+                            </graphic>
+                        </Label>
+                        <HBox HBox.hgrow="ALWAYS"/>
+                    </HBox>
+
+                    <HBox alignment="CENTER">
+                        <HBox HBox.hgrow="ALWAYS"/>
+                        <Label text="游戏时长："
+                               contentDisplay="RIGHT">
+                            <graphic>
+                                <Text text="0" fx:id="gameTime"/>
+                            </graphic>
+                        </Label>
+                        <HBox HBox.hgrow="ALWAYS"/>
+                        <Label text="经验："
+                               contentDisplay="RIGHT">
+                            <tooltip>
+                                <Tooltip text="预估值"/>
+                            </tooltip>
+                            <graphic>
+                                <Text text="0" fx:id="exp"/>
+                            </graphic>
+                        </Label>
+                        <HBox HBox.hgrow="ALWAYS"/>
+                    </HBox>
+
+                    <VBox alignment="CENTER" spacing="15" styleClass="workVBox">
+                        <HBox alignment="CENTER_LEFT" spacing="10">
+                            <Text text="工作天:"/>
+                            <TilePane hgap="20" vgap="5" fx:id="workDay" style="-fx-padding: 0">
+                                <CheckBox styleClass="check-box-ui, check-box-ui-main" text="每天"/>
+                                <CheckBox styleClass="check-box-ui, check-box-ui-main" text="周一"/>
+                                <CheckBox styleClass="check-box-ui, check-box-ui-main" text="周二"/>
+                                <CheckBox styleClass="check-box-ui, check-box-ui-main" text="周三"/>
+                                <CheckBox styleClass="check-box-ui, check-box-ui-main" text="周四"/>
+                                <CheckBox styleClass="check-box-ui, check-box-ui-main" text="周五"/>
+                                <CheckBox styleClass="check-box-ui, check-box-ui-main" text="周六"/>
+                                <CheckBox styleClass="check-box-ui, check-box-ui-main" text="周日"/>
+                            </TilePane>
+                        </HBox>
+
+                        <HBox alignment="CENTER_LEFT" spacing="10">
+                            <Text text="工作段:"/>
+                            <VBox spacing="5" fx:id="workTime">
+                                <HBox styleClass="timeHBox">
+                                    <CheckBox styleClass="check-box-ui, check-box-ui-main">
+                                        <tooltip>
+                                            <Tooltip text="优先级最高"/>
+                                        </tooltip>
+                                    </CheckBox>
+                                    <HBox disable="true">
+                                        <Time showSelector="false"/>
+                                        <Text text="-" translateY="3" style="-fx-font-weight: BOLD"/>
+                                        <Time showSelector="false"/>
+                                    </HBox>
+                                </HBox>
+                                <HBox styleClass="timeHBox">
+                                    <CheckBox styleClass="check-box-ui, check-box-ui-main"/>
+                                    <HBox>
+                                        <Time showSelector="false"/>
+                                        <Text text="-" translateY="3" style="-fx-font-weight: BOLD"/>
+                                        <Time showSelector="false"/>
+                                    </HBox>
+                                </HBox>
+                                <HBox styleClass="timeHBox">
+                                    <CheckBox styleClass="check-box-ui, check-box-ui-main"/>
+                                    <HBox>
+                                        <Time showSelector="false"/>
+                                        <Text text="-" translateY="3" style="-fx-font-weight: BOLD"/>
+                                        <Time showSelector="false"/>
+                                    </HBox>
+                                </HBox>
+                            </VBox>
+                        </HBox>
+
+                        <HBox alignment="CENTER" spacing="6">
+                            <Button text="保存" styleClass="btn-ui, btn-ui-small, btn-ui-success" onAction="#saveTime"/>
+                        </HBox>
+                    </VBox>
+
+                    <VBox alignment="CENTER" spacing="5">
+                        <HBox spacing="5" alignment="CENTER">
+                            <Text fx:id="version"/>
+                            <Button onAction="#updateVersion" fx:id="update" styleClass="btn-ui, btn-ui-small, btn-ui-normal" visible="false" managed="false">
+                                <tooltip>
+                                    <Tooltip text="下载更新"/>
+                                </tooltip>
+                                <graphic>
+                                    <UpdateIco/>
+                                </graphic>
+                            </Button>
+                            <Button onAction="#flushVersion" fx:id="flush" styleClass="btn-ui, btn-ui-small, btn-ui-normal">
+                                <tooltip>
+                                    <Tooltip text="检查更新"/>
+                                </tooltip>
+                                <graphic>
+                                    <FlushIco fx:id="flushIco"/>
+                                </graphic>
+                            </Button>
+                        </HBox>
+                        <ProgressBar fx:id="downloadProgress" progress="1" styleClass="progress-bar-ui" prefWidth="${titledPaneControl.width}" visible="false" managed="false"/>
+                    </VBox>
+
+                    <Button onAction="#openSettings" text="设置" styleClass="btn-ui, btn-ui-small">
+                        <graphic>
+                            <SettingsIco/>
+                        </graphic>
+                    </Button>
+                </VBox>
+            </TitledPane>
+            <TitledPane text="日志" fx:id="titledPaneLog">
+                <ScrollPane fx:id="logScrollPane" hbarPolicy="NEVER" onMouseEntered="#mouseEnteredLog" onMouseExited="#mouseExitedLog">
+                    <VBox maxWidth="${accordion.width}" spacing="5" fx:id="logVBox"/>
+                </ScrollPane>
+            </TitledPane>
+        </panes>
+    </Accordion>
+    <NotificationManager fx:id="notificationManger" notificationPos="BOTTOM_CENTER">
+        <notificationFactory>
+            <NotificationFactory size="SMALL" showingCloseBtn="false"/>
+        </notificationFactory>
+    </NotificationManager>
+</StackPane>
