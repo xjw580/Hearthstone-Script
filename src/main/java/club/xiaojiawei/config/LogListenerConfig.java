@@ -26,7 +26,7 @@ public class LogListenerConfig {
 
     @Bean
     public AbstractLogListener logListener(){
-        deckLogListener.setNextLogListener(screenLogListener).setNextLogListener(powerLogListener);
+        deckLogListener.setNextLogListener(powerLogListener).setNextLogListener(screenLogListener);
         return deckLogListener;
     }
 }

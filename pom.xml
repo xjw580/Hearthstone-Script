@@ -10,7 +10,7 @@
     </parent>
     <groupId>club.xiaojiawei</groupId>
     <artifactId>HearthstoneScript</artifactId>
-    <version>v3.2.2-GA</version>
+    <version>v3.2.3-GA</version>
     <name>hearthstoneScript</name>
     <description>炉石传说脚本</description>
     <properties>
@@ -28,7 +28,6 @@
             <groupId>org.mapstruct</groupId>
             <artifactId>mapstruct</artifactId>
             <version>${mapstruct-version}</version>
-            <scope>provided</scope>
         </dependency>
         <!-- 监听全局键鼠包 -->
         <dependency>

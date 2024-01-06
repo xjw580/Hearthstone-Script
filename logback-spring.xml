@@ -7,7 +7,7 @@
               value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%boldYellow(%thread)] \\(%file:%line\\) %highlight(%-5level) %msg%n"/>
     <!--文件日志格式-->
     <property name="log_pattern_file"
-              value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] [%logger{36}:%line] %-5level %logger{0} %msg%n"/>
+              value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] [%logger{36}:%line] %-5level %msg%n"/>
     <!--CONSOLE-->
     <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
         <layout class="ch.qos.logback.classic.PatternLayout">

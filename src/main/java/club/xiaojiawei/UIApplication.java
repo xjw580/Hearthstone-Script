@@ -5,6 +5,7 @@ import club.xiaojiawei.data.ScriptStaticData;
 import club.xiaojiawei.data.SpringData;
 import club.xiaojiawei.enums.DeckEnum;
 import club.xiaojiawei.enums.WindowEnum;
+import club.xiaojiawei.initializer.AbstractInitializer;
 import club.xiaojiawei.utils.SystemUtil;
 import club.xiaojiawei.utils.WindowUtil;
 import javafx.application.Application;
@@ -12,8 +13,12 @@ import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.stage.Stage;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.ApplicationArguments;
+import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -36,8 +41,12 @@ import static club.xiaojiawei.enums.ConfigurationEnum.DECK;
  */
 @Slf4j
 @Component
-public class UIApplication extends Application{
+@Order(520)
+public class UIApplication extends Application implements ApplicationRunner {
 
+    @Lazy
+    @Resource
+    private AbstractInitializer initializer;
     @Resource
     private Properties scriptConfiguration;
     @Resource
@@ -124,4 +133,8 @@ public class UIApplication extends Application{
         }
     }
 
+    @Override
+    public void run(ApplicationArguments args) {
+        initializer.init();
+    }
 }

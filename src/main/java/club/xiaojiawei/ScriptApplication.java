@@ -20,19 +20,10 @@ import javax.annotation.Resource;
 @SpringBootApplication
 @EnableScheduling
 @ServletComponentScan
-@Order(520)
-public class ScriptApplication implements ApplicationRunner {
-
-    @Lazy
-    @Resource
-    private AbstractInitializer initializer;
+public class ScriptApplication{
 
     public static void main(String[] args) {
         Application.launch(UIApplication.class, args);
     }
 
-    @Override
-    public void run(ApplicationArguments args) {
-        initializer.init();
-    }
 }

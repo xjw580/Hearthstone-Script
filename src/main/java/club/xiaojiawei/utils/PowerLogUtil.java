@@ -8,7 +8,6 @@ import club.xiaojiawei.bean.entity.ExtraEntity;
 import club.xiaojiawei.bean.entity.TagChangeEntity;
 import club.xiaojiawei.custom.DealTagChange;
 import club.xiaojiawei.custom.ParseExtraEntity;
-import club.xiaojiawei.enums.CardTypeEnum;
 import club.xiaojiawei.enums.ZoneEnum;
 import club.xiaojiawei.status.War;
 import lombok.SneakyThrows;
@@ -17,7 +16,6 @@ import org.apache.logging.log4j.util.Strings;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.Objects;
 
 import static club.xiaojiawei.data.ScriptStaticData.*;
 import static club.xiaojiawei.enums.TagEnum.UNKNOWN;
