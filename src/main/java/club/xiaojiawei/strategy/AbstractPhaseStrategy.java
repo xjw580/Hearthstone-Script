@@ -12,11 +12,11 @@ import club.xiaojiawei.status.War;
 import club.xiaojiawei.utils.GameUtil;
 import club.xiaojiawei.utils.PowerLogUtil;
 import club.xiaojiawei.utils.SystemUtil;
+import jakarta.annotation.Resource;
 import javafx.beans.property.BooleanProperty;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
-import javax.annotation.Resource;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.List;

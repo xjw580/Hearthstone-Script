@@ -5,10 +5,9 @@ import club.xiaojiawei.data.GameRationStaticData;
 import club.xiaojiawei.utils.MouseUtil;
 import club.xiaojiawei.utils.RandomUtil;
 import club.xiaojiawei.utils.SystemUtil;
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-
-import javax.annotation.Resource;
 
 import static club.xiaojiawei.data.GameRationStaticData.*;
 import static club.xiaojiawei.data.ScriptStaticData.GAME_RECT;

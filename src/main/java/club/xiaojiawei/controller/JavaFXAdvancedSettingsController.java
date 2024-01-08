@@ -3,15 +3,14 @@ package club.xiaojiawei.controller;
 import club.xiaojiawei.controls.NotificationManager;
 import club.xiaojiawei.controls.PasswordShowField;
 import club.xiaojiawei.controls.Switch;
-import club.xiaojiawei.controls.ico.OKIco;
 import club.xiaojiawei.utils.PropertiesUtil;
+import jakarta.annotation.Resource;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 import java.net.URL;
 import java.util.Objects;
 import java.util.Properties;

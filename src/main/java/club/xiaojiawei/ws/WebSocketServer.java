@@ -9,14 +9,14 @@ import club.xiaojiawei.listener.WarCountListener;
 import club.xiaojiawei.status.War;
 import club.xiaojiawei.status.Work;
 import com.alibaba.fastjson.JSON;
+import jakarta.annotation.Resource;
+import jakarta.websocket.*;
+import jakarta.websocket.server.ServerEndpoint;
 import javafx.beans.property.BooleanProperty;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
-import javax.websocket.*;
-import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Objects;
@@ -70,7 +70,8 @@ public class WebSocketServer{
         log.info(String.format("WebSocket建立连接完成,当前用户数：【%d】", webSocketSet.size()));
         sendInitMsg();
     }
-    @SneakyThrows(value = IOException.class)
+
+
     private void sendInitMsg(){
         DeckEnum currentDeck = DeckEnum.valueOf(scriptConfiguration.getProperty(ConfigurationEnum.DECK.getKey()));
         ArrayList<String> modes = new ArrayList<>();
@@ -81,26 +82,29 @@ public class WebSocketServer{
         }
         RemoteEndpoint.Basic remote = session.getBasicRemote();
 //        发送顺序不要改变!
-        remote.sendText(JSON.toJSONString(WsResult.ofNew(WsResultTypeEnum.LOG, "WebSocket连接成功")));
-        remote.sendText(JSON.toJSONString(WsResult.ofNew(WsResultTypeEnum.PAUSE, isPause.get().get())));
-        remote.sendText(JSON.toJSONString(WsResult.ofNew(WsResultTypeEnum.MODE_LIST, modes)));
-        remote.sendText(JSON.toJSONString(WsResult.ofNew(WsResultTypeEnum.MODE, currentDeck.getRunMode().getComment())));
-        remote.sendText(JSON.toJSONString(WsResult.ofNew(WsResultTypeEnum.DECK, currentDeck.getComment())));
-        remote.sendText(JSON.toJSONString(WsResult.ofNew(WsResultTypeEnum.GAME_COUNT, War.warCount.get())));
-        remote.sendText(JSON.toJSONString(WsResult.ofNew(WsResultTypeEnum.WINNING_PERCENTAGE, WarCountListener.getWinningPercentage())));
-        remote.sendText(JSON.toJSONString(WsResult.ofNew(WsResultTypeEnum.WORK_DATE, new String[][]{Work.getWorkDayFlagArr(), Work.getWorkTimeFlagArr(), Work.getWorkTimeArr()})));
-        remote.sendText(JSON.toJSONString(WsResult.ofNew(WsResultTypeEnum.GAME_TIME, War.gameTime.get())));
-        remote.sendText(JSON.toJSONString(WsResult.ofNew(WsResultTypeEnum.EXP, War.exp.get())));
+        try {
+            remote.sendText(JSON.toJSONString(WsResult.ofNew(WsResultTypeEnum.LOG, "WebSocket连接成功")));
+            remote.sendText(JSON.toJSONString(WsResult.ofNew(WsResultTypeEnum.PAUSE, isPause.get().get())));
+            remote.sendText(JSON.toJSONString(WsResult.ofNew(WsResultTypeEnum.MODE_LIST, modes)));
+            remote.sendText(JSON.toJSONString(WsResult.ofNew(WsResultTypeEnum.MODE, currentDeck.getRunMode().getComment())));
+            remote.sendText(JSON.toJSONString(WsResult.ofNew(WsResultTypeEnum.DECK, currentDeck.getComment())));
+            remote.sendText(JSON.toJSONString(WsResult.ofNew(WsResultTypeEnum.GAME_COUNT, War.warCount.get())));
+            remote.sendText(JSON.toJSONString(WsResult.ofNew(WsResultTypeEnum.WINNING_PERCENTAGE, WarCountListener.getWinningPercentage())));
+            remote.sendText(JSON.toJSONString(WsResult.ofNew(WsResultTypeEnum.WORK_DATE, new String[][]{Work.getWorkDayFlagArr(), Work.getWorkTimeFlagArr(), Work.getWorkTimeArr()})));
+            remote.sendText(JSON.toJSONString(WsResult.ofNew(WsResultTypeEnum.GAME_TIME, War.gameTime.get())));
+            remote.sendText(JSON.toJSONString(WsResult.ofNew(WsResultTypeEnum.EXP, War.exp.get())));
+        } catch (IOException e) {
+            log.error("ws发送异常", e);
+        }
     }
 
     /**
      * 发生错误
-     *
      * @param throwable e
      */
     @OnError
     public void onError(Throwable throwable) {
-        throwable.printStackTrace();
+        log.error("ws发生错误", throwable);
     }
 
     /**

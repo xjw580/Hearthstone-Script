@@ -2,10 +2,10 @@ package club.xiaojiawei.strategy.mode;
 
 import club.xiaojiawei.core.Core;
 import club.xiaojiawei.strategy.AbstractModeStrategy;
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 
 /**
  * 致命错误

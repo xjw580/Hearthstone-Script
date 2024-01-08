@@ -16,10 +16,10 @@ import club.xiaojiawei.status.Work;
 import club.xiaojiawei.strategy.AbstractModeStrategy;
 import club.xiaojiawei.utils.RandomUtil;
 import club.xiaojiawei.utils.SystemUtil;
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 import java.io.IOException;
 import java.util.List;
 import java.util.Objects;

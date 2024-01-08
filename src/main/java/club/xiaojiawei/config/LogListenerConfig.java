@@ -4,10 +4,9 @@ import club.xiaojiawei.listener.log.AbstractLogListener;
 import club.xiaojiawei.listener.log.DeckLogListener;
 import club.xiaojiawei.listener.log.PowerLogListener;
 import club.xiaojiawei.listener.log.ScreenLogListener;
+import jakarta.annotation.Resource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import javax.annotation.Resource;
 
 /**
  * LogListener的责任链配置

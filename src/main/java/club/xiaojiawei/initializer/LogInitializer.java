@@ -1,10 +1,10 @@
 package club.xiaojiawei.initializer;
 
 import club.xiaojiawei.data.SpringData;
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;

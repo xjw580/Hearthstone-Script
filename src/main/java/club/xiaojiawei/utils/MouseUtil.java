@@ -3,11 +3,11 @@ package club.xiaojiawei.utils;
 import club.xiaojiawei.custom.dll.User32Dll;
 import club.xiaojiawei.enums.ConfigurationEnum;
 import com.sun.jna.platform.win32.WinDef;
+import jakarta.annotation.Resource;
 import javafx.beans.property.BooleanProperty;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 import java.awt.*;
 import java.util.Objects;
 import java.util.Properties;

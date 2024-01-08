@@ -5,9 +5,9 @@ import club.xiaojiawei.controls.PasswordShowField;
 import club.xiaojiawei.data.ScriptStaticData;
 import club.xiaojiawei.enums.ConfigurationEnum;
 import club.xiaojiawei.enums.WindowEnum;
-import club.xiaojiawei.factory.NotificationFactory;
 import club.xiaojiawei.utils.PropertiesUtil;
 import club.xiaojiawei.utils.WindowUtil;
+import jakarta.annotation.Resource;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.text.Text;
@@ -16,7 +16,6 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 import java.io.File;
 import java.net.URL;
 import java.util.Properties;

@@ -5,15 +5,15 @@ import club.xiaojiawei.data.ScriptStaticData;
 import club.xiaojiawei.enums.WindowEnum;
 import club.xiaojiawei.starter.AbstractStarter;
 import club.xiaojiawei.status.Work;
-import club.xiaojiawei.utils.WindowUtil;
 import club.xiaojiawei.utils.SystemUtil;
+import club.xiaojiawei.utils.WindowUtil;
+import jakarta.annotation.Resource;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.atomic.AtomicReference;
 

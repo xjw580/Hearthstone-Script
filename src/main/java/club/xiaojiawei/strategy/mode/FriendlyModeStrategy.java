@@ -5,9 +5,9 @@ import club.xiaojiawei.enums.DeckEnum;
 import club.xiaojiawei.status.Work;
 import club.xiaojiawei.strategy.AbstractModeStrategy;
 import club.xiaojiawei.utils.SystemUtil;
+import jakarta.annotation.Resource;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 import java.util.Properties;
 
 /**
@@ -20,6 +20,7 @@ public class FriendlyModeStrategy extends AbstractModeStrategy<Object> {
     private TournamentModeStrategy tournamentModeStrategy;
     @Resource
     private Properties scriptConfiguration;
+
     @Override
     public void wantEnter() {
 

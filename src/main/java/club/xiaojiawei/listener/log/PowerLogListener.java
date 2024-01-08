@@ -5,11 +5,11 @@ import club.xiaojiawei.data.SpringData;
 import club.xiaojiawei.enums.StepEnum;
 import club.xiaojiawei.status.War;
 import club.xiaojiawei.strategy.AbstractPhaseStrategy;
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 

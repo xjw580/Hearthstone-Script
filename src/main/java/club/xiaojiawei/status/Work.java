@@ -8,6 +8,7 @@ import club.xiaojiawei.listener.VersionListener;
 import club.xiaojiawei.utils.PropertiesUtil;
 import club.xiaojiawei.utils.SystemUtil;
 import club.xiaojiawei.ws.WebSocketServer;
+import jakarta.annotation.Resource;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import lombok.Getter;
@@ -18,7 +19,6 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 import java.io.File;
 import java.time.LocalDate;
 import java.time.LocalTime;

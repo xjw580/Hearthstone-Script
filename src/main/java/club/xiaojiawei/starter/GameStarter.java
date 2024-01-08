@@ -5,12 +5,12 @@ import club.xiaojiawei.data.ScriptStaticData;
 import club.xiaojiawei.utils.MouseUtil;
 import club.xiaojiawei.utils.SystemUtil;
 import com.sun.jna.platform.win32.WinDef;
+import jakarta.annotation.Resource;
 import javafx.beans.property.BooleanProperty;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 import java.io.IOException;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;

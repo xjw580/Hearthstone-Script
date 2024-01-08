@@ -6,10 +6,10 @@ import club.xiaojiawei.enums.ConfigurationEnum;
 import club.xiaojiawei.enums.RunModeEnum;
 import club.xiaojiawei.strategy.AbstractModeStrategy;
 import club.xiaojiawei.utils.SystemUtil;
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 import java.util.Properties;
 
 /**

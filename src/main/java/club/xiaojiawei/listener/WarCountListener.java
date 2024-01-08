@@ -5,12 +5,11 @@ import club.xiaojiawei.controller.JavaFXDashboardController;
 import club.xiaojiawei.enums.WsResultTypeEnum;
 import club.xiaojiawei.status.War;
 import club.xiaojiawei.ws.WebSocketServer;
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.Resource;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-
-import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
 
 /**
  * 游戏局数监听器

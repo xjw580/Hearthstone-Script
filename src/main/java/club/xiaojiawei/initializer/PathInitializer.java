@@ -4,11 +4,11 @@ import club.xiaojiawei.data.ScriptStaticData;
 import club.xiaojiawei.enums.ConfigurationEnum;
 import club.xiaojiawei.enums.RegCommonNameEnum;
 import club.xiaojiawei.utils.PropertiesUtil;
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 import java.io.File;
 import java.util.Properties;
 

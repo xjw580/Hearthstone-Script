@@ -5,7 +5,6 @@ import club.xiaojiawei.bean.WsResult;
 import club.xiaojiawei.controls.NotificationManager;
 import club.xiaojiawei.controls.Time;
 import club.xiaojiawei.controls.ico.FlushIco;
-import club.xiaojiawei.controls.ico.OKIco;
 import club.xiaojiawei.enums.DeckEnum;
 import club.xiaojiawei.enums.RunModeEnum;
 import club.xiaojiawei.enums.WindowEnum;
@@ -16,6 +15,7 @@ import club.xiaojiawei.utils.PropertiesUtil;
 import club.xiaojiawei.utils.SystemUtil;
 import club.xiaojiawei.utils.WindowUtil;
 import club.xiaojiawei.ws.WebSocketServer;
+import jakarta.annotation.Resource;
 import javafx.animation.RotateTransition;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
@@ -34,7 +34,6 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 import java.io.*;
 import java.net.URL;
 import java.util.Objects;
@@ -77,7 +76,8 @@ public class JavaFXDashboardController implements Initializable {
     @FXML private TilePane workDay;
     @FXML private VBox workTime;
     @FXML private ProgressBar downloadProgress;
-    @Resource private AtomicReference<BooleanProperty> isPause;
+    @Resource
+    private AtomicReference<BooleanProperty> isPause;
     @Resource private PropertiesUtil propertiesUtil;
     @Resource private Properties scriptConfiguration;
     @Resource private ScheduledThreadPoolExecutor extraThreadPool;

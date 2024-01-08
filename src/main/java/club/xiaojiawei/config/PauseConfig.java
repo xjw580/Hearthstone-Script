@@ -7,6 +7,7 @@ import club.xiaojiawei.enums.WsResultTypeEnum;
 import club.xiaojiawei.status.Work;
 import club.xiaojiawei.utils.SystemUtil;
 import club.xiaojiawei.ws.WebSocketServer;
+import jakarta.annotation.Resource;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import lombok.extern.slf4j.Slf4j;
@@ -14,7 +15,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
 
-import javax.annotation.Resource;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**

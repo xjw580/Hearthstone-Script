@@ -5,24 +5,48 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.7.5</version>
+        <version>3.2.1</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>club.xiaojiawei</groupId>
     <artifactId>HearthstoneScript</artifactId>
-    <version>v3.2.3-GA</version>
+    <version>v3.2.3.1-DEV</version>
     <name>hearthstoneScript</name>
     <description>炉石传说脚本</description>
     <properties>
-        <java.version>17</java.version>
-        <javafx-version>17.0.2</javafx-version>
-        <mapstruct-version>1.6.0.Beta1</mapstruct-version>
-        <lombok-version>1.18.26</lombok-version>
-        <jna-version>5.12.1</jna-version>
+        <java.version>21</java.version>
+        <javafx-version>21.0.1</javafx-version>
         <javafx-ui-version>0.2.0</javafx-ui-version>
+        <mapstruct-version>1.6.0.Beta1</mapstruct-version>
+        <jintellitype-version>1.4.1</jintellitype-version>
+        <fastjson-version>2.0.20</fastjson-version>
+        <jna-version>5.14.0</jna-version>
+        <lombok-version>1.18.30</lombok-version>
+        <maven-assembly-plugin-version>3.6.0</maven-assembly-plugin-version>
+        <maven-jar-plugin-version>3.3.0</maven-jar-plugin-version>
+        <maven-compiler-plugin-version>3.12.1</maven-compiler-plugin-version>
+
+
     </properties>
 
     <dependencies>
+        <!--javafx-->
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-controls</artifactId>
+            <version>${javafx-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-fxml</artifactId>
+            <version>${javafx-version}</version>
+        </dependency>
+        <!--JavaFX组件UI库-->
+        <dependency>
+            <groupId>club.xiaojiawei</groupId>
+            <artifactId>javafx-ui</artifactId>
+            <version>${javafx-ui-version}</version>
+        </dependency>
         <!--bean转换包-->
         <dependency>
             <groupId>org.mapstruct</groupId>
@@ -33,13 +57,13 @@
         <dependency>
             <groupId>com.melloware</groupId>
             <artifactId>jintellitype</artifactId>
-            <version>1.4.1</version>
+            <version>${jintellitype-version}</version>
         </dependency>
         <!-- fastjson2 -->
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
-            <version>2.0.20</version>
+            <version>${fastjson-version}</version>
         </dependency>
         <!--访问系统本地库依赖-->
         <dependency>
@@ -60,28 +84,10 @@
             <version>${lombok-version}</version>
             <scope>provided</scope>
         </dependency>
-        <!--javafx-->
-        <dependency>
-            <groupId>org.openjfx</groupId>
-            <artifactId>javafx-controls</artifactId>
-            <version>${javafx-version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.openjfx</groupId>
-            <artifactId>javafx-fxml</artifactId>
-            <version>${javafx-version}</version>
-        </dependency>
-        <!--JavaFX组件UI库-->
-        <dependency>
-            <groupId>club.xiaojiawei</groupId>
-            <artifactId>javafx-ui</artifactId>
-            <version>${javafx-ui-version}</version>
-        </dependency>
         <!--thymeleaf-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-thymeleaf</artifactId>
-            <version>2.7.5</version>
         </dependency>
         <!--WebSocket-->
         <dependency>
@@ -100,14 +106,15 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
+                <version>${maven-assembly-plugin-version}</version>
                 <configuration>
                     <appendAssemblyId>false</appendAssemblyId>
                     <descriptors>
                         <!-- 读取assembly.xml文件 -->
                         <descriptor>assembly.xml</descriptor>
                     </descriptors>
-                    <!-- 输出在target/dist/目录下 -->
-                    <outputDirectory>${project.build.directory}/dist/</outputDirectory>
+                    <!-- 输出在target/目录下 -->
+                    <outputDirectory>${project.build.directory}/</outputDirectory>
                 </configuration>
                 <executions>
                     <execution>
@@ -123,7 +130,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
-                <version>3.0.2</version>
+                <version>${maven-jar-plugin-version}</version>
                 <configuration>
                     <excludes>
                         <exclude>**/bat/**</exclude>
@@ -146,7 +153,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.5.1</version>
+                <version>${maven-compiler-plugin-version}</version>
                 <configuration>
                     <source>${java.version}</source>
                     <target>${java.version}</target>

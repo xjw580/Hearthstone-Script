@@ -3,6 +3,7 @@ package club.xiaojiawei.utils;
 import club.xiaojiawei.JavaFXUI;
 import club.xiaojiawei.data.ScriptStaticData;
 import club.xiaojiawei.enums.WindowEnum;
+import jakarta.annotation.Resource;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
@@ -16,7 +17,6 @@ import javafx.stage.Stage;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;

@@ -2,13 +2,13 @@ package club.xiaojiawei.starter;
 
 import club.xiaojiawei.enums.ConfigurationEnum;
 import club.xiaojiawei.utils.SystemUtil;
+import jakarta.annotation.Resource;
 import javafx.beans.property.BooleanProperty;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 import java.awt.event.KeyEvent;
 import java.util.Properties;
 import java.util.concurrent.ScheduledFuture;

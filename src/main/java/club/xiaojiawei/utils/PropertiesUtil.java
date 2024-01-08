@@ -3,9 +3,9 @@ package club.xiaojiawei.utils;
 import club.xiaojiawei.data.ScriptStaticData;
 import club.xiaojiawei.data.SpringData;
 import club.xiaojiawei.enums.ConfigurationEnum;
+import jakarta.annotation.Resource;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;

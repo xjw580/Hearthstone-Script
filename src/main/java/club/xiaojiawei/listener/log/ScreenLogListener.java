@@ -5,13 +5,13 @@ import club.xiaojiawei.custom.LogRunnable;
 import club.xiaojiawei.data.SpringData;
 import club.xiaojiawei.enums.ModeEnum;
 import club.xiaojiawei.status.Mode;
+import jakarta.annotation.Resource;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 import java.io.*;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;

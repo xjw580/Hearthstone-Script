@@ -2,12 +2,12 @@ package club.xiaojiawei.listener.log;
 
 import club.xiaojiawei.config.LogListenerConfig;
 import club.xiaojiawei.utils.SystemUtil;
+import jakarta.annotation.Resource;
 import javafx.beans.property.BooleanProperty;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
-import javax.annotation.Resource;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;

@@ -1,10 +1,9 @@
 package club.xiaojiawei.config;
 
 import club.xiaojiawei.starter.*;
+import jakarta.annotation.Resource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import javax.annotation.Resource;
 
 /**
  * Starter的责任链配置

@@ -3,10 +3,10 @@ package club.xiaojiawei.starter;
 import club.xiaojiawei.data.SpringData;
 import club.xiaojiawei.enums.ConfigurationEnum;
 import club.xiaojiawei.listener.log.AbstractLogListener;
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 import java.io.File;
 import java.util.Arrays;
 import java.util.Comparator;

@@ -2,6 +2,8 @@ package club.xiaojiawei.listener;
 
 import club.xiaojiawei.bean.Release;
 import club.xiaojiawei.data.SpringData;
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.Resource;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import lombok.Getter;
@@ -11,8 +13,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
 import java.util.Objects;
 import java.util.Properties;
 

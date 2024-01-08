@@ -3,11 +3,11 @@ package club.xiaojiawei.listener;
 import club.xiaojiawei.utils.SystemUtil;
 import com.melloware.jintellitype.HotkeyListener;
 import com.melloware.jintellitype.JIntellitype;
+import jakarta.annotation.Resource;
 import javafx.beans.property.BooleanProperty;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
 
-import javax.annotation.Resource;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**

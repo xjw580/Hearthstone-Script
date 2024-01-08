@@ -2,11 +2,11 @@ package club.xiaojiawei.utils;
 
 import club.xiaojiawei.data.GameRationStaticData;
 import club.xiaojiawei.data.ScriptStaticData;
+import jakarta.annotation.Resource;
 import javafx.beans.property.BooleanProperty;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;

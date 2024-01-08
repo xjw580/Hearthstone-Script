@@ -1,16 +1,9 @@
 package club.xiaojiawei;
 
-import club.xiaojiawei.initializer.AbstractInitializer;
 import javafx.application.Application;
-import org.springframework.boot.ApplicationArguments;
-import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.ServletComponentScan;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.core.annotation.Order;
 import org.springframework.scheduling.annotation.EnableScheduling;
-
-import javax.annotation.Resource;
 
 /**
  * 启动类

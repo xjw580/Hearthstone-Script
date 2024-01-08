@@ -6,13 +6,13 @@ import club.xiaojiawei.enums.WarPhaseEnum;
 import club.xiaojiawei.strategy.AbstractDeckStrategy;
 import club.xiaojiawei.strategy.AbstractModeStrategy;
 import club.xiaojiawei.strategy.AbstractPhaseStrategy;
+import jakarta.annotation.Resource;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 
-import javax.annotation.Resource;
 
 /**
  * 为枚举常量的属性赋值

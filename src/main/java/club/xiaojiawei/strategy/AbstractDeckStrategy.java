@@ -8,10 +8,10 @@ import club.xiaojiawei.utils.GameUtil;
 import club.xiaojiawei.utils.MouseUtil;
 import club.xiaojiawei.utils.RandomUtil;
 import club.xiaojiawei.utils.SystemUtil;
+import jakarta.annotation.Resource;
 import javafx.beans.property.BooleanProperty;
 import lombok.extern.slf4j.Slf4j;
 
-import javax.annotation.Resource;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicReference;

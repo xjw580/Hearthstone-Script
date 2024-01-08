@@ -8,6 +8,7 @@ import club.xiaojiawei.enums.WindowEnum;
 import club.xiaojiawei.initializer.AbstractInitializer;
 import club.xiaojiawei.utils.SystemUtil;
 import club.xiaojiawei.utils.WindowUtil;
+import jakarta.annotation.Resource;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
@@ -21,7 +22,6 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -62,7 +62,7 @@ public class UIApplication extends Application implements ApplicationRunner {
     }
 
     private void showStartupPage(){
-        WindowUtil.showStage(WindowEnum.STARTUP);
+        new Thread(() -> Platform.runLater(() -> WindowUtil.showStage(WindowEnum.STARTUP))).start();
     }
 
     private void showMainPage(){
@@ -79,7 +79,6 @@ public class UIApplication extends Application implements ApplicationRunner {
                 stage.show();
                 afterShowing();
             });
-
         });
         thread.setName("MainPage Thread");
         thread.start();
@@ -129,6 +128,11 @@ public class UIApplication extends Application implements ApplicationRunner {
         log.info("脚本数据路径：" + springData.getScriptPath());
         List<String> args = this.getParameters().getRaw();
         if (!args.isEmpty() && Objects.equals("false", args.get(0))){
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
             isPause.get().set(false);
         }
     }
