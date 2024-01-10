@@ -75,7 +75,7 @@ public class ScriptStaticData {
     /**
      * 本脚本的程序名
      */
-    public static final String SCRIPT_NAME = "Zerg";
+    public static final String SCRIPT_NAME = "hs-script";
     /**
      * 炉石传说程序名
      */

@@ -10,7 +10,7 @@
     </parent>
     <groupId>club.xiaojiawei</groupId>
     <artifactId>HearthstoneScript</artifactId>
-    <version>v3.2.3.1-DEV</version>
+    <version>v3.2.3.2-DEV</version>
     <name>hearthstoneScript</name>
     <description>炉石传说脚本</description>
     <properties>
@@ -25,8 +25,6 @@
         <maven-assembly-plugin-version>3.6.0</maven-assembly-plugin-version>
         <maven-jar-plugin-version>3.3.0</maven-jar-plugin-version>
         <maven-compiler-plugin-version>3.12.1</maven-compiler-plugin-version>
-
-
     </properties>
 
     <dependencies>
@@ -134,6 +132,7 @@
                 <configuration>
                     <excludes>
                         <exclude>**/bat/**</exclude>
+                        <exclude>**/exe/**</exclude>
                         <exclude>application.yml</exclude>
                     </excludes>
                     <archive>

@@ -1,4 +1,4 @@
-package club.xiaojiawei.bean;
+package club.xiaojiawei.mapper;
 
 import club.xiaojiawei.bean.entity.Card;
 import org.mapstruct.Mapper;

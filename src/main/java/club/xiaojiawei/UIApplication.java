@@ -12,6 +12,7 @@ import jakarta.annotation.Resource;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.value.ChangeListener;
 import javafx.stage.Stage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.ApplicationArguments;
@@ -26,9 +27,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
+import java.util.*;
 import java.util.List;
-import java.util.Objects;
-import java.util.Properties;
+import java.util.Timer;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static club.xiaojiawei.data.ScriptStaticData.MAIN_ICO_NAME;
@@ -53,6 +54,7 @@ public class UIApplication extends Application implements ApplicationRunner {
     private SpringData springData;
     @Resource
     private AtomicReference<BooleanProperty> isPause;
+    private ChangeListener<Boolean> mainShowingListener;
 
     @Override
     public void start(Stage stage) throws IOException {
@@ -62,7 +64,9 @@ public class UIApplication extends Application implements ApplicationRunner {
     }
 
     private void showStartupPage(){
-        new Thread(() -> Platform.runLater(() -> WindowUtil.showStage(WindowEnum.STARTUP))).start();
+        Thread thread = new Thread(() -> Platform.runLater(() -> WindowUtil.showStage(WindowEnum.STARTUP)));
+        thread.setName("StartupPage Thread");
+        thread.start();
     }
 
     private void showMainPage(){
@@ -71,13 +75,15 @@ public class UIApplication extends Application implements ApplicationRunner {
             setTray();
             Platform.runLater(() -> {
                 Stage stage = WindowUtil.buildStage(WindowEnum.DASHBOARD);
-                stage.showingProperty().addListener((observableValue, aBoolean, t1) -> {
-                    if (!t1){
-                        WindowUtil.hideAllStage();
+                mainShowingListener = (observableValue, aBoolean, t1) -> {
+                    if (t1) {
+                        stage.showingProperty().removeListener(mainShowingListener);
+                        mainShowingListener = null;
+                        afterShowing();
                     }
-                });
+                };
+                stage.showingProperty().addListener(mainShowingListener);
                 stage.show();
-                afterShowing();
             });
         });
         thread.setName("MainPage Thread");
@@ -127,13 +133,14 @@ public class UIApplication extends Application implements ApplicationRunner {
         }
         log.info("脚本数据路径：" + springData.getScriptPath());
         List<String> args = this.getParameters().getRaw();
-        if (!args.isEmpty() && Objects.equals("false", args.get(0))){
-            try {
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-            isPause.get().set(false);
+        if (!args.isEmpty() && Objects.equals("false", args.getFirst())){
+            log.info("接收到开始参数，开始脚本");
+            new Timer().schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    Platform.runLater(() -> isPause.get().set(false));
+                }
+            }, 1500);
         }
     }
 

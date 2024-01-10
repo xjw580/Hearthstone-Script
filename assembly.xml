@@ -48,6 +48,13 @@
             <outputDirectory/>
         </fileSet>
         <fileSet>
+            <directory>${project.basedir}/src/main/resources/exe</directory>
+            <includes>
+                <include>*.exe</include>
+            </includes>
+            <outputDirectory/>
+        </fileSet>
+        <fileSet>
             <directory>${project.build.directory}</directory>
             <outputDirectory/>
             <includes>

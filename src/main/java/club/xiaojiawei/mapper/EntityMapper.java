@@ -1,6 +1,5 @@
-package club.xiaojiawei.bean;
+package club.xiaojiawei.mapper;
 
-import club.xiaojiawei.bean.entity.Card;
 import club.xiaojiawei.bean.entity.Entity;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;

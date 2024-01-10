@@ -1,18 +1,13 @@
 package club.xiaojiawei.bean.entity;
 
-import club.xiaojiawei.bean.CardMapper;
-import club.xiaojiawei.bean.EntityMapper;
+import club.xiaojiawei.mapper.CardMapper;
+import club.xiaojiawei.mapper.EntityMapper;
 import club.xiaojiawei.custom.CustomToStringGenerator;
-import club.xiaojiawei.data.ScriptStaticData;
 import club.xiaojiawei.enums.CardRaceEnum;
 import club.xiaojiawei.enums.CardTypeEnum;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
-
-import java.lang.reflect.Field;
-import java.util.Objects;
 
 /**
  * 属性来源于{@link club.xiaojiawei.enums.TagEnum}

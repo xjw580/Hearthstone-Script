@@ -12,7 +12,7 @@ del /s /Q lib\*.jar
 
 xcopy %1\* .\ /s /i /y
 
-cmd /c start start.bat %2
+hs-script.exe %2
 
 timeout /t 3
 

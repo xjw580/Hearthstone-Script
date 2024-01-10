@@ -39,7 +39,7 @@ public class JavaFXStartupController implements Initializable {
                     Platform.runLater(() -> progressBar.setProgress((double) count / 100));
                 }
             }
-        }, 500, 7);
+        }, 500, 10);
     }
 
     public static void complete(){
