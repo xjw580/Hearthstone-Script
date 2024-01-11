@@ -26,6 +26,7 @@ import static club.xiaojiawei.enums.TagEnum.STEP;
 @Slf4j
 @Component
 public class GameTurnPhaseStrategy extends AbstractPhaseStrategy{
+
     @Resource
     private Properties scriptConfiguration;
 
@@ -36,10 +37,9 @@ public class GameTurnPhaseStrategy extends AbstractPhaseStrategy{
         try{
             if (thread != null && thread.isAlive()){
                 thread.stop();
-                log.info("出牌线程已停止");
             }
         }catch (Exception e){
-            log.warn("出牌线程已停止");
+            log.warn("出牌线程已停止", e);
         }
     }
 
@@ -52,7 +52,7 @@ public class GameTurnPhaseStrategy extends AbstractPhaseStrategy{
                     SystemUtil.updateGameRect();
                     stopThread();
                     War.setMyTurn(true);
-//                            异步执行出牌策略，以便监听出牌后的卡牌变动
+//                    异步执行出牌策略，以便监听出牌后的卡牌变动
                     (thread = new Thread(new LogRunnable(() -> {
                         //                          等待动画结束
                         SystemUtil.delay(4000);

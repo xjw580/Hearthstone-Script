@@ -9,9 +9,9 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>club.xiaojiawei</groupId>
-    <artifactId>HearthstoneScript</artifactId>
-    <version>v3.2.3.1-DEV</version>
-    <name>hearthstoneScript</name>
+    <artifactId>hs-script</artifactId>
+    <version>v3.2.3.3-DEV</version>
+    <name>hearthstone-Script</name>
     <description>炉石传说脚本</description>
     <properties>
         <java.version>21</java.version>
@@ -28,6 +28,12 @@
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.5.13</version>
+        </dependency>
+
         <!--javafx-->
         <dependency>
             <groupId>org.openjfx</groupId>
@@ -100,6 +106,7 @@
     </dependencies>
 
     <build>
+        <finalName>${project.artifactId}_${project.version}</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

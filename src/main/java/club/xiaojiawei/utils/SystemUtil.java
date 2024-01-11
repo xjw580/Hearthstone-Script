@@ -1,7 +1,7 @@
 package club.xiaojiawei.utils;
 
 import club.xiaojiawei.custom.MouseClickListener;
-import club.xiaojiawei.custom.dll.User32Dll;
+import club.xiaojiawei.custom.dll.SystemDll;
 import club.xiaojiawei.enums.RegCommonNameEnum;
 import club.xiaojiawei.listener.log.DeckLogListener;
 import club.xiaojiawei.listener.log.PowerLogListener;
@@ -17,6 +17,8 @@ import com.sun.jna.platform.win32.Advapi32Util;
 import com.sun.jna.platform.win32.User32;
 import com.sun.jna.platform.win32.WinDef;
 import com.sun.jna.platform.win32.WinReg;
+import javafx.application.Platform;
+import javafx.beans.property.BooleanProperty;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -29,6 +31,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
 import static club.xiaojiawei.data.ScriptStaticData.*;
@@ -44,11 +47,18 @@ public class SystemUtil {
     private static ScreenLogListener screenLogListener;
     private static PowerLogListener powerLogListener;
     private static DeckLogListener deckLogListener;
+    private static AtomicReference<BooleanProperty> isPause;
     @Autowired
-    public void setScreenLogListener(ScreenLogListener screenLogListener, PowerLogListener powerLogListener, DeckLogListener deckLogListener) {
+    public void setScreenLogListener(
+            ScreenLogListener screenLogListener,
+             PowerLogListener powerLogListener,
+             DeckLogListener deckLogListener,
+             AtomicReference<BooleanProperty> isPause
+    ) {
         SystemUtil.screenLogListener = screenLogListener;
         SystemUtil.powerLogListener = powerLogListener;
         SystemUtil.deckLogListener = deckLogListener;
+        SystemUtil.isPause = isPause;
     }
 
     public final static Clipboard CLIPBOARD = Toolkit.getDefaultToolkit().getSystemClipboard();
@@ -65,7 +75,7 @@ public class SystemUtil {
      * @param content
      */
     public static void notice(String title, String content){
-        trayIcon.displayMessage(title, content, TrayIcon.MessageType.INFO);
+        trayIcon.displayMessage(title, content, TrayIcon.MessageType.NONE);
     }
 
     public static void cancelAllTask(){
@@ -257,8 +267,8 @@ public class SystemUtil {
         WinDef.HWND platformHWND = findPlatformHWND();
         WinDef.HWND loginPlatformHWND = findLoginPlatformHWND();
         if (platformHWND != null || loginPlatformHWND != null){
-            User32Dll.INSTANCE.closeProgram(platformHWND);
-            User32Dll.INSTANCE.closeProgram(loginPlatformHWND);
+            SystemDll.INSTANCE.closeProgram(platformHWND);
+            SystemDll.INSTANCE.closeProgram(loginPlatformHWND);
             log.info("战网已关闭");
         }else {
             log.info("战网不在运行");
@@ -273,6 +283,10 @@ public class SystemUtil {
      */
     public static void addTray(String trayIconName, String trayName, Consumer<MouseEvent> mouseClickListener, MenuItem... menuItems){
         if (trayIcon != null){
+            return;
+        }
+        if (!SystemTray.isSupported()){
+            log.warn("当前系统不支持系统托盘");
             return;
         }
         Image image = Toolkit.getDefaultToolkit().getImage(SystemUtil.class.getResource(IMAGE_PATH + trayIconName));
@@ -343,4 +357,19 @@ public class SystemUtil {
         return Advapi32Util.registryGetStringValue(WinReg.HKEY_LOCAL_MACHINE, path, regCommonNameEnum.getValue());
     }
 
+    /**
+     * 关闭本软件
+     */
+    public static void shutdown(){
+        isPause.get().set(true);
+        Platform.exit();
+        Thread.startVirtualThread(() -> {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                log.error("休眠被中断", e);
+            }
+            System.exit(0);
+        });
+    }
 }

@@ -74,9 +74,9 @@ public class GameStarter extends AbstractStarter{
         mouseUtil.leftButtonClickByUser32(platformhwnd, 145, 120);
     }
 
+
     public static void cancelGameTimer(){
         if (scheduledFuture != null && !scheduledFuture.isDone()){
-            log.info("已取消游戏启动定时器");
             scheduledFuture.cancel(true);
         }
     }

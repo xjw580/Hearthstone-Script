@@ -1,6 +1,6 @@
 package club.xiaojiawei.utils;
 
-import club.xiaojiawei.custom.dll.User32Dll;
+import club.xiaojiawei.custom.dll.SystemDll;
 import club.xiaojiawei.enums.ConfigurationEnum;
 import com.sun.jna.platform.win32.WinDef;
 import jakarta.annotation.Resource;
@@ -141,7 +141,7 @@ public class MouseUtil {
         if (isPause.get().get()){
             return;
         }
-        User32Dll.INSTANCE.leftClick(hwnd, x, y);
+        SystemDll.INSTANCE.leftMouseClick(hwnd, x, y);
     }
 
     private void saveInitPos(){

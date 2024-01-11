@@ -1,7 +1,6 @@
 package club.xiaojiawei.listener.log;
 
 import club.xiaojiawei.config.LogListenerConfig;
-import club.xiaojiawei.utils.SystemUtil;
 import jakarta.annotation.Resource;
 import javafx.beans.property.BooleanProperty;
 import lombok.Getter;
@@ -38,6 +37,7 @@ public abstract class AbstractLogListener {
     protected long listenPeriod;
     protected TimeUnit listenTimeUnit;
     protected AbstractLogListener nextLogListener;
+
     public AbstractLogListener setNextLogListener(AbstractLogListener nextLogListener) {
         return this.nextLogListener = nextLogListener;
     }
@@ -53,9 +53,13 @@ public abstract class AbstractLogListener {
     }
 
     protected abstract void readOldLog() throws Exception;
+
     protected abstract void listenLog() throws Exception;
+
     protected void otherListen(){};
+
     protected void cancelOtherListener(){};
+
     public synchronized void listen(){
         if (logScheduledFuture != null && !logScheduledFuture.isDone()){
             log.warn(logFileName + "正在被监听，无法再次被监听");
@@ -74,10 +78,14 @@ public abstract class AbstractLogListener {
             throw new RuntimeException(e);
         }
         logScheduledFuture = listenFileThreadPool.scheduleAtFixedRate(() -> {
-            try {
-                listenLog();
-            }catch (Exception e){
-                log.warn(logFileName + "监听器发生错误", e);
+            if (isPause.get().get()){
+                cancelListener();
+            }else {
+                try {
+                    listenLog();
+                }catch (Exception e){
+                    log.warn(logFileName + "监听器发生错误", e);
+                }
             }
         }, listenInitialDelay, listenPeriod, listenTimeUnit);
         otherListen();
@@ -85,6 +93,7 @@ public abstract class AbstractLogListener {
             nextLogListener.listen();
         }
     }
+
     private File createFile(){
         File logFile = new File(logDir.getAbsolutePath() + "/" + logFileName);
         if (!logFile.exists()){
@@ -96,6 +105,7 @@ public abstract class AbstractLogListener {
         }
         return logFile;
     }
+
     private void closeLogStream(){
         if (accessFile != null){
             try {
@@ -106,11 +116,11 @@ public abstract class AbstractLogListener {
             }
         }
     }
+
+
     public void cancelListener(){
         if (logScheduledFuture != null && !logScheduledFuture.isDone()){
             logScheduledFuture.cancel(true);
-            log.info("已停止监听" + logFileName);
-            SystemUtil.delay(2000);
         }
         cancelOtherListener();
     }

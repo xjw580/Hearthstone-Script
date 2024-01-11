@@ -1,8 +1,10 @@
 @echo off
 
+chcp 65001
+
 taskkill -f -t -im javaw.exe
 
-echo ------------Stop successfully!--------------------
+echo ------------停止成功!--------------------
 
 timeout /t 1
 

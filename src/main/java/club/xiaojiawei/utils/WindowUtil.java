@@ -32,6 +32,8 @@ public class WindowUtil {
 
     private static ApplicationContext context;
 
+    private final static Map<WindowEnum, Stage> STAGE_MAP = new HashMap<>();
+
     @Resource
     public void setContext(ApplicationContext context) {
         WindowUtil.context = context;
@@ -74,7 +76,7 @@ public class WindowUtil {
         return createAlert(headerText, contentText, okHandler, null, null, null);
     }
 
-    private final static Map<WindowEnum, Stage> STAGE_MAP = new HashMap<>();
+
     public static void showStage(WindowEnum windowEnum){
         Stage stage = buildStage(windowEnum);
         if (stage.isShowing()){
@@ -132,5 +134,14 @@ public class WindowUtil {
             throw new RuntimeException(e);
         }
         return stage;
+    }
+
+    /**
+     * 获取stage
+     * @param windowEnum
+     * @return
+     */
+    public static Stage getStage(WindowEnum windowEnum){
+        return STAGE_MAP.get(windowEnum);
     }
 }

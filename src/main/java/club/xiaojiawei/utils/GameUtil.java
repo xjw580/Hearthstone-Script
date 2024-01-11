@@ -64,16 +64,17 @@ public class GameUtil {
     public void clickGameEndPageTask(){
         SystemUtil.updateGameRect();
         cancelTask();
-        log.info("点掉游戏结束结算页面中……");
+        log.info("点掉游戏结束结算页面");
         clickGameEndPageTask = extraThreadPool.scheduleWithFixedDelay(
                 () -> {
                     if (isPause.get().get()){
                         cancelTask();
+                    }else {
+                        mouseUtil.leftButtonClick(
+                                ScriptStaticData.GAME_RECT.right + ScriptStaticData.GAME_RECT.left >> 1,
+                                (int) (ScriptStaticData.GAME_RECT.bottom - (ScriptStaticData.GAME_RECT.bottom - ScriptStaticData.GAME_RECT.top) * SURRENDER_BUTTON_VERTICAL_TO_BOTTOM_RATION)
+                        );
                     }
-                    mouseUtil.leftButtonClick(
-                            ScriptStaticData.GAME_RECT.right + ScriptStaticData.GAME_RECT.left >> 1,
-                            (int) (ScriptStaticData.GAME_RECT.bottom - (ScriptStaticData.GAME_RECT.bottom - ScriptStaticData.GAME_RECT.top) * SURRENDER_BUTTON_VERTICAL_TO_BOTTOM_RATION)
-                    );
                 },
                 4500,
                 2000,
@@ -84,7 +85,6 @@ public class GameUtil {
     public static void cancelTask(){
         if (clickGameEndPageTask != null && !clickGameEndPageTask.isDone()){
             clickGameEndPageTask.cancel(true);
-            log.info("已取消点掉游戏结束结算页面任务");
         }
     }
 

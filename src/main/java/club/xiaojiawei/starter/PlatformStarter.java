@@ -55,9 +55,9 @@ public class PlatformStarter extends AbstractStarter{
             }
         }, 1, 3, TimeUnit.SECONDS);
     }
+
     public static void cancelPlatformTimer(){
         if (scheduledFuture != null && !scheduledFuture.isDone()){
-            log.info("已取消战网启动定时器");
             scheduledFuture.cancel(true);
         }
     }

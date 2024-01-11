@@ -1,5 +1,6 @@
 package club.xiaojiawei;
 
+import club.xiaojiawei.bean.LogRunnable;
 import club.xiaojiawei.controller.JavaFXStartupController;
 import club.xiaojiawei.data.ScriptStaticData;
 import club.xiaojiawei.data.SpringData;
@@ -15,21 +16,32 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.stage.Stage;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.http.HttpStatus;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ContentType;
+import org.apache.http.impl.auth.BasicScheme;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.stereotype.Component;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
-import java.util.*;
+import java.net.http.HttpResponse;
 import java.util.List;
 import java.util.Timer;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static club.xiaojiawei.data.ScriptStaticData.MAIN_ICO_NAME;
@@ -59,18 +71,16 @@ public class UIApplication extends Application implements ApplicationRunner {
     @Override
     public void start(Stage stage) throws IOException {
         Platform.setImplicitExit(false);
-        showStartupPage();
         showMainPage();
+        showStartupPage();
     }
 
     private void showStartupPage(){
-        Thread thread = new Thread(() -> Platform.runLater(() -> WindowUtil.showStage(WindowEnum.STARTUP)));
-        thread.setName("StartupPage Thread");
-        thread.start();
+        WindowUtil.showStage(WindowEnum.STARTUP);
     }
 
     private void showMainPage(){
-        Thread thread = new Thread(() -> {
+        Thread.ofVirtual().name("MainPage VThread").start(new LogRunnable(() -> {
             launchSpringBoot();
             setTray();
             Platform.runLater(() -> {
@@ -85,9 +95,7 @@ public class UIApplication extends Application implements ApplicationRunner {
                 stage.showingProperty().addListener(mainShowingListener);
                 stage.show();
             });
-        });
-        thread.setName("MainPage Thread");
-        thread.start();
+        }));
     }
 
     private void launchSpringBoot(){
@@ -97,28 +105,28 @@ public class UIApplication extends Application implements ApplicationRunner {
 
     private void setTray(){
         MenuItem quit = new MenuItem("退出");
-        MenuItem show = new MenuItem("显示");
         quit.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Platform.runLater(() -> {
                     SystemUtil.removeTray();
-                    System.exit(0);
+                    SystemUtil.shutdown();
                 });
-            }
-        });
-        show.addActionListener(new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Platform.runLater(() -> WindowUtil.showStage(WindowEnum.DASHBOARD));
             }
         });
         SystemUtil.addTray(MAIN_ICO_NAME, ScriptStaticData.SCRIPT_NAME, e -> {
 //            左键点击
             if (e.getButton() == 1){
-                Platform.runLater(() -> WindowUtil.showStage(WindowEnum.DASHBOARD));
+                Platform.runLater(() -> {
+                    Stage stage = WindowUtil.getStage(WindowEnum.DASHBOARD);
+                    if (stage.isShowing()){
+                        WindowUtil.hideStage(WindowEnum.DASHBOARD);
+                    }else {
+                        WindowUtil.showStage(WindowEnum.DASHBOARD);
+                    }
+                });
             }
-        }, show, quit);
+        }, quit);
     }
 
     private void afterShowing(){
@@ -148,4 +156,5 @@ public class UIApplication extends Application implements ApplicationRunner {
     public void run(ApplicationArguments args) {
         initializer.init();
     }
+
 }

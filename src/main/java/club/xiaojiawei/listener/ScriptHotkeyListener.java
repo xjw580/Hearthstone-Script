@@ -43,7 +43,7 @@ public class ScriptHotkeyListener implements HotkeyListener {
             log.info("捕捉到热键，关闭程序");
             SystemUtil.notice("捕捉到热键，关闭程序");
             JIntellitype.getInstance().removeHotKeyListener(this);
-            System.exit(0);
+            SystemUtil.shutdown();
         }else if (i == HOT_KEY_PAUSE){
             if (!isPause.get().get()){
                 log.info("捕捉到热键,停止脚本");

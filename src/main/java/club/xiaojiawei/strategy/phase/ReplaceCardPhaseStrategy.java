@@ -38,10 +38,9 @@ public class ReplaceCardPhaseStrategy extends AbstractPhaseStrategy{
         try{
             if (thread != null && thread.isAlive()){
                 thread.stop();
-                log.info("换牌线程已停止");
             }
         }catch (Exception e){
-            log.warn("换牌线程已停止");
+            log.warn("换牌线程已停止", e);
         }
     }
 

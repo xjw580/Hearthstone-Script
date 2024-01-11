@@ -80,7 +80,6 @@ public class ScreenLogListener extends AbstractLogListener{
     protected void cancelOtherListener() {
         if (errorScheduledFuture != null && !errorScheduledFuture.isDone()){
             errorScheduledFuture.cancel(true);
-            log.info("已停止监听异常情况");
         }
     }
 

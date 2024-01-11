@@ -57,13 +57,12 @@ public class TournamentModeStrategy extends AbstractModeStrategy<Object> {
     private static final float CLASSIC_BUTTON_HORIZONTAL_TO_CENTER_RATION = 0.34F;
     private static final float STANDARD_BUTTON_VERTICAL_TO_BOTTOM_RATION = 0.714F;
     private static final float STANDARD_BUTTON_HORIZONTAL_TO_CENTER_RATION = 0.11F;
+
     public static void cancelTask(){
         if (scheduledFuture != null && !scheduledFuture.isDone()){
-            log.info("已取消点击天梯模式按钮任务");
             scheduledFuture.cancel(true);
         }
         if (errorScheduledFuture != null && !errorScheduledFuture.isDone()){
-            log.info("已取消再次匹配任务");
             errorScheduledFuture.cancel(true);
         }
     }
@@ -73,7 +72,7 @@ public class TournamentModeStrategy extends AbstractModeStrategy<Object> {
         cancelTask();
         scheduledFuture = extraThreadPool.scheduleWithFixedDelay(new LogRunnable(() -> {
             if (isPause.get().get()){
-                scheduledFuture.cancel(true);
+                cancelTask();
             } else if (Mode.getCurrMode() == ModeEnum.HUB){
                 SystemUtil.updateGameRect();
                 mouseUtil.leftButtonClick(
@@ -81,11 +80,11 @@ public class TournamentModeStrategy extends AbstractModeStrategy<Object> {
                         (int) (ScriptStaticData.GAME_RECT.bottom - (ScriptStaticData.GAME_RECT.bottom - ScriptStaticData.GAME_RECT.top) * TOURNAMENT_MODE_BUTTON_VERTICAL_TO_BOTTOM_RATIO) + RandomUtil.getRandom(-5, 5)
                 );
             }else if (Mode.getCurrMode() == ModeEnum.GAME_MODE){
-                scheduledFuture.cancel(true);
+                cancelTask();
                 SystemUtil.updateGameRect();
                 gameUtil.clickBackButton();
             }else {
-                scheduledFuture.cancel(true);
+                cancelTask();
             }
         }), DELAY_TIME, INTERVAL_TIME, TimeUnit.MILLISECONDS);
     }
@@ -216,7 +215,9 @@ public class TournamentModeStrategy extends AbstractModeStrategy<Object> {
      */
     private void generateTimer(){
         errorScheduledFuture = extraThreadPool.schedule(new LogRunnable(() -> {
-            if (!isPause.get().get()){
+            if (isPause.get().get()){
+                errorScheduledFuture.cancel(true);
+            }else {
                 log.info("匹配失败，再次匹配中");
                 SystemUtil.notice("匹配失败，再次匹配中");
                 SystemUtil.updateGameRect();

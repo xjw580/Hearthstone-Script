@@ -73,7 +73,6 @@ public class LoginPlatformStarter extends AbstractStarter{
 
     public static void cancelLoginPlatformTimer(){
         if (scheduledFuture != null && !scheduledFuture.isDone()){
-            log.info("已取消战网登录定时器");
             scheduledFuture.cancel(true);
         }
     }

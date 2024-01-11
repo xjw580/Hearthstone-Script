@@ -29,9 +29,11 @@ public class PauseConfig {
     @Resource
     @Lazy
     private JavaFXDashboardController javafxDashboardController;
+
     @Resource
     @Lazy
     private Core core;
+
     @Bean
     public AtomicReference<BooleanProperty> isPause(){
         SimpleBooleanProperty booleanProperty = new SimpleBooleanProperty(true);
@@ -39,8 +41,8 @@ public class PauseConfig {
             javafxDashboardController.changeSwitch(newValue);
             WebSocketServer.sendAllMessage(WsResult.ofNew(WsResultTypeEnum.PAUSE, newValue));
             if (newValue){
-                Work.setWorking(false);
                 SystemUtil.cancelAllRunnable();
+                Work.setWorking(false);
             }else {
                 if (Work.canWork()){
                     core.start();

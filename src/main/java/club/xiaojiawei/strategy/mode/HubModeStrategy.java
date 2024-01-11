@@ -36,7 +36,7 @@ public class HubModeStrategy extends AbstractModeStrategy<Object> {
     @Override
     protected void afterEnter(Object o) {
 //        点击弹窗（去除任务，活动等）
-        log.info("点击弹窗（去除任务，活动等）中……");
+        log.info("点击弹窗（去除任务，活动等）");
         for (int i = 0; i < 4; i++) {
             if (isPause.get().get()){
                 return;
