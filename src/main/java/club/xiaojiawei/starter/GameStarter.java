@@ -86,9 +86,7 @@ public class GameStarter extends AbstractStarter{
         extraThreadPool.schedule(() -> {
             cancelGameTimer();
             SystemUtil.updateGameRect();
-            if (nextStarter != null) {
-                nextStarter.start();
-            }
+            startNextStarter();
         },1, TimeUnit.SECONDS);
     }
 }

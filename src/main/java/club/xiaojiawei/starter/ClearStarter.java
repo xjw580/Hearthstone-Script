@@ -18,8 +18,6 @@ public class ClearStarter extends AbstractStarter{
     public void exec() {
         SystemUtil.cancelAllRunnable();
         Mode.reset();
-        if (nextStarter != null){
-            nextStarter.start();
-        }
+        startNextStarter();
     }
 }

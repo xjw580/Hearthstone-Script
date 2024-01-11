@@ -12,18 +12,50 @@ import lombok.ToString;
 @ToString
 @AllArgsConstructor
 public enum CardTypeEnum {
-    MINION("随从"),
-    LOCATION("地标"),
-    SPELL("法术"),
-    HERO("英雄"),
-    WEAPON("武器"),
-    HERO_POWER("技能"),
-    ENCHANTMENT("效果"),
-    GAME("游戏"),
-    PLAYER("玩家"),
-    INVALID("无效"),
-    UNKNOWN("未知"),
+    /**
+     * 随从
+     */
+    MINION,
+    /**
+     * 地标
+     */
+    LOCATION,
+    /**
+     * 法术
+     */
+    SPELL,
+    /**
+     * 英雄
+     */
+    HERO,
+    /**
+     * 武器
+     */
+    WEAPON,
+    /**
+     * 技能
+     */
+    HERO_POWER,
+    /**
+     * 效果
+     */
+    ENCHANTMENT,
+    /**
+     * 游戏
+     */
+    GAME,
+    /**
+     * 玩家
+     */
+    PLAYER,
+    /**
+     * 无效
+     */
+    INVALID,
+    /**
+     * 未知
+     */
+    UNKNOWN,
     ;
-    private final String comment;
 
 }

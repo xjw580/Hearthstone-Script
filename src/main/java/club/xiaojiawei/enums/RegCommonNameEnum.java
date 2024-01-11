@@ -13,8 +13,10 @@ public enum RegCommonNameEnum {
     PUBLISHER("Publisher", "出版商"),
     UNINSTALL_STRING("UninstallString", "卸载路径"),
     INSTALL_LOCATION("InstallLocation", "安装路径");
+
     private final String value;
     private final String comment;
+
     RegCommonNameEnum(String value, String comment) {
         this.value = value;
         this.comment = comment;

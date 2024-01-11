@@ -20,12 +20,14 @@ import java.util.Properties;
 @Slf4j
 @Component
 public class LogListenStarter extends AbstractStarter{
+
     @Resource
     protected Properties scriptConfiguration;
     @Resource
     protected SpringData springData;
     @Resource
     private AbstractLogListener logListener;
+
     @Override
     protected void exec() {
         File filePath = new File(scriptConfiguration.getProperty(ConfigurationEnum.GAME_PATH.getKey()) + springData.getGameLogPath());
@@ -38,8 +40,6 @@ public class LogListenStarter extends AbstractStarter{
         AbstractLogListener.setLogDir(files[files.length - 1]);
         log.info("游戏日志目录读取成功：" + files[files.length - 1].getAbsoluteFile());
         logListener.listen();
-        if (nextStarter != null){
-            nextStarter.start();
-        }
+        startNextStarter();
     }
 }

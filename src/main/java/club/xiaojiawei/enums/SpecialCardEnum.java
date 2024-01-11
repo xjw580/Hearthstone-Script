@@ -20,6 +20,6 @@ public enum SpecialCardEnum {
     GENN_GREYMANE("GIL_692", "吉恩·格雷迈恩"),
 
     ;
-    private final String value;
+    private final String cardId;
     private final String comment;
 }

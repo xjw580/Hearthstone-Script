@@ -3,6 +3,7 @@ package club.xiaojiawei.enums;
 import club.xiaojiawei.strategy.AbstractPhaseStrategy;
 import club.xiaojiawei.strategy.phase.*;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 
 /**
@@ -22,11 +23,8 @@ public enum WarPhaseEnum {
 
     private final String comment;
     private final  Class<? extends AbstractPhaseStrategy> phaseStrategyClass;
+    @Setter
     private AbstractPhaseStrategy abstractPhaseStrategy;
-
-    public void setAbstractPhaseStrategy(AbstractPhaseStrategy abstractPhaseStrategy) {
-        this.abstractPhaseStrategy = abstractPhaseStrategy;
-    }
 
     WarPhaseEnum(String comment, Class<? extends AbstractPhaseStrategy> phaseStrategyClass) {
         this.comment = comment;
