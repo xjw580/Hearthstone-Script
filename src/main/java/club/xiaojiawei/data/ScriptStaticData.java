@@ -41,7 +41,6 @@ public class ScriptStaticData {
     public static final String PLATFORM_LOGIN_CN_NAME = "战网登录";
     public static final String GAME_US_NAME = "Hearthstone";
     public static final String PLATFORM_US_NAME = "Battle.net";
-    public static final String REPO_NAME = "HearthstoneScript";
     public static final String TEMP_DIR = "new_version_temp";
     public static final String TEMP_PATH = System.getProperty("user.dir") + File.separator + TEMP_DIR + File.separator;
     /**

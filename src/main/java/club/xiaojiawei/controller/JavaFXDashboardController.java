@@ -35,7 +35,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.io.*;
+import java.lang.management.ManagementFactory;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.ResourceBundle;
@@ -86,6 +88,7 @@ public class JavaFXDashboardController implements Initializable {
     @Getter private static DeckEnum currentDeck;
     @Getter private static VBox staticLogVBox;
     @Getter private static Accordion staticAccordion;
+    private static NotificationManager staticNotificationManger;
     private static ProgressBar staticDownloadProgress;
     private static AtomicReference<BooleanProperty> staticIsPause;
     private static final SimpleBooleanProperty IS_UPDATING = new SimpleBooleanProperty(false);
@@ -95,14 +98,16 @@ public class JavaFXDashboardController implements Initializable {
         accordion.setExpandedPane(titledPaneLog);
     }
 
-    public static void downloadRelease(Release release){
+    public static boolean downloadRelease(Release release){
         try (
-                InputStream inputStream = new URL(String.format("https://gitee.com/zergqueen/Hearthstone-Script/releases/download/%s/%s-%s.zip", release.getTagName(), REPO_NAME, release.getTagName()))
+                InputStream inputStream = new URL(String.format("https://gitee.com/zergqueen/Hearthstone-Script/releases/download/%s/%s.zip", release.getTagName(), release.getName()))
                         .openConnection()
                         .getInputStream();
                 ZipInputStream zipInputStream = new ZipInputStream(inputStream);
         ) {
-            log.info("开始下载新版本：" + release.getTagName());
+            String startContent = "开始下载新版本【" + release.getTagName() + "】";
+            staticNotificationManger.showInfo(startContent, 2);
+            log.info(startContent);
             staticDownloadProgress.setProgress(0D);
             staticDownloadProgress.setVisible(true);
             staticDownloadProgress.setManaged(true);
@@ -127,14 +132,20 @@ public class JavaFXDashboardController implements Initializable {
                 staticDownloadProgress.setProgress(++count / 70);
             }
             staticDownloadProgress.setProgress(1D);
-            log.info(release.getTagName() + "下载完毕");
+            String endContent = "新版本【" + release.getTagName() + "】下载完毕";
+            log.info(endContent);
+            staticNotificationManger.showSuccess(endContent, 2);
         } catch (IOException e) {
-            log.error("新版本下载失败", e);
+            String errorContent = "新版本【" + release.getTagName() + "】下载失败";
+            log.error(errorContent, e);
+            staticNotificationManger.showError(errorContent, 2);
+            return false;
         } finally {
             staticDownloadProgress.setVisible(false);
             staticDownloadProgress.setManaged(false);
             IS_UPDATING.set(false);
         }
+        return true;
     }
 
     public static void execUpdate(){
@@ -153,6 +164,7 @@ public class JavaFXDashboardController implements Initializable {
         staticAccordion = accordion;
         staticDownloadProgress = downloadProgress;
         staticIsPause = isPause;
+        staticNotificationManger = notificationManger;
     }
     /**
      * 初始化模式和卡组
@@ -230,7 +242,6 @@ public class JavaFXDashboardController implements Initializable {
             }
         });
         VersionListener.getCanUpdate().addListener((observable, oldValue, newValue) -> {
-            System.out.println(newValue);
             if (newValue){
                 flush.setVisible(false);
                 flush.setManaged(false);
@@ -318,7 +329,10 @@ public class JavaFXDashboardController implements Initializable {
             IS_UPDATING.set(true);
             extraThreadPool.submit(() -> {
                 if (!new File(TEMP_PATH).exists()){
-                    downloadRelease(release);
+                    if (!downloadRelease(release)){
+                        WindowUtil.createAlert("新版本下载失败", "", null);
+                        return;
+                    }
                 }
                 Platform.runLater(() -> WindowUtil.createAlert("新版本[" + release.getTagName() + "]下载完毕", "现在更新？", event -> {
                     execUpdate();

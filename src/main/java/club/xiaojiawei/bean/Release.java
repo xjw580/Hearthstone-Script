@@ -14,4 +14,6 @@ public class Release {
     private String tagName;
     @JsonProperty("prerelease")
     private boolean preRelease;
+    @JsonProperty("name")
+    private String name;
 }

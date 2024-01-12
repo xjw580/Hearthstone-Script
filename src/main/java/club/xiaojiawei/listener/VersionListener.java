@@ -2,6 +2,7 @@ package club.xiaojiawei.listener;
 
 import club.xiaojiawei.bean.Release;
 import club.xiaojiawei.data.SpringData;
+import club.xiaojiawei.enums.ConfigurationEnum;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.Resource;
 import javafx.beans.property.BooleanProperty;
@@ -15,6 +16,8 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.Objects;
 import java.util.Properties;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static club.xiaojiawei.enums.ConfigurationEnum.UPDATE_DEV;
 
@@ -26,6 +29,7 @@ import static club.xiaojiawei.enums.ConfigurationEnum.UPDATE_DEV;
 @Component
 @Slf4j
 public class VersionListener {
+
     @Getter
     private static Release latestRelease;
     @Getter
@@ -39,6 +43,7 @@ public class VersionListener {
     @Getter
     @Setter
     private static BooleanProperty canUpdate = new SimpleBooleanProperty(false);
+
     @PostConstruct
     void init(){
           /*
@@ -49,33 +54,82 @@ public class VersionListener {
             currentVersion = springData.getVersion();
         }
     }
+
     @Scheduled(initialDelay = 500,fixedDelay = 1000 * 60 * 60 * 12)
     public void checkVersion(){
 //        在idea中启动时就不要检查更新了
         if (!Objects.equals(Objects.requireNonNull(this.getClass().getResource("")).getProtocol(), "jar")){
             return;
         }
-        log.info("开始检查是否有更新");
+        boolean updateDev = Objects.equals(scriptConfiguration.getProperty(UPDATE_DEV.getKey()), "true");
+        log.info("开始从Gitee检查更新");
+        log.info("更新dev：" + updateDev);
         try {
-            latestRelease = restTemplate.getForObject("https://gitee.com/api/v5/repos/zergqueen/Hearthstone-Script/releases/latest", Release.class);
+            if (updateDev){
+                latestRelease = restTemplate.getForObject("https://gitee.com/api/v5/repos/zergqueen/Hearthstone-Script/releases/latest", Release.class);
+            }else {
+                Release[] releases = restTemplate.getForObject("https://gitee.com/api/v5/repos/zergqueen/Hearthstone-Script/releases", Release[].class);
+                if (releases != null){
+                    for (int i = releases.length - 1; i >= 0; i--) {
+                        Release release = releases[i];
+                        if (!release.isPreRelease()){
+                            latestRelease = release;
+                        }
+                    }
+                }
+            }
         }catch (RuntimeException e){
+            log.warn("从Gitee检查更新异常", e);
+            log.info("开始从Github检查更新");
             try {
-//                todo 获取不到Github的预览版
-                latestRelease = restTemplate.getForObject("https://api.github.com/repos/xjw580/Hearthstone-Script/releases/latest", Release.class);
+                if (updateDev){
+                    Release[] releases = restTemplate.getForObject("https://api.github.com/repos/xjw580/Hearthstone-Script/releases", Release[].class);
+                    if (releases != null && releases.length > 0){
+                        latestRelease = releases[0];
+                    }
+                }else {
+                    latestRelease = restTemplate.getForObject("https://api.github.com/repos/xjw580/Hearthstone-Script/releases/latest", Release.class);
+                }
             }catch (RuntimeException e2){
-                log.warn("获取最新版本信息失败", e2);
+                log.warn("从Github检查更新异常", e2);
             }
         }
         if (latestRelease != null){
-            if (currentVersion.compareTo(latestRelease.getTagName()) < 0 && (!latestRelease.isPreRelease() || Objects.equals(scriptConfiguration.getProperty(UPDATE_DEV.getKey()), "true"))){
+            if (compareVersion(currentVersion, latestRelease.getTagName()) < 0){
                 canUpdate.set(true);
                 log.info("有更新可用😊，当前版本：" + currentVersion + ", 最新版本：" + latestRelease.getTagName());
             }else {
-                log.info("已是最新，当前版本：" + currentVersion);
+                log.info("已是最新，当前版本：" + currentVersion + ", 最新版本：" + latestRelease.getTagName());
             }
         }else {
             log.warn("没有任何最新版本");
         }
+    }
+
+    private static int compareVersion(String version1, String version2){
+//        例：匹配v3.2.3.3-DEV中的3.2.3.3
+        String regex = "\\d+(\\.\\d+)*";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher1 = pattern.matcher(version1);
+        Matcher matcher2 = pattern.matcher(version2);
+        boolean isFind1 = matcher1.find();
+        boolean isFind2 = matcher2.find();
+        if (!isFind1 || !isFind2){
+            log.error(String.format("版本号有误，version1：%s，version2：%s", version1, version2));
+            return Integer.MAX_VALUE;
+        }
+        String[] v1 = matcher1.group().split("\\.");
+        String[] v2 = matcher2.group().split("\\.");
+        int minLength = Math.min(v1.length, v2.length);
+        for (int i = 0; i < minLength; i++) {
+            String s1 = v1[i];
+            String s2 = v2[i];
+            int result = Integer.compare(Integer.parseInt(s1), Integer.parseInt(s2));
+            if (result != 0){
+                return result;
+            }
+        }
+        return Integer.compare(v1.length, v2.length);
     }
 
 }

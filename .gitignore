@@ -3,7 +3,6 @@ target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
-**/exe/*
 
 ### STS ###
 .apt_generated
@@ -32,6 +31,10 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Custom ###
 /bfg.jar
 /gitStrip.bat
 /new_version_temp/
+**/exe/*
+/*.exe

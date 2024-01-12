@@ -75,7 +75,7 @@ public class SystemUtil {
      * @param content
      */
     public static void notice(String title, String content){
-        trayIcon.displayMessage(title, content, TrayIcon.MessageType.NONE);
+        trayIcon.displayMessage(title, content, TrayIcon.MessageType.INFO);
     }
 
     public static void cancelAllTask(){
