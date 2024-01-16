@@ -19,6 +19,7 @@ import static club.xiaojiawei.enums.CardTypeEnum.MINION;
  */
 @Slf4j
 public class AlgorithmDeckStrategy extends ActionDeckStrategy{
+
     protected static double BLOOD_WEIGHT = 0.4;
     protected static double ATC_WEIGHT = 0.6;
     protected static double FREE_EAT_MAX = 5;
@@ -34,6 +35,7 @@ public class AlgorithmDeckStrategy extends ActionDeckStrategy{
     protected boolean cleanNormal(){
         return cleanNormal(1.3D, 1.35D, 0.7D);
     }
+
     protected boolean cleanTaunt(double myAtcWeight, double rivalAtcWeight, double lazyLevel){
         int rivalCardEnableCount = 0;
         boolean[] rivalCardEnable = new boolean[rivalPlayCards.size()];
@@ -50,6 +52,7 @@ public class AlgorithmDeckStrategy extends ActionDeckStrategy{
         }
         return result && findTauntCard(rivalPlayCards) == -1;
     }
+
     protected boolean cleanBuff(double myAtcWeight, double rivalAtcWeight, double lazyLevel){
         if (findTauntCard(rivalPlayCards) != -1){
             return false;
@@ -69,6 +72,7 @@ public class AlgorithmDeckStrategy extends ActionDeckStrategy{
         }
         return result && !containsBuff(rivalPlayCards);
     }
+
     protected boolean cleanDanger(double myAtcWeight, double rivalAtcWeight, double lazyLevel){
         if (findTauntCard(rivalPlayCards) != -1){
             return false;
@@ -88,6 +92,7 @@ public class AlgorithmDeckStrategy extends ActionDeckStrategy{
         }
         return result && !containsDanger(rivalPlayCards);
     }
+
     /**
      * @param myAtcWeight 我方随从攻击力权重，大于1表示攻击力比生命值重要
      * @param rivalAtcWeight 敌方随从攻击力权重，rivalAtcWeight/myAtcWeight小于1时认为我方随从更加厉害，防止出现我方2-2解对方2-2的情况
@@ -112,9 +117,11 @@ public class AlgorithmDeckStrategy extends ActionDeckStrategy{
         }
         return result;
     }
+
     private volatile double finalWeight;
     private volatile double initWeight;
     private volatile boolean[][] finalActFlag;
+
     @SneakyThrows(value = {InterruptedException.class,  ExecutionException.class})
     private boolean cleanPlay(
             double myAtcWeight, double rivalAtcWeight,
@@ -165,6 +172,7 @@ public class AlgorithmDeckStrategy extends ActionDeckStrategy{
         log.info("思考解怪耗时：" + (System.currentTimeMillis() - start) + "ms");
         return cleanAction(myPlayCards, rivalPlayCards);
     }
+
     private boolean cleanAction(List<Card> myPlayCards, List<Card> rivalPlayCards){
         if (finalWeight > initWeight){
             HashMap<String, String> entityIdMap = new HashMap<>();
@@ -205,6 +213,7 @@ public class AlgorithmDeckStrategy extends ActionDeckStrategy{
         }
         return false;
     }
+
     private void recursionCleanPlay(
             double myAtcWeight, double rivalAtcWeight,
             List<Card> myPlayCards, List<Card> rivalPlayCards,
@@ -236,6 +245,7 @@ public class AlgorithmDeckStrategy extends ActionDeckStrategy{
             recursionCleanPlay(myAtcWeight, rivalAtcWeight, myPlayCards, rivalPlayCards, myCardEnable, rivalCardEnable, atcFlag, myPlayIndex + 1, lazyLevel);
         }
     }
+
     private int calcRivalTotalAtcForClean(List<Card> cards){
         int atc = 0;
         for (Card card : cards) {

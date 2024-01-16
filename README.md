@@ -3,12 +3,13 @@
 
 
 # 炉石传说脚本
+![favicon.ico](src/main/resources/static/favicon.ico)
 
 
 
 ### 介绍
 
-本脚本仅供学习交流，严禁用于刷经验破坏天梯环境😡！！！。
+本项目仅供学习交流Java，严禁用于刷经验破坏天梯环境😡！！！。
 
 
 

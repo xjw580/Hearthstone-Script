@@ -37,4 +37,6 @@ build/
 /gitStrip.bat
 /new_version_temp/
 **/exe/*
-/*.exe
+*.exe
+embedded_*
+config.json
