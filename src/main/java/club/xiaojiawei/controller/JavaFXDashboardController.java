@@ -105,9 +105,11 @@ public class JavaFXDashboardController implements Initializable {
                         .getInputStream();
                 ZipInputStream zipInputStream = new ZipInputStream(inputStream);
         ) {
-            String startContent = "开始下载新版本【" + release.getTagName() + "】";
-            staticNotificationManger.showInfo(startContent, 2);
+            String startContent = "开始下载<" + release.getTagName() + ">";
             log.info(startContent);
+            Platform.runLater(() -> {
+                staticNotificationManger.showInfo(startContent, 2);
+            });
             staticDownloadProgress.setProgress(0D);
             staticDownloadProgress.setVisible(true);
             staticDownloadProgress.setManaged(true);
@@ -132,13 +134,15 @@ public class JavaFXDashboardController implements Initializable {
                 staticDownloadProgress.setProgress(++count / 70);
             }
             staticDownloadProgress.setProgress(1D);
-            String endContent = "新版本【" + release.getTagName() + "】下载完毕";
+            String endContent = "<" + release.getTagName() + ">下载完毕";
             log.info(endContent);
-            staticNotificationManger.showSuccess(endContent, 2);
+            Platform.runLater(() -> {
+                staticNotificationManger.showSuccess(endContent, 2);
+            });
         } catch (IOException e) {
-            String errorContent = "新版本【" + release.getTagName() + "】下载失败";
+            String errorContent = "<" + release.getTagName() + ">下载失败";
             log.error(errorContent, e);
-            staticNotificationManger.showError(errorContent, 2);
+            Platform.runLater(() -> staticNotificationManger.showError(errorContent, 2));
             return false;
         } finally {
             staticDownloadProgress.setVisible(false);
