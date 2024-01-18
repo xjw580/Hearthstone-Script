@@ -59,7 +59,7 @@ public class JavaFXAdvancedSettingsController implements Initializable {
         psw.setText(scriptConfiguration.getProperty(VERIFY_PASSWORD.getKey()));
         updateDev.setStatus(Objects.equals(scriptConfiguration.getProperty(UPDATE_DEV.getKey()), "true"));
         autoUpdate.setStatus(Objects.equals(scriptConfiguration.getProperty(AUTO_UPDATE.getKey()), "true"));
-        staticCursor.setStatus(Objects.equals(scriptConfiguration.getProperty(AUTO_UPDATE.getKey()), "true"));
+        staticCursor.setStatus(Objects.equals(scriptConfiguration.getProperty(STATIC_CURSOR.getKey()), "true"));
     }
     private void listen(){
 //        监听web界面开关
