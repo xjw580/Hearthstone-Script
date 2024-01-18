@@ -60,7 +60,7 @@ public class Player extends Entity {
 
     @SneakyThrows
     public void setGameId(String gameId) {
-        if (Strings.isBlank(this.gameId)){
+        if (Strings.isNotBlank(this.gameId)){
             log.info("playerId:" + playerId + ",gameId:" + gameId);
         }
         this.gameId = gameId;

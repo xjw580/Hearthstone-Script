@@ -3,7 +3,7 @@
 
 
 # 炉石传说脚本
-![favicon.ico](src/main/resources/static/favicon.ico)
+![favicon.ico](src/main/resources/static/img/favicon.ico)
 
 
 

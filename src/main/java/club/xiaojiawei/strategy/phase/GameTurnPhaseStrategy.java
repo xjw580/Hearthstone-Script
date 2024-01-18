@@ -52,14 +52,16 @@ public class GameTurnPhaseStrategy extends AbstractPhaseStrategy{
                     SystemUtil.updateGameRect();
                     stopThread();
                     War.setMyTurn(true);
-//                    异步执行出牌策略，以便监听出牌后的卡牌变动
+                    // 异步执行出牌策略，以便监听出牌后的卡牌变动
                     (thread = new Thread(new LogRunnable(() -> {
-                        //                          等待动画结束
+                        // 等待动画结束
                         SystemUtil.delay(4000);
                         DeckEnum.valueOf(scriptConfiguration.getProperty(DECK.getKey())).getAbstractDeckStrategy().outCard();
                     }), "OutCard Thread")).start();
                 }else {
                     log.info("对方回合");
+                    War.setMyTurn(false);
+                    stopThread();
                 }
             }else if (Objects.equals(tagChangeEntity.getValue(), MAIN_END.name())){
                 War.setMyTurn(false);

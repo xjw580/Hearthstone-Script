@@ -1,6 +1,6 @@
 package club.xiaojiawei.utils;
 
-import club.xiaojiawei.custom.dll.SystemDll;
+import club.xiaojiawei.dll.SystemDll;
 import club.xiaojiawei.enums.ConfigurationEnum;
 import com.sun.jna.platform.win32.WinDef;
 import jakarta.annotation.Resource;

@@ -24,6 +24,7 @@ import java.util.concurrent.atomic.AtomicReference;
 @Slf4j
 @Component
 public class PlatformStarter extends AbstractStarter{
+
     @Resource
     private Properties scriptConfiguration;
     @Resource
@@ -33,11 +34,11 @@ public class PlatformStarter extends AbstractStarter{
     @Resource
     private ScheduledThreadPoolExecutor extraThreadPool;
     private static ScheduledFuture<?> scheduledFuture;
+
     @Override
     public void exec() {
         try {
-//            检测炉石传说是否存活
-            if (Strings.isNotBlank(new String(Runtime.getRuntime().exec(ScriptStaticData.GAME_ALIVE_CMD).getInputStream().readAllBytes()))) {
+            if (SystemUtil.isAliveOfGame()) {
                 startNextStarter();
                 return;
             }
@@ -53,7 +54,7 @@ public class PlatformStarter extends AbstractStarter{
             }else if (SystemUtil.findPlatformHWND() != null || SystemUtil.findLoginPlatformHWND() != null){
                 cancelAndStartNext();
             }
-        }, 1, 3, TimeUnit.SECONDS);
+        }, 1, 1, TimeUnit.SECONDS);
     }
 
     public static void cancelPlatformTimer(){
@@ -63,10 +64,8 @@ public class PlatformStarter extends AbstractStarter{
     }
 
     public void cancelAndStartNext(){
-        extraThreadPool.schedule(() -> {
-            cancelPlatformTimer();
-            startNextStarter();
-        }, 1, TimeUnit.SECONDS);
+        cancelPlatformTimer();
+        extraThreadPool.schedule(this::startNextStarter, 0, TimeUnit.SECONDS);
     }
 
 }

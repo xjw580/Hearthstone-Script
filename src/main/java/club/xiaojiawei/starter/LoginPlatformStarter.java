@@ -1,7 +1,9 @@
 package club.xiaojiawei.starter;
 
+import club.xiaojiawei.dll.SystemDll;
 import club.xiaojiawei.enums.ConfigurationEnum;
 import club.xiaojiawei.utils.SystemUtil;
+import com.sun.jna.platform.win32.WinDef;
 import jakarta.annotation.Resource;
 import javafx.beans.property.BooleanProperty;
 import lombok.extern.slf4j.Slf4j;
@@ -36,37 +38,37 @@ public class LoginPlatformStarter extends AbstractStarter{
     @Resource
     private AbstractStarter starter;
     private static ScheduledFuture<?> scheduledFuture;
-    private static final AtomicInteger COUNT = new AtomicInteger();
+    private final AtomicInteger LOGIN_COUNT = new AtomicInteger();
+
     @Override
     protected void exec() {
-        if (SystemUtil.findLoginPlatformHWND() == null){
-            cancelAndStartNext();
+        if (SystemUtil.isAliveOfGame() || Strings.isBlank(scriptConfiguration.getProperty(ConfigurationEnum.PLATFORM_PASSWORD.getKey()))) {
+            startNextStarter();
             return;
         }
         scheduledFuture = extraThreadPool.scheduleAtFixedRate(() -> {
+            WinDef.HWND loginPlatformHWND;
             if (isPause.get().get()){
                 cancelLoginPlatformTimer();
-            }else if (SystemUtil.findLoginPlatformHWND() == null){
+            }else if ((loginPlatformHWND = SystemUtil.findLoginPlatformHWND()) == null){
                 cancelAndStartNext();
             }else {
-                if (COUNT.incrementAndGet() == 5){
+                if (LOGIN_COUNT.incrementAndGet() > 4){
                     log.info("登录战网失败次数过多，重新执行启动器链");
-                    COUNT.set(0);
+                    cancelLoginPlatformTimer();
                     extraThreadPool.schedule(() -> {
-                        cancelLoginPlatformTimer();
+                        SystemUtil.killLoginPlatform();
+                        SystemUtil.killPlatform();
+                        LOGIN_COUNT.set(0);
                         starter.start();
                     }, 1, TimeUnit.SECONDS);
                     return;
                 }
-                SystemUtil.frontWindow(SystemUtil.findLoginPlatformHWND());
+//                SystemUtil.frontWindow(loginPlatformHWND);
+//                SystemUtil.delay(500);
+                inputPassword(loginPlatformHWND);
                 SystemUtil.delay(500);
-                if (!inputPassword()){
-                    log.warn("未设置战网账号密码");
-                    startNextStarter();
-                    return;
-                }
-                SystemUtil.delay(500);
-                clickLoginButton();
+                clickLoginButton(loginPlatformHWND);
             }
         }, 5, 15, TimeUnit.SECONDS);
     }
@@ -77,30 +79,41 @@ public class LoginPlatformStarter extends AbstractStarter{
         }
     }
 
-    private boolean inputPassword(){
-        String password = scriptConfiguration.getProperty(ConfigurationEnum.PLATFORM_PASSWORD.getKey());
-        if (Strings.isBlank(password)){
-            return false;
-        }
+    private void inputPassword(WinDef.HWND loginPlatformHWND){
         log.info("输入战网密码中...");
-        SystemUtil.deleteAllContent();
-        SystemUtil.copyToClipboard(password);
-        SystemUtil.pasteFromClipboard();
-        return true;
+        String password = scriptConfiguration.getProperty(ConfigurationEnum.PLATFORM_PASSWORD.getKey());
+        if (Strings.isNotBlank(password)){
+            SystemDll.INSTANCE.sendText(loginPlatformHWND, password, false);
+        }
     }
 
+    @Deprecated
+    private void inputPassword(){
+        log.info("输入战网密码中...");
+        String password = scriptConfiguration.getProperty(ConfigurationEnum.PLATFORM_PASSWORD.getKey());
+        if (Strings.isNotBlank(password)){
+            SystemUtil.deleteAllContent();
+            SystemUtil.copyToClipboard(password);
+            SystemUtil.pasteFromClipboard();
+        }
+    }
+
+    private void clickLoginButton(WinDef.HWND loginPlatformHWND){
+        log.info("点击登入按钮");
+        SystemDll.INSTANCE.clickLoginPlatformLoginBtn(loginPlatformHWND);
+    }
+
+    @Deprecated
     private void clickLoginButton(){
-        log.info("点击登录按钮");
+        log.info("点击登入按钮");
         SystemUtil.sendKey(KeyEvent.VK_TAB);
         SystemUtil.delay(500);
         SystemUtil.sendKey(KeyEvent.VK_ENTER);
     }
 
     public void cancelAndStartNext(){
-        extraThreadPool.schedule(() -> {
-            cancelLoginPlatformTimer();
-            startNextStarter();
-        }, 1, TimeUnit.SECONDS);
+        cancelLoginPlatformTimer();
+        extraThreadPool.schedule(this::startNextStarter, 0, TimeUnit.SECONDS);
     }
 
 }

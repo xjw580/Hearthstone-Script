@@ -4,6 +4,7 @@ import club.xiaojiawei.bean.area.Area;
 import club.xiaojiawei.enums.CardRaceEnum;
 import club.xiaojiawei.enums.CardTypeEnum;
 import club.xiaojiawei.enums.TagEnum;
+import club.xiaojiawei.utils.SystemUtil;
 import com.sun.jna.platform.win32.WinDef;
 import lombok.Getter;
 import lombok.Setter;
@@ -88,19 +89,19 @@ public class ScriptStaticData {
      */
     public static final String AUTHOR = "XiaoJiawei";
     /*主路径*/
-    public static final String MAIN_PATH = "/club/xiaojiawei/";
+    public static final String FXML_PATH = "/fxml/";
     /**
      * 图片路径
      */
-    public static final String IMAGE_PATH = MAIN_PATH + "images/";
+    public static final String FXML_IMAGE_PATH = FXML_PATH + "img/";
     /**
      * 脚本程序图标名字
      */
-    public static final String MAIN_ICO_NAME = "main.png";
+    public static final String MAIN_ICO_NAME = "favicon.png";
     /**
      * 脚本程序图标路径
      */
-    public static final String SCRIPT_ICON_PATH = IMAGE_PATH + MAIN_ICO_NAME;
+    public static final String SCRIPT_ICON_PATH = FXML_IMAGE_PATH + MAIN_ICO_NAME;
 
     /*日志相关*/
     public static final String VALUE = "value";
@@ -159,6 +160,18 @@ public class ScriptStaticData {
             cardTypeTempMap.put(value.name(), value);
         }
         CARD_TYPE_MAP = Collections.unmodifiableMap(cardTypeTempMap);
+    }
+
+    public static void main(String[] args) throws AWTException {
+        WinDef.HWND hello = SystemUtil.findHWND("战网登录");
+        WinDef.RECT rect = new WinDef.RECT();
+        SystemUtil.updateRECT(hello, rect);
+//        SystemDll.INSTANCE.sendText(hello, "11111");
+//        SystemDll.INSTANCE.leftMouseClick(hello, 100, 350);
+//        SystemDll.INSTANCE.clickLoginPlatformLoginBtn(hello);
+//        System.out.println(rect.bottom - rect.top);
+//        System.out.println(rect.right - rect.left);
+//        System.out.println(rect);
     }
 
 }

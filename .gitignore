@@ -40,3 +40,4 @@ build/
 *.exe
 embedded_*
 config.json
+/easy-release_static/

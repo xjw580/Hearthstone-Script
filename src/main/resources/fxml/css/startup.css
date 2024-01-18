@@ -2,6 +2,6 @@
     -fx-fill: white;
 }
 #root{
-    -fx-background-image: url("../images/startupBackGroud.jpg");
+    -fx-background-image: url("../img/startupBackGroud.jpg");
     -fx-background-size: stretch;
 }

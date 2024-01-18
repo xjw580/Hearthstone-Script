@@ -26,6 +26,7 @@ import static club.xiaojiawei.strategy.deck.EvenNumberShamanDeckStrategy.EvenNum
  */
 @Component
 @Slf4j
+@SuppressWarnings("all")
 public class EvenNumberShamanDeckStrategy extends AbstractDeckStrategy{
 
     static class EvenNumberShaman {

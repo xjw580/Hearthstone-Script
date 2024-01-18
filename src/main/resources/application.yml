@@ -25,7 +25,6 @@ log:
   path: ${script.path}
 
 server:
-  #  改端口时记得把index.js里的ws端口也改了
   port: 8848
 
 spring:

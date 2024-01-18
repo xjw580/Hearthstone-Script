@@ -3,6 +3,7 @@ package club.xiaojiawei.controller;
 
 import club.xiaojiawei.bean.Result;
 import club.xiaojiawei.data.ScriptStaticData;
+import club.xiaojiawei.data.SpringData;
 import club.xiaojiawei.enums.DeckEnum;
 import club.xiaojiawei.listener.VersionListener;
 import club.xiaojiawei.status.Work;
@@ -53,6 +54,7 @@ public class WebDashboardController {
     private Properties scriptConfiguration;
     @Resource
     private JavaFXDashboardController javafxDashboardController;
+
     @RequestMapping("/")
     public String index(Model model){
         model.addAttribute("version", "当前版本号：" + VersionListener.getCurrentVersion());

@@ -1,4 +1,4 @@
-package club.xiaojiawei.custom.dll;
+package club.xiaojiawei.dll;
 
 import com.sun.jna.Library;
 import com.sun.jna.Native;
@@ -9,6 +9,7 @@ import com.sun.jna.platform.win32.WinDef;
  * @author 肖嘉威
  * @date 2023/9/16 17:34
  */
+@SuppressWarnings("all")
 public interface SystemDll extends Library {
 
     SystemDll INSTANCE = Native.load("dll/libsystem", SystemDll.class);
@@ -32,4 +33,12 @@ public interface SystemDll extends Library {
     //void moveMouse(WinDef.HWND hwnd, int startX, int startY, int endX, int endY);
 
     void frontWindow(WinDef.HWND hwnd);
+
+    /**
+     * 点击登录战网页的登入按钮
+     * @param loginPlatformRootHWND
+     */
+    void clickLoginPlatformLoginBtn(WinDef.HWND loginPlatformRootHWND);
+
+    void sendText(WinDef.HWND hwnd, String text, boolean append);
 }

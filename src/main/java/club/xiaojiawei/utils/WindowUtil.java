@@ -111,7 +111,7 @@ public class WindowUtil {
     private static Stage createStage(WindowEnum windowEnum){
         Stage stage = new Stage();
         try {
-            FXMLLoader fxmlLoader = new FXMLLoader(WindowUtil.class.getResource(ScriptStaticData.MAIN_PATH + windowEnum.getFxmlName()));
+            FXMLLoader fxmlLoader = new FXMLLoader(WindowUtil.class.getResource(ScriptStaticData.FXML_PATH + windowEnum.getFxmlName()));
             if (context != null){
                 fxmlLoader.setControllerFactory(context::getBean);
             }

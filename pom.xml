@@ -10,8 +10,8 @@
     </parent>
     <groupId>club.xiaojiawei</groupId>
     <artifactId>hs-script</artifactId>
-    <version>v3.2.3.4-DEV</version>
-    <name>hearthstone-Script</name>
+    <version>v3.2.3.5-DEV</version>
+    <name>Hearthstone-Script</name>
     <description>炉石传说脚本</description>
     <properties>
         <java.version>21</java.version>

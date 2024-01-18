@@ -5,6 +5,7 @@ import club.xiaojiawei.custom.LogRunnable;
 import club.xiaojiawei.data.SpringData;
 import club.xiaojiawei.enums.ModeEnum;
 import club.xiaojiawei.status.Mode;
+import club.xiaojiawei.utils.SystemUtil;
 import jakarta.annotation.Resource;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -92,7 +93,7 @@ public class ScreenLogListener extends AbstractLogListener{
             return ModeEnum.valueOf(line.substring(index + 9));
         }else if (line.contains("OnDestroy()")){
             Thread.sleep(2000);
-            if (Strings.isBlank(new String(Runtime.getRuntime().exec(GAME_ALIVE_CMD).getInputStream().readAllBytes()))){
+            if (!SystemUtil.isAliveOfGame()){
                 log.info("检测到游戏关闭，准备重启游戏");
                 core.restart();
             }

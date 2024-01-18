@@ -1,7 +1,8 @@
 package club.xiaojiawei.utils;
 
 import club.xiaojiawei.custom.MouseClickListener;
-import club.xiaojiawei.custom.dll.SystemDll;
+import club.xiaojiawei.dll.SystemDll;
+import club.xiaojiawei.data.ScriptStaticData;
 import club.xiaojiawei.enums.RegCommonNameEnum;
 import club.xiaojiawei.listener.log.DeckLogListener;
 import club.xiaojiawei.listener.log.PowerLogListener;
@@ -20,6 +21,7 @@ import com.sun.jna.platform.win32.WinReg;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -235,8 +237,12 @@ public class SystemUtil {
         delay(RandomUtil.getHugeRandom());
     }
 
+    /**
+     * @deprecated 由 {@link SystemDll#closeProgram(WinDef.HWND)} 取代
+     * @param programHWND
+     */
     @Deprecated
-    public  static void killProgram(WinDef.HWND programHWND){
+    public static void killProgram(WinDef.HWND programHWND){
         frontWindow(programHWND);
         ROBOT.keyPress(18);
         ROBOT.keyPress(115);
@@ -246,11 +252,23 @@ public class SystemUtil {
     }
 
     /**
+     * 检测游戏是否存活
+     * @return
+     */
+    public static boolean isAliveOfGame(){
+        try {
+            return Strings.isNotBlank(new String(Runtime.getRuntime().exec(ScriptStaticData.GAME_ALIVE_CMD).getInputStream().readAllBytes()));
+        } catch (IOException e) {
+            log.error("检测游戏是否存活异常", e);
+        }
+        return true;
+    }
+
+    /**
      * 通过此方式停止的游戏，screen.log监听器可能无法监测到游戏被关闭
      */
     public static void killGame(){
-        WinDef.HWND gameHWND = findGameHWND();
-        if (gameHWND != null){
+        if (findGameHWND() != null){
             try {
                 Runtime.getRuntime().exec("cmd /c taskkill /f /t /im " + GAME_PROGRAM_NAME).waitFor();
                 SystemUtil.delay(1000);
@@ -275,6 +293,16 @@ public class SystemUtil {
         }
     }
 
+    public static void killLoginPlatform(){
+        WinDef.HWND loginPlatformHWND = SystemUtil.findLoginPlatformHWND();
+        if (loginPlatformHWND != null){
+            SystemDll.INSTANCE.closeProgram(loginPlatformHWND);
+            log.info("登录战网已关闭");
+        }else {
+            log.info("登录战网不在运行");
+        }
+    }
+
     /**
      * 添加托盘
      * @param trayIconName
@@ -289,7 +317,7 @@ public class SystemUtil {
             log.warn("当前系统不支持系统托盘");
             return;
         }
-        Image image = Toolkit.getDefaultToolkit().getImage(SystemUtil.class.getResource(IMAGE_PATH + trayIconName));
+        Image image = Toolkit.getDefaultToolkit().getImage(SystemUtil.class.getResource(FXML_IMAGE_PATH + trayIconName));
 //        托盘右键弹出菜单
         PopupMenu popupMenu = new PopupMenu();
         for (MenuItem menuItem : menuItems) {

@@ -4,9 +4,8 @@
 
     <id>app</id>
 
-    <!--最终输出生成zip和tar.gz文件 -->
+    <!--最终输出生成zip文件 -->
     <formats>
-<!--        <format>tar.gz</format>-->
         <format>zip</format>
     </formats>
 

@@ -37,35 +37,26 @@ public class GameStarter extends AbstractStarter{
     private static WinDef.HWND gameHWND;
     @Override
     public void exec() {
+        log.info("开始检查" + ScriptStaticData.GAME_CN_NAME);
         if ((gameHWND = SystemUtil.findGameHWND()) != null){
-            ScriptStaticData.setGameHWND(gameHWND);
-            SystemUtil.updateGameRect();
-            if (nextStarter != null){
-                nextStarter.start();
-            }
+            cancelAndStartNext();
             return;
         }
-        log.info("开始检查" + ScriptStaticData.GAME_CN_NAME);
         scheduledFuture = launchProgramThreadPool.scheduleAtFixedRate(new LogRunnable(() -> {
             if (isPause.get().get()) {
                 cancelGameTimer();
             } else {
-                try {
-                    if (Strings.isNotBlank(new String(Runtime.getRuntime().exec(ScriptStaticData.GAME_ALIVE_CMD).getInputStream().readAllBytes()))) {
-                        if ((gameHWND = SystemUtil.findGameHWND()) == null){
-                            return;
-                        }
-                        cancelAndStartNext();
-                    }else if ((gameHWND = SystemUtil.findGameHWND()) != null){
-                        cancelAndStartNext();
-                    }else {
-                        launchGame();
+                if (SystemUtil.isAliveOfGame()) {
+//                    游戏刚启动时找不到HWND
+                    if ((gameHWND = SystemUtil.findGameHWND()) == null){
+                        return;
                     }
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
+                    cancelAndStartNext();
+                }else {
+                    launchGame();
                 }
             }
-        }), 3, 30, TimeUnit.SECONDS);
+        }), 5, 30, TimeUnit.SECONDS);
     }
 
     private void launchGame(){
@@ -82,9 +73,9 @@ public class GameStarter extends AbstractStarter{
     }
     public void cancelAndStartNext(){
         log.info(ScriptStaticData.GAME_CN_NAME + "正在运行");
-        ScriptStaticData.setGameHWND(gameHWND);
+        cancelGameTimer();
         extraThreadPool.schedule(() -> {
-            cancelGameTimer();
+            ScriptStaticData.setGameHWND(gameHWND);
             SystemUtil.updateGameRect();
             startNextStarter();
         },1, TimeUnit.SECONDS);
