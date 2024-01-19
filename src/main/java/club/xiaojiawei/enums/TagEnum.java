@@ -1,7 +1,7 @@
 package club.xiaojiawei.enums;
 
-import club.xiaojiawei.custom.DealTagChange;
-import club.xiaojiawei.custom.ParseExtraEntity;
+import club.xiaojiawei.func.DealTagChange;
+import club.xiaojiawei.func.ParseExtraEntity;
 import club.xiaojiawei.data.ScriptStaticData;
 import club.xiaojiawei.bean.entity.Card;
 import club.xiaojiawei.bean.entity.ExtraEntity;

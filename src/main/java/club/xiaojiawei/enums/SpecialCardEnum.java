@@ -12,6 +12,7 @@ import lombok.ToString;
 @Getter
 @ToString
 @AllArgsConstructor
+@SuppressWarnings("all")
 public enum SpecialCardEnum {
 
     PRINCE_RENATHAL("REV_018", "雷纳索尔王子"),

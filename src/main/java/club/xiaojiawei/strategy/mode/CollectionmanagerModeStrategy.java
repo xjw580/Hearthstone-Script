@@ -12,12 +12,12 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 public class CollectionmanagerModeStrategy extends AbstractModeStrategy<Object> {
+
     @Override
     public void wantEnter() {
     }
 
     @Override
     protected void afterEnter(Object o) {
-
     }
 }

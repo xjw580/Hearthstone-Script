@@ -20,6 +20,7 @@ import java.util.concurrent.atomic.AtomicReference;
 @Component
 @Slf4j
 public class GameUtil {
+
     @Resource
     private MouseUtil mouseUtil;
     @Resource
@@ -52,8 +53,8 @@ public class GameUtil {
         SystemUtil.updateGameRect();
 //        点击投降按钮
         mouseUtil.leftButtonClick(
-                ScriptStaticData.GAME_RECT.right + ScriptStaticData.GAME_RECT.left >> 1,
-                (int) (ScriptStaticData.GAME_RECT.bottom - (ScriptStaticData.GAME_RECT.bottom - ScriptStaticData.GAME_RECT.top) * SURRENDER_BUTTON_VERTICAL_TO_BOTTOM_RATION)
+            ScriptStaticData.GAME_RECT.right + ScriptStaticData.GAME_RECT.left >> 1,
+            (int) (ScriptStaticData.GAME_RECT.bottom - (ScriptStaticData.GAME_RECT.bottom - ScriptStaticData.GAME_RECT.top) * SURRENDER_BUTTON_VERTICAL_TO_BOTTOM_RATION)
         );
         clickGameEndPageTask();
     }
@@ -66,19 +67,19 @@ public class GameUtil {
         cancelTask();
         log.info("点掉游戏结束结算页面");
         clickGameEndPageTask = extraThreadPool.scheduleWithFixedDelay(
-                () -> {
-                    if (isPause.get().get()){
-                        cancelTask();
-                    }else {
-                        mouseUtil.leftButtonClick(
-                                ScriptStaticData.GAME_RECT.right + ScriptStaticData.GAME_RECT.left >> 1,
-                                (int) (ScriptStaticData.GAME_RECT.bottom - (ScriptStaticData.GAME_RECT.bottom - ScriptStaticData.GAME_RECT.top) * SURRENDER_BUTTON_VERTICAL_TO_BOTTOM_RATION)
-                        );
-                    }
-                },
-                4500,
-                2000,
-                TimeUnit.MILLISECONDS
+            () -> {
+                if (isPause.get().get()){
+                    cancelTask();
+                }else {
+                    mouseUtil.leftButtonClick(
+                            ScriptStaticData.GAME_RECT.right + ScriptStaticData.GAME_RECT.left >> 1,
+                            (int) (ScriptStaticData.GAME_RECT.bottom - (ScriptStaticData.GAME_RECT.bottom - ScriptStaticData.GAME_RECT.top) * SURRENDER_BUTTON_VERTICAL_TO_BOTTOM_RATION)
+                    );
+                }
+            },
+            4500,
+            2000,
+            TimeUnit.MILLISECONDS
         );
     }
 

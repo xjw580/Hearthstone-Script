@@ -33,6 +33,7 @@ import static club.xiaojiawei.data.ScriptStaticData.*;
  */
 @Slf4j
 public abstract class AbstractPhaseStrategy{
+
     @Resource
     protected PowerLogListener powerLogListener;
     @Resource
@@ -71,12 +72,12 @@ public abstract class AbstractPhaseStrategy{
                         int size = cards.size();
                         if (
                                 size >= 3
-                                && !Objects.equals(lastDiscoverEntityId, cards.get(cards.size() - 1).getEntityId())
+                                && !Objects.equals(lastDiscoverEntityId, cards.getLast().getEntityId())
                                 && Objects.equals(cards.get(size - 1).getCreator(), cards.get(size - 2).getCreator())
                                 && Objects.equals(cards.get(size - 1).getCreator(), cards.get(size - 3).getCreator())
                         ){
                             log.info("触发发现动作");
-                            lastDiscoverEntityId = cards.get(cards.size() - 1).getEntityId();
+                            lastDiscoverEntityId = cards.getLast().getEntityId();
                             DeckEnum.valueOf(scriptConfiguration.getProperty(ConfigurationEnum.DECK.getKey())).getAbstractDeckStrategy().discoverChooseCard(cards.get(size - 3), cards.get(size - 2), cards.get(size - 1));
                         }
                     }
@@ -142,4 +143,5 @@ public abstract class AbstractPhaseStrategy{
     protected boolean dealOtherThenIsOver(String line){
         return false;
     }
+
 }

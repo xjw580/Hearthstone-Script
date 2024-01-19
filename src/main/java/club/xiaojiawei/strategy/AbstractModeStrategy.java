@@ -18,6 +18,7 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 @Slf4j
 public abstract class AbstractModeStrategy<T>{
+
     @Resource
     protected MouseUtil mouseUtil;
     @Resource
@@ -46,4 +47,5 @@ public abstract class AbstractModeStrategy<T>{
     protected void log(){
         log.info("切換到" + Mode.getCurrMode().getComment());
     }
+
 }

@@ -1,5 +1,7 @@
 package club.xiaojiawei.utils;
 
+import lombok.Getter;
+
 import java.util.Random;
 
 /**
@@ -9,6 +11,7 @@ import java.util.Random;
  */
 public class RandomUtil {
 
+    @Getter
     private static final Random RANDOM = new Random(System.currentTimeMillis());
 
     public static int getRandom(int min, int max){

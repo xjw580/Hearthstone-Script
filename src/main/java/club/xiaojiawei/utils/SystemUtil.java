@@ -4,7 +4,6 @@ import club.xiaojiawei.custom.MouseClickListener;
 import club.xiaojiawei.data.SpringData;
 import club.xiaojiawei.dll.NoticeDll;
 import club.xiaojiawei.dll.SystemDll;
-import club.xiaojiawei.data.ScriptStaticData;
 import club.xiaojiawei.enums.RegCommonNameEnum;
 import club.xiaojiawei.listener.log.DeckLogListener;
 import club.xiaojiawei.listener.log.PowerLogListener;
@@ -16,7 +15,6 @@ import club.xiaojiawei.strategy.mode.LoginModeStrategy;
 import club.xiaojiawei.strategy.mode.TournamentModeStrategy;
 import club.xiaojiawei.strategy.phase.GameTurnPhaseStrategy;
 import club.xiaojiawei.strategy.phase.ReplaceCardPhaseStrategy;
-import com.sun.jna.WString;
 import com.sun.jna.platform.win32.Advapi32Util;
 import com.sun.jna.platform.win32.User32;
 import com.sun.jna.platform.win32.WinDef;
@@ -32,7 +30,6 @@ import java.awt.*;
 import java.awt.datatransfer.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
-import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -238,6 +235,9 @@ public class SystemUtil {
     public static void delay(int delay){
         ROBOT.delay(delay);
     }
+    public static void delay(int minDelay, int maxDelay){
+        delay(RandomUtil.getRandom(minDelay, maxDelay));
+    }
     public static void delayHuman(){
         delay(RandomUtil.getHumanRandom());
     }
@@ -277,7 +277,7 @@ public class SystemUtil {
      */
     public static boolean isAliveOfGame(){
         try {
-            return Strings.isNotBlank(new String(Runtime.getRuntime().exec(ScriptStaticData.GAME_ALIVE_CMD).getInputStream().readAllBytes()));
+            return Strings.isNotBlank(new String(Runtime.getRuntime().exec("cmd /c tasklist | find \"" + GAME_PROGRAM_NAME + "\"").getInputStream().readAllBytes()));
         } catch (IOException e) {
             log.error("检测游戏是否存活异常", e);
         }

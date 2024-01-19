@@ -20,6 +20,7 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 @Component
 public class LoginModeStrategy extends AbstractModeStrategy<Object> {
+
     private static ScheduledFuture<?> scheduledFuture;
 
     public static void cancelTask(){
@@ -49,4 +50,5 @@ public class LoginModeStrategy extends AbstractModeStrategy<Object> {
             }
         }), 3000, 2000, TimeUnit.MILLISECONDS);
     }
+
 }

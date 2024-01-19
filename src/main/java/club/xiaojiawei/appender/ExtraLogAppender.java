@@ -27,6 +27,7 @@ public class ExtraLogAppender extends UnsynchronizedAppenderBase<ILoggingEvent> 
             appendWebSocket(event);
         }
     }
+
     @SuppressWarnings("all")
     private void appendJavaFX(ILoggingEvent event){
         if (JavaFXDashboardController.getStaticLogVBox() != null && JavaFXDashboardController.getStaticAccordion()!= null){

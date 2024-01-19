@@ -22,8 +22,10 @@ import org.springframework.core.annotation.Order;
 @Configuration
 @Order(250)
 public class EnumConfig implements ApplicationRunner {
+
     @Resource
     private ConfigurableApplicationContext springContext;
+
     @Override
     public void run(ApplicationArguments args) {
         for (WarPhaseEnum phase : WarPhaseEnum.values()) {

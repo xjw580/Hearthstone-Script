@@ -12,6 +12,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
  */
 @Configuration
 public class SchedulingRewriteConfig {
+
     @Bean
     public TaskScheduler taskScheduler(){
         ThreadPoolTaskScheduler taskScheduler = new ThreadPoolTaskScheduler();
@@ -20,4 +21,5 @@ public class SchedulingRewriteConfig {
         taskScheduler.initialize();
         return taskScheduler;
     }
+
 }

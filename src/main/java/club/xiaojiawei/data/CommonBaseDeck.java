@@ -23,4 +23,5 @@ public class CommonBaseDeck {
     public static final BaseCard 携刃信使 = new BaseCard("TSC_085");
     public static final BaseCard 农夫 = new BaseCard("SW_319");
     public static final BaseCard 火焰术士弗洛格尔 = new BaseCard("BAR_860");
+
 }

@@ -18,6 +18,7 @@ import java.util.concurrent.atomic.AtomicReference;
 @Slf4j
 @Configuration
 public class ScriptHotkeyListener implements HotkeyListener {
+
     @Resource
     private AtomicReference<BooleanProperty> isPause;
     private final static int HOT_KEY_EXIT = 111;

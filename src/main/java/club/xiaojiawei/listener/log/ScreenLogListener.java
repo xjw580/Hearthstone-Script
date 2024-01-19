@@ -17,8 +17,6 @@ import java.io.*;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-import static club.xiaojiawei.data.ScriptStaticData.GAME_ALIVE_CMD;
-
 /**
  * 游戏界面监听器
  * @author 肖嘉威
@@ -28,6 +26,7 @@ import static club.xiaojiawei.data.ScriptStaticData.GAME_ALIVE_CMD;
 @Slf4j
 @Component
 public class ScreenLogListener extends AbstractLogListener{
+
     @Resource
     private Core core;
     private static ScheduledFuture<?> errorScheduledFuture;
@@ -84,7 +83,7 @@ public class ScreenLogListener extends AbstractLogListener{
         }
     }
 
-    private ModeEnum resolveLog(String line) throws InterruptedException, IOException {
+    private ModeEnum resolveLog(String line) throws InterruptedException {
         if (line == null){
             return null;
         }

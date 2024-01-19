@@ -12,7 +12,9 @@ import lombok.ToString;
 @Getter
 @ToString
 @AllArgsConstructor
+@SuppressWarnings("all")
 public enum StepEnum {
+
     BEGIN_MULLIGAN("调度开始"),
     MAIN_READY("主游戏-准备"),
     MAIN_START_TRIGGERS("主游戏-触发"),

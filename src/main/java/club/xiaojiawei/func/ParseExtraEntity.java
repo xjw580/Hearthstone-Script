@@ -1,4 +1,4 @@
-package club.xiaojiawei.custom;
+package club.xiaojiawei.func;
 
 import club.xiaojiawei.bean.entity.ExtraEntity;
 

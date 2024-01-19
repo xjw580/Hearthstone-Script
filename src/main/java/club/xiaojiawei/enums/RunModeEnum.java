@@ -13,6 +13,7 @@ import lombok.ToString;
 @ToString
 @AllArgsConstructor
 public enum RunModeEnum {
+
     STANDARD("标准模式", ModeEnum.TOURNAMENT, true),
     WILD("狂野模式", ModeEnum.TOURNAMENT, true),
     CASUAL("休闲模式", ModeEnum.TOURNAMENT, true),
@@ -20,6 +21,7 @@ public enum RunModeEnum {
     TWIST("幻变模式", ModeEnum.TOURNAMENT, false),
     BACON("酒馆战棋", ModeEnum.BACON, false),
     ;
+
     private final String comment;
     private final ModeEnum modeEnum;
     private final boolean enable;

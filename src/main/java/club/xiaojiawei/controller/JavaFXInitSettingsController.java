@@ -41,6 +41,7 @@ public class JavaFXInitSettingsController implements Initializable {
     private Properties scriptConfiguration;
     @Resource
     private PropertiesUtil propertiesUtil;
+
     @FXML
     protected void gameClicked(){
         DirectoryChooser directoryChooser = new DirectoryChooser();
@@ -75,6 +76,7 @@ public class JavaFXInitSettingsController implements Initializable {
             initValue();
         }
     }
+
     @FXML
     protected void save(){
         scriptConfiguration.setProperty(ConfigurationEnum.PLATFORM_PASSWORD.getKey(), password.getText());

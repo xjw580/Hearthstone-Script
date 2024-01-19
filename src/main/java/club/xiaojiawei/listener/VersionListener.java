@@ -126,7 +126,7 @@ public class VersionListener {
         boolean isFind1 = matcher1.find();
         boolean isFind2 = matcher2.find();
         if (!isFind1 || !isFind2){
-            log.error(String.format("版本号有误，version1：%s，version2：%s", version1, version2));
+            log.warn(String.format("版本号有误，version1：%s，version2：%s", version1, version2));
             return Integer.MAX_VALUE;
         }
         String[] v1 = matcher1.group().split("\\.");

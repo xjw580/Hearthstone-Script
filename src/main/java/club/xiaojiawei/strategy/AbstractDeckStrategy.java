@@ -27,6 +27,7 @@ import static club.xiaojiawei.enums.ConfigurationEnum.STRATEGY;
  */
 @Slf4j
 public abstract class AbstractDeckStrategy extends AlgorithmDeckStrategy {
+
     @Resource
     protected AtomicReference<BooleanProperty> isPause;
     @Resource

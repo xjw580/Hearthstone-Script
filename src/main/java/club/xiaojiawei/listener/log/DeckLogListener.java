@@ -21,13 +21,14 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 @Component
 public class DeckLogListener extends AbstractLogListener{
+
     @Autowired
     public DeckLogListener(SpringData springData) {
         super(springData.getDeckLogName(), 0, 1500, TimeUnit.MILLISECONDS);
     }
 
     @Getter
-    private static final LinkedList<Deck> decks = new LinkedList<>();
+    private static final LinkedList<Deck> DECKS = new LinkedList<>();
 
     @Override
     protected void readOldLog() throws IOException {
@@ -41,7 +42,7 @@ public class DeckLogListener extends AbstractLogListener{
         }
     }
     private void dealReceived() throws IOException {
-        decks.clear();
+        DECKS.clear();
         String line;
         long filePointer = accessFile.getFilePointer();
         while ((line = accessFile.readLine()) != null){
@@ -49,14 +50,14 @@ public class DeckLogListener extends AbstractLogListener{
                 accessFile.seek(filePointer);
                 break;
             }
-            decks.addFirst(createDeck(line));
+            DECKS.addFirst(createDeck(line));
             filePointer = accessFile.getFilePointer();
         }
     }
     private void dealEditing() throws IOException {
         Deck deck = createDeck(accessFile.readLine());
         boolean exist = false;
-        for (Deck d : decks) {
+        for (Deck d : DECKS) {
             if (Objects.equals(d.getId(), deck.getId())){
                 d.setName(deck.getName());
                 d.setCode(deck.getCode());
@@ -65,7 +66,7 @@ public class DeckLogListener extends AbstractLogListener{
             }
         }
         if (!exist){
-            decks.addFirst(deck);
+            DECKS.addFirst(deck);
         }
     }
 
@@ -80,4 +81,5 @@ public class DeckLogListener extends AbstractLogListener{
     protected void listenLog() throws IOException {
         readOldLog();
     }
+
 }

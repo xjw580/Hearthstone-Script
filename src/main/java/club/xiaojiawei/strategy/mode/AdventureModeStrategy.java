@@ -25,6 +25,7 @@ import static club.xiaojiawei.enums.ModeEnum.GAME_MODE;
 @Slf4j
 @Component
 public class AdventureModeStrategy extends AbstractModeStrategy<Object> {
+
     private static final float ADVENTURE_MODE_BUTTON_VERTICAL_TO_BOTTOM_RATIO = (float) 0.742;
     private static final float ADVENTURE_MODE_BUTTON_HORIZONTAL_TO_CENTER_RATIO = (float) 0.107;
     private static final float CHOOSE_BUTTON_HORIZONTAL_TO_CENTER_RATION = (float) 0.29;

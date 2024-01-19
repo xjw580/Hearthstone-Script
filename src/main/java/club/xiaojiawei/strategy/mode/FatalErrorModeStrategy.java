@@ -15,15 +15,19 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 public class FatalErrorModeStrategy extends AbstractModeStrategy<Object> {
+
     @Resource
     private Core core;
+
     @Override
     public void wantEnter() {
 
     }
+
     @Override
     protected void afterEnter(Object o) {
         log.info("发生致命错误，准备重启游戏");
         core.restart();
     }
+
 }

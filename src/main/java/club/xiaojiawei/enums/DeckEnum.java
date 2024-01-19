@@ -6,6 +6,7 @@ import club.xiaojiawei.strategy.deck.FreeDeckStrategy;
 import club.xiaojiawei.strategy.deck.SwordfishRogueDeckStrategy;
 import club.xiaojiawei.strategy.deck.ZooDeckStrategy;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 
 /**
@@ -28,6 +29,7 @@ public enum DeckEnum {
     private final RunModeEnum runMode;
     private final String deckCode;
     private final Class<? extends AbstractDeckStrategy> abstractDeckStrategyClass;
+    @Setter
     private AbstractDeckStrategy abstractDeckStrategy;
     private final boolean enable;
 
@@ -40,7 +42,4 @@ public enum DeckEnum {
         this.enable = enable;
     }
 
-    public void setAbstractDeckStrategy(AbstractDeckStrategy abstractDeckStrategy) {
-        this.abstractDeckStrategy = abstractDeckStrategy;
-    }
 }

@@ -85,10 +85,6 @@ public class ScriptStaticData {
      */
     public static final String GAME_PROGRAM_NAME = "Hearthstone.exe";
     /**
-     * 检测炉石传说进程是否存活命令
-     */
-    public static final String GAME_ALIVE_CMD = "cmd /c tasklist | find \"" + GAME_PROGRAM_NAME + "\"";
-    /**
      * 作者
      */
     public static final String AUTHOR = "XiaoJiawei";
@@ -164,18 +160,6 @@ public class ScriptStaticData {
             cardTypeTempMap.put(value.name(), value);
         }
         CARD_TYPE_MAP = Collections.unmodifiableMap(cardTypeTempMap);
-    }
-
-    public static void main(String[] args) throws AWTException {
-        WinDef.HWND hello = SystemUtil.findHWND("战网登录");
-        WinDef.RECT rect = new WinDef.RECT();
-        SystemUtil.updateRECT(hello, rect);
-//        SystemDll.INSTANCE.sendText(hello, "11111");
-//        SystemDll.INSTANCE.leftMouseClick(hello, 100, 350);
-//        SystemDll.INSTANCE.clickLoginPlatformLoginBtn(hello);
-//        System.out.println(rect.bottom - rect.top);
-//        System.out.println(rect.right - rect.left);
-//        System.out.println(rect);
     }
 
 }

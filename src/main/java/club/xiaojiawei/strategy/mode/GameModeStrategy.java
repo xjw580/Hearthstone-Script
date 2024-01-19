@@ -24,6 +24,7 @@ public class GameModeStrategy extends AbstractModeStrategy<Object> {
 
     public static final float GAME_MODE_BUTTON_VERTICAL_TO_BOTTOM_RATIO = (float) 0.475;
     ScheduledFuture<?> scheduledFuture;
+
     @Override
     public void wantEnter() {
         scheduledFuture = extraThreadPool.scheduleWithFixedDelay(() -> {
@@ -40,8 +41,8 @@ public class GameModeStrategy extends AbstractModeStrategy<Object> {
             }
         }, DELAY_TIME, INTERVAL_TIME, TimeUnit.MILLISECONDS);
     }
+
     @Override
     protected void afterEnter(Object o) {
-
     }
 }

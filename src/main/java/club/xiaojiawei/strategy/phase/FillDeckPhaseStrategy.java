@@ -19,6 +19,7 @@ import java.util.Objects;
 @Slf4j
 @Component
 public class FillDeckPhaseStrategy extends AbstractPhaseStrategy {
+
     @Override
     protected boolean dealTagChangeThenIsOver(String line, TagChangeEntity tagChangeEntity) {
         if (tagChangeEntity.getTag() == TagEnum.TURN && Objects.equals(tagChangeEntity.getValue(), "1")){

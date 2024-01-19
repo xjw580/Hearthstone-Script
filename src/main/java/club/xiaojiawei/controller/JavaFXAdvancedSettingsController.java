@@ -27,31 +27,23 @@ import static club.xiaojiawei.enums.ConfigurationEnum.*;
 @Slf4j
 public class JavaFXAdvancedSettingsController implements Initializable {
 
-    @FXML
-    private NotificationManager notificationManager;
-    @FXML
-    private Switch webSwitch;
-    @FXML
-    private Switch strategySwitch;
-    @FXML
-    private Switch verifySwitch;
-    @FXML
-    private PasswordShowField psw;
-    @FXML
-    private Switch updateDev;
-    @FXML
-    private Switch autoUpdate;
-    @FXML
-    private Switch staticCursor;
-    @Resource
-    private Properties scriptConfiguration;
-    @Resource
-    private PropertiesUtil propertiesUtil;
+    @FXML private NotificationManager notificationManager;
+    @FXML private Switch webSwitch;
+    @FXML private Switch strategySwitch;
+    @FXML private Switch verifySwitch;
+    @FXML private PasswordShowField psw;
+    @FXML private Switch updateDev;
+    @FXML private Switch autoUpdate;
+    @FXML private Switch staticCursor;
+    @Resource private Properties scriptConfiguration;
+    @Resource private PropertiesUtil propertiesUtil;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         initValue();
         listen();
     }
+
     private void initValue(){
         webSwitch.setStatus(Objects.equals(scriptConfiguration.getProperty(AUTO_OPEN_WEB.getKey()), "true"));
         strategySwitch.setStatus(Objects.equals(scriptConfiguration.getProperty(STRATEGY.getKey()), "true"));
@@ -61,6 +53,7 @@ public class JavaFXAdvancedSettingsController implements Initializable {
         autoUpdate.setStatus(Objects.equals(scriptConfiguration.getProperty(AUTO_UPDATE.getKey()), "true"));
         staticCursor.setStatus(Objects.equals(scriptConfiguration.getProperty(STATIC_CURSOR.getKey()), "true"));
     }
+
     private void listen(){
 //        监听web界面开关
         webSwitch.statusProperty().addListener((observable, oldValue, newValue) -> {

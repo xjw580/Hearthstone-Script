@@ -27,6 +27,7 @@ import java.util.concurrent.atomic.AtomicReference;
 @Slf4j
 @Component
 public class GameStarter extends AbstractStarter{
+
     @Resource
     private AtomicReference<BooleanProperty> isPause;
     @Resource
@@ -37,6 +38,7 @@ public class GameStarter extends AbstractStarter{
     private ScheduledThreadPoolExecutor extraThreadPool;
     private static ScheduledFuture<?> scheduledFuture;
     private static WinDef.HWND gameHWND;
+
     @Override
     public void exec() {
         log.info("开始检查" + ScriptStaticData.GAME_CN_NAME);

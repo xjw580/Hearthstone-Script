@@ -35,7 +35,6 @@ public class HubModeStrategy extends AbstractModeStrategy<Object> {
 
     @Override
     protected void afterEnter(Object o) {
-//        点击弹窗（去除任务，活动等）
         log.info("点击弹窗（去除任务，活动等）");
         for (int i = 0; i < 4; i++) {
             if (isPause.get().get()){
@@ -51,4 +50,5 @@ public class HubModeStrategy extends AbstractModeStrategy<Object> {
         log.info("准备进入指定模式");
         RunModeEnum.valueOf(scriptConfiguration.getProperty(ConfigurationEnum.RUN_MODE.getKey())).getModeEnum().getAbstractModeStrategy().wantEnter();
     }
+
 }

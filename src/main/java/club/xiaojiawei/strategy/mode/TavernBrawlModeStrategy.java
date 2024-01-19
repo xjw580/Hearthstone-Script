@@ -10,13 +10,13 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class TavernBrawlModeStrategy extends AbstractModeStrategy<Object> {
+
     @Override
     public void wantEnter() {
-
     }
 
     @Override
     protected void afterEnter(Object o) {
-
     }
+
 }

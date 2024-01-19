@@ -85,6 +85,7 @@ public class WebDashboardController {
         }
         return result;
     }
+
     @RequestMapping("/verifyCookie")
     @ResponseBody
     public Result<Object> verifyCookie(HttpServletRequest request){
@@ -170,6 +171,7 @@ public class WebDashboardController {
         }
         return Result.ofSuccess(result);
     }
+
     @RequestMapping("/dashboard/screenCapture")
     public void screenCapture(HttpServletResponse response) throws IOException {
         BufferedImage bufferedImage = ROBOT.createScreenCapture(new Rectangle(Toolkit.getDefaultToolkit().getScreenSize()));

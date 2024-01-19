@@ -16,6 +16,7 @@ import java.util.Properties;
  */
 @Component
 public class FriendlyModeStrategy extends AbstractModeStrategy<Object> {
+
     @Resource
     private TournamentModeStrategy tournamentModeStrategy;
     @Resource
@@ -38,4 +39,5 @@ public class FriendlyModeStrategy extends AbstractModeStrategy<Object> {
             Work.stopWork();
         }
     }
+
 }

@@ -1,4 +1,4 @@
-package club.xiaojiawei.custom;
+package club.xiaojiawei.func;
 
 import club.xiaojiawei.bean.entity.Card;
 import club.xiaojiawei.bean.Player;
@@ -12,8 +12,11 @@ import club.xiaojiawei.bean.area.Area;
  */
 @FunctionalInterface
 public interface DealTagChange {
+
     default void dealTagChange(TagChangeEntity tagChangeEntity){
         dealTagChange(null, tagChangeEntity, null, null);
     }
+
     void dealTagChange(Card card, TagChangeEntity tagChangeEntity, Player player, Area area);
+
 }

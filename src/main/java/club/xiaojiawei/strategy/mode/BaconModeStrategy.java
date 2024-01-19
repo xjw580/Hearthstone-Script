@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 public class BaconModeStrategy extends AbstractModeStrategy<Object> {
+
     @Override
     public void wantEnter() {
     }

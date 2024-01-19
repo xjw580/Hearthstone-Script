@@ -8,17 +8,31 @@ import lombok.Getter;
  */
 @Getter
 public enum RegCommonNameEnum {
-    DISPLAY_NAME("DisplayName", "软件名称"),
-    DISPLAY_VERSION("DisplayVersion", "版本号"),
-    PUBLISHER("Publisher", "出版商"),
-    UNINSTALL_STRING("UninstallString", "卸载路径"),
-    INSTALL_LOCATION("InstallLocation", "安装路径");
+    /**
+     * 软件名称
+     */
+    DISPLAY_NAME("DisplayName"),
+    /**
+     * 版本号
+     */
+    DISPLAY_VERSION("DisplayVersion"),
+    /**
+     * 出版商
+     */
+    PUBLISHER("Publisher"),
+    /**
+     * 卸载路径
+     */
+    UNINSTALL_STRING("UninstallString"),
+    /**
+     * 安装路径
+     */
+    INSTALL_LOCATION("InstallLocation");
 
     private final String value;
-    private final String comment;
 
-    RegCommonNameEnum(String value, String comment) {
+    RegCommonNameEnum(String value) {
         this.value = value;
-        this.comment = comment;
     }
+
 }

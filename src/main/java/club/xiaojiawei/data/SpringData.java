@@ -40,4 +40,5 @@ public class SpringData {
     private String webType;
     @Value("${server.port}")
     private String serverPort;
+
 }

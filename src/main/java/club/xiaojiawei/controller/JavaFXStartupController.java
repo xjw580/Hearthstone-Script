@@ -25,6 +25,7 @@ public class JavaFXStartupController implements Initializable {
     private static int count;
     private static ProgressBar staticProgressBar;
     private static Timer timer;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         staticProgressBar = progressBar;

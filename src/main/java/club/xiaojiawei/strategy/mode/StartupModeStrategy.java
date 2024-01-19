@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class StartupModeStrategy extends AbstractModeStrategy<Object> {
+
     @Override
     public void wantEnter() {
     }
@@ -17,4 +18,5 @@ public class StartupModeStrategy extends AbstractModeStrategy<Object> {
     @Override
     protected void afterEnter(Object o) {
     }
+
 }

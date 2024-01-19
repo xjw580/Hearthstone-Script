@@ -79,8 +79,7 @@ public class JavaFXDashboardController implements Initializable {
     @FXML private TilePane workDay;
     @FXML private VBox workTime;
     @FXML private ProgressBar downloadProgress;
-    @Resource
-    private AtomicReference<BooleanProperty> isPause;
+    @Resource private AtomicReference<BooleanProperty> isPause;
     @Resource private PropertiesUtil propertiesUtil;
     @Resource private Properties scriptConfiguration;
     @Resource private ScheduledThreadPoolExecutor extraThreadPool;

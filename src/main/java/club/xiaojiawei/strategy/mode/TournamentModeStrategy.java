@@ -151,7 +151,7 @@ public class TournamentModeStrategy extends AbstractModeStrategy<Object> {
     }
 
     public void selectDeck(DeckEnum currentDeck){
-        List<Deck> decks = DeckLogListener.getDecks();
+        List<Deck> decks = DeckLogListener.getDECKS();
         for (int i = decks.size() - 1; i >= 0; i--) {
             Deck d = decks.get(i);
             if (Objects.equals(d.getCode(), currentDeck.getDeckCode()) || Objects.equals(d.getName(), currentDeck.getComment())){
