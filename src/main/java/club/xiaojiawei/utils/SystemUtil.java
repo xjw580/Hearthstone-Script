@@ -239,7 +239,7 @@ public class SystemUtil {
         ROBOT.delay(delay);
     }
     public static void delayHuman(){
-        delay(RandomUtil.getHugeRandom());
+        delay(RandomUtil.getHumanRandom());
     }
     public static void delayTiny(){
         delay(RandomUtil.getTinyRandom());

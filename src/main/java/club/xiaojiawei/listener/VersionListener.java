@@ -4,6 +4,7 @@ import club.xiaojiawei.bean.Release;
 import club.xiaojiawei.data.ScriptStaticData;
 import club.xiaojiawei.data.SpringData;
 import club.xiaojiawei.enums.ConfigurationEnum;
+import club.xiaojiawei.utils.SystemUtil;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.Resource;
 import javafx.beans.property.BooleanProperty;
@@ -20,6 +21,7 @@ import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static club.xiaojiawei.data.ScriptStaticData.PROJECT_NAME;
 import static club.xiaojiawei.enums.ConfigurationEnum.UPDATE_DEV;
 
 /**
@@ -99,10 +101,18 @@ public class VersionListener {
             if (compareVersion(currentVersion, latestRelease.getTagName()) < 0){
                 canUpdate.set(true);
                 log.info("有更新可用😊，当前版本：" + currentVersion + ", 最新版本：" + latestRelease.getTagName());
+                SystemUtil.notice(
+                        String.format("发现新版本：%s", VersionListener.getLatestRelease().getTagName()),
+                        String.format("更新日志：\n%s", VersionListener.getLatestRelease().getBody()),
+                        "查看详情",
+                        String.format("https://gitee.com/zergqueen/%s/releases/tag/%s", PROJECT_NAME, VersionListener.getLatestRelease().getTagName())
+                );
             }else {
+                canUpdate.set(false);
                 log.info("已是最新，当前版本：" + currentVersion + ", 最新版本：" + latestRelease.getTagName());
             }
         }else {
+            canUpdate.set(false);
             log.warn("没有任何最新版本");
         }
     }

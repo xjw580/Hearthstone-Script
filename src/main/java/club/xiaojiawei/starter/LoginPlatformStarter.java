@@ -67,7 +67,7 @@ public class LoginPlatformStarter extends AbstractStarter{
 //                SystemUtil.frontWindow(loginPlatformHWND);
 //                SystemUtil.delay(500);
                 inputPassword(loginPlatformHWND);
-                SystemUtil.delay(500);
+                SystemUtil.delayShort();
                 clickLoginButton(loginPlatformHWND);
             }
         }, 5, 15, TimeUnit.SECONDS);
