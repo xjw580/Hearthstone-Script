@@ -36,6 +36,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
@@ -87,12 +88,12 @@ public class SystemUtil {
      */
     public static void notice(String title, String content, String btnText, String btnURL){
 //        trayIcon.displayMessage(title, content, TrayIcon.MessageType.NONE);
-        byte[] appIDBytes = SCRIPT_NAME.getBytes();
-        byte[] titleBytes = title.getBytes();
-        byte[] msgBytes = content.getBytes();
-        byte[] icoPathBytes = (springData.getResourcePath() + MAIN_ICO_NAME).getBytes();
-        byte[] btnTextBytes = btnText.getBytes();
-        byte[] btnURLBytes = btnURL.getBytes();
+        byte[] appIDBytes = SCRIPT_NAME.getBytes(StandardCharsets.UTF_8);
+        byte[] titleBytes = title.getBytes(StandardCharsets.UTF_8);
+        byte[] msgBytes = content.getBytes(StandardCharsets.UTF_8);
+        byte[] icoPathBytes = (springData.getResourcePath() + MAIN_ICO_NAME).getBytes(StandardCharsets.UTF_8);
+        byte[] btnTextBytes = btnText.getBytes(StandardCharsets.UTF_8);
+        byte[] btnURLBytes = btnURL.getBytes(StandardCharsets.UTF_8);
         NoticeDll.INSTANCE.notice(
                 appIDBytes, titleBytes, msgBytes, icoPathBytes, btnTextBytes, btnURLBytes,
                 appIDBytes.length, titleBytes.length, msgBytes.length, icoPathBytes.length, btnTextBytes.length, btnURLBytes.length
