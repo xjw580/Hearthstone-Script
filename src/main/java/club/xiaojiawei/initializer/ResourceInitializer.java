@@ -36,7 +36,7 @@ public class ResourceInitializer extends AbstractInitializer{
             }
         }
         try (BufferedInputStream bufferedInputStream = new BufferedInputStream(Objects.requireNonNull(ResourceInitializer.class.getResourceAsStream("/fxml/img/" + ScriptStaticData.MAIN_ICO_NAME)));
-             BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(new FileOutputStream(resourceDir.getAbsolutePath() + ScriptStaticData.MAIN_ICO_NAME))
+             BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(new FileOutputStream(resourceDir.getAbsolutePath() + File.separator + ScriptStaticData.MAIN_ICO_NAME))
         ){
             byte[] bytes = new byte[1024];
             int size;
