@@ -16,4 +16,6 @@ public class Release {
     private boolean preRelease;
     @JsonProperty("name")
     private String name;
+    @JsonProperty("body")
+    private String body;
 }

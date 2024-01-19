@@ -15,6 +15,8 @@ import org.springframework.context.annotation.Configuration;
 public class InitializerConfig {
 
     @Resource
+    private ResourceInitializer resourceInitializer;
+    @Resource
     private LogInitializer logInitializer;
     @Resource
     private PathInitializer pathInitializer;
@@ -22,13 +24,18 @@ public class InitializerConfig {
     private WebInitializer webInitializer;
     @Resource
     private DelTempInitializer delTempInitializer;
+
     /**
      * Initializer责任链头对象
      * @return AbstractInitializer
      */
     @Bean
     public AbstractInitializer initializer(){
-        logInitializer.setNextInitializer(pathInitializer).setNextInitializer(webInitializer).setNextInitializer(delTempInitializer);
-        return logInitializer;
+        resourceInitializer.setNextInitializer(logInitializer)
+                .setNextInitializer(pathInitializer)
+                .setNextInitializer(webInitializer)
+                .setNextInitializer(delTempInitializer);
+        return resourceInitializer;
     }
+
 }

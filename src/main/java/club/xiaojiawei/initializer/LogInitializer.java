@@ -70,8 +70,5 @@ public class LogInitializer extends AbstractInitializer{
         } catch (IOException e) {
             throw new RuntimeException("文件重写失败，游戏日志未打开，脚本无法运行", e);
         }
-        if (nextInitializer != null){
-            nextInitializer.init();
-        }
     }
 }

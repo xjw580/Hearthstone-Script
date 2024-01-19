@@ -77,6 +77,10 @@ public class ScriptStaticData {
      */
     public static final String SCRIPT_NAME = "hs-script";
     /**
+     * 项目名
+     */
+    public static final String PROJECT_NAME = "Hearthstone-Script";
+    /**
      * 炉石传说程序名
      */
     public static final String GAME_PROGRAM_NAME = "Hearthstone.exe";

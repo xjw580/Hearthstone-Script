@@ -26,6 +26,8 @@ public class SpringData {
     private String version;
     @Value("${script.path}")
     private String scriptPath;
+    @Value("${script.resource}")
+    private String resourcePath;
     @Value("${game.log.out.path}")
     private String gameLogPath;
     @Value("${game.log.out.file.screen}")

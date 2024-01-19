@@ -41,14 +41,10 @@ public class PathInitializer extends AbstractInitializer{
                 && propertiesUtil.storePath(gameInstallLocation, absolutePlatformPath)
         ){
             log.info("通过注册表获取到战网和炉石传说路径");
-
         }else {
-            log.warn("炉石传说或战网安装路径未正确配置，脚本无法运行");
+            log.error("炉石传说或战网安装路径未正确配置，脚本无法运行");
             return;
         }
         ScriptStaticData.setSetPath(true);
-        if (nextInitializer != null){
-            nextInitializer.init();
-        }
     }
 }

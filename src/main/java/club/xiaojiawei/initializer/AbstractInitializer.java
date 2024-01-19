@@ -16,6 +16,7 @@ public abstract class AbstractInitializer {
     public void init(){
         log.info("执行" + getClass().getSimpleName());
         exec();
+        initNextInitializer();
     }
 
     protected abstract void exec();
@@ -24,4 +25,9 @@ public abstract class AbstractInitializer {
         return this.nextInitializer = nextInitializer;
     }
 
+    protected void initNextInitializer(){
+        if (nextInitializer != null){
+            nextInitializer.init();
+        }
+    }
 }

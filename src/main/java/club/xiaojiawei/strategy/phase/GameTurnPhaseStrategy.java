@@ -38,7 +38,7 @@ public class GameTurnPhaseStrategy extends AbstractPhaseStrategy{
             if (thread != null && thread.isAlive()){
                 thread.stop();
             }
-        }catch (Exception e){
+        }catch (UnsupportedOperationException e){
             log.warn("出牌线程已停止", e);
         }
     }

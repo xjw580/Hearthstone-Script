@@ -1,6 +1,8 @@
 package club.xiaojiawei.utils;
 
 import club.xiaojiawei.custom.MouseClickListener;
+import club.xiaojiawei.data.SpringData;
+import club.xiaojiawei.dll.NoticeDll;
 import club.xiaojiawei.dll.SystemDll;
 import club.xiaojiawei.data.ScriptStaticData;
 import club.xiaojiawei.enums.RegCommonNameEnum;
@@ -14,6 +16,7 @@ import club.xiaojiawei.strategy.mode.LoginModeStrategy;
 import club.xiaojiawei.strategy.mode.TournamentModeStrategy;
 import club.xiaojiawei.strategy.phase.GameTurnPhaseStrategy;
 import club.xiaojiawei.strategy.phase.ReplaceCardPhaseStrategy;
+import com.sun.jna.WString;
 import com.sun.jna.platform.win32.Advapi32Util;
 import com.sun.jna.platform.win32.User32;
 import com.sun.jna.platform.win32.WinDef;
@@ -29,6 +32,7 @@ import java.awt.*;
 import java.awt.datatransfer.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -46,21 +50,26 @@ import static club.xiaojiawei.data.ScriptStaticData.*;
 @Slf4j
 @Component
 public class SystemUtil {
+
     private static ScreenLogListener screenLogListener;
     private static PowerLogListener powerLogListener;
     private static DeckLogListener deckLogListener;
     private static AtomicReference<BooleanProperty> isPause;
+    private static SpringData springData;
+
     @Autowired
     public void setScreenLogListener(
             ScreenLogListener screenLogListener,
-             PowerLogListener powerLogListener,
-             DeckLogListener deckLogListener,
-             AtomicReference<BooleanProperty> isPause
+            PowerLogListener powerLogListener,
+            DeckLogListener deckLogListener,
+            AtomicReference<BooleanProperty> isPause,
+            SpringData springData
     ) {
         SystemUtil.screenLogListener = screenLogListener;
         SystemUtil.powerLogListener = powerLogListener;
         SystemUtil.deckLogListener = deckLogListener;
         SystemUtil.isPause = isPause;
+        SystemUtil.springData = springData;
     }
 
     public final static Clipboard CLIPBOARD = Toolkit.getDefaultToolkit().getSystemClipboard();
@@ -76,8 +85,21 @@ public class SystemUtil {
      * @param title
      * @param content
      */
-    public static void notice(String title, String content){
-        trayIcon.displayMessage(title, content, TrayIcon.MessageType.INFO);
+    public static void notice(String title, String content, String btnText, String btnURL){
+//        trayIcon.displayMessage(title, content, TrayIcon.MessageType.NONE);
+        byte[] appIDBytes = SCRIPT_NAME.getBytes();
+        byte[] titleBytes = title.getBytes();
+        byte[] msgBytes = content.getBytes();
+        byte[] icoPathBytes = (springData.getResourcePath() + MAIN_ICO_NAME).getBytes();
+        byte[] btnTextBytes = btnText.getBytes();
+        byte[] btnURLBytes = btnURL.getBytes();
+        NoticeDll.INSTANCE.notice(
+                appIDBytes, titleBytes, msgBytes, icoPathBytes, btnTextBytes, btnURLBytes,
+                appIDBytes.length, titleBytes.length, msgBytes.length, icoPathBytes.length, btnTextBytes.length, btnURLBytes.length
+        );
+    }
+    public static void notice(String content){
+        notice("", content, "", "");
     }
 
     public static void cancelAllTask(){
@@ -113,9 +135,6 @@ public class SystemUtil {
         cancelAllProgramTimer();
         cancelAllListener();
         delay(1000);
-    }
-    public static void notice(String context){
-        notice(SCRIPT_NAME, context);
     }
 
     /**
@@ -400,4 +419,5 @@ public class SystemUtil {
             System.exit(0);
         });
     }
+
 }

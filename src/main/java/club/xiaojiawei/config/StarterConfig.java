@@ -26,7 +26,10 @@ public class StarterConfig {
 
     @Bean
     public AbstractStarter starter(){
-        clearStarter.setNextStarter(platformStarter).setNextStarter(loginPlatformStarter).setNextStarter(gameStarter).setNextStarter(logListenStarter);
+        clearStarter.setNextStarter(platformStarter)
+                .setNextStarter(loginPlatformStarter)
+                .setNextStarter(gameStarter)
+                .setNextStarter(logListenStarter);
         return clearStarter;
     }
 }

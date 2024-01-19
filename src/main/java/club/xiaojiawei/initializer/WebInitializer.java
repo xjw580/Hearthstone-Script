@@ -31,8 +31,5 @@ public class WebInitializer extends AbstractInitializer{
         }else {
             log.info("自动打开Web界面开关处于关闭状态");
         }
-        if (nextInitializer != null){
-            nextInitializer.init();
-        }
     }
 }

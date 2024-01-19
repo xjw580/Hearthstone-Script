@@ -11,7 +11,8 @@ game:
 
 script:
   version: '@project.version@'
-  path: ${PROGRAMDATA:C:\ProgramData}/hs_script/
+  path: ${PROGRAMDATA:C:/ProgramData}/hs_script/
+  resource: ${script.path}resource/
   configuration:
     file: ${script.path}/script.properties
 

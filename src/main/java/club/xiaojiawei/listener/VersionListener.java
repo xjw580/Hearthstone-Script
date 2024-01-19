@@ -1,6 +1,7 @@
 package club.xiaojiawei.listener;
 
 import club.xiaojiawei.bean.Release;
+import club.xiaojiawei.data.ScriptStaticData;
 import club.xiaojiawei.data.SpringData;
 import club.xiaojiawei.enums.ConfigurationEnum;
 import jakarta.annotation.PostConstruct;
@@ -66,9 +67,9 @@ public class VersionListener {
         log.info("更新dev：" + updateDev);
         try {
             if (updateDev){
-                latestRelease = restTemplate.getForObject("https://gitee.com/api/v5/repos/zergqueen/Hearthstone-Script/releases/latest", Release.class);
+                latestRelease = restTemplate.getForObject(String.format("https://gitee.com/api/v5/repos/zergqueen/%s/releases/latest", ScriptStaticData.PROJECT_NAME), Release.class);
             }else {
-                Release[] releases = restTemplate.getForObject("https://gitee.com/api/v5/repos/zergqueen/Hearthstone-Script/releases", Release[].class);
+                Release[] releases = restTemplate.getForObject(String.format("https://gitee.com/api/v5/repos/zergqueen/%s/releases", ScriptStaticData.PROJECT_NAME), Release[].class);
                 if (releases != null){
                     for (int i = releases.length - 1; i >= 0; i--) {
                         Release release = releases[i];
@@ -83,12 +84,12 @@ public class VersionListener {
             log.info("开始从Github检查更新");
             try {
                 if (updateDev){
-                    Release[] releases = restTemplate.getForObject("https://api.github.com/repos/xjw580/Hearthstone-Script/releases", Release[].class);
+                    Release[] releases = restTemplate.getForObject(String.format("https://api.github.com/repos/xjw580/%s/releases", ScriptStaticData.PROJECT_NAME), Release[].class);
                     if (releases != null && releases.length > 0){
                         latestRelease = releases[0];
                     }
                 }else {
-                    latestRelease = restTemplate.getForObject("https://api.github.com/repos/xjw580/Hearthstone-Script/releases/latest", Release.class);
+                    latestRelease = restTemplate.getForObject(String.format("https://api.github.com/repos/xjw580/%s/releases/latest", ScriptStaticData.PROJECT_NAME), Release.class);
                 }
             }catch (RuntimeException e2){
                 log.warn("从Github检查更新异常", e2);

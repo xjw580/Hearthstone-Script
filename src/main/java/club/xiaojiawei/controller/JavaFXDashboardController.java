@@ -5,6 +5,7 @@ import club.xiaojiawei.bean.WsResult;
 import club.xiaojiawei.controls.NotificationManager;
 import club.xiaojiawei.controls.Time;
 import club.xiaojiawei.controls.ico.FlushIco;
+import club.xiaojiawei.data.ScriptStaticData;
 import club.xiaojiawei.enums.DeckEnum;
 import club.xiaojiawei.enums.RunModeEnum;
 import club.xiaojiawei.enums.WindowEnum;
@@ -247,6 +248,12 @@ public class JavaFXDashboardController implements Initializable {
         });
         VersionListener.getCanUpdate().addListener((observable, oldValue, newValue) -> {
             if (newValue){
+                SystemUtil.notice(
+                        String.format("发现新版本：%s", VersionListener.getLatestRelease().getTagName()),
+                        String.format("更新日志：\n%s", VersionListener.getLatestRelease().getBody()),
+                        "查看详情",
+                        String.format("https://gitee.com/zergqueen/%s/releases/tag/%s", PROJECT_NAME, VersionListener.getLatestRelease().getTagName())
+                );
                 flush.setVisible(false);
                 flush.setManaged(false);
                 update.setVisible(true);

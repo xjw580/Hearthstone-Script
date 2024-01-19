@@ -1,7 +1,3 @@
-# *接下几个星期将停止维护此脚本，直至我下个月发工资配完电脑再恢复维护，望周知。*
-
-
-
 # 炉石传说脚本
 ![favicon.ico](src/main/resources/static/img/favicon.ico)
 
@@ -10,6 +6,13 @@
 ### 介绍
 
 本项目仅供学习交流Java，严禁用于刷经验破坏天梯环境😡！！！。
+
+
+
+### 问题反馈
+
+1. 在提issue时，请及时地回复作者的消息
+2. 当需要日志文件时，在C:\ProgramData\hs_script\log下，发到邮箱xjw580@qq.com,并注明issue的id
 
 
 
@@ -29,7 +32,7 @@
 ### 支持的卡组
 
 - 偶数萨（有瑕疵但推荐）
-- 核心骑（由核心卡组成的套牌，不推荐）
+- 核心骑（由核心卡组成的套牌，哪里亮了点哪里，不推荐）
 
 
 
@@ -60,11 +63,18 @@
 
 
 
-### [API文档](https://hearthstone-script-documentation.vercel.app/)
+### [项目文档](https://hearthstone-script-documentation.vercel.app/)
 
 
 
 ### 更新日志
+
+##### v3.2.3-GA
+
+1. 修复因mapstruct包遗漏导致脚本在进入对战后发生异常的问题
+2. 优化日志打印
+
+
 
 ##### v3.2.2-GA
 

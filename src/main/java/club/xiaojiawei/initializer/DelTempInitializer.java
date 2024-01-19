@@ -29,8 +29,5 @@ public class DelTempInitializer extends AbstractInitializer{
         }else {
             log.info("没有临时文件，无需删除");
         }
-        if (nextInitializer != null){
-            nextInitializer.init();
-        }
     }
 }

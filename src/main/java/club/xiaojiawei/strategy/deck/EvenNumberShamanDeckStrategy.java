@@ -555,6 +555,7 @@ public class EvenNumberShamanDeckStrategy extends AbstractDeckStrategy{
         Card power = myPlayArea.getPower();
         return War.isMyTurn() && !isPause.get().get() && (findByLECost(myHandCards, cost) != -1 || !power.isExhausted() && power.getCost() <= cost);
     }
+
     private void deal分裂战斧Exhausted(){
         Card card = null;
         for (Card myPlayCard : myPlayCards) {
@@ -569,6 +570,7 @@ public class EvenNumberShamanDeckStrategy extends AbstractDeckStrategy{
             }
         }
     }
+
     private void calcKillHero(){
         int damageOf火舌图腾 = 0, damageOf冰霜撕咬 = Math.min(calcCardCount(myHandCards, 冰霜撕咬), calcMyUsableResource() >> 1) * (3 + calcMySpellPower()), countOf火舌图腾 = 0;
         if (!myPlayCards.isEmpty()){
