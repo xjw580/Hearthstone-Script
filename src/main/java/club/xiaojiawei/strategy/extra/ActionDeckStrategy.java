@@ -2,6 +2,7 @@ package club.xiaojiawei.strategy.extra;
 
 import club.xiaojiawei.bean.entity.Card;
 import club.xiaojiawei.data.GameRationStaticData;
+import club.xiaojiawei.status.War;
 import club.xiaojiawei.utils.MouseUtil;
 import club.xiaojiawei.utils.RandomUtil;
 import club.xiaojiawei.utils.SystemUtil;
@@ -109,7 +110,7 @@ public class ActionDeckStrategy extends FindDeckStrategy{
         );
     }
     protected boolean myHandPointToMyPlay(int handIndex){
-        if (handIndex < 0 || handIndex >= myHandCards.size()){
+        if (!War.isMyTurn() || handIndex < 0 || handIndex >= myHandCards.size()){
             return false;
         }
         Card card = myHandCards.get(handIndex);
@@ -126,7 +127,7 @@ public class ActionDeckStrategy extends FindDeckStrategy{
         return false;
     }
     protected boolean myHandPointToMyPlay(int myHandIndex, int myPlayIndex){
-        if (myHandIndex < 0 || myHandIndex >= myHandCards.size() || myPlayIndex >= myPlayCards.size()){
+        if (!War.isMyTurn() || myHandIndex < 0 || myHandIndex >= myHandCards.size() || myPlayIndex >= myPlayCards.size()){
             return false;
         }
         Card card = myHandCards.get(myHandIndex);
@@ -143,7 +144,7 @@ public class ActionDeckStrategy extends FindDeckStrategy{
         return false;
     }
     protected boolean myHandPointToMyPlayNoPlace(int myHandIndex, int myPlayIndex){
-        if (myPlayIndex < 0 || myHandIndex < 0 || myHandIndex >= myHandCards.size() || myPlayIndex >= myPlayCards.size()){
+        if (!War.isMyTurn() || myPlayIndex < 0 || myHandIndex < 0 || myHandIndex >= myHandCards.size() || myPlayIndex >= myPlayCards.size()){
             return false;
         }
         Card card = myHandCards.get(myHandIndex);
@@ -176,7 +177,7 @@ public class ActionDeckStrategy extends FindDeckStrategy{
     }
 
     protected boolean myHandPointToRivalPlayNoPlace(int myHandIndex, int rivalPlayIndex){
-        if (myHandIndex < 0 || rivalPlayIndex < 0 || myHandIndex >= myHandCards.size() || rivalPlayIndex >= rivalPlayCards.size()){
+        if (!War.isMyTurn() || myHandIndex < 0 || rivalPlayIndex < 0 || myHandIndex >= myHandCards.size() || rivalPlayIndex >= rivalPlayCards.size()){
             return false;
         }
         Card card = myHandCards.get(myHandIndex);
@@ -194,7 +195,7 @@ public class ActionDeckStrategy extends FindDeckStrategy{
         return false;
     }
     protected boolean myHandPointToRivalHeroNoPlace(int myHandIndex){
-        if (myHandIndex < 0 || myHandIndex >= myHandCards.size()){
+        if (!War.isMyTurn() || myHandIndex < 0 || myHandIndex >= myHandCards.size()){
             return false;
         }
         Card card = myHandCards.get(myHandIndex);
@@ -212,7 +213,7 @@ public class ActionDeckStrategy extends FindDeckStrategy{
         return false;
     }
     protected boolean myHandPointToNoPlace(int myHandIndex){
-        if (myHandIndex < 0 || myHandIndex >= myHandCards.size()){
+        if (!War.isMyTurn() || myHandIndex < 0 || myHandIndex >= myHandCards.size()){
             return false;
         }
         Card card = myHandCards.get(myHandIndex);
@@ -230,7 +231,7 @@ public class ActionDeckStrategy extends FindDeckStrategy{
     }
 
     protected boolean myHeroPointToRivalHero(){
-        if (!canPointedByRival(rivalPlayArea.getHero()) || !canMove(myPlayArea.getHero()) || calcMyHeroAtc() <= 0){
+        if (!War.isMyTurn() || !canPointedByRival(rivalPlayArea.getHero()) || !canMove(myPlayArea.getHero()) || calcMyHeroAtc() <= 0){
             return false;
         }
         SystemUtil.updateGameRect();
@@ -239,7 +240,7 @@ public class ActionDeckStrategy extends FindDeckStrategy{
         return true;
     }
     protected boolean myHeroPointToRivalPlay(int rivalPlayIndex){
-        if (
+        if (!War.isMyTurn() ||
                 rivalPlayIndex >= rivalPlayCards.size()
                         || !canPointedByRival(rivalPlayCards.get(rivalPlayIndex))
                         || !canMove(myPlayArea.getHero())
@@ -272,7 +273,7 @@ public class ActionDeckStrategy extends FindDeckStrategy{
         }
     }
     protected boolean myPlayPointToRivalHero(int myPlayIndex){
-        if (myPlayIndex < 0 || myPlayIndex >= myPlayCards.size()){
+        if (!War.isMyTurn() || myPlayIndex < 0 || myPlayIndex >= myPlayCards.size()){
             return false;
         }
         Card card = myPlayCards.get(myPlayIndex);
@@ -295,13 +296,11 @@ public class ActionDeckStrategy extends FindDeckStrategy{
      * @param rivalPlayIndex
      */
     protected boolean myPlayPointToRivalPlay(int myPlayIndex, int rivalPlayIndex){
-        if (myPlayIndex < 0 || rivalPlayIndex < 0 || myPlayIndex >= myPlayCards.size() || rivalPlayIndex >= rivalPlayCards.size()){
-            log.info("下标错误");
+        if (!War.isMyTurn() || myPlayIndex < 0 || rivalPlayIndex < 0 || myPlayIndex >= myPlayCards.size() || rivalPlayIndex >= rivalPlayCards.size()){
             return false;
         }
         Card card = myPlayCards.get(myPlayIndex);
         if (!canPointedByRival(rivalPlayCards.get(rivalPlayIndex)) || !canMove(card)){
-            log.info("动不了");
             return false;
         }
         SystemUtil.updateGameRect();
@@ -321,7 +320,7 @@ public class ActionDeckStrategy extends FindDeckStrategy{
      * 点击我方技能
      */
     protected boolean clickPower(){
-        if (myPlayArea.getPower().isExhausted() || calcMyUsableResource() < myPlayArea.getPower().getCost() || myPlayArea.isFull()){
+        if (!War.isMyTurn() || myPlayArea.getPower().isExhausted() || calcMyUsableResource() < myPlayArea.getPower().getCost() || myPlayArea.isFull()){
             return false;
         }
         SystemUtil.updateGameRect();
@@ -343,7 +342,7 @@ public class ActionDeckStrategy extends FindDeckStrategy{
     }
 
     protected boolean myHandPointToMyPlayThenPointToMyPlay(int myHandIndex, int myPlayIndex, int thenMyPlayIndex){
-        if (myHandIndex < 0 || myHandIndex >= myHandCards.size() || myPlayArea.isFull() || myPlayCards.get(thenMyPlayIndex).isDormantAwakenConditionEnchant() || myHandCards.get(myHandIndex).getCost() > calcMyUsableResource()){
+        if (!War.isMyTurn() || myHandIndex < 0 || myHandIndex >= myHandCards.size() || myPlayArea.isFull() || myPlayCards.get(thenMyPlayIndex).isDormantAwakenConditionEnchant() || myHandCards.get(myHandIndex).getCost() > calcMyUsableResource()){
             return false;
         }
         Card card = myHandCards.get(myHandIndex);
@@ -367,7 +366,7 @@ public class ActionDeckStrategy extends FindDeckStrategy{
     }
 
     protected boolean myHandPointToMyPlayThenPointToRivalPlay(int myHandIndex, int myPlayIndex, int rivalPlayIndex){
-        if (myHandIndex < 0 || myHandIndex >= myHandCards.size() || rivalPlayIndex >= rivalPlayCards.size() || myPlayArea.isFull() || !canPointedByRival(rivalPlayCards.get(rivalPlayIndex)) || myHandCards.get(myHandIndex).getCost() > calcMyUsableResource()){
+        if (!War.isMyTurn() || myHandIndex < 0 || myHandIndex >= myHandCards.size() || rivalPlayIndex >= rivalPlayCards.size() || myPlayArea.isFull() || !canPointedByRival(rivalPlayCards.get(rivalPlayIndex)) || myHandCards.get(myHandIndex).getCost() > calcMyUsableResource()){
             return false;
         }
         Card card = myHandCards.get(myHandIndex);
@@ -388,7 +387,7 @@ public class ActionDeckStrategy extends FindDeckStrategy{
     }
 
     protected boolean myHandPointToMyPlayThenPointToRivalHero(int myHandIndex, int myPlayIndex){
-        if (myHandIndex < 0 || myHandIndex >= myHandCards.size() || myPlayArea.isFull() || !canPointedByRival(rivalPlayArea.getHero()) || myHandCards.get(myHandIndex).getCost() > calcMyUsableResource()){
+        if (!War.isMyTurn() || myHandIndex < 0 || myHandIndex >= myHandCards.size() || myPlayArea.isFull() || !canPointedByRival(rivalPlayArea.getHero()) || myHandCards.get(myHandIndex).getCost() > calcMyUsableResource()){
             return false;
         }
         Card card = myHandCards.get(myHandIndex);
@@ -414,6 +413,9 @@ public class ActionDeckStrategy extends FindDeckStrategy{
      * @param doubleCardIndex 0~2
      */
     protected void clickFloatCard(double clearance, double firstCardPos, int doubleCardIndex){
+        if (!War.isMyTurn()){
+            return;
+        }
         SystemUtil.updateGameRect();
         mouseUtil.leftButtonClick(
                 (int) (firstCardPos + doubleCardIndex * clearance) + RandomUtil.getRandom(-10, 10),

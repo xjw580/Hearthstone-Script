@@ -4,7 +4,9 @@ import club.xiaojiawei.custom.LogRunnable;
 import club.xiaojiawei.data.ScriptStaticData;
 import club.xiaojiawei.utils.MouseUtil;
 import club.xiaojiawei.utils.SystemUtil;
+import com.sun.jna.platform.win32.User32;
 import com.sun.jna.platform.win32.WinDef;
+import com.sun.jna.platform.win32.WinUser;
 import jakarta.annotation.Resource;
 import javafx.beans.property.BooleanProperty;
 import lombok.extern.slf4j.Slf4j;
@@ -74,6 +76,10 @@ public class GameStarter extends AbstractStarter{
     public void cancelAndStartNext(){
         log.info(ScriptStaticData.GAME_CN_NAME + "正在运行");
         cancelGameTimer();
+        WinDef.HWND platformHWND = SystemUtil.findPlatformHWND();
+        if (platformHWND != null){
+            User32.INSTANCE.ShowWindow(platformHWND, WinUser.SW_MINIMIZE);
+        }
         extraThreadPool.schedule(() -> {
             ScriptStaticData.setGameHWND(gameHWND);
             SystemUtil.updateGameRect();
