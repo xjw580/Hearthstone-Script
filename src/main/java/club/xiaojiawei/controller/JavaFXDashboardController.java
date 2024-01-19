@@ -101,7 +101,7 @@ public class JavaFXDashboardController implements Initializable {
 
     public static boolean downloadRelease(Release release){
         try (
-                InputStream inputStream = new URL(String.format("https://gitee.com/zergqueen/Hearthstone-Script/releases/download/%s/%s.zip", release.getTagName(), release.getName()))
+                InputStream inputStream = new URL(String.format("https://gitee.com/zergqueen/Hearthstone-Script/releases/download/%s/%s_%s.zip", release.getTagName(), ScriptStaticData.SCRIPT_NAME, release.getTagName()))
                         .openConnection()
                         .getInputStream();
                 ZipInputStream zipInputStream = new ZipInputStream(inputStream);
@@ -115,7 +115,7 @@ public class JavaFXDashboardController implements Initializable {
             staticDownloadProgress.setVisible(true);
             staticDownloadProgress.setManaged(true);
             ZipEntry nextEntry;
-            double count = 0;
+            double index = 0D, count = 74D;
             while ((nextEntry = zipInputStream.getNextEntry()) != null) {
                 File entryFile = new File(TEMP_PATH + nextEntry.getName());
                 if (nextEntry.isDirectory()) {
@@ -132,7 +132,7 @@ public class JavaFXDashboardController implements Initializable {
                     }
                     log.info("downloaded_file：" + entryFile.getPath());
                 }
-                staticDownloadProgress.setProgress(++count / 70);
+                staticDownloadProgress.setProgress(++index / count);
             }
             staticDownloadProgress.setProgress(1D);
             String endContent = "<" + release.getTagName() + ">下载完毕";
@@ -341,7 +341,7 @@ public class JavaFXDashboardController implements Initializable {
             extraThreadPool.submit(() -> {
                 if (!new File(TEMP_PATH).exists()){
                     if (!downloadRelease(release)){
-                        WindowUtil.createAlert("新版本下载失败", "", null);
+                        Platform.runLater(() -> WindowUtil.createAlert(String.format("新版本<%s>下载失败", release.getTagName()), "", null).show());
                         return;
                     }
                 }
