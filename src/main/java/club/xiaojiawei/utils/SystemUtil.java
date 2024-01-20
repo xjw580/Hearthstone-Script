@@ -128,10 +128,10 @@ public class SystemUtil {
     }
 
     public static void cancelAllRunnable(){
+        cancelAllListener();
         stopAllThread();
         cancelAllTask();
         cancelAllProgramTimer();
-        cancelAllListener();
         delay(1000);
     }
 
@@ -152,7 +152,8 @@ public class SystemUtil {
 //        如果程序最小化无法获取到准确的窗口信息
         frontWindow(programHWND);
         User32.INSTANCE.GetWindowRect(programHWND, programRECT);
-        if ((GAME_RECT.bottom - GAME_RECT.top) != DISPLAY_PIXEL_Y){
+//        非全屏时，需要去除窗口标题栏的高度
+        if ((GAME_RECT.bottom - GAME_RECT.top) != DISPLAY_PIXEL_HEIGHT){
             GAME_RECT.top += WINDOW_TITLE_PIXEL_Y;
         }
     }

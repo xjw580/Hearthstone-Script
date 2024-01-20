@@ -63,8 +63,8 @@ public class Core{
      */
     public void restart(){
         coreThreadPool.execute(() -> {
-            SystemUtil.killGame();
             isPause.get().set(true);
+            SystemUtil.killGame();
             log.info("游戏重启中……");
             isPause.get().set(false);
         });

@@ -2,6 +2,9 @@ package club.xiaojiawei.utils;
 
 import club.xiaojiawei.data.GameRationStaticData;
 import club.xiaojiawei.data.ScriptStaticData;
+import com.sun.jna.platform.win32.User32;
+import com.sun.jna.platform.win32.WinDef;
+import com.sun.jna.platform.win32.WinUser;
 import jakarta.annotation.Resource;
 import javafx.beans.property.BooleanProperty;
 import lombok.extern.slf4j.Slf4j;
@@ -86,6 +89,16 @@ public class GameUtil {
     public static void cancelTask(){
         if (clickGameEndPageTask != null && !clickGameEndPageTask.isDone()){
             clickGameEndPageTask.cancel(true);
+        }
+    }
+
+    public static void hidePlatformWindow(){
+        WinDef.HWND platformHWND = SystemUtil.findPlatformHWND();
+        if (platformHWND != null){
+            SystemUtil.delay(200);
+            User32.INSTANCE.MoveWindow(platformHWND, ScriptStaticData.DISPLAY_PIXEL_WIDTH - 50,  ScriptStaticData.DISPLAY_PIXEL_HEIGHT - 100, 0, 0, false);
+            SystemUtil.delay(500);
+            User32.INSTANCE.ShowWindow(platformHWND, WinUser.SW_MINIMIZE);
         }
     }
 

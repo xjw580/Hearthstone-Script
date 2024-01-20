@@ -413,9 +413,6 @@ public class ActionDeckStrategy extends FindDeckStrategy{
      * @param doubleCardIndex 0~2
      */
     protected void clickFloatCard(double clearance, double firstCardPos, int doubleCardIndex){
-        if (!War.isMyTurn()){
-            return;
-        }
         SystemUtil.updateGameRect();
         mouseUtil.leftButtonClick(
                 (int) (firstCardPos + doubleCardIndex * clearance) + RandomUtil.getRandom(-10, 10),

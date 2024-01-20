@@ -2,12 +2,14 @@ package club.xiaojiawei.status;
 
 import club.xiaojiawei.bean.WsResult;
 import club.xiaojiawei.controller.JavaFXDashboardController;
+import club.xiaojiawei.controls.TimeSelector;
 import club.xiaojiawei.core.Core;
 import club.xiaojiawei.enums.WsResultTypeEnum;
 import club.xiaojiawei.listener.VersionListener;
 import club.xiaojiawei.utils.PropertiesUtil;
 import club.xiaojiawei.utils.SystemUtil;
 import club.xiaojiawei.ws.WebSocketServer;
+import com.sun.jna.platform.win32.User32;
 import jakarta.annotation.Resource;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
@@ -38,6 +40,13 @@ import static club.xiaojiawei.enums.ConfigurationEnum.*;
 @Component
 @Slf4j
 public class Work {
+
+    /**
+     * 是否处于工作中
+     */
+    @Setter
+    @Getter
+    private volatile static boolean working;
     /**
      * 工作日标记
      */
@@ -57,6 +66,7 @@ public class Work {
     private static Properties scriptProperties;
     private static AtomicReference<BooleanProperty> isPause;
     private static Core core;
+
     @Autowired
     private void set(Properties scriptConfiguration, AtomicReference<BooleanProperty> isPause, PropertiesUtil propertiesUtil){
         Work.scriptProperties = scriptConfiguration;
@@ -84,27 +94,24 @@ public class Work {
         checkWork();
     }
 
-    /**
-     * 是否处于工作中
-     */
-    @Setter
-    @Getter
-    private volatile static boolean working;
     public static void stopWork(){
         working = false;
+        SystemUtil.cancelAllRunnable();
         cannotWorkLog();
         log.info("停止工作，准备关闭游戏");
         SystemUtil.killGame();
-        SystemUtil.cancelAllRunnable();
     }
+
     public static void cannotWorkLog(){
         String context = "现在是下班时间 🌜";
         SystemUtil.notice(context);
         log.info(context);
     }
+
     public static void workLog(){
         log.info("现在是上班时间 🌞");
     }
+
     @Scheduled(fixedDelay = 1000 * 60)
     void workSchedule(){
         checkWork();
@@ -128,7 +135,6 @@ public class Work {
         }
         return validateDate();
     }
-    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
 
     /**
      * 验证是否在工作时间内
@@ -144,7 +150,7 @@ public class Work {
         for (int i = 0; i < workTimeFlagArr.length; i++) {
             if (Objects.equals(workTimeFlagArr[i], "true") && !Objects.equals(workTimeArr[i],  "null")){
                 String[] time = workTimeArr[i].split("-");
-                String start = time[0], end = time[1], nowTime = DATE_TIME_FORMATTER.format(localTime);
+                String start = time[0], end = time[1], nowTime = TimeSelector.TIME_FORMATTER.format(localTime);
                 if (
                         end.compareTo(start) == 0
                                 ||

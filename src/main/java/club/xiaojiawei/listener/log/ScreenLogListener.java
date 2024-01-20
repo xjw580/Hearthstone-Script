@@ -29,10 +29,6 @@ public class ScreenLogListener extends AbstractLogListener{
 
     @Resource
     private Core core;
-    private static ScheduledFuture<?> errorScheduledFuture;
-    @Setter
-    private volatile static long lastWorkTime;
-    private static final long MAX_IDLE_TIME = 5 * 60 * 1000L;
 
     @Autowired
     public ScreenLogListener(SpringData springData) {
@@ -65,22 +61,12 @@ public class ScreenLogListener extends AbstractLogListener{
 
     @Override
     protected void otherListen() {
-        lastWorkTime = System.currentTimeMillis();
-        log.info("开始监听异常情况");
-        errorScheduledFuture = listenFileThreadPool.scheduleAtFixedRate(new LogRunnable(() -> {
-            if (!isPause.get().get() && System.currentTimeMillis() - lastWorkTime > MAX_IDLE_TIME){
-                log.info("监听到异常情况，准备重启游戏");
-                lastWorkTime = System.currentTimeMillis();
-                core.restart();
-            }
-        }), 0, 1, TimeUnit.MINUTES);
+
     }
 
     @Override
     protected void cancelOtherListener() {
-        if (errorScheduledFuture != null && !errorScheduledFuture.isDone()){
-            errorScheduledFuture.cancel(true);
-        }
+
     }
 
     private ModeEnum resolveLog(String line) throws InterruptedException {

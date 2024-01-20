@@ -4,7 +4,6 @@ import club.xiaojiawei.bean.area.Area;
 import club.xiaojiawei.enums.CardRaceEnum;
 import club.xiaojiawei.enums.CardTypeEnum;
 import club.xiaojiawei.enums.TagEnum;
-import club.xiaojiawei.utils.SystemUtil;
 import com.sun.jna.platform.win32.WinDef;
 import lombok.Getter;
 import lombok.Setter;
@@ -63,11 +62,11 @@ public class ScriptStaticData {
     /**
      * 显示器纵向像素数
      */
-    public static final int DISPLAY_PIXEL_Y = Toolkit.getDefaultToolkit().getScreenSize().height;
+    public static final int DISPLAY_PIXEL_HEIGHT;
     /**
      * 显示器横向像素数
      */
-    public static final int DISPLAY_PIXEL_X = Toolkit.getDefaultToolkit().getScreenSize().width;
+    public static final int DISPLAY_PIXEL_WIDTH;
     /**
      * 窗口标题栏纵向高度
      */
@@ -141,6 +140,8 @@ public class ScriptStaticData {
         AffineTransform tx = screenDevices[0].getDefaultConfiguration().getDefaultTransform();
         DISPLAY_SCALE_X = tx.getScaleX();
         DISPLAY_SCALE_Y = tx.getScaleY();
+        DISPLAY_PIXEL_WIDTH = (int) (Toolkit.getDefaultToolkit().getScreenSize().width * DISPLAY_SCALE_X);
+        DISPLAY_PIXEL_HEIGHT = (int) (Toolkit.getDefaultToolkit().getScreenSize().height * DISPLAY_SCALE_Y);
         WINDOW_TITLE_PIXEL_Y = (int) (33 / DISPLAY_SCALE_Y);
 
         Map<String, TagEnum> tagTempMap = new HashMap<>(TagEnum.values().length);

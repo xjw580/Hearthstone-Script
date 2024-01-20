@@ -1,6 +1,7 @@
 package club.xiaojiawei.listener.log;
 
 import club.xiaojiawei.core.Core;
+import club.xiaojiawei.custom.LogRunnable;
 import club.xiaojiawei.data.SpringData;
 import club.xiaojiawei.enums.StepEnum;
 import club.xiaojiawei.status.War;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 import static club.xiaojiawei.enums.WarPhaseEnum.*;
@@ -26,6 +28,9 @@ public class PowerLogListener extends AbstractLogListener{
 
     @Resource
     private Core core;
+    private static ScheduledFuture<?> errorScheduledFuture;
+    private volatile static long lastWorkTime;
+    private static final long MAX_IDLE_TIME = 5 * 60 * 1000L;
 
     @Autowired
     public PowerLogListener(SpringData springData) {
@@ -47,6 +52,26 @@ public class PowerLogListener extends AbstractLogListener{
             }else if (isRelevance(line)){
                 resolveLog(line);
             }
+        }
+    }
+
+    @Override
+    protected void otherListen() {
+        lastWorkTime = System.currentTimeMillis();
+        log.info("开始监听异常情况");
+        errorScheduledFuture = listenFileThreadPool.scheduleAtFixedRate(new LogRunnable(() -> {
+            if (!isPause.get().get() && System.currentTimeMillis() - lastWorkTime > MAX_IDLE_TIME){
+                log.info("监听到异常情况，准备重启游戏");
+                lastWorkTime = System.currentTimeMillis();
+                core.restart();
+            }
+        }), 0, 1, TimeUnit.MINUTES);
+    }
+
+    @Override
+    protected void cancelOtherListener() {
+        if (errorScheduledFuture != null && !errorScheduledFuture.isDone()){
+            errorScheduledFuture.cancel(true);
         }
     }
 
@@ -79,7 +104,7 @@ public class PowerLogListener extends AbstractLogListener{
         }else {
             flag = l.contains("PowerTaskList");
         }
-        ScreenLogListener.setLastWorkTime(System.currentTimeMillis());
+        lastWorkTime = System.currentTimeMillis();
         return flag;
     }
 }

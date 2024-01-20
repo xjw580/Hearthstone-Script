@@ -4,10 +4,8 @@ import club.xiaojiawei.bean.entity.ExtraEntity;
 import club.xiaojiawei.bean.entity.TagChangeEntity;
 import club.xiaojiawei.status.War;
 import club.xiaojiawei.strategy.AbstractPhaseStrategy;
+import club.xiaojiawei.utils.GameUtil;
 import club.xiaojiawei.utils.SystemUtil;
-import com.sun.jna.platform.win32.User32;
-import com.sun.jna.platform.win32.WinDef;
-import com.sun.jna.platform.win32.WinUser;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -54,10 +52,7 @@ public class GameOverPhaseStrategy extends AbstractPhaseStrategy{
     }
 
     private void over(){
-        WinDef.HWND platformHWND = SystemUtil.findPlatformHWND();
-        if (platformHWND != null){
-            User32.INSTANCE.ShowWindow(platformHWND, WinUser.SW_MINIMIZE);
-        }
+        GameUtil.hidePlatformWindow();
         War.setMyTurn(false);
         SystemUtil.stopAllThread();
         War.increaseWarCount();
