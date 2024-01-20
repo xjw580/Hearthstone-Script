@@ -36,6 +36,10 @@
             <Text text="静态光标："/>
             <Switch fx:id="staticCursor"/>
         </HBox>
+        <HBox styleClass="h-box">
+            <Text text="发送Windows通知："/>
+            <Switch fx:id="sendNotice"/>
+        </HBox>
     </VBox>
     <NotificationManager fx:id="notificationManager" notificationPos="BOTTOM_CENTER">
         <notificationFactory>

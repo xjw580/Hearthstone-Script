@@ -36,9 +36,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.io.*;
-import java.lang.management.ManagementFactory;
 import java.net.URL;
-import java.util.Arrays;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.ResourceBundle;
@@ -47,7 +45,8 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import static club.xiaojiawei.data.ScriptStaticData.*;
+import static club.xiaojiawei.data.ScriptStaticData.TEMP_DIR;
+import static club.xiaojiawei.data.ScriptStaticData.TEMP_PATH;
 import static club.xiaojiawei.enums.ConfigurationEnum.DECK;
 import static club.xiaojiawei.enums.ConfigurationEnum.RUN_MODE;
 
@@ -99,17 +98,24 @@ public class JavaFXDashboardController implements Initializable {
     }
 
     public static boolean downloadRelease(Release release){
+        boolean result = true;
+        if (!downloadRelease(release, String.format("https://gitee.com/zergqueen/%s/releases/download/%s/%s_%s.zip", ScriptStaticData.PROJECT_NAME, release.getTagName(), ScriptStaticData.SCRIPT_NAME, release.getTagName()))){
+            Platform.runLater(() -> staticNotificationManger.showInfo("更换下载源重新下载", 3));
+            result = downloadRelease(release, String.format("https://github.com/xjw580/%s/releases/download/%s/%s_%s.zip", ScriptStaticData.PROJECT_NAME, release.getTagName(), ScriptStaticData.SCRIPT_NAME, release.getTagName()));
+        }
+        return result;
+    }
+
+    private static boolean downloadRelease(Release release, String url){
         try (
-                InputStream inputStream = new URL(String.format("https://gitee.com/zergqueen/Hearthstone-Script/releases/download/%s/%s_%s.zip", release.getTagName(), ScriptStaticData.SCRIPT_NAME, release.getTagName()))
+                InputStream inputStream = new URL(url)
                         .openConnection()
                         .getInputStream();
                 ZipInputStream zipInputStream = new ZipInputStream(inputStream);
         ) {
             String startContent = "开始下载<" + release.getTagName() + ">";
             log.info(startContent);
-            Platform.runLater(() -> {
-                staticNotificationManger.showInfo(startContent, 2);
-            });
+            Platform.runLater(() -> staticNotificationManger.showInfo(startContent, 2));
             staticDownloadProgress.setProgress(0D);
             staticDownloadProgress.setVisible(true);
             staticDownloadProgress.setManaged(true);
@@ -136,12 +142,10 @@ public class JavaFXDashboardController implements Initializable {
             staticDownloadProgress.setProgress(1D);
             String endContent = "<" + release.getTagName() + ">下载完毕";
             log.info(endContent);
-            Platform.runLater(() -> {
-                staticNotificationManger.showSuccess(endContent, 2);
-            });
+            Platform.runLater(() -> staticNotificationManger.showSuccess(endContent, 2));
         } catch (IOException e) {
             String errorContent = "<" + release.getTagName() + ">下载失败";
-            log.error(errorContent, e);
+            log.error(errorContent + "," + url, e);
             Platform.runLater(() -> staticNotificationManger.showError(errorContent, 2));
             return false;
         } finally {

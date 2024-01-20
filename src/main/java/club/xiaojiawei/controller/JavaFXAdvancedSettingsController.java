@@ -35,6 +35,7 @@ public class JavaFXAdvancedSettingsController implements Initializable {
     @FXML private Switch updateDev;
     @FXML private Switch autoUpdate;
     @FXML private Switch staticCursor;
+    @FXML private Switch sendNotice;
     @Resource private Properties scriptConfiguration;
     @Resource private PropertiesUtil propertiesUtil;
 
@@ -52,6 +53,7 @@ public class JavaFXAdvancedSettingsController implements Initializable {
         updateDev.setStatus(Objects.equals(scriptConfiguration.getProperty(UPDATE_DEV.getKey()), "true"));
         autoUpdate.setStatus(Objects.equals(scriptConfiguration.getProperty(AUTO_UPDATE.getKey()), "true"));
         staticCursor.setStatus(Objects.equals(scriptConfiguration.getProperty(STATIC_CURSOR.getKey()), "true"));
+        sendNotice.setStatus(Objects.equals(scriptConfiguration.getProperty(SEND_NOTICE.getKey()), "true"));
     }
 
     private void listen(){
@@ -84,6 +86,11 @@ public class JavaFXAdvancedSettingsController implements Initializable {
 //        监听静态光标开关
         staticCursor.statusProperty().addListener((observable, oldValue, newValue) -> {
             scriptConfiguration.setProperty(STATIC_CURSOR.getKey(), String.valueOf(newValue));
+            propertiesUtil.storeScriptProperties();
+        });
+//        监听发送通知开关
+        sendNotice.statusProperty().addListener((observable, oldValue, newValue) -> {
+            scriptConfiguration.setProperty(SEND_NOTICE.getKey(), String.valueOf(newValue));
             propertiesUtil.storeScriptProperties();
         });
     }

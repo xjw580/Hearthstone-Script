@@ -71,6 +71,10 @@ public enum ConfigurationEnum {
      * 鼠标操作完后回到原位置
      */
     STATIC_CURSOR("staticCursor", "false"),
+    /**
+     * 允许发送windows通知
+     */
+    SEND_NOTICE("sendNotice", "true"),
     ;
     private final String key;
     private final String defaultValue;

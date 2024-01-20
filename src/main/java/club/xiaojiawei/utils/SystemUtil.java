@@ -4,6 +4,7 @@ import club.xiaojiawei.custom.MouseClickListener;
 import club.xiaojiawei.data.SpringData;
 import club.xiaojiawei.dll.NoticeDll;
 import club.xiaojiawei.dll.SystemDll;
+import club.xiaojiawei.enums.ConfigurationEnum;
 import club.xiaojiawei.enums.RegCommonNameEnum;
 import club.xiaojiawei.listener.log.DeckLogListener;
 import club.xiaojiawei.listener.log.PowerLogListener;
@@ -19,6 +20,7 @@ import com.sun.jna.platform.win32.Advapi32Util;
 import com.sun.jna.platform.win32.User32;
 import com.sun.jna.platform.win32.WinDef;
 import com.sun.jna.platform.win32.WinReg;
+import jakarta.annotation.Resource;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import lombok.extern.slf4j.Slf4j;
@@ -35,6 +37,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
+import java.util.Properties;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
@@ -54,6 +57,7 @@ public class SystemUtil {
     private static DeckLogListener deckLogListener;
     private static AtomicReference<BooleanProperty> isPause;
     private static SpringData springData;
+    private static Properties scriptConfiguration;
 
     @Autowired
     public void setScreenLogListener(
@@ -61,13 +65,15 @@ public class SystemUtil {
             PowerLogListener powerLogListener,
             DeckLogListener deckLogListener,
             AtomicReference<BooleanProperty> isPause,
-            SpringData springData
+            SpringData springData,
+            Properties scriptConfiguration
     ) {
         SystemUtil.screenLogListener = screenLogListener;
         SystemUtil.powerLogListener = powerLogListener;
         SystemUtil.deckLogListener = deckLogListener;
         SystemUtil.isPause = isPause;
         SystemUtil.springData = springData;
+        SystemUtil.scriptConfiguration = scriptConfiguration;
     }
 
     public final static Clipboard CLIPBOARD = Toolkit.getDefaultToolkit().getSystemClipboard();
@@ -84,17 +90,19 @@ public class SystemUtil {
      * @param content
      */
     public static void notice(String title, String content, String btnText, String btnURL){
+        if (Objects.equals(scriptConfiguration.getProperty(ConfigurationEnum.SEND_NOTICE.getKey()), "true")){
 //        trayIcon.displayMessage(title, content, TrayIcon.MessageType.NONE);
-        byte[] appIDBytes = SCRIPT_NAME.getBytes(StandardCharsets.UTF_8);
-        byte[] titleBytes = title.getBytes(StandardCharsets.UTF_8);
-        byte[] msgBytes = content.getBytes(StandardCharsets.UTF_8);
-        byte[] icoPathBytes = (springData.getResourcePath() + MAIN_ICO_NAME).getBytes(StandardCharsets.UTF_8);
-        byte[] btnTextBytes = btnText.getBytes(StandardCharsets.UTF_8);
-        byte[] btnURLBytes = btnURL.getBytes(StandardCharsets.UTF_8);
-        NoticeDll.INSTANCE.notice(
-                appIDBytes, titleBytes, msgBytes, icoPathBytes, btnTextBytes, btnURLBytes,
-                appIDBytes.length, titleBytes.length, msgBytes.length, icoPathBytes.length, btnTextBytes.length, btnURLBytes.length
-        );
+            byte[] appIDBytes = SCRIPT_NAME.getBytes(StandardCharsets.UTF_8);
+            byte[] titleBytes = title.getBytes(StandardCharsets.UTF_8);
+            byte[] msgBytes = content.getBytes(StandardCharsets.UTF_8);
+            byte[] icoPathBytes = (springData.getResourcePath() + MAIN_ICO_NAME).getBytes(StandardCharsets.UTF_8);
+            byte[] btnTextBytes = btnText.getBytes(StandardCharsets.UTF_8);
+            byte[] btnURLBytes = btnURL.getBytes(StandardCharsets.UTF_8);
+            NoticeDll.INSTANCE.notice(
+                    appIDBytes, titleBytes, msgBytes, icoPathBytes, btnTextBytes, btnURLBytes,
+                    appIDBytes.length, titleBytes.length, msgBytes.length, icoPathBytes.length, btnTextBytes.length, btnURLBytes.length
+            );
+        }
     }
     public static void notice(String content){
         notice("", content, "", "");
