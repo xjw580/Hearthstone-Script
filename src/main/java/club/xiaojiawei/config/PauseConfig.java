@@ -44,7 +44,7 @@ public class PauseConfig {
                 SystemUtil.cancelAllRunnable();
                 Work.setWorking(false);
             }else {
-                if (Work.canWork()){
+                if (Work.isDuringWorkDate()){
                     core.start();
                 }else {
                     Work.cannotWorkLog();

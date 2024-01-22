@@ -279,6 +279,10 @@ public class JavaFXDashboardController implements Initializable {
                 ((Time)timeControls.get(0)).setTime(times[0]);
                 ((Time)timeControls.get(2)).setTime(times[1]);
                 ((CheckBox)timeHBox.getChildren().get(0)).setSelected(Objects.equals(workTimeFlagArr[i], "true"));
+            }else {
+                ((Time)timeControls.get(0)).setTime(null);
+                ((Time)timeControls.get(2)).setTime(null);
+                ((CheckBox)timeHBox.getChildren().get(0)).setSelected(false);
             }
         }
     }
@@ -367,6 +371,10 @@ public class JavaFXDashboardController implements Initializable {
                 workTimeArr[i] = String.join("-", startTime.getTime(), endTime.getTime());
                 workTimeFlagArr[i] = String.valueOf(timeCheckBox.isSelected());
             }else {
+                workTimeArr[i] = "null";
+                startTime.setTime(null);
+                endTime.setTime(null);
+                workTimeFlagArr[i] = String.valueOf(false);
                 timeCheckBox.setSelected(false);
             }
             startTime.refresh();

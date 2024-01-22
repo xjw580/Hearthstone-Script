@@ -16,6 +16,7 @@ import club.xiaojiawei.strategy.mode.LoginModeStrategy;
 import club.xiaojiawei.strategy.mode.TournamentModeStrategy;
 import club.xiaojiawei.strategy.phase.GameTurnPhaseStrategy;
 import club.xiaojiawei.strategy.phase.ReplaceCardPhaseStrategy;
+import club.xiaojiawei.ws.WebSocketServer;
 import com.sun.jna.platform.win32.Advapi32Util;
 import com.sun.jna.platform.win32.User32;
 import com.sun.jna.platform.win32.WinDef;
@@ -418,10 +419,12 @@ public class SystemUtil {
      * 关闭本软件
      */
     public static void shutdown(){
+        SystemUtil.removeTray();
         isPause.get().set(true);
         Platform.exit();
         Thread.startVirtualThread(() -> {
             try {
+                WebSocketServer.closeAll();
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
                 log.error("休眠被中断", e);

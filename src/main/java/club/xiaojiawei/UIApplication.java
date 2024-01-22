@@ -97,10 +97,7 @@ public class UIApplication extends Application implements ApplicationRunner {
         quit.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Platform.runLater(() -> {
-                    SystemUtil.removeTray();
-                    SystemUtil.shutdown();
-                });
+                SystemUtil.shutdown();
             }
         });
         SystemUtil.addTray(MAIN_ICO_NAME, ScriptStaticData.SCRIPT_NAME, e -> {

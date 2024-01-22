@@ -29,7 +29,7 @@ public class FriendlyModeStrategy extends AbstractModeStrategy<Object> {
 
     @Override
     protected void afterEnter(Object o) {
-        if (Work.canWork()){
+        if (Work.isDuringWorkDate()){
             SystemUtil.updateGameRect();
             DeckEnum currentDeck = DeckEnum.valueOf(scriptConfiguration.getProperty(ConfigurationEnum.DECK.getKey()));
             tournamentModeStrategy.selectDeck(currentDeck);

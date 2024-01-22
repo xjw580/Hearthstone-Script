@@ -9,7 +9,6 @@ import club.xiaojiawei.listener.VersionListener;
 import club.xiaojiawei.utils.PropertiesUtil;
 import club.xiaojiawei.utils.SystemUtil;
 import club.xiaojiawei.ws.WebSocketServer;
-import com.sun.jna.platform.win32.User32;
 import jakarta.annotation.Resource;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
@@ -24,7 +23,6 @@ import org.springframework.stereotype.Component;
 import java.io.File;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicReference;
@@ -118,29 +116,26 @@ public class Work {
     }
 
     private static void checkWork(){
-        if (!isPause.get().get() && !working && validateDate()){
-            workLog();
-            core.start();
-        }
-    }
-
-    public static boolean canWork(){
-        //         版本校验，开启自动更新并且有更新可用时将停止工作以升级版本
-        if (Objects.equals(scriptProperties.getProperty(AUTO_UPDATE.getKey()), "true") && VersionListener.getCanUpdate().get()){
-            if (!new File(TEMP_PATH).exists()){
-                JavaFXDashboardController.downloadRelease(VersionListener.getLatestRelease());
+        if (!working){
+            if (!isPause.get().get() && isDuringWorkDate()){
+                workLog();
+                core.start();
+            }else if (Objects.equals(scriptProperties.getProperty(AUTO_UPDATE.getKey()), "true") && VersionListener.getCanUpdate().get()){
+                if (!new File(TEMP_PATH).exists() && !JavaFXDashboardController.downloadRelease(VersionListener.getLatestRelease())){
+                    log.warn(String.format("新版本<%s>下载失败", VersionListener.getLatestRelease().getTagName()));
+                    VersionListener.getCanUpdate().set(false);
+                    return;
+                }
+                Platform.runLater(JavaFXDashboardController::execUpdate);
             }
-            Platform.runLater(JavaFXDashboardController::execUpdate);
-            return false;
         }
-        return validateDate();
     }
 
     /**
      * 验证是否在工作时间内
      * @return
      */
-    private static boolean validateDate(){
+    public static boolean isDuringWorkDate(){
         //        天校验
         if (!Objects.equals(workDayFlagArr[0], "true") && Objects.equals(workDayFlagArr[LocalDate.now().getDayOfWeek().getValue()], "false")){
             return false;

@@ -17,14 +17,14 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 @Slf4j
 @Configuration
-public class ScriptHotkeyListener implements HotkeyListener {
+public class GlobalHotkeyListener implements HotkeyListener {
 
     @Resource
     private AtomicReference<BooleanProperty> isPause;
     private final static int HOT_KEY_EXIT = 111;
     private final static int HOT_KEY_PAUSE = 222;
 
-    public ScriptHotkeyListener(){
+    public GlobalHotkeyListener(){
         if (JIntellitype.isJIntellitypeSupported()) {
             JIntellitype.getInstance().registerHotKey(HOT_KEY_EXIT, JIntellitype.MOD_ALT, 'P');
             JIntellitype.getInstance().registerHotKey(HOT_KEY_PAUSE, JIntellitype.MOD_CONTROL, 'P');
@@ -41,9 +41,9 @@ public class ScriptHotkeyListener implements HotkeyListener {
     @Override
     public void onHotKey(int i) {
         if(i == HOT_KEY_EXIT){
+            JIntellitype.getInstance().removeHotKeyListener(this);
             log.info("捕捉到热键，关闭程序");
             SystemUtil.notice("捕捉到热键，关闭程序");
-            JIntellitype.getInstance().removeHotKeyListener(this);
             SystemUtil.shutdown();
         }else if (i == HOT_KEY_PAUSE){
             if (!isPause.get().get()){

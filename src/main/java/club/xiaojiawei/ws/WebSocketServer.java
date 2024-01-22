@@ -63,14 +63,11 @@ public class WebSocketServer{
      */
     @OnOpen
     public void onOpen(Session session) {
-        log.info(String.format("WebSocket建立连接中,连接用户ID：【%s】", session.getId()));
-        // 建立连接
         this.session = session;
         webSocketSet.add(this);
-        log.info(String.format("WebSocket建立连接完成,当前用户数：【%d】", webSocketSet.size()));
+        log.info(String.format("WebSocket建立连接完成，连接用户ID：【%s】，当前在线人数为：【%d】", this.session.getId(), webSocketSet.size()));
         sendInitMsg();
     }
-
 
     private void sendInitMsg(){
         DeckEnum currentDeck = DeckEnum.valueOf(scriptConfiguration.getProperty(ConfigurationEnum.DECK.getKey()));
@@ -113,7 +110,7 @@ public class WebSocketServer{
     @OnClose
     public void onClose() {
         webSocketSet.remove(this);
-        log.info(String.format("WebSocket连接断开,断开用户ID：【%s】,当前在线人数为：【%d】", this.session.getId(), webSocketSet.size()));
+        log.info(String.format("WebSocket连接断开，断开用户ID：【%s】，当前在线人数为：【%d】", this.session.getId(), webSocketSet.size()));
     }
 
     /**
@@ -135,6 +132,16 @@ public class WebSocketServer{
                 webSocket.session.getBasicRemote().sendText(JSON.toJSONString(wsResult));
             } catch (IOException e) {
                 log.error("WebSocket群发消息发生错误" , e);
+            }
+        }
+    }
+
+    public static void closeAll(){
+        for (WebSocketServer webSocket : webSocketSet) {
+            try {
+                webSocket.session.close();
+            } catch (IOException e) {
+                log.error("WebSocket关闭连接发生错误" , e);
             }
         }
     }

@@ -76,11 +76,15 @@ const common = {
                         }
                         let timeChildren = $("#time").children();
                         for (let i = 0; i < arr[1].length; i++) {
-                            timeChildren[i].children[0].checked = arr[1][i] === "true";
-                            if (arr[2][i] !== "null"){
+                            if (arr[2][i] === "null"){
+                                timeChildren[i].children[0].checked = false;
+                                timeChildren[i].children[1].value = ''
+                                timeChildren[i].children[2].value = ''
+                            }else {
                                 let times = arr[2][i].split('-');
                                 timeChildren[i].children[1].value = times[0]
                                 timeChildren[i].children[2].value = times[1]
+                                timeChildren[i].children[0].checked = arr[1][i] === "true";
                             }
                         }
                         break
@@ -145,7 +149,7 @@ const common = {
                 const data = await promiseAjax({
                     url: "/verifyPsw",
                     data: {
-                        psw: md5(psw)
+                        psw: psw
                     }
                 });
                 if (data.status === httpStatus.SUCCESS){
@@ -199,18 +203,18 @@ function save(){
     let workTimeFlagArr = []
     let workTimeArr = [null]
     for (let i = 0; i < days.length; i++){
-        workDayFlagArr[i] = workDayFlagArr[0] === true? false : days[i].children[0].checked + "";
+        workDayFlagArr[i] = days[i].children[0].checked + "";
     }
     let times = $("#time").children();
     for (let i = 0; i < times.length; i++){
-        workTimeFlagArr[i] = times[i].children[0].checked + ""
-        if (times[i].children[1].value !== '' && times[i].children[2].value !== '' && times[i].children[1].value !== times[i].children[2].value){
-            if (i !== 0){
-                workTimeArr[i] = times[i].children[1].value + "-" + times[i].children[2].value + ""
-            }
-        }else if (i !== 0){
-            workTimeFlagArr[i] = false + ""
+        if (times[i].children[1].value !== '' && times[i].children[2].value !== ''){
+            workTimeArr[i] = times[i].children[1].value + "-" + times[i].children[2].value + ""
+            workTimeFlagArr[i] = times[i].children[0].checked + ""
+        }else {
             workTimeArr[i] = "null"
+            times[i].children[1].value = ''
+            times[i].children[2].value = ''
+            workTimeFlagArr[i] = false
             times[i].children[0].checked = false
         }
     }

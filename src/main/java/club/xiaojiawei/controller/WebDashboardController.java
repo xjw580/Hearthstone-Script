@@ -66,8 +66,7 @@ public class WebDashboardController {
     public Result<Object> verifyPsw(@RequestParam("psw") String psw, HttpServletResponse response){
         Result<Object> result;
         if (Strings.isBlank(psw)
-                ||
-                !Objects.equals(psw, scriptConfiguration.getProperty(VERIFY_PASSWORD.getKey()))) {
+                || !Objects.equals(psw, scriptConfiguration.getProperty(VERIFY_PASSWORD.getKey()))) {
             result = Result.ofFail();
         }else {
             String value = ScriptStaticData.AUTHOR + System.currentTimeMillis();

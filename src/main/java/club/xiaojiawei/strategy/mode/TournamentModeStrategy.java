@@ -90,7 +90,7 @@ public class TournamentModeStrategy extends AbstractModeStrategy<Object> {
     }
     @Override
     protected void afterEnter(Object o) {
-        if (Work.canWork()){
+        if (Work.isDuringWorkDate()){
             SystemUtil.updateGameRect();
             if (ModeEnum.TOURNAMENT == RunModeEnum.valueOf(scriptConfiguration.getProperty(ConfigurationEnum.RUN_MODE.getKey())).getModeEnum()){
                 DeckEnum currentDeck = DeckEnum.valueOf(scriptConfiguration.getProperty(ConfigurationEnum.DECK.getKey()));

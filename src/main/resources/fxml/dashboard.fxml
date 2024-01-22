@@ -114,12 +114,8 @@
                             <Text text="工作段:"/>
                             <VBox spacing="5" fx:id="workTime">
                                 <HBox styleClass="timeHBox">
-                                    <CheckBox styleClass="check-box-ui, check-box-ui-main">
-                                        <tooltip>
-                                            <Tooltip text="优先级最高"/>
-                                        </tooltip>
-                                    </CheckBox>
-                                    <HBox disable="true">
+                                    <CheckBox styleClass="check-box-ui, check-box-ui-main"/>
+                                    <HBox>
                                         <Time showSelector="false"/>
                                         <Text text="-" translateY="3" style="-fx-font-weight: BOLD"/>
                                         <Time showSelector="false"/>
