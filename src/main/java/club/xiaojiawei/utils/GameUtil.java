@@ -97,8 +97,8 @@ public class GameUtil {
         if (platformHWND != null){
             SystemUtil.delay(200);
             User32.INSTANCE.MoveWindow(platformHWND, ScriptStaticData.DISPLAY_PIXEL_WIDTH - 100,  ScriptStaticData.DISPLAY_PIXEL_HEIGHT - 150, 0, 0, false);
-            SystemUtil.delay(500);
-            User32.INSTANCE.ShowWindow(platformHWND, WinUser.SW_MINIMIZE);
+//            SystemUtil.delay(500);
+//            User32.INSTANCE.ShowWindow(platformHWND, WinUser.SW_MINIMIZE);
         }
     }
 

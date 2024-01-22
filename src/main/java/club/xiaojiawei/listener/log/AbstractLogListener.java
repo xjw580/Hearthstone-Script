@@ -83,8 +83,10 @@ public abstract class AbstractLogListener {
             }else {
                 try {
                     listenLog();
-                }catch (Exception e){
-                    log.warn(logFileName + "监听器发生错误", e);
+                }catch (InterruptedException e){
+                    log.warn(logFileName + "监听器sleep中断", e);
+                } catch (Exception e) {
+                    log.error(logFileName + "监听器发生错误", e);
                 }
             }
         }, listenInitialDelay, listenPeriod, listenTimeUnit);
