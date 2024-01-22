@@ -1,7 +1,7 @@
 package club.xiaojiawei.controller;
 
 import club.xiaojiawei.controls.NotificationManager;
-import club.xiaojiawei.controls.PasswordShowField;
+import club.xiaojiawei.controls.PasswordTextField;
 import club.xiaojiawei.data.ScriptStaticData;
 import club.xiaojiawei.enums.ConfigurationEnum;
 import club.xiaojiawei.enums.WindowEnum;
@@ -36,7 +36,7 @@ public class JavaFXInitSettingsController implements Initializable {
     @FXML
     private Text platformPath;
     @FXML
-    private PasswordShowField password;
+    private PasswordTextField password;
     @Resource
     private Properties scriptConfiguration;
     @Resource

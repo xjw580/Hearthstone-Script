@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import club.xiaojiawei.controls.*?>
+<?import club.xiaojiawei.factory.NotificationFactory?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
-<?import club.xiaojiawei.factory.NotificationFactory?>
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             stylesheets="@css/advancedSettings.css"
@@ -17,7 +17,7 @@
         <HBox styleClass="h-box">
             <Text text="Web安全验证："/>
             <Switch fx:id="verifySwitch"/>
-            <PasswordShowField prefWidth="50" styleClass="password-show-field-ui, password-show-field-ui-small" fx:id="psw" promptText="验证密码"/>
+            <PasswordTextField prefWidth="50" styleClass="password-text-field-ui, password-text-field-ui-small" fx:id="psw" promptText="验证密码" hideForever="true"/>
             <Button styleClass="btn-ui, btn-ui-success, btn-ui-small" text="保存密码" onMouseClicked="#saveVerifyPassword"/>
         </HBox>
         <HBox styleClass="h-box">

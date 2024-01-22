@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import club.xiaojiawei.controls.ico.FileIco?>
-<?import club.xiaojiawei.controls.PasswordShowField?>
+<?import club.xiaojiawei.controls.NotificationManager?>
+<?import club.xiaojiawei.controls.PasswordTextField?>
+<?import club.xiaojiawei.factory.NotificationFactory?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
-<?import club.xiaojiawei.controls.NotificationManager?>
-<?import club.xiaojiawei.factory.NotificationFactory?>
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             stylesheets="@css/initSettings.css"
@@ -32,7 +32,7 @@
         </HBox>
         <HBox styleClass="h-box">
             <Text text="战网账号密码："/>
-            <PasswordShowField styleClass="password-show-field-ui, password-show-field-ui-small" fx:id="password" promptText="非必填项，防止登录失败用"/>
+            <PasswordTextField styleClass="password-text-field-ui, password-text-field-ui-small" fx:id="password" promptText="非必填项，防止登录失败用" hideForever="true"/>
         </HBox>
     </VBox>
     <HBox AnchorPane.bottomAnchor="15" AnchorPane.rightAnchor="15" spacing="20" alignment="CENTER">

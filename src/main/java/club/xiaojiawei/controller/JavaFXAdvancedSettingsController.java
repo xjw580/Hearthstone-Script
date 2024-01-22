@@ -1,7 +1,7 @@
 package club.xiaojiawei.controller;
 
 import club.xiaojiawei.controls.NotificationManager;
-import club.xiaojiawei.controls.PasswordShowField;
+import club.xiaojiawei.controls.PasswordTextField;
 import club.xiaojiawei.controls.Switch;
 import club.xiaojiawei.utils.PropertiesUtil;
 import jakarta.annotation.Resource;
@@ -31,7 +31,7 @@ public class JavaFXAdvancedSettingsController implements Initializable {
     @FXML private Switch webSwitch;
     @FXML private Switch strategySwitch;
     @FXML private Switch verifySwitch;
-    @FXML private PasswordShowField psw;
+    @FXML private PasswordTextField psw;
     @FXML private Switch updateDev;
     @FXML private Switch autoUpdate;
     @FXML private Switch staticCursor;

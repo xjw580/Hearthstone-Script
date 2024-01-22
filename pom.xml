@@ -16,7 +16,7 @@
     <properties>
         <java.version>21</java.version>
         <javafx-version>21.0.1</javafx-version>
-        <javafx-ui-version>0.2.3</javafx-ui-version>
+        <javafx-ui-version>0.2.6</javafx-ui-version>
         <mapstruct-version>1.6.0.Beta1</mapstruct-version>
         <jintellitype-version>1.4.1</jintellitype-version>
         <fastjson-version>2.0.20</fastjson-version>
