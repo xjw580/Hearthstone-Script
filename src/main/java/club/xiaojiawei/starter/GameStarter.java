@@ -9,11 +9,13 @@ import com.sun.jna.platform.win32.WinDef;
 import jakarta.annotation.Resource;
 import javafx.beans.property.BooleanProperty;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -33,6 +35,9 @@ public class GameStarter extends AbstractStarter{
     private MouseUtil mouseUtil;
     @Resource
     private ScheduledThreadPoolExecutor extraThreadPool;
+    @Lazy
+    @Resource
+    private AbstractStarter starter;
     private static ScheduledFuture<?> scheduledFuture;
     private static WinDef.HWND gameHWND;
 
@@ -43,10 +48,22 @@ public class GameStarter extends AbstractStarter{
             cancelAndStartNext();
             return;
         }
+        final AtomicInteger launchCount = new AtomicInteger();
         scheduledFuture = launchProgramThreadPool.scheduleAtFixedRate(new LogRunnable(() -> {
             if (isPause.get().get()) {
                 cancelGameTimer();
             } else {
+                if (launchCount.incrementAndGet() > 4){
+                    log.info("打开炉石失败次数过多，重新执行启动器链");
+                    cancelGameTimer();
+                    extraThreadPool.schedule(() -> {
+                        SystemUtil.killLoginPlatform();
+                        SystemUtil.killPlatform();
+                        launchCount.set(0);
+                        starter.start();
+                    }, 1, TimeUnit.SECONDS);
+                    return;
+                }
                 if (SystemUtil.isAliveOfGame()) {
 //                    游戏刚启动时找不到HWND
                     if ((gameHWND = SystemUtil.findGameHWND()) == null){

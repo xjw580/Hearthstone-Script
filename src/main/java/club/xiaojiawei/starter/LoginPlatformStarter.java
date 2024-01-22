@@ -38,7 +38,6 @@ public class LoginPlatformStarter extends AbstractStarter{
     @Resource
     private AbstractStarter starter;
     private static ScheduledFuture<?> scheduledFuture;
-    private final AtomicInteger LOGIN_COUNT = new AtomicInteger();
 
     @Override
     protected void exec() {
@@ -46,6 +45,7 @@ public class LoginPlatformStarter extends AbstractStarter{
             startNextStarter();
             return;
         }
+        final AtomicInteger loginCount = new AtomicInteger();
         scheduledFuture = extraThreadPool.scheduleAtFixedRate(() -> {
             WinDef.HWND loginPlatformHWND;
             if (isPause.get().get()){
@@ -53,13 +53,13 @@ public class LoginPlatformStarter extends AbstractStarter{
             }else if ((loginPlatformHWND = SystemUtil.findLoginPlatformHWND()) == null){
                 cancelAndStartNext();
             }else {
-                if (LOGIN_COUNT.incrementAndGet() > 4){
+                if (loginCount.incrementAndGet() > 4){
                     log.info("登录战网失败次数过多，重新执行启动器链");
                     cancelLoginPlatformTimer();
                     extraThreadPool.schedule(() -> {
                         SystemUtil.killLoginPlatform();
                         SystemUtil.killPlatform();
-                        LOGIN_COUNT.set(0);
+                        loginCount.set(0);
                         starter.start();
                     }, 1, TimeUnit.SECONDS);
                     return;
