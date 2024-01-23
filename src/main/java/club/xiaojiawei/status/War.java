@@ -66,13 +66,13 @@ public class War {
     @Setter
     private volatile static long endTime;
 
-    public final static SimpleIntegerProperty warCount = new SimpleIntegerProperty();
-    public final static AtomicInteger winCount = new AtomicInteger();
+    public final static SimpleIntegerProperty WAR_COUNT = new SimpleIntegerProperty();
+    public final static AtomicInteger WIN_COUNT = new AtomicInteger();
     /**
      * 单位：min
      */
-    public final static AtomicInteger gameTime = new AtomicInteger();
-    public final static AtomicInteger exp = new AtomicInteger();
+    public final static AtomicInteger GAME_TIME = new AtomicInteger();
+    public final static AtomicInteger EXP = new AtomicInteger();
     @Getter
     @Setter
     private volatile static boolean myTurn;
@@ -101,7 +101,7 @@ public class War {
         }
         long time = (endTime - startTime) / 1000 / 60;
         log.info("本局游戏时长：" + time + "分钟");
-        gameTime.set((int) (time + gameTime.get()));
+        GAME_TIME.set((int) (time + GAME_TIME.get()));
         int winExp, lostExp;
         switch (JavaFXDashboardController.getCurrentRunMode()){
             case STANDARD, WILD,CLASSIC, TWIST -> {
@@ -119,13 +119,13 @@ public class War {
         }
         long earnExp = Math.min(time, 30) * (flag ? winExp : lostExp);
         log.info("本局游戏获得经验值：" + earnExp);
-        exp.set((int) (exp.get() + earnExp));
-        warCount.set(warCount.get() + 1);
+        EXP.set((int) (EXP.get() + earnExp));
+        WAR_COUNT.set(WAR_COUNT.get() + 1);
     }
     private static boolean printResult(){
         boolean flag = false;
         if (Objects.equals(War.getWon(), War.getMe().getGameId())){
-            War.winCount.incrementAndGet();
+            War.WIN_COUNT.incrementAndGet();
             flag = true;
         }
         log.info("本局游戏胜者：" + won);

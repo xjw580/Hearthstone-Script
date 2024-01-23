@@ -572,6 +572,7 @@ public class EvenNumberShamanDeckStrategy extends AbstractDeckStrategy{
     }
 
     private void calcKillHero(){
+//        火舌、冰霜撕咬、加攻法术、刀
         int damageOf火舌图腾 = 0, damageOf冰霜撕咬 = Math.min(calcCardCount(myHandCards, 冰霜撕咬), calcMyUsableResource() >> 1) * (3 + calcMySpellPower()), countOf火舌图腾 = 0;
         if (!myPlayCards.isEmpty()){
             countOf火舌图腾 = Math.min(calcCardCount(myHandCards, 火舌图腾), calcMyUsableResource() >> 1);

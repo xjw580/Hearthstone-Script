@@ -26,7 +26,7 @@ public class WarCountListener {
     private static String winningPercentage = "?";
     @PostConstruct
     void init(){
-        War.warCount.addListener((observable, oldValue, newValue) -> {
+        War.WAR_COUNT.addListener((observable, oldValue, newValue) -> {
             log.info("已完成第 " + newValue + " 把游戏");
             setJavaFXGUI(newValue);
             sendWSMsg(newValue);
@@ -34,9 +34,9 @@ public class WarCountListener {
     }
     private void setJavaFXGUI(Number warCount){
         javafxDashboardController.getGameCount().setText(warCount.toString());
-        javafxDashboardController.getWinningPercentage().setText(winningPercentage = String.format("%.0f", War.winCount.get() / warCount.doubleValue() * 100) + "%");
-        javafxDashboardController.getGameTime().setText(getTimeStr(War.gameTime.get()));
-        javafxDashboardController.getExp().setText(String.valueOf(War.exp.get()));
+        javafxDashboardController.getWinningPercentage().setText(winningPercentage = String.format("%.0f", War.WIN_COUNT.get() / warCount.doubleValue() * 100) + "%");
+        javafxDashboardController.getGameTime().setText(getTimeStr(War.GAME_TIME.get()));
+        javafxDashboardController.getExp().setText(String.valueOf(War.EXP.get()));
     }
 
     private static String getTimeStr(int time) {
@@ -64,7 +64,7 @@ public class WarCountListener {
     private void sendWSMsg(Number warCount){
         WebSocketServer.sendAllMessage(WsResult.ofNew(WsResultTypeEnum.GAME_COUNT, warCount.toString()));
         WebSocketServer.sendAllMessage(WsResult.ofNew(WsResultTypeEnum.WINNING_PERCENTAGE, WarCountListener.getWinningPercentage()));
-        WebSocketServer.sendAllMessage(WsResult.ofNew(WsResultTypeEnum.GAME_TIME, War.gameTime.get()));
-        WebSocketServer.sendAllMessage(WsResult.ofNew(WsResultTypeEnum.EXP, War.exp.get()));
+        WebSocketServer.sendAllMessage(WsResult.ofNew(WsResultTypeEnum.GAME_TIME, War.GAME_TIME.get()));
+        WebSocketServer.sendAllMessage(WsResult.ofNew(WsResultTypeEnum.EXP, War.EXP.get()));
     }
 }

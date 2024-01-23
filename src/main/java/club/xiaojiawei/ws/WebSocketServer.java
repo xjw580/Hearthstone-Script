@@ -13,7 +13,6 @@ import jakarta.annotation.Resource;
 import jakarta.websocket.*;
 import jakarta.websocket.server.ServerEndpoint;
 import javafx.beans.property.BooleanProperty;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -85,11 +84,11 @@ public class WebSocketServer{
             remote.sendText(JSON.toJSONString(WsResult.ofNew(WsResultTypeEnum.MODE_LIST, modes)));
             remote.sendText(JSON.toJSONString(WsResult.ofNew(WsResultTypeEnum.MODE, currentDeck.getRunMode().getComment())));
             remote.sendText(JSON.toJSONString(WsResult.ofNew(WsResultTypeEnum.DECK, currentDeck.getComment())));
-            remote.sendText(JSON.toJSONString(WsResult.ofNew(WsResultTypeEnum.GAME_COUNT, War.warCount.get())));
+            remote.sendText(JSON.toJSONString(WsResult.ofNew(WsResultTypeEnum.GAME_COUNT, War.WAR_COUNT.get())));
             remote.sendText(JSON.toJSONString(WsResult.ofNew(WsResultTypeEnum.WINNING_PERCENTAGE, WarCountListener.getWinningPercentage())));
             remote.sendText(JSON.toJSONString(WsResult.ofNew(WsResultTypeEnum.WORK_DATE, new String[][]{Work.getWorkDayFlagArr(), Work.getWorkTimeFlagArr(), Work.getWorkTimeArr()})));
-            remote.sendText(JSON.toJSONString(WsResult.ofNew(WsResultTypeEnum.GAME_TIME, War.gameTime.get())));
-            remote.sendText(JSON.toJSONString(WsResult.ofNew(WsResultTypeEnum.EXP, War.exp.get())));
+            remote.sendText(JSON.toJSONString(WsResult.ofNew(WsResultTypeEnum.GAME_TIME, War.GAME_TIME.get())));
+            remote.sendText(JSON.toJSONString(WsResult.ofNew(WsResultTypeEnum.EXP, War.EXP.get())));
         } catch (IOException e) {
             log.error("ws发送异常", e);
         }
