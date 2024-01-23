@@ -146,7 +146,7 @@ public class WebDashboardController {
     public Result<Object> save(@RequestParam("workDayFlagArr")String[] workDayFlagArr, @RequestParam("workTimeFlagArr") String[] workTimeFlagArr, @RequestParam("workTimeArr") String[] workTimeArr){
         System.arraycopy(workDayFlagArr, 0, Work.getWorkDayFlagArr(), 0, Work.getWorkDayFlagArr().length);
         System.arraycopy(workTimeFlagArr, 0, Work.getWorkTimeFlagArr(), 0, Work.getWorkTimeFlagArr().length);
-        System.arraycopy(workTimeArr, 1, Work.getWorkTimeArr(), 1, Work.getWorkTimeArr().length - 1);
+        System.arraycopy(workTimeArr, 0, Work.getWorkTimeArr(), 0, Work.getWorkTimeArr().length);
         Work.storeWorkDate();
         javafxDashboardController.initWorkDate();
         return Result.ofSuccess();

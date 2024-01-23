@@ -9,6 +9,7 @@
 <?import club.xiaojiawei.factory.NotificationFactory?>
 <StackPane xmlns:fx="http://javafx.com/fxml"
            stylesheets="@css/dashboard.css"
+           fx:id="rootPane"
            fx:controller="club.xiaojiawei.controller.JavaFXDashboardController">
     <Accordion fx:id="accordion" styleClass="accordion-ui, accordion-ui-big" expandedPane="$titledPaneControl">
         <panes>

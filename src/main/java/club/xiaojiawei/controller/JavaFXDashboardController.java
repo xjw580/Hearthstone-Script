@@ -4,6 +4,7 @@ import club.xiaojiawei.bean.Release;
 import club.xiaojiawei.bean.WsResult;
 import club.xiaojiawei.controls.NotificationManager;
 import club.xiaojiawei.controls.Time;
+import club.xiaojiawei.controls.ico.ClearIco;
 import club.xiaojiawei.controls.ico.FlushIco;
 import club.xiaojiawei.data.ScriptStaticData;
 import club.xiaojiawei.enums.DeckEnum;
@@ -26,10 +27,14 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import javafx.stage.Popup;
 import javafx.util.Duration;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -58,6 +63,7 @@ import static club.xiaojiawei.enums.ConfigurationEnum.RUN_MODE;
 @Slf4j
 public class JavaFXDashboardController implements Initializable {
 
+    @FXML private StackPane rootPane;
     @FXML private NotificationManager notificationManger;
     @FXML private ScrollPane logScrollPane;
     @FXML private Button update;
@@ -240,6 +246,7 @@ public class JavaFXDashboardController implements Initializable {
             log.info("挂机卡组改为：" + deckComment);
         }
     }
+
     private void addListener(){
         //        是否在更新中监听
         IS_UPDATING.addListener((observable, oldValue, newValue) -> update.setDisable(newValue));
@@ -255,6 +262,35 @@ public class JavaFXDashboardController implements Initializable {
             update.setVisible(newValue);
             update.setManaged(newValue);
         });
+        logScrollPane.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
+            if (event.getButton() == MouseButton.SECONDARY){
+                showMenuPopup(event);
+            }
+        });
+    }
+
+    private void showMenuPopup(MouseEvent event){
+        Popup popup = new Popup();
+
+        Label label = new Label("清空");
+        label.setOnMouseClicked(event1 -> {
+            logVBox.getChildren().clear();
+            popup.hide();
+        });
+        label.setStyle("-fx-padding: 5 10 5 10");
+        label.setGraphic(new ClearIco());
+        label.getStyleClass().addAll("bg-hover-ui", "radius-ui");
+
+        VBox vBox = new VBox(label){{
+            setStyle("-fx-effect: dropshadow(gaussian, rgba(128, 128, 128, 0.67), 10, 0, 3, 3);-fx-padding: 5 3 5 3;-fx-background-color: white");
+        }};
+        vBox.getStyleClass().add("radius-ui");
+
+        popup.setAutoHide(true);
+        popup.getContent().add(vBox);
+        popup.setAnchorX(event.getScreenX() - 5);
+        popup.setAnchorY(event.getScreenY() - 5);
+        popup.show(rootPane.getScene().getWindow());
     }
 
     /**
