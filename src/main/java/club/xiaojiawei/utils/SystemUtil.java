@@ -303,8 +303,10 @@ public class SystemUtil {
                 Runtime.getRuntime().exec("cmd /c taskkill /f /t /im " + GAME_PROGRAM_NAME).waitFor();
                 SystemUtil.delay(1000);
                 log.info("炉石传说已关闭");
-            } catch (IOException | InterruptedException e) {
-                throw new RuntimeException(e);
+            } catch (IOException e) {
+                log.error("关闭炉石传说异常", e);
+            } catch (InterruptedException e) {
+                log.warn("关闭炉石传说异常", e);
             }
         }else {
             log.info("炉石传说不在运行");
