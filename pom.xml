@@ -13,10 +13,18 @@
     <version>v3.2.4.4-DEV</version>
     <name>Hearthstone-Script</name>
     <description>炉石传说脚本</description>
+
+    <repositories>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+    </repositories>
+
     <properties>
         <java.version>21</java.version>
         <javafx-version>21.0.1</javafx-version>
-        <javafx-ui-version>0.2.8</javafx-ui-version>
+        <javafx-ui-version>v0.2.8</javafx-ui-version>
         <mapstruct-version>1.6.0.Beta1</mapstruct-version>
         <jintellitype-version>1.4.1</jintellitype-version>
         <fastjson-version>2.0.20</fastjson-version>
@@ -28,12 +36,6 @@
     </properties>
 
     <dependencies>
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
-            <version>4.5.13</version>
-        </dependency>
-
         <!--javafx-->
         <dependency>
             <groupId>org.openjfx</groupId>
@@ -47,7 +49,7 @@
         </dependency>
         <!--JavaFX组件UI库-->
         <dependency>
-            <groupId>club.xiaojiawei</groupId>
+            <groupId>com.github.xjw580</groupId>
             <artifactId>javafx-ui</artifactId>
             <version>${javafx-ui-version}</version>
         </dependency>
