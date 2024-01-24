@@ -9,9 +9,9 @@ import club.xiaojiawei.bean.BaseCard;
 @SuppressWarnings("all")
 public class CommonBaseDeck {
 
+    public static final BaseCard 火舌图腾 = new BaseCard("EX1_565");
     public static final BaseCard 南海船长 = new BaseCard("NEW1_027");
     public static final BaseCard 恐狼前锋 = new BaseCard("EX1_162");
-    public static final BaseCard 火舌图腾 = new BaseCard("EX1_565");
     public static final BaseCard 末日预言者 = new BaseCard("NEW1_021");
     public static final BaseCard 对空奥数法师 = new BaseCard("ULD_240");
     public static final BaseCard 驻锚图腾 = new BaseCard("TSC_922");

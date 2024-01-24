@@ -439,9 +439,12 @@ public class EvenNumberShamanDeckStrategy extends AbstractDeckStrategy{
                     clickPower();
                 }
                 dealZeroResource();
+                int count = calcCardRaceCount(myPlayCards, CardRaceEnum.TOTEM, false) - 1;
                 myHandPointToNoPlace(tempIndex);
-                if (findByCardId(myPlayCards, 驻锚图腾) != -1){
-                    SystemUtil.delay(3000);
+                if (findByCardId(myPlayCards, 驻锚图腾) == -1){
+                    SystemUtil.delay(500 * count);
+                }else {
+                    SystemUtil.delay(2000 * count);
                 }
                 deal分裂战斧Exhausted();
                 dealWeapon();
