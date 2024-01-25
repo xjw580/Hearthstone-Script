@@ -31,6 +31,10 @@ public abstract class Area {
     @Getter
     private int maxSize;
 
+    @Setter
+    @Getter
+    private int oldMaxSize;
+
     public Area(int maxSize) {
         this.cards = new ArrayList<>();
         this.zeroCards = new HashMap<>();

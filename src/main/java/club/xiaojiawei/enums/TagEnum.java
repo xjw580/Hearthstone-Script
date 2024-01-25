@@ -1,5 +1,6 @@
 package club.xiaojiawei.enums;
 
+import club.xiaojiawei.bean.area.PlayArea;
 import club.xiaojiawei.func.DealTagChange;
 import club.xiaojiawei.func.ParseExtraEntity;
 import club.xiaojiawei.data.ScriptStaticData;
@@ -157,6 +158,23 @@ public enum TagEnum {
 //    tagChange和tag里都有出现
     REVEALED("揭示",
             null,
+            null),
+    MAX_SLOTS_PER_PLAYER_OVERRIDE("最大槽位",
+            (card, tagChangeEntity, player, area) -> {
+                PlayArea playArea;
+                if (Objects.equals(tagChangeEntity.getEntity(), War.getMe().getGameId())){
+                    playArea = War.getMe().getPlayArea();
+                }else {
+                    playArea = War.getRival().getPlayArea();
+                }
+                if (Objects.equals(tagChangeEntity.getValue(), "1")){
+                    playArea.setOldMaxSize(playArea.getMaxSize());
+                    playArea.setMaxSize(1);
+                }else if (Objects.equals(tagChangeEntity.getValue(), "0")){
+                    playArea.setOldMaxSize(playArea.getMaxSize());
+                    playArea.setMaxSize(playArea.getOldMaxSize());
+                }
+            },
             null),
     /*++++++++++++++++++++++++++++++++++*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
     /**
@@ -392,7 +410,7 @@ public enum TagEnum {
     /*+++++++++++++++++++++++++++++++++++++++++++++++*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
     UNKNOWN("未知",
             null,
-            null)
+            null),
     ;
     private static void log(Player player, Card card, String tagComment, Object value){
         String playerId = "", gameId = "", entityId = "", cardId = "", entityName = "";

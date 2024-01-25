@@ -251,6 +251,6 @@ public class PowerLogUtil {
      * @param args
      */
     public static void main(String[] args) {
-        decontamination("S:\\Hearthstone\\Logs\\Hearthstone_2023_11_05_15_51_14", true);
+        decontamination("S:\\", true);
     }
 }
