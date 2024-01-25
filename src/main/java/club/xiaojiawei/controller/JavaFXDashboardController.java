@@ -262,14 +262,17 @@ public class JavaFXDashboardController implements Initializable {
             update.setVisible(newValue);
             update.setManaged(newValue);
         });
+        Popup menuPopup = createMenuPopup();
         logScrollPane.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
-            if (event.getButton() == MouseButton.SECONDARY){
-                showMenuPopup(event);
+            if (event.getButton() == MouseButton.SECONDARY && !logVBox.getChildren().isEmpty()){
+                menuPopup.setAnchorX(event.getScreenX() - 5);
+                menuPopup.setAnchorY(event.getScreenY() - 5);
+                menuPopup.show(rootPane.getScene().getWindow());
             }
         });
     }
 
-    private void showMenuPopup(MouseEvent event){
+    private Popup createMenuPopup(){
         Popup popup = new Popup();
 
         Label label = new Label("清空");
@@ -288,9 +291,7 @@ public class JavaFXDashboardController implements Initializable {
 
         popup.setAutoHide(true);
         popup.getContent().add(vBox);
-        popup.setAnchorX(event.getScreenX() - 5);
-        popup.setAnchorY(event.getScreenY() - 5);
-        popup.show(rootPane.getScene().getWindow());
+        return popup;
     }
 
     /**
