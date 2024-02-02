@@ -177,10 +177,9 @@ public class SystemUtil {
         updateRECT(getGameHWND(), GAME_RECT);
     }
 
-
     public static WinDef.HWND findGameHWND(){
-        setGameHWND(SystemUtil.findHWND(GAME_CN_NAME));
-        return getGameHWND();
+        WinDef.HWND hwnd;
+        return (hwnd = SystemUtil.findHWND(GAME_CN_NAME)) == null? SystemUtil.findHWND(GAME_US_NAME) : hwnd;
     }
 
     public static WinDef.HWND findPlatformHWND(){

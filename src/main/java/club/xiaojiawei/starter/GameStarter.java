@@ -41,6 +41,14 @@ public class GameStarter extends AbstractStarter{
     private static ScheduledFuture<?> scheduledFuture;
     private static WinDef.HWND gameHWND;
 
+    public static void main(String[] args) {
+        final AtomicInteger launchCount = new AtomicInteger();
+        while (launchCount.incrementAndGet() <= 4){
+            log.info("111");
+        }
+
+    }
+
     @Override
     public void exec() {
         log.info("开始检查" + ScriptStaticData.GAME_CN_NAME);
@@ -67,6 +75,7 @@ public class GameStarter extends AbstractStarter{
                 if (SystemUtil.isAliveOfGame()) {
 //                    游戏刚启动时找不到HWND
                     if ((gameHWND = SystemUtil.findGameHWND()) == null){
+                        log.info("炉石传说已在运行，但未找到对应窗口句柄");
                         return;
                     }
                     cancelAndStartNext();
