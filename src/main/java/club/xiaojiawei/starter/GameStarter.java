@@ -41,14 +41,6 @@ public class GameStarter extends AbstractStarter{
     private static ScheduledFuture<?> scheduledFuture;
     private static WinDef.HWND gameHWND;
 
-    public static void main(String[] args) {
-        final AtomicInteger launchCount = new AtomicInteger();
-        while (launchCount.incrementAndGet() <= 4){
-            log.info("111");
-        }
-
-    }
-
     @Override
     public void exec() {
         log.info("开始检查" + ScriptStaticData.GAME_CN_NAME);
