@@ -32,7 +32,7 @@
         </HBox>
         <HBox styleClass="h-box">
             <Text text="战网账号密码："/>
-            <PasswordTextField styleClass="password-text-field-ui, password-text-field-ui-small" fx:id="password" promptText="非必填项，防止登录失败用" hideForever="true"/>
+            <PasswordTextField styleClass="text-field-ui, text-field-ui-small" fx:id="password" promptText="非必填项，防止登录失败用" hideForever="true"/>
         </HBox>
     </VBox>
     <HBox AnchorPane.bottomAnchor="15" AnchorPane.rightAnchor="15" spacing="20" alignment="CENTER">

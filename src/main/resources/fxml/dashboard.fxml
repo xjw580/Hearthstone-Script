@@ -11,12 +11,16 @@
            stylesheets="@css/dashboard.css"
            fx:id="rootPane"
            fx:controller="club.xiaojiawei.controller.JavaFXDashboardController">
+    <fx:define>
+        <ToggleGroup fx:id="pauseToggleGroup"/>
+    </fx:define>
     <Accordion fx:id="accordion" styleClass="accordion-ui, accordion-ui-big" expandedPane="$titledPaneControl">
         <panes>
             <TitledPane text="控制" fx:id="titledPaneControl">
                 <VBox alignment="TOP_CENTER" spacing="20" style="-fx-padding: 5 5 0 5">
                     <HBox alignment="CENTER" spacing="40">
-                        <Button fx:id="startButton" text="开始" styleClass="btn-ui, btn-ui-small, btn-ui-success-3d" onAction="#startScript">
+                        <ToggleButton fx:id="startButton" toggleGroup="$pauseToggleGroup" text="开始"
+                                      styleClass="btn-ui, btn-ui-small, btn-ui-success-3d">
                             <tooltip>
                                 <Tooltip text="开始工作">
                                     <showDelay>
@@ -27,9 +31,9 @@
                             <graphic>
                                 <StartIco/>
                             </graphic>
-                        </Button>
-                        <Button fx:id="pauseButton" disable="true" text="暂停"
-                                styleClass="btn-ui, btn-ui-small, btn-ui-error-3d" onAction="#pauseScript">
+                        </ToggleButton>
+                        <ToggleButton fx:id="pauseButton" toggleGroup="$pauseToggleGroup" selected="true" text="暂停"
+                                styleClass="btn-ui, btn-ui-small, btn-ui-error-3d, btnPressed">
                             <tooltip>
                                 <Tooltip text="暂停工作">
                                     <showDelay>
@@ -40,7 +44,7 @@
                             <graphic>
                                 <PauseIco/>
                             </graphic>
-                        </Button>
+                        </ToggleButton>
                     </HBox>
 
                     <Label text="模式："
@@ -148,8 +152,8 @@
 
                     <VBox alignment="CENTER" spacing="5">
                         <HBox spacing="5" alignment="CENTER">
-                            <Text fx:id="version"/>
-                            <Button onAction="#updateVersion" fx:id="update" styleClass="btn-ui, btn-ui-small, btn-ui-normal" visible="false" managed="false">
+                            <Text fx:id="versionText"/>
+                            <Button onAction="#updateVersion" fx:id="updateBtn" styleClass="btn-ui, btn-ui-small, btn-ui-normal" visible="false" managed="false">
                                 <tooltip>
                                     <Tooltip text="下载更新"/>
                                 </tooltip>
@@ -157,7 +161,7 @@
                                     <UpdateIco/>
                                 </graphic>
                             </Button>
-                            <Button onAction="#flushVersion" fx:id="flush" styleClass="btn-ui, btn-ui-small, btn-ui-normal">
+                            <Button onAction="#flushVersion" fx:id="flushBtn" styleClass="btn-ui, btn-ui-small, btn-ui-normal">
                                 <tooltip>
                                     <Tooltip text="检查更新"/>
                                 </tooltip>

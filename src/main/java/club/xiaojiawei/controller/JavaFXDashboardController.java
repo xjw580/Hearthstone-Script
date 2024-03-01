@@ -63,17 +63,18 @@ import static club.xiaojiawei.enums.ConfigurationEnum.RUN_MODE;
 @Slf4j
 public class JavaFXDashboardController implements Initializable {
 
+    @FXML private ToggleGroup pauseToggleGroup;
     @FXML private StackPane rootPane;
     @FXML private NotificationManager notificationManger;
     @FXML private ScrollPane logScrollPane;
-    @FXML private Button update;
-    @FXML private Button flush;
+    @FXML private Button updateBtn;
+    @FXML private Button flushBtn;
     @FXML private FlushIco flushIco;
-    @FXML private Text version;
+    @FXML private Text versionText;
     @FXML private VBox logVBox;
     @FXML private Accordion accordion;
-    @FXML private Button startButton;
-    @FXML private Button pauseButton;
+    @FXML private ToggleButton startButton;
+    @FXML private ToggleButton pauseButton;
     @FXML private TitledPane titledPaneLog;
     @FXML @Getter private Text gameCount;
     @FXML @Getter private Text winningPercentage;
@@ -249,7 +250,7 @@ public class JavaFXDashboardController implements Initializable {
 
     private void addListener(){
         //        是否在更新中监听
-        IS_UPDATING.addListener((observable, oldValue, newValue) -> update.setDisable(newValue));
+        IS_UPDATING.addListener((observable, oldValue, newValue) -> updateBtn.setDisable(newValue));
         //        监听日志自动滑到底部
         logVBox.heightProperty().addListener((observable, oldValue, newValue) -> {
             if (isNotHoverLog){
@@ -257,10 +258,10 @@ public class JavaFXDashboardController implements Initializable {
             }
         });
         VersionListener.getCanUpdate().addListener((observable, oldValue, newValue) -> {
-            flush.setVisible(!newValue);
-            flush.setManaged(!newValue);
-            update.setVisible(newValue);
-            update.setManaged(newValue);
+            flushBtn.setVisible(!newValue);
+            flushBtn.setManaged(!newValue);
+            updateBtn.setVisible(newValue);
+            updateBtn.setManaged(newValue);
         });
         Popup menuPopup = createMenuPopup();
         logScrollPane.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
@@ -268,6 +269,24 @@ public class JavaFXDashboardController implements Initializable {
                 menuPopup.setAnchorX(event.getScreenX() - 5);
                 menuPopup.setAnchorY(event.getScreenY() - 5);
                 menuPopup.show(rootPane.getScene().getWindow());
+            }
+        });
+        String btnPressedStyleClass = "btnPressed";
+        pauseToggleGroup.selectedToggleProperty().addListener((observableValue, toggle, t1) -> {
+            if (t1 == null){
+                if (toggle != null){
+                    pauseToggleGroup.selectToggle(toggle);
+                }
+            }else {
+                startButton.getStyleClass().remove(btnPressedStyleClass);
+                pauseButton.getStyleClass().remove(btnPressedStyleClass);
+                if (t1 == startButton){
+                    startButton.getStyleClass().add(btnPressedStyleClass);
+                    isPause.get().set(false);
+                }else if (t1 == pauseButton){
+                    pauseButton.getStyleClass().add(btnPressedStyleClass);
+                    isPause.get().set(true);
+                }
             }
         });
     }
@@ -335,14 +354,17 @@ public class JavaFXDashboardController implements Initializable {
             deckBox.getSelectionModel().select(currentDeck.getComment());
         });
     }
-    public void changeSwitch(boolean value){
-        pauseButton.setDisable(value);
-        startButton.setDisable(!value);
+    public void changeSwitch(boolean isPause){
+        if (isPause){
+            pauseToggleGroup.selectToggle(pauseButton);
+        }else {
+            pauseToggleGroup.selectToggle(startButton);
+        }
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        version.setText("当前版本：" + VersionListener.getCurrentVersion());
+        versionText.setText("当前版本：" + VersionListener.getCurrentVersion());
         assign();
         initModeAndDeck();
         initWorkDate();
@@ -356,14 +378,6 @@ public class JavaFXDashboardController implements Initializable {
         transition.setCycleCount(4);
         transition.play();
         versionListener.checkVersion();
-    }
-
-    @FXML protected void startScript(){
-        isPause.get().set(false);
-    }
-
-    @FXML protected void pauseScript(){
-        isPause.get().set(true);
     }
 
     @FXML protected void openSettings() {

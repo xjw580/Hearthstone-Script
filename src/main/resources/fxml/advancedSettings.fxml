@@ -5,6 +5,9 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
+<?import club.xiaojiawei.controls.ico.HelpIco?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Tooltip?>
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             stylesheets="@css/advancedSettings.css"
@@ -17,12 +20,20 @@
         <HBox styleClass="h-box">
             <Text text="Web安全验证："/>
             <Switch fx:id="verifySwitch"/>
-            <PasswordTextField prefWidth="50" styleClass="password-text-field-ui, password-text-field-ui-small" fx:id="psw" promptText="验证密码" hideForever="true"/>
+            <PasswordTextField prefWidth="50" styleClass="text-field-ui, text-field-ui-small" fx:id="psw" promptText="验证密码" hideForever="true" minWidth="150"/>
             <Button styleClass="btn-ui, btn-ui-success, btn-ui-small" text="保存密码" onMouseClicked="#saveVerifyPassword"/>
         </HBox>
         <HBox styleClass="h-box">
             <Text text="执行策略："/>
             <Switch fx:id="strategySwitch"/>
+            <Label>
+                <graphic>
+                    <HelpIco/>
+                </graphic>
+                <tooltip>
+                    <Tooltip text="是否执行卡组策略"/>
+                </tooltip>
+            </Label>
         </HBox>
         <HBox styleClass="h-box">
             <Text text="更新开发版："/>
@@ -35,10 +46,30 @@
         <HBox styleClass="h-box">
             <Text text="静态光标："/>
             <Switch fx:id="staticCursor"/>
+            <Label>
+                <graphic>
+                    <HelpIco/>
+                </graphic>
+                <tooltip>
+                    <Tooltip text="操作完鼠标是否回到原位"/>
+                </tooltip>
+            </Label>
         </HBox>
         <HBox styleClass="h-box">
             <Text text="发送Windows通知："/>
             <Switch fx:id="sendNotice"/>
+        </HBox>
+        <HBox styleClass="h-box">
+            <Text text="无感启动炉石："/>
+            <Switch fx:id="unobtrusiveLaunchGame"/>
+            <Label>
+                <graphic>
+                    <HelpIco/>
+                </graphic>
+                <tooltip>
+                    <Tooltip text="关闭时：控制鼠标打开炉石；打开时：发送点击事件到战网打开炉石"/>
+                </tooltip>
+            </Label>
         </HBox>
     </VBox>
     <NotificationManager fx:id="notificationManager" notificationPos="BOTTOM_CENTER">

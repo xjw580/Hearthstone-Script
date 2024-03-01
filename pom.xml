@@ -10,7 +10,7 @@
     </parent>
     <groupId>club.xiaojiawei</groupId>
     <artifactId>hs-script</artifactId>
-    <version>v3.2.5.2-MR</version>
+    <version>v3.2.5.3-MR</version>
     <name>Hearthstone-Script</name>
     <description>炉石传说脚本</description>
 
@@ -24,7 +24,7 @@
     <properties>
         <java.version>21</java.version>
         <javafx-version>21.0.1</javafx-version>
-        <javafx-ui-version>v0.2.8</javafx-ui-version>
+        <javafx-ui-version>v0.2.18</javafx-ui-version>
         <mapstruct-version>1.6.0.Beta1</mapstruct-version>
         <jintellitype-version>1.4.1</jintellitype-version>
         <fastjson-version>2.0.20</fastjson-version>

@@ -23,3 +23,6 @@
 #logVBox{
     -fx-padding: 5;
 }
+.btnPressed{
+    -fx-text-fill: gray !important;
+}

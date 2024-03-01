@@ -1,5 +1,6 @@
 package club.xiaojiawei.listener;
 
+import club.xiaojiawei.controller.JavaFXDashboardController;
 import club.xiaojiawei.utils.SystemUtil;
 import com.melloware.jintellitype.HotkeyListener;
 import com.melloware.jintellitype.JIntellitype;
@@ -19,6 +20,8 @@ import java.util.concurrent.atomic.AtomicReference;
 @Configuration
 public class GlobalHotkeyListener implements HotkeyListener {
 
+    @Resource
+    private JavaFXDashboardController javaFXDashboardController;
     @Resource
     private AtomicReference<BooleanProperty> isPause;
     private final static int HOT_KEY_EXIT = 111;
@@ -49,11 +52,11 @@ public class GlobalHotkeyListener implements HotkeyListener {
             if (!isPause.get().get()){
                 log.info("捕捉到热键,停止脚本");
                 SystemUtil.notice("捕捉到热键,停止脚本");
-                isPause.get().set(true);
+                javaFXDashboardController.changeSwitch(true);
             }else {
                 log.info("捕捉到热键,开始脚本");
                 SystemUtil.notice("捕捉到热键,开始脚本");
-                isPause.get().set(false);
+                javaFXDashboardController.changeSwitch(false);
             }
         }
     }
