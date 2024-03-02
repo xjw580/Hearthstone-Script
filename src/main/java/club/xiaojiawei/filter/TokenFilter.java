@@ -24,6 +24,7 @@ public class TokenFilter implements Filter {
 
     @Resource
     private Properties scriptConfiguration;
+
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         if (Objects.equals(scriptConfiguration.getProperty(ENABLE_VERIFY.getKey()), "false")){

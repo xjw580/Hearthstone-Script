@@ -28,13 +28,16 @@ public class PowerLogListener extends AbstractLogListener{
 
     @Resource
     private Core core;
+
     private static ScheduledFuture<?> errorScheduledFuture;
-    private volatile static long lastWorkTime;
-    private static final long MAX_IDLE_TIME = 5 * 60 * 1000L;
+
+    private static volatile long lastWorkTime;
+
+    private static final long MAX_IDLE_TIME = 5 * 60 * 1_000L;
 
     @Autowired
     public PowerLogListener(SpringData springData) {
-        super(springData.getPowerLogName(), 0, 1_000, TimeUnit.MILLISECONDS);
+        super(springData.getPowerLogName(), 0, 1_000L, TimeUnit.MILLISECONDS);
     }
 
     @Override

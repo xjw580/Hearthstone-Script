@@ -3,7 +3,6 @@ package club.xiaojiawei.controller;
 
 import club.xiaojiawei.bean.Result;
 import club.xiaojiawei.data.ScriptStaticData;
-import club.xiaojiawei.data.SpringData;
 import club.xiaojiawei.enums.DeckEnum;
 import club.xiaojiawei.listener.VersionListener;
 import club.xiaojiawei.status.Work;
@@ -27,10 +26,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.Objects;
-import java.util.Properties;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static club.xiaojiawei.data.ScriptStaticData.ROBOT;
@@ -47,7 +43,9 @@ import static club.xiaojiawei.enums.ConfigurationEnum.VERIFY_PASSWORD;
 public class WebDashboardController {
 
     public static final LinkedHashSet<String> TOKEN_SET = new LinkedHashSet<>();
-    public static final int MAX_TOKEN = 3;
+
+    public static final int MAX_TOKEN_COUNT = 3;
+
     @Resource
     private AtomicReference<BooleanProperty> isPause;
     @Resource
@@ -70,11 +68,8 @@ public class WebDashboardController {
             result = Result.ofFail();
         }else {
             String value = ScriptStaticData.AUTHOR + System.currentTimeMillis();
-            if (TOKEN_SET.size() >= MAX_TOKEN){
-                for (String s : TOKEN_SET) {
-                    TOKEN_SET.remove(s);
-                    break;
-                }
+            if (TOKEN_SET.size() >= MAX_TOKEN_COUNT){
+                TOKEN_SET.removeFirst();
             }
             TOKEN_SET.add(value);
             Cookie cookie = new Cookie("token", value);

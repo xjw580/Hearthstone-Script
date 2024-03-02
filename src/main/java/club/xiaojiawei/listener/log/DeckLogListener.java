@@ -24,7 +24,7 @@ public class DeckLogListener extends AbstractLogListener{
 
     @Autowired
     public DeckLogListener(SpringData springData) {
-        super(springData.getDeckLogName(), 0, 1500, TimeUnit.MILLISECONDS);
+        super(springData.getDeckLogName(), 0, 1500L, TimeUnit.MILLISECONDS);
     }
 
     @Getter

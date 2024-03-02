@@ -1,6 +1,8 @@
 package club.xiaojiawei.controller;
 
 import club.xiaojiawei.data.ScriptStaticData;
+import club.xiaojiawei.enums.WindowEnum;
+import club.xiaojiawei.utils.WindowUtil;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -43,8 +45,12 @@ public class JavaFXStartupController implements Initializable {
         }, 500, 10);
     }
 
+    /**
+     * 完成进度条并隐藏此窗口
+     */
     public static void complete(){
         timer.cancel();
         staticProgressBar.setProgress(1D);
+        WindowUtil.hideStage(WindowEnum.STARTUP);
     }
 }

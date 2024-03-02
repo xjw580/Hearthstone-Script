@@ -21,6 +21,7 @@ public class LogInitializer extends AbstractInitializer{
 
     @Resource
     private SpringData springData;
+
     @Override
     public void exec() {
         File logFile = new File(springData.getGameLogConfigurationPath());
@@ -71,4 +72,5 @@ public class LogInitializer extends AbstractInitializer{
             throw new RuntimeException("文件重写失败，游戏日志未打开，脚本无法运行", e);
         }
     }
+
 }

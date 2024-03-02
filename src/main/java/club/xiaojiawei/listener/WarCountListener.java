@@ -24,6 +24,7 @@ public class WarCountListener {
     private JavaFXDashboardController javafxDashboardController;
     @Getter
     private static String winningPercentage = "?";
+
     @PostConstruct
     void init(){
         War.WAR_COUNT.addListener((observable, oldValue, newValue) -> {
@@ -32,14 +33,15 @@ public class WarCountListener {
             sendWSMsg(newValue);
         });
     }
+
     private void setJavaFXGUI(Number warCount){
         javafxDashboardController.getGameCount().setText(warCount.toString());
         javafxDashboardController.getWinningPercentage().setText(winningPercentage = String.format("%.0f", War.WIN_COUNT.get() / warCount.doubleValue() * 100) + "%");
-        javafxDashboardController.getGameTime().setText(getTimeStr(War.GAME_TIME.get()));
+        javafxDashboardController.getGameTime().setText(formatTime(War.GAME_TIME.get()));
         javafxDashboardController.getExp().setText(String.valueOf(War.EXP.get()));
     }
 
-    private static String getTimeStr(int time) {
+    private static String formatTime(int time) {
         String timeStr;
         if (time == 0){
             timeStr = String.format("%d", time);
