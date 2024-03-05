@@ -29,7 +29,7 @@ public class ScriptStaticData {
      */
     @Getter
     @Setter
-    private static boolean isSetPath;
+    private static boolean isSetPath = true;
     /**
      * 游戏窗口句柄
      */
@@ -41,8 +41,8 @@ public class ScriptStaticData {
     public static final String PLATFORM_LOGIN_CN_NAME = "战网登录";
     public static final String GAME_US_NAME = "Hearthstone";
     public static final String PLATFORM_US_NAME = "Battle.net";
-    public static final String TEMP_DIR = "new_version_temp";
-    public static final String TEMP_PATH = System.getProperty("user.dir") + File.separator + TEMP_DIR + File.separator;
+    public static final String TEMP_VERSION_DIR = "new_version_temp";
+    public static final String TEMP_VERSION_PATH = System.getProperty("user.dir") + File.separator + TEMP_VERSION_DIR + File.separator;
     /**
      * 游戏窗口信息
      */
@@ -82,7 +82,11 @@ public class ScriptStaticData {
     /**
      * 炉石传说程序名
      */
-    public static final String GAME_PROGRAM_NAME = "Hearthstone.exe";
+    public static final String GAME_PROGRAM_NAME = GAME_US_NAME + ".exe";
+    /**
+     * 战网程序名
+     */
+    public static final String PLATFORM_PROGRAM_NAME = PLATFORM_US_NAME + ".exe";
     /**
      * 作者
      */

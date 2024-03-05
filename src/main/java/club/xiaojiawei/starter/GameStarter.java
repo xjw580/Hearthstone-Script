@@ -45,6 +45,9 @@ public class GameStarter extends AbstractStarter{
     @Lazy
     @Resource
     private AbstractStarter starter;
+    @Resource
+    private GameUtil gameUtil;
+
     private static ScheduledFuture<?> scheduledFuture;
     private static WinDef.HWND gameHWND;
 
@@ -60,7 +63,9 @@ public class GameStarter extends AbstractStarter{
             if (isPause.get().get()) {
                 cancelGameTimer();
             } else {
-                if (launchCount.incrementAndGet() > 4){
+                if (launchCount.incrementAndGet() > 3){
+                    user32LaunchGame();
+                }else if (launchCount.incrementAndGet() > 4){
                     log.info("打开炉石失败次数过多，重新执行启动器链");
                     cancelGameTimer();
                     extraThreadPool.schedule(() -> {
@@ -79,11 +84,7 @@ public class GameStarter extends AbstractStarter{
                     }
                     cancelAndStartNext();
                 }else {
-                    if (Objects.equals(scriptConfiguration.getProperty(ConfigurationEnum.UNOBTRUSIVE_LAUNCH_GAME.getKey()), "true")){
-                        user32LaunchGame();
-                    }else {
-                        robotLaunchGame();
-                    }
+                    gameUtil.cmdLaunchGame();
                 }
             }
         }), 5, 20, TimeUnit.SECONDS);
@@ -95,6 +96,7 @@ public class GameStarter extends AbstractStarter{
         mouseUtil.leftButtonClickByUser32(platformhwnd, 145, 120);
     }
 
+    @Deprecated
     private void robotLaunchGame(){
         log.info("正在通过robot打开" + ScriptStaticData.GAME_CN_NAME);
         WinDef.HWND platformHWND = SystemUtil.findPlatformHWND();

@@ -50,8 +50,8 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import static club.xiaojiawei.data.ScriptStaticData.TEMP_DIR;
-import static club.xiaojiawei.data.ScriptStaticData.TEMP_PATH;
+import static club.xiaojiawei.data.ScriptStaticData.TEMP_VERSION_DIR;
+import static club.xiaojiawei.data.ScriptStaticData.TEMP_VERSION_PATH;
 import static club.xiaojiawei.enums.ConfigurationEnum.DECK;
 import static club.xiaojiawei.enums.ConfigurationEnum.RUN_MODE;
 
@@ -129,7 +129,7 @@ public class JavaFXDashboardController implements Initializable {
             ZipEntry nextEntry;
             double index = 0D, count = 74D;
             while ((nextEntry = zipInputStream.getNextEntry()) != null) {
-                File entryFile = new File(TEMP_PATH + nextEntry.getName());
+                File entryFile = new File(TEMP_VERSION_PATH + nextEntry.getName());
                 if (nextEntry.isDirectory()) {
                     entryFile.mkdirs();
                     log.info("created_dir：" + entryFile.getPath());
@@ -166,7 +166,7 @@ public class JavaFXDashboardController implements Initializable {
     public static void execUpdate(){
         try {
             IS_UPDATING.set(true);
-            Runtime.getRuntime().exec("cmd /c start update.bat " + TEMP_DIR + " " + staticIsPause.get().get());
+            Runtime.getRuntime().exec("cmd /c start update.bat " + TEMP_VERSION_DIR + " " + staticIsPause.get().get());
         } catch (IOException e) {
             log.error("执行版本更新失败", e);
         }finally {
@@ -389,7 +389,7 @@ public class JavaFXDashboardController implements Initializable {
         if (release != null && !IS_UPDATING.get()){
             IS_UPDATING.set(true);
             extraThreadPool.submit(() -> {
-                if (!new File(TEMP_PATH).exists()){
+                if (!new File(TEMP_VERSION_PATH).exists()){
                     if (!downloadRelease(release)){
                         Platform.runLater(() -> WindowUtil.createAlert(String.format("新版本<%s>下载失败", release.getTagName()), "", null).show());
                         return;

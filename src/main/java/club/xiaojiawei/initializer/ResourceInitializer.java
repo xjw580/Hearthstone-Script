@@ -9,9 +9,6 @@ import org.springframework.stereotype.Component;
 import java.io.*;
 import java.util.Objects;
 
-import static club.xiaojiawei.data.ScriptStaticData.TEMP_DIR;
-import static club.xiaojiawei.data.ScriptStaticData.TEMP_PATH;
-
 /**
  * 创建系统资源文件夹
  * @author 肖嘉威

@@ -59,18 +59,6 @@
             <Text text="发送Windows通知："/>
             <Switch fx:id="sendNotice"/>
         </HBox>
-        <HBox styleClass="h-box">
-            <Text text="无感启动炉石："/>
-            <Switch fx:id="unobtrusiveLaunchGame"/>
-            <Label>
-                <graphic>
-                    <HelpIco/>
-                </graphic>
-                <tooltip>
-                    <Tooltip text="关闭时：控制鼠标打开炉石；打开时：发送点击事件到战网打开炉石"/>
-                </tooltip>
-            </Label>
-        </HBox>
     </VBox>
     <NotificationManager fx:id="notificationManager" notificationPos="BOTTOM_CENTER">
         <notificationFactory>

@@ -2,6 +2,7 @@ package club.xiaojiawei.utils;
 
 import club.xiaojiawei.data.GameRationStaticData;
 import club.xiaojiawei.data.ScriptStaticData;
+import club.xiaojiawei.enums.ConfigurationEnum;
 import com.sun.jna.platform.win32.User32;
 import com.sun.jna.platform.win32.WinDef;
 import com.sun.jna.platform.win32.WinUser;
@@ -10,6 +11,8 @@ import javafx.beans.property.BooleanProperty;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
+import java.util.Properties;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -30,6 +33,8 @@ public class GameUtil {
     private ScheduledThreadPoolExecutor extraThreadPool;
     @Resource
     private AtomicReference<BooleanProperty> isPause;
+    @Resource
+    private Properties scriptConfiguration;
     private static ScheduledFuture<?> clickGameEndPageTask;
 
     /**
@@ -40,6 +45,14 @@ public class GameUtil {
                 (int) (((ScriptStaticData.GAME_RECT.right + ScriptStaticData.GAME_RECT.left) >> 1) + ((ScriptStaticData.GAME_RECT.bottom - ScriptStaticData.GAME_RECT.top) * GameRationStaticData.BACK_BUTTON_HORIZONTAL_TO_CENTER_RATION * GameRationStaticData.GAME_WINDOW_ASPECT_TO_HEIGHT_RATIO) + RandomUtil.getRandom(-5, 5)),
                 (int) (ScriptStaticData.GAME_RECT.bottom - (ScriptStaticData.GAME_RECT.bottom - ScriptStaticData.GAME_RECT.top) * GameRationStaticData.BACK_BUTTON_VERTICAL_TO_BOTTOM_RATION) + RandomUtil.getRandom(-2, 2)
         );
+    }
+
+    public void cmdLaunchGame(){
+        try {
+            Runtime.getRuntime().exec("\"" + scriptConfiguration.getProperty(ConfigurationEnum.PLATFORM_PATH.getKey()) + "\"" + " --exec=\"launch WTCG\"");
+        } catch (IOException e) {
+            log.error("命令行启动炉石异常", e);
+        }
     }
 
     /**
@@ -95,10 +108,10 @@ public class GameUtil {
     public static void hidePlatformWindow(){
         WinDef.HWND platformHWND = SystemUtil.findPlatformHWND();
         if (platformHWND != null){
-            SystemUtil.delay(200);
-            User32.INSTANCE.MoveWindow(platformHWND, ScriptStaticData.DISPLAY_PIXEL_WIDTH - 100,  ScriptStaticData.DISPLAY_PIXEL_HEIGHT - 150, 0, 0, false);
+            SystemUtil.delay(500);
+//            User32.INSTANCE.MoveWindow(platformHWND, ScriptStaticData.DISPLAY_PIXEL_WIDTH - 100,  ScriptStaticData.DISPLAY_PIXEL_HEIGHT - 150, 0, 0, false);
 //            SystemUtil.delay(500);
-//            User32.INSTANCE.ShowWindow(platformHWND, WinUser.SW_MINIMIZE);
+            User32.INSTANCE.ShowWindow(platformHWND, WinUser.SW_MINIMIZE);
         }
     }
 

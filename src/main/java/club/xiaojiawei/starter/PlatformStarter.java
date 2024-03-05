@@ -33,22 +33,19 @@ public class PlatformStarter extends AbstractStarter{
     private ScheduledThreadPoolExecutor launchProgramThreadPool;
     @Resource
     private ScheduledThreadPoolExecutor extraThreadPool;
+    @Resource
+    private GameUtil gameUtil;
     private static ScheduledFuture<?> scheduledFuture;
 
     @Override
     public void exec() {
-        try {
-            if (SystemUtil.isAliveOfGame()) {
-                startNextStarter();
-                return;
-            }
-            log.info("正在进入" + ScriptStaticData.PLATFORM_CN_NAME + ScriptStaticData.GAME_CN_NAME + "启动页");
-            String platformPath = scriptConfiguration.getProperty(ConfigurationEnum.PLATFORM_PATH.getKey());
-            Runtime.getRuntime().exec("\"" + platformPath + "\"" + " --exec=\"launch WTCG\"");
-            GameUtil.hidePlatformWindow();
-        } catch (IOException e) {
-            log.error("进入" + ScriptStaticData.PLATFORM_CN_NAME + ScriptStaticData.GAME_CN_NAME + "异常", e);
+        if (SystemUtil.isAliveOfGame()) {
+            startNextStarter();
+            return;
         }
+        log.info("正在进入" + ScriptStaticData.PLATFORM_CN_NAME + ScriptStaticData.GAME_CN_NAME + "启动页");
+        gameUtil.cmdLaunchGame();
+        GameUtil.hidePlatformWindow();
         scheduledFuture = launchProgramThreadPool.scheduleAtFixedRate(() -> {
             if (isPause.get().get()){
                 cancelPlatformTimer();

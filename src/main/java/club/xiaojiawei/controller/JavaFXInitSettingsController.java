@@ -67,26 +67,33 @@ public class JavaFXInitSettingsController implements Initializable {
 
     @FXML
     protected void apply(){
-        scriptConfiguration.setProperty(ConfigurationEnum.PLATFORM_PASSWORD.getKey(), password.getText());
-        if(propertiesUtil.storePath(gamePath.getText(), platformPath.getText())){
-            ScriptStaticData.setSetPath(true);
+        if (checkConfiguration()){
             notificationManager.showSuccess("应用成功", 2);
-        }else {
-            notificationManager.showError("安装路径不正确,请重新选择", 3);
-            initValue();
         }
     }
 
     @FXML
     protected void save(){
-        scriptConfiguration.setProperty(ConfigurationEnum.PLATFORM_PASSWORD.getKey(), password.getText());
-        if(propertiesUtil.storePath(gamePath.getText(), platformPath.getText())){
-            ScriptStaticData.setSetPath(true);
+        if (checkConfiguration()){
             WindowUtil.hideStage(WindowEnum.SETTINGS);
-        }else {
-            notificationManager.showError("安装路径不正确,请重新选择", 3);
-            initValue();
         }
+    }
+
+    private boolean checkConfiguration(){
+        scriptConfiguration.setProperty(ConfigurationEnum.PLATFORM_PASSWORD.getKey(), password.getText());
+        propertiesUtil.storeScriptProperties();
+        if (!propertiesUtil.storePlatformPath(platformPath.getText())){
+            notificationManager.showError(ScriptStaticData.PLATFORM_CN_NAME + "安装路径不正确,请重新选择", 3);
+            initValue();
+            return false;
+        }
+        if (!propertiesUtil.storeGamePath(gamePath.getText())){
+            notificationManager.showError(ScriptStaticData.GAME_CN_NAME + "安装路径不正确,请重新选择", 3);
+            initValue();
+            return false;
+        }
+        ScriptStaticData.setSetPath(true);
+        return true;
     }
 
     @Override

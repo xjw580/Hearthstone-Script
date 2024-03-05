@@ -75,10 +75,6 @@ public enum ConfigurationEnum {
      * 允许发送windows通知
      */
     SEND_NOTICE("sendNotice", "true"),
-    /**
-     * 无感启动游戏
-     */
-    UNOBTRUSIVE_LAUNCH_GAME("unobtrusiveLaunchGame", "true"),
     ;
     private final String key;
     private final String defaultValue;

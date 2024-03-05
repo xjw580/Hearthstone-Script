@@ -6,8 +6,8 @@ import org.springframework.stereotype.Component;
 import java.io.File;
 import java.io.IOException;
 
-import static club.xiaojiawei.data.ScriptStaticData.TEMP_DIR;
-import static club.xiaojiawei.data.ScriptStaticData.TEMP_PATH;
+import static club.xiaojiawei.data.ScriptStaticData.TEMP_VERSION_DIR;
+import static club.xiaojiawei.data.ScriptStaticData.TEMP_VERSION_PATH;
 
 /**
  * 删除下载的新版本等临时文件
@@ -20,9 +20,9 @@ public class DelTempInitializer extends AbstractInitializer{
 
     @Override
     protected void exec() {
-        if (new File(TEMP_PATH).exists()){
+        if (new File(TEMP_VERSION_PATH).exists()){
             try {
-                Runtime.getRuntime().exec("cmd /c rd /s /Q " + TEMP_DIR);
+                Runtime.getRuntime().exec("cmd /c rd /s /Q " + TEMP_VERSION_DIR);
                 log.info("临时文件删除成功");
             } catch (IOException e) {
                 throw new RuntimeException("删除临时文件发生错误", e);

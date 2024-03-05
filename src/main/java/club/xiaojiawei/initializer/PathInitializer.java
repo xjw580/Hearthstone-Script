@@ -1,5 +1,6 @@
 package club.xiaojiawei.initializer;
 
+import club.xiaojiawei.ScriptApplication;
 import club.xiaojiawei.data.ScriptStaticData;
 import club.xiaojiawei.enums.ConfigurationEnum;
 import club.xiaojiawei.enums.RegCommonNameEnum;
@@ -25,26 +26,38 @@ public class PathInitializer extends AbstractInitializer{
 
     @Resource
     private Properties scriptConfiguration;
+
     @Resource
     private PropertiesUtil propertiesUtil;
 
     @Override
     public void exec() {
-        String platformInstallLocation, gameInstallLocation, absolutePlatformPath;
-        if (Strings.isNotBlank(scriptConfiguration.getProperty(ConfigurationEnum.GAME_PATH.getKey()))
-                && Strings.isNotBlank(scriptConfiguration.getProperty(ConfigurationEnum.PLATFORM_PATH.getKey()))
-        ){
-            log.info("读取到战网和炉石传说路径");
-        }else if (Strings.isNotBlank(platformInstallLocation = registryGetStringValueForUserProgram(RegCommonNameEnum.INSTALL_LOCATION, ScriptStaticData.PLATFORM_US_NAME))
-                && new File(absolutePlatformPath = platformInstallLocation + "\\" + ScriptStaticData.PLATFORM_US_NAME + ".exe").exists()
-                && Strings.isNotBlank(gameInstallLocation = registryGetStringValueForUserProgram(RegCommonNameEnum.INSTALL_LOCATION, ScriptStaticData.GAME_US_NAME))
-                && propertiesUtil.storePath(gameInstallLocation, absolutePlatformPath)
-        ){
-            log.info("通过注册表获取到战网和炉石传说路径");
-        }else {
-            log.error("炉石传说或战网安装路径未正确配置，脚本无法运行");
-            return;
+        String platformInstallLocation, gameInstallLocation;
+        if (Strings.isBlank(scriptConfiguration.getProperty(ConfigurationEnum.PLATFORM_PATH.getKey()))){
+            log.info(String.format("未配置%s安装路径，尝试从注册表读取", ScriptStaticData.PLATFORM_CN_NAME));
+            if (Strings.isNotBlank(platformInstallLocation = registryGetStringValueForUserProgram(RegCommonNameEnum.INSTALL_LOCATION, ScriptStaticData.PLATFORM_US_NAME))){
+                log.info(String.format("从注册表读取到%s安装路径", ScriptStaticData.PLATFORM_CN_NAME));
+                if (!propertiesUtil.storePlatformPath(platformInstallLocation)){
+                    log.warn(String.format("从注册表读取的%s安装路径无效", ScriptStaticData.PLATFORM_CN_NAME));
+                    ScriptStaticData.setSetPath(false);
+                }
+            }else {
+                log.warn(String.format("%s安装路径读取失败，脚本无法正常运行", ScriptStaticData.PLATFORM_CN_NAME));
+                ScriptStaticData.setSetPath(false);
+            }
         }
-        ScriptStaticData.setSetPath(true);
+        if (Strings.isBlank(scriptConfiguration.getProperty(ConfigurationEnum.GAME_PATH.getKey()))){
+            log.info(String.format("未配置%s安装路径，尝试从注册表读取", ScriptStaticData.GAME_CN_NAME));
+            if (Strings.isNotBlank(gameInstallLocation = registryGetStringValueForUserProgram(RegCommonNameEnum.INSTALL_LOCATION, ScriptStaticData.GAME_US_NAME))){
+                log.info(String.format("从注册表读取到%s安装路径", ScriptStaticData.GAME_CN_NAME));
+                if (!propertiesUtil.storeGamePath(gameInstallLocation)){
+                    log.warn(String.format("从注册表读取的%s安装路径无效", ScriptStaticData.GAME_CN_NAME));
+                    ScriptStaticData.setSetPath(false);
+                }
+            }else {
+                log.warn(String.format("%s安装路径读取失败，脚本无法正常运行", ScriptStaticData.GAME_CN_NAME));
+                ScriptStaticData.setSetPath(false);
+            }
+        }
     }
 }

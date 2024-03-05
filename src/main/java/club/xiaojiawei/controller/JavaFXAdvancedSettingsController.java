@@ -36,7 +36,6 @@ public class JavaFXAdvancedSettingsController implements Initializable {
     @FXML private Switch autoUpdate;
     @FXML private Switch staticCursor;
     @FXML private Switch sendNotice;
-    @FXML private Switch unobtrusiveLaunchGame;
     @Resource private Properties scriptConfiguration;
     @Resource private PropertiesUtil propertiesUtil;
 
@@ -55,7 +54,6 @@ public class JavaFXAdvancedSettingsController implements Initializable {
         autoUpdate.setStatus(Objects.equals(scriptConfiguration.getProperty(AUTO_UPDATE.getKey()), "true"));
         staticCursor.setStatus(Objects.equals(scriptConfiguration.getProperty(STATIC_CURSOR.getKey()), "true"));
         sendNotice.setStatus(Objects.equals(scriptConfiguration.getProperty(SEND_NOTICE.getKey()), "true"));
-        unobtrusiveLaunchGame.setStatus(Objects.equals(scriptConfiguration.getProperty(UNOBTRUSIVE_LAUNCH_GAME.getKey()), "true"));
     }
 
     private void listen(){
@@ -93,11 +91,6 @@ public class JavaFXAdvancedSettingsController implements Initializable {
 //        监听发送通知开关
         sendNotice.statusProperty().addListener((observable, oldValue, newValue) -> {
             scriptConfiguration.setProperty(SEND_NOTICE.getKey(), String.valueOf(newValue));
-            propertiesUtil.storeScriptProperties();
-        });
-//        监听无感启动炉石开关
-        unobtrusiveLaunchGame.statusProperty().addListener((observable, oldValue, newValue) -> {
-            scriptConfiguration.setProperty(UNOBTRUSIVE_LAUNCH_GAME.getKey(), String.valueOf(newValue));
             propertiesUtil.storeScriptProperties();
         });
     }

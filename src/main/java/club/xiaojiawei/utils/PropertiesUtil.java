@@ -32,23 +32,28 @@ public class PropertiesUtil {
         }
     }
 
-    public boolean storeGamePath(String path){
-        if (new File(path).exists()){
-            if (!new File(path + "/" + ScriptStaticData.GAME_PROGRAM_NAME).exists()){
-                return false;
-            }
-            scriptConfiguration.setProperty(ConfigurationEnum.GAME_PATH.getKey(), path);
+    public boolean storeGamePath(String gameInstallPath){
+        if (new File(gameInstallPath + File.separator + ScriptStaticData.GAME_PROGRAM_NAME).exists()){
+            scriptConfiguration.setProperty(ConfigurationEnum.GAME_PATH.getKey(), gameInstallPath);
             storeScriptProperties();
             return true;
         }
         return false;
     }
-    public void storePlatformPath(String path){
-        scriptConfiguration.setProperty(ConfigurationEnum.PLATFORM_PATH.getKey(), path);
-        storeScriptProperties();
+
+    public boolean storePlatformPath(String platformInstallPath){
+        String programAbsolutePath;
+        if (platformInstallPath != null && platformInstallPath.endsWith(".exe")){
+            programAbsolutePath = platformInstallPath;
+        }else {
+            programAbsolutePath = platformInstallPath + File.separator + ScriptStaticData.PLATFORM_PROGRAM_NAME;
+        }
+        if (new File(programAbsolutePath).exists()){
+            scriptConfiguration.setProperty(ConfigurationEnum.PLATFORM_PATH.getKey(), programAbsolutePath);
+            storeScriptProperties();
+            return true;
+        }
+        return false;
     }
-    public boolean storePath(String gamePath, String platformPath){
-        storePlatformPath(platformPath);
-        return storeGamePath(gamePath);
-    }
+
 }

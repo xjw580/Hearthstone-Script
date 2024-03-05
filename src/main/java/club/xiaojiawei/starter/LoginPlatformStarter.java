@@ -1,5 +1,6 @@
 package club.xiaojiawei.starter;
 
+import club.xiaojiawei.data.ScriptStaticData;
 import club.xiaojiawei.dll.SystemDll;
 import club.xiaojiawei.enums.ConfigurationEnum;
 import club.xiaojiawei.utils.SystemUtil;
@@ -41,7 +42,11 @@ public class LoginPlatformStarter extends AbstractStarter{
 
     @Override
     protected void exec() {
-        if (SystemUtil.isAliveOfGame() || Strings.isBlank(scriptConfiguration.getProperty(ConfigurationEnum.PLATFORM_PASSWORD.getKey()))) {
+        if (SystemUtil.isAliveOfGame()) {
+            startNextStarter();
+            return;
+        }else if (Strings.isBlank(scriptConfiguration.getProperty(ConfigurationEnum.PLATFORM_PASSWORD.getKey()))){
+            log.info(String.format("未配置%s账号密码，跳过此步骤", ScriptStaticData.PLATFORM_CN_NAME));
             startNextStarter();
             return;
         }
