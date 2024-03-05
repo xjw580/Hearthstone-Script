@@ -65,6 +65,9 @@ public class War {
     @Getter
     @Setter
     private volatile static long endTime;
+    @Getter
+    @Setter
+    private volatile static boolean myTurn;
 
     public final static SimpleIntegerProperty WAR_COUNT = new SimpleIntegerProperty();
     public final static AtomicInteger WIN_COUNT = new AtomicInteger();
@@ -73,9 +76,7 @@ public class War {
      */
     public final static AtomicInteger GAME_TIME = new AtomicInteger();
     public final static AtomicInteger EXP = new AtomicInteger();
-    @Getter
-    @Setter
-    private volatile static boolean myTurn;
+
     public static void reset(){
         firstPlayerGameId = null;
         currentPhase = FILL_DECK_PHASE;

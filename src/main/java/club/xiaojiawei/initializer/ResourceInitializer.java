@@ -13,7 +13,7 @@ import static club.xiaojiawei.data.ScriptStaticData.TEMP_DIR;
 import static club.xiaojiawei.data.ScriptStaticData.TEMP_PATH;
 
 /**
- * 删除下载的新版本等临时文件
+ * 创建系统资源文件夹
  * @author 肖嘉威
  * @date 2023/9/17 1:59
  */

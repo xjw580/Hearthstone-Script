@@ -80,22 +80,22 @@ public class GameStarter extends AbstractStarter{
                     cancelAndStartNext();
                 }else {
                     if (Objects.equals(scriptConfiguration.getProperty(ConfigurationEnum.UNOBTRUSIVE_LAUNCH_GAME.getKey()), "true")){
-                        launchGame();
+                        user32LaunchGame();
                     }else {
-                        oldLaunchGame();
+                        robotLaunchGame();
                     }
                 }
             }
         }), 5, 20, TimeUnit.SECONDS);
     }
 
-    private void launchGame(){
+    private void user32LaunchGame(){
         log.info("正在通过user32打开" + ScriptStaticData.GAME_CN_NAME);
         WinDef.HWND platformhwnd = SystemUtil.findPlatformHWND();
         mouseUtil.leftButtonClickByUser32(platformhwnd, 145, 120);
     }
 
-    private void oldLaunchGame(){
+    private void robotLaunchGame(){
         log.info("正在通过robot打开" + ScriptStaticData.GAME_CN_NAME);
         WinDef.HWND platformHWND = SystemUtil.findPlatformHWND();
         WinDef.RECT rect = new WinDef.RECT();
@@ -113,6 +113,7 @@ public class GameStarter extends AbstractStarter{
             scheduledFuture.cancel(true);
         }
     }
+
     public void cancelAndStartNext(){
         log.info(ScriptStaticData.GAME_CN_NAME + "正在运行");
         cancelGameTimer();

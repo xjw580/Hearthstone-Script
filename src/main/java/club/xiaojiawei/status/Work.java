@@ -152,7 +152,6 @@ public class Work {
                         (end.compareTo(start) > 0 && nowTime.compareTo(start) >= 0 && nowTime.compareTo(end) <= 0)
                                 ||
                         (end.compareTo(start) < 0 && (nowTime.compareTo(start) >= 0 || nowTime.compareTo(end) <= 0))
-
                 ){
                     return true;
                 }

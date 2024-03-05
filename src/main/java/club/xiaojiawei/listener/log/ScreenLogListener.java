@@ -32,7 +32,7 @@ public class ScreenLogListener extends AbstractLogListener{
 
     @Autowired
     public ScreenLogListener(SpringData springData) {
-        super(springData.getScreenLogName(), 0, 1500, TimeUnit.MILLISECONDS);
+        super(springData.getScreenLogName(), 0, 1500L, TimeUnit.MILLISECONDS);
     }
 
     @Override

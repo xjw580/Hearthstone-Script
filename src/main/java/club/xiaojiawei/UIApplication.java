@@ -31,6 +31,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Timer;
 import java.util.*;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static club.xiaojiawei.data.ScriptStaticData.MAIN_ICO_NAME;
@@ -55,6 +57,9 @@ public class UIApplication extends Application implements ApplicationRunner {
     private SpringData springData;
     @Resource
     private AtomicReference<BooleanProperty> isPause;
+    @Resource
+    private ScheduledThreadPoolExecutor extraThreadPool;
+
     private ChangeListener<Boolean> mainShowingListener;
 
     @Override
@@ -71,7 +76,7 @@ public class UIApplication extends Application implements ApplicationRunner {
     private void showMainPage(){
         Thread.ofVirtual().name("MainPage VThread").start(new LogRunnable(() -> {
             launchSpringBoot();
-            setTray();
+            setSystemTray();
             Platform.runLater(() -> {
                 Stage stage = WindowUtil.buildStage(WindowEnum.DASHBOARD);
                 mainShowingListener = (observableValue, aBoolean, t1) -> {
@@ -92,7 +97,7 @@ public class UIApplication extends Application implements ApplicationRunner {
         springContext.getAutowireCapableBeanFactory().autowireBean(this);
     }
 
-    private void setTray(){
+    private void setSystemTray(){
         MenuItem quit = new MenuItem("退出");
         quit.addActionListener(new AbstractAction() {
             @Override
@@ -117,7 +122,7 @@ public class UIApplication extends Application implements ApplicationRunner {
 
     private void afterShowing(){
         JavaFXStartupController.complete();
-        WindowUtil.hideStage(WindowEnum.STARTUP);
+
         DeckEnum deckEnum = DeckEnum.valueOf(scriptConfiguration.getProperty(DECK.getKey()));
         log.info(deckEnum.getComment() + "卡组代码：" + deckEnum.getDeckCode());
         if (SystemUtil.copyToClipboard(deckEnum.getDeckCode())){
@@ -125,16 +130,13 @@ public class UIApplication extends Application implements ApplicationRunner {
             log.info(content);
             SystemUtil.notice(content);
         }
+
         log.info("脚本数据路径：" + springData.getScriptPath());
+
         List<String> args = this.getParameters().getRaw();
         if (!args.isEmpty() && Objects.equals("false", args.getFirst())){
             log.info("接收到开始参数，开始脚本");
-            new Timer().schedule(new TimerTask() {
-                @Override
-                public void run() {
-                    Platform.runLater(() -> isPause.get().set(false));
-                }
-            }, 1500);
+            extraThreadPool.schedule(() -> Platform.runLater(() -> isPause.get().set(false)), 1500, TimeUnit.MILLISECONDS);
         }
     }
 

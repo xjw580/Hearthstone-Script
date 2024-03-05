@@ -24,6 +24,7 @@ public class GlobalHotkeyListener implements HotkeyListener {
     private JavaFXDashboardController javaFXDashboardController;
     @Resource
     private AtomicReference<BooleanProperty> isPause;
+
     private final static int HOT_KEY_EXIT = 111;
     private final static int HOT_KEY_PAUSE = 222;
 

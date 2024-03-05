@@ -17,6 +17,7 @@ import static club.xiaojiawei.data.ScriptStaticData.TEMP_PATH;
 @Component
 @Slf4j
 public class DelTempInitializer extends AbstractInitializer{
+
     @Override
     protected void exec() {
         if (new File(TEMP_PATH).exists()){
@@ -30,4 +31,5 @@ public class DelTempInitializer extends AbstractInitializer{
             log.info("没有临时文件，无需删除");
         }
     }
+
 }

@@ -11,4 +11,5 @@ import club.xiaojiawei.bean.entity.ExtraEntity;
 public interface ParseExtraEntity {
 
     void parseExtraEntity(ExtraEntity extraEntity, String value);
+
 }
