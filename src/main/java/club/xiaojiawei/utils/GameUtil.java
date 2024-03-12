@@ -47,6 +47,9 @@ public class GameUtil {
         );
     }
 
+    /**
+     * 如果战网不在运行则相当于启动战网，如果战网已经运行则为启动炉石
+     */
     public void cmdLaunchGame(){
         try {
             Runtime.getRuntime().exec("\"" + scriptConfiguration.getProperty(ConfigurationEnum.PLATFORM_PATH.getKey()) + "\"" + " --exec=\"launch WTCG\"");

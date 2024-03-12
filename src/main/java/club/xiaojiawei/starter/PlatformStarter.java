@@ -26,8 +26,6 @@ import java.util.concurrent.atomic.AtomicReference;
 public class PlatformStarter extends AbstractStarter{
 
     @Resource
-    private Properties scriptConfiguration;
-    @Resource
     private AtomicReference<BooleanProperty> isPause;
     @Resource
     private ScheduledThreadPoolExecutor launchProgramThreadPool;

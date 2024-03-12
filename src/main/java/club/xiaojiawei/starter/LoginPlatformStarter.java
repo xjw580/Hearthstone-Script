@@ -59,7 +59,7 @@ public class LoginPlatformStarter extends AbstractStarter{
                 cancelAndStartNext();
             }else {
                 if (loginCount.incrementAndGet() > 4){
-                    log.info("登录战网失败次数过多，重新执行启动器链");
+                    log.warn("登录战网失败次数过多，重新执行启动器链");
                     cancelLoginPlatformTimer();
                     extraThreadPool.schedule(() -> {
                         SystemUtil.killLoginPlatform();

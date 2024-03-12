@@ -181,15 +181,14 @@
                 </VBox>
             </TitledPane>
             <TitledPane text="日志" fx:id="titledPaneLog">
-                <ScrollPane fx:id="logScrollPane" hbarPolicy="NEVER" onMouseEntered="#mouseEnteredLog" onMouseExited="#mouseExitedLog">
+                <ScrollPane fx:id="logScrollPane" hbarPolicy="NEVER"
+                            onMouseEntered="#mouseEnteredLog" onMouseExited="#mouseExitedLog" onMouseClicked="#mouseClickedLog">
                     <VBox maxWidth="${accordion.width}" spacing="5" fx:id="logVBox"/>
                 </ScrollPane>
             </TitledPane>
         </panes>
     </Accordion>
     <NotificationManager fx:id="notificationManger" notificationPos="BOTTOM_CENTER">
-        <notificationFactory>
-            <NotificationFactory size="SMALL" showingCloseBtn="false"/>
-        </notificationFactory>
+        <NotificationFactory size="SMALL" showingCloseBtn="false"/>
     </NotificationManager>
 </StackPane>

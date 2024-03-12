@@ -263,14 +263,6 @@ public class JavaFXDashboardController implements Initializable {
             updateBtn.setVisible(newValue);
             updateBtn.setManaged(newValue);
         });
-        Popup menuPopup = createMenuPopup();
-        logScrollPane.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
-            if (event.getButton() == MouseButton.SECONDARY && !logVBox.getChildren().isEmpty()){
-                menuPopup.setAnchorX(event.getScreenX() - 5);
-                menuPopup.setAnchorY(event.getScreenY() - 5);
-                menuPopup.show(rootPane.getScene().getWindow());
-            }
-        });
         String btnPressedStyleClass = "btnPressed";
         pauseToggleGroup.selectedToggleProperty().addListener((observableValue, toggle, t1) -> {
             if (t1 == null){
@@ -438,7 +430,17 @@ public class JavaFXDashboardController implements Initializable {
     @FXML protected void mouseEnteredLog(){
         isNotHoverLog = false;
     }
+
     @FXML protected void mouseExitedLog(){
         isNotHoverLog = true;
+    }
+
+    @FXML protected void mouseClickedLog(MouseEvent event){
+        if (event.getButton() == MouseButton.SECONDARY && !logVBox.getChildren().isEmpty()){
+            Popup menuPopup = createMenuPopup();
+            menuPopup.setAnchorX(event.getScreenX() - 5);
+            menuPopup.setAnchorY(event.getScreenY() - 5);
+            menuPopup.show(rootPane.getScene().getWindow());
+        }
     }
 }

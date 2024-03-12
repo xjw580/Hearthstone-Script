@@ -66,7 +66,7 @@ public class GameStarter extends AbstractStarter{
                 if (launchCount.incrementAndGet() > 3){
                     user32LaunchGame();
                 }else if (launchCount.incrementAndGet() > 4){
-                    log.info("打开炉石失败次数过多，重新执行启动器链");
+                    log.warn("打开炉石失败次数过多，重新执行启动器链");
                     cancelGameTimer();
                     extraThreadPool.schedule(() -> {
                         SystemUtil.killLoginPlatform();

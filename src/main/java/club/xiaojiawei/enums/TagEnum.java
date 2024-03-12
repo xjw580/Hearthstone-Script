@@ -412,6 +412,7 @@ public enum TagEnum {
             null,
             null),
     ;
+
     private static void log(Player player, Card card, String tagComment, Object value){
         String playerId = "", gameId = "", entityId = "", cardId = "", entityName = "";
         if (player != null){

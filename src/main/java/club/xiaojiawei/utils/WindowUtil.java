@@ -8,11 +8,10 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.DialogEvent;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
+import javafx.scene.layout.VBox;
+import javafx.stage.Popup;
 import javafx.stage.Stage;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
@@ -37,6 +36,19 @@ public class WindowUtil {
     @Resource
     public void setContext(ApplicationContext context) {
         WindowUtil.context = context;
+    }
+
+    public static Popup createMenuPopup(Label... labels){
+        Popup popup = new Popup();
+
+        VBox vBox = new VBox(){{
+            setStyle("-fx-effect: dropshadow(gaussian, rgba(128, 128, 128, 0.67), 10, 0, 3, 3);-fx-padding: 5 3 5 3;-fx-background-color: white");
+        }};
+        vBox.getStyleClass().add("radius-ui");
+
+        popup.setAutoHide(true);
+        popup.getContent().add(vBox);
+        return popup;
     }
 
     /**
