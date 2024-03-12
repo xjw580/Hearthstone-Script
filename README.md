@@ -1,3 +1,5 @@
+![GitHub release](https://img.shields.io/github/release/xjw580/Hearthstone-Script.svg)  ![GitHub](https://img.shields.io/github/license/xjw580/Hearthstone-Script?style=flat-square)
+
 # 炉石传说脚本（2024.01.25停更至国服回归）
 ![favicon.ico](src/main/resources/static/img/favicon.ico)
 
