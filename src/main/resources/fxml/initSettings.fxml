@@ -10,28 +10,31 @@
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             stylesheets="@css/initSettings.css"
+            fx:id="rootPane"
             fx:controller="club.xiaojiawei.controller.JavaFXInitSettingsController">
-    <VBox styleClass="main">
+    <VBox fx:id="mainVBox">
         <HBox styleClass="h-box">
-            <Text text="炉石传说安装路径："/>
+            <Text text="炉石传说安装路径"/>
             <Text fx:id="gamePath" underline="true"/>
-            <Button styleClass="btn-ui, btn-ui-small" translateX="10" onAction="#gameClicked" text="选择">
+            <HBox HBox.hgrow="ALWAYS"/>
+            <Button styleClass="btn-ui, btn-ui-small" onAction="#gameClicked" text="选择">
                 <graphic>
                     <FileIco/>
                 </graphic>
             </Button>
         </HBox>
         <HBox styleClass="h-box">
-            <Text text="战网程序路径："/>
+            <Text text="战网程序路径"/>
             <Text fx:id="platformPath" underline="true"/>
-            <Button styleClass="btn-ui, btn-ui-small" translateX="10" onAction="#platformClicked" text="选择">
+            <HBox HBox.hgrow="ALWAYS"/>
+            <Button styleClass="btn-ui, btn-ui-small" onAction="#platformClicked" text="选择">
                 <graphic>
                     <FileIco/>
                 </graphic>
             </Button>
         </HBox>
         <HBox styleClass="h-box">
-            <Text text="战网账号密码："/>
+            <Text text="战网账号密码"/>
             <PasswordTextField styleClass="text-field-ui, text-field-ui-small" fx:id="password" promptText="非必填项，防止登录失败用" hideForever="true"/>
         </HBox>
     </VBox>
@@ -43,8 +46,6 @@
         <Button fx:id="save" text="保存" styleClass="btn-ui, btn-ui-success" onAction="#save" />
     </HBox>
     <NotificationManager fx:id="notificationManager" notificationPos="BOTTOM_CENTER">
-        <notificationFactory>
-            <NotificationFactory showingCloseBtn="false" size="SMALL"/>
-        </notificationFactory>
+        <NotificationFactory showingCloseBtn="false" size="SMALL"/>
     </NotificationManager>
 </AnchorPane>

@@ -1,10 +1,19 @@
 .h-box{
-    -fx-spacing: 5;
+    -fx-spacing: 10;
     -fx-alignment: CENTER_LEFT;
+    -fx-background-color: white;
+    -fx-background-radius: 5;
+    -fx-padding: 12;
+    -fx-effect: default-effect;
 }
-.main{
-    -fx-padding: 10;
-    -fx-font-size: 12;
-    -fx-spacing: 15;
-    -fx-alignment: CENTER_LEFT;
+#rootPane{
+    -fx-background-color: rgb(242, 242, 242);
+}
+#mainVBox{
+    -fx-alignment: CENTER;
+    -fx-padding: 8 50 8 50;
+    -fx-spacing: 8;
+    /*-fx-padding: 10;*/
+    /*-fx-font-size: 12;*/
+    /*-fx-alignment: CENTER_LEFT;*/
 }

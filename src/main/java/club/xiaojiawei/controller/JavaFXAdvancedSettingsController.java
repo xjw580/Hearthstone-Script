@@ -5,9 +5,12 @@ import club.xiaojiawei.controls.PasswordTextField;
 import club.xiaojiawei.controls.Switch;
 import club.xiaojiawei.utils.PropertiesUtil;
 import jakarta.annotation.Resource;
+import javafx.beans.value.ChangeListener;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
+import javafx.scene.layout.VBox;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -27,6 +30,7 @@ import static club.xiaojiawei.enums.ConfigurationEnum.*;
 @Slf4j
 public class JavaFXAdvancedSettingsController implements Initializable {
 
+    @FXML private VBox mainVBox;
     @FXML private NotificationManager notificationManager;
     @FXML private Switch webSwitch;
     @FXML private Switch strategySwitch;
@@ -38,6 +42,8 @@ public class JavaFXAdvancedSettingsController implements Initializable {
     @FXML private Switch sendNotice;
     @Resource private Properties scriptConfiguration;
     @Resource private PropertiesUtil propertiesUtil;
+
+    private ChangeListener<Scene> sceneListener;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -93,6 +99,11 @@ public class JavaFXAdvancedSettingsController implements Initializable {
             scriptConfiguration.setProperty(SEND_NOTICE.getKey(), String.valueOf(newValue));
             propertiesUtil.storeScriptProperties();
         });
+        sceneListener = (observableValue, scene, t1) -> {
+            mainVBox.prefWidthProperty().bind(t1.widthProperty());
+            mainVBox.sceneProperty().removeListener(sceneListener);
+        };
+        mainVBox.sceneProperty().addListener(sceneListener);
     }
 
     @FXML protected void saveVerifyPassword(Event event){

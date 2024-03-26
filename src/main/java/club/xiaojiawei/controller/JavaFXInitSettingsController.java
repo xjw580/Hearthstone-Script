@@ -8,8 +8,12 @@ import club.xiaojiawei.enums.WindowEnum;
 import club.xiaojiawei.utils.PropertiesUtil;
 import club.xiaojiawei.utils.WindowUtil;
 import jakarta.annotation.Resource;
+import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
@@ -30,6 +34,8 @@ import java.util.ResourceBundle;
 public class JavaFXInitSettingsController implements Initializable {
 
     @FXML
+    private VBox mainVBox;
+    @FXML
     private NotificationManager notificationManager;
     @FXML
     private Text gamePath;
@@ -41,6 +47,8 @@ public class JavaFXInitSettingsController implements Initializable {
     private Properties scriptConfiguration;
     @Resource
     private PropertiesUtil propertiesUtil;
+
+    private ChangeListener<Scene> sceneListener;
 
     @FXML
     protected void gameClicked(){
@@ -99,7 +107,14 @@ public class JavaFXInitSettingsController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         initValue();
+        sceneListener = (observableValue, scene, t1) -> {
+            mainVBox.prefWidthProperty().bind(t1.widthProperty());
+            mainVBox.prefWidthProperty().bind(t1.widthProperty());
+            mainVBox.sceneProperty().removeListener(sceneListener);
+        };
+        mainVBox.sceneProperty().addListener(sceneListener);
     }
+
     private void initValue(){
         gamePath.setText(scriptConfiguration.getProperty(ConfigurationEnum.GAME_PATH.getKey()));
         platformPath.setText(scriptConfiguration.getProperty(ConfigurationEnum.PLATFORM_PATH.getKey()));

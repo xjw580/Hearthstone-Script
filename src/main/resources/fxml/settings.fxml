@@ -2,6 +2,7 @@
 
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.ScrollPane?>
 <TabPane xmlns="http://javafx.com/javafx"
          xmlns:fx="http://javafx.com/fxml"
          tabClosingPolicy="UNAVAILABLE"
@@ -10,6 +11,8 @@
         <fx:include source="initSettings.fxml"/>
     </Tab>
     <Tab text="高级设置">
-        <fx:include source="advancedSettings.fxml"/>
+        <ScrollPane hbarPolicy="NEVER">
+            <fx:include source="advancedSettings.fxml"/>
+        </ScrollPane>
     </Tab>
 </TabPane>
