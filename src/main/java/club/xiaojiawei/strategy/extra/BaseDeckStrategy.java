@@ -5,11 +5,14 @@ import club.xiaojiawei.bean.Player;
 import club.xiaojiawei.bean.area.HandArea;
 import club.xiaojiawei.bean.area.PlayArea;
 import club.xiaojiawei.bean.entity.Card;
+import club.xiaojiawei.enums.CardTypeEnum;
 import club.xiaojiawei.status.War;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 import java.util.Objects;
+
+import static club.xiaojiawei.enums.CardTypeEnum.MINION;
 
 /**
  * @author 肖嘉威 xjw580@qq.com
@@ -94,7 +97,7 @@ public class BaseDeckStrategy {
      * @return
      */
     protected boolean canPointedByRival(Card card){
-        return !(card.isImmune() || card.isStealth() || card.isDormantAwakenConditionEnchant());
+        return card.getCardType() == MINION && !(card.isImmune() || card.isStealth() || card.isDormantAwakenConditionEnchant());
     }
 
     /**
@@ -103,7 +106,16 @@ public class BaseDeckStrategy {
      * @return
      */
     protected boolean canPointedByMe(Card card){
-        return !(card.isImmune() || card.isDormantAwakenConditionEnchant() || isImmunityMagic(card));
+        return card.getCardType() == MINION && !(card.isImmune() || card.isDormantAwakenConditionEnchant() || isImmunityMagic(card));
+    }
+
+    /**
+     * 能不能动
+     * @param card
+     * @return
+     */
+    protected boolean canMove(Card card){
+        return card.getCardType() == CardTypeEnum.MINION && !(card.isExhausted() || card.isFrozen() || card.isDormantAwakenConditionEnchant() || card.getAtc() <= 0);
     }
 
     /**
@@ -113,14 +125,5 @@ public class BaseDeckStrategy {
      */
     protected boolean isImmunityMagic(Card card){
         return card.isCantBeTargetedByHeroPowers() && card.isCantBeTargetedBySpells();
-    }
-
-    /**
-     * 能不能动
-     * @param card
-     * @return
-     */
-    protected boolean canMove(Card card){
-        return !(card.isExhausted() || card.isFrozen() || card.isDormantAwakenConditionEnchant() || card.getAtc() <= 0);
     }
 }

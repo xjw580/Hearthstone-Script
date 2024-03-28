@@ -40,7 +40,7 @@ public class AlgorithmDeckStrategy extends ActionDeckStrategy{
         int rivalCardEnableCount = 0;
         boolean[] rivalCardEnable = new boolean[rivalPlayCards.size()];
         for (int i = 0; i < rivalPlayCards.size(); i++) {
-            if (rivalPlayCards.get(i).isTaunt() && canPointedByRival(rivalPlayCards.get(i)) && rivalPlayCards.get(i).getCardType() == MINION){
+            if (rivalPlayCards.get(i).isTaunt() && canPointedByRival(rivalPlayCards.get(i))){
                 rivalCardEnable[i] = true;
                 rivalCardEnableCount++;
             }
@@ -133,7 +133,8 @@ public class AlgorithmDeckStrategy extends ActionDeckStrategy{
         boolean[] myCardEnable = new boolean[myPlayCards.size()];
         int myCardEnableCount = 0, firstMyCardEnable = -1;
         for (int i = 0; i < myPlayCards.size(); i++) {
-            if (myCardEnable[i] = canMove(myPlayCards.get(i))){
+            myCardEnable[i] = canMove(myPlayCards.get(i));
+            if (myCardEnable[i]){
                 if (firstMyCardEnable == -1){
                     firstMyCardEnable = i;
                 }
