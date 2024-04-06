@@ -356,7 +356,7 @@ public class JavaFXDashboardController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        versionText.setText("当前版本：" + VersionListener.getCurrentVersion());
+        versionText.setText("当前版本：" + VersionListener.getCurrentRelease().getTagName());
         assign();
         initModeAndDeck();
         initWorkDate();

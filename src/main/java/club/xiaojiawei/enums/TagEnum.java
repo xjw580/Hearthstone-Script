@@ -72,21 +72,20 @@ public enum TagEnum {
                 if (War.getMe() != null){
                     String gameId = tagChangeEntity.getEntity();
                     if (isTrue(tagChangeEntity.getValue())){
-                        //                匹配战网id后缀正则
-                        if (gameId.matches("^.+#\\d+$")){
-//                    是我
-                            if (Objects.equals(War.getMe().getGameId(), gameId) || (War.getRival().getGameId() != null && !Objects.equals(War.getRival().getGameId(), gameId))){
-                                War.setCurrentPlayer(War.getMe());
-                                War.getMe().resetResources();
-                                War.getMe().setGameId(gameId);
-                            }else {
-//                        是对手
-                                War.setCurrentPlayer(War.getRival());
-                                War.getMe().resetResources();
-                                War.getRival().setGameId(gameId);
-                            }
-                        }else {
+//                        匹配战网id后缀正则
+                        if (!gameId.matches("^.+#\\d+$")){
                             log.warn("非正常游戏id：" + gameId);
+                        }
+//                        是我
+                        if (Objects.equals(War.getMe().getGameId(), gameId) || (War.getRival().getGameId() != null && !Objects.equals(War.getRival().getGameId(), gameId))){
+                            War.setCurrentPlayer(War.getMe());
+                            War.getMe().resetResources();
+                            War.getMe().setGameId(gameId);
+                        }else {
+//                        是对手
+                            War.setCurrentPlayer(War.getRival());
+                            War.getMe().resetResources();
+                            War.getRival().setGameId(gameId);
                         }
                     }
                 }

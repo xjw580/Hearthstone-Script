@@ -3,7 +3,6 @@ package club.xiaojiawei.listener;
 import club.xiaojiawei.bean.Release;
 import club.xiaojiawei.data.ScriptStaticData;
 import club.xiaojiawei.data.SpringData;
-import club.xiaojiawei.enums.ConfigurationEnum;
 import club.xiaojiawei.utils.SystemUtil;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.Resource;
@@ -18,8 +17,6 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.Objects;
 import java.util.Properties;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static club.xiaojiawei.data.ScriptStaticData.PROJECT_NAME;
 import static club.xiaojiawei.enums.ConfigurationEnum.UPDATE_DEV;
@@ -36,7 +33,7 @@ public class VersionListener {
     @Getter
     private static Release latestRelease;
     @Getter
-    private static String currentVersion;
+    private static Release currentRelease;
     @Resource
     private RestTemplate restTemplate;
     @Resource
@@ -53,8 +50,15 @@ public class VersionListener {
             用idea启动时springData.getVersion()能读到正确的值
             打完包后启动this.getClass().getPackage().getImplementationVersion()能读到正确的值
         */
-        if ((currentVersion = VersionListener.class.getPackage().getImplementationVersion()) == null){
-            currentVersion = springData.getVersion();
+        String version = VersionListener.class.getPackage().getImplementationVersion();
+        currentRelease = new Release();
+        if (version == null){
+            currentRelease.setTagName(version = springData.getVersion());
+        }else {
+            currentRelease.setTagName(version);
+        }
+        if (!version.endsWith("GA")){
+            currentRelease.setPreRelease(true);
         }
     }
 
@@ -76,7 +80,9 @@ public class VersionListener {
                     for (int i = releases.length - 1; i >= 0; i--) {
                         Release release = releases[i];
                         if (!release.isPreRelease()){
-                            latestRelease = release;
+                            if (latestRelease == null || release.compareTo(latestRelease) > 0){
+                                latestRelease = release;
+                            }
                         }
                     }
                 }
@@ -98,9 +104,9 @@ public class VersionListener {
             }
         }
         if (latestRelease != null){
-            if (compareVersion(currentVersion, latestRelease.getTagName()) < 0){
+            if (currentRelease.compareTo(latestRelease) < 0){
                 canUpdate.set(true);
-                log.info("有更新可用😊，当前版本：" + currentVersion + ", 最新版本：" + latestRelease.getTagName());
+                log.info("有更新可用😊，当前版本：" + currentRelease + ", 最新版本：" + latestRelease);
                 SystemUtil.notice(
                         String.format("发现新版本：%s", VersionListener.getLatestRelease().getTagName()),
                         String.format("更新日志：\n%s", VersionListener.getLatestRelease().getBody()),
@@ -109,38 +115,12 @@ public class VersionListener {
                 );
             }else {
                 canUpdate.set(false);
-                log.info("已是最新，当前版本：" + currentVersion + ", 最新版本：" + latestRelease.getTagName());
+                log.info("已是最新，当前版本：" + currentRelease + ", 最新版本：" + latestRelease);
             }
         }else {
             canUpdate.set(false);
             log.warn("没有任何最新版本");
         }
-    }
-
-    private static int compareVersion(String version1, String version2){
-//        例：匹配v3.2.3.3-DEV中的3.2.3.3
-        String regex = "\\d+(\\.\\d+)*";
-        Pattern pattern = Pattern.compile(regex);
-        Matcher matcher1 = pattern.matcher(version1);
-        Matcher matcher2 = pattern.matcher(version2);
-        boolean isFind1 = matcher1.find();
-        boolean isFind2 = matcher2.find();
-        if (!isFind1 || !isFind2){
-            log.warn(String.format("版本号有误，version1：%s，version2：%s", version1, version2));
-            return Integer.MAX_VALUE;
-        }
-        String[] v1 = matcher1.group().split("\\.");
-        String[] v2 = matcher2.group().split("\\.");
-        int minLength = Math.min(v1.length, v2.length);
-        for (int i = 0; i < minLength; i++) {
-            String s1 = v1[i];
-            String s2 = v2[i];
-            int result = Integer.compare(Integer.parseInt(s1), Integer.parseInt(s2));
-            if (result != 0){
-                return result;
-            }
-        }
-        return Integer.compare(v1.length, v2.length);
     }
 
 }

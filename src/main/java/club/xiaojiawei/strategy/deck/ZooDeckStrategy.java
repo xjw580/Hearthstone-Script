@@ -45,11 +45,6 @@ public class ZooDeckStrategy extends AbstractDeckStrategy{
 
     PlayArea myPlayArea;
     PlayArea rivalPlayArea;
-    private Player me = War.getMe();
-    private Player rival = War.getRival();
-    private List<Card> myHandCards;
-    private List<Card> myPlayCards;
-    private List<Card> rivalPlayCards;
     private int coinIndex;
     private int index1, index2;
     private boolean usedPower;
@@ -67,14 +62,6 @@ public class ZooDeckStrategy extends AbstractDeckStrategy{
     @SneakyThrows
     @Override
     public void executeOutCard() {
-        this.me = me;
-        this.rival = rival;
-        myPlayCards = me.getPlayArea().getCards();
-        usedPower = false;
-        this.rivalPlayArea = rivalPlayArea;
-        this.myPlayArea = myPlayArea;
-        myHandCards = me.getHandArea().getCards();
-        rivalPlayCards = rivalPlayArea.getCards();
         coinIndex = findByCardId(myHandCards, "COIN");
         log.info("我方本回合费用：" + me.getResources());
         log.info("我方手牌数量：" + myHandCards.size());

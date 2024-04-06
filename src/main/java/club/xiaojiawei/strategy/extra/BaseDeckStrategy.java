@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.List;
 import java.util.Objects;
 
+import static club.xiaojiawei.enums.CardTypeEnum.HERO;
 import static club.xiaojiawei.enums.CardTypeEnum.MINION;
 
 /**
@@ -97,7 +98,8 @@ public class BaseDeckStrategy {
      * @return
      */
     protected boolean canPointedByRival(Card card){
-        return card.getCardType() == MINION && !(card.isImmune() || card.isStealth() || card.isDormantAwakenConditionEnchant());
+        return (card.getCardType() == MINION || card.getCardType() == HERO)
+                && !(card.isImmune() || card.isStealth() || card.isDormantAwakenConditionEnchant());
     }
 
     /**
@@ -106,7 +108,8 @@ public class BaseDeckStrategy {
      * @return
      */
     protected boolean canPointedByMe(Card card){
-        return card.getCardType() == MINION && !(card.isImmune() || card.isDormantAwakenConditionEnchant() || isImmunityMagic(card));
+        return (card.getCardType() == MINION || card.getCardType() == HERO)
+                && !(card.isImmune() || card.isDormantAwakenConditionEnchant() || isImmunityMagic(card));
     }
 
     /**
@@ -115,7 +118,8 @@ public class BaseDeckStrategy {
      * @return
      */
     protected boolean canMove(Card card){
-        return card.getCardType() == CardTypeEnum.MINION && !(card.isExhausted() || card.isFrozen() || card.isDormantAwakenConditionEnchant() || card.getAtc() <= 0);
+        return (card.getCardType() == CardTypeEnum.MINION || card.getCardType() == HERO)
+                && !(card.isExhausted() || card.isFrozen() || card.isDormantAwakenConditionEnchant() || card.getAtc() <= 0);
     }
 
     /**

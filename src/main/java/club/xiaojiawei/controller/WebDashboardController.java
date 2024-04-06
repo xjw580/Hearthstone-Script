@@ -55,7 +55,7 @@ public class WebDashboardController {
 
     @RequestMapping("/")
     public String index(Model model){
-        model.addAttribute("version", "当前版本号：" + VersionListener.getCurrentVersion());
+        model.addAttribute("version", "当前版本号：" + VersionListener.getCurrentRelease().getTagName());
         return "dashboard";
     }
 
