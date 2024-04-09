@@ -29,7 +29,7 @@
                                 </Tooltip>
                             </tooltip>
                             <graphic>
-                                <StartIco/>
+                                <StartIco fx:id="startIco"/>
                             </graphic>
                         </ToggleButton>
                         <ToggleButton fx:id="pauseButton" toggleGroup="$pauseToggleGroup" selected="true" text="暂停"
@@ -42,7 +42,7 @@
                                 </Tooltip>
                             </tooltip>
                             <graphic>
-                                <PauseIco/>
+                                <PauseIco fx:id="pauseIco" color="gray"/>
                             </graphic>
                         </ToggleButton>
                     </HBox>
@@ -121,25 +121,25 @@
                                 <HBox styleClass="timeHBox">
                                     <CheckBox styleClass="check-box-ui, check-box-ui-main"/>
                                     <HBox>
-                                        <Time showSelector="false"/>
+                                        <Time showIcon="false" size="SMALL" rightAngleBackground="false"/>
                                         <Text text="-" translateY="3" style="-fx-font-weight: BOLD"/>
-                                        <Time showSelector="false"/>
+                                        <Time showIcon="false" size="SMALL" rightAngleBackground="false"/>
                                     </HBox>
                                 </HBox>
                                 <HBox styleClass="timeHBox">
                                     <CheckBox styleClass="check-box-ui, check-box-ui-main"/>
                                     <HBox>
-                                        <Time showSelector="false"/>
+                                        <Time showIcon="false" size="SMALL" rightAngleBackground="false"/>
                                         <Text text="-" translateY="3" style="-fx-font-weight: BOLD"/>
-                                        <Time showSelector="false"/>
+                                        <Time showIcon="false" size="SMALL" rightAngleBackground="false"/>
                                     </HBox>
                                 </HBox>
                                 <HBox styleClass="timeHBox">
                                     <CheckBox styleClass="check-box-ui, check-box-ui-main"/>
                                     <HBox>
-                                        <Time showSelector="false"/>
+                                        <Time showIcon="false" size="SMALL" rightAngleBackground="false"/>
                                         <Text text="-" translateY="3" style="-fx-font-weight: BOLD"/>
-                                        <Time showSelector="false"/>
+                                        <Time showIcon="false" size="SMALL" rightAngleBackground="false"/>
                                     </HBox>
                                 </HBox>
                             </VBox>

@@ -4,8 +4,7 @@ import club.xiaojiawei.bean.Release;
 import club.xiaojiawei.bean.WsResult;
 import club.xiaojiawei.controls.NotificationManager;
 import club.xiaojiawei.controls.Time;
-import club.xiaojiawei.controls.ico.ClearIco;
-import club.xiaojiawei.controls.ico.FlushIco;
+import club.xiaojiawei.controls.ico.*;
 import club.xiaojiawei.data.ScriptStaticData;
 import club.xiaojiawei.enums.DeckEnum;
 import club.xiaojiawei.enums.RunModeEnum;
@@ -63,6 +62,8 @@ import static club.xiaojiawei.enums.ConfigurationEnum.RUN_MODE;
 @Slf4j
 public class JavaFXDashboardController implements Initializable {
 
+    @FXML private StartIco startIco;
+    @FXML private PauseIco pauseIco;
     @FXML private ToggleGroup pauseToggleGroup;
     @FXML private StackPane rootPane;
     @FXML private NotificationManager notificationManger;
@@ -273,10 +274,16 @@ public class JavaFXDashboardController implements Initializable {
                 startButton.getStyleClass().remove(btnPressedStyleClass);
                 pauseButton.getStyleClass().remove(btnPressedStyleClass);
                 if (t1 == startButton){
+                    startIco.setColor("gray");
+                    pauseIco.setColor("black");
                     startButton.getStyleClass().add(btnPressedStyleClass);
                     isPause.get().set(false);
                 }else if (t1 == pauseButton){
+                    pauseIco.setColor("gray");
+                    startIco.setColor("black");
                     pauseButton.getStyleClass().add(btnPressedStyleClass);
+                    AbstractIco graphic = (AbstractIco) pauseButton.getGraphic();
+                    graphic.setColor("gray");
                     isPause.get().set(true);
                 }
             }
