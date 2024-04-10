@@ -1,6 +1,6 @@
 ![GitHub release](https://img.shields.io/github/release/xjw580/Hearthstone-Script.svg)  ![GitHub](https://img.shields.io/github/license/xjw580/Hearthstone-Script?style=flat-square)
 
-# 炉石传说脚本（2024.01.25停更至国服回归）
+# 炉石传说脚本（网易暴雪复婚，本项目恢复更新，下个稳定版将炉石国服可玩后更新）
 ![favicon.ico](src/main/resources/static/img/favicon.ico)
 
 
