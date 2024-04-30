@@ -15,9 +15,9 @@
 
 > 目前处于项目维护阶段，只处理脚本运行状况问题，不处理出牌策略等相关问题。
 
-1. **任何问题都要通过提issue的方式，不要直接发邮件！**
+1. **任何问题都要通过提issue的方式提问**
 2. 在提issue时，请及时地回复作者的消息
-3. 当需要日志文件时，在C:\ProgramData\hs_script\log下，发到邮箱xjw580@qq.com,并注明issue的id
+3. 可以的话附上日志文件，在C:\ProgramData\hs_script\log下
 
 
 
