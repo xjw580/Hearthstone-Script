@@ -459,9 +459,10 @@ public class EvenNumberShamanDeckStrategy extends AbstractDeckStrategy{
                 return true;
             }
         }
+
         if (
                 (index = findByCardId(myHandCards, 图腾团聚)) != -1
-                && (( myPlayCards.size() <= 3 && findByCardId(myPlayCards, 驻锚图腾) != -1) || ( myPlayCards.size() >= rivalPlayCards.size() && myPlayCards.size() <= 2))
+                && (( myPlayArea.getMaxSize() - myPlayArea.size() >= 4 && findByCardId(myPlayCards, 驻锚图腾) != -1) || ( myPlayCards.size() >= rivalPlayCards.size() && myPlayArea.getMaxSize() - myPlayArea.size() >= 3))
         ){
             if (calcMyUsableResource() > 5 && (other = findByCardId(myHandCards, 驻锚图腾)) != -1){
                 myHandPointToMyPlay(other);
@@ -480,7 +481,7 @@ public class EvenNumberShamanDeckStrategy extends AbstractDeckStrategy{
         }
         if (
                 (index = findByCardId(myHandCards, 图腾团聚)) != -1
-                && (myPlayCards.size() == 3 && calcMyUsableResource() == 4 || myPlayCards.size() < 3)
+                && (myPlayArea.getMaxSize() - myPlayArea.size() >= 3 && calcMyUsableResource() == 4 || myPlayArea.getMaxSize() - myPlayArea.size() >= 4)
         ){
             if (calcMyUsableResource() > 5 && (other = findByCardId(myHandCards, 驻锚图腾)) != -1){
                 myHandPointToMyPlay(other);

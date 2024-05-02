@@ -35,10 +35,19 @@ public abstract class Area {
     @Getter
     private int oldMaxSize;
 
+    @Setter
+    @Getter
+    private int defaultMaxSize;
+
     public Area(int maxSize) {
+        this(maxSize, maxSize);
+    }
+
+    public Area(int maxSize, int defaultMaxSize) {
         this.cards = new ArrayList<>();
         this.zeroCards = new HashMap<>();
         this.maxSize = maxSize;
+        this.defaultMaxSize = defaultMaxSize;
     }
 
     protected void addZone(Card card){

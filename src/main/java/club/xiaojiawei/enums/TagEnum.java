@@ -171,7 +171,7 @@ public enum TagEnum {
                     playArea.setMaxSize(1);
                 }else if (Objects.equals(tagChangeEntity.getValue(), "0")){
                     playArea.setOldMaxSize(playArea.getMaxSize());
-                    playArea.setMaxSize(playArea.getOldMaxSize());
+                    playArea.setMaxSize(playArea.getDefaultMaxSize());
                 }
             },
             null),

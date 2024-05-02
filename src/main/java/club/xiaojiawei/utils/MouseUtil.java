@@ -173,7 +173,7 @@ public class MouseUtil {
      * 炉石里点击右键可取消操作
      */
     public static void gameCancel(){
-        SystemUtil.delay(500, 1000);
+        SystemUtil.delay(250, 500);
         ROBOT.mousePress(BUTTON3_DOWN_MASK);
         delayShort();
         ROBOT.mouseRelease(BUTTON3_DOWN_MASK);
@@ -182,6 +182,7 @@ public class MouseUtil {
     private static void delayShort(){
         SystemUtil.delay(30, 80);
     }
+
     /**
      * 计算斜率
      * @return double 斜率
