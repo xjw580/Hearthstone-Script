@@ -1,5 +1,6 @@
-package club.xiaojiawei.controller;
+package club.xiaojiawei.controller.javafx;
 
+import club.xiaojiawei.controller.web.DashboardController;
 import club.xiaojiawei.controls.NotificationManager;
 import club.xiaojiawei.controls.PasswordTextField;
 import club.xiaojiawei.controls.Switch;
@@ -10,6 +11,7 @@ import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -28,7 +30,7 @@ import static club.xiaojiawei.enums.ConfigurationEnum.*;
  */
 @Component
 @Slf4j
-public class JavaFXAdvancedSettingsController implements Initializable {
+public class AdvancedSettingsController implements Initializable {
 
     @FXML private VBox mainVBox;
     @FXML private NotificationManager notificationManager;
@@ -44,6 +46,8 @@ public class JavaFXAdvancedSettingsController implements Initializable {
     @Resource private PropertiesUtil propertiesUtil;
 
     private ChangeListener<Scene> sceneListener;
+    @FXML
+    private AnchorPane rootPane;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -109,7 +113,7 @@ public class JavaFXAdvancedSettingsController implements Initializable {
     @FXML protected void saveVerifyPassword(Event event){
         scriptConfiguration.setProperty(VERIFY_PASSWORD.getKey(), psw.getText());
         propertiesUtil.storeScriptProperties();
-        WebDashboardController.TOKEN_SET.clear();
+        DashboardController.TOKEN_SET.clear();
         notificationManager.showSuccess("Web密码保存成功", 2);
     }
 }

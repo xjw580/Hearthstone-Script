@@ -1,7 +1,7 @@
 package club.xiaojiawei.config;
 
 import club.xiaojiawei.bean.WsResult;
-import club.xiaojiawei.controller.JavaFXDashboardController;
+import club.xiaojiawei.controller.javafx.MainController;
 import club.xiaojiawei.core.Core;
 import club.xiaojiawei.enums.WsResultTypeEnum;
 import club.xiaojiawei.status.Work;
@@ -28,7 +28,7 @@ public class PauseConfig {
 
     @Resource
     @Lazy
-    private JavaFXDashboardController javafxDashboardController;
+    private MainController javafxMainController;
 
     @Resource
     @Lazy
@@ -38,7 +38,7 @@ public class PauseConfig {
     public AtomicReference<BooleanProperty> isPause(){
         SimpleBooleanProperty booleanProperty = new SimpleBooleanProperty(true);
         booleanProperty.addListener((observable, oldValue, newValue) -> {
-            javafxDashboardController.changeSwitch(newValue);
+            javafxMainController.changeSwitch(newValue);
             WebSocketServer.sendAllMessage(WsResult.ofNew(WsResultTypeEnum.PAUSE, newValue));
             if (newValue){
                 SystemUtil.cancelAllRunnable();

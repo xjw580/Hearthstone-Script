@@ -1,6 +1,6 @@
 package club.xiaojiawei.core;
 
-import club.xiaojiawei.controller.JavaFXDashboardController;
+import club.xiaojiawei.controller.javafx.MainController;
 import club.xiaojiawei.data.ScriptStaticData;
 import club.xiaojiawei.enums.WindowEnum;
 import club.xiaojiawei.starter.AbstractStarter;
@@ -32,7 +32,7 @@ public class Core{
     @Resource
     private AtomicReference<BooleanProperty> isPause;
     @Resource
-    private JavaFXDashboardController javafxDashboardController;
+    private MainController javafxMainController;
     @Resource
     private ThreadPoolExecutor coreThreadPool;
 
@@ -51,7 +51,7 @@ public class Core{
                 Platform.runLater(() -> WindowUtil.showStage(WindowEnum.SETTINGS));
                 isPause.get().set(true);
             }else if (!isPause.get().get()){
-                javafxDashboardController.expandedLogPane();
+                javafxMainController.expandedLogPane();
                 log.info("热键：Ctrl+P 开始/停止程序,Alt+P 关闭程序");
                 starter.start();
             }

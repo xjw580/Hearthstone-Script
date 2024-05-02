@@ -1,7 +1,7 @@
 package club.xiaojiawei;
 
 import club.xiaojiawei.bean.LogRunnable;
-import club.xiaojiawei.controller.JavaFXStartupController;
+import club.xiaojiawei.controller.javafx.StartupController;
 import club.xiaojiawei.data.ScriptStaticData;
 import club.xiaojiawei.data.SpringData;
 import club.xiaojiawei.enums.DeckEnum;
@@ -29,7 +29,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.util.List;
-import java.util.Timer;
 import java.util.*;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -78,7 +77,7 @@ public class UIApplication extends Application implements ApplicationRunner {
             launchSpringBoot();
             setSystemTray();
             Platform.runLater(() -> {
-                Stage stage = WindowUtil.buildStage(WindowEnum.DASHBOARD);
+                Stage stage = WindowUtil.buildStage(WindowEnum.MAIN);
                 mainShowingListener = (observableValue, aBoolean, t1) -> {
                     if (t1) {
                         stage.showingProperty().removeListener(mainShowingListener);
@@ -109,11 +108,11 @@ public class UIApplication extends Application implements ApplicationRunner {
 //            左键点击
             if (e.getButton() == 1){
                 Platform.runLater(() -> {
-                    Stage stage = WindowUtil.getStage(WindowEnum.DASHBOARD);
+                    Stage stage = WindowUtil.getStage(WindowEnum.MAIN);
                     if (stage.isShowing()){
-                        WindowUtil.hideStage(WindowEnum.DASHBOARD);
+                        WindowUtil.hideStage(WindowEnum.MAIN);
                     }else {
-                        WindowUtil.showStage(WindowEnum.DASHBOARD);
+                        WindowUtil.showStage(WindowEnum.MAIN);
                     }
                 });
             }
@@ -121,7 +120,7 @@ public class UIApplication extends Application implements ApplicationRunner {
     }
 
     private void afterShowing(){
-        JavaFXStartupController.complete();
+        StartupController.complete();
 
         DeckEnum deckEnum = DeckEnum.valueOf(scriptConfiguration.getProperty(DECK.getKey()));
         log.info(deckEnum.getComment() + "卡组代码：" + deckEnum.getDeckCode());

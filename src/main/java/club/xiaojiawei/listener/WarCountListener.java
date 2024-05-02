@@ -1,7 +1,7 @@
 package club.xiaojiawei.listener;
 
 import club.xiaojiawei.bean.WsResult;
-import club.xiaojiawei.controller.JavaFXDashboardController;
+import club.xiaojiawei.controller.javafx.MainController;
 import club.xiaojiawei.enums.WsResultTypeEnum;
 import club.xiaojiawei.status.War;
 import club.xiaojiawei.ws.WebSocketServer;
@@ -21,7 +21,7 @@ import org.springframework.stereotype.Component;
 public class WarCountListener {
 
     @Resource
-    private JavaFXDashboardController javafxDashboardController;
+    private MainController javafxMainController;
     @Getter
     private static String winningPercentage = "?";
 
@@ -35,10 +35,10 @@ public class WarCountListener {
     }
 
     private void setJavaFXGUI(Number warCount){
-        javafxDashboardController.getGameCount().setText(warCount.toString());
-        javafxDashboardController.getWinningPercentage().setText(winningPercentage = String.format("%.0f", War.WIN_COUNT.get() / warCount.doubleValue() * 100) + "%");
-        javafxDashboardController.getGameTime().setText(formatTime(War.GAME_TIME.get()));
-        javafxDashboardController.getExp().setText(String.valueOf(War.EXP.get()));
+        javafxMainController.getGameCount().setText(warCount.toString());
+        javafxMainController.getWinningPercentage().setText(winningPercentage = String.format("%.0f", War.WIN_COUNT.get() / warCount.doubleValue() * 100) + "%");
+        javafxMainController.getGameTime().setText(formatTime(War.GAME_TIME.get()));
+        javafxMainController.getExp().setText(String.valueOf(War.EXP.get()));
     }
 
     private static String formatTime(int time) {

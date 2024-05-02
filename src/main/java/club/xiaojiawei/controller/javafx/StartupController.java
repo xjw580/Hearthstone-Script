@@ -1,4 +1,4 @@
-package club.xiaojiawei.controller;
+package club.xiaojiawei.controller.javafx;
 
 import club.xiaojiawei.data.ScriptStaticData;
 import club.xiaojiawei.enums.WindowEnum;
@@ -18,7 +18,7 @@ import java.util.TimerTask;
  * @author 肖嘉威
  * @date 2023/10/14 12:43
  */
-public class JavaFXStartupController implements Initializable {
+public class StartupController implements Initializable {
 
     @FXML
     private ProgressBar progressBar;

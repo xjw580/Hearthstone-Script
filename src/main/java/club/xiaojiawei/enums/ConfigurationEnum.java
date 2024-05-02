@@ -75,6 +75,11 @@ public enum ConfigurationEnum {
      * 允许发送windows通知
      */
     SEND_NOTICE("sendNotice", "true"),
+    /**
+     * 鼠标操作完一套流程的停顿时间
+     */
+    MOUSE_ACTION_INTERVAL("mouseActionInterval", "3500"),
+    MOUSE_MOVE_INTERVAL("mouseMoveInterval", "13"),
     ;
     private final String key;
     private final String defaultValue;

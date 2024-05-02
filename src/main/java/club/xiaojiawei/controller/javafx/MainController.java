@@ -1,7 +1,8 @@
-package club.xiaojiawei.controller;
+package club.xiaojiawei.controller.javafx;
 
 import club.xiaojiawei.bean.Release;
 import club.xiaojiawei.bean.WsResult;
+import club.xiaojiawei.controls.*;
 import club.xiaojiawei.controls.NotificationManager;
 import club.xiaojiawei.controls.Time;
 import club.xiaojiawei.controls.ico.*;
@@ -28,10 +29,12 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.*;
 import javafx.scene.text.Text;
 import javafx.stage.Popup;
 import javafx.util.Duration;
@@ -60,7 +63,7 @@ import static club.xiaojiawei.enums.ConfigurationEnum.RUN_MODE;
  */
 @Component
 @Slf4j
-public class JavaFXDashboardController implements Initializable {
+public class MainController implements Initializable {
 
     @FXML private StartIco startIco;
     @FXML private PauseIco pauseIco;
@@ -100,6 +103,8 @@ public class JavaFXDashboardController implements Initializable {
     private static AtomicReference<BooleanProperty> staticIsPause;
     private static final SimpleBooleanProperty IS_UPDATING = new SimpleBooleanProperty(false);
     private boolean isNotHoverLog = true;
+    @FXML
+    private TitledPane titledPaneControl;
 
     public void expandedLogPane(){
         accordion.setExpandedPane(titledPaneLog);

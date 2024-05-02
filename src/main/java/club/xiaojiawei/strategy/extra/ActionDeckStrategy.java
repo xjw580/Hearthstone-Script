@@ -2,6 +2,7 @@ package club.xiaojiawei.strategy.extra;
 
 import club.xiaojiawei.bean.entity.Card;
 import club.xiaojiawei.data.GameRationStaticData;
+import club.xiaojiawei.enums.ConfigurationEnum;
 import club.xiaojiawei.status.War;
 import club.xiaojiawei.utils.MouseUtil;
 import club.xiaojiawei.utils.RandomUtil;
@@ -9,6 +10,8 @@ import club.xiaojiawei.utils.SystemUtil;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+
+import java.util.Properties;
 
 import static club.xiaojiawei.data.GameRationStaticData.*;
 import static club.xiaojiawei.data.ScriptStaticData.GAME_RECT;
@@ -20,12 +23,15 @@ import static club.xiaojiawei.data.ScriptStaticData.GAME_RECT;
 @Slf4j
 @Component
 public class ActionDeckStrategy extends FindDeckStrategy{
+
     @Resource
     protected MouseUtil mouseUtil;
+    @Resource
+    protected Properties scriptConfiguration;
     /**
      * 每次行动后停顿时间
      */
-    protected static final int ACTION_INTERVAL = 3500;
+//    protected static int ACTION_INTERVAL = Integer.parseInt(ConfigurationEnum.MOUSE_ACTION_INTERVAL.getDefaultValue());
 
     protected double getFloatCardClearanceForFourCard(){
         return GameRationStaticData.GAME_WINDOW_ASPECT_TO_HEIGHT_RATIO * GameRationStaticData.CARD_HORIZONTAL_CLEARANCE_WHEN_FOUR_CARD * (GAME_RECT.bottom - GAME_RECT.top);
@@ -118,7 +124,7 @@ public class ActionDeckStrategy extends FindDeckStrategy{
             return false;
         }
         myHandPointToMyPlayForBase(handIndex, myPlayCards.size(), true);
-        SystemUtil.delay(ACTION_INTERVAL);
+        SystemUtil.delay(getActionInterval());
         log.info("当前可用水晶数：" + calcMyUsableResource());
         if (findByEntityId(myHandCards, card) == -1){
             return true;
@@ -135,7 +141,7 @@ public class ActionDeckStrategy extends FindDeckStrategy{
             return false;
         }
         myHandPointToMyPlayForBase(myHandIndex, myPlayIndex, true);
-        SystemUtil.delay(ACTION_INTERVAL);
+        SystemUtil.delay(getActionInterval());
         log.info("当前可用水晶数：" + calcMyUsableResource());
         if (findByEntityId(myHandCards, card) == -1){
             return true;
@@ -152,7 +158,7 @@ public class ActionDeckStrategy extends FindDeckStrategy{
             return false;
         }
         myHandPointToMyPlayForBase(myHandIndex, myPlayIndex, false);
-        SystemUtil.delay(ACTION_INTERVAL);
+        SystemUtil.delay(getActionInterval());
         log.info("当前可用水晶数：" + calcMyUsableResource());
         if (findByEntityId(myHandCards, card) == -1){
             return true;
@@ -186,7 +192,7 @@ public class ActionDeckStrategy extends FindDeckStrategy{
         }
         SystemUtil.updateGameRect();
         myHandPointTo(myHandIndex, getRivalPlayCardPos(rival.getPlayArea().getCards().size(), rivalPlayIndex));
-        SystemUtil.delay(ACTION_INTERVAL);
+        SystemUtil.delay(getActionInterval());
         log.info("当前可用水晶数：" + calcMyUsableResource());
         if (findByEntityId(myHandCards, card) == -1){
             return true;
@@ -204,7 +210,7 @@ public class ActionDeckStrategy extends FindDeckStrategy{
         }
         SystemUtil.updateGameRect();
         myHandPointTo(myHandIndex, getRivalHeroPos());
-        SystemUtil.delay(ACTION_INTERVAL);
+        SystemUtil.delay(getActionInterval());
         log.info("当前可用水晶数：" + calcMyUsableResource());
         if (findByEntityId(myHandCards, card) == -1){
             return true;
@@ -221,7 +227,7 @@ public class ActionDeckStrategy extends FindDeckStrategy{
             return false;
         }
         myHandPointToMyPlayForBase(myHandIndex, -1, false);
-        SystemUtil.delay(ACTION_INTERVAL);
+        SystemUtil.delay(getActionInterval());
         log.info("当前可用水晶数：" + calcMyUsableResource());
         if (findByEntityId(myHandCards, card) == -1){
             return true;
@@ -236,7 +242,7 @@ public class ActionDeckStrategy extends FindDeckStrategy{
         }
         SystemUtil.updateGameRect();
         myHeroPointTo(getRivalHeroPos());
-        SystemUtil.delay(ACTION_INTERVAL);
+        SystemUtil.delay(getActionInterval());
         return true;
     }
     protected boolean myHeroPointToRivalPlay(int rivalPlayIndex){
@@ -252,7 +258,7 @@ public class ActionDeckStrategy extends FindDeckStrategy{
         SystemUtil.updateGameRect();
         int[] rivalPlayPos = getRivalPlayCardPos(rivalPlayCards.size(), rivalPlayIndex);
         myHeroPointTo(rivalPlayPos);
-        SystemUtil.delay(ACTION_INTERVAL + 750);
+        SystemUtil.delay(getActionInterval() + 750);
         return true;
     }
     private void myHeroPointTo(int[] endPos){
@@ -286,7 +292,7 @@ public class ActionDeckStrategy extends FindDeckStrategy{
                 getMyPlayCardPos(me.getPlayArea().getCards().size(), myPlayIndex),
                 rivalHeroPos
         );
-        SystemUtil.delay(ACTION_INTERVAL - 700);
+        SystemUtil.delay(getActionInterval() - 700);
         return true;
     }
 
@@ -312,7 +318,7 @@ public class ActionDeckStrategy extends FindDeckStrategy{
                 rivalPlayPos[0],
                 rivalPlayPos[1]
         );
-        SystemUtil.delay(ACTION_INTERVAL + 750);
+        SystemUtil.delay(getActionInterval() + 750);
         return true;
     }
 
@@ -325,7 +331,7 @@ public class ActionDeckStrategy extends FindDeckStrategy{
         }
         SystemUtil.updateGameRect();
         mouseUtil.leftButtonClick(getMyPowerPos());
-        SystemUtil.delay(ACTION_INTERVAL);
+        SystemUtil.delay(getActionInterval());
         log.info("当前可用水晶数：" + calcMyUsableResource());
         return true;
     }
@@ -356,7 +362,7 @@ public class ActionDeckStrategy extends FindDeckStrategy{
                 playPos,
                 getMyPlayCardPos(me.getPlayArea().getCards().size() + 1, thenMyPlayIndex)
         );
-        SystemUtil.delay(ACTION_INTERVAL);
+        SystemUtil.delay(getActionInterval());
         log.info("当前可用水晶数：" + calcMyUsableResource());
         if (findByEntityId(myHandCards, card) == -1){
             return true;
@@ -377,7 +383,7 @@ public class ActionDeckStrategy extends FindDeckStrategy{
                 playPos,
                 getRivalPlayCardPos(rival.getPlayArea().getCards().size(), rivalPlayIndex)
         );
-        SystemUtil.delay(ACTION_INTERVAL);
+        SystemUtil.delay(getActionInterval());
         log.info("当前可用水晶数：" + calcMyUsableResource());
         if (findByEntityId(myHandCards, card) == -1){
             return true;
@@ -398,7 +404,7 @@ public class ActionDeckStrategy extends FindDeckStrategy{
                 playPos,
                 getRivalHeroPos()
         );
-        SystemUtil.delay(ACTION_INTERVAL);
+        SystemUtil.delay(getActionInterval());
         log.info("当前可用水晶数：" + calcMyUsableResource());
         if (findByEntityId(myHandCards, card) == -1){
             return true;
@@ -419,6 +425,10 @@ public class ActionDeckStrategy extends FindDeckStrategy{
                 (GAME_RECT.bottom + GAME_RECT.top >> 1) + RandomUtil.getRandom(-15, 15)
         );
         SystemUtil.delayShort();
+    }
+
+    protected int getActionInterval(){
+        return Integer.parseInt(scriptConfiguration.getProperty(ConfigurationEnum.MOUSE_ACTION_INTERVAL.getKey(), ConfigurationEnum.MOUSE_ACTION_INTERVAL.getDefaultValue()));
     }
 
 }

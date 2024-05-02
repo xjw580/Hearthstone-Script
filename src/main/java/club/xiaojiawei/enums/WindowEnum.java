@@ -20,8 +20,8 @@ public enum WindowEnum {
             600D, 400D, -1, -1,
             false, DECORATED
     ),
-    DASHBOARD(
-            "dashboard.fxml", ScriptStaticData.SCRIPT_NAME, 220D,
+    MAIN(
+            "main.fxml", ScriptStaticData.SCRIPT_NAME, 220D,
             670D, Screen.getPrimary().getBounds().getWidth() - 215D, (Screen.getPrimary().getBounds().getHeight() - 670D) / 2,
             true, DECORATED
     ),

@@ -30,17 +30,24 @@ public class MouseUtil {
      * 鼠标每次移动后的间隔时间：ms
      */
     private static final int MIN_MOVE_INTERVAL = 1;
-    private static final int MAX_MOVE_INTERVAL = 13;
     /**
      * 鼠标每次移动的距离：px
      */
     private static final int MOVE_DISTANCE = 10;
+    private static Properties scriptConfiguration;
     @Resource
     private AtomicReference<BooleanProperty> isPause;
-    @Resource
-    private Properties scriptConfiguration;
     private double initX;
     private double initY;
+
+    @Resource
+    public void setScriptConfiguration(Properties scriptConfiguration) {
+        MouseUtil.scriptConfiguration = scriptConfiguration;
+    }
+
+    private static int getMaxMoveInterval(){
+        return Integer.parseInt(scriptConfiguration.getProperty(ConfigurationEnum.MOUSE_MOVE_INTERVAL.getKey(), ConfigurationEnum.MOUSE_MOVE_INTERVAL.getDefaultValue()));
+    }
 
     /**
      * 鼠标左键从指定处拖拽到指定处
@@ -65,7 +72,7 @@ public class MouseUtil {
             SystemUtil.delayShort();
             for (int i = 0; i < 50; i++) {
                 ROBOT.mouseMove(startX, --startY);
-                SystemUtil.delay(MIN_MOVE_INTERVAL, MAX_MOVE_INTERVAL);
+                SystemUtil.delay(MIN_MOVE_INTERVAL, getMaxMoveInterval());
             }
             SystemUtil.delayShort();
             moveMouseByLine(startX, startY, endX, endY);
@@ -202,23 +209,23 @@ public class MouseUtil {
         if (Math.abs(startY - endY) <= 5){
             for (startX -= MOVE_DISTANCE; startX >= endX; startX -= MOVE_DISTANCE){
                 ROBOT.mouseMove(startX, startY);
-                SystemUtil.delay(MIN_MOVE_INTERVAL, MAX_MOVE_INTERVAL);
+                SystemUtil.delay(MIN_MOVE_INTERVAL, getMaxMoveInterval());
             }
         }else if (Math.abs(startX - endX) <= 5){
             for (startY -= MOVE_DISTANCE; startY >= endY; startY -= MOVE_DISTANCE){
                 ROBOT.mouseMove(startX, startY);
-                SystemUtil.delay(MIN_MOVE_INTERVAL, MAX_MOVE_INTERVAL);
+                SystemUtil.delay(MIN_MOVE_INTERVAL, getMaxMoveInterval());
             }
         }else {
             double k = calcK(startX, startY, endX, endY);
             double b = startY - k * startX;
             for (startY -= MOVE_DISTANCE; startY >= endY; startY -= MOVE_DISTANCE){
                 ROBOT.mouseMove((int) ((startY - b) / k), startY);
-                SystemUtil.delay(MIN_MOVE_INTERVAL, MAX_MOVE_INTERVAL);
+                SystemUtil.delay(MIN_MOVE_INTERVAL, getMaxMoveInterval());
             }
         }
         ROBOT.mouseMove(endX, endY);
-        SystemUtil.delay(MIN_MOVE_INTERVAL, MAX_MOVE_INTERVAL);
+        SystemUtil.delay(MIN_MOVE_INTERVAL, getMaxMoveInterval());
     }
     /**
      * 鼠标按照贝塞尔曲线方式移动

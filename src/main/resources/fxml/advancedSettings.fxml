@@ -12,7 +12,7 @@
             xmlns:fx="http://javafx.com/fxml"
             stylesheets="@css/advancedSettings.css"
             fx:id="rootPane"
-            fx:controller="club.xiaojiawei.controller.JavaFXAdvancedSettingsController">
+            fx:controller="club.xiaojiawei.controller.javafx.AdvancedSettingsController">
     <VBox fx:id="mainVBox">
         <HBox styleClass="h-box">
             <Text text="自动打开Web界面"/>

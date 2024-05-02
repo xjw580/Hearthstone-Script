@@ -5,7 +5,7 @@ import club.xiaojiawei.bean.entity.ExtraEntity;
 import club.xiaojiawei.bean.Player;
 import club.xiaojiawei.bean.entity.TagChangeEntity;
 import club.xiaojiawei.bean.area.Area;
-import club.xiaojiawei.controller.JavaFXDashboardController;
+import club.xiaojiawei.controller.javafx.MainController;
 import club.xiaojiawei.enums.StepEnum;
 import club.xiaojiawei.enums.WarPhaseEnum;
 import club.xiaojiawei.enums.ZoneEnum;
@@ -104,7 +104,7 @@ public class War {
         log.info("本局游戏时长：" + time + "分钟");
         GAME_TIME.set((int) (time + GAME_TIME.get()));
         int winExp, lostExp;
-        switch (JavaFXDashboardController.getCurrentRunMode()){
+        switch (MainController.getCurrentRunMode()){
             case STANDARD, WILD,CLASSIC, TWIST -> {
                 winExp = 8;
                 lostExp = 6;

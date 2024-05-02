@@ -4,7 +4,7 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.UnsynchronizedAppenderBase;
 import club.xiaojiawei.bean.WsResult;
-import club.xiaojiawei.controller.JavaFXDashboardController;
+import club.xiaojiawei.controller.javafx.MainController;
 import club.xiaojiawei.enums.WsResultTypeEnum;
 import club.xiaojiawei.ws.WebSocketServer;
 import javafx.application.Platform;
@@ -30,9 +30,9 @@ public class ExtraLogAppender extends UnsynchronizedAppenderBase<ILoggingEvent> 
 
     @SuppressWarnings("all")
     private void appendJavaFX(ILoggingEvent event){
-        if (JavaFXDashboardController.getStaticLogVBox() != null && JavaFXDashboardController.getStaticAccordion()!= null){
+        if (MainController.getStaticLogVBox() != null && MainController.getStaticAccordion()!= null){
             Platform.runLater(() -> {
-                ObservableList<Node> list = JavaFXDashboardController.getStaticLogVBox().getChildren();
+                ObservableList<Node> list = MainController.getStaticLogVBox().getChildren();
                 //                大于二百五条就清空,防止内存泄露和性能问题
                 if (list.size() > 250){
                     list.clear();
@@ -49,7 +49,7 @@ public class ExtraLogAppender extends UnsynchronizedAppenderBase<ILoggingEvent> 
                     text = new Text(event.getMessage() + "，查看脚本日志获取详细错误信息");
                     text.getStyleClass().add("error");
                 }
-                text.wrappingWidthProperty().bind(JavaFXDashboardController.getStaticAccordion().widthProperty().subtract(15));
+                text.wrappingWidthProperty().bind(MainController.getStaticAccordion().widthProperty().subtract(15));
                 list.add(text);
             });
         }

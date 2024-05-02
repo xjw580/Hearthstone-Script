@@ -8,9 +8,9 @@
 <?import javafx.util.Duration?>
 <?import club.xiaojiawei.factory.NotificationFactory?>
 <StackPane xmlns:fx="http://javafx.com/fxml"
-           stylesheets="@css/dashboard.css"
+           stylesheets="@css/main.css"
            fx:id="rootPane"
-           fx:controller="club.xiaojiawei.controller.JavaFXDashboardController">
+           fx:controller="club.xiaojiawei.controller.javafx.MainController">
     <fx:define>
         <ToggleGroup fx:id="pauseToggleGroup"/>
     </fx:define>

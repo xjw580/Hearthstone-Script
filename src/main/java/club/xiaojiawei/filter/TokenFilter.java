@@ -1,6 +1,6 @@
 package club.xiaojiawei.filter;
 
-import club.xiaojiawei.controller.WebDashboardController;
+import club.xiaojiawei.controller.web.DashboardController;
 import jakarta.annotation.Resource;
 import jakarta.servlet.*;
 import jakarta.servlet.annotation.WebFilter;
@@ -47,7 +47,7 @@ public class TokenFilter implements Filter {
                 response.setStatus(403);
                 return;
             }
-            if (WebDashboardController.TOKEN_SET.contains(cookie.getValue())){
+            if (DashboardController.TOKEN_SET.contains(cookie.getValue())){
                 filterChain.doFilter(servletRequest, servletResponse);
             }else {
                 response.setStatus(403);

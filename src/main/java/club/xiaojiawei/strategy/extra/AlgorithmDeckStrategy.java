@@ -521,4 +521,5 @@ public class AlgorithmDeckStrategy extends ActionDeckStrategy{
 //        不选
         calcFreeEatRivalCardRecursive(result, myPlayCards, indexList, rivalBlood, rivalAtc,  atcSum, index + 1, maxDeathCount);
     }
+
 }

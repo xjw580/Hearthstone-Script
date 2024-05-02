@@ -11,7 +11,7 @@
             xmlns:fx="http://javafx.com/fxml"
             stylesheets="@css/initSettings.css"
             fx:id="rootPane"
-            fx:controller="club.xiaojiawei.controller.JavaFXInitSettingsController">
+            fx:controller="club.xiaojiawei.controller.javafx.InitSettingsController">
     <VBox fx:id="mainVBox">
         <HBox styleClass="h-box">
             <Text text="炉石传说安装路径"/>
@@ -40,10 +40,10 @@
     </VBox>
     <HBox AnchorPane.bottomAnchor="15" AnchorPane.rightAnchor="15" spacing="20" alignment="CENTER">
         <HBox spacing="5" alignment="CENTER">
-            <Button fx:id="apply" text="应用" styleClass="btn-ui, btn-ui-normal" onAction="#apply"/>
+            <Button text="应用" styleClass="btn-ui, btn-ui-normal" onAction="#apply"/>
         </HBox>
         <HBox HBox.hgrow="ALWAYS"/>
-        <Button fx:id="save" text="保存" styleClass="btn-ui, btn-ui-success" onAction="#save" />
+        <Button text="保存" styleClass="btn-ui, btn-ui-success" onAction="#save" />
     </HBox>
     <NotificationManager fx:id="notificationManager" notificationPos="BOTTOM_CENTER">
         <NotificationFactory showingCloseBtn="false" size="SMALL"/>

@@ -1,7 +1,8 @@
-package club.xiaojiawei.controller;
+package club.xiaojiawei.controller.web;
 
 
 import club.xiaojiawei.bean.Result;
+import club.xiaojiawei.controller.javafx.MainController;
 import club.xiaojiawei.data.ScriptStaticData;
 import club.xiaojiawei.enums.DeckEnum;
 import club.xiaojiawei.listener.VersionListener;
@@ -40,7 +41,7 @@ import static club.xiaojiawei.enums.ConfigurationEnum.VERIFY_PASSWORD;
  */
 @Controller
 @Slf4j
-public class WebDashboardController {
+public class DashboardController {
 
     public static final LinkedHashSet<String> TOKEN_SET = new LinkedHashSet<>();
 
@@ -51,7 +52,7 @@ public class WebDashboardController {
     @Resource
     private Properties scriptConfiguration;
     @Resource
-    private JavaFXDashboardController javafxDashboardController;
+    private MainController javafxMainController;
 
     @RequestMapping("/")
     public String index(Model model){
@@ -143,14 +144,14 @@ public class WebDashboardController {
         System.arraycopy(workTimeFlagArr, 0, Work.getWorkTimeFlagArr(), 0, Work.getWorkTimeFlagArr().length);
         System.arraycopy(workTimeArr, 0, Work.getWorkTimeArr(), 0, Work.getWorkTimeArr().length);
         Work.storeWorkDate();
-        javafxDashboardController.initWorkDate();
+        javafxMainController.initWorkDate();
         return Result.ofSuccess();
     }
 
     @RequestMapping("/dashboard/changeDeck")
     @ResponseBody
     public Result<Object> changeDeck(@RequestParam("deckComment")String deckComment){
-        javafxDashboardController.changeDeck(deckComment);
+        javafxMainController.changeDeck(deckComment);
         return Result.ofSuccess();
     }
 

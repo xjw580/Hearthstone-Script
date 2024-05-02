@@ -1,7 +1,7 @@
 package club.xiaojiawei.status;
 
 import club.xiaojiawei.bean.WsResult;
-import club.xiaojiawei.controller.JavaFXDashboardController;
+import club.xiaojiawei.controller.javafx.MainController;
 import club.xiaojiawei.controls.TimeSelector;
 import club.xiaojiawei.core.Core;
 import club.xiaojiawei.enums.WsResultTypeEnum;
@@ -121,12 +121,12 @@ public class Work {
                 workLog();
                 core.start();
             }else if (Objects.equals(scriptProperties.getProperty(AUTO_UPDATE.getKey()), "true") && VersionListener.getCanUpdate().get()){
-                if (!new File(TEMP_VERSION_PATH).exists() && !JavaFXDashboardController.downloadRelease(VersionListener.getLatestRelease())){
+                if (!new File(TEMP_VERSION_PATH).exists() && !MainController.downloadRelease(VersionListener.getLatestRelease())){
                     log.warn(String.format("新版本<%s>下载失败", VersionListener.getLatestRelease().getTagName()));
                     VersionListener.getCanUpdate().set(false);
                     return;
                 }
-                Platform.runLater(JavaFXDashboardController::execUpdate);
+                Platform.runLater(MainController::execUpdate);
             }
         }
     }

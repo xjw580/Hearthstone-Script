@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import club.xiaojiawei.controls.NotificationManager?>
+<?import club.xiaojiawei.controls.NumberField?>
+<?import club.xiaojiawei.factory.NotificationFactory?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.control.Button?>
+<?import java.lang.Double?>
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            stylesheets="@css/strategySettings.css"
+            fx:id="rootPane"
+            fx:controller="club.xiaojiawei.controller.javafx.StrategySettingsController"
+            prefHeight="324.0">
+    <VBox fx:id="mainVBox">
+        <fx:define>
+            <Double fx:id="maxFieldWidth" fx:value="120"/>
+        </fx:define>
+        <HBox styleClass="h-box">
+            <Text text="操作间隔/ms"/>
+            <HBox HBox.hgrow="ALWAYS"/>
+            <NumberField fx:id="actionIntervalField" styleClass="text-field-ui, text-field-ui-small" maxWidth="${maxFieldWidth}"/>
+        </HBox>
+        <HBox styleClass="h-box">
+            <Text text="鼠标移动间隔/ms"/>
+            <HBox HBox.hgrow="ALWAYS"/>
+            <NumberField fx:id="mouseMoveIntervalField" styleClass="text-field-ui, text-field-ui-small" maxWidth="${maxFieldWidth}"/>
+        </HBox>
+    </VBox>
+    <HBox AnchorPane.bottomAnchor="15" AnchorPane.rightAnchor="15" spacing="20" alignment="CENTER">
+        <HBox spacing="5" alignment="CENTER">
+            <Button text="应用" styleClass="btn-ui, btn-ui-normal" onAction="#apply"/>
+        </HBox>
+        <HBox HBox.hgrow="ALWAYS"/>
+        <Button text="保存" styleClass="btn-ui, btn-ui-success" onAction="#save" />
+    </HBox>
+    <NotificationManager fx:id="notificationManager" notificationPos="BOTTOM_CENTER">
+        <NotificationFactory showingCloseBtn="false" size="SMALL"/>
+    </NotificationManager>
+</AnchorPane>

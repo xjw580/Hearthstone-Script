@@ -376,7 +376,7 @@ public class EvenNumberShamanDeckStrategy extends AbstractDeckStrategy{
             }
         }
         if ((index = findByCardId(myHandCards, 深海融合怪)) != -1 && (other = findCardByCardRace(myPlayCards, CardRaceEnum.TOTEM, CardRaceEnum.ALL, CardRaceEnum.PET)) != -1 && myHandPointToMyPlayThenPointToMyPlay(index, myPlayCards.size(), other)){
-            SystemUtil.delay(ACTION_INTERVAL + 1000);
+            SystemUtil.delay(getActionInterval() + 1000);
             dealZeroResource();
             return;
         }

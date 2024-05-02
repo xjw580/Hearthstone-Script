@@ -1,4 +1,4 @@
-package club.xiaojiawei.controller;
+package club.xiaojiawei.controller.javafx;
 
 import club.xiaojiawei.controls.NotificationManager;
 import club.xiaojiawei.controls.PasswordTextField;
@@ -12,8 +12,11 @@ import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
-import javafx.scene.layout.HBox;
+import javafx.scene.control.Button;
+import javafx.scene.control.Button;
+import javafx.scene.layout.*;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.*;
 import javafx.scene.text.Text;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
@@ -31,7 +34,7 @@ import java.util.ResourceBundle;
  * @date 2023/2/11 17:24
  */
 @Component
-public class JavaFXInitSettingsController implements Initializable {
+public class InitSettingsController implements Initializable {
 
     @FXML
     private VBox mainVBox;
@@ -49,6 +52,12 @@ public class JavaFXInitSettingsController implements Initializable {
     private PropertiesUtil propertiesUtil;
 
     private ChangeListener<Scene> sceneListener;
+    @FXML
+    private AnchorPane rootPane;
+    @FXML
+    private Button apply;
+    @FXML
+    private Button save;
 
     @FXML
     protected void gameClicked(){
