@@ -15,6 +15,9 @@ public class RandomUtil {
     private static final Random RANDOM = new Random(System.currentTimeMillis());
 
     public static int getRandom(int min, int max){
+        if (min > max){
+            return getRandom(max, min);
+        }
         return (int) (RANDOM.nextDouble() * (max - min + 1) + min);
     }
 

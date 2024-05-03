@@ -3,6 +3,7 @@ package club.xiaojiawei.utils;
 import club.xiaojiawei.data.GameRationStaticData;
 import club.xiaojiawei.data.ScriptStaticData;
 import club.xiaojiawei.enums.ConfigurationEnum;
+import com.sun.jna.platform.win32.Kernel32;
 import com.sun.jna.platform.win32.User32;
 import com.sun.jna.platform.win32.WinDef;
 import com.sun.jna.platform.win32.WinUser;
@@ -42,8 +43,10 @@ public class GameUtil {
      */
     public void clickBackButton(){
         mouseUtil.leftButtonClick(
-                (int) (((ScriptStaticData.GAME_RECT.right + ScriptStaticData.GAME_RECT.left) >> 1) + ((ScriptStaticData.GAME_RECT.bottom - ScriptStaticData.GAME_RECT.top) * GameRationStaticData.BACK_BUTTON_HORIZONTAL_TO_CENTER_RATION * GameRationStaticData.GAME_WINDOW_ASPECT_TO_HEIGHT_RATIO) + RandomUtil.getRandom(-5, 5)),
-                (int) (ScriptStaticData.GAME_RECT.bottom - (ScriptStaticData.GAME_RECT.bottom - ScriptStaticData.GAME_RECT.top) * GameRationStaticData.BACK_BUTTON_VERTICAL_TO_BOTTOM_RATION) + RandomUtil.getRandom(-2, 2)
+                GameRationStaticData.BACK_BUTTON_HORIZONTAL_TO_CENTER_RATION,
+                GameRationStaticData.BACK_BUTTON_VERTICAL_TO_BOTTOM_RATION,
+                new int[]{-5, 5},
+                new int[]{-2, 2}
         );
     }
 
@@ -114,7 +117,9 @@ public class GameUtil {
             SystemUtil.delay(500);
 //            User32.INSTANCE.MoveWindow(platformHWND, ScriptStaticData.DISPLAY_PIXEL_WIDTH - 100,  ScriptStaticData.DISPLAY_PIXEL_HEIGHT - 150, 0, 0, false);
 //            SystemUtil.delay(500);
-            User32.INSTANCE.ShowWindow(platformHWND, WinUser.SW_MINIMIZE);
+            if (!User32.INSTANCE.ShowWindow(platformHWND, WinUser.SW_MINIMIZE)){
+                log.error("最小化窗口异常，错误代码：{}", Kernel32.INSTANCE.GetLastError());
+            }
         }
     }
 

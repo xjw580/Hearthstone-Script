@@ -17,14 +17,12 @@ import club.xiaojiawei.strategy.mode.TournamentModeStrategy;
 import club.xiaojiawei.strategy.phase.GameTurnPhaseStrategy;
 import club.xiaojiawei.strategy.phase.ReplaceCardPhaseStrategy;
 import club.xiaojiawei.ws.WebSocketServer;
-import com.sun.jna.platform.win32.Advapi32Util;
-import com.sun.jna.platform.win32.User32;
-import com.sun.jna.platform.win32.WinDef;
-import com.sun.jna.platform.win32.WinReg;
+import com.sun.jna.platform.win32.*;
 import jakarta.annotation.Resource;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.catalina.User;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -160,7 +158,9 @@ public class SystemUtil {
     public static void updateRECT(WinDef.HWND programHWND, WinDef.RECT programRECT) {
 //        如果程序最小化无法获取到准确的窗口信息
         frontWindow(programHWND);
-        User32.INSTANCE.GetWindowRect(programHWND, programRECT);
+        if (!User32.INSTANCE.GetWindowRect(programHWND, programRECT)){
+            log.error("获取窗口尺寸异常，错误代码：{}", Kernel32.INSTANCE.GetLastError());
+        }
 //        非全屏时，需要去除窗口标题栏的高度
         if ((GAME_RECT.bottom - GAME_RECT.top) != DISPLAY_PIXEL_HEIGHT){
             GAME_RECT.top += WINDOW_TITLE_PIXEL_Y;
@@ -212,13 +212,20 @@ public class SystemUtil {
          * 前置窗口
          * @param programHWND
          */
-    public static void frontWindow(WinDef.HWND programHWND){
+    public static boolean frontWindow(WinDef.HWND programHWND){
         // 显示窗口
-        User32.INSTANCE.ShowWindow(programHWND, 9 );
+        if (!User32.INSTANCE.ShowWindow(programHWND, 9 )){
+            log.error("显示窗口异常，错误代码：{}", Kernel32.INSTANCE.GetLastError());
+            return false;
+        }
         delay(100);
         // 前置窗口
-        User32.INSTANCE.SetForegroundWindow(programHWND);
+        if (!User32.INSTANCE.SetForegroundWindow(programHWND)){
+            log.error("前置窗口异常，错误代码：{}", Kernel32.INSTANCE.GetLastError());
+            return false;
+        }
         delay(100);
+        return true;
     }
     public static final Desktop DESKTOP = Desktop.getDesktop();
     /**
@@ -378,19 +385,19 @@ public class SystemUtil {
      * @param content
      */
     public static boolean copyToClipboard(String content){
-        Transferable contents = CLIPBOARD.getContents(null);
-        //判断是否为文本类型
-        if (contents.isDataFlavorSupported(DataFlavor.stringFlavor)) {
-            String text;
-            try {
-                text = (String) contents.getTransferData(DataFlavor.stringFlavor);
-            } catch (UnsupportedFlavorException | IOException e) {
-                throw new RuntimeException(e);
-            }
-            if (Objects.equals(content, text)) {
-                return false;
-            }
-        }
+//        Transferable contents = CLIPBOARD.getContents(null);
+//        //判断是否为文本类型
+//        if (contents.isDataFlavorSupported(DataFlavor.stringFlavor)) {
+//            String text = null;
+//            try {
+//                text = (String) contents.getTransferData(DataFlavor.stringFlavor);
+//            } catch (UnsupportedFlavorException | IOException e) {
+//                log.error("", e);
+//            }
+//            if (Objects.equals(content, text)) {
+//                return false;
+//            }
+//        }
         CLIPBOARD.setContents(new StringSelection(content), null);
         return true;
     }

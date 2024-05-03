@@ -1,5 +1,7 @@
 package club.xiaojiawei.utils;
 
+import club.xiaojiawei.data.GameRationStaticData;
+import club.xiaojiawei.data.ScriptStaticData;
 import club.xiaojiawei.dll.SystemDll;
 import club.xiaojiawei.enums.ConfigurationEnum;
 import com.sun.jna.platform.win32.WinDef;
@@ -117,6 +119,23 @@ public class MouseUtil {
     }
     public void leftButtonMoveThenClick(int[] start, int[] end) {
         leftButtonMoveThenClick(start[0], start[1], end[0], end[1]);
+    }
+
+    public void leftButtonClick(float horizontalToCenterRation, float verticalToBottomRation, int[] xRandom, int[] yRandom){
+        if (xRandom == null || xRandom.length < 2){
+            xRandom = new int[]{0, 0};
+        }
+        if (yRandom == null || yRandom.length < 2){
+            yRandom = new int[]{0, 0};
+        }
+        int centerX = (GAME_RECT.right + GAME_RECT.left) >> 1;
+        int windowHeight = GAME_RECT.bottom - GAME_RECT.top;
+        float windowWidth = windowHeight * GameRationStaticData.GAME_WINDOW_ASPECT_TO_HEIGHT_RATIO;
+        float width = windowWidth * horizontalToCenterRation;
+        int x = (int) (centerX + width + RandomUtil.getRandom(xRandom[0], xRandom[1]));
+        float height = windowHeight * verticalToBottomRation;
+        int y = (int) (ScriptStaticData.GAME_RECT.bottom - height) + RandomUtil.getRandom(yRandom[0], yRandom[1]);
+        leftButtonClick(x, y);
     }
 
     /**
