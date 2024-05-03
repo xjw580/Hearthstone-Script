@@ -10,7 +10,7 @@
     </parent>
     <groupId>club.xiaojiawei</groupId>
     <artifactId>hs-script</artifactId>
-    <version>v3.2.6-GA</version>
+    <version>v3.2.6.1-DEV</version>
     <name>Hearthstone-Script</name>
     <description>炉石传说脚本</description>
 
