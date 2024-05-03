@@ -16,8 +16,6 @@
         </ScrollPane>
     </Tab>
     <Tab text="策略设置">
-        <ScrollPane hbarPolicy="NEVER">
-            <fx:include source="strategySettings.fxml"/>
-        </ScrollPane>
+        <fx:include source="strategySettings.fxml"/>
     </Tab>
 </TabPane>

@@ -134,6 +134,8 @@ public class WindowUtil {
             stage.getIcons().add(new Image(Objects.requireNonNull(WindowUtil.class.getResource(ScriptStaticData.SCRIPT_ICON_PATH)).toExternalForm()));
             stage.setWidth(windowEnum.getWidth());
             stage.setHeight(windowEnum.getHeight());
+            stage.setMinHeight(windowEnum.getHeight());
+            stage.setMinWidth(windowEnum.getWidth());
             if (windowEnum.getX() != -1){
                 stage.setX(windowEnum.getX());
             }

@@ -12,7 +12,7 @@
             stylesheets="@css/strategySettings.css"
             fx:id="rootPane"
             fx:controller="club.xiaojiawei.controller.javafx.StrategySettingsController"
-            prefHeight="324.0">
+>
     <VBox fx:id="mainVBox">
         <fx:define>
             <Double fx:id="maxFieldWidth" fx:value="120"/>
