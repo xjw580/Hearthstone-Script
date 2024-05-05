@@ -60,8 +60,6 @@
 
   2. 点击开始按钮或者使用热键 `Ctrl` + `P`
 
-     ![脚本程序页面](https://zergqueen.gitee.io/images/hearthstone/main.png)
-
 - **关闭脚本**
 
   - 双击 `stop.bat` 文件
