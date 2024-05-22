@@ -24,7 +24,7 @@
     <properties>
         <java.version>21</java.version>
         <javafx-version>21.0.1</javafx-version>
-        <javafx-ui-version>v0.3.6</javafx-ui-version>
+        <javafx-ui-version>v1.2.0</javafx-ui-version>
         <mapstruct-version>1.6.0.Beta1</mapstruct-version>
         <jintellitype-version>1.4.1</jintellitype-version>
         <fastjson-version>2.0.20</fastjson-version>
@@ -53,6 +53,11 @@
             <artifactId>javafx-ui</artifactId>
             <version>${javafx-ui-version}</version>
         </dependency>
+<!--        <dependency>-->
+<!--            <groupId>club.xiaojiawei</groupId>-->
+<!--            <artifactId>javafx-ui</artifactId>-->
+<!--            <version>1.2.0</version>-->
+<!--        </dependency>-->
         <!--bean转换包-->
         <dependency>
             <groupId>org.mapstruct</groupId>
