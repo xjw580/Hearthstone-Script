@@ -18,7 +18,7 @@ import lombok.ToString;
 public enum DeckEnum {
 
     ZOO("动物园", DeckTypeEnum.CLASSIC, RunModeEnum.CLASSIC, "AAEDAcn1AgAP+5UEs5YE1ZYE7ZYEgaEErqEEsqEEw6EE06EE7qEEnaIEo6IEu6IEv6IEw6MEAA==", ZooDeckStrategy.class, false),
-    FREE("核心骑", DeckTypeEnum.STANDARD, RunModeEnum.STANDARD, "AAECAZ8FAp/UBLaeBg6hnwS1nwSWoASkoATHoATJoATWoASp1ASL7AW0ngbPngbQngbRngbUngYAAA==", FreeDeckStrategy.class, true),
+    FREE("核心骑", DeckTypeEnum.STANDARD, RunModeEnum.STANDARD, "AAECAZ8FAp/UBJ/UBA6hnwS1nwSWoASkoATHoATJoATWoASp1ASL7AW0ngbPngbQngbRngbUngYAAA==", FreeDeckStrategy.class, true),
     FREE_CASUAL("核心骑_休闲", DeckTypeEnum.CASUAL, RunModeEnum.CASUAL, "AAECAZ8FAp/UBLaeBg6hnwS1nwSWoASkoATHoATJoATWoASp1ASL7AW0ngbPngbQngbRngbUngYAAA==", FreeDeckStrategy.class, true),
     EVEN_NUMBER_SHAMAN( "偶数萨", DeckTypeEnum.WILD, RunModeEnum.WILD, "AAEBAdL8BQQzzfQCsdkE9PIFDb4GshSU7wKdowPapQP5kQT6tASG1ASq2QS95QTBngbfoQbpoQYAAA==", EvenNumberShamanDeckStrategy.class, true),
     EVEN_NUMBER_SHAMAN_CASUAL( "偶数萨_休闲", DeckTypeEnum.CASUAL, RunModeEnum.CASUAL, "AAEBAdL8BQQzzfQCsdkE9PIFDb4GshSU7wKdowPapQP5kQT6tASG1ASq2QS95QTBngbfoQbpoQYAAA==", EvenNumberShamanDeckStrategy.class, true),
