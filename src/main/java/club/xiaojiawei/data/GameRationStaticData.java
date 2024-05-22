@@ -23,6 +23,7 @@ public class GameRationStaticData {
     public static final float FIRST_CARD_HORIZONTAL_TO_CENTER_WHEN_FOUR_CARD = 0.267F;
     public static final float CARD_HORIZONTAL_CLEARANCE_WHEN_FOUR_CARD = 0.173F;
     public static final float CONFIRM_OR_CLOSE_BUTTON_VERTICAL_TO_BOTTOM_RATION = 0.255F;
+    public static final float CLOSE_AD_BUTTON_VERTICAL_TO_BOTTOM_RATION = 0.2F;
     public static final float CANCEL_MATCH_BUTTON_VERTICAL_TO_BOTTOM_RATION = 0.148F;
     public static final float[] FIRST_HAND_CARD_HORIZONTAL_TO_CENTER_RATION = new float[]{
             -0.033F, -0.08F, -0.123F, -0.167F, -0.177F, -0.193F, -0.203F, -0.213F, -0.22F, -0.227F
