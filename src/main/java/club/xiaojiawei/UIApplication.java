@@ -123,17 +123,8 @@ public class UIApplication extends Application implements ApplicationRunner {
         StartupController.complete();
 
         DeckEnum deckEnum = DeckEnum.valueOf(scriptConfiguration.getProperty(DECK.getKey()));
-        log.info(deckEnum.getComment() + "卡组代码：" + deckEnum.getDeckCode());
-        if (SystemUtil.copyToClipboard(deckEnum.getDeckCode())){
-            String content = deckEnum.getComment() + "卡组代码已经复制到剪切板";
-            log.info(content);
-            SystemUtil.notice(content);
-            Thread.ofVirtual().name("复制").start(new LogRunnable(() -> {
-                SystemUtil.delayShort();
-                SystemUtil.copyToClipboard(String.format("%s脚本提示：【%s】代码👇", ScriptStaticData.SCRIPT_NAME, deckEnum.getComment()));
-            }));
-        }
-
+        log.info(deckEnum.getComment() + "卡组代码：");
+        log.info("$" + deckEnum.getDeckCode());
         log.info("脚本数据路径：" + springData.getScriptPath());
 
         List<String> args = this.getParameters().getRaw();

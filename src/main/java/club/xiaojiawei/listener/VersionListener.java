@@ -7,6 +7,8 @@ import club.xiaojiawei.utils.SystemUtil;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.Resource;
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.ReadOnlyBooleanProperty;
+import javafx.beans.property.ReadOnlyBooleanWrapper;
 import javafx.beans.property.SimpleBooleanProperty;
 import lombok.Getter;
 import lombok.Setter;
@@ -40,9 +42,15 @@ public class VersionListener {
     private SpringData springData;
     @Resource
     private Properties scriptConfiguration;
-    @Getter
-    @Setter
-    private static BooleanProperty canUpdate = new SimpleBooleanProperty(false);
+    private final static ReadOnlyBooleanWrapper canUpdate = new ReadOnlyBooleanWrapper(false);
+
+    public static boolean isCanUpdate() {
+        return canUpdate.get();
+    }
+
+    public static ReadOnlyBooleanProperty canUpdateReadOnlyProperty() {
+        return canUpdate.getReadOnlyProperty();
+    }
 
     @PostConstruct
     void init(){

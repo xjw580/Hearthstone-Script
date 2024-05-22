@@ -64,6 +64,7 @@ public class Work {
     private static Properties scriptProperties;
     private static AtomicReference<BooleanProperty> isPause;
     private static Core core;
+    private static boolean enableUpdate = true;
 
     @Autowired
     private void set(Properties scriptConfiguration, AtomicReference<BooleanProperty> isPause, PropertiesUtil propertiesUtil){
@@ -120,13 +121,13 @@ public class Work {
             if (!isPause.get().get() && isDuringWorkDate()){
                 workLog();
                 core.start();
-            }else if (Objects.equals(scriptProperties.getProperty(AUTO_UPDATE.getKey()), "true") && VersionListener.getCanUpdate().get()){
+            }else if (enableUpdate && Objects.equals(scriptProperties.getProperty(AUTO_UPDATE.getKey()), "true") && VersionListener.isCanUpdate()){
                 if (!new File(TEMP_VERSION_PATH).exists() && !MainController.downloadRelease(VersionListener.getLatestRelease())){
                     log.warn(String.format("新版本<%s>下载失败", VersionListener.getLatestRelease().getTagName()));
-                    VersionListener.getCanUpdate().set(false);
-                    return;
+                    enableUpdate = false;
+                }else {
+                    Platform.runLater(MainController::execUpdate);
                 }
-                Platform.runLater(MainController::execUpdate);
             }
         }
     }

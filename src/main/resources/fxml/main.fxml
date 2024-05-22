@@ -14,7 +14,7 @@
     <fx:define>
         <ToggleGroup fx:id="pauseToggleGroup"/>
     </fx:define>
-    <Accordion fx:id="accordion" styleClass="accordion-ui, accordion-ui-big" expandedPane="$titledPaneControl">
+    <Accordion fx:id="accordion" styleClass="accordion-ui, accordion-ui-big, accordion-ui-pure" expandedPane="$titledPaneControl">
         <panes>
             <TitledPane text="控制" fx:id="titledPaneControl">
                 <VBox alignment="TOP_CENTER" spacing="20" style="-fx-padding: 5 5 0 5">

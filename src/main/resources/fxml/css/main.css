@@ -1,8 +1,14 @@
-.warn{
-    -fx-fill: #ff8000;
+.copyLog{
+    -fx-fill: #1982fd;
+    -fx-text-fill: #1982fd;
 }
-.error{
+.warnLog{
+    -fx-fill: #ff8000;
+    -fx-text-fill: #ff8000;
+}
+.errorLog{
     -fx-fill: #ff0000;
+    -fx-text-fill: #ff0000;
 }
 .accordion{
     -fx-background-color: white;
@@ -25,4 +31,10 @@
 }
 .btnPressed{
     -fx-text-fill: gray !important;
+}
+.hoverChildrenNode{
+    visibility: false;
+}
+.hoverRootNode:hover .hoverChildrenNode{
+    visibility: true;
 }

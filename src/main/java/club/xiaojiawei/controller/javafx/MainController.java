@@ -1,8 +1,8 @@
 package club.xiaojiawei.controller.javafx;
 
+import club.xiaojiawei.bean.LogRunnable;
 import club.xiaojiawei.bean.Release;
 import club.xiaojiawei.bean.WsResult;
-import club.xiaojiawei.controls.*;
 import club.xiaojiawei.controls.NotificationManager;
 import club.xiaojiawei.controls.Time;
 import club.xiaojiawei.controls.ico.*;
@@ -19,6 +19,7 @@ import club.xiaojiawei.utils.WindowUtil;
 import club.xiaojiawei.ws.WebSocketServer;
 import jakarta.annotation.Resource;
 import javafx.animation.RotateTransition;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -29,12 +30,10 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.*;
 import javafx.scene.text.Text;
 import javafx.stage.Popup;
 import javafx.util.Duration;
@@ -223,7 +222,7 @@ public class MainController implements Initializable {
         //        卡组更改监听
         deckBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null){
-                storeDeck((String) newValue);
+                storeDeck(newValue);
             }
         });
     }
@@ -249,8 +248,8 @@ public class MainController implements Initializable {
             WebSocketServer.sendAllMessage(WsResult.ofNew(WsResultTypeEnum.MODE, currentRunMode.getComment()));
             WebSocketServer.sendAllMessage(WsResult.ofNew(WsResultTypeEnum.DECK, currentDeck.getComment()));
             SystemUtil.notice("挂机卡组改为：" + deckComment);
-            SystemUtil.copyToClipboard(currentDeck.getDeckCode());
             log.info("挂机卡组改为：" + deckComment);
+            log.info("$" + currentDeck.getDeckCode());
         }
     }
 
@@ -263,7 +262,7 @@ public class MainController implements Initializable {
                 logScrollPane.setVvalue(logScrollPane.getVmax());
             }
         });
-        VersionListener.getCanUpdate().addListener((observable, oldValue, newValue) -> {
+        VersionListener.canUpdateReadOnlyProperty().addListener((observable, oldValue, newValue) -> {
             flushBtn.setVisible(!newValue);
             flushBtn.setManaged(!newValue);
             updateBtn.setVisible(newValue);
@@ -379,9 +378,18 @@ public class MainController implements Initializable {
         RotateTransition transition = new RotateTransition(Duration.millis(1200), flushIco);
         transition.setFromAngle(0);
         transition.setToAngle(360);
-        transition.setCycleCount(4);
-        transition.play();
-        versionListener.checkVersion();
+        transition.setCycleCount(Timeline.INDEFINITE);
+        try{
+            transition.play();
+            versionListener.checkVersion();
+            if (VersionListener.isCanUpdate()) {
+                notificationManger.showSuccess("发现新版本", 2);
+            }else {
+                notificationManger.showInfo("已是最新版本", 2);
+            }
+        }finally {
+            transition.stop();
+        }
     }
 
     @FXML protected void openSettings() {
