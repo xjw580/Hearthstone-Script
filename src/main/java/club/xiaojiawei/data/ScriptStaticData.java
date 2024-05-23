@@ -42,6 +42,7 @@ public class ScriptStaticData {
     public static final String GAME_US_NAME = "Hearthstone";
     public static final String PLATFORM_US_NAME = "Battle.net";
     public static final String TEMP_VERSION_DIR = "new_version_temp";
+    public static final String UPDATE_PROGRAM_NAME = "update.exe";
     public static final String TEMP_VERSION_PATH = System.getProperty("user.dir") + File.separator + TEMP_VERSION_DIR + File.separator;
     /**
      * 游戏窗口信息

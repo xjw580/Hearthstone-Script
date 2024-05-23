@@ -19,6 +19,7 @@ import static club.xiaojiawei.enums.ConfigurationEnum.AUTO_OPEN_WEB;
 @Component
 @Slf4j
 public class WebInitializer extends AbstractInitializer{
+
     @Resource
     private SpringData springData;
     @Resource
@@ -32,4 +33,10 @@ public class WebInitializer extends AbstractInitializer{
             log.info("自动打开Web界面开关处于关闭状态");
         }
     }
+
+    @Override
+    public int getOrder() {
+        return 70;
+    }
+
 }

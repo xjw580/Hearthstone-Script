@@ -1,9 +1,9 @@
 package club.xiaojiawei.utils;
 
-import club.xiaojiawei.closer.GameThreadCloser;
-import club.xiaojiawei.closer.LogListenerCloser;
-import club.xiaojiawei.closer.ModeTaskCloser;
-import club.xiaojiawei.closer.StarterTaskCloser;
+import club.xiaojiawei.interfaces.closer.GameThreadCloser;
+import club.xiaojiawei.interfaces.closer.LogListenerCloser;
+import club.xiaojiawei.interfaces.closer.ModeTaskCloser;
+import club.xiaojiawei.interfaces.closer.StarterTaskCloser;
 import club.xiaojiawei.custom.MouseClickListener;
 import club.xiaojiawei.data.SpringData;
 import club.xiaojiawei.dll.NoticeDll;
@@ -383,19 +383,6 @@ public class SystemUtil {
      * @param content
      */
     public static boolean copyToClipboard(String content){
-//        Transferable contents = CLIPBOARD.getContents(null);
-//        //判断是否为文本类型
-//        if (contents.isDataFlavorSupported(DataFlavor.stringFlavor)) {
-//            String text = null;
-//            try {
-//                text = (String) contents.getTransferData(DataFlavor.stringFlavor);
-//            } catch (UnsupportedFlavorException | IOException e) {
-//                log.error("", e);
-//            }
-//            if (Objects.equals(content, text)) {
-//                return false;
-//            }
-//        }
         CLIPBOARD.setContents(new StringSelection(content), null);
         return true;
     }
@@ -431,6 +418,7 @@ public class SystemUtil {
         Thread.startVirtualThread(() -> {
             try {
                 WebSocketServer.closeAll();
+                log.info("关闭软件...");
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
                 log.error("休眠被中断", e);

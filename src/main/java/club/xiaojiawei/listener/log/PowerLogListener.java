@@ -1,6 +1,6 @@
 package club.xiaojiawei.listener.log;
 
-import club.xiaojiawei.closer.LogListenerCloser;
+import club.xiaojiawei.interfaces.closer.LogListenerCloser;
 import club.xiaojiawei.core.Core;
 import club.xiaojiawei.custom.LogRunnable;
 import club.xiaojiawei.data.SpringData;

@@ -1,5 +1,6 @@
 package club.xiaojiawei.listener;
 
+import club.xiaojiawei.ScriptApplication;
 import club.xiaojiawei.bean.Release;
 import club.xiaojiawei.data.ScriptStaticData;
 import club.xiaojiawei.data.SpringData;
@@ -73,7 +74,7 @@ public class VersionListener {
     @Scheduled(initialDelay = 500,fixedDelay = 1000 * 60 * 60 * 12)
     public void checkVersion(){
 //        在idea中启动时就不要检查更新了
-        if (!Objects.equals(Objects.requireNonNull(this.getClass().getResource("")).getProtocol(), "jar")){
+        if (!Objects.equals(Objects.requireNonNull(this.getClass().getResource("")).getProtocol(), "jar") && !ScriptApplication.getArgs().contains("--update")){
             return;
         }
         boolean updateDev = Objects.equals(scriptConfiguration.getProperty(UPDATE_DEV.getKey()), "true");

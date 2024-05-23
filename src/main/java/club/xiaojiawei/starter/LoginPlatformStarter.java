@@ -1,6 +1,6 @@
 package club.xiaojiawei.starter;
 
-import club.xiaojiawei.closer.StarterTaskCloser;
+import club.xiaojiawei.interfaces.closer.StarterTaskCloser;
 import club.xiaojiawei.data.ScriptStaticData;
 import club.xiaojiawei.dll.SystemDll;
 import club.xiaojiawei.enums.ConfigurationEnum;
@@ -128,4 +128,8 @@ public class LoginPlatformStarter extends AbstractStarter implements StarterTask
         cancelLoginPlatformTimer();
     }
 
+    @Override
+    public int getOrder() {
+        return 70;
+    }
 }

@@ -73,4 +73,8 @@ public class LogInitializer extends AbstractInitializer{
         }
     }
 
+    @Override
+    public int getOrder() {
+        return 90;
+    }
 }

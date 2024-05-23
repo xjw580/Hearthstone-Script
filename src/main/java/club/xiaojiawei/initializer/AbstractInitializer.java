@@ -1,6 +1,7 @@
 package club.xiaojiawei.initializer;
 
 import club.xiaojiawei.config.InitializerConfig;
+import club.xiaojiawei.interfaces.Chain;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -9,7 +10,7 @@ import lombok.extern.slf4j.Slf4j;
  * @date 2023/7/4 11:24
  */
 @Slf4j
-public abstract class AbstractInitializer {
+public abstract class AbstractInitializer implements Chain {
 
     protected AbstractInitializer nextInitializer;
 
@@ -30,4 +31,5 @@ public abstract class AbstractInitializer {
             nextInitializer.init();
         }
     }
+
 }

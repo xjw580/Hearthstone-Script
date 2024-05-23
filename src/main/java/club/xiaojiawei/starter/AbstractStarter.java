@@ -1,6 +1,7 @@
 package club.xiaojiawei.starter;
 
 import club.xiaojiawei.config.StarterConfig;
+import club.xiaojiawei.interfaces.Chain;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -9,7 +10,7 @@ import lombok.extern.slf4j.Slf4j;
  * @date 2023/7/5 14:37
  */
 @Slf4j
-public abstract class AbstractStarter {
+public abstract class AbstractStarter implements Chain {
 
     protected AbstractStarter nextStarter;
 

@@ -1,9 +1,15 @@
 package club.xiaojiawei.config;
 
-import club.xiaojiawei.initializer.*;
+import club.xiaojiawei.initializer.AbstractInitializer;
+import club.xiaojiawei.interfaces.Chain;
 import jakarta.annotation.Resource;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -15,15 +21,7 @@ import org.springframework.context.annotation.Configuration;
 public class InitializerConfig {
 
     @Resource
-    private ResourceInitializer resourceInitializer;
-    @Resource
-    private LogInitializer logInitializer;
-    @Resource
-    private PathInitializer pathInitializer;
-    @Resource
-    private WebInitializer webInitializer;
-    @Resource
-    private DelTempInitializer delTempInitializer;
+    private ApplicationContext applicationContext;
 
     /**
      * Initializer责任链头对象
@@ -31,11 +29,12 @@ public class InitializerConfig {
      */
     @Bean
     public AbstractInitializer initializer(){
-        resourceInitializer.setNextInitializer(logInitializer)
-                .setNextInitializer(pathInitializer)
-                .setNextInitializer(webInitializer)
-                .setNextInitializer(delTempInitializer);
-        return resourceInitializer;
+        Map<String, AbstractInitializer> map = applicationContext.getBeansOfType(AbstractInitializer.class);
+        List<AbstractInitializer> list = map.values().stream().sorted(Comparator.comparingInt(Chain::getOrder)).toList();
+        for (int i = list.size() - 1; i > 0;) {
+            list.get(i).setNextInitializer(list.get(--i));
+        }
+        return list.getLast();
     }
 
 }

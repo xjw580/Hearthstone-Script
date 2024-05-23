@@ -20,4 +20,9 @@ public class ClearStarter extends AbstractStarter{
         Mode.reset();
         startNextStarter();
     }
+
+    @Override
+    public int getOrder() {
+        return 100;
+    }
 }

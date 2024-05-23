@@ -1,7 +1,7 @@
 package club.xiaojiawei.strategy.mode;
 
 import club.xiaojiawei.bean.Deck;
-import club.xiaojiawei.closer.ModeTaskCloser;
+import club.xiaojiawei.interfaces.closer.ModeTaskCloser;
 import club.xiaojiawei.core.Core;
 import club.xiaojiawei.custom.LogRunnable;
 import club.xiaojiawei.data.GameRationStaticData;

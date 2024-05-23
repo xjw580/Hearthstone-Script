@@ -1,6 +1,6 @@
 package club.xiaojiawei.utils;
 
-import club.xiaojiawei.closer.ModeTaskCloser;
+import club.xiaojiawei.interfaces.closer.ModeTaskCloser;
 import club.xiaojiawei.data.GameRationStaticData;
 import club.xiaojiawei.data.ScriptStaticData;
 import club.xiaojiawei.enums.ConfigurationEnum;

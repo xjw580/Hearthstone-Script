@@ -1,4 +1,4 @@
-package club.xiaojiawei.closer;
+package club.xiaojiawei.interfaces.closer;
 
 /**
  * @author 肖嘉威 xjw580@qq.com

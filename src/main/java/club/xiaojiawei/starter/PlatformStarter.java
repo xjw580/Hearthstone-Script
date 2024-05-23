@@ -1,8 +1,7 @@
 package club.xiaojiawei.starter;
 
-import club.xiaojiawei.closer.StarterTaskCloser;
+import club.xiaojiawei.interfaces.closer.StarterTaskCloser;
 import club.xiaojiawei.data.ScriptStaticData;
-import club.xiaojiawei.enums.ConfigurationEnum;
 import club.xiaojiawei.utils.GameUtil;
 import club.xiaojiawei.utils.SystemUtil;
 import jakarta.annotation.Resource;
@@ -10,8 +9,6 @@ import javafx.beans.property.BooleanProperty;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
-import java.util.Properties;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -70,4 +67,8 @@ public class PlatformStarter extends AbstractStarter implements StarterTaskClose
         cancelPlatformTimer();
     }
 
+    @Override
+    public int getOrder() {
+        return 90;
+    }
 }

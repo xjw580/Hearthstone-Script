@@ -1,9 +1,16 @@
 package club.xiaojiawei.config;
 
+import club.xiaojiawei.initializer.AbstractInitializer;
+import club.xiaojiawei.interfaces.Chain;
 import club.xiaojiawei.starter.*;
 import jakarta.annotation.Resource;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Starter的责任链配置
@@ -14,22 +21,16 @@ import org.springframework.context.annotation.Configuration;
 public class StarterConfig {
 
     @Resource
-    private ClearStarter clearStarter;
-    @Resource
-    private PlatformStarter platformStarter;
-    @Resource
-    private LoginPlatformStarter loginPlatformStarter;
-    @Resource
-    private GameStarter gameStarter;
-    @Resource
-    private LogListenStarter logListenStarter;
+    private ApplicationContext applicationContext;
 
     @Bean
     public AbstractStarter starter(){
-        clearStarter.setNextStarter(platformStarter)
-                .setNextStarter(loginPlatformStarter)
-                .setNextStarter(gameStarter)
-                .setNextStarter(logListenStarter);
-        return clearStarter;
+        Map<String, AbstractStarter> map = applicationContext.getBeansOfType(AbstractStarter.class);
+        List<AbstractStarter> list = map.values().stream().sorted(Comparator.comparingInt(Chain::getOrder)).toList();
+        for (int i = list.size() - 1; i > 0;) {
+            list.get(i).setNextStarter(list.get(--i));
+        }
+        return list.getLast();
     }
+
 }

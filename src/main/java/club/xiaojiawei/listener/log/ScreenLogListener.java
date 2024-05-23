@@ -1,21 +1,18 @@
 package club.xiaojiawei.listener.log;
 
-import club.xiaojiawei.closer.LogListenerCloser;
+import club.xiaojiawei.interfaces.closer.LogListenerCloser;
 import club.xiaojiawei.core.Core;
-import club.xiaojiawei.custom.LogRunnable;
 import club.xiaojiawei.data.SpringData;
 import club.xiaojiawei.enums.ModeEnum;
 import club.xiaojiawei.status.Mode;
 import club.xiaojiawei.utils.SystemUtil;
 import jakarta.annotation.Resource;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.*;
-import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 /**

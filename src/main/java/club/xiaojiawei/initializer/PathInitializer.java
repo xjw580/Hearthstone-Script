@@ -60,4 +60,9 @@ public class PathInitializer extends AbstractInitializer{
             }
         }
     }
+
+    @Override
+    public int getOrder() {
+        return 80;
+    }
 }

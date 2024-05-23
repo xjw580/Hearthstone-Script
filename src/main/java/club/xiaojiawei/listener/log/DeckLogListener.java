@@ -1,7 +1,7 @@
 package club.xiaojiawei.listener.log;
 
 import club.xiaojiawei.bean.Deck;
-import club.xiaojiawei.closer.LogListenerCloser;
+import club.xiaojiawei.interfaces.closer.LogListenerCloser;
 import club.xiaojiawei.data.SpringData;
 import club.xiaojiawei.utils.PowerLogUtil;
 import lombok.Getter;

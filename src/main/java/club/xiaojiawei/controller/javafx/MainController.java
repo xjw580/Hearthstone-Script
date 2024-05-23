@@ -1,6 +1,5 @@
 package club.xiaojiawei.controller.javafx;
 
-import club.xiaojiawei.bean.LogRunnable;
 import club.xiaojiawei.bean.Release;
 import club.xiaojiawei.bean.WsResult;
 import club.xiaojiawei.controls.NotificationManager;
@@ -16,6 +15,8 @@ import club.xiaojiawei.status.Work;
 import club.xiaojiawei.utils.PropertiesUtil;
 import club.xiaojiawei.utils.SystemUtil;
 import club.xiaojiawei.utils.WindowUtil;
+import club.xiaojiawei.bean.single.repository.GiteeRepository;
+import club.xiaojiawei.bean.single.repository.GithubRepository;
 import club.xiaojiawei.ws.WebSocketServer;
 import jakarta.annotation.Resource;
 import javafx.animation.RotateTransition;
@@ -42,7 +43,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.io.*;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.Path;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.ResourceBundle;
@@ -100,7 +104,7 @@ public class MainController implements Initializable {
     private static NotificationManager staticNotificationManger;
     private static ProgressBar staticDownloadProgress;
     private static AtomicReference<BooleanProperty> staticIsPause;
-    private static final SimpleBooleanProperty IS_UPDATING = new SimpleBooleanProperty(false);
+    private static final SimpleBooleanProperty UPDATING = new SimpleBooleanProperty(false);
     private boolean isNotHoverLog = true;
     @FXML
     private TitledPane titledPaneControl;
@@ -109,18 +113,23 @@ public class MainController implements Initializable {
         accordion.setExpandedPane(titledPaneLog);
     }
 
-    public static boolean downloadRelease(Release release){
-        boolean result = true;
-        if (!downloadRelease(release, String.format("https://gitee.com/zergqueen/%s/releases/download/%s/%s_%s.zip", ScriptStaticData.PROJECT_NAME, release.getTagName(), ScriptStaticData.SCRIPT_NAME, release.getTagName()))){
+    public static String downloadRelease(Release release, boolean force){
+        String path;
+        File file = Path.of(TEMP_VERSION_PATH, release.getTagName()).toFile();
+        if (!force && file.exists()) {
+            path = file.getAbsolutePath();
+        } else if ((path = downloadRelease(release, GiteeRepository.getInstance().getReleaseURL(release))) == null){
             Platform.runLater(() -> staticNotificationManger.showInfo("更换下载源重新下载", 3));
-            result = downloadRelease(release, String.format("https://github.com/xjw580/%s/releases/download/%s/%s_%s.zip", ScriptStaticData.PROJECT_NAME, release.getTagName(), ScriptStaticData.SCRIPT_NAME, release.getTagName()));
+            path = downloadRelease(release, GithubRepository.getInstance().getReleaseURL(release));
         }
-        return result;
+        return path;
     }
 
-    private static boolean downloadRelease(Release release, String url){
+    private static String downloadRelease(Release release, String url){
+        Path rootPath;
         try (
-                InputStream inputStream = new URL(url)
+                InputStream inputStream = new URI(url)
+                        .toURL()
                         .openConnection()
                         .getInputStream();
                 ZipInputStream zipInputStream = new ZipInputStream(inputStream);
@@ -133,21 +142,30 @@ public class MainController implements Initializable {
             staticDownloadProgress.setManaged(true);
             ZipEntry nextEntry;
             double index = 0D, count = 74D;
+            rootPath = Path.of(TEMP_VERSION_PATH, release.getTagName());
+            File rootFile = rootPath.toFile();
+            if (!rootFile.exists() && !rootFile.mkdirs()){
+                log.error(rootFile.getAbsolutePath() + "创建失败");
+                return null;
+            }
             while ((nextEntry = zipInputStream.getNextEntry()) != null) {
-                File entryFile = new File(TEMP_VERSION_PATH + nextEntry.getName());
+                File entryFile = rootPath.resolve(nextEntry.getName()).toFile();
                 if (nextEntry.isDirectory()) {
-                    entryFile.mkdirs();
-                    log.info("created_dir：" + entryFile.getPath());
-                } else {
-                    new File(entryFile.getPath().substring(0, entryFile.getPath().lastIndexOf("\\"))).mkdirs();
-                    try (BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(new FileOutputStream(entryFile))) {
-                        int l;
-                        byte[] bytes = new byte[1024];
-                        while ((l = zipInputStream.read(bytes)) != -1) {
-                            bufferedOutputStream.write(bytes, 0, l);
-                        }
+                    if (entryFile.mkdirs()) {
+                        log.info("created_dir：" + entryFile.getPath());
                     }
-                    log.info("downloaded_file：" + entryFile.getPath());
+                } else {
+                    File parentFile = entryFile.getParentFile();
+                    if (parentFile.exists() || parentFile.mkdirs()) {
+                        try (BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(new FileOutputStream(entryFile))) {
+                            int l;
+                            byte[] bytes = new byte[8192];
+                            while ((l = zipInputStream.read(bytes)) != -1) {
+                                bufferedOutputStream.write(bytes, 0, l);
+                            }
+                        }
+                        log.info("downloaded_file：" + entryFile.getPath());
+                    }
                 }
                 staticDownloadProgress.setProgress(++index / count);
             }
@@ -155,27 +173,27 @@ public class MainController implements Initializable {
             String endContent = "<" + release.getTagName() + ">下载完毕";
             log.info(endContent);
             Platform.runLater(() -> staticNotificationManger.showSuccess(endContent, 2));
-        } catch (IOException e) {
+        } catch (IOException | URISyntaxException e) {
             String errorContent = "<" + release.getTagName() + ">下载失败";
             log.error(errorContent + "," + url, e);
             Platform.runLater(() -> staticNotificationManger.showError(errorContent, 2));
-            return false;
+            return null;
         } finally {
             staticDownloadProgress.setVisible(false);
             staticDownloadProgress.setManaged(false);
-            IS_UPDATING.set(false);
+            UPDATING.set(false);
         }
-        return true;
+        return rootPath.toString();
     }
 
-    public static void execUpdate(){
+    public static void execUpdate(String versionPath){
         try {
-            IS_UPDATING.set(true);
-            Runtime.getRuntime().exec("cmd /c start update.bat " + TEMP_VERSION_DIR + " " + staticIsPause.get().get());
+            UPDATING.set(true);
+            Runtime.getRuntime().exec(String.format("cmd /c start %s --target=%s --source=%s --pause=%s", System.getProperty("user.dir"), ScriptStaticData.UPDATE_PROGRAM_NAME, versionPath, staticIsPause.get().get()));
         } catch (IOException e) {
             log.error("执行版本更新失败", e);
         }finally {
-            IS_UPDATING.set(false);
+            UPDATING.set(false);
         }
     }
 
@@ -255,7 +273,7 @@ public class MainController implements Initializable {
 
     private void addListener(){
         //        是否在更新中监听
-        IS_UPDATING.addListener((observable, oldValue, newValue) -> updateBtn.setDisable(newValue));
+        UPDATING.addListener((observable, oldValue, newValue) -> updateBtn.setDisable(newValue));
         //        监听日志自动滑到底部
         logVBox.heightProperty().addListener((observable, oldValue, newValue) -> {
             if (isNotHoverLog){
@@ -398,18 +416,15 @@ public class MainController implements Initializable {
 
     @FXML protected void updateVersion() {
         Release release = VersionListener.getLatestRelease();
-        if (release != null && !IS_UPDATING.get()){
-            IS_UPDATING.set(true);
+        if (release != null && !UPDATING.get()){
+            UPDATING.set(true);
             extraThreadPool.submit(() -> {
-                if (!new File(TEMP_VERSION_PATH).exists()){
-                    if (!downloadRelease(release)){
-                        Platform.runLater(() -> WindowUtil.createAlert(String.format("新版本<%s>下载失败", release.getTagName()), "", null).show());
-                        return;
-                    }
+                String path;
+                if ((path = downloadRelease(release, false)) == null){
+                    Platform.runLater(() -> WindowUtil.createAlert(String.format("新版本<%s>下载失败", release.getTagName()), "", null).show());
+                }else {
+                    Platform.runLater(() -> WindowUtil.createAlert("新版本[" + release.getTagName() + "]下载完毕", "现在更新？", event -> execUpdate(path), event -> UPDATING.set(false), event -> UPDATING.set(false), event -> UPDATING.set(false)).show());
                 }
-                Platform.runLater(() -> WindowUtil.createAlert("新版本[" + release.getTagName() + "]下载完毕", "现在更新？", event -> {
-                    execUpdate();
-                }, event -> IS_UPDATING.set(false), event -> IS_UPDATING.set(false), event -> IS_UPDATING.set(false)).show());
             });
         }
     }

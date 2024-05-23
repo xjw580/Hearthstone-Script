@@ -1,6 +1,6 @@
 package club.xiaojiawei.strategy.mode;
 
-import club.xiaojiawei.closer.ModeTaskCloser;
+import club.xiaojiawei.interfaces.closer.ModeTaskCloser;
 import club.xiaojiawei.custom.LogRunnable;
 import club.xiaojiawei.strategy.AbstractModeStrategy;
 import club.xiaojiawei.utils.SystemUtil;

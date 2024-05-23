@@ -46,4 +46,8 @@ public class ResourceInitializer extends AbstractInitializer{
         }
     }
 
+    @Override
+    public int getOrder() {
+        return 100;
+    }
 }

@@ -1,6 +1,6 @@
 package club.xiaojiawei.starter;
 
-import club.xiaojiawei.closer.StarterTaskCloser;
+import club.xiaojiawei.interfaces.closer.StarterTaskCloser;
 import club.xiaojiawei.custom.LogRunnable;
 import club.xiaojiawei.data.ScriptStaticData;
 import club.xiaojiawei.utils.GameUtil;
@@ -15,7 +15,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
-import java.util.Properties;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -129,4 +128,8 @@ public class GameStarter extends AbstractStarter implements StarterTaskCloser {
         cancelGameTimer();
     }
 
+    @Override
+    public int getOrder() {
+        return 60;
+    }
 }

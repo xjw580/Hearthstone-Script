@@ -42,4 +42,9 @@ public class LogListenStarter extends AbstractStarter{
         logListener.listen();
         startNextStarter();
     }
+
+    @Override
+    public int getOrder() {
+        return 50;
+    }
 }
