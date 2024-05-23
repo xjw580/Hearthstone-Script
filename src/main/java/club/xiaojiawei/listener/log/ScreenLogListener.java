@@ -1,5 +1,6 @@
 package club.xiaojiawei.listener.log;
 
+import club.xiaojiawei.closer.LogListenerCloser;
 import club.xiaojiawei.core.Core;
 import club.xiaojiawei.custom.LogRunnable;
 import club.xiaojiawei.data.SpringData;
@@ -25,7 +26,7 @@ import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Component
-public class ScreenLogListener extends AbstractLogListener{
+public class ScreenLogListener extends AbstractLogListener implements LogListenerCloser {
 
     @Resource
     private Core core;
@@ -59,16 +60,6 @@ public class ScreenLogListener extends AbstractLogListener{
         }
     }
 
-    @Override
-    protected void otherListen() {
-
-    }
-
-    @Override
-    protected void cancelOtherListener() {
-
-    }
-
     private ModeEnum resolveLog(String line) throws InterruptedException {
         if (line == null){
             return null;
@@ -85,4 +76,10 @@ public class ScreenLogListener extends AbstractLogListener{
         }
         return null;
     }
+
+    @Override
+    public void closeLogListener() {
+        cancelListener();
+    }
+
 }

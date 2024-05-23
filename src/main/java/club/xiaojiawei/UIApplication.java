@@ -1,7 +1,7 @@
 package club.xiaojiawei;
 
-import club.xiaojiawei.bean.LogRunnable;
 import club.xiaojiawei.controller.javafx.StartupController;
+import club.xiaojiawei.custom.LogRunnable;
 import club.xiaojiawei.data.ScriptStaticData;
 import club.xiaojiawei.data.SpringData;
 import club.xiaojiawei.enums.DeckEnum;
@@ -29,7 +29,8 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.util.List;
-import java.util.*;
+import java.util.Objects;
+import java.util.Properties;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;

@@ -1,5 +1,6 @@
 package club.xiaojiawei.strategy.mode;
 
+import club.xiaojiawei.closer.ModeTaskCloser;
 import club.xiaojiawei.custom.LogRunnable;
 import club.xiaojiawei.data.GameRationStaticData;
 import club.xiaojiawei.data.ScriptStaticData;
@@ -19,11 +20,11 @@ import java.util.concurrent.TimeUnit;
  */
 @Slf4j
 @Component
-public class LoginModeStrategy extends AbstractModeStrategy<Object> {
+public class LoginModeStrategy extends AbstractModeStrategy<Object> implements ModeTaskCloser {
 
-    private static ScheduledFuture<?> scheduledFuture;
+    private ScheduledFuture<?> scheduledFuture;
 
-    public static void cancelTask(){
+    private void cancelTask(){
         if (scheduledFuture != null && !scheduledFuture.isDone()){
             scheduledFuture.cancel(true);
         }
@@ -49,6 +50,11 @@ public class LoginModeStrategy extends AbstractModeStrategy<Object> {
                 );
             }
         }), 3000, 2000, TimeUnit.MILLISECONDS);
+    }
+
+    @Override
+    public void closeModeTask() {
+        cancelTask();
     }
 
 }

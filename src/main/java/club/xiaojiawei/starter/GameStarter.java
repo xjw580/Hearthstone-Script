@@ -1,8 +1,8 @@
 package club.xiaojiawei.starter;
 
+import club.xiaojiawei.closer.StarterTaskCloser;
 import club.xiaojiawei.custom.LogRunnable;
 import club.xiaojiawei.data.ScriptStaticData;
-import club.xiaojiawei.enums.ConfigurationEnum;
 import club.xiaojiawei.utils.GameUtil;
 import club.xiaojiawei.utils.MouseUtil;
 import club.xiaojiawei.utils.RandomUtil;
@@ -15,7 +15,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
-import java.util.Objects;
 import java.util.Properties;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
@@ -30,7 +29,7 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 @Slf4j
 @Component
-public class GameStarter extends AbstractStarter{
+public class GameStarter extends AbstractStarter implements StarterTaskCloser {
 
     @Resource
     private AtomicReference<BooleanProperty> isPause;
@@ -40,16 +39,15 @@ public class GameStarter extends AbstractStarter{
     private MouseUtil mouseUtil;
     @Resource
     private ScheduledThreadPoolExecutor extraThreadPool;
-    @Resource
-    private Properties scriptConfiguration;
     @Lazy
     @Resource
     private AbstractStarter starter;
     @Resource
     private GameUtil gameUtil;
 
-    private static ScheduledFuture<?> scheduledFuture;
-    private static WinDef.HWND gameHWND;
+    private ScheduledFuture<?> scheduledFuture;
+
+    private WinDef.HWND gameHWND;
 
     @Override
     public void exec() {
@@ -109,14 +107,13 @@ public class GameStarter extends AbstractStarter{
         mouseUtil.leftButtonClick(rect.left + RandomUtil.getRandom(100, 150), rect.bottom - RandomUtil.getRandom(110, 125));
     }
 
-
-    public static void cancelGameTimer(){
+    private void cancelGameTimer(){
         if (scheduledFuture != null && !scheduledFuture.isDone()){
             scheduledFuture.cancel(true);
         }
     }
 
-    public void cancelAndStartNext(){
+    private void cancelAndStartNext(){
         log.info(ScriptStaticData.GAME_CN_NAME + "正在运行");
         cancelGameTimer();
         GameUtil.hidePlatformWindow();
@@ -126,4 +123,10 @@ public class GameStarter extends AbstractStarter{
             startNextStarter();
         },1, TimeUnit.SECONDS);
     }
+
+    @Override
+    public void closeStarterTask() {
+        cancelGameTimer();
+    }
+
 }

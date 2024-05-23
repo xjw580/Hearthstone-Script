@@ -95,7 +95,7 @@ public class Work {
 
     public static void stopWork(){
         working = false;
-        SystemUtil.cancelAllRunnable();
+        SystemUtil.closeAll();
         cannotWorkLog();
         log.info("停止工作，准备关闭游戏");
         SystemUtil.killGame();

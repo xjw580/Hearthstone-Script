@@ -1,6 +1,7 @@
 package club.xiaojiawei.strategy.phase;
 
 import club.xiaojiawei.bean.entity.TagChangeEntity;
+import club.xiaojiawei.closer.GameThreadCloser;
 import club.xiaojiawei.custom.LogRunnable;
 import club.xiaojiawei.enums.ConfigurationEnum;
 import club.xiaojiawei.enums.DeckEnum;
@@ -27,14 +28,14 @@ import static club.xiaojiawei.enums.TagEnum.NEXT_STEP;
  */
 @Slf4j
 @Component
-public class ReplaceCardPhaseStrategy extends AbstractPhaseStrategy{
+public class ReplaceCardPhaseStrategy extends AbstractPhaseStrategy implements GameThreadCloser {
 
     @Resource
     private Properties scriptConfiguration;
-    private static Thread thread;
+    private Thread thread;
 
     @SuppressWarnings("all")
-    public static void stopThread(){
+    private void stopThread(){
         try{
             if (thread != null && thread.isAlive()){
                 thread.stop();
@@ -66,4 +67,8 @@ public class ReplaceCardPhaseStrategy extends AbstractPhaseStrategy{
         return false;
     }
 
+    @Override
+    public void closeGameThread() {
+        stopThread();
+    }
 }

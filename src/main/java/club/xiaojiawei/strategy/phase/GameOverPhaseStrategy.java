@@ -54,7 +54,7 @@ public class GameOverPhaseStrategy extends AbstractPhaseStrategy{
     private void over(){
         GameUtil.hidePlatformWindow();
         War.setMyTurn(false);
-        SystemUtil.stopAllThread();
+        SystemUtil.closeGameThread();
         War.increaseWarCount();
         try {
             SystemUtil.delay(1000);

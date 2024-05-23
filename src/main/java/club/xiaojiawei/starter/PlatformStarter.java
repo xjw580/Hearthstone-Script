@@ -1,5 +1,6 @@
 package club.xiaojiawei.starter;
 
+import club.xiaojiawei.closer.StarterTaskCloser;
 import club.xiaojiawei.data.ScriptStaticData;
 import club.xiaojiawei.enums.ConfigurationEnum;
 import club.xiaojiawei.utils.GameUtil;
@@ -23,7 +24,7 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 @Slf4j
 @Component
-public class PlatformStarter extends AbstractStarter{
+public class PlatformStarter extends AbstractStarter implements StarterTaskCloser {
 
     @Resource
     private AtomicReference<BooleanProperty> isPause;
@@ -33,7 +34,7 @@ public class PlatformStarter extends AbstractStarter{
     private ScheduledThreadPoolExecutor extraThreadPool;
     @Resource
     private GameUtil gameUtil;
-    private static ScheduledFuture<?> scheduledFuture;
+    private ScheduledFuture<?> scheduledFuture;
 
     @Override
     public void exec() {
@@ -53,15 +54,20 @@ public class PlatformStarter extends AbstractStarter{
         }, 1, 1, TimeUnit.SECONDS);
     }
 
-    public static void cancelPlatformTimer(){
+    private void cancelPlatformTimer(){
         if (scheduledFuture != null && !scheduledFuture.isDone()){
             scheduledFuture.cancel(true);
         }
     }
 
-    public void cancelAndStartNext(){
+    private void cancelAndStartNext(){
         cancelPlatformTimer();
         extraThreadPool.schedule(this::startNextStarter, 0, TimeUnit.SECONDS);
+    }
+
+    @Override
+    public void closeStarterTask() {
+        cancelPlatformTimer();
     }
 
 }

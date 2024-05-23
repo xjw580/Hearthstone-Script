@@ -119,11 +119,11 @@ public abstract class AbstractLogListener {
         }
     }
 
-
-    public void cancelListener(){
+    protected void cancelListener(){
         if (logScheduledFuture != null && !logScheduledFuture.isDone()){
             logScheduledFuture.cancel(true);
         }
         cancelOtherListener();
     }
+
 }

@@ -1,5 +1,6 @@
 package club.xiaojiawei.starter;
 
+import club.xiaojiawei.closer.StarterTaskCloser;
 import club.xiaojiawei.data.ScriptStaticData;
 import club.xiaojiawei.dll.SystemDll;
 import club.xiaojiawei.enums.ConfigurationEnum;
@@ -27,7 +28,7 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 @Component
 @Slf4j
-public class LoginPlatformStarter extends AbstractStarter{
+public class LoginPlatformStarter extends AbstractStarter implements StarterTaskCloser {
 
     @Resource
     private Properties scriptConfiguration;
@@ -38,7 +39,8 @@ public class LoginPlatformStarter extends AbstractStarter{
     @Lazy
     @Resource
     private AbstractStarter starter;
-    private static ScheduledFuture<?> scheduledFuture;
+
+    private ScheduledFuture<?> scheduledFuture;
 
     @Override
     protected void exec() {
@@ -78,7 +80,7 @@ public class LoginPlatformStarter extends AbstractStarter{
         }, 5, 15, TimeUnit.SECONDS);
     }
 
-    public static void cancelLoginPlatformTimer(){
+    private void cancelLoginPlatformTimer(){
         if (scheduledFuture != null && !scheduledFuture.isDone()){
             scheduledFuture.cancel(true);
         }
@@ -116,9 +118,14 @@ public class LoginPlatformStarter extends AbstractStarter{
         SystemUtil.sendKey(KeyEvent.VK_ENTER);
     }
 
-    public void cancelAndStartNext(){
+    private void cancelAndStartNext(){
         cancelLoginPlatformTimer();
         extraThreadPool.schedule(this::startNextStarter, 0, TimeUnit.SECONDS);
+    }
+
+    @Override
+    public void closeStarterTask() {
+        cancelLoginPlatformTimer();
     }
 
 }

@@ -42,7 +42,7 @@ public abstract class AbstractModeStrategy<T>{
         afterEnter(t);
     }
     protected void beforeEnter(){
-        SystemUtil.cancelAllTask();
+        SystemUtil.closeModeTask();
     }
     protected void log(){
         log.info("切換到" + Mode.getCurrMode().getComment());

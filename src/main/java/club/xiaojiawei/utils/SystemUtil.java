@@ -1,30 +1,23 @@
 package club.xiaojiawei.utils;
 
+import club.xiaojiawei.closer.GameThreadCloser;
+import club.xiaojiawei.closer.LogListenerCloser;
+import club.xiaojiawei.closer.ModeTaskCloser;
+import club.xiaojiawei.closer.StarterTaskCloser;
 import club.xiaojiawei.custom.MouseClickListener;
 import club.xiaojiawei.data.SpringData;
 import club.xiaojiawei.dll.NoticeDll;
 import club.xiaojiawei.dll.SystemDll;
 import club.xiaojiawei.enums.ConfigurationEnum;
 import club.xiaojiawei.enums.RegCommonNameEnum;
-import club.xiaojiawei.listener.log.DeckLogListener;
-import club.xiaojiawei.listener.log.PowerLogListener;
-import club.xiaojiawei.listener.log.ScreenLogListener;
-import club.xiaojiawei.starter.GameStarter;
-import club.xiaojiawei.starter.LoginPlatformStarter;
-import club.xiaojiawei.starter.PlatformStarter;
-import club.xiaojiawei.strategy.mode.LoginModeStrategy;
-import club.xiaojiawei.strategy.mode.TournamentModeStrategy;
-import club.xiaojiawei.strategy.phase.GameTurnPhaseStrategy;
-import club.xiaojiawei.strategy.phase.ReplaceCardPhaseStrategy;
 import club.xiaojiawei.ws.WebSocketServer;
 import com.sun.jna.platform.win32.*;
-import jakarta.annotation.Resource;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.catalina.User;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
 import java.awt.*;
@@ -35,6 +28,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicReference;
@@ -51,28 +45,28 @@ import static club.xiaojiawei.data.ScriptStaticData.*;
 @Component
 public class SystemUtil {
 
-    private static ScreenLogListener screenLogListener;
-    private static PowerLogListener powerLogListener;
-    private static DeckLogListener deckLogListener;
     private static AtomicReference<BooleanProperty> isPause;
     private static SpringData springData;
     private static Properties scriptConfiguration;
+    private static Map<String, GameThreadCloser> gameThreadCloserMap;
+    private static Map<String, LogListenerCloser> logListenerCloserMap;
+    private static Map<String, ModeTaskCloser> modeTaskCloserMap;
+    private static Map<String, StarterTaskCloser> starterCloserMap;
 
     @Autowired
     public void setScreenLogListener(
-            ScreenLogListener screenLogListener,
-            PowerLogListener powerLogListener,
-            DeckLogListener deckLogListener,
             AtomicReference<BooleanProperty> isPause,
             SpringData springData,
-            Properties scriptConfiguration
+            Properties scriptConfiguration,
+            ApplicationContext applicationContext
     ) {
-        SystemUtil.screenLogListener = screenLogListener;
-        SystemUtil.powerLogListener = powerLogListener;
-        SystemUtil.deckLogListener = deckLogListener;
         SystemUtil.isPause = isPause;
         SystemUtil.springData = springData;
         SystemUtil.scriptConfiguration = scriptConfiguration;
+        SystemUtil.gameThreadCloserMap = applicationContext.getBeansOfType(GameThreadCloser.class);
+        SystemUtil.logListenerCloserMap = applicationContext.getBeansOfType(LogListenerCloser.class);
+        SystemUtil.modeTaskCloserMap = applicationContext.getBeansOfType(ModeTaskCloser.class);
+        SystemUtil.starterCloserMap = applicationContext.getBeansOfType(StarterTaskCloser.class);
     }
 
     public final static Clipboard CLIPBOARD = Toolkit.getDefaultToolkit().getSystemClipboard();
@@ -107,38 +101,42 @@ public class SystemUtil {
         notice("", content, "", "");
     }
 
-    public static void cancelAllTask(){
+    public static void closeModeTask(){
         log.info("终止所有模式任务");
-        GameUtil.cancelTask();
-        LoginModeStrategy.cancelTask();
-        TournamentModeStrategy.cancelTask();
+//        GameUtil.cancelTask();
+//        LoginModeStrategy.cancelTask();
+//        TournamentModeStrategy.cancelTask();
+        modeTaskCloserMap.forEach((key, value) -> value.closeModeTask());
     }
 
-    public static void cancelAllListener(){
+    public static void closeLogListener(){
         log.info("终止所有监听器");
-        screenLogListener.cancelListener();
-        powerLogListener.cancelListener();
-        deckLogListener.cancelListener();
+//        screenLogListener.cancelListener();
+//        powerLogListener.cancelListener();
+//        deckLogListener.cancelListener();
+        logListenerCloserMap.forEach((key, value) -> value.closeLogListener());
     }
 
-    public static void stopAllThread(){
+    public static void closeGameThread(){
         log.info("终止所有额外线程");
-        ReplaceCardPhaseStrategy.stopThread();
-        GameTurnPhaseStrategy.stopThread();
+//        ReplaceCardPhaseStrategy.stopThread();
+//        GameTurnPhaseStrategy.stopThread();
+        gameThreadCloserMap.forEach((key, value) -> value.closeGameThread());
     }
 
-    public static void cancelAllProgramTimer(){
+    public static void closeStarterTask(){
         log.info("终止所有程序启动定时器");
-        PlatformStarter.cancelPlatformTimer();
-        LoginPlatformStarter.cancelLoginPlatformTimer();
-        GameStarter.cancelGameTimer();
+//        PlatformStarter.cancelPlatformTimer();
+//        LoginPlatformStarter.cancelLoginPlatformTimer();
+//        GameStarter.cancelGameTimer();
+        starterCloserMap.forEach((key, value) -> value.closeStarterTask());
     }
 
-    public static void cancelAllRunnable(){
-        cancelAllListener();
-        stopAllThread();
-        cancelAllTask();
-        cancelAllProgramTimer();
+    public static void closeAll(){
+        closeLogListener();
+        closeGameThread();
+        closeModeTask();
+        closeStarterTask();
         delay(1000);
     }
 

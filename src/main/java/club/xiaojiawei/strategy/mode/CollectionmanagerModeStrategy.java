@@ -1,14 +1,14 @@
 package club.xiaojiawei.strategy.mode;
 
+import club.xiaojiawei.closer.ModeTaskCloser;
+import club.xiaojiawei.custom.LogRunnable;
 import club.xiaojiawei.strategy.AbstractModeStrategy;
-import club.xiaojiawei.utils.MouseUtil;
 import club.xiaojiawei.utils.SystemUtil;
-import club.xiaojiawei.utils.WindowUtil;
-import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import java.util.Properties;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 我的收藏
@@ -17,7 +17,9 @@ import java.util.Properties;
  */
 @Slf4j
 @Component
-public class CollectionmanagerModeStrategy extends AbstractModeStrategy<Object> {
+public class CollectionmanagerModeStrategy extends AbstractModeStrategy<Object> implements ModeTaskCloser {
+
+    private ScheduledFuture<?> scheduledFuture;
 
     @Override
     public void wantEnter() {
@@ -25,8 +27,22 @@ public class CollectionmanagerModeStrategy extends AbstractModeStrategy<Object> 
 
     @Override
     protected void afterEnter(Object o) {
-        SystemUtil.updateGameRect();
-        SystemUtil.delayShort();
-        gameUtil.clickBackButton();
+        cancelTask();
+        scheduledFuture = extraThreadPool.scheduleWithFixedDelay(new LogRunnable(() -> {
+            SystemUtil.updateGameRect();
+            gameUtil.clickBackButton();
+        }), DELAY_TIME, 500, TimeUnit.MILLISECONDS);
     }
+
+    private void cancelTask() {
+        if (scheduledFuture != null && !scheduledFuture.isDone()){
+            scheduledFuture.cancel(true);
+        }
+    }
+
+    @Override
+    public void closeModeTask() {
+        cancelTask();
+    }
+
 }

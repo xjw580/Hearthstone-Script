@@ -1,5 +1,6 @@
 package club.xiaojiawei.listener.log;
 
+import club.xiaojiawei.closer.LogListenerCloser;
 import club.xiaojiawei.core.Core;
 import club.xiaojiawei.custom.LogRunnable;
 import club.xiaojiawei.data.SpringData;
@@ -24,14 +25,14 @@ import static club.xiaojiawei.enums.WarPhaseEnum.*;
  */
 @Slf4j
 @Component
-public class PowerLogListener extends AbstractLogListener{
+public class PowerLogListener extends AbstractLogListener implements LogListenerCloser {
 
     @Resource
     private Core core;
 
-    private static ScheduledFuture<?> errorScheduledFuture;
+    private ScheduledFuture<?> errorScheduledFuture;
 
-    private static volatile long lastWorkTime;
+    private volatile long lastWorkTime;
 
     private static final long MAX_IDLE_TIME = 5 * 60 * 1_000L;
 
@@ -41,7 +42,7 @@ public class PowerLogListener extends AbstractLogListener{
     }
 
     @Override
-    public void readOldLog() throws IOException {
+    protected void readOldLog() throws IOException {
         accessFile.seek(accessFile.length());
         War.reset();
     }
@@ -107,4 +108,10 @@ public class PowerLogListener extends AbstractLogListener{
         lastWorkTime = System.currentTimeMillis();
         return flag;
     }
+
+    @Override
+    public void closeLogListener() {
+        cancelListener();
+    }
+
 }

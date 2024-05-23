@@ -1,5 +1,6 @@
 package club.xiaojiawei.utils;
 
+import club.xiaojiawei.closer.ModeTaskCloser;
 import club.xiaojiawei.data.GameRationStaticData;
 import club.xiaojiawei.data.ScriptStaticData;
 import club.xiaojiawei.enums.ConfigurationEnum;
@@ -26,7 +27,7 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 @Component
 @Slf4j
-public class GameUtil {
+public class GameUtil implements ModeTaskCloser {
 
     @Resource
     private MouseUtil mouseUtil;
@@ -36,7 +37,10 @@ public class GameUtil {
     private AtomicReference<BooleanProperty> isPause;
     @Resource
     private Properties scriptConfiguration;
-    private static ScheduledFuture<?> clickGameEndPageTask;
+
+    private ScheduledFuture<?> clickGameEndPageTask;
+
+    private static final float SURRENDER_BUTTON_VERTICAL_TO_BOTTOM_RATION = (float) 0.652;
 
     /**
      * 点击炉石里的返回按钮
@@ -65,7 +69,7 @@ public class GameUtil {
      * 游戏里投降
      */
     public void surrender(){
-        SystemUtil.stopAllThread();
+        SystemUtil.closeGameThread();
         SystemUtil.delay(10000);
         SystemUtil.frontWindow(ScriptStaticData.getGameHWND());
 //        按ESC键弹出投降界面
@@ -105,7 +109,7 @@ public class GameUtil {
         );
     }
 
-    public static void cancelTask(){
+    private void cancelTask(){
         if (clickGameEndPageTask != null && !clickGameEndPageTask.isDone()){
             clickGameEndPageTask.cancel(true);
         }
@@ -123,5 +127,9 @@ public class GameUtil {
         }
     }
 
-    private static final float SURRENDER_BUTTON_VERTICAL_TO_BOTTOM_RATION = (float) 0.652;
+    @Override
+    public void closeModeTask() {
+        cancelTask();
+    }
+
 }

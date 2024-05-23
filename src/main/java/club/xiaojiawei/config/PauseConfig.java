@@ -41,7 +41,7 @@ public class PauseConfig {
             javafxMainController.changeSwitch(newValue);
             WebSocketServer.sendAllMessage(WsResult.ofNew(WsResultTypeEnum.PAUSE, newValue));
             if (newValue){
-                SystemUtil.cancelAllRunnable();
+                SystemUtil.closeAll();
                 Work.setWorking(false);
             }else {
                 if (Work.isDuringWorkDate()){

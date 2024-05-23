@@ -1,6 +1,7 @@
 package club.xiaojiawei.strategy.mode;
 
 import club.xiaojiawei.bean.Deck;
+import club.xiaojiawei.closer.ModeTaskCloser;
 import club.xiaojiawei.core.Core;
 import club.xiaojiawei.custom.LogRunnable;
 import club.xiaojiawei.data.GameRationStaticData;
@@ -38,7 +39,7 @@ import static club.xiaojiawei.data.GameRationStaticData.FIRST_ROW_DECK_VERTICAL_
  */
 @Slf4j
 @Component
-public class TournamentModeStrategy extends AbstractModeStrategy<Object> {
+public class TournamentModeStrategy extends AbstractModeStrategy<Object> implements ModeTaskCloser {
 
     @Resource
     private Properties scriptConfiguration;
@@ -46,8 +47,8 @@ public class TournamentModeStrategy extends AbstractModeStrategy<Object> {
     private PowerLogListener powerLogListener;
     @Resource
     private Core core;
-    private static ScheduledFuture<?> scheduledFuture;
-    private static ScheduledFuture<?> errorScheduledFuture;
+    private ScheduledFuture<?> scheduledFuture;
+    private ScheduledFuture<?> errorScheduledFuture;
     private static final float TOURNAMENT_MODE_BUTTON_VERTICAL_TO_BOTTOM_RATIO = 0.7F;
     private static final float FIRST_DECK_BUTTON_HORIZONTAL_TO_CENTER_RATIO = 0.333F;
     private static final float ERROR_BUTTON_VERTICAL_TO_BOTTOM_RATION = 0.395F;
@@ -58,7 +59,7 @@ public class TournamentModeStrategy extends AbstractModeStrategy<Object> {
     private static final float STANDARD_BUTTON_VERTICAL_TO_BOTTOM_RATION = 0.714F;
     private static final float STANDARD_BUTTON_HORIZONTAL_TO_CENTER_RATION = 0.11F;
 
-    public static void cancelTask(){
+    private void cancelTask(){
         if (scheduledFuture != null && !scheduledFuture.isDone()){
             scheduledFuture.cancel(true);
         }
@@ -238,6 +239,11 @@ public class TournamentModeStrategy extends AbstractModeStrategy<Object> {
                 afterEnter(null);
             }
         }), 60, TimeUnit.SECONDS);
+    }
+
+    @Override
+    public void closeModeTask() {
+        cancelTask();
     }
 
 }

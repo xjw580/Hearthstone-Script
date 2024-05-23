@@ -1,6 +1,7 @@
 package club.xiaojiawei.listener.log;
 
 import club.xiaojiawei.bean.Deck;
+import club.xiaojiawei.closer.LogListenerCloser;
 import club.xiaojiawei.data.SpringData;
 import club.xiaojiawei.utils.PowerLogUtil;
 import lombok.Getter;
@@ -20,15 +21,15 @@ import java.util.concurrent.TimeUnit;
  */
 @Slf4j
 @Component
-public class DeckLogListener extends AbstractLogListener{
+public class DeckLogListener extends AbstractLogListener implements LogListenerCloser {
+
+    @Getter
+    private static final LinkedList<Deck> DECKS = new LinkedList<>();
 
     @Autowired
     public DeckLogListener(SpringData springData) {
         super(springData.getDeckLogName(), 0, 1500L, TimeUnit.MILLISECONDS);
     }
-
-    @Getter
-    private static final LinkedList<Deck> DECKS = new LinkedList<>();
 
     @Override
     protected void readOldLog() throws IOException {
@@ -41,6 +42,7 @@ public class DeckLogListener extends AbstractLogListener{
             }
         }
     }
+
     private void dealReceived() throws IOException {
         DECKS.clear();
         String line;
@@ -54,6 +56,7 @@ public class DeckLogListener extends AbstractLogListener{
             filePointer = accessFile.getFilePointer();
         }
     }
+
     private void dealEditing() throws IOException {
         Deck deck = createDeck(accessFile.readLine());
         boolean exist = false;
@@ -80,6 +83,11 @@ public class DeckLogListener extends AbstractLogListener{
     @Override
     protected void listenLog() throws IOException {
         readOldLog();
+    }
+
+    @Override
+    public void closeLogListener() {
+        cancelListener();
     }
 
 }

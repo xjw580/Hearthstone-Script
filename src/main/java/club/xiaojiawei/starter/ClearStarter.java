@@ -16,7 +16,7 @@ public class ClearStarter extends AbstractStarter{
 
     @Override
     public void exec() {
-        SystemUtil.cancelAllRunnable();
+        SystemUtil.closeAll();
         Mode.reset();
         startNextStarter();
     }
