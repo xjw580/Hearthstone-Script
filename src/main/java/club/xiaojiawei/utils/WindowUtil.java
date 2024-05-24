@@ -7,12 +7,14 @@ import jakarta.annotation.Resource;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.stage.Popup;
-import javafx.stage.Stage;
+import javafx.scene.paint.Paint;
+import javafx.stage.*;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
@@ -57,35 +59,65 @@ public class WindowUtil {
      * @param contentText
      * @param okHandler
      * @param cancelHandler
-     * @param closeHandler
-     * @param windowCloseHandler
      * @return
      */
-    public static Alert createAlert(
+    public static Stage createAlert(
             String headerText,
             String contentText,
             EventHandler<ActionEvent> okHandler,
             EventHandler<ActionEvent> cancelHandler,
-            EventHandler<ActionEvent> closeHandler,
-            EventHandler<DialogEvent> windowCloseHandler
+            Window window
     ){
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle(ScriptStaticData.SCRIPT_NAME);
-        alert.getButtonTypes().add(ButtonType.CLOSE);
-        alert.setHeaderText(headerText);
-        alert.setContentText(contentText);
-        Button okButton = (Button) alert.getDialogPane().lookupButton(ButtonType.OK);
-        Button cancelButton = (Button) alert.getDialogPane().lookupButton(ButtonType.CANCEL);
-        Button closeButton = (Button) alert.getDialogPane().lookupButton(ButtonType.CLOSE);
-        okButton.setOnAction(okHandler);
-        cancelButton.setOnAction(cancelHandler);
-        closeButton.setOnAction(closeHandler);
-        alert.setOnCloseRequest(windowCloseHandler);
-        return alert;
+        Stage stage = new Stage();
+        VBox rootPane = new VBox();
+        rootPane.setStyle("-fx-effect: dropshadow(gaussian, rgba(128, 128, 128, 0.67), 10, 0, 0, 0);-fx-background-radius: 5;-fx-background-insets: 10;-fx-padding: 10");
+        Button okBtn = new javafx.scene.control.Button("确认");
+        okBtn.getStyleClass().addAll("btn-ui", "btn-ui-success");
+        okBtn.setOnAction(actionEvent -> {
+            stage.hide();
+            if (okHandler != null) {
+                System.out.println("ok update");
+                okHandler.handle(actionEvent);
+            }
+        });
+        Button cancelBtn = new javafx.scene.control.Button("取消");
+        cancelBtn.getStyleClass().addAll("btn-ui");
+        cancelBtn.setOnAction(actionEvent -> {
+            stage.hide();
+            if (cancelHandler != null) {
+                cancelHandler.handle(actionEvent);
+            }
+        });
+        HBox head = new HBox(new Label(headerText){{setStyle("-fx-wrap-text: true");}});
+        HBox center = new HBox(new Label(contentText){{setStyle("-fx-wrap-text: true");}});
+        HBox bottom = new HBox(okBtn, cancelBtn);
+        head.setAlignment(Pos.CENTER_LEFT);
+        center.setAlignment(Pos.CENTER_LEFT);
+        bottom.setAlignment(Pos.CENTER_RIGHT);
+        head.setStyle("-fx-padding: 15;-fx-font-weight: bold");
+        center.setStyle("-fx-padding: 10 30 10 30;-fx-font-size: 14");
+        bottom.setStyle("-fx-padding: 10;-fx-spacing: 20");
+        rootPane.getChildren().addAll(head, center, bottom);
+        Scene scene = new Scene(rootPane, 400, -1);
+        scene.setFill(Paint.valueOf("#FFFFFF00"));
+        JavaFXUI.addjavafxUIStylesheet(scene);
+        stage.setMaximized(false);
+        stage.setResizable(false);
+        stage.initStyle(StageStyle.TRANSPARENT);
+        stage.setScene(scene);
+        stage.getIcons().add(new Image(Objects.requireNonNull(WindowUtil.class.getResource(ScriptStaticData.SCRIPT_ICON_PATH)).toExternalForm()));
+        stage.showingProperty().addListener((observableValue, aBoolean, t1) -> {
+            if (!t1 && cancelHandler != null) {
+                cancelHandler.handle(null);
+            }
+        });
+        stage.initModality(Modality.APPLICATION_MODAL);
+        stage.initOwner(window);
+        return stage;
     }
 
-    public static Alert createAlert(String headerText, String contentText, EventHandler<ActionEvent> okHandler){
-        return createAlert(headerText, contentText, okHandler, null, null, null);
+    public static Stage createAlert(String headerText, String contentText, Window window){
+        return createAlert(headerText, contentText, null, null, window);
     }
 
 

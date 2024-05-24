@@ -37,9 +37,13 @@ import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Popup;
+import javafx.stage.Stage;
+import javafx.stage.Window;
 import javafx.util.Duration;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.girod.javafx.svgimage.Main;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.*;
@@ -52,6 +56,7 @@ import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Consumer;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -95,7 +100,6 @@ public class MainController implements Initializable {
     @Resource private AtomicReference<BooleanProperty> isPause;
     @Resource private PropertiesUtil propertiesUtil;
     @Resource private Properties scriptConfiguration;
-    @Resource private ScheduledThreadPoolExecutor extraThreadPool;
     @Resource private VersionListener versionListener;
     @Getter private static RunModeEnum currentRunMode;
     @Getter private static DeckEnum currentDeck;
@@ -104,25 +108,44 @@ public class MainController implements Initializable {
     private static NotificationManager staticNotificationManger;
     private static ProgressBar staticDownloadProgress;
     private static AtomicReference<BooleanProperty> staticIsPause;
+    private static ScheduledThreadPoolExecutor extraThreadPool;
     private static final SimpleBooleanProperty UPDATING = new SimpleBooleanProperty(false);
+    private static final String VERSION_FILE_FLAG_NAME = "downloaded.flag";
     private boolean isNotHoverLog = true;
     @FXML
     private TitledPane titledPaneControl;
+
+    @Autowired
+    private void set(ScheduledThreadPoolExecutor extraThreadPool){
+        MainController.extraThreadPool = extraThreadPool;
+    }
 
     public void expandedLogPane(){
         accordion.setExpandedPane(titledPaneLog);
     }
 
-    public static String downloadRelease(Release release, boolean force){
-        String path;
-        File file = Path.of(TEMP_VERSION_PATH, release.getTagName()).toFile();
-        if (!force && file.exists()) {
-            path = file.getAbsolutePath();
-        } else if ((path = downloadRelease(release, GiteeRepository.getInstance().getReleaseURL(release))) == null){
-            Platform.runLater(() -> staticNotificationManger.showInfo("更换下载源重新下载", 3));
-            path = downloadRelease(release, GithubRepository.getInstance().getReleaseURL(release));
+    public static void downloadRelease(Release release, boolean force, Consumer<String> callback){
+        if (UPDATING.get()) {
+            return;
         }
-        return path;
+        UPDATING.set(true);
+        extraThreadPool.submit(() -> {
+            String path = null;
+            try {
+                File file = Path.of(TEMP_VERSION_PATH, release.getTagName(), VERSION_FILE_FLAG_NAME).toFile();
+                if (!force && file.exists()) {
+                    path = file.getParentFile().getAbsolutePath();
+                } else if ((path = downloadRelease(release, GiteeRepository.getInstance().getReleaseURL(release))) == null){
+                    Platform.runLater(() -> staticNotificationManger.showInfo("更换下载源重新下载", 3));
+                    path = downloadRelease(release, GithubRepository.getInstance().getReleaseURL(release));
+                }
+            }finally {
+                UPDATING.set(false);
+                if (callback != null) {
+                    callback.accept(path);
+                }
+            }
+        });
     }
 
     private static String downloadRelease(Release release, String url){
@@ -169,6 +192,7 @@ public class MainController implements Initializable {
                 }
                 staticDownloadProgress.setProgress(++index / count);
             }
+            writeVersionFileCompleteFlag(rootPath.toString());
             staticDownloadProgress.setProgress(1D);
             String endContent = "<" + release.getTagName() + ">下载完毕";
             log.info(endContent);
@@ -181,22 +205,41 @@ public class MainController implements Initializable {
         } finally {
             staticDownloadProgress.setVisible(false);
             staticDownloadProgress.setManaged(false);
-            UPDATING.set(false);
         }
         return rootPath.toString();
+    }
+
+    private static boolean writeVersionFileCompleteFlag(String path){
+        try {
+            return Path.of(path, VERSION_FILE_FLAG_NAME).toFile().createNewFile();
+        } catch (IOException e) {
+            log.error("", e);
+        }
+        return false;
     }
 
     public static void execUpdate(String versionPath){
         try {
             UPDATING.set(true);
-            Runtime.getRuntime().exec(String.format(
-                    "cmd /c start %s --target=%s --source=%s --pause=%s --pid=%s",
+            System.out.println("exec update");
+            String format = String.format(
+                    "%s --target='%s' --source='%s' --pause='%s' --pid='%s'",
+                    System.getProperty("user.dir") + File.separator + ScriptStaticData.UPDATE_PROGRAM_NAME,
                     System.getProperty("user.dir"),
-                    ScriptStaticData.UPDATE_PROGRAM_NAME,
+                    versionPath,
+                    staticIsPause.get().get(),
+                    ProcessHandle.current().pid()
+            );
+            System.out.println("path:" + format);
+            Runtime.getRuntime().exec(String.format(
+                    "%s --target='%s' --source='%s' --pause='%s' --pid='%s'",
+                    System.getProperty("user.dir") + File.separator + ScriptStaticData.UPDATE_PROGRAM_NAME,
+                    System.getProperty("user.dir"),
                     versionPath,
                     staticIsPause.get().get(),
                     ProcessHandle.current().pid()
             ));
+            System.out.println("end update");
         } catch (IOException e) {
             log.error("执行版本更新失败", e);
         }finally {
@@ -423,14 +466,12 @@ public class MainController implements Initializable {
 
     @FXML protected void updateVersion() {
         Release release = VersionListener.getLatestRelease();
-        if (release != null && !UPDATING.get()){
-            UPDATING.set(true);
-            extraThreadPool.submit(() -> {
-                String path;
-                if ((path = downloadRelease(release, false)) == null){
-                    Platform.runLater(() -> WindowUtil.createAlert(String.format("新版本<%s>下载失败", release.getTagName()), "", null).show());
+        if (release != null){
+            downloadRelease(release, false, path -> {
+                if (path == null) {
+                    Platform.runLater(() -> WindowUtil.createAlert(String.format("新版本<%s>下载失败", release.getTagName()), "", rootPane.getScene().getWindow()).show());
                 }else {
-                    Platform.runLater(() -> WindowUtil.createAlert("新版本[" + release.getTagName() + "]下载完毕", "现在更新？", event -> execUpdate(path), event -> UPDATING.set(false), event -> UPDATING.set(false), event -> UPDATING.set(false)).show());
+                    Platform.runLater(() -> WindowUtil.createAlert("新版本[" + release.getTagName() + "]下载完毕", "现在更新？", event -> execUpdate(path), event -> UPDATING.set(false), rootPane.getScene().getWindow()).show());
                 }
             });
         }

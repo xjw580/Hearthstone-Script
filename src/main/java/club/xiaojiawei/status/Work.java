@@ -25,6 +25,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Objects;
 import java.util.Properties;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static club.xiaojiawei.data.ScriptStaticData.TEMP_VERSION_PATH;
@@ -78,6 +79,7 @@ public class Work {
         Work.isPause = isPause;
         Work.propertiesUtil = propertiesUtil;
     }
+
     @Resource
     @Lazy
     public void setCore(Core core){
@@ -122,13 +124,14 @@ public class Work {
                 workLog();
                 core.start();
             }else if (enableUpdate && Objects.equals(scriptProperties.getProperty(AUTO_UPDATE.getKey()), "true") && VersionListener.isCanUpdate()){
-                String path;
-                if ((path = MainController.downloadRelease(VersionListener.getLatestRelease(), false)) == null){
+                MainController.downloadRelease(VersionListener.getLatestRelease(), false, path -> {
                     enableUpdate = false;
-                    log.warn(String.format("新版本<%s>下载失败", VersionListener.getLatestRelease().getTagName()));
-                }else {
-                    Platform.runLater(() -> MainController.execUpdate(path));
-                }
+                    if (path == null){
+                        log.warn(String.format("新版本<%s>下载失败", VersionListener.getLatestRelease().getTagName()));
+                    }else {
+                        Platform.runLater(() -> MainController.execUpdate(path));
+                    }
+                });
             }
         }
     }

@@ -101,11 +101,12 @@ public class ScriptStaticData {
     /**
      * 脚本程序图标名字
      */
-    public static final String MAIN_ICO_NAME = "favicon.png";
+    public static final String MAIN_IMG_PNG_NAME = "favicon.png";
+    public static final String MAIN_IMG_ICO_NAME = "favicon.ico";
     /**
      * 脚本程序图标路径
      */
-    public static final String SCRIPT_ICON_PATH = FXML_IMAGE_PATH + MAIN_ICO_NAME;
+    public static final String SCRIPT_ICON_PATH = FXML_IMAGE_PATH + MAIN_IMG_PNG_NAME;
 
     /*日志相关*/
     public static final String VALUE = "value";

@@ -88,7 +88,7 @@ public class SystemUtil {
             byte[] appIDBytes = SCRIPT_NAME.getBytes(StandardCharsets.UTF_8);
             byte[] titleBytes = title.getBytes(StandardCharsets.UTF_8);
             byte[] msgBytes = content.getBytes(StandardCharsets.UTF_8);
-            byte[] icoPathBytes = (springData.getResourcePath() + MAIN_ICO_NAME).getBytes(StandardCharsets.UTF_8);
+            byte[] icoPathBytes = (springData.getResourcePath() + MAIN_IMG_PNG_NAME).getBytes(StandardCharsets.UTF_8);
             byte[] btnTextBytes = btnText.getBytes(StandardCharsets.UTF_8);
             byte[] btnURLBytes = btnURL.getBytes(StandardCharsets.UTF_8);
             NoticeDll.INSTANCE.notice(
@@ -213,13 +213,13 @@ public class SystemUtil {
     public static boolean frontWindow(WinDef.HWND programHWND){
         // 显示窗口
         if (!User32.INSTANCE.ShowWindow(programHWND, 9 )){
-            log.error("显示窗口异常，错误代码：{}", Kernel32.INSTANCE.GetLastError());
+            log.error("显示窗口异常，错误代码：" + Kernel32.INSTANCE.GetLastError());
             return false;
         }
         delay(100);
         // 前置窗口
         if (!User32.INSTANCE.SetForegroundWindow(programHWND)){
-            log.error("前置窗口异常，错误代码：{}", Kernel32.INSTANCE.GetLastError());
+            log.error("前置窗口异常，错误代码：" + Kernel32.INSTANCE.GetLastError());
             return false;
         }
         delay(100);

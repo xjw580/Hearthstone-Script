@@ -35,7 +35,7 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static club.xiaojiawei.data.ScriptStaticData.MAIN_ICO_NAME;
+import static club.xiaojiawei.data.ScriptStaticData.MAIN_IMG_PNG_NAME;
 import static club.xiaojiawei.enums.ConfigurationEnum.DECK;
 
 /**
@@ -105,7 +105,7 @@ public class UIApplication extends Application implements ApplicationRunner {
                 SystemUtil.shutdown();
             }
         });
-        SystemUtil.addTray(MAIN_ICO_NAME, ScriptStaticData.SCRIPT_NAME, e -> {
+        SystemUtil.addTray(MAIN_IMG_PNG_NAME, ScriptStaticData.SCRIPT_NAME, e -> {
 //            左键点击
             if (e.getButton() == 1){
                 Platform.runLater(() -> {

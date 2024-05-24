@@ -23,17 +23,16 @@ public class ResourceInitializer extends AbstractInitializer{
 
     @Override
     protected void exec() {
-        if (new File(springData.getResourcePath() + ScriptStaticData.MAIN_ICO_NAME).exists()){
+        File imgFile = new File(springData.getResourcePath() + File.separator + ScriptStaticData.MAIN_IMG_PNG_NAME);
+        if (imgFile.exists()){
             return;
         }
-        File resourceDir = new File(springData.getResourcePath());
-        if (!resourceDir.exists()){
-            if (!resourceDir.mkdirs()){
-                log.warn("资源文件夹创建失败");
-            }
+        File resourceDir = imgFile.getParentFile();
+        if (!resourceDir.exists() && !resourceDir.mkdirs()){
+            log.warn("资源文件夹创建失败");
         }
-        try (BufferedInputStream bufferedInputStream = new BufferedInputStream(Objects.requireNonNull(ResourceInitializer.class.getResourceAsStream("/fxml/img/" + ScriptStaticData.MAIN_ICO_NAME)));
-             BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(new FileOutputStream(resourceDir.getAbsolutePath() + File.separator + ScriptStaticData.MAIN_ICO_NAME))
+        try (BufferedInputStream bufferedInputStream = new BufferedInputStream(Objects.requireNonNull(ResourceInitializer.class.getResourceAsStream("/fxml/img/" + ScriptStaticData.MAIN_IMG_PNG_NAME)));
+             BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(new FileOutputStream(imgFile))
         ){
             byte[] bytes = new byte[1024];
             int size;
@@ -50,4 +49,5 @@ public class ResourceInitializer extends AbstractInitializer{
     public int getOrder() {
         return 100;
     }
+
 }
