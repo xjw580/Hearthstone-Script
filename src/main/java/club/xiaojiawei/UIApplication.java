@@ -129,7 +129,17 @@ public class UIApplication extends Application implements ApplicationRunner {
         log.info("脚本数据路径：" + springData.getScriptPath());
 
         List<String> args = this.getParameters().getRaw();
-        if (!args.isEmpty() && Objects.equals("false", args.getFirst())){
+
+        String pause = "";
+        for (String arg : args) {
+            if (arg.startsWith("--pause=")) {
+                String[] split = arg.split("=", 2);
+                if (split.length > 1) {
+                    pause = split[1];
+                }
+            }
+        }
+        if (Objects.equals("false", pause)){
             log.info("接收到开始参数，开始脚本");
             extraThreadPool.schedule(() -> Platform.runLater(() -> isPause.get().set(false)), 1500, TimeUnit.MILLISECONDS);
         }

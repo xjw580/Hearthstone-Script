@@ -189,7 +189,14 @@ public class MainController implements Initializable {
     public static void execUpdate(String versionPath){
         try {
             UPDATING.set(true);
-            Runtime.getRuntime().exec(String.format("cmd /c start %s --target=%s --source=%s --pause=%s", System.getProperty("user.dir"), ScriptStaticData.UPDATE_PROGRAM_NAME, versionPath, staticIsPause.get().get()));
+            Runtime.getRuntime().exec(String.format(
+                    "cmd /c start %s --target=%s --source=%s --pause=%s --pid=%s",
+                    System.getProperty("user.dir"),
+                    ScriptStaticData.UPDATE_PROGRAM_NAME,
+                    versionPath,
+                    staticIsPause.get().get(),
+                    ProcessHandle.current().pid()
+            ));
         } catch (IOException e) {
             log.error("执行版本更新失败", e);
         }finally {
