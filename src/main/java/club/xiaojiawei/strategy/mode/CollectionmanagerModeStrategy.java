@@ -23,6 +23,7 @@ public class CollectionmanagerModeStrategy extends AbstractModeStrategy<Object> 
 
     @Override
     public void wantEnter() {
+        SystemUtil.copyToClipboard(" ");
     }
 
     @Override
