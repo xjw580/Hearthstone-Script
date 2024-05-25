@@ -50,7 +50,9 @@ import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.ResourceBundle;
@@ -221,25 +223,21 @@ public class MainController implements Initializable {
     public static void execUpdate(String versionPath){
         try {
             UPDATING.set(true);
-            System.out.println("exec update");
-            String format = String.format(
-                    "%s --target='%s' --source='%s' --pause='%s' --pid='%s'",
-                    System.getProperty("user.dir") + File.separator + ScriptStaticData.UPDATE_PROGRAM_NAME,
-                    System.getProperty("user.dir"),
-                    versionPath,
-                    staticIsPause.get().get(),
-                    ProcessHandle.current().pid()
+            String rootPath = System.getProperty("user.dir");
+            String updateProgramPath = rootPath + File.separator + ScriptStaticData.UPDATE_PROGRAM_NAME;
+            Files.copy(
+                    Path.of(versionPath + File.separator + ScriptStaticData.UPDATE_PROGRAM_NAME),
+                    Path.of(rootPath + File.separator + ScriptStaticData.UPDATE_PROGRAM_NAME),
+                    StandardCopyOption.REPLACE_EXISTING
             );
-            System.out.println("path:" + format);
             Runtime.getRuntime().exec(String.format(
                     "%s --target='%s' --source='%s' --pause='%s' --pid='%s'",
-                    System.getProperty("user.dir") + File.separator + ScriptStaticData.UPDATE_PROGRAM_NAME,
-                    System.getProperty("user.dir"),
+                    updateProgramPath,
+                    rootPath,
                     versionPath,
                     staticIsPause.get().get(),
                     ProcessHandle.current().pid()
             ));
-            System.out.println("end update");
         } catch (IOException e) {
             log.error("执行版本更新失败", e);
         }finally {

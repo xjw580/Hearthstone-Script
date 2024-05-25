@@ -76,7 +76,6 @@ public class WindowUtil {
         okBtn.setOnAction(actionEvent -> {
             stage.hide();
             if (okHandler != null) {
-                System.out.println("ok update");
                 okHandler.handle(actionEvent);
             }
         });

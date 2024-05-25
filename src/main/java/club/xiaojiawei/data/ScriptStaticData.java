@@ -102,7 +102,6 @@ public class ScriptStaticData {
      * 脚本程序图标名字
      */
     public static final String MAIN_IMG_PNG_NAME = "favicon.png";
-    public static final String MAIN_IMG_ICO_NAME = "favicon.ico";
     /**
      * 脚本程序图标路径
      */
