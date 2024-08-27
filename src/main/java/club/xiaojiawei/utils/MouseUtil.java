@@ -2,8 +2,10 @@ package club.xiaojiawei.utils;
 
 import club.xiaojiawei.data.GameRationStaticData;
 import club.xiaojiawei.data.ScriptStaticData;
+import club.xiaojiawei.dll.MouseUtilDll;
 import club.xiaojiawei.dll.SystemDll;
 import club.xiaojiawei.enums.ConfigurationEnum;
+import com.sun.jna.platform.win32.User32;
 import com.sun.jna.platform.win32.WinDef;
 import jakarta.annotation.Resource;
 import javafx.beans.property.BooleanProperty;
@@ -39,8 +41,8 @@ public class MouseUtil {
     private static Properties scriptConfiguration;
     @Resource
     private AtomicReference<BooleanProperty> isPause;
-    private double initX;
-    private double initY;
+    private static double initX;
+    private static double initY;
 
     @Resource
     public void setScriptConfiguration(Properties scriptConfiguration) {
@@ -68,18 +70,22 @@ public class MouseUtil {
             startY = transformScalePixelY(startY);
             endX = transformScalePixelX(endX);
             endY = transformScalePixelY(endY);
-            ROBOT.mouseMove(startX, startY);
+//            ROBOT.mouseMove(startX, startY);
+            MouseUtilDll.INSTANCE.moveMouse(startX, startY, getGameHWND());
             delayShort();
-            ROBOT.mousePress(BUTTON1_DOWN_MASK);
+//            ROBOT.mousePress(BUTTON1_DOWN_MASK);
+            MouseUtilDll.INSTANCE.leftClick(startX, startY, getGameHWND());
             SystemUtil.delayShort();
             for (int i = 0; i < 50; i++) {
-                ROBOT.mouseMove(startX, --startY);
+//                ROBOT.mouseMove(startX, --startY);
+                MouseUtilDll.INSTANCE.moveMouse(startX, --startY, getGameHWND());
                 SystemUtil.delay(MIN_MOVE_INTERVAL, getMaxMoveInterval());
             }
             SystemUtil.delayShort();
             moveMouseByLine(startX, startY, endX, endY);
             delayShort();
-            ROBOT.mouseRelease(BUTTON1_DOWN_MASK);
+//            ROBOT.mouseRelease(BUTTON1_DOWN_MASK);
+            MouseUtilDll.INSTANCE.moveMouse(endX, endY, getGameHWND());
             delayShort();
             gotoInitPos();
         }
@@ -106,13 +112,15 @@ public class MouseUtil {
             startY = transformScalePixelY(startY);
             endX = transformScalePixelX(endX);
             endY = transformScalePixelY(endY);
-            ROBOT.mouseMove(startX, startY);
+//            ROBOT.mouseMove(startX, startY);
+            MouseUtilDll.INSTANCE.moveMouse(startX, startY, getGameHWND());
             delayShort();
             moveMouseByLine(startX, startY, endX, endY);
             SystemUtil.delayShort();
-            ROBOT.mousePress(BUTTON1_DOWN_MASK);
-            delayShort();
-            ROBOT.mouseRelease(BUTTON1_DOWN_MASK);
+//            ROBOT.mousePress(BUTTON1_DOWN_MASK);
+//            delayShort();
+//            ROBOT.mouseRelease(BUTTON1_DOWN_MASK);
+            MouseUtilDll.INSTANCE.leftClick(endX, endY, getGameHWND());
             delayShort();
             gotoInitPos();
         }
@@ -151,12 +159,15 @@ public class MouseUtil {
             saveInitPos();
             x = transformScalePixelX(x);
             y = transformScalePixelY(y);
-            ROBOT.mouseMove(x, y);
-            delayShort();
-            ROBOT.mousePress(BUTTON1_DOWN_MASK);
-            delayShort();
-            ROBOT.mouseRelease(BUTTON1_DOWN_MASK);
-            delayShort();
+            System.out.println("x:" + x + " y:" + y);
+//            User32.INSTANCE.SetCursorPos(x, y);
+            MouseUtilDll.INSTANCE.leftClick(x, y + 10, getGameHWND());
+//            ROBOT.mouseMove(x, y);
+//            delayShort();
+//            ROBOT.mousePress(BUTTON1_DOWN_MASK);
+//            delayShort();
+//            ROBOT.mouseRelease(BUTTON1_DOWN_MASK);
+//            delayShort();
             gotoInitPos();
         }
     }
@@ -172,10 +183,8 @@ public class MouseUtil {
     }
 
     private void saveInitPos(){
-        if (Objects.equals(scriptConfiguration.getProperty(ConfigurationEnum.STATIC_CURSOR.getKey()), "true")){
-            initX = MouseInfo.getPointerInfo().getLocation().getX();
-            initY = MouseInfo.getPointerInfo().getLocation().getY();
-        }
+        initX = MouseInfo.getPointerInfo().getLocation().getX();
+        initY = MouseInfo.getPointerInfo().getLocation().getY();
     }
     private void gotoInitPos(){
         if (Objects.equals(scriptConfiguration.getProperty(ConfigurationEnum.STATIC_CURSOR.getKey()), "true")){
@@ -192,7 +201,7 @@ public class MouseUtil {
         return (int) (pixelX / DISPLAY_SCALE_X);
     }
     public static int transformScalePixelY(int pixelY){
-        return (int) (pixelY / DISPLAY_SCALE_Y);
+        return (int) (pixelY / DISPLAY_SCALE_Y - WINDOW_TITLE_PIXEL_Y);
     }
 
     /**
@@ -200,9 +209,10 @@ public class MouseUtil {
      */
     public static void gameCancel(){
         SystemUtil.delay(250, 500);
-        ROBOT.mousePress(BUTTON3_DOWN_MASK);
-        delayShort();
-        ROBOT.mouseRelease(BUTTON3_DOWN_MASK);
+        MouseUtilDll.INSTANCE.rightClick((int) initX, (int) initY, getGameHWND());
+//        ROBOT.mousePress(BUTTON3_DOWN_MASK);
+//        delayShort();
+//        ROBOT.mouseRelease(BUTTON3_DOWN_MASK);
     }
 
     private static void delayShort(){
@@ -227,23 +237,27 @@ public class MouseUtil {
     private static void moveMouseByLine(int startX, int startY, int endX, int endY){
         if (Math.abs(startY - endY) <= 5){
             for (startX -= MOVE_DISTANCE; startX >= endX; startX -= MOVE_DISTANCE){
-                ROBOT.mouseMove(startX, startY);
+//                ROBOT.mouseMove(startX, startY);
+                MouseUtilDll.INSTANCE.moveMouse(startX, startY, getGameHWND());
                 SystemUtil.delay(MIN_MOVE_INTERVAL, getMaxMoveInterval());
             }
         }else if (Math.abs(startX - endX) <= 5){
             for (startY -= MOVE_DISTANCE; startY >= endY; startY -= MOVE_DISTANCE){
-                ROBOT.mouseMove(startX, startY);
+//                ROBOT.mouseMove(startX, startY);
+                MouseUtilDll.INSTANCE.moveMouse(startX, startY, getGameHWND());
                 SystemUtil.delay(MIN_MOVE_INTERVAL, getMaxMoveInterval());
             }
         }else {
             double k = calcK(startX, startY, endX, endY);
             double b = startY - k * startX;
             for (startY -= MOVE_DISTANCE; startY >= endY; startY -= MOVE_DISTANCE){
-                ROBOT.mouseMove((int) ((startY - b) / k), startY);
+//                ROBOT.mouseMove((int) ((startY - b) / k), startY);
+                MouseUtilDll.INSTANCE.moveMouse((int) ((startY - b) / k), startY, getGameHWND());
                 SystemUtil.delay(MIN_MOVE_INTERVAL, getMaxMoveInterval());
             }
         }
         ROBOT.mouseMove(endX, endY);
+        MouseUtilDll.INSTANCE.moveMouse(endX, endY, getGameHWND());
         SystemUtil.delay(MIN_MOVE_INTERVAL, getMaxMoveInterval());
     }
     /**

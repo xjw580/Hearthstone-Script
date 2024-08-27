@@ -11,6 +11,7 @@ import club.xiaojiawei.dll.SystemDll;
 import club.xiaojiawei.enums.ConfigurationEnum;
 import club.xiaojiawei.enums.RegCommonNameEnum;
 import club.xiaojiawei.ws.WebSocketServer;
+import com.sun.jna.Native;
 import com.sun.jna.platform.win32.*;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
