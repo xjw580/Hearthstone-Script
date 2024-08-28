@@ -41,4 +41,7 @@ public interface SystemDll extends Library {
     boolean moveWindow(WinDef.HWND hwnd, int x, int y, int w, int h, boolean ignoreSize);
 
     boolean moveWindowForTitle(String title, int x, int y, int w, int h, boolean ignoreSize);
+
+    boolean IsIconicWindow(WinDef.HWND hwnd);
+
 }

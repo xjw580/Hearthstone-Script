@@ -2,6 +2,7 @@ package club.xiaojiawei.utils.main;
 
 
 import club.xiaojiawei.data.GameRationStaticData;
+import club.xiaojiawei.dll.SystemDll;
 import club.xiaojiawei.utils.SystemUtil;
 import com.sun.jna.platform.win32.User32;
 import com.sun.jna.platform.win32.WinDef;
@@ -64,7 +65,10 @@ public class MeasureApplication extends Application {
         btnPane.getChildren().addAll(showBtn, hideBtn, clearBtn);
         vBox.getChildren().addAll(textArea, btnPane);
         primaryStage.setScene(new Scene(vBox, 450, 600));
+        String title = "GameRectUtil";
+        primaryStage.setTitle(title);
         primaryStage.show();
+        SystemDll.INSTANCE.topWindowForTitle(title, true);
     }
 
     private Window show(Stage stage, TextArea textArea) {
@@ -94,11 +98,11 @@ public class MeasureApplication extends Application {
         StackPane stackPane = new StackPane(root);
         Circle circle = new Circle(1.5, Color.RED);
         double outputScaleX = Screen.getPrimary().getOutputScaleX();
-        double realH = (clientH) / outputScaleX;
-        double realW = realH * GameRationStaticData.GAME_WINDOW_ASPECT_TO_HEIGHT_RATIO;
-        Line hLine = new Line(0, 0, realW, 0);
+        double usableH = (clientH) / outputScaleX;
+        double usableW = usableH * GameRationStaticData.GAME_WINDOW_ASPECT_TO_HEIGHT_RATIO;
+        Line hLine = new Line(0, 0, usableW, 0);
         hLine.setFill(Color.BLACK);
-        Line vLine = new Line(0, 0, 0, realH);
+        Line vLine = new Line(0, 0, 0, usableH);
         vLine.setFill(Color.BLACK);
         AnchorPane rectangle = new AnchorPane();
         rectangle.setStyle("-fx-background-color: transparent;-fx-border-color: red;-fx-border-width: 2");
@@ -114,23 +118,23 @@ public class MeasureApplication extends Application {
         root.setOnMouseDragged(event -> {
             Double startY = AnchorPane.getTopAnchor(rectangle);
             Double startX = AnchorPane.getLeftAnchor(rectangle);
-            rectangle.setPrefWidth(Math.min(event.getSceneX() - startX, realW - startX));
-            rectangle.setPrefHeight(Math.min(event.getSceneY() - startY, realH - startY));
+            rectangle.setPrefWidth(Math.min(event.getSceneX() - startX, usableW - startX));
+            rectangle.setPrefHeight(Math.min(event.getSceneY() - startY, usableH - startY));
         });
-        double middleH = realH / 2;
-        double middleW = realW / 2;
+        double middleH = usableH / 2;
+        double middleW = usableW / 2;
         root.setOnMouseReleased(event -> {
-            String msg = String.format("left: %.4f, right: %.4f, top: %.4f, bottom: %.4f\n",
-                    (AnchorPane.getLeftAnchor(rectangle) - middleW) / realW,
-                    (AnchorPane.getLeftAnchor(rectangle) + rectangle.getWidth() - middleW) / realW,
-                    (AnchorPane.getTopAnchor(rectangle) - middleH) / realH,
-                    (AnchorPane.getTopAnchor(rectangle) + rectangle.getHeight() - middleH) / realH
+            String msg = String.format("public static final GameRect RECT = new GameRect(%.4fD, %.4fD, %.4fD, %.4fD);\n",
+                    (AnchorPane.getLeftAnchor(rectangle) - middleW) / usableW,
+                    (AnchorPane.getLeftAnchor(rectangle) + rectangle.getWidth() - middleW) / usableW,
+                    (AnchorPane.getTopAnchor(rectangle) - middleH) / usableH,
+                    (AnchorPane.getTopAnchor(rectangle) + rectangle.getHeight() - middleH) / usableH
             );
             textArea.appendText(msg);
         });
         popup.getContent().addAll(stackPane);
         double titleH = 25D;
-        popup.setX(((windowRECT.left + ((windowW - clientW) / 2D)) / outputScaleX) + ((clientW / outputScaleX - realW) / 2));
+        popup.setX(((windowRECT.left + ((windowW - clientW) / 2D)) / outputScaleX) + ((clientW / outputScaleX - usableW) / 2));
         popup.setY((windowRECT.top + ((windowH - clientH - titleH) / 2D) + titleH) / outputScaleX);
         popup.show(stage);
         return popup;

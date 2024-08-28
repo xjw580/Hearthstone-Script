@@ -58,10 +58,7 @@ public class MouseUtil {
      * @param endX
      * @param endY
      */
-    public void leftButtonDrag(int startX, int startY, int endX, int endY) {
-        if (isPause.get().get()) {
-            return;
-        }
+    public static void leftButtonDrag(int startX, int startY, int endX, int endY) {
         synchronized (MouseUtil.class) {
             saveInitPos();
             startX = transformScalePixelX(startX);
@@ -89,7 +86,7 @@ public class MouseUtil {
         }
     }
 
-    public void leftButtonDrag(int[] start, int[] end) {
+    public static void leftButtonDrag(int[] start, int[] end) {
         leftButtonDrag(start[0], start[1], end[0], end[1]);
     }
 
@@ -102,10 +99,7 @@ public class MouseUtil {
      * @param endX
      * @param endY
      */
-    public void leftButtonMoveThenClick(int startX, int startY, int endX, int endY) {
-        if (isPause.get().get()) {
-            return;
-        }
+    public static void leftButtonMoveThenClick(int startX, int startY, int endX, int endY) {
         synchronized (MouseUtil.class) {
             saveInitPos();
             startX = transformScalePixelX(startX);
@@ -126,11 +120,11 @@ public class MouseUtil {
         }
     }
 
-    public void leftButtonMoveThenClick(int[] start, int[] end) {
+    public static void leftButtonMoveThenClick(int[] start, int[] end) {
         leftButtonMoveThenClick(start[0], start[1], end[0], end[1]);
     }
 
-    public void leftButtonClick(float horizontalToCenterRation, float verticalToBottomRation, int[] xRandom, int[] yRandom) {
+    public static void leftButtonClick(float horizontalToCenterRation, float verticalToBottomRation, int[] xRandom, int[] yRandom) {
         if (xRandom == null || xRandom.length < 2) {
             xRandom = new int[]{0, 0};
         }
@@ -153,43 +147,25 @@ public class MouseUtil {
      * @param x
      * @param y
      */
-    public void leftButtonClick(int x, int y) {
-        if (isPause.get().get()) {
-            return;
-        }
-        synchronized (MouseUtil.class) {
-            saveInitPos();
-            x = transformScalePixelX(x);
-            y = transformScalePixelY(y);
-//            User32.INSTANCE.SetCursorPos(x, y);
-            SystemDll.INSTANCE.leftClick(x, y, getGameHWND());
-//            ROBOT.mouseMove(x, y);
-//            delayShort();
-//            ROBOT.mousePress(BUTTON1_DOWN_MASK);
-//            delayShort();
-//            ROBOT.mouseRelease(BUTTON1_DOWN_MASK);
-//            delayShort();
-            gotoInitPos();
-        }
+    public static void leftButtonClick(int x, int y) {
+        System.out.println("x:" + x + ",y:" + y);
+        SystemDll.INSTANCE.leftClick(x, y, getGameHWND());
     }
 
-    public void leftButtonClick(int[] pos) {
+    public static void leftButtonClick(int[] pos) {
         leftButtonClick(pos[0], pos[1]);
     }
 
-    public void leftButtonClickByUser32(WinDef.HWND hwnd, int x, int y) {
-        if (isPause.get().get()) {
-            return;
-        }
+    public static void leftButtonClickByUser32(WinDef.HWND hwnd, int x, int y) {
         SystemDll.INSTANCE.leftClick(x, y, hwnd);
     }
 
-    private void saveInitPos() {
+    private static void saveInitPos() {
         initX = MouseInfo.getPointerInfo().getLocation().getX();
         initY = MouseInfo.getPointerInfo().getLocation().getY();
     }
 
-    private void gotoInitPos() {
+    private static void gotoInitPos() {
         if (Objects.equals(scriptConfiguration.getProperty(ConfigurationEnum.STATIC_CURSOR.getKey()), "true")) {
             ROBOT.mouseMove((int) initX, (int) initY);
         }

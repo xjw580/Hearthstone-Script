@@ -1,5 +1,6 @@
 package club.xiaojiawei.strategy.mode;
 
+import club.xiaojiawei.bean.GameRect;
 import club.xiaojiawei.interfaces.closer.ModeTaskCloser;
 import club.xiaojiawei.custom.LogRunnable;
 import club.xiaojiawei.strategy.AbstractModeStrategy;
@@ -18,6 +19,8 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 @Component
 public class CollectionmanagerModeStrategy extends AbstractModeStrategy<Object> implements ModeTaskCloser {
+
+    public static final GameRect BACK_RECT = new GameRect(0.4041D, 0.4604D, 0.4122D, 0.4489D);
 
     private ScheduledFuture<?> scheduledFuture;
 

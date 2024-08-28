@@ -211,18 +211,20 @@ public class SystemUtil {
          * @param programHWND
          */
     public static boolean frontWindow(WinDef.HWND programHWND){
-        // 显示窗口
-        if (!User32.INSTANCE.ShowWindow(programHWND, 9 )){
-            log.error("显示窗口异常，错误代码：" + Kernel32.INSTANCE.GetLastError());
-            return false;
+        if (SystemDll.INSTANCE.IsIconicWindow(programHWND)){
+            // 显示窗口
+            if (!User32.INSTANCE.ShowWindow(programHWND, 9 )){
+                log.error("显示窗口异常，错误代码：" + Kernel32.INSTANCE.GetLastError());
+                return false;
+            }
         }
-        delay(100);
-        // 前置窗口
-        if (!User32.INSTANCE.SetForegroundWindow(programHWND)){
-            log.error("前置窗口异常，错误代码：" + Kernel32.INSTANCE.GetLastError());
-            return false;
-        }
-        delay(100);
+//        delay(100);
+//        // 前置窗口
+//        if (!User32.INSTANCE.SetForegroundWindow(programHWND)){
+//            log.error("前置窗口异常，错误代码：" + Kernel32.INSTANCE.GetLastError());
+//            return false;
+//        }
+//        delay(100);
         return true;
     }
     public static final Desktop DESKTOP = Desktop.getDesktop();
