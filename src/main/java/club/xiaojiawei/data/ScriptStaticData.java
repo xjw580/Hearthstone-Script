@@ -147,7 +147,7 @@ public class ScriptStaticData {
         DISPLAY_SCALE_Y = tx.getScaleY();
         DISPLAY_PIXEL_WIDTH = (int) (Toolkit.getDefaultToolkit().getScreenSize().width * DISPLAY_SCALE_X);
         DISPLAY_PIXEL_HEIGHT = (int) (Toolkit.getDefaultToolkit().getScreenSize().height * DISPLAY_SCALE_Y);
-        WINDOW_TITLE_PIXEL_Y = (int) (33 / DISPLAY_SCALE_Y);
+        WINDOW_TITLE_PIXEL_Y = (int) (31 / DISPLAY_SCALE_Y);
 
         Map<String, TagEnum> tagTempMap = new HashMap<>(TagEnum.values().length);
         for (TagEnum value : TagEnum.values()) {

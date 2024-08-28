@@ -12,25 +12,17 @@ import com.sun.jna.platform.win32.WinDef;
 @SuppressWarnings("all")
 public interface SystemDll extends Library {
 
-    SystemDll INSTANCE = Native.load("dll/libsystem", SystemDll.class);
+    SystemDll INSTANCE = Native.load("dll/system", SystemDll.class);
 
-    void normalLeftMouseClick(int x, int y);
+    void normalLeftClick(int x, int y);
 
-    void leftMouseClick(WinDef.HWND hwnd, int x, int y);
+    void leftClick(long x, long y, WinDef.HWND hwnd);
 
-    void rightMouseClick(WinDef.HWND hwnd, int x, int y);
+    void rightClick(long x, long y, WinDef.HWND hwnd);
 
-    void leftMouseDown(WinDef.HWND hwnd, int x, int y);
-
-    void leftMouseUp(WinDef.HWND hwnd, int x, int y);
-
-    void rightMouseDown(WinDef.HWND hwnd, int x, int y);
-
-    void rightMouseUp(WinDef.HWND hwnd, int x, int y);
+    void moveMouse(long x, long y, WinDef.HWND hwnd);
 
     void closeProgram(WinDef.HWND hwnd);
-
-    //void moveMouse(WinDef.HWND hwnd, int startX, int startY, int endX, int endY);
 
     void frontWindow(WinDef.HWND hwnd);
 
@@ -41,4 +33,15 @@ public interface SystemDll extends Library {
     void clickLoginPlatformLoginBtn(WinDef.HWND loginPlatformRootHWND);
 
     void sendText(WinDef.HWND hwnd, String text, boolean append);
+
+    boolean topWindow(WinDef.HWND hwnd, boolean isTop);
+
+    boolean topWindowForTitle(String title, boolean isTop);
+
+    boolean moveWindow(WinDef.HWND hwnd, int x, int y, int w, int h, boolean ignoreSize);
+
+    boolean moveWindowForTitle(String title, int x, int y, int w, int h, boolean ignoreSize);
+
+    boolean IsIconicWindow(WinDef.HWND hwnd);
+
 }

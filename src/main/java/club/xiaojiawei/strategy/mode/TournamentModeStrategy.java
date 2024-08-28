@@ -1,6 +1,7 @@
 package club.xiaojiawei.strategy.mode;
 
 import club.xiaojiawei.bean.Deck;
+import club.xiaojiawei.bean.GameRect;
 import club.xiaojiawei.interfaces.closer.ModeTaskCloser;
 import club.xiaojiawei.core.Core;
 import club.xiaojiawei.custom.LogRunnable;
@@ -41,6 +42,19 @@ import static club.xiaojiawei.data.GameRationStaticData.FIRST_ROW_DECK_VERTICAL_
 @Component
 public class TournamentModeStrategy extends AbstractModeStrategy<Object> implements ModeTaskCloser {
 
+    public static final GameRect START_RECT = new GameRect(0.2586D, 0.3459D, 0.2706D, 0.3794D);
+
+    public static final GameRect CHANGE_MODE_RECT = new GameRect(0.2868D, 0.3256D, -0.4672D, -0.4279D);
+
+    public static final GameRect STANDARD_MODE_RECT = new GameRect(-0.2012D, -0.0295D, -0.2156D, -0.0400D);
+
+    public static final GameRect CASUAL_MODE_RECT = new GameRect(0.2557D, 0.4278D, -0.1769D, 0.0014D);
+
+    public static final GameRect FIRST_DECK_RECT = new GameRect(-0.4108D, -0.2487D, -0.2811D, -0.1894D);
+
+    public static final GameRect BACK_RECT = new GameRect(0.4041D, 0.4575D, 0.4083D, 0.4410D);
+
+
     @Resource
     private Properties scriptConfiguration;
     @Resource
@@ -76,10 +90,11 @@ public class TournamentModeStrategy extends AbstractModeStrategy<Object> impleme
                 cancelTask();
             } else if (Mode.getCurrMode() == ModeEnum.HUB){
                 SystemUtil.updateGameRect();
-                mouseUtil.leftButtonClick(
-                        ((ScriptStaticData.GAME_RECT.right + ScriptStaticData.GAME_RECT.left) >> 1) + RandomUtil.getRandom(-15, 15),
-                        (int) (ScriptStaticData.GAME_RECT.bottom - (ScriptStaticData.GAME_RECT.bottom - ScriptStaticData.GAME_RECT.top) * TOURNAMENT_MODE_BUTTON_VERTICAL_TO_BOTTOM_RATIO) + RandomUtil.getRandom(-5, 5)
-                );
+//                mouseUtil.leftButtonClick(
+//                        ((ScriptStaticData.GAME_RECT.right + ScriptStaticData.GAME_RECT.left) >> 1) + RandomUtil.getRandom(-15, 15),
+//                        (int) (ScriptStaticData.GAME_RECT.bottom - (ScriptStaticData.GAME_RECT.bottom - ScriptStaticData.GAME_RECT.top) * TOURNAMENT_MODE_BUTTON_VERTICAL_TO_BOTTOM_RATIO) + RandomUtil.getRandom(-5, 5)
+//                );
+                HubModeStrategy.TOURNAMENT_MODE_RECT.click();
             }else if (Mode.getCurrMode() == ModeEnum.GAME_MODE){
                 cancelTask();
                 SystemUtil.updateGameRect();
@@ -135,10 +150,11 @@ public class TournamentModeStrategy extends AbstractModeStrategy<Object> impleme
 
     private void clickModeChangeButton(){
         log.info("点击切换模式按钮");
-        mouseUtil.leftButtonClick(
-                (int) (((ScriptStaticData.GAME_RECT.right + ScriptStaticData.GAME_RECT.left) >> 1) + (ScriptStaticData.GAME_RECT.bottom - ScriptStaticData.GAME_RECT.top) * CHANGE_MODE_BUTTON_HORIZONTAL_TO_CENTER_RATION * GameRationStaticData.GAME_WINDOW_ASPECT_TO_HEIGHT_RATIO + RandomUtil.getRandom(-15, -5)),
-                (int) (ScriptStaticData.GAME_RECT.bottom - (ScriptStaticData.GAME_RECT.bottom - ScriptStaticData.GAME_RECT.top) * CHANGE_MODE_BUTTON_VERTICAL_TO_BOTTOM_RATION) + RandomUtil.getRandom(10, 20)
-        );
+//        mouseUtil.leftButtonClick(
+//                (int) (((ScriptStaticData.GAME_RECT.right + ScriptStaticData.GAME_RECT.left) >> 1) + (ScriptStaticData.GAME_RECT.bottom - ScriptStaticData.GAME_RECT.top) * CHANGE_MODE_BUTTON_HORIZONTAL_TO_CENTER_RATION * GameRationStaticData.GAME_WINDOW_ASPECT_TO_HEIGHT_RATIO + RandomUtil.getRandom(-15, -5)),
+//                (int) (ScriptStaticData.GAME_RECT.bottom - (ScriptStaticData.GAME_RECT.bottom - ScriptStaticData.GAME_RECT.top) * CHANGE_MODE_BUTTON_VERTICAL_TO_BOTTOM_RATION) + RandomUtil.getRandom(10, 20)
+//        );
+        CHANGE_MODE_RECT.click();
     }
 
     private void changeMode(DeckEnum currentDeck){
@@ -162,11 +178,13 @@ public class TournamentModeStrategy extends AbstractModeStrategy<Object> impleme
         }
         log.info("选择套牌");
 
-        int x = (int) (((ScriptStaticData.GAME_RECT.right + ScriptStaticData.GAME_RECT.left) >> 1) - (ScriptStaticData.GAME_RECT.bottom - ScriptStaticData.GAME_RECT.top) * FIRST_DECK_BUTTON_HORIZONTAL_TO_CENTER_RATIO * GameRationStaticData.GAME_WINDOW_ASPECT_TO_HEIGHT_RATIO + RandomUtil.getRandom(-10, 10));
-        int y = (int) (ScriptStaticData.GAME_RECT.bottom - (ScriptStaticData.GAME_RECT.bottom - ScriptStaticData.GAME_RECT.top) * FIRST_ROW_DECK_VERTICAL_TO_BOTTOM_RATIO) + RandomUtil.getRandom(-5, 5);
-        mouseUtil.leftButtonClick(x, y);
+//        int x = (int) (((ScriptStaticData.GAME_RECT.right + ScriptStaticData.GAME_RECT.left) >> 1) - (ScriptStaticData.GAME_RECT.bottom - ScriptStaticData.GAME_RECT.top) * FIRST_DECK_BUTTON_HORIZONTAL_TO_CENTER_RATIO * GameRationStaticData.GAME_WINDOW_ASPECT_TO_HEIGHT_RATIO + RandomUtil.getRandom(-10, 10));
+//        int y = (int) (ScriptStaticData.GAME_RECT.bottom - (ScriptStaticData.GAME_RECT.bottom - ScriptStaticData.GAME_RECT.top) * FIRST_ROW_DECK_VERTICAL_TO_BOTTOM_RATIO) + RandomUtil.getRandom(-5, 5);
+//        mouseUtil.leftButtonClick(x, y);
+        FIRST_DECK_RECT.click();
         SystemUtil.delayShort();
-        mouseUtil.leftButtonClick(x, y);
+        FIRST_DECK_RECT.click();
+//        mouseUtil.leftButtonClick(x, y);
     }
 
     private void changeModeToClassic(){
@@ -183,7 +201,8 @@ public class TournamentModeStrategy extends AbstractModeStrategy<Object> impleme
 
     private void changeModeToStandard(){
         log.info("切换至标准模式");
-        clickRight(STANDARD_BUTTON_HORIZONTAL_TO_CENTER_RATION, STANDARD_BUTTON_VERTICAL_TO_BOTTOM_RATION);
+//        clickRight(STANDARD_BUTTON_HORIZONTAL_TO_CENTER_RATION, STANDARD_BUTTON_VERTICAL_TO_BOTTOM_RATION);
+        STANDARD_MODE_RECT.click();
     }
 
     private void changeModeToWild(){
@@ -206,10 +225,11 @@ public class TournamentModeStrategy extends AbstractModeStrategy<Object> impleme
     public void startMatching(){
         log.info("开始匹配");
         //        重置游戏
-        mouseUtil.leftButtonClick(
-                (int) (((ScriptStaticData.GAME_RECT.right + ScriptStaticData.GAME_RECT.left) >> 1) + (ScriptStaticData.GAME_RECT.bottom - ScriptStaticData.GAME_RECT.top) * GameRationStaticData.START_BUTTON_HORIZONTAL_TO_CENTER_RATIO * GameRationStaticData.GAME_WINDOW_ASPECT_TO_HEIGHT_RATIO + RandomUtil.getRandom(-10, 10)),
-                (int) (ScriptStaticData.GAME_RECT.bottom - (ScriptStaticData.GAME_RECT.bottom - ScriptStaticData.GAME_RECT.top) * GameRationStaticData.START_BUTTON_VERTICAL_TO_BOTTOM_RATIO) + RandomUtil.getRandom(-10, 10)
-        );
+//        mouseUtil.leftButtonClick(
+//                (int) (((ScriptStaticData.GAME_RECT.right + ScriptStaticData.GAME_RECT.left) >> 1) + (ScriptStaticData.GAME_RECT.bottom - ScriptStaticData.GAME_RECT.top) * GameRationStaticData.START_BUTTON_HORIZONTAL_TO_CENTER_RATIO * GameRationStaticData.GAME_WINDOW_ASPECT_TO_HEIGHT_RATIO + RandomUtil.getRandom(-10, 10)),
+//                (int) (ScriptStaticData.GAME_RECT.bottom - (ScriptStaticData.GAME_RECT.bottom - ScriptStaticData.GAME_RECT.top) * GameRationStaticData.START_BUTTON_VERTICAL_TO_BOTTOM_RATIO) + RandomUtil.getRandom(-10, 10)
+//        );
+        START_RECT.click();
         generateTimer();
     }
 

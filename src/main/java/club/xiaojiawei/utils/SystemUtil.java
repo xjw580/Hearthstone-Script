@@ -156,13 +156,13 @@ public class SystemUtil {
     public static void updateRECT(WinDef.HWND programHWND, WinDef.RECT programRECT) {
 //        如果程序最小化无法获取到准确的窗口信息
         frontWindow(programHWND);
-        if (!User32.INSTANCE.GetWindowRect(programHWND, programRECT)){
+        if (!User32.INSTANCE.GetClientRect(programHWND, programRECT)){
             log.error("获取窗口尺寸异常，错误代码：{}", Kernel32.INSTANCE.GetLastError());
         }
 //        非全屏时，需要去除窗口标题栏的高度
-        if ((GAME_RECT.bottom - GAME_RECT.top) != DISPLAY_PIXEL_HEIGHT){
-            GAME_RECT.top += WINDOW_TITLE_PIXEL_Y;
-        }
+//        if ((programRECT.bottom - programRECT.top) != DISPLAY_PIXEL_HEIGHT){
+//            programRECT.top += WINDOW_TITLE_PIXEL_Y;
+//        }
     }
 
     /**
@@ -211,18 +211,20 @@ public class SystemUtil {
          * @param programHWND
          */
     public static boolean frontWindow(WinDef.HWND programHWND){
-        // 显示窗口
-        if (!User32.INSTANCE.ShowWindow(programHWND, 9 )){
-            log.error("显示窗口异常，错误代码：" + Kernel32.INSTANCE.GetLastError());
-            return false;
+        if (SystemDll.INSTANCE.IsIconicWindow(programHWND)){
+            // 显示窗口
+            if (!User32.INSTANCE.ShowWindow(programHWND, 9 )){
+                log.error("显示窗口异常，错误代码：" + Kernel32.INSTANCE.GetLastError());
+                return false;
+            }
         }
-        delay(100);
-        // 前置窗口
-        if (!User32.INSTANCE.SetForegroundWindow(programHWND)){
-            log.error("前置窗口异常，错误代码：" + Kernel32.INSTANCE.GetLastError());
-            return false;
-        }
-        delay(100);
+//        delay(100);
+//        // 前置窗口
+//        if (!User32.INSTANCE.SetForegroundWindow(programHWND)){
+//            log.error("前置窗口异常，错误代码：" + Kernel32.INSTANCE.GetLastError());
+//            return false;
+//        }
+//        delay(100);
         return true;
     }
     public static final Desktop DESKTOP = Desktop.getDesktop();

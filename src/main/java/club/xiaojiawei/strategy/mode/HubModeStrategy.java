@@ -1,5 +1,6 @@
 package club.xiaojiawei.strategy.mode;
 
+import club.xiaojiawei.bean.GameRect;
 import club.xiaojiawei.data.GameRationStaticData;
 import club.xiaojiawei.data.ScriptStaticData;
 import club.xiaojiawei.enums.ConfigurationEnum;
@@ -22,6 +23,8 @@ import java.util.Properties;
 @Slf4j
 @Component
 public class HubModeStrategy extends AbstractModeStrategy<Object> {
+
+    public static final GameRect TOURNAMENT_MODE_RECT = new GameRect(-0.0790D, 0.0811D, -0.2090D, -0.1737D);
 
     @Resource
     private Properties scriptConfiguration;
