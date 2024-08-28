@@ -5,14 +5,18 @@ import club.xiaojiawei.controls.NotificationManager;
 import club.xiaojiawei.controls.PasswordTextField;
 import club.xiaojiawei.controls.Switch;
 import club.xiaojiawei.utils.PropertiesUtil;
+import club.xiaojiawei.utils.main.MeasureApplication;
 import jakarta.annotation.Resource;
+import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
+import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -116,4 +120,9 @@ public class AdvancedSettingsController implements Initializable {
         DashboardController.TOKEN_SET.clear();
         notificationManager.showSuccess("Web密码保存成功", 2);
     }
+
+    @FXML protected void openMeasureUtil(ActionEvent actionEvent) {
+        MeasureApplication.startStage(new Stage());
+    }
+
 }

@@ -48,11 +48,16 @@ public class TournamentModeStrategy extends AbstractModeStrategy<Object> impleme
 
     public static final GameRect STANDARD_MODE_RECT = new GameRect(-0.2012D, -0.0295D, -0.2156D, -0.0400D);
 
+    public static final GameRect WILD_MODE_RECT = new GameRect(0.0295D, 0.2012D, -0.2156D, -0.0400D);
+
     public static final GameRect CASUAL_MODE_RECT = new GameRect(0.2557D, 0.4278D, -0.1769D, 0.0014D);
 
     public static final GameRect FIRST_DECK_RECT = new GameRect(-0.4108D, -0.2487D, -0.2811D, -0.1894D);
 
     public static final GameRect BACK_RECT = new GameRect(0.4041D, 0.4575D, 0.4083D, 0.4410D);
+
+    public static final GameRect CANCEL_RECT = new GameRect(-0.0251D, 0.0530D, 0.3203D, 0.3802D);
+
 
 
     @Resource

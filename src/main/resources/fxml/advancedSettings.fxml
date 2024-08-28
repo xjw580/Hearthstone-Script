@@ -67,6 +67,10 @@
             <HBox HBox.hgrow="ALWAYS"/>
             <Switch fx:id="sendNotice"/>
         </HBox>
+        <HBox styleClass="h-box">
+            <Button text="打开测量工具" styleClass="btn-ui, btn-ui-normal, btn-ui-small" onAction="#openMeasureUtil"/>
+            <HBox HBox.hgrow="ALWAYS"/>
+        </HBox>
     </VBox>
     <NotificationManager fx:id="notificationManager" notificationPos="BOTTOM_CENTER">
         <NotificationFactory showingCloseBtn="false" size="SMALL"/>
