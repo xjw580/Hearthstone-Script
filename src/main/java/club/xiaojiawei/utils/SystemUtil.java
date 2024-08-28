@@ -11,7 +11,6 @@ import club.xiaojiawei.dll.SystemDll;
 import club.xiaojiawei.enums.ConfigurationEnum;
 import club.xiaojiawei.enums.RegCommonNameEnum;
 import club.xiaojiawei.ws.WebSocketServer;
-import com.sun.jna.Native;
 import com.sun.jna.platform.win32.*;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
@@ -157,13 +156,13 @@ public class SystemUtil {
     public static void updateRECT(WinDef.HWND programHWND, WinDef.RECT programRECT) {
 //        如果程序最小化无法获取到准确的窗口信息
         frontWindow(programHWND);
-        if (!User32.INSTANCE.GetWindowRect(programHWND, programRECT)){
+        if (!User32.INSTANCE.GetClientRect(programHWND, programRECT)){
             log.error("获取窗口尺寸异常，错误代码：{}", Kernel32.INSTANCE.GetLastError());
         }
 //        非全屏时，需要去除窗口标题栏的高度
-        if ((GAME_RECT.bottom - GAME_RECT.top) != DISPLAY_PIXEL_HEIGHT){
-            GAME_RECT.top += WINDOW_TITLE_PIXEL_Y;
-        }
+//        if ((programRECT.bottom - programRECT.top) != DISPLAY_PIXEL_HEIGHT){
+//            programRECT.top += WINDOW_TITLE_PIXEL_Y;
+//        }
     }
 
     /**
