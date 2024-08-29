@@ -147,7 +147,7 @@ public class UIApplication extends Application implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) {
-        initializer.init();
+        Thread.ofVirtual().name("Initializer VThread").start(() -> initializer.init());
     }
 
 }

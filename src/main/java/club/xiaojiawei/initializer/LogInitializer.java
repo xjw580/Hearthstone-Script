@@ -36,25 +36,7 @@ public class LogInitializer extends AbstractInitializer{
                     ConsolePrinting=False
                     ScreenPrinting=False
                     Verbose=False
-                    [Arena]
-                    LogLevel=1
-                    FilePrinting=True
-                    ConsolePrinting=False
-                    ScreenPrinting=False
-                    Verbose=False
                     [Decks]
-                    LogLevel=1
-                    FilePrinting=True
-                    ConsolePrinting=False
-                    ScreenPrinting=False
-                    Verbose=False
-                    [Achievements]
-                    LogLevel=1
-                    FilePrinting=True
-                    ConsolePrinting=False
-                    ScreenPrinting=False
-                    Verbose=False
-                    [FullScreenFX]
                     LogLevel=1
                     FilePrinting=True
                     ConsolePrinting=False
