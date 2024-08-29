@@ -1,9 +1,8 @@
 package club.xiaojiawei.strategy.deck;
 
 import club.xiaojiawei.bean.area.PlayArea;
-import club.xiaojiawei.bean.entity.Card;
+import club.xiaojiawei.bean.Card;
 import club.xiaojiawei.enums.CardRaceEnum;
-import club.xiaojiawei.enums.CardTypeEnum;
 import club.xiaojiawei.strategy.AbstractDeckStrategy;
 
 import java.util.ArrayList;

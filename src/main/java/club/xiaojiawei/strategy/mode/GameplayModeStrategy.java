@@ -33,7 +33,7 @@ public class GameplayModeStrategy extends AbstractModeStrategy<Object> {
             new GameRect(0.1656D, 0.3106D, -0.1702D, 0.1160D),
     };
 
-    public static final GameRect[][] HAND_DECK_RECTS = new GameRect[][]{
+    public static final GameRect[][] MY_HAND_DECK_RECTS = new GameRect[][]{
             new GameRect[]{
                     new GameRect(-0.0693D, 0.0136D, 0.3675D, 0.5000D),
             },
@@ -111,7 +111,7 @@ public class GameplayModeStrategy extends AbstractModeStrategy<Object> {
             },
     };
 
-    public static final GameRect[][] PLAY_DECK_RECTS = new GameRect[][]{
+    public static final GameRect[][] MY_PLAY_DECK_RECTS = new GameRect[][]{
 //            偶数
             new GameRect[]{
                     new GameRect(-0.2689D, -0.2111D, -0.0033D, 0.1050D),
@@ -130,6 +130,15 @@ public class GameplayModeStrategy extends AbstractModeStrategy<Object> {
                     new GameRect(0.0691D, 0.1257D, -0.0041D, 0.1043D),
                     new GameRect(0.1626D, 0.2204D, -0.0041D, 0.1043D),
                     new GameRect(0.2578D, 0.3156D, -0.0041D, 0.1043D),
+            },
+    };
+
+    public static final GameRect[][] RIVAL_PLAY_DECK_RECTS = new GameRect[][]{
+//            偶数
+            new GameRect[]{
+            },
+//            奇数
+            new GameRect[]{
             },
     };
 

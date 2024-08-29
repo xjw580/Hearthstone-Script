@@ -1,9 +1,11 @@
 package club.xiaojiawei.strategy.extra;
 
-import club.xiaojiawei.bean.entity.Card;
+import club.xiaojiawei.bean.Card;
+import club.xiaojiawei.bean.GameRect;
 import club.xiaojiawei.data.GameRationStaticData;
 import club.xiaojiawei.enums.ConfigurationEnum;
 import club.xiaojiawei.status.War;
+import club.xiaojiawei.strategy.mode.GameplayModeStrategy;
 import club.xiaojiawei.utils.MouseUtil;
 import club.xiaojiawei.utils.RandomUtil;
 import club.xiaojiawei.utils.SystemUtil;
@@ -44,6 +46,39 @@ public class ActionDeckStrategy extends FindDeckStrategy{
     }
     protected double getFloatCardFirstCardPosForThreeCard(){
         return (GAME_RECT.left + GAME_RECT.right >> 1) - (GAME_RECT.bottom - GAME_RECT.top) * GameRationStaticData.FIRST_CARD_HORIZONTAL_TO_CENTER_WHEN_THREE_CARD * GameRationStaticData.GAME_WINDOW_ASPECT_TO_HEIGHT_RATIO;
+    }
+
+    protected GameRect getThreeDiscoverCardRect(int index){
+        if (index > GameplayModeStrategy.THREE_DISCOVER_RECTS.length - 1) {
+            return GameRect.DEFAULT;
+        }
+        return GameplayModeStrategy.THREE_DISCOVER_RECTS[index];
+    }
+
+    protected GameRect getFourDiscoverCardRect(int index){
+        if (index > GameplayModeStrategy.FOUR_DISCOVER_RECTS.length - 1) {
+            return GameRect.DEFAULT;
+        }
+        return GameplayModeStrategy.FOUR_DISCOVER_RECTS[index];
+    }
+
+    protected GameRect getMyHandCardRect(int index, int size){
+        if (size > GameplayModeStrategy.MY_HAND_DECK_RECTS.length - 1){
+            return GameRect.DEFAULT;
+        }
+        return GameplayModeStrategy.MY_HAND_DECK_RECTS[size - 1][index];
+    }
+
+    protected GameRect getMyPlayCardRect(int index, int size){
+        GameRect[] rects = GameplayModeStrategy.MY_PLAY_DECK_RECTS[size & 1];
+        int offset = (rects.length - size) >> 1;
+        return rects[offset + index];
+    }
+
+    protected GameRect getRivalPlayCardRect(int index, int size){
+        GameRect[] rects = GameplayModeStrategy.RIVAL_PLAY_DECK_RECTS[size & 1];
+        int offset = (rects.length - size) >> 1;
+        return rects[offset + index];
     }
 
     /**

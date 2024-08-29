@@ -42,17 +42,6 @@ public class GameUtil implements ModeTaskCloser {
 
     private static final float SURRENDER_BUTTON_VERTICAL_TO_BOTTOM_RATION = (float) 0.652;
 
-    /**
-     * 点击炉石里的返回按钮
-     */
-    public void clickBackButton(){
-        mouseUtil.leftButtonClick(
-                GameRationStaticData.BACK_BUTTON_HORIZONTAL_TO_CENTER_RATION,
-                GameRationStaticData.BACK_BUTTON_VERTICAL_TO_BOTTOM_RATION,
-                new int[]{-5, 5},
-                new int[]{-2, 2}
-        );
-    }
 
     /**
      * 如果战网不在运行则相当于启动战网，如果战网已经运行则为启动炉石

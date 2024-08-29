@@ -1,8 +1,7 @@
 package club.xiaojiawei.strategy.deck;
 
-import club.xiaojiawei.bean.Player;
 import club.xiaojiawei.bean.area.PlayArea;
-import club.xiaojiawei.bean.entity.Card;
+import club.xiaojiawei.bean.Card;
 import club.xiaojiawei.enums.CardTypeEnum;
 import club.xiaojiawei.status.War;
 import club.xiaojiawei.strategy.AbstractDeckStrategy;

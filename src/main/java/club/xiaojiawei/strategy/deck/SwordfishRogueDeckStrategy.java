@@ -1,7 +1,7 @@
 package club.xiaojiawei.strategy.deck;
 
-import club.xiaojiawei.bean.BaseCard;
-import club.xiaojiawei.bean.entity.Card;
+import club.xiaojiawei.bean.PureCard;
+import club.xiaojiawei.bean.Card;
 import club.xiaojiawei.strategy.AbstractDeckStrategy;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -17,21 +17,21 @@ import static club.xiaojiawei.strategy.deck.SwordfishRogueDeckStrategy.Swordfish
 @Slf4j
 public class SwordfishRogueDeckStrategy extends AbstractDeckStrategy {
     static class SwordfishRogue {
-        public static final BaseCard 冷血 = new BaseCard("CS2_073");
-        public static final BaseCard 南海船工 = new BaseCard("CS2_146");
-        public static final BaseCard 奖品掠夺者 = new BaseCard("DMF_519");
-        public static final BaseCard 旗标骷髅 = new BaseCard("NX2_006");
-        public static final BaseCard 海盗帕奇斯 = new BaseCard("CFM_637");
-        public static final BaseCard 秘密通道 = new BaseCard("SCH_305");
-        public static final BaseCard 鱼排斗士 = new BaseCard("TSC_963");
-        public static final BaseCard 悦耳嘻哈 = new BaseCard("ETC_717");
-        public static final BaseCard 洞穴探宝者 = new BaseCard("LOOT_033");
-        public static final BaseCard 空降歹徒 = new BaseCard("DRG_056");
-        public static final BaseCard 船载火炮 = new BaseCard("GVG_075");
-        public static final BaseCard 剑鱼 = new BaseCard("TSC_086");
-        public static final BaseCard 携刃信使 = new BaseCard("TSC_085");
-        public static final BaseCard 恐怖海盗 = new BaseCard("NEW1_022");
-        public static final BaseCard 狂暴邪翼蝠 = new BaseCard("YOD_032");
+        public static final PureCard 冷血 = new PureCard("CS2_073");
+        public static final PureCard 南海船工 = new PureCard("CS2_146");
+        public static final PureCard 奖品掠夺者 = new PureCard("DMF_519");
+        public static final PureCard 旗标骷髅 = new PureCard("NX2_006");
+        public static final PureCard 海盗帕奇斯 = new PureCard("CFM_637");
+        public static final PureCard 秘密通道 = new PureCard("SCH_305");
+        public static final PureCard 鱼排斗士 = new PureCard("TSC_963");
+        public static final PureCard 悦耳嘻哈 = new PureCard("ETC_717");
+        public static final PureCard 洞穴探宝者 = new PureCard("LOOT_033");
+        public static final PureCard 空降歹徒 = new PureCard("DRG_056");
+        public static final PureCard 船载火炮 = new PureCard("GVG_075");
+        public static final PureCard 剑鱼 = new PureCard("TSC_086");
+        public static final PureCard 携刃信使 = new PureCard("TSC_085");
+        public static final PureCard 恐怖海盗 = new PureCard("NEW1_022");
+        public static final PureCard 狂暴邪翼蝠 = new PureCard("YOD_032");
     }
     @Override
     protected boolean executeChangeCard(Card card, int index) {

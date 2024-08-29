@@ -1,7 +1,7 @@
 package club.xiaojiawei.strategy.extra;
 
-import club.xiaojiawei.bean.BaseCard;
-import club.xiaojiawei.bean.entity.Card;
+import club.xiaojiawei.bean.PureCard;
+import club.xiaojiawei.bean.Card;
 import club.xiaojiawei.enums.CardRaceEnum;
 
 import java.util.ArrayList;
@@ -185,10 +185,10 @@ public class FindDeckStrategy extends CalcDeckStrategy{
         }
         return -1;
     }
-    protected int findByCardId(List<Card> cards, BaseCard baseCard){
+    protected int findByCardId(List<Card> cards, PureCard pureCard){
         for (int i = cards.size() - 1; i >= 0; i--) {
             String id = cards.get(i).getCardId();
-            if (id != null && id.contains(baseCard.cardId())){
+            if (id != null && id.contains(pureCard.cardId())){
                 return i;
             }
         }

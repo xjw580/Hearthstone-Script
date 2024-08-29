@@ -1,9 +1,9 @@
 package club.xiaojiawei.status;
 
-import club.xiaojiawei.bean.entity.Card;
-import club.xiaojiawei.bean.entity.ExtraEntity;
+import club.xiaojiawei.bean.Card;
+import club.xiaojiawei.bean.log.ExtraEntity;
 import club.xiaojiawei.bean.Player;
-import club.xiaojiawei.bean.entity.TagChangeEntity;
+import club.xiaojiawei.bean.log.TagChangeEntity;
 import club.xiaojiawei.bean.area.Area;
 import club.xiaojiawei.controller.javafx.MainController;
 import club.xiaojiawei.enums.StepEnum;

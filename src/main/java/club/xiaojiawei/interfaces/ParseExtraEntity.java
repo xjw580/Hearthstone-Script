@@ -1,6 +1,6 @@
 package club.xiaojiawei.interfaces;
 
-import club.xiaojiawei.bean.entity.ExtraEntity;
+import club.xiaojiawei.bean.log.ExtraEntity;
 
 /**
  * 处理这种日志：tag=PREMIUM value=1

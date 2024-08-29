@@ -1,7 +1,7 @@
 package club.xiaojiawei.strategy.extra;
 
-import club.xiaojiawei.bean.BaseCard;
-import club.xiaojiawei.bean.entity.Card;
+import club.xiaojiawei.bean.PureCard;
+import club.xiaojiawei.bean.Card;
 import club.xiaojiawei.enums.CardRaceEnum;
 
 import java.util.List;
@@ -46,7 +46,7 @@ public class CalcDeckStrategy extends BaseDeckStrategy{
      * @param card
      * @return
      */
-    protected int calcCardCount(List<Card> cards, BaseCard card){
+    protected int calcCardCount(List<Card> cards, PureCard card){
         return calcCardCount(cards, card.cardId());
     }
     /**

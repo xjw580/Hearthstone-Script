@@ -1,6 +1,6 @@
 package club.xiaojiawei.bean.area;
 
-import club.xiaojiawei.bean.entity.Card;
+import club.xiaojiawei.bean.Card;
 import club.xiaojiawei.bean.Player;
 import club.xiaojiawei.enums.ZoneEnum;
 import club.xiaojiawei.status.War;
@@ -11,7 +11,6 @@ import org.apache.logging.log4j.util.Strings;
 
 import java.util.*;
 
-import static club.xiaojiawei.data.ScriptStaticData.CARD_AREA_MAP;
 import static club.xiaojiawei.data.ScriptStaticData.UNKNOWN;
 
 /**
@@ -25,7 +24,7 @@ public abstract class Area {
     @Getter
     protected volatile List<Card> cards;
 
-    protected final Map<String, Card> zeroCards;
+    private final Map<String, Card> zeroCards;
 
     @Setter
     @Getter
@@ -51,7 +50,14 @@ public abstract class Area {
     }
 
     protected void addZone(Card card){
-        CARD_AREA_MAP.put(card.getEntityId(), this);
+        if (card != null) {
+            card.setArea(this);
+        }
+    }
+    protected void removeZone(Card card){
+        if (card != null) {
+            card.setArea(null);
+        }
     }
 
     protected void addZeroCard(Card card){
@@ -69,6 +75,21 @@ public abstract class Area {
         }
         addZone(card);
         log.info(getLogText(card, ""));
+    }
+
+    protected boolean removeCard(Card card){
+        removeZone(card);
+        return cards.remove(card);
+    }
+    protected Card removeCard(int index){
+        Card remove = cards.remove(index);
+        removeZone(remove);
+        return remove;
+    }
+    protected Card removeZeroCard(String entityId){
+        Card remove = zeroCards.remove(entityId);
+        removeZone(remove);
+        return remove;
     }
 
     protected String getLogText(Card card, String name){
@@ -138,7 +159,7 @@ public abstract class Area {
         if (card == null){
             for (int i = 0; i < cards.size(); i++) {
                 if (Objects.equals(entityId, cards.get(i).getEntityId())){
-                    card =  cards.remove(i);
+                    card =  removeCard(i);
                     break;
                 }
             }
@@ -146,7 +167,7 @@ public abstract class Area {
         return card;
     }
     public Card removeByEntityIdInZeroArea(String entityId){
-        return zeroCards.remove(entityId);
+        return removeZeroCard(entityId);
     }
 
     public boolean isFull(){

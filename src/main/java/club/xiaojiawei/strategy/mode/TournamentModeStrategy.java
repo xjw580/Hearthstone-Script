@@ -103,7 +103,7 @@ public class TournamentModeStrategy extends AbstractModeStrategy<Object> impleme
             }else if (Mode.getCurrMode() == ModeEnum.GAME_MODE){
                 cancelTask();
                 SystemUtil.updateGameRect();
-                gameUtil.clickBackButton();
+                BACK_RECT.click();
             }else {
                 cancelTask();
             }
@@ -132,7 +132,7 @@ public class TournamentModeStrategy extends AbstractModeStrategy<Object> impleme
                 startMatching();
             }else {
 //            退出该界面
-                gameUtil.clickBackButton();
+                BACK_RECT.click();
             }
         }else {
             Work.stopWork();

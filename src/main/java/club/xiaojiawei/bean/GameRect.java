@@ -7,6 +7,8 @@ import club.xiaojiawei.utils.RandomUtil;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+import java.awt.*;
+
 /**
  * @author 肖嘉威 xjw580@qq.com
  * @date 2024/8/28 15:15
@@ -15,15 +17,17 @@ import lombok.Data;
 @AllArgsConstructor
 public class GameRect {
 
-    private double left;
+    public static final GameRect DEFAULT = new GameRect(0, 0, 0, 0);
 
-    private double right;
+    private final double left;
 
-    private double top;
+    private final double right;
 
-    private double bottom;
+    private final double top;
 
-    public void click(){
+    private final double bottom;
+
+    public Point getClickPos(){
         int realH = ScriptStaticData.GAME_RECT.bottom - ScriptStaticData.GAME_RECT.top, usableH = realH;
         int realW = ScriptStaticData.GAME_RECT.right - ScriptStaticData.GAME_RECT.left;
         int usableW = (int) (realH * GameRationStaticData.GAME_WINDOW_ASPECT_TO_HEIGHT_RATIO);
@@ -31,6 +35,17 @@ public class GameRect {
         int middleY = realH >> 1;
         double pointX = RandomUtil.getRandom(left, right);
         double pointY = RandomUtil.getRandom(top, bottom);
-        MouseUtil.leftButtonClick((int) (middleX + pointX * usableW), (int) (middleY + pointY * usableH));
+        return new Point((int) (middleX + pointX * usableW), (int) (middleY + pointY * usableH));
+    }
+
+    public void click(){
+        MouseUtil.leftButtonClick(getClickPos());
+    }
+
+    public void clickMoveClick(GameRect gameRect){
+        if (gameRect == null) {
+            return;
+        }
+        MouseUtil.leftButtonDrag(getClickPos(), gameRect.getClickPos());
     }
 }

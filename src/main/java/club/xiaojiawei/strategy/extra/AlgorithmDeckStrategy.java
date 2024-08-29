@@ -1,6 +1,6 @@
 package club.xiaojiawei.strategy.extra;
 
-import club.xiaojiawei.bean.entity.Card;
+import club.xiaojiawei.bean.Card;
 import club.xiaojiawei.strategy.AbstractDeckStrategy;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;

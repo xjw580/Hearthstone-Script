@@ -1,6 +1,6 @@
 package club.xiaojiawei.mapper;
 
-import club.xiaojiawei.bean.entity.Entity;
+import club.xiaojiawei.bean.Entity;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.factory.Mappers;

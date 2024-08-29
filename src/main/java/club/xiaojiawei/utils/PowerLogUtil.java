@@ -2,10 +2,10 @@ package club.xiaojiawei.utils;
 
 import club.xiaojiawei.bean.Player;
 import club.xiaojiawei.bean.area.Area;
-import club.xiaojiawei.bean.entity.Card;
-import club.xiaojiawei.bean.entity.CommonEntity;
-import club.xiaojiawei.bean.entity.ExtraEntity;
-import club.xiaojiawei.bean.entity.TagChangeEntity;
+import club.xiaojiawei.bean.Card;
+import club.xiaojiawei.bean.log.CommonEntity;
+import club.xiaojiawei.bean.log.ExtraEntity;
+import club.xiaojiawei.bean.log.TagChangeEntity;
 import club.xiaojiawei.interfaces.DealTagChange;
 import club.xiaojiawei.interfaces.ParseExtraEntity;
 import club.xiaojiawei.enums.ZoneEnum;
@@ -37,7 +37,10 @@ public class PowerLogUtil {
     public static ExtraEntity dealShowEntity(String line, RandomAccessFile accessFile){
         ExtraEntity extraEntity = parseExtraEntity(line, accessFile, SHOW_ENTITY);
         if (extraEntity.getZone() == extraEntity.getExtraCard().getZone() || extraEntity.getExtraCard().getZone() == null){
-            CARD_AREA_MAP.get(extraEntity.getEntityId()).findByEntityId(extraEntity.getEntityId()).updateByExtraEntity(extraEntity);
+            CARD_AREA_MAP
+                    .get(extraEntity.getEntityId())
+                    .findByEntityId(extraEntity.getEntityId())
+                    .updateByExtraEntity(extraEntity);
         }else {
             War.exchangeAreaOfCard(extraEntity);
         }

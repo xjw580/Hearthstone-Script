@@ -1,7 +1,7 @@
 
 package club.xiaojiawei.strategy;
 
-import club.xiaojiawei.bean.entity.Card;
+import club.xiaojiawei.bean.Card;
 import club.xiaojiawei.status.War;
 import club.xiaojiawei.strategy.extra.AlgorithmDeckStrategy;
 import club.xiaojiawei.utils.GameUtil;

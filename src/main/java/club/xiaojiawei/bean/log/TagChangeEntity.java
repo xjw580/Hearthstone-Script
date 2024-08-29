@@ -1,4 +1,4 @@
-package club.xiaojiawei.bean.entity;
+package club.xiaojiawei.bean.log;
 
 import club.xiaojiawei.enums.TagEnum;
 import lombok.Data;

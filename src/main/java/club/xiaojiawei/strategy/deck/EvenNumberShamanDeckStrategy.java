@@ -1,7 +1,7 @@
 package club.xiaojiawei.strategy.deck;
 
-import club.xiaojiawei.bean.BaseCard;
-import club.xiaojiawei.bean.entity.Card;
+import club.xiaojiawei.bean.PureCard;
+import club.xiaojiawei.bean.Card;
 import club.xiaojiawei.enums.CardRaceEnum;
 import club.xiaojiawei.status.War;
 import club.xiaojiawei.strategy.AbstractDeckStrategy;
@@ -30,26 +30,26 @@ import static club.xiaojiawei.strategy.deck.EvenNumberShamanDeckStrategy.EvenNum
 public class EvenNumberShamanDeckStrategy extends AbstractDeckStrategy{
 
     static class EvenNumberShaman {
-        public static final BaseCard 图腾之力 = new BaseCard("EX1_244");
-        public static final BaseCard 图腾潮涌 = new BaseCard("ULD_171");
-        public static final BaseCard 冰霜撕咬 = new BaseCard("AV_259");
-        public static final BaseCard 图腾魔像 = new BaseCard("AT_052");
-        public static final BaseCard 海象人图腾师 = new BaseCard("WON_081");
-        public static final BaseCard 即兴演奏 = new BaseCard("JAM_013");
-        public static final BaseCard 异教低阶牧师 = new BaseCard("SCH_713");
-        public static final BaseCard 深海融合怪 = new BaseCard("TSC_069");
-        public static final BaseCard 石雕凿刀 = new BaseCard("REV_917");
-        public static final BaseCard 笔记能手 = new BaseCard("SCH_236");
-        public static final BaseCard 阴燃电鳗 = new BaseCard("GIL_530");
-        public static final BaseCard 风怒 = new BaseCard("CS2_039");
-        public static final BaseCard 分裂战斧 = new BaseCard("ULD_413");
-        public static final BaseCard 图腾团聚 = new BaseCard("WON_091");
-        public static final BaseCard 锻石师 = new BaseCard("REV_921");
-        public static final BaseCard 吉恩_格雷迈恩 = new BaseCard("GIL_692");
-        public static final BaseCard 深渊魔物 = new BaseCard("OG_028");
-        public static final BaseCard 图腾巨像 = new BaseCard("REV_838");
-        public static final BaseCard 远古图腾 = new BaseCard("TTN_710");
-        public static final BaseCard 可靠陪伴 = new BaseCard("WW_027");
+        public static final PureCard 图腾之力 = new PureCard("EX1_244");
+        public static final PureCard 图腾潮涌 = new PureCard("ULD_171");
+        public static final PureCard 冰霜撕咬 = new PureCard("AV_259");
+        public static final PureCard 图腾魔像 = new PureCard("AT_052");
+        public static final PureCard 海象人图腾师 = new PureCard("WON_081");
+        public static final PureCard 即兴演奏 = new PureCard("JAM_013");
+        public static final PureCard 异教低阶牧师 = new PureCard("SCH_713");
+        public static final PureCard 深海融合怪 = new PureCard("TSC_069");
+        public static final PureCard 石雕凿刀 = new PureCard("REV_917");
+        public static final PureCard 笔记能手 = new PureCard("SCH_236");
+        public static final PureCard 阴燃电鳗 = new PureCard("GIL_530");
+        public static final PureCard 风怒 = new PureCard("CS2_039");
+        public static final PureCard 分裂战斧 = new PureCard("ULD_413");
+        public static final PureCard 图腾团聚 = new PureCard("WON_091");
+        public static final PureCard 锻石师 = new PureCard("REV_921");
+        public static final PureCard 吉恩_格雷迈恩 = new PureCard("GIL_692");
+        public static final PureCard 深渊魔物 = new PureCard("OG_028");
+        public static final PureCard 图腾巨像 = new PureCard("REV_838");
+        public static final PureCard 远古图腾 = new PureCard("TTN_710");
+        public static final PureCard 可靠陪伴 = new PureCard("WW_027");
     }
 
     @Override

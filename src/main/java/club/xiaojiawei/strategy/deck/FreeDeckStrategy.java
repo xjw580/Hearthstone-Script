@@ -1,11 +1,9 @@
 package club.xiaojiawei.strategy.deck;
 
-import club.xiaojiawei.bean.entity.Card;
+import club.xiaojiawei.bean.Card;
 import club.xiaojiawei.strategy.AbstractDeckStrategy;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 
 /**

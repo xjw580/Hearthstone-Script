@@ -1,4 +1,4 @@
-package club.xiaojiawei.bean.entity;
+package club.xiaojiawei.bean;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

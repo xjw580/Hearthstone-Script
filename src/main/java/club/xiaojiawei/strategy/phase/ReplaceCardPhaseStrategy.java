@@ -1,6 +1,6 @@
 package club.xiaojiawei.strategy.phase;
 
-import club.xiaojiawei.bean.entity.TagChangeEntity;
+import club.xiaojiawei.bean.log.TagChangeEntity;
 import club.xiaojiawei.interfaces.closer.GameThreadCloser;
 import club.xiaojiawei.custom.LogRunnable;
 import club.xiaojiawei.enums.ConfigurationEnum;

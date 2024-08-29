@@ -1,6 +1,6 @@
 package club.xiaojiawei.bean.area;
 
-import club.xiaojiawei.bean.entity.Card;
+import club.xiaojiawei.bean.Card;
 
 /**
  * 除外区（各种效果在此生成）,发现时，最新的三张就是需要选择的牌

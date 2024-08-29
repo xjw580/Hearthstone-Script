@@ -1,7 +1,7 @@
 package club.xiaojiawei.strategy.phase;
 
-import club.xiaojiawei.bean.entity.ExtraEntity;
-import club.xiaojiawei.bean.entity.TagChangeEntity;
+import club.xiaojiawei.bean.log.ExtraEntity;
+import club.xiaojiawei.bean.log.TagChangeEntity;
 import club.xiaojiawei.status.War;
 import club.xiaojiawei.strategy.AbstractPhaseStrategy;
 import club.xiaojiawei.utils.GameUtil;

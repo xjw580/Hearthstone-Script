@@ -1,8 +1,8 @@
 package club.xiaojiawei.interfaces;
 
-import club.xiaojiawei.bean.entity.Card;
+import club.xiaojiawei.bean.Card;
 import club.xiaojiawei.bean.Player;
-import club.xiaojiawei.bean.entity.TagChangeEntity;
+import club.xiaojiawei.bean.log.TagChangeEntity;
 import club.xiaojiawei.bean.area.Area;
 
 /**

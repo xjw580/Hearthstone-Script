@@ -1,8 +1,11 @@
-package club.xiaojiawei.bean.entity;
+package club.xiaojiawei.bean.log;
 
+import club.xiaojiawei.bean.BaseCard;
+import club.xiaojiawei.bean.area.Area;
+import club.xiaojiawei.bean.Card;
 import club.xiaojiawei.enums.ZoneEnum;
+import javafx.beans.property.ObjectProperty;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 /**
@@ -13,7 +16,7 @@ import lombok.ToString;
 @ToString(callSuper = true)
 public class ExtraCard{
 
-    private Card card = new Card();
+    private BaseCard card = new BaseCard();
 
     private ZoneEnum zone;
 

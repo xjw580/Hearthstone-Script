@@ -1,10 +1,10 @@
 package club.xiaojiawei.strategy.extra;
 
-import club.xiaojiawei.bean.BaseCard;
+import club.xiaojiawei.bean.PureCard;
 import club.xiaojiawei.bean.Player;
 import club.xiaojiawei.bean.area.HandArea;
 import club.xiaojiawei.bean.area.PlayArea;
-import club.xiaojiawei.bean.entity.Card;
+import club.xiaojiawei.bean.Card;
 import club.xiaojiawei.enums.CardTypeEnum;
 import club.xiaojiawei.status.War;
 import lombok.extern.slf4j.Slf4j;
@@ -52,11 +52,11 @@ public class BaseDeckStrategy {
     /**
      * 卡id是否相同包含
      * @param longCard
-     * @param baseCard
+     * @param pureCard
      * @return
      */
-    protected boolean cardContains(Card longCard, BaseCard baseCard){
-        return cardContains(longCard, baseCard.cardId());
+    protected boolean cardContains(Card longCard, PureCard pureCard){
+        return cardContains(longCard, pureCard.cardId());
     }
     protected boolean cardContains(Card longCard, String baseCardId){
         return longCard != null && longCard.getCardId() != null && longCard.getCardId().contains(baseCardId);
@@ -64,11 +64,11 @@ public class BaseDeckStrategy {
     /**
      * 卡id是否相同
      * @param longCard
-     * @param baseCard
+     * @param pureCard
      * @return
      */
-    protected boolean cardEquals(Card longCard, BaseCard baseCard){
-        return cardEquals(longCard, baseCard.cardId());
+    protected boolean cardEquals(Card longCard, PureCard pureCard){
+        return cardEquals(longCard, pureCard.cardId());
     }
     protected boolean cardEquals(Card longCard, String baseCardId){
         return longCard != null && Objects.equals(longCard.getCardId(), baseCardId);

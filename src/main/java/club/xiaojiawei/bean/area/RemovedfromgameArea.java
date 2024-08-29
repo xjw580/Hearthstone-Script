@@ -1,6 +1,6 @@
 package club.xiaojiawei.bean.area;
 
-import club.xiaojiawei.bean.entity.Card;
+import club.xiaojiawei.bean.Card;
 
 /**
  * 移除区

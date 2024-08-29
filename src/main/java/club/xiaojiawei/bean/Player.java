@@ -1,7 +1,6 @@
 package club.xiaojiawei.bean;
 
 import club.xiaojiawei.bean.area.*;
-import club.xiaojiawei.bean.entity.Entity;
 import club.xiaojiawei.enums.ZoneEnum;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

@@ -1,6 +1,5 @@
-package club.xiaojiawei.bean;
+package club.xiaojiawei.bean.log;
 
-import club.xiaojiawei.bean.entity.CommonEntity;
 import club.xiaojiawei.enums.BlockTypeEnum;
 import lombok.Data;
 

@@ -1,6 +1,6 @@
 package club.xiaojiawei.bean.area;
 
-import club.xiaojiawei.bean.entity.Card;
+import club.xiaojiawei.bean.Card;
 import club.xiaojiawei.enums.HeroTypeEnum;
 import club.xiaojiawei.enums.PowerTypeEnum;
 import lombok.Getter;

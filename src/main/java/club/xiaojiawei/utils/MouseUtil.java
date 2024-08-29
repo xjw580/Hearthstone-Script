@@ -24,7 +24,6 @@ import static club.xiaojiawei.data.ScriptStaticData.*;
  * @date 2022/11/24 11:18
  */
 @Slf4j
-@Component
 public class MouseUtil {
 
     /**
@@ -35,18 +34,20 @@ public class MouseUtil {
      * 鼠标每次移动的距离：px
      */
     private static final int MOVE_DISTANCE = 10;
+    private static double lastX;
+    private static double lastY;
     private static Properties scriptConfiguration;
-    @Resource
-    private AtomicReference<BooleanProperty> isPause;
-    private static double initX;
-    private static double initY;
+    private static AtomicReference<BooleanProperty> isPause;
 
-    @Resource
-    public void setScriptConfiguration(Properties scriptConfiguration) {
+    public void init(Properties scriptConfiguration, AtomicReference<BooleanProperty> isPause) {
         MouseUtil.scriptConfiguration = scriptConfiguration;
+        MouseUtil.isPause = isPause;
     }
 
     private static int getMaxMoveInterval() {
+        if (scriptConfiguration == null) {
+            return Integer.parseInt(ConfigurationEnum.MOUSE_MOVE_INTERVAL.getDefaultValue());
+        }
         return Integer.parseInt(scriptConfiguration.getProperty(ConfigurationEnum.MOUSE_MOVE_INTERVAL.getKey(), ConfigurationEnum.MOUSE_MOVE_INTERVAL.getDefaultValue()));
     }
 
@@ -59,35 +60,32 @@ public class MouseUtil {
      * @param endY
      */
     public static void leftButtonDrag(int startX, int startY, int endX, int endY) {
-        synchronized (MouseUtil.class) {
-            saveInitPos();
-            startX = transformScalePixelX(startX);
-            startY = transformScalePixelY(startY);
-            endX = transformScalePixelX(endX);
-            endY = transformScalePixelY(endY);
-//            ROBOT.mouseMove(startX, startY);
-            SystemDll.INSTANCE.moveMouse(startX, startY, getGameHWND());
-            delayShort();
-//            ROBOT.mousePress(BUTTON1_DOWN_MASK);
-            SystemDll.INSTANCE.leftClick(startX, startY, getGameHWND());
-            SystemUtil.delayShort();
-            for (int i = 0; i < 50; i++) {
-//                ROBOT.mouseMove(startX, --startY);
-                SystemDll.INSTANCE.moveMouse(startX, --startY, getGameHWND());
-                SystemUtil.delay(MIN_MOVE_INTERVAL, getMaxMoveInterval());
-            }
-            SystemUtil.delayShort();
-            moveMouseByLine(startX, startY, endX, endY);
-            delayShort();
-//            ROBOT.mouseRelease(BUTTON1_DOWN_MASK);
-            SystemDll.INSTANCE.moveMouse(endX, endY, getGameHWND());
-            delayShort();
-            gotoInitPos();
+        if (isPause.get().get()){
+            return;
         }
+        savePos(startX, startY);
+        SystemDll.INSTANCE.moveMouse(startX, startY, getGameHWND());
+        delayShort();
+        SystemDll.INSTANCE.leftClick(startX, startY, getGameHWND());
+        SystemUtil.delayShort();
+        for (int i = 0; i < 50; i++) {
+            SystemDll.INSTANCE.moveMouse(startX, --startY, getGameHWND());
+            SystemUtil.delay(MIN_MOVE_INTERVAL, getMaxMoveInterval());
+        }
+        SystemUtil.delayShort();
+        moveMouseByLine(startX, startY, endX, endY);
+        delayShort();
+        SystemDll.INSTANCE.moveMouse(endX, endY, getGameHWND());
+        delayShort();
+        savePos(endX, endY);
     }
 
     public static void leftButtonDrag(int[] start, int[] end) {
         leftButtonDrag(start[0], start[1], end[0], end[1]);
+    }
+
+    public static void leftButtonDrag(Point start, Point end) {
+        leftButtonDrag(start.x, start.y, end.x, end.y);
     }
 
 
@@ -100,100 +98,62 @@ public class MouseUtil {
      * @param endY
      */
     public static void leftButtonMoveThenClick(int startX, int startY, int endX, int endY) {
-        synchronized (MouseUtil.class) {
-            saveInitPos();
-            startX = transformScalePixelX(startX);
-            startY = transformScalePixelY(startY);
-            endX = transformScalePixelX(endX);
-            endY = transformScalePixelY(endY);
-//            ROBOT.mouseMove(startX, startY);
-            SystemDll.INSTANCE.moveMouse(startX, startY, getGameHWND());
-            delayShort();
-            moveMouseByLine(startX, startY, endX, endY);
-            SystemUtil.delayShort();
-//            ROBOT.mousePress(BUTTON1_DOWN_MASK);
-//            delayShort();
-//            ROBOT.mouseRelease(BUTTON1_DOWN_MASK);
-            SystemDll.INSTANCE.leftClick(endX, endY, getGameHWND());
-            delayShort();
-            gotoInitPos();
+        if (isPause.get().get()){
+            return;
         }
+        savePos(startX, startY);
+        SystemDll.INSTANCE.moveMouse(startX, startY, getGameHWND());
+        delayShort();
+        moveMouseByLine(startX, startY, endX, endY);
+        SystemUtil.delayShort();
+        SystemDll.INSTANCE.leftClick(endX, endY, getGameHWND());
+        delayShort();
+        savePos(endX, endY);
     }
 
     public static void leftButtonMoveThenClick(int[] start, int[] end) {
         leftButtonMoveThenClick(start[0], start[1], end[0], end[1]);
     }
 
-    public static void leftButtonClick(float horizontalToCenterRation, float verticalToBottomRation, int[] xRandom, int[] yRandom) {
-        if (xRandom == null || xRandom.length < 2) {
-            xRandom = new int[]{0, 0};
-        }
-        if (yRandom == null || yRandom.length < 2) {
-            yRandom = new int[]{0, 0};
-        }
-        int centerX = (GAME_RECT.right + GAME_RECT.left) >> 1;
-        int windowHeight = GAME_RECT.bottom - GAME_RECT.top;
-        float windowWidth = windowHeight * GameRationStaticData.GAME_WINDOW_ASPECT_TO_HEIGHT_RATIO;
-        float width = windowWidth * horizontalToCenterRation;
-        int x = (int) (centerX + width + RandomUtil.getRandom(xRandom[0], xRandom[1]));
-        float height = windowHeight * verticalToBottomRation;
-        int y = (int) (ScriptStaticData.GAME_RECT.bottom - height) + RandomUtil.getRandom(yRandom[0], yRandom[1]);
-        leftButtonClick(x, y);
-    }
-
     /**
      * 鼠标左键点击指定处
-     *
      * @param x
      * @param y
      */
     public static void leftButtonClick(int x, int y) {
-        System.out.println("x:" + x + ",y:" + y);
-        SystemDll.INSTANCE.leftClick(x, y, getGameHWND());
+        leftButtonClick(x, y, getGameHWND());
+    }
+
+    public static void leftButtonClick(int x, int y, WinDef.HWND hwnd) {
+        if (isPause.get().get()){
+            return;
+        }
+        SystemDll.INSTANCE.leftClick(x, y, hwnd);
+        savePos(x, y);
     }
 
     public static void leftButtonClick(int[] pos) {
         leftButtonClick(pos[0], pos[1]);
     }
 
-    public static void leftButtonClickByUser32(WinDef.HWND hwnd, int x, int y) {
-        SystemDll.INSTANCE.leftClick(x, y, hwnd);
+    public static void leftButtonClick(Point pos) {
+        leftButtonClick(pos.x, pos.y);
     }
 
-    private static void saveInitPos() {
-        initX = MouseInfo.getPointerInfo().getLocation().getX();
-        initY = MouseInfo.getPointerInfo().getLocation().getY();
-    }
-
-    private static void gotoInitPos() {
-        if (Objects.equals(scriptConfiguration.getProperty(ConfigurationEnum.STATIC_CURSOR.getKey()), "true")) {
-            ROBOT.mouseMove((int) initX, (int) initY);
-        }
-    }
-
-    /**
-     * 转换成应用显示器缩放后的值
-     *
-     * @param pixelX
-     * @return
-     */
-    public static int transformScalePixelX(int pixelX) {
-        return (int) (pixelX / DISPLAY_SCALE_X);
-    }
-
-    public static int transformScalePixelY(int pixelY) {
-        return (int) (pixelY / DISPLAY_SCALE_Y - WINDOW_TITLE_PIXEL_Y);
+    private static void savePos(int x, int y) {
+        lastX = x;
+        lastY = y;
     }
 
     /**
      * 炉石里点击右键可取消操作
      */
     public static void gameCancel() {
+        if (isPause.get().get()){
+            return;
+        }
         SystemUtil.delay(250, 500);
-        SystemDll.INSTANCE.rightClick((int) initX, (int) initY, getGameHWND());
-//        ROBOT.mousePress(BUTTON3_DOWN_MASK);
-//        delayShort();
-//        ROBOT.mouseRelease(BUTTON3_DOWN_MASK);
+        SystemDll.INSTANCE.rightClick((int) lastX, (int) lastY, getGameHWND());
     }
 
     private static void delayShort() {
@@ -220,13 +180,11 @@ public class MouseUtil {
     private static void moveMouseByLine(int startX, int startY, int endX, int endY) {
         if (Math.abs(startY - endY) <= 5) {
             for (startX -= MOVE_DISTANCE; startX >= endX; startX -= MOVE_DISTANCE) {
-//                ROBOT.mouseMove(startX, startY);
                 SystemDll.INSTANCE.moveMouse(startX, startY, getGameHWND());
                 SystemUtil.delay(MIN_MOVE_INTERVAL, getMaxMoveInterval());
             }
         } else if (Math.abs(startX - endX) <= 5) {
             for (startY -= MOVE_DISTANCE; startY >= endY; startY -= MOVE_DISTANCE) {
-//                ROBOT.mouseMove(startX, startY);
                 SystemDll.INSTANCE.moveMouse(startX, startY, getGameHWND());
                 SystemUtil.delay(MIN_MOVE_INTERVAL, getMaxMoveInterval());
             }
@@ -234,12 +192,10 @@ public class MouseUtil {
             double k = calcK(startX, startY, endX, endY);
             double b = startY - k * startX;
             for (startY -= MOVE_DISTANCE; startY >= endY; startY -= MOVE_DISTANCE) {
-//                ROBOT.mouseMove((int) ((startY - b) / k), startY);
                 SystemDll.INSTANCE.moveMouse((int) ((startY - b) / k), startY, getGameHWND());
                 SystemUtil.delay(MIN_MOVE_INTERVAL, getMaxMoveInterval());
             }
         }
-        ROBOT.mouseMove(endX, endY);
         SystemDll.INSTANCE.moveMouse(endX, endY, getGameHWND());
         SystemUtil.delay(MIN_MOVE_INTERVAL, getMaxMoveInterval());
     }
