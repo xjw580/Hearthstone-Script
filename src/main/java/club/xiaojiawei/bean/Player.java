@@ -81,4 +81,9 @@ public class Player extends Entity {
             case REMOVEDFROMGAME -> removedfromgameArea;
         };
     }
+
+    public int getUsableResource(){
+        return getResources() - getResourcesUsed() + getTempResources();
+    }
+
 }

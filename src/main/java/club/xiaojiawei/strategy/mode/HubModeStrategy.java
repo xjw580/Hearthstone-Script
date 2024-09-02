@@ -25,6 +25,10 @@ import java.util.Properties;
 public class HubModeStrategy extends AbstractModeStrategy<Object> {
 
     public static final GameRect TOURNAMENT_MODE_RECT = new GameRect(-0.0790D, 0.0811D, -0.2090D, -0.1737D);
+    //    TODO ADD
+    public static final GameRect CLOSE_AD1_RECT = new GameRect(-0.0790D, 0.0811D, -0.2090D, -0.1737D);
+    //    TODO ADD
+    public static final GameRect CLOSE_AD2_RECT = new GameRect(-0.0790D, 0.0811D, -0.2090D, -0.1737D);
 
     @Resource
     private Properties scriptConfiguration;
@@ -46,18 +50,10 @@ public class HubModeStrategy extends AbstractModeStrategy<Object> {
                 if (isPause.get().get()){
                     return;
                 }
-                SystemUtil.updateGameRect();
-                mouseUtil.leftButtonClick(
-                        (ScriptStaticData.GAME_RECT.right + ScriptStaticData.GAME_RECT.left) >> 1,
-                        (int) (ScriptStaticData.GAME_RECT.bottom - (ScriptStaticData.GAME_RECT.bottom - ScriptStaticData.GAME_RECT.top) * GameRationStaticData.CONFIRM_OR_CLOSE_BUTTON_VERTICAL_TO_BOTTOM_RATION)
-                );
+                CLOSE_AD1_RECT.lClick();
                 SystemUtil.delay(500);
             }
-            SystemUtil.updateGameRect();
-            mouseUtil.leftButtonClick(
-                    (ScriptStaticData.GAME_RECT.right + ScriptStaticData.GAME_RECT.left) >> 1,
-                    (int) (ScriptStaticData.GAME_RECT.bottom - (ScriptStaticData.GAME_RECT.bottom - ScriptStaticData.GAME_RECT.top) * GameRationStaticData.CLOSE_AD_BUTTON_VERTICAL_TO_BOTTOM_RATION)
-            );
+            CLOSE_AD2_RECT.lClick();
             SystemUtil.delay(200);
         }
         log.info("准备进入指定模式");

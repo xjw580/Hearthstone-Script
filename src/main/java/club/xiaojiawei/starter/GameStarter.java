@@ -81,7 +81,7 @@ public class GameStarter extends AbstractStarter implements StarterTaskCloser {
                     }
                     cancelAndStartNext();
                 }else {
-                    gameUtil.cmdLaunchGame();
+                    GameUtil.cmdLaunchGame();
                 }
             }
         }), 5, 20, TimeUnit.SECONDS);
@@ -90,20 +90,7 @@ public class GameStarter extends AbstractStarter implements StarterTaskCloser {
     private void user32LaunchGame(){
         log.info("正在通过user32打开" + ScriptStaticData.GAME_CN_NAME);
         WinDef.HWND platformhwnd = SystemUtil.findPlatformHWND();
-        mouseUtil.leftButtonClick(145, 120, platformhwnd);
-    }
-
-    @Deprecated
-    private void robotLaunchGame(){
-        log.info("正在通过robot打开" + ScriptStaticData.GAME_CN_NAME);
-        WinDef.HWND platformHWND = SystemUtil.findPlatformHWND();
-        WinDef.RECT rect = new WinDef.RECT();
-        SystemUtil.frontWindow(platformHWND);
-        SystemUtil.delay(200);
-        User32.INSTANCE.MoveWindow(platformHWND, 0,  0, 0, 0, false);
-        SystemUtil.delay(200);
-        SystemUtil.updateRECT(platformHWND, rect);
-        mouseUtil.leftButtonClick(rect.left + RandomUtil.getRandom(100, 150), rect.bottom - RandomUtil.getRandom(110, 125));
+        MouseUtil.leftButtonClick(145, 120, platformhwnd);
     }
 
     private void cancelGameTimer(){

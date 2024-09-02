@@ -137,7 +137,7 @@ public abstract class Area {
         return result;
     }
 
-    public int size(){
+    public int cardSize(){
         return cards.size();
     }
 

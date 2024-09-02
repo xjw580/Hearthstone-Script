@@ -256,6 +256,9 @@ public class MainController implements Initializable {
      * 初始化模式和卡组
      */
     private void initModeAndDeck(){
+        if (true) {
+            return;
+        }
         currentDeck = DeckEnum.valueOf(scriptConfiguration.getProperty(DECK.getKey()));
         currentRunMode = currentDeck.getRunMode();
         ObservableList<String> runModeBoxItems = runModeBox.getItems();

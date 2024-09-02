@@ -123,6 +123,7 @@ public class War {
         EXP.set((int) (EXP.get() + earnExp));
         WAR_COUNT.set(WAR_COUNT.get() + 1);
     }
+
     private static boolean printResult(){
         boolean flag = false;
         if (Objects.equals(War.getWon(), War.getMe().getGameId())){

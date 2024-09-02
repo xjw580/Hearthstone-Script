@@ -75,4 +75,8 @@ public class Card extends BaseCard implements Cloneable{
         return CustomToStringGenerator.generateToString(this, true);
     }
 
+    public String toSimpleString(){
+        return "【entityId:" + getEntityId() + "，entityName:" + getEntityName() + "，cardId:" + getCardId() + "】";
+    }
+
 }

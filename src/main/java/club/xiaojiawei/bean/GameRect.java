@@ -2,6 +2,7 @@ package club.xiaojiawei.bean;
 
 import club.xiaojiawei.data.GameRationStaticData;
 import club.xiaojiawei.data.ScriptStaticData;
+import club.xiaojiawei.utils.GameUtil;
 import club.xiaojiawei.utils.MouseUtil;
 import club.xiaojiawei.utils.RandomUtil;
 
@@ -27,17 +28,21 @@ public record GameRect(double left, double right, double top, double bottom) {
     }
 
     public void lClick() {
-        MouseUtil.leftButtonClick(getClickPos());
+        GameUtil.leftButtonClick(getClickPos());
     }
 
     public void rClick() {
-        MouseUtil.rightButtonClick(getClickPos());
+        GameUtil.rightButtonClick(getClickPos());
     }
 
     public void lClickMoveLClick(GameRect gameRect) {
         if (gameRect == null) {
             return;
         }
-        MouseUtil.leftButtonDrag(getClickPos(), gameRect.getClickPos());
+        Point startPos = getClickPos();
+        Point endPos = gameRect.getClickPos();
+        GameUtil.leftButtonClick(startPos);
+        GameUtil.moveMouseByLine(startPos, endPos);
+        GameUtil.leftButtonClick(endPos);
     }
 }

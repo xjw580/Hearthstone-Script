@@ -17,20 +17,33 @@ import static club.xiaojiawei.enums.CardTypeEnum.*;
  * @author 肖嘉威
  * @date 2022/11/27 15:02
  */
-@Getter
-@Setter
 @ToString
 @Slf4j
 public class PlayArea extends Area {
 
+    @Getter
+    @Setter
     private HeroTypeEnum heroType;
+    @Getter
+    @Setter
     private PowerTypeEnum powerType;
+    @Getter
+    @Setter
     private Card hero;
     private Card heroHide;
+    @Getter
+    @Setter
     private Card power;
     private Card powerHide;
+    @Getter
+    @Setter
     private Card weapon;
     private Card weaponHide;
+
+    private void addZoneAndLog(String name, Card card){
+        addZone(card);
+        log.info(getLogText(card, name));
+    }
 
     @Override
     public boolean add(Card card, int pos){
@@ -55,11 +68,6 @@ public class PlayArea extends Area {
             result =  super.add(card, pos);
         }
         return result;
-    }
-
-    private void addZoneAndLog(String name, Card card){
-        addZone(card);
-        log.info(getLogText(card, name));
     }
 
     @Override

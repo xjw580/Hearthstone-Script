@@ -2,22 +2,18 @@
 package club.xiaojiawei.strategy;
 
 import club.xiaojiawei.bean.Card;
+import club.xiaojiawei.bean.Player;
 import club.xiaojiawei.status.War;
-import club.xiaojiawei.strategy.extra.AlgorithmDeckStrategy;
 import club.xiaojiawei.utils.GameUtil;
-import club.xiaojiawei.utils.MouseUtil;
-import club.xiaojiawei.utils.RandomUtil;
 import club.xiaojiawei.utils.SystemUtil;
-import jakarta.annotation.Resource;
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.Objects;
+import java.util.HashSet;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static club.xiaojiawei.data.GameRationStaticData.CONFIRM_BUTTON_VERTICAL_TO_BOTTOM_RATION;
-import static club.xiaojiawei.data.ScriptStaticData.GAME_RECT;
 import static club.xiaojiawei.enums.ConfigurationEnum.STRATEGY;
 
 /**
@@ -26,45 +22,40 @@ import static club.xiaojiawei.enums.ConfigurationEnum.STRATEGY;
  * @date 2022/11/29 17:29
  */
 @Slf4j
-public abstract class AbstractDeckStrategy extends AlgorithmDeckStrategy {
+public abstract class AbstractDeckStrategy {
 
-    @Resource
-    protected AtomicReference<BooleanProperty> isPause;
-    @Resource
-    protected Properties scriptConfiguration;
-    @Resource
-    private GameUtil gameUtil;
+    protected static AtomicReference<BooleanProperty> isPause = new AtomicReference<>(new SimpleBooleanProperty(true));
+
+    private static Properties scriptConfiguration = new Properties();
+
+    public AbstractDeckStrategy(AtomicReference<BooleanProperty> isPause, Properties scriptConfiguration) {
+        AbstractDeckStrategy.isPause = isPause;
+        AbstractDeckStrategy.scriptConfiguration = scriptConfiguration;
+    }
+
+    protected Player me;
+
+    protected Player rival;
 
     public void changeCard() {
-        assign();
-        if (Boolean.parseBoolean(scriptConfiguration.getProperty(STRATEGY.getKey()))){
+        me = War.getMe();
+        rival = War.getRival();
+        if (Boolean.parseBoolean(scriptConfiguration.getProperty(STRATEGY.getKey(), STRATEGY.getDefaultValue()))) {
             try {
                 log.info("执行换牌策略");
-                double clearance ,firstCardPos;
-                if (myHandCards.size() == 3){
-                    clearance  = getFloatCardClearanceForThreeCard();
-                    firstCardPos = getFloatCardFirstCardPosForThreeCard();
-                }else {
-                    clearance  = getFloatCardClearanceForFourCard();
-                    firstCardPos = getFloatCardFirstCardPosForFourCard();
-                }
-                SystemUtil.updateGameRect();
-                int size = Math.min(myHandCards.size(), 4);
-                for (int index = 0; index < size; index++) {
-                    Card card = myHandCards.get(index);
-                    if (executeChangeCard(card, index)){
-                        clickFloatCard(clearance, firstCardPos, index);
+                HashSet<Card> copyHandCards = new HashSet<>(me.getHandArea().getCards());
+                executeChangeCard(copyHandCards);
+                for (int i = 0; i < me.getHandArea().getCards().size(); i++) {
+                    Card card = me.getHandArea().getCards().get(i);
+                    if (!copyHandCards.contains(card)) {
                         log.info("换掉起始卡牌：【entityId:" + card.getEntityId() + "，entityName:" + card.getEntityName() + "，cardId:" + card.getCardId() + "】");
+                        GameUtil.clickDiscover(i, me.getHandArea().cardSize());
+                        SystemUtil.delayShort();
                     }
                 }
                 log.info("执行换牌策略完毕");
             }finally {
-                SystemUtil.updateGameRect();
-                //        点击确认按钮
-                mouseUtil.leftButtonClick(
-                        ((GAME_RECT.right + GAME_RECT.left) >> 1) + RandomUtil.getRandom(-10, 10),
-                        (int) (GAME_RECT.bottom - (GAME_RECT.bottom - GAME_RECT.top) * CONFIRM_BUTTON_VERTICAL_TO_BOTTOM_RATION + RandomUtil.getRandom(-5, 5))
-                );
+                GameUtil.CONFIRM_RECT.lClick();
             }
         }
     }
@@ -73,44 +64,34 @@ public abstract class AbstractDeckStrategy extends AlgorithmDeckStrategy {
         if (Boolean.parseBoolean(scriptConfiguration.getProperty(STRATEGY.getKey()))){
             try{
                 log.info("执行出牌策略");
-                if (log.isDebugEnabled()){
-                    log.debug("我方手牌：" + myHandCards);
-                    log.debug("我方战场：" + myPlayCards);
-                    log.debug("我方英雄：" + myPlayArea.getHero());
-                    log.debug("我方武器：" + myPlayArea.getWeapon());
-                    log.debug("我方技能：" + myPlayArea.getPower());
-                }
-                log.info("回合开始可用水晶数：" + calcMyUsableResource());
-                if (Objects.equals(War.getRival().getGameId(), "SBBaoXue#31568")){
-                    gameUtil.surrender();
-                    return;
-                }
+                log.info("回合开始可用水晶数：" + War.getMe().getUsableResource());
                 executeOutCard();
                 log.info("执行出牌策略完毕");
             }finally {
-                MouseUtil.gameCancel();
-                clickTurnOverButton();
+                GameUtil.cancelAction();
+                GameUtil.END_TURN_RECT.lClick();
             }
         }
     }
+
     public void discoverChooseCard(Card...cards){
-        if (Boolean.parseBoolean(scriptConfiguration.getProperty(STRATEGY.getKey()))){
+        if (Boolean.parseBoolean(scriptConfiguration.getProperty(STRATEGY.getKey(), STRATEGY.getDefaultValue()))) {
             SystemUtil.delay(1000);
             log.info("执行发现选牌策略");
             int index = executeDiscoverChooseCard(cards);
-            clickFloatCard(getFloatCardClearanceForThreeCard(), getFloatCardFirstCardPosForThreeCard(), index);
+            GameUtil.clickDiscover(index, me.getHandArea().cardSize());
             Card card = cards[index];
-            log.info("选择了：【entityId:" + card.getEntityId() + "，entityName:" + card.getEntityName() + "，cardId:" + card.getCardId() + "】");
+            log.info("选择了：" + card.toSimpleString());
             log.info("执行发现选牌策略完毕");
         }
     }
 
     /**
      * 执行换牌策略
-     * @param card
+     * @param cards
      * @return 返回true表示换掉该牌
      */
-    protected abstract boolean executeChangeCard(Card card, int index);
+    protected abstract void executeChangeCard(HashSet<Card> cards);
 
     /**
      * 执行出牌策略

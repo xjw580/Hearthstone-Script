@@ -1,7 +1,9 @@
 package club.xiaojiawei.strategy.mode;
 
+import club.xiaojiawei.bean.GameRect;
 import club.xiaojiawei.custom.LogRunnable;
 import club.xiaojiawei.enums.ModeEnum;
+import club.xiaojiawei.interfaces.closer.ModeTaskCloser;
 import club.xiaojiawei.status.Mode;
 import club.xiaojiawei.strategy.AbstractModeStrategy;
 import club.xiaojiawei.utils.RandomUtil;
@@ -24,34 +26,30 @@ import static club.xiaojiawei.enums.ModeEnum.GAME_MODE;
  */
 @Slf4j
 @Component
-public class AdventureModeStrategy extends AbstractModeStrategy<Object> {
+public class AdventureModeStrategy extends AbstractModeStrategy<Object> implements ModeTaskCloser {
 
-    private static final float ADVENTURE_MODE_BUTTON_VERTICAL_TO_BOTTOM_RATIO = (float) 0.742;
-    private static final float ADVENTURE_MODE_BUTTON_HORIZONTAL_TO_CENTER_RATIO = (float) 0.107;
-    private static final float CHOOSE_BUTTON_HORIZONTAL_TO_CENTER_RATION = (float) 0.29;
+//    todo add
+    public static final GameRect ADVENTURE_RECT = GameRect.INVALID;
+    public static final GameRect CHOOSE_RECT = GameRect.INVALID;
+    public static final GameRect START_RECT = GameRect.INVALID;
+    public static final GameRect SELECT_DECK_RECT = GameRect.INVALID;
     private static ScheduledFuture<?> wantEnterSchedule;
 
     @Override
     public void wantEnter() {
         wantEnterSchedule = extraThreadPool.scheduleWithFixedDelay(new LogRunnable(() -> {
             if (isPause.get().get()){
-                wantEnterSchedule.cancel(true);
+                cancelTask();
             }else if (Mode.getCurrMode() == ModeEnum.HUB) {
-                wantEnterSchedule.cancel(true);
+                cancelTask();
                 GAME_MODE.getAbstractModeStrategy().wantEnter();
             } else if (Mode.getCurrMode() == GAME_MODE) {
                 SystemUtil.updateGameRect();
 //                    点击冒险模式
-                mouseUtil.leftButtonClick(
-                        (int) (((GAME_RECT.right + GAME_RECT.left) >> 1) - (GAME_RECT.bottom - GAME_RECT.top) * ADVENTURE_MODE_BUTTON_HORIZONTAL_TO_CENTER_RATIO * GAME_WINDOW_ASPECT_TO_HEIGHT_RATIO + RandomUtil.getRandom(-15, 15)),
-                        (int) (GAME_RECT.bottom - (GAME_RECT.bottom - GAME_RECT.top) * ADVENTURE_MODE_BUTTON_VERTICAL_TO_BOTTOM_RATIO) + RandomUtil.getRandom(-15, 15)
-                );
+                ADVENTURE_RECT.lClick();
                 SystemUtil.delayMedium();
 //                    点击选择按钮进入冒险模式
-                mouseUtil.leftButtonClick(
-                        (int) (((GAME_RECT.right + GAME_RECT.left) >> 1) + (GAME_RECT.bottom - GAME_RECT.top) * CHOOSE_BUTTON_HORIZONTAL_TO_CENTER_RATION * GAME_WINDOW_ASPECT_TO_HEIGHT_RATIO + RandomUtil.getRandom(-10, 10)),
-                        (int) (GAME_RECT.bottom - (GAME_RECT.bottom - GAME_RECT.top) * SELECT_BUTTON_VERTICAL_TO_BOTTOM_RATIO) + RandomUtil.getRandom(-10, 10)
-                );
+                CHOOSE_RECT.lClick();
             } else {
                 wantEnterSchedule.cancel(true);
             }
@@ -74,21 +72,25 @@ public class AdventureModeStrategy extends AbstractModeStrategy<Object> {
 
     private void clickStart(){
         log.info("点击开始");
-        mouseUtil.leftButtonClick(
-                (int) (((GAME_RECT.right + GAME_RECT.left) >> 1) + (GAME_RECT.bottom - GAME_RECT.top) * START_BUTTON_HORIZONTAL_TO_CENTER_RATIO * GAME_WINDOW_ASPECT_TO_HEIGHT_RATIO + RandomUtil.getRandom(-10, 10)),
-                (int) (GAME_RECT.bottom - (GAME_RECT.bottom - GAME_RECT.top) * START_BUTTON_VERTICAL_TO_BOTTOM_RATIO) + RandomUtil.getRandom(-10, 10)
-        );
+        START_RECT.lClick();
     }
 
     private void selectDeck(){
         log.info("选择套牌");
-        mouseUtil.leftButtonClick(
-                ((GAME_RECT.right + GAME_RECT.left) >> 1)  + RandomUtil.getRandom(-15, 15),
-                (int) (GAME_RECT.bottom - (GAME_RECT.bottom - GAME_RECT.top) * FIRST_ROW_DECK_VERTICAL_TO_BOTTOM_RATIO) + RandomUtil.getRandom(-5, 5)
-        );
+        SELECT_DECK_RECT.lClick();
     }
 
     public void selectHero(){
     }
 
+    private void cancelTask(){
+        if (wantEnterSchedule != null && !wantEnterSchedule.isDone()){
+            wantEnterSchedule.cancel(true);
+        }
+    }
+
+    @Override
+    public void closeModeTask() {
+        cancelTask();
+    }
 }

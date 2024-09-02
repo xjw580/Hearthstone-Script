@@ -7,6 +7,8 @@ import club.xiaojiawei.data.SpringData;
 import club.xiaojiawei.enums.DeckEnum;
 import club.xiaojiawei.enums.WindowEnum;
 import club.xiaojiawei.initializer.AbstractInitializer;
+import club.xiaojiawei.utils.GameUtil;
+import club.xiaojiawei.utils.MouseUtil;
 import club.xiaojiawei.utils.SystemUtil;
 import club.xiaojiawei.utils.WindowUtil;
 import jakarta.annotation.Resource;
@@ -147,7 +149,9 @@ public class UIApplication extends Application implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) {
-        Thread.ofVirtual().name("Initializer VThread").start(() -> initializer.init());
+        extraThreadPool.submit(() -> {
+            initializer.init();
+        });
     }
 
 }
