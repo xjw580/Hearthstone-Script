@@ -50,34 +50,34 @@ public class ActionDeckStrategy extends FindDeckStrategy{
 
     protected GameRect getThreeDiscoverCardRect(int index){
         if (index > GameplayModeStrategy.THREE_DISCOVER_RECTS.length - 1) {
-            return GameRect.DEFAULT;
+            return GameRect.INVALID;
         }
         return GameplayModeStrategy.THREE_DISCOVER_RECTS[index];
     }
 
     protected GameRect getFourDiscoverCardRect(int index){
         if (index > GameplayModeStrategy.FOUR_DISCOVER_RECTS.length - 1) {
-            return GameRect.DEFAULT;
+            return GameRect.INVALID;
         }
         return GameplayModeStrategy.FOUR_DISCOVER_RECTS[index];
     }
 
-    protected GameRect getMyHandCardRect(int index, int size){
-        if (size > GameplayModeStrategy.MY_HAND_DECK_RECTS.length - 1){
-            return GameRect.DEFAULT;
+    protected GameRect getMyHandCardRect(int index, int handSize){
+        if (handSize > GameplayModeStrategy.MY_HAND_DECK_RECTS.length - 1){
+            return GameRect.INVALID;
         }
-        return GameplayModeStrategy.MY_HAND_DECK_RECTS[size - 1][index];
+        return GameplayModeStrategy.MY_HAND_DECK_RECTS[handSize - 1][index];
     }
 
-    protected GameRect getMyPlayCardRect(int index, int size){
-        GameRect[] rects = GameplayModeStrategy.MY_PLAY_DECK_RECTS[size & 1];
-        int offset = (rects.length - size) >> 1;
+    protected GameRect getMyPlayCardRect(int index, int playSize){
+        GameRect[] rects = GameplayModeStrategy.MY_PLAY_DECK_RECTS[playSize & 1];
+        int offset = (rects.length - playSize) >> 1;
         return rects[offset + index];
     }
 
-    protected GameRect getRivalPlayCardRect(int index, int size){
-        GameRect[] rects = GameplayModeStrategy.RIVAL_PLAY_DECK_RECTS[size & 1];
-        int offset = (rects.length - size) >> 1;
+    protected GameRect getRivalPlayCardRect(int index, int playSize){
+        GameRect[] rects = GameplayModeStrategy.RIVAL_PLAY_DECK_RECTS[playSize & 1];
+        int offset = (rects.length - playSize) >> 1;
         return rects[offset + index];
     }
 

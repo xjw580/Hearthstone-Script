@@ -34,7 +34,7 @@ public class CollectionmanagerModeStrategy extends AbstractModeStrategy<Object> 
         cancelTask();
         scheduledFuture = extraThreadPool.scheduleWithFixedDelay(new LogRunnable(() -> {
             SystemUtil.updateGameRect();
-            BACK_RECT.click();
+            BACK_RECT.lClick();
         }), DELAY_TIME, 500, TimeUnit.MILLISECONDS);
     }
 

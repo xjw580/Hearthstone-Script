@@ -90,7 +90,7 @@ public class GameStarter extends AbstractStarter implements StarterTaskCloser {
     private void user32LaunchGame(){
         log.info("正在通过user32打开" + ScriptStaticData.GAME_CN_NAME);
         WinDef.HWND platformhwnd = SystemUtil.findPlatformHWND();
-        mouseUtil.leftButtonClickByUser32(platformhwnd, 145, 120);
+        mouseUtil.leftButtonClick(145, 120, platformhwnd);
     }
 
     @Deprecated

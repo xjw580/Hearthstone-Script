@@ -19,12 +19,27 @@ public class GameplayModeStrategy extends AbstractModeStrategy<Object> {
 
     public static final GameRect CONFIRM_RECT = new GameRect(-0.0546D, 0.0601D, 0.2709D, 0.3222D);
 
+    public static final GameRect END_TURN_RECT = new GameRect(0.3535D, 0.4533D, -0.0636D, -0.0196D);
+
+
+    public static final GameRect THANK_RECT = new GameRect(-0.1604D, -0.0404D, 0.1153D, 0.1502D);
+    public static final GameRect PRAISE_RECT = new GameRect(-0.1930D, -0.0730D, 0.1971D, 0.2320D);
+    public static final GameRect GREET_RECT = new GameRect(-0.1907D, -0.0707D, 0.2799D, 0.3148D);
+    public static final GameRect THREATEN_RECT = new GameRect(0.0754D, 0.1954D, 0.2830D, 0.3180D);
+    public static final GameRect ERROR_RECT = new GameRect(0.0786D, 0.1986D, 0.1981D, 0.2331D);
+    public static final GameRect WONDER_RECT = new GameRect(0.0444D, 0.1644D, 0.1174D, 0.1523D);
+
+    public static final GameRect RIVAL_HERO_RECT = new GameRect(-0.0453D, 0.0488D, -0.3620D, -0.2355D);
+    public static final GameRect MY_HERO_RECT = new GameRect(-0.0453D, 0.0488D, 0.2229D, 0.3494D);
+
+    public static final GameRect RIVAL_POWER_RECT = new GameRect(0.0840D, 0.1554D, -0.3260D, -0.2338D);
+    public static final GameRect MY_POWER_RECT = new GameRect(0.0855D, 0.1569D, 0.2254D, 0.3176D);
+
     public static final GameRect[] FOUR_DISCOVER_RECTS = new GameRect[]{
             new GameRect(-0.3332D, -0.1911D, -0.1702D, 0.1160D),
             new GameRect(-0.1570D, -0.0149D, -0.1702D, 0.1160D),
             new GameRect(0.0182D, 0.1603D, -0.1702D, 0.1160D),
             new GameRect(0.1934D, 0.3355D, -0.1702D, 0.1160D),
-
     };
 
     public static final GameRect[] THREE_DISCOVER_RECTS = new GameRect[]{
@@ -136,9 +151,22 @@ public class GameplayModeStrategy extends AbstractModeStrategy<Object> {
     public static final GameRect[][] RIVAL_PLAY_DECK_RECTS = new GameRect[][]{
 //            偶数
             new GameRect[]{
+                    new GameRect(-0.2689D, -0.2111D, -0.1730D, -0.0716D),
+                    new GameRect(-0.1731D, -0.1153D, -0.1730D, -0.0716D),
+                    new GameRect(-0.0773D, -0.0195D, -0.1730D, -0.0716D),
+                    new GameRect(0.0195D, 0.0773D, -0.1730D, -0.0716D),
+                    new GameRect(0.1153D, 0.1731D, -0.1730D, -0.0716D),
+                    new GameRect(0.2111D, 0.2689D, -0.1730D, -0.0716D),
             },
 //            奇数
             new GameRect[]{
+                    new GameRect(-0.3156D, -0.2578D, -0.1730D, -0.0716D),
+                    new GameRect(-0.2204D, -0.1626D, -0.1730D, -0.0716D),
+                    new GameRect(-0.1257D, -0.0691D, -0.1730D, -0.0716D),
+                    new GameRect(-0.0299D, 0.0267D, -0.1730D, -0.0716D),
+                    new GameRect(0.0691D, 0.1257D, -0.1730D, -0.0716D),
+                    new GameRect(0.1626D, 0.2204D, -0.1730D, -0.0716D),
+                    new GameRect(0.2578D, 0.3156D, -0.1730D, -0.0716D),
             },
     };
 

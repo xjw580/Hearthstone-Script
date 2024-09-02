@@ -7,6 +7,7 @@ import club.xiaojiawei.enums.ConfigurationEnum;
 import com.sun.jna.platform.win32.WinDef;
 import jakarta.annotation.Resource;
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -37,7 +38,7 @@ public class MouseUtil {
     private static double lastX;
     private static double lastY;
     private static Properties scriptConfiguration;
-    private static AtomicReference<BooleanProperty> isPause;
+    private static AtomicReference<BooleanProperty> isPause = new AtomicReference<>(new SimpleBooleanProperty());
 
     public void init(Properties scriptConfiguration, AtomicReference<BooleanProperty> isPause) {
         MouseUtil.scriptConfiguration = scriptConfiguration;
@@ -138,6 +139,14 @@ public class MouseUtil {
 
     public static void leftButtonClick(Point pos) {
         leftButtonClick(pos.x, pos.y);
+    }
+
+    public static void rightButtonClick(Point pos) {
+        if (isPause.get().get()){
+            return;
+        }
+        SystemDll.INSTANCE.rightClick(pos.x, pos.y, getGameHWND());
+        savePos(pos.x, pos.y);
     }
 
     private static void savePos(int x, int y) {
