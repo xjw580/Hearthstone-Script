@@ -141,6 +141,25 @@ public abstract class Area {
         return cards.size();
     }
 
+    public int indexOfCard(Card card){
+        if (card == null){
+            return -2;
+        }
+        return indexOfCard(card.getEntityId());
+    }
+
+    public int indexOfCard(String entityId){
+        if (zeroCards.containsKey(entityId)){
+            return -1;
+        }
+        for (int i = 0; i < cards.size(); i++) {
+            if (Objects.equals(cards.get(i).getEntityId(), entityId)){
+                return i;
+            }
+        }
+        return -2;
+    }
+
     public Card findByEntityId(String entityId){
         Card card = zeroCards.get(entityId);
         if (card == null){

@@ -58,6 +58,30 @@ public class Card extends BaseCard implements Cloneable{
         EntityMapper.INSTANCE.update(extraEntity, this);
     }
 
+//    public boolean power(int ... ){
+//
+//    }
+
+
+//    public boolean power(){
+//        if (isBattlecry()){
+//            return false;
+//        }
+//        int index = getArea().indexOfCard(this);
+//        GameRect myHandCardRect = GameUtil.getMyHandCardRect(index, getArea().cardSize());
+//        switch (getCardType()){
+//            case SPELL: return false;
+//            case WEAPON, HERO:{
+//
+//                break;
+//            }
+//        }
+//    }
+//
+//    public boolean attackRival(){
+//
+//    }
+
 
     @Override
     public Card clone() {

@@ -53,9 +53,7 @@ public class GameUtil implements ModeTaskCloser {
 
     public static final GameRect CANCEL_CONNECT_RECT = new GameRect(0.0266D, 0.1714D, 0.2282D, 0.2904D);
 
-
-    //    TODO ADD
-    public static final GameRect SURRENDER_RECT = new GameRect(0.3535D, 0.4533D, -0.0636D, -0.0196D);
+    public static final GameRect SURRENDER_RECT = new GameRect(-0.0629D, 0.0607D, -0.1677D, -0.1279D);
 
     public static final GameRect THANK_RECT = new GameRect(-0.1604D, -0.0404D, 0.1153D, 0.1502D);
     public static final GameRect PRAISE_RECT = new GameRect(-0.1930D, -0.0730D, 0.1971D, 0.2320D);
@@ -70,20 +68,20 @@ public class GameUtil implements ModeTaskCloser {
     public static final GameRect RIVAL_POWER_RECT = new GameRect(0.0840D, 0.1554D, -0.3260D, -0.2338D);
     public static final GameRect MY_POWER_RECT = new GameRect(0.0855D, 0.1569D, 0.2254D, 0.3176D);
 
-    public static final GameRect[] FOUR_DISCOVER_RECTS = new GameRect[]{
+    private static final GameRect[] FOUR_DISCOVER_RECTS = new GameRect[]{
             new GameRect(-0.3332D, -0.1911D, -0.1702D, 0.1160D),
             new GameRect(-0.1570D, -0.0149D, -0.1702D, 0.1160D),
             new GameRect(0.0182D, 0.1603D, -0.1702D, 0.1160D),
             new GameRect(0.1934D, 0.3355D, -0.1702D, 0.1160D),
     };
 
-    public static final GameRect[] THREE_DISCOVER_RECTS = new GameRect[]{
+    private static final GameRect[] THREE_DISCOVER_RECTS = new GameRect[]{
             new GameRect(-0.3037D, -0.1595D, -0.1702D, 0.1160D),
             new GameRect(-0.0666D, 0.0741D, -0.1702D, 0.1160D),
             new GameRect(0.1656D, 0.3106D, -0.1702D, 0.1160D),
     };
 
-    public static final GameRect[][] MY_HAND_DECK_RECTS = new GameRect[][]{
+    private static final GameRect[][] MY_HAND_DECK_RECTS = new GameRect[][]{
             new GameRect[]{
                     new GameRect(-0.0693D, 0.0136D, 0.3675D, 0.5000D),
             },
@@ -161,7 +159,7 @@ public class GameUtil implements ModeTaskCloser {
             },
     };
 
-    public static final GameRect[][] MY_PLAY_DECK_RECTS = new GameRect[][]{
+    private static final GameRect[][] MY_PLAY_DECK_RECTS = new GameRect[][]{
 //            偶数
             new GameRect[]{
                     new GameRect(-0.2689D, -0.2111D, -0.0033D, 0.1050D),
@@ -183,7 +181,7 @@ public class GameUtil implements ModeTaskCloser {
             },
     };
 
-    public static final GameRect[][] RIVAL_PLAY_DECK_RECTS = new GameRect[][]{
+    private static final GameRect[][] RIVAL_PLAY_DECK_RECTS = new GameRect[][]{
 //            偶数
             new GameRect[]{
                     new GameRect(-0.2689D, -0.2111D, -0.1730D, -0.0716D),
@@ -205,34 +203,34 @@ public class GameUtil implements ModeTaskCloser {
             },
     };
 
-    private static GameRect getThreeDiscoverCardRect(int index){
+    public static GameRect getThreeDiscoverCardRect(int index){
         if (index > THREE_DISCOVER_RECTS.length - 1) {
             return GameRect.INVALID;
         }
         return THREE_DISCOVER_RECTS[index];
     }
 
-    private static GameRect getFourDiscoverCardRect(int index){
+    public static GameRect getFourDiscoverCardRect(int index){
         if (index > FOUR_DISCOVER_RECTS.length - 1) {
             return GameRect.INVALID;
         }
         return FOUR_DISCOVER_RECTS[index];
     }
 
-    private static GameRect getMyHandCardRect(int index, int size){
+    public static GameRect getMyHandCardRect(int index, int size){
         if (size > MY_HAND_DECK_RECTS.length - 1){
             return GameRect.INVALID;
         }
         return MY_HAND_DECK_RECTS[size - 1][index];
     }
 
-    private static GameRect getMyPlayCardRect(int index, int size){
+    public static GameRect getMyPlayCardRect(int index, int size){
         GameRect[] rects = MY_PLAY_DECK_RECTS[size & 1];
         int offset = (rects.length - size) >> 1;
         return rects[offset + index];
     }
 
-    private static GameRect getRivalPlayCardRect(int index, int size){
+    public static GameRect getRivalPlayCardRect(int index, int size){
         GameRect[] rects = RIVAL_PLAY_DECK_RECTS[size & 1];
         int offset = (rects.length - size) >> 1;
         return rects[offset + index];
@@ -257,6 +255,7 @@ public class GameUtil implements ModeTaskCloser {
     public static void moveMouseByLine(Point startPos, Point endPos){
         MouseUtil.moveMouseByLine(startPos, endPos, ScriptStaticData.getGameHWND());
     }
+
 
     /**
      * 如果战网不在运行则相当于启动战网，如果战网已经运行则为启动炉石

@@ -35,12 +35,12 @@ public record GameRect(double left, double right, double top, double bottom) {
         GameUtil.rightButtonClick(getClickPos());
     }
 
-    public void lClickMoveLClick(GameRect gameRect) {
-        if (gameRect == null) {
+    public void lClickMoveLClick(GameRect endRect) {
+        if (endRect == null) {
             return;
         }
         Point startPos = getClickPos();
-        Point endPos = gameRect.getClickPos();
+        Point endPos = endRect.getClickPos();
         GameUtil.leftButtonClick(startPos);
         GameUtil.moveMouseByLine(startPos, endPos);
         GameUtil.leftButtonClick(endPos);
