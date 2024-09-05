@@ -4,13 +4,17 @@ import club.xiaojiawei.bean.area.Area;
 import club.xiaojiawei.bean.log.CommonEntity;
 import club.xiaojiawei.bean.log.ExtraEntity;
 import club.xiaojiawei.custom.CustomToStringGenerator;
-import club.xiaojiawei.mapper.CardMapper;
+import club.xiaojiawei.mapper.BaseCardMapper;
 import club.xiaojiawei.mapper.EntityMapper;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static club.xiaojiawei.data.ScriptStaticData.CARD_AREA_MAP;
 
@@ -22,7 +26,15 @@ import static club.xiaojiawei.data.ScriptStaticData.CARD_AREA_MAP;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @Slf4j
-public class Card extends BaseCard implements Cloneable{
+public abstract class Card extends BaseCard{
+
+    private static Card defaultCard;
+
+    public static void setDefaultCard(Card defaultCard) {
+        if (Card.defaultCard == null) {
+            Card.defaultCard = defaultCard;
+        }
+    }
 
     private final ObjectProperty<Area> area = new SimpleObjectProperty<>();
 
@@ -39,68 +51,54 @@ public class Card extends BaseCard implements Cloneable{
     }
 
     public Card() {
-        area.addListener((observableValue, area1, t1) -> {
-            CARD_AREA_MAP.remove(this.getEntityId());
-            CARD_AREA_MAP.put(this.getEntityId(), t1);
-        });
+        addListener();
     }
 
     public Card(CommonEntity commonEntity) {
         super(commonEntity.getEntityId(), commonEntity.getEntityName(), commonEntity.getCardId());
+        addListener();
+    }
+
+    private void addListener(){
         area.addListener((observableValue, area1, t1) -> {
             CARD_AREA_MAP.remove(this.getEntityId());
             CARD_AREA_MAP.put(this.getEntityId(), t1);
         });
     }
 
-    public void updateByExtraEntity(ExtraEntity extraEntity){
-        CardMapper.INSTANCE.update(extraEntity.getExtraCard().getCard(), this);
-        EntityMapper.INSTANCE.update(extraEntity, this);
-    }
 
-//    public boolean power(int ... ){
-//
-//    }
+    public static class Action{
 
+        private final Card card;
 
-//    public boolean power(){
-//        if (isBattlecry()){
-//            return false;
-//        }
-//        int index = getArea().indexOfCard(this);
-//        GameRect myHandCardRect = GameUtil.getMyHandCardRect(index, getArea().cardSize());
-//        switch (getCardType()){
-//            case SPELL: return false;
-//            case WEAPON, HERO:{
-//
-//                break;
-//            }
-//        }
-//    }
-//
-//    public boolean attackRival(){
-//
-//    }
-
-
-    @Override
-    public Card clone() {
-        try {
-            Card card = (Card) super.clone();
-            CardMapper.INSTANCE.update(this, card);
-            return card;
-        } catch (CloneNotSupportedException e) {
-            throw new RuntimeException(e);
+        private Action(Card card) {
+            this.card = card;
         }
+
+        private final List<Runnable> runnableList = new ArrayList<>();
+
+        public Action exec(){
+            runnableList.forEach(Runnable::run);
+            return this;
+        }
+
+        public Action clear(){
+            runnableList.clear();
+            return this;
+        }
+
     }
 
-    @Override
-    public String toString() {
-        return CustomToStringGenerator.generateToString(this, true);
-    }
+    abstract public boolean power();
 
-    public String toSimpleString(){
-        return "【entityId:" + getEntityId() + "，entityName:" + getEntityName() + "，cardId:" + getCardId() + "】";
-    }
+    abstract public boolean power(Card card);
+
+    abstract public boolean power(int index);
+
+    abstract public boolean attackMinion(Card card);
+
+    abstract public boolean attackHero();
+
+    abstract public boolean pointTo(Card card);
 
 }

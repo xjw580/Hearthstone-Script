@@ -39,78 +39,79 @@ public class MouseUtil {
      * 鼠标每次移动的距离：px
      */
     private static final int MOVE_DISTANCE = 10;
+
     @Getter
-    private static int lastX;
-    @Getter
-    private static int lastY;
+    private static final Point lastPoint = new Point(-1, -1);
+
+    private static boolean validPoint(Point point) {
+        if (point == null) {
+            return false;
+        }
+        return point.x != -1 && point.y != -1;
+    }
 
     public static void leftButtonClick(WinDef.HWND hwnd) {
-        leftButtonClick(lastX, lastY, hwnd);
+        leftButtonClick(lastPoint, hwnd);
     }
-    public static void leftButtonClick(Point point, WinDef.HWND hwnd) {
-        leftButtonClick(point.x, point.y, hwnd);
-    }
-    public static void leftButtonClick(int x, int y, WinDef.HWND hwnd) {
-        if (isPause.get().get()){
-            return;
+    public static void leftButtonClick(Point pos, WinDef.HWND hwnd) {
+        if (!isPause.get().get() && validPoint(pos)) {
+            SystemDll.INSTANCE.leftClick(pos.x, pos.y, hwnd);
+            savePos(pos);
         }
-        SystemDll.INSTANCE.leftClick(x, y, hwnd);
-        savePos(x, y);
     }
 
     public static void rightButtonClick(WinDef.HWND hwnd) {
-        rightButtonClick(lastX, lastY, hwnd);
+        rightButtonClick(lastPoint, hwnd);
     }
-    public static void rightButtonClick(Point point, WinDef.HWND hwnd) {
-        rightButtonClick(point.x, point.y, hwnd);
-    }
-    public static void rightButtonClick(int x, int y, WinDef.HWND hwnd) {
-        if (isPause.get().get()){
-            return;
+    public static void rightButtonClick(Point pos, WinDef.HWND hwnd) {
+        if (!isPause.get().get() && validPoint(pos)) {
+            SystemDll.INSTANCE.rightClick(pos.x, pos.y, hwnd);
+            savePos(pos);
         }
-        SystemDll.INSTANCE.rightClick(x, y, hwnd);
-        savePos(x, y);
     }
 
 
-    public static void moveMouseByLine(Point startPos, Point endPos, WinDef.HWND hwnd) {
-        moveMouseByLine(startPos.x, startPos.y, endPos.x, endPos.y, hwnd);
+    public static void moveMouseByLine(Point endPos, WinDef.HWND hwnd) {
+        moveMouseByLine(null, endPos, hwnd);
     }
 
     /**
      * 鼠标按照直线方式移动
-     * @param startX
-     * @param startY
-     * @param endX
-     * @param endY
      */
-    public static void moveMouseByLine(int startX, int startY, int endX, int endY, WinDef.HWND hwnd) {
-        savePos(startX, startY);
-        if (Math.abs(startY - endY) <= 5) {
-            for (startX -= MOVE_DISTANCE; startX >= endX && !isPause.get().get(); startX -= MOVE_DISTANCE) {
-                SystemDll.INSTANCE.moveMouse(startX, startY, hwnd);
-                SystemUtil.delay(MIN_MOVE_INTERVAL, getMaxMoveInterval());
+    public static void moveMouseByLine(Point startPos, Point endPos, WinDef.HWND hwnd) {
+        if (!isPause.get().get() && validPoint(endPos)) {
+            int endX = endPos.x;
+            int endY = endPos.y;
+            if (validPoint(startPos)) {
+                int startX = startPos.x;
+                int startY = startPos.y;
+                if (Math.abs(startY - endY) <= 5) {
+                    for (startX -= MOVE_DISTANCE; startX >= endX && !isPause.get().get(); startX -= MOVE_DISTANCE) {
+                        SystemDll.INSTANCE.moveMouse(startX, startY, hwnd);
+                        SystemUtil.delay(MIN_MOVE_INTERVAL, getMaxMoveInterval());
+                    }
+                } else if (Math.abs(startX - endX) <= 5) {
+                    for (startY -= MOVE_DISTANCE; startY >= endY && !isPause.get().get(); startY -= MOVE_DISTANCE) {
+                        SystemDll.INSTANCE.moveMouse(startX, startY, hwnd);
+                        SystemUtil.delay(MIN_MOVE_INTERVAL, getMaxMoveInterval());
+                    }
+                } else {
+                    double k = calcK(startX, startY, endX, endY);
+                    double b = startY - k * startX;
+                    for (startY -= MOVE_DISTANCE; startY >= endY && !isPause.get().get(); startY -= MOVE_DISTANCE) {
+                        SystemDll.INSTANCE.moveMouse((int) ((startY - b) / k), startY, hwnd);
+                        SystemUtil.delay(MIN_MOVE_INTERVAL, getMaxMoveInterval());
+                    }
+                }
             }
-        } else if (Math.abs(startX - endX) <= 5) {
-            for (startY -= MOVE_DISTANCE; startY >= endY && !isPause.get().get(); startY -= MOVE_DISTANCE) {
-                SystemDll.INSTANCE.moveMouse(startX, startY, hwnd);
-                SystemUtil.delay(MIN_MOVE_INTERVAL, getMaxMoveInterval());
-            }
-        } else {
-            double k = calcK(startX, startY, endX, endY);
-            double b = startY - k * startX;
-            for (startY -= MOVE_DISTANCE; startY >= endY && !isPause.get().get(); startY -= MOVE_DISTANCE) {
-                SystemDll.INSTANCE.moveMouse((int) ((startY - b) / k), startY, hwnd);
-                SystemUtil.delay(MIN_MOVE_INTERVAL, getMaxMoveInterval());
-            }
+            SystemDll.INSTANCE.moveMouse(endX, endY, hwnd);
+            savePos(endPos);
         }
-        SystemDll.INSTANCE.moveMouse(endX, endY, hwnd);
-        savePos(endX, endY);
     }
 
-    private static void savePos(int x, int y) {
-        lastX = x;
-        lastY = y;
+    private static void savePos(Point pos) {
+        lastPoint.x = pos.x;
+        lastPoint.y = pos.y;
     }
 
     /**

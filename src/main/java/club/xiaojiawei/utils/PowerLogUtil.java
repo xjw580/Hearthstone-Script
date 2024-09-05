@@ -1,5 +1,6 @@
 package club.xiaojiawei.utils;
 
+import club.xiaojiawei.bean.DefaultCard;
 import club.xiaojiawei.bean.Player;
 import club.xiaojiawei.bean.area.Area;
 import club.xiaojiawei.bean.Card;
@@ -57,7 +58,7 @@ public class PowerLogUtil {
         //        不退出客户端的情况下断线重连会导致牌库的牌重新在日志中输出
         if (CARD_AREA_MAP.get(extraEntity.getEntityId()) == null){
             Area area;
-            Card card = new Card();
+            Card card = new DefaultCard();
             card.updateByExtraEntity(extraEntity);
             area = War.getPlayer(extraEntity.getPlayerId()).getArea(extraEntity.getExtraCard().getZone());
             area.add(card, extraEntity.getExtraCard().getZonePos());

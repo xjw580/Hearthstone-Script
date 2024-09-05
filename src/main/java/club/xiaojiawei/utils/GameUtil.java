@@ -1,5 +1,6 @@
 package club.xiaojiawei.utils;
 
+import club.xiaojiawei.annotations.NotNull;
 import club.xiaojiawei.bean.GameRect;
 import club.xiaojiawei.interfaces.closer.ModeTaskCloser;
 import club.xiaojiawei.data.ScriptStaticData;
@@ -203,6 +204,7 @@ public class GameUtil implements ModeTaskCloser {
             },
     };
 
+    @NotNull
     public static GameRect getThreeDiscoverCardRect(int index){
         if (index > THREE_DISCOVER_RECTS.length - 1) {
             return GameRect.INVALID;
@@ -210,6 +212,7 @@ public class GameUtil implements ModeTaskCloser {
         return THREE_DISCOVER_RECTS[index];
     }
 
+    @NotNull
     public static GameRect getFourDiscoverCardRect(int index){
         if (index > FOUR_DISCOVER_RECTS.length - 1) {
             return GameRect.INVALID;
@@ -217,6 +220,7 @@ public class GameUtil implements ModeTaskCloser {
         return FOUR_DISCOVER_RECTS[index];
     }
 
+    @NotNull
     public static GameRect getMyHandCardRect(int index, int size){
         if (size > MY_HAND_DECK_RECTS.length - 1){
             return GameRect.INVALID;
@@ -224,12 +228,14 @@ public class GameUtil implements ModeTaskCloser {
         return MY_HAND_DECK_RECTS[size - 1][index];
     }
 
+    @NotNull
     public static GameRect getMyPlayCardRect(int index, int size){
         GameRect[] rects = MY_PLAY_DECK_RECTS[size & 1];
         int offset = (rects.length - size) >> 1;
         return rects[offset + index];
     }
 
+    @NotNull
     public static GameRect getRivalPlayCardRect(int index, int size){
         GameRect[] rects = RIVAL_PLAY_DECK_RECTS[size & 1];
         int offset = (rects.length - size) >> 1;
@@ -252,8 +258,12 @@ public class GameUtil implements ModeTaskCloser {
         MouseUtil.leftButtonClick(point, ScriptStaticData.getGameHWND());
     }
 
-    public static void moveMouseByLine(Point startPos, Point endPos){
+    public static void moveMouse(Point startPos, Point endPos){
         MouseUtil.moveMouseByLine(startPos, endPos, ScriptStaticData.getGameHWND());
+    }
+
+    public static void moveMouse(Point endPos){
+        MouseUtil.moveMouseByLine(endPos, ScriptStaticData.getGameHWND());
     }
 
 
@@ -287,8 +297,12 @@ public class GameUtil implements ModeTaskCloser {
         MouseUtil.rightButtonClick(ScriptStaticData.getGameHWND());
     }
 
-    public static void clickCenter(){
+    public static void lClickCenter(){
         CENTER_RECT.lClick();
+    }
+
+    public static void rClickCenter(){
+        CENTER_RECT.rClick();
     }
 
     public static void reconnect(){
@@ -306,7 +320,7 @@ public class GameUtil implements ModeTaskCloser {
                 if (isPause.get().get()){
                     cancelTask();
                 }else {
-                    clickCenter();
+                    lClickCenter();
                 }
             },
             4500,

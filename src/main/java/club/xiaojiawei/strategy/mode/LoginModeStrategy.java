@@ -1,13 +1,9 @@
 package club.xiaojiawei.strategy.mode;
 
-import club.xiaojiawei.bean.GameRect;
 import club.xiaojiawei.interfaces.closer.ModeTaskCloser;
 import club.xiaojiawei.custom.LogRunnable;
-import club.xiaojiawei.data.GameRationStaticData;
-import club.xiaojiawei.data.ScriptStaticData;
 import club.xiaojiawei.strategy.AbstractModeStrategy;
 import club.xiaojiawei.utils.GameUtil;
-import club.xiaojiawei.utils.SystemUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -45,7 +41,7 @@ public class LoginModeStrategy extends AbstractModeStrategy<Object> implements M
             if (isPause.get().get()){
                 cancelTask();
             }else {
-                GameUtil.clickCenter();
+                GameUtil.lClickCenter();
             }
         }), 3000, 2000, TimeUnit.MILLISECONDS);
     }

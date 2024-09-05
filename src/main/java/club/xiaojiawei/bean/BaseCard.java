@@ -1,7 +1,11 @@
 package club.xiaojiawei.bean;
 
+import club.xiaojiawei.bean.log.ExtraEntity;
+import club.xiaojiawei.custom.CustomToStringGenerator;
 import club.xiaojiawei.enums.CardRaceEnum;
 import club.xiaojiawei.enums.CardTypeEnum;
+import club.xiaojiawei.mapper.BaseCardMapper;
+import club.xiaojiawei.mapper.EntityMapper;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
@@ -13,7 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @Slf4j
-public class BaseCard extends Entity{
+public class BaseCard extends Entity implements Cloneable{
 
     public BaseCard() {
     }
@@ -123,4 +127,28 @@ public class BaseCard extends Entity{
 
     private volatile boolean dormant;
 
+    public void updateByExtraEntity(ExtraEntity extraEntity){
+        BaseCardMapper.INSTANCE.update(extraEntity.getExtraCard().getCard(), this);
+        EntityMapper.INSTANCE.update(extraEntity, this);
+    }
+
+    @Override
+    public BaseCard clone() {
+        try {
+            BaseCard card = (BaseCard) super.clone();
+            BaseCardMapper.INSTANCE.update(this, card);
+            return card;
+        } catch (CloneNotSupportedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public String toString() {
+        return CustomToStringGenerator.generateToString(this, true);
+    }
+
+    public String toSimpleString(){
+        return "【entityId:" + getEntityId() + "，entityName:" + getEntityName() + "，cardId:" + getCardId() + "】";
+    }
 }

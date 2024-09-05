@@ -1,5 +1,7 @@
 package club.xiaojiawei;
 
+import club.xiaojiawei.bean.Card;
+import club.xiaojiawei.bean.DefaultCard;
 import club.xiaojiawei.controller.javafx.StartupController;
 import club.xiaojiawei.custom.LogRunnable;
 import club.xiaojiawei.data.ScriptStaticData;
@@ -151,6 +153,7 @@ public class UIApplication extends Application implements ApplicationRunner {
     public void run(ApplicationArguments args) {
         extraThreadPool.submit(() -> {
             initializer.init();
+            Card.setDefaultCard(new DefaultCard());
         });
     }
 

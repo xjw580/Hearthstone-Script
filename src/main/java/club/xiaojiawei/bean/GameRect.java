@@ -3,15 +3,20 @@ package club.xiaojiawei.bean;
 import club.xiaojiawei.data.GameRationStaticData;
 import club.xiaojiawei.data.ScriptStaticData;
 import club.xiaojiawei.utils.GameUtil;
-import club.xiaojiawei.utils.MouseUtil;
 import club.xiaojiawei.utils.RandomUtil;
+import lombok.Getter;
+import lombok.ToString;
 
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * @author 肖嘉威 xjw580@qq.com
  * @date 2024/8/28 15:15
  */
+
 public record GameRect(double left, double right, double top, double bottom) {
 
     public static final GameRect INVALID = new GameRect(0, 0, 0, 0);
@@ -25,6 +30,10 @@ public record GameRect(double left, double right, double top, double bottom) {
         double pointX = RandomUtil.getRandom(left, right);
         double pointY = RandomUtil.getRandom(top, bottom);
         return new Point((int) (middleX + pointX * usableW), (int) (middleY + pointY * usableH));
+    }
+
+    public boolean isValid() {
+        return !Objects.equals(this, INVALID);
     }
 
     public void lClick() {
@@ -42,7 +51,96 @@ public record GameRect(double left, double right, double top, double bottom) {
         Point startPos = getClickPos();
         Point endPos = endRect.getClickPos();
         GameUtil.leftButtonClick(startPos);
-        GameUtil.moveMouseByLine(startPos, endPos);
+        GameUtil.moveMouse(startPos, endPos);
         GameUtil.leftButtonClick(endPos);
+    }
+
+    public void move() {
+        GameUtil.moveMouse(getClickPos());
+    }
+
+    public void move(GameRect endRect) {
+        if (endRect == null) {
+            move();
+        } else {
+            GameUtil.moveMouse(getClickPos(), endRect.getClickPos());
+        }
+    }
+
+    public Action buildAction() {
+        return new Action(this);
+    }
+
+    public static class Action {
+
+        private final GameRect rect;
+
+        private final List<Runnable> runnableList = new ArrayList<>();
+
+        private GameRect lastRect;
+
+        private Action(GameRect rect) {
+            this.rect = rect;
+        }
+
+        public Action clear() {
+            runnableList.clear();
+            lastRect = null;
+            return this;
+        }
+
+        public Action exec() {
+            runnableList.forEach(Runnable::run);
+            return this;
+        }
+
+        public Action lClick() {
+            runnableList.add(rect::lClick);
+            return this;
+        }
+
+        public Action lClick(final GameRect rect) {
+            runnableList.add(() -> {
+                if (rect == null) {
+                    if (lastRect != null) {
+                        lastRect.lClick();
+                    }
+                } else {
+                    rect.lClick();
+                    lastRect = rect;
+                }
+            });
+            return this;
+        }
+
+        public Action rClick() {
+            runnableList.add(rect::rClick);
+            return this;
+        }
+
+        public Action rClick(final GameRect rect) {
+            runnableList.add(() -> {
+                if (rect == null) {
+                    if (lastRect != null) {
+                        lastRect.rClick();
+                    }
+                } else {
+                    rect.rClick();
+                    lastRect = rect;
+                }
+            });
+            return this;
+        }
+
+        public Action move() {
+            runnableList.add(rect::move);
+            return this;
+        }
+
+        public Action move(final GameRect endRect) {
+            runnableList.add(() -> rect.move(endRect));
+            return this;
+        }
+
     }
 }

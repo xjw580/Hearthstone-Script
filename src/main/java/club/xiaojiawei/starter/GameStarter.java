@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
+import java.awt.*;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -90,7 +91,7 @@ public class GameStarter extends AbstractStarter implements StarterTaskCloser {
     private void user32LaunchGame(){
         log.info("正在通过user32打开" + ScriptStaticData.GAME_CN_NAME);
         WinDef.HWND platformhwnd = SystemUtil.findPlatformHWND();
-        MouseUtil.leftButtonClick(145, 120, platformhwnd);
+        MouseUtil.leftButtonClick(new Point(145, 120), platformhwnd);
     }
 
     private void cancelGameTimer(){
