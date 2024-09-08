@@ -36,8 +36,8 @@ build/
 /bfg.jar
 /gitStrip.bat
 /new_version_temp/
-**/exe/*
 *.exe
 embedded_*
 config.json
 /easy-release_static/
+/plugin

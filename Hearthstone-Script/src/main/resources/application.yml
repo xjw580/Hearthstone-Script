@@ -1,0 +1,37 @@
+game:
+  log:
+    configuration:
+      path: ${LOCALAPPDATA:}/Blizzard/Hearthstone/log.config
+    out:
+      path: /Logs/
+      file:
+        screen: /LoadingScreen.log
+        power: /Power.log
+        deck: /Decks.log
+
+script:
+  version: '@project.version@'
+  path: ${PROGRAMDATA:C:/ProgramData}/hs_script/
+  resource: ${script.path}resource/
+  configuration:
+    file: ${script.path}/script.properties
+
+logging:
+  level:
+    root: info
+  config: classpath:logback-spring.xml
+
+log:
+  level: ${logging.level.root}
+  path: ${script.path}
+
+server:
+  port: 8848
+
+spring:
+  thymeleaf:
+    cache: false
+  main:
+    #  web容器开关
+    web-application-type: servlet
+##    web-application-type: none

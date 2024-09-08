@@ -1,20 +1,36 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>3.2.1</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
+
     <groupId>club.xiaojiawei</groupId>
-    <artifactId>hs-script</artifactId>
-    <version>v3.2.6.3.DEV</version>
-    <name>Hearthstone-Script</name>
-    <description>炉石传说脚本</description>
+    <artifactId>hs-script-parent</artifactId>
+    <version>1.0.0</version>
+    <packaging>pom</packaging>
+
+    <name>Hearthstone-Script-Parent</name>
+    <url>http://maven.apache.org</url>
+
+    <modules>
+        <module>Hearthstone-Script</module>
+        <module>Hearthstone-Script-Base</module>
+        <module>Hearthstone-Script-Plugin-SDK</module>
+        <module>Hearthstone-Script-Card-SDK</module>
+        <module>Hearthstone-Script-Deck-SDK</module>
+        <module>Hearthstone-Script-Base-Deck</module>
+    </modules>
 
     <repositories>
+        <repository>
+            <id>mavenCentral</id>
+            <url>https://repo1.maven.org/maven2/</url>
+        </repository>
         <repository>
             <id>jitpack.io</id>
             <url>https://jitpack.io</url>
@@ -22,151 +38,243 @@
     </repositories>
 
     <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <!--kotlin-->
+        <kotlin.version>2.0.20</kotlin.version>
+        <kotlin.code.style>official</kotlin.code.style>
+        <kotlin.compiler.jvmTarget>1.8</kotlin.compiler.jvmTarget>
+
+        <!--java/fx-->
         <java.version>21</java.version>
         <javafx-version>21.0.1</javafx-version>
         <javafx-ui-version>v1.2.0</javafx-ui-version>
+
+        <!--other-->
+        <lombok-version>1.18.30</lombok-version>
+        <slf4j-version>2.0.9</slf4j-version>
+
+        <cardaction-sdk-version>1.0.0</cardaction-sdk-version>
         <mapstruct-version>1.6.0.Beta1</mapstruct-version>
         <jintellitype-version>1.4.1</jintellitype-version>
         <fastjson-version>2.0.20</fastjson-version>
         <jna-version>5.14.0</jna-version>
-        <lombok-version>1.18.30</lombok-version>
+        <kotlin-logging-jvm-version>5.1.4</kotlin-logging-jvm-version>
+
+        <hs-script-base-deck-version>1.0.0</hs-script-base-deck-version>
+
+        <!--sdk-->
+        <hs-script-base-version>1.0.0</hs-script-base-version>
+        <hs-script-plugin-sdk-version>1.0.0</hs-script-plugin-sdk-version>
+        <hs-script-card-sdk-version>1.0.0</hs-script-card-sdk-version>
+        <hs-script-deck-sdk-version>1.0.0</hs-script-deck-sdk-version>
+
+        <!--plugin-->
         <maven-assembly-plugin-version>3.6.0</maven-assembly-plugin-version>
         <maven-jar-plugin-version>3.3.0</maven-jar-plugin-version>
         <maven-compiler-plugin-version>3.12.1</maven-compiler-plugin-version>
     </properties>
 
     <dependencies>
-        <!--javafx-->
         <dependency>
-            <groupId>org.openjfx</groupId>
-            <artifactId>javafx-controls</artifactId>
-            <version>${javafx-version}</version>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-stdlib-jdk8</artifactId>
+            <version>${kotlin.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.openjfx</groupId>
-            <artifactId>javafx-fxml</artifactId>
-            <version>${javafx-version}</version>
-        </dependency>
-        <!--JavaFX组件UI库-->
-        <dependency>
-            <groupId>com.github.xjw580</groupId>
-            <artifactId>javafx-ui</artifactId>
-            <version>${javafx-ui-version}</version>
-        </dependency>
-<!--        <dependency>-->
-<!--            <groupId>club.xiaojiawei</groupId>-->
-<!--            <artifactId>javafx-ui</artifactId>-->
-<!--            <version>1.2.0</version>-->
-<!--        </dependency>-->
-        <!--bean转换包-->
-        <dependency>
-            <groupId>org.mapstruct</groupId>
-            <artifactId>mapstruct</artifactId>
-            <version>${mapstruct-version}</version>
-        </dependency>
-        <!-- 监听全局键鼠包 -->
-        <dependency>
-            <groupId>com.melloware</groupId>
-            <artifactId>jintellitype</artifactId>
-            <version>${jintellitype-version}</version>
-        </dependency>
-        <!-- fastjson2 -->
-        <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>fastjson</artifactId>
-            <version>${fastjson-version}</version>
-        </dependency>
-        <!--访问系统本地库依赖-->
-        <dependency>
-            <groupId>net.java.dev.jna</groupId>
-            <artifactId>jna</artifactId>
-            <version>${jna-version}</version>
-        </dependency>
-        <!--访问系统本地库依赖-->
-        <dependency>
-            <groupId>net.java.dev.jna</groupId>
-            <artifactId>jna-platform</artifactId>
-            <version>${jna-version}</version>
-        </dependency>
-        <!--lombok-->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>${lombok-version}</version>
             <scope>provided</scope>
         </dependency>
-        <!--thymeleaf-->
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-thymeleaf</artifactId>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct</artifactId>
+            <version>${mapstruct-version}</version>
         </dependency>
-        <!--WebSocket-->
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-websocket</artifactId>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j-version}</version>
         </dependency>
-        <!--Web-->
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
+            <groupId>io.github.oshai</groupId>
+            <artifactId>kotlin-logging-jvm</artifactId>
+            <version>${kotlin-logging-jvm-version}</version>
         </dependency>
     </dependencies>
 
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>club.xiaojiawei</groupId>
+                <artifactId>hs-script-base-deck</artifactId>
+                <version>${hs-script-base-deck-version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <!--sdk-->
+            <dependency>
+                <groupId>club.xiaojiawei</groupId>
+                <artifactId>hs-script-base</artifactId>
+                <version>${hs-script-base-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>club.xiaojiawei</groupId>
+                <artifactId>hs-script-plugin-sdk</artifactId>
+                <version>${hs-script-plugin-sdk-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>club.xiaojiawei</groupId>
+                <artifactId>hs-script-card-sdk</artifactId>
+                <version>${hs-script-card-sdk-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>club.xiaojiawei</groupId>
+                <artifactId>hs-script-deck-sdk</artifactId>
+                <version>${hs-script-deck-sdk-version}</version>
+            </dependency>
+            <!--javafx-->
+            <dependency>
+                <groupId>org.openjfx</groupId>
+                <artifactId>javafx-controls</artifactId>
+                <version>${javafx-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.openjfx</groupId>
+                <artifactId>javafx-fxml</artifactId>
+                <version>${javafx-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.openjfx</groupId>
+                <artifactId>javafx-base</artifactId>
+                <version>${javafx-version}</version>
+            </dependency>
+            <!--JavaFX组件UI库-->
+            <dependency>
+                <groupId>com.github.xjw580</groupId>
+                <artifactId>javafx-ui</artifactId>
+                <version>${javafx-ui-version}</version>
+            </dependency>
+            <!--更新bean-->
+            <dependency>
+                <groupId>org.mapstruct</groupId>
+                <artifactId>mapstruct</artifactId>
+                <version>${mapstruct-version}</version>
+            </dependency>
+            <!-- 监听全局键鼠包 -->
+            <dependency>
+                <groupId>com.melloware</groupId>
+                <artifactId>jintellitype</artifactId>
+                <version>${jintellitype-version}</version>
+            </dependency>
+            <!-- fastjson2 -->
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>fastjson</artifactId>
+                <version>${fastjson-version}</version>
+            </dependency>
+            <!--访问系统本地库依赖-->
+            <dependency>
+                <groupId>net.java.dev.jna</groupId>
+                <artifactId>jna</artifactId>
+                <version>${jna-version}</version>
+            </dependency>
+            <!--访问系统本地库依赖-->
+            <dependency>
+                <groupId>net.java.dev.jna</groupId>
+                <artifactId>jna-platform</artifactId>
+                <version>${jna-version}</version>
+            </dependency>
+
+        </dependencies>
+    </dependencyManagement>
+
     <build>
-        <finalName>${project.artifactId}_${project.version}</finalName>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-assembly-plugin</artifactId>
+                    <version>${maven-assembly-plugin-version}</version>
+                    <configuration>
+                        <appendAssemblyId>false</appendAssemblyId>
+                        <descriptors>
+                            <!-- 读取assembly.xml文件 -->
+                            <descriptor>assembly.xml</descriptor>
+                        </descriptors>
+                        <!-- 输出在target/目录下 -->
+                        <outputDirectory>${project.build.directory}/</outputDirectory>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <id>make-assembly</id>
+                            <phase>package</phase>
+                            <goals>
+                                <goal>single</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>${maven-jar-plugin-version}</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+
         <plugins>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <version>${maven-assembly-plugin-version}</version>
-                <configuration>
-                    <appendAssemblyId>false</appendAssemblyId>
-                    <descriptors>
-                        <!-- 读取assembly.xml文件 -->
-                        <descriptor>assembly.xml</descriptor>
-                    </descriptors>
-                    <!-- 输出在target/目录下 -->
-                    <outputDirectory>${project.build.directory}/</outputDirectory>
-                </configuration>
+                <groupId>org.jetbrains.kotlin</groupId>
+                <artifactId>kotlin-maven-plugin</artifactId>
+                <version>${kotlin.version}</version>
                 <executions>
                     <execution>
-                        <id>make-assembly</id>
-                        <phase>package</phase>
+                        <id>compile</id>
+                        <phase>compile</phase>
                         <goals>
-                            <goal>single</goal>
+                            <goal>compile</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>test-compile</id>
+                        <phase>test-compile</phase>
+                        <goals>
+                            <goal>test-compile</goal>
                         </goals>
                     </execution>
                 </executions>
             </plugin>
-            <!-- 打包成jar包，并指定lib和resources文件夹位置 -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>${maven-jar-plugin-version}</version>
-                <configuration>
-                    <excludes>
-                        <exclude>**/bat/**</exclude>
-                        <exclude>**/exe/**</exclude>
-                        <exclude>application.yml</exclude>
-                    </excludes>
-                    <archive>
-                        <manifest>
-                            <!-- 入口Main Class -->
-                            <mainClass>club.xiaojiawei.ScriptApplication</mainClass>
-                            <!-- 依赖的lib -->
-                            <classpathPrefix>lib/</classpathPrefix>
-                            <addClasspath>true</addClasspath>
-                        </manifest>
-                        <manifestEntries>
-                            <Class-Path>resources/</Class-Path>
-                        </manifestEntries>
-                    </archive>
-                </configuration>
-            </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${maven-compiler-plugin-version}</version>
+                <executions>
+                    <execution>
+                        <id>default-compile</id>
+                        <phase>none</phase>
+                    </execution>
+                    <execution>
+                        <id>default-testCompile</id>
+                        <phase>none</phase>
+                    </execution>
+                    <execution>
+                        <id>compile</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>testCompile</id>
+                        <phase>test-compile</phase>
+                        <goals>
+                            <goal>testCompile</goal>
+                        </goals>
+                    </execution>
+                </executions>
                 <configuration>
                     <source>${java.version}</source>
                     <target>${java.version}</target>
@@ -186,5 +294,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>
