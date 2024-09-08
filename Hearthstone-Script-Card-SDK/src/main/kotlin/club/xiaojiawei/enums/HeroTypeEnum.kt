@@ -1,17 +1,11 @@
-package club.xiaojiawei.enums;
-
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.ToString;
+package club.xiaojiawei.enums
 
 /**
  * @author 肖嘉威
  * @date 2022/11/28 20:11
  */
-@Getter
-@ToString
-@AllArgsConstructor
-public enum HeroTypeEnum {
+enum class HeroTypeEnum(val comment: String) {
+
     WARRIOR("战士"),
     MAGE("法师"),
     WARLOCK("术士"),
@@ -22,7 +16,6 @@ public enum HeroTypeEnum {
     HUNTER("猎人"),
     DRUID("德鲁伊"),
     DEMON_HUNTER("恶魔猎手"),
-    DEATH_KNIGHT("死亡骑士")
-    ;
-    private final String comment;
+    DEATH_KNIGHT("死亡骑士");
+
 }

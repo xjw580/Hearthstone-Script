@@ -1,9 +1,7 @@
 package club.xiaojiawei.strategy.mode;
 
 import club.xiaojiawei.bean.GameRect;
-import club.xiaojiawei.enums.ConfigurationEnum;
 import club.xiaojiawei.enums.ModeEnum;
-import club.xiaojiawei.enums.RunModeEnum;
 import club.xiaojiawei.status.DeckStrategyManager;
 import club.xiaojiawei.status.Mode;
 import club.xiaojiawei.strategy.AbstractModeStrategy;
@@ -58,7 +56,7 @@ public class HubModeStrategy extends AbstractModeStrategy<Object> {
 
         if (DeckStrategyManager.CURRENT_DECK_STRATEGY.get() != null) {
             log.info("准备进入指定模式");
-            DeckStrategyManager.CURRENT_DECK_STRATEGY.get().runMode[0].getModeEnum().getModeStrategy().wantEnter();
+            DeckStrategyManager.CURRENT_DECK_STRATEGY.get().getRunModes()[0].getModeEnum().getModeStrategy().wantEnter();
         }
     }
 

@@ -48,11 +48,11 @@ public class GameTurnPhaseStrategy extends AbstractPhaseStrategy implements Game
     protected boolean dealTagChangeThenIsOver(String line, TagChangeEntity tagChangeEntity) {
         if (tagChangeEntity.getTag() == STEP){
             if (Objects.equals(tagChangeEntity.getValue(), MAIN_ACTION.name())){
-                if (War.getMe() == War.getCurrentPlayer()){
+                if (War.INSTANCE.getMe() == War.INSTANCE.getCurrentPlayer()){
                     log.info("我方回合");
                     SystemUtil.updateGameRect();
                     stopThread();
-                    War.setMyTurn(true);
+                    War.INSTANCE.setMyTurn(true);
                     // 异步执行出牌策略，以便监听出牌后的卡牌变动
                     (thread = new LogThread(() -> {
                         // 等待动画结束
@@ -61,11 +61,11 @@ public class GameTurnPhaseStrategy extends AbstractPhaseStrategy implements Game
                     }, "OutCard Thread")).start();
                 }else {
                     log.info("对方回合");
-                    War.setMyTurn(false);
+                    War.INSTANCE.setMyTurn(false);
                     stopThread();
                 }
             }else if (Objects.equals(tagChangeEntity.getValue(), MAIN_END.name())){
-                War.setMyTurn(false);
+                War.INSTANCE.setMyTurn(false);
                 stopThread();
             }
         }

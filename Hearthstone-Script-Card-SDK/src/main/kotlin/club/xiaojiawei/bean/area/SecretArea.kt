@@ -1,7 +1,7 @@
-package club.xiaojiawei.bean.area;
+package club.xiaojiawei.bean.area
 
-import club.xiaojiawei.bean.Card;
-import club.xiaojiawei.bean.Player;
+import club.xiaojiawei.bean.Card
+import club.xiaojiawei.bean.Player
 
 /**
  * 奥秘区
@@ -9,13 +9,8 @@ import club.xiaojiawei.bean.Player;
  * @author 肖嘉威
  * @date 2022/11/28 20:02
  */
-public class SecretArea extends Area {
-    public SecretArea(Player player) {
-        super(5, player);
-    }
-
-    @Override
-    public void addZeroCard(Card card) {
-        add(card);
+class SecretArea(player: Player) : Area(5, player) {
+    override fun addZeroCard(card: Card?) {
+        add(card)
     }
 }

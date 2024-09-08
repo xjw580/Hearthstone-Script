@@ -50,19 +50,19 @@ public class ReplaceCardPhaseStrategy extends AbstractPhaseStrategy implements G
     protected boolean dealTagChangeThenIsOver(String line, TagChangeEntity tagChangeEntity) {
         if (tagChangeEntity.getTag() == MULLIGAN_STATE && Objects.equals(tagChangeEntity.getValue(), INPUT.name())) {
             String gameId = tagChangeEntity.getEntity();
-            if (Objects.equals(War.getMe().getGameId(), gameId) || (War.getRival().getGameId() != null && !Objects.equals(War.getRival().getGameId(), gameId))) {
+            if (Objects.equals(War.INSTANCE.getMe().getGameId(), gameId) || (War.INSTANCE.getRival().getGameId() != null && !Objects.equals(War.INSTANCE.getRival().getGameId(), gameId))) {
                 stopThread();
                 //        执行换牌策略
                 (thread = new LogThread(() -> {
-                    log.info("1号玩家牌库数量：" + War.getPlayer1().getDeckArea().getCards().size());
-                    log.info("2号玩家牌库数量：" + War.getPlayer2().getDeckArea().getCards().size());
+                    log.info("1号玩家牌库数量：" + War.INSTANCE.getPlayer1().getDeckArea().getCards().size());
+                    log.info("2号玩家牌库数量：" + War.INSTANCE.getPlayer2().getDeckArea().getCards().size());
 //                    因为傻逼畸变模式导致开局动画增加，这又加了4.5秒
                     SystemUtil.delay(24_500);
                     deckStrategyActuator.changeCard();
                 }, "Change Card Thread")).start();
             }
         } else if (tagChangeEntity.getTag() == NEXT_STEP && Objects.equals(StepEnum.MAIN_READY.name(), tagChangeEntity.getValue())) {
-            War.setCurrentPhase(WarPhaseEnum.SPECIAL_EFFECT_TRIGGER_PHASE);
+            War.INSTANCE.setCurrentPhase(WarPhaseEnum.SPECIAL_EFFECT_TRIGGER_PHASE);
             return true;
         }
         return false;

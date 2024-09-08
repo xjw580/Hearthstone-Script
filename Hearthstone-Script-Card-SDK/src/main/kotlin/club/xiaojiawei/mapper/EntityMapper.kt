@@ -1,19 +1,21 @@
-package club.xiaojiawei.mapper;
+package club.xiaojiawei.mapper
 
-import club.xiaojiawei.bean.Entity;
-import org.mapstruct.Mapper;
-import org.mapstruct.MappingTarget;
-import org.mapstruct.factory.Mappers;
+import club.xiaojiawei.bean.Entity
+import org.mapstruct.Mapper
+import org.mapstruct.MappingTarget
+import org.mapstruct.factory.Mappers
 
 /**
- * @author 肖嘉威 xjw580@qq.com
- * @date 2024/1/6 18:38
+ * @author 肖嘉威
+ * @date 2024/9/8 19:17
  */
 @Mapper
-public interface EntityMapper {
+interface EntityMapper {
 
-    EntityMapper INSTANCE = Mappers.getMapper(EntityMapper.class);
+    companion object {
+        val INSTANCE: EntityMapper = Mappers.getMapper(EntityMapper::class.java)
+    }
 
-    void update(Entity sourceEntity, @MappingTarget Entity targetEntity);
+    fun update(sourceEntity: Entity?, @MappingTarget targetEntity: Entity?)
 
 }

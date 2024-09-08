@@ -1,17 +1,15 @@
-package club.xiaojiawei.interfaces;
+package club.xiaojiawei.interfaces
 
 /**
  * @author 肖嘉威
  * @date 2024/9/7 13:50
  */
-public interface ModeStrategy<T> {
+interface ModeStrategy<T> {
+    fun wantEnter()
 
-    void wantEnter();
+    fun afterLeave()
 
-    void afterLeave();
+    fun entering()
 
-    void entering();
-
-    void entering(T t);
-
+    fun entering(t: T)
 }

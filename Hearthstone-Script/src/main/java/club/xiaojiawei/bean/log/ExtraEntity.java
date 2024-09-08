@@ -13,6 +13,6 @@ import lombok.ToString;
 @ToString(callSuper = true)
 public class ExtraEntity extends CommonEntity {
 
-    private ExtraCard extraCard = new ExtraCard();
+    public ExtraCard extraCard = new ExtraCard();
 
 }

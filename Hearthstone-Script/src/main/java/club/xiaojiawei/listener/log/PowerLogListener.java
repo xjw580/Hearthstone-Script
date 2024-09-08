@@ -1,6 +1,7 @@
 package club.xiaojiawei.listener.log;
 
 import club.xiaojiawei.data.ScriptStaticData;
+import club.xiaojiawei.enums.WarPhaseEnum;
 import club.xiaojiawei.interfaces.closer.LogListenerCloser;
 import club.xiaojiawei.core.Core;
 import club.xiaojiawei.bean.LogRunnable;
@@ -18,7 +19,6 @@ import java.io.IOException;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-import static club.xiaojiawei.enums.WarPhaseEnum.*;
 
 /**
  * 对局日志监听器
@@ -46,7 +46,7 @@ public class PowerLogListener extends AbstractLogListener implements LogListener
     @Override
     protected void readOldLog() throws IOException {
         accessFile.seek(accessFile.length());
-        War.reset();
+        War.INSTANCE.reset();
     }
 
     @Override
@@ -82,20 +82,20 @@ public class PowerLogListener extends AbstractLogListener implements LogListener
     }
 
     private void resolveLog(String line) {
-        switch (War.getCurrentPhase()){
+        switch (War.INSTANCE.getCurrentPhase()){
             case FILL_DECK_PHASE -> {
-                War.setStartTime(System.currentTimeMillis());
-                FILL_DECK_PHASE.getPhaseStrategy().deal(line);
+                War.INSTANCE.setStartTime(System.currentTimeMillis());
+                WarPhaseEnum.FILL_DECK_PHASE.getPhaseStrategy().deal(line);
             }
             case GAME_OVER_PHASE -> {
-                War.setEndTime(War.getStartTime() == 0 ? 0 : System.currentTimeMillis());
-                GAME_OVER_PHASE.getPhaseStrategy().deal(line);
-                War.reset();
+                War.INSTANCE.setEndTime(War.INSTANCE.getStartTime() == 0 ? 0 : System.currentTimeMillis());
+                WarPhaseEnum.GAME_OVER_PHASE.getPhaseStrategy().deal(line);
+                War.INSTANCE.reset();
             }
-            default -> War.getCurrentPhase().getPhaseStrategy().deal(line);
+            default -> War.INSTANCE.getCurrentPhase().getPhaseStrategy().deal(line);
         }
-        if (War.getCurrentTurnStep() == StepEnum.FINAL_GAMEOVER){
-            War.setCurrentPhase(GAME_OVER_PHASE);
+        if (War.INSTANCE.getCurrentTurnStep() == StepEnum.FINAL_GAMEOVER){
+            War.INSTANCE.setCurrentPhase(WarPhaseEnum.GAME_OVER_PHASE);
         }
     }
 

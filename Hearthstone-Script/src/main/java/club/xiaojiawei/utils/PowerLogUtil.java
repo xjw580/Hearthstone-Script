@@ -1,6 +1,7 @@
 package club.xiaojiawei.utils;
 
 import club.xiaojiawei.bean.Card;
+import club.xiaojiawei.bean.DefaultCardAction;
 import club.xiaojiawei.bean.Player;
 import club.xiaojiawei.bean.area.Area;
 import club.xiaojiawei.bean.log.CommonEntity;
@@ -58,13 +59,13 @@ public class PowerLogUtil {
         //        不退出客户端的情况下断线重连会导致牌库的牌重新在日志中输出
         if (CARD_AREA_MAP.get(extraEntity.getEntityId()) == null){
             Area area;
-            Card card = new Card();
+            Card card = new Card(DefaultCardAction.DEFAULT);
             CardUtil.addAreaListener(card);
             CardUtil.updateCardByExtraEntity(extraEntity, card);
             CardUtil.setCardAction(card);
-            card.cardIdProperty().addListener((observableValue, s, t1) -> CardUtil.setCardAction(card));
+            card.getCardIdProperty().addListener((observableValue, s, t1) -> CardUtil.setCardAction(card));
 
-            area = War.getPlayer(extraEntity.getPlayerId()).getArea(extraEntity.getExtraCard().getZone());
+            area = War.INSTANCE.getPlayer(extraEntity.getPlayerId()).getArea(extraEntity.getExtraCard().getZone());
             area.add(card, extraEntity.getExtraCard().getZonePos());
         }else {
             if (log.isDebugEnabled()){
@@ -83,7 +84,7 @@ public class PowerLogUtil {
     public static ExtraEntity dealChangeEntity(String line, RandomAccessFile accessFile){
         ExtraEntity extraEntity = parseExtraEntity(line, accessFile, CHANGE_ENTITY);
         Card card = CARD_AREA_MAP.get(extraEntity.getEntityId()).findByEntityId(extraEntity.getEntityId());
-        log.info("玩家"+ extraEntity.getPlayerId() + "【" + War.getPlayer(extraEntity.getPlayerId()).getGameId() + "】 的 【entityId:" + extraEntity.getEntityId() + "】 由 【entityName:" + card.getEntityName() + "，cardId:" + card.getCardId() + "】 变形成了 【entityName:，cardId:" + extraEntity.getCardId() + "】");
+        log.info("玩家"+ extraEntity.getPlayerId() + "【" + War.INSTANCE.getPlayer(extraEntity.getPlayerId()).getGameId() + "】 的 【entityId:" + extraEntity.getEntityId() + "】 由 【entityName:" + card.getEntityName() + "，cardId:" + card.getCardId() + "】 变形成了 【entityName:，cardId:" + extraEntity.getCardId() + "】");
         extraEntity.setEntityName("");
         CardUtil.updateCardByExtraEntity(extraEntity, card);
         return extraEntity;
@@ -100,7 +101,7 @@ public class PowerLogUtil {
         if (tagChangeEntity.getTag() != UNKNOWN){
 //        处理复杂
             if (tagChangeEntity.getEntity() == null){
-                Player player = War.getPlayer(tagChangeEntity.getPlayerId());
+                Player player = War.INSTANCE.getPlayer(tagChangeEntity.getPlayerId());
                 Area area = CARD_AREA_MAP.get(tagChangeEntity.getEntityId());
                 if (area == null){
                     return tagChangeEntity;

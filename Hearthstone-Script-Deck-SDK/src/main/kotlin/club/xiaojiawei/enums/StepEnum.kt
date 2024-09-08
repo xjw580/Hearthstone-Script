@@ -1,19 +1,11 @@
-package club.xiaojiawei.enums;
-
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.ToString;
+package club.xiaojiawei.enums
 
 /**
  * 游戏回合阶段
  * @author 肖嘉威
  * @date 2022/11/29 20:28
  */
-@Getter
-@ToString
-@AllArgsConstructor
-@SuppressWarnings("all")
-public enum StepEnum {
+enum class StepEnum(val comment: String) {
 
     BEGIN_MULLIGAN("调度开始"),
     MAIN_READY("主游戏-准备"),
@@ -24,8 +16,6 @@ public enum StepEnum {
     MAIN_CLEANUP("主游戏-清除"),
     MAIN_NEXT("主游戏-下一步骤"),
     FINAL_WRAPUP("最后阶段-收尾"),
-    FINAL_GAMEOVER("最后阶段-游戏结束")
-    ;
-    private final String comment;
+    FINAL_GAMEOVER("最后阶段-游戏结束");
 
 }

@@ -72,8 +72,8 @@ public abstract class AbstractPhaseStrategy implements PhaseStrategy {
                 if (line == null) {
                     mark = accessFile.getFilePointer();
                     SystemUtil.delay(1000);
-                    if (accessFile.length() <= mark && War.getMe() != null){
-                        List<Card> cards = War.getMe().getSetasideArea().getCards();
+                    if (accessFile.length() <= mark && War.INSTANCE.getMe() != null){
+                        List<Card> cards = War.INSTANCE.getMe().getSetasideArea().getCards();
                         int size = cards.size();
                         if (
                                 size >= 3
@@ -83,7 +83,7 @@ public abstract class AbstractPhaseStrategy implements PhaseStrategy {
                         ){
                             log.info("触发发现动作");
                             lastDiscoverEntityId = cards.getLast().getEntityId();
-                            if (War.getCurrentPhase() != REPLACE_CARD_PHASE){
+                            if (War.INSTANCE.getCurrentPhase() != REPLACE_CARD_PHASE){
                                 deckStrategyActuator.discoverChooseCard(cards.get(size - 3), cards.get(size - 2), cards.get(size - 1));
                             }
                         }
@@ -93,7 +93,7 @@ public abstract class AbstractPhaseStrategy implements PhaseStrategy {
                         log.debug(line);
                     }
                     if (line.contains(TAG_CHANGE)){
-                        if (dealTagChangeThenIsOver(line, PowerLogUtil.dealTagChange(line)) || War.getCurrentTurnStep() == StepEnum.FINAL_GAMEOVER){
+                        if (dealTagChangeThenIsOver(line, PowerLogUtil.dealTagChange(line)) || War.INSTANCE.getCurrentTurnStep() == StepEnum.FINAL_GAMEOVER){
                             break;
                         }
                     }else if (line.contains(SHOW_ENTITY)){

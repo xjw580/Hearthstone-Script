@@ -1,127 +1,101 @@
-package club.xiaojiawei.bean.area;
+package club.xiaojiawei.bean.area
 
-import club.xiaojiawei.bean.Card;
-import club.xiaojiawei.bean.Player;
-import club.xiaojiawei.enums.HeroTypeEnum;
-import club.xiaojiawei.enums.PowerTypeEnum;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
-import lombok.extern.slf4j.Slf4j;
-
-import java.util.Objects;
-
-import static club.xiaojiawei.enums.CardTypeEnum.*;
+import club.xiaojiawei.bean.Card
+import club.xiaojiawei.bean.Player
+import club.xiaojiawei.enums.CardTypeEnum
+import club.xiaojiawei.enums.HeroTypeEnum
+import club.xiaojiawei.log
 
 /**
  * 战场
  * @author 肖嘉威
  * @date 2022/11/27 15:02
  */
-@ToString
-@Slf4j
-public class PlayArea extends Area {
+class PlayArea(player: Player) : Area(7, player) {
 
-    @Getter
-    @Setter
-    private HeroTypeEnum heroType;
-    @Getter
-    @Setter
-    private PowerTypeEnum powerType;
-    @Getter
-    @Setter
-    private Card hero;
-    private Card heroHide;
-    @Getter
-    @Setter
-    private Card power;
-    private Card powerHide;
-    @Getter
-    @Setter
-    private Card weapon;
-    private Card weaponHide;
+    @Volatile var heroType: HeroTypeEnum? = null
 
-    public PlayArea(Player player) {
-        super(7, player);
+    @Volatile var hero: Card? = null
+    @Volatile var heroHide: Card? = null
+
+    @Volatile var power: Card? = null
+    @Volatile var powerHide: Card? = null
+
+    @Volatile var weapon: Card? = null
+    @Volatile var weaponHide: Card? = null
+
+    private fun addZoneAndLog(name: String, card: Card) {
+        addZone(card)
+        log.info { getLogText(card, name) }
     }
 
-    private void addZoneAndLog(String name, Card card){
-        addZone(card);
-        log.info(getLogText(card, name));
-    }
-
-    @Override
-    public boolean add(Card card, int pos){
-        boolean result = true;
-        if (card == null){
-            result = false;
-        }else if (card.getCardType() == HERO_POWER){
-            powerHide = power;
-            power = card;
-//            TODO 设置powerType
-            addZoneAndLog("技能", card);
-        }else if (card.getCardType() == HERO){
+    override fun add(card: Card?, pos: Int): Boolean {
+        var result = true
+        if (card == null) {
+            result = false
+        } else if (card.cardType == CardTypeEnum.HERO_POWER) {
+            powerHide = power
+            power = card
+            addZoneAndLog("技能", card)
+        } else if (card.cardType == CardTypeEnum.HERO) {
 //            TODO 设置heroType
-            heroHide = hero;
-            hero = card;
-            addZoneAndLog("英雄", card);
-        }else if (card.getCardType() == WEAPON){
-            weaponHide = weapon;
-            weapon = card;
-            addZoneAndLog("武器", card);
-        }else {
-            result =  super.add(card, pos);
+            heroHide = hero
+            hero = card
+            addZoneAndLog("英雄", card)
+        } else if (card.cardType == CardTypeEnum.WEAPON) {
+            weaponHide = weapon
+            weapon = card
+            addZoneAndLog("武器", card)
+        } else {
+            result = super.add(card, pos)
         }
-        return result;
+        return result
     }
 
-    @Override
-    public Card findByEntityId(String entityId) {
-        Card card = super.findByEntityId(entityId);
-        if (card == null){
-            if (hero != null && Objects.equals(hero.getEntityId(), entityId)){
-                card = hero;
-            }else if (power != null && Objects.equals(power.getEntityId(), entityId)){
-                card = power;
-            }else if (weapon != null && Objects.equals(weapon.getEntityId(), entityId)){
-                card = weapon;
-            }else if (heroHide != null && Objects.equals(heroHide.getEntityId(), entityId)){
-                card = heroHide;
-            }else if (powerHide != null && Objects.equals(powerHide.getEntityId(), entityId)){
-                card = powerHide;
-            }else if (weaponHide != null && Objects.equals(weaponHide.getEntityId(), entityId)){
-                card = weaponHide;
+    override fun findByEntityId(entityId: String): Card? {
+        var card = super.findByEntityId(entityId)
+        if (card == null) {
+            if (hero != null && hero!!.entityId == entityId) {
+                card = hero
+            } else if (power != null && power!!.entityId == entityId) {
+                card = power
+            } else if (weapon != null && weapon!!.entityId == entityId) {
+                card = weapon
+            } else if (heroHide != null && heroHide!!.entityId == entityId) {
+                card = heroHide
+            } else if (powerHide != null && powerHide!!.entityId == entityId) {
+                card = powerHide
+            } else if (weaponHide != null && weaponHide!!.entityId == entityId) {
+                card = weaponHide
             }
         }
-        return card;
+        return card
     }
 
 
-    @Override
-    public Card removeByEntityId(String entityId) {
-        Card card = super.removeByEntityId(entityId);
-        if (card == null){
-            if (hero != null && Objects.equals(hero.getEntityId(), entityId)){
-                card = hero;
-                hero = null;
-            }else if (power != null && Objects.equals(power.getEntityId(), entityId)){
-                card = power;
-                power = null;
-            }else if (weapon != null && Objects.equals(weapon.getEntityId(), entityId)){
-                card = weapon;
-                weapon = null;
-            }else if (heroHide != null && Objects.equals(heroHide.getEntityId(), entityId)){
-                card = heroHide;
-                heroHide = null;
-            }else if (powerHide != null && Objects.equals(powerHide.getEntityId(), entityId)){
-                card = powerHide;
-                powerHide = null;
-            }else if (weaponHide != null && Objects.equals(weaponHide.getEntityId(), entityId)){
-                card = weaponHide;
-                weaponHide = null;
+    override fun removeByEntityId(entityId: String): Card? {
+        var card = super.removeByEntityId(entityId)
+        if (card == null) {
+            if (hero != null && hero!!.entityId == entityId) {
+                card = hero
+                hero = null
+            } else if (power != null && power!!.entityId == entityId) {
+                card = power
+                power = null
+            } else if (weapon != null && weapon!!.entityId == entityId) {
+                card = weapon
+                weapon = null
+            } else if (heroHide != null && heroHide!!.entityId == entityId) {
+                card = heroHide
+                heroHide = null
+            } else if (powerHide != null && powerHide!!.entityId == entityId) {
+                card = powerHide
+                powerHide = null
+            } else if (weaponHide != null && weaponHide!!.entityId == entityId) {
+                card = weaponHide
+                weaponHide = null
             }
         }
-        return card;
+        return card
     }
-
 }

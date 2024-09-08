@@ -53,9 +53,9 @@ public class GameOverPhaseStrategy extends AbstractPhaseStrategy{
 
     private void over(){
         GameUtil.hidePlatformWindow();
-        War.setMyTurn(false);
+        War.INSTANCE.setMyTurn(false);
         SystemUtil.closeGameThread();
-        War.endWar();
+        War.INSTANCE.endWar();
         try {
             SystemUtil.delay(1000);
             RandomAccessFile accessFile = powerLogListener.getAccessFile();

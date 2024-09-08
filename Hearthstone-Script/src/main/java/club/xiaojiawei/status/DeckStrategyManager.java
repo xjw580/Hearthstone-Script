@@ -9,7 +9,6 @@ import club.xiaojiawei.ws.WebSocketServer;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.collections.ObservableSet;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
@@ -50,7 +49,7 @@ public class DeckStrategyManager {
             } else if (!Objects.equals(propertiesUtil.getScriptConfiguration().getProperty(DEFAULT_DECK_STRATEGY.getKey()), t1.id())){
                 propertiesUtil.getScriptConfiguration().setProperty(DEFAULT_DECK_STRATEGY.getKey(), t1.id());
                 propertiesUtil.storeScriptProperties();
-                WebSocketServer.sendAllMessage(WsResult.ofNew(WsResultTypeEnum.MODE, t1.runMode));
+                WebSocketServer.sendAllMessage(WsResult.ofNew(WsResultTypeEnum.MODE, t1.getRunModes()));
                 WebSocketServer.sendAllMessage(WsResult.ofNew(WsResultTypeEnum.DECK, t1.name()));
                 SystemUtil.notice("挂机卡组改为：" + t1.name());
                 log.info("挂机卡组改为：" + t1.name());
@@ -64,7 +63,7 @@ public class DeckStrategyManager {
             DECK_STRATEGIES.clear();
             DECK_STRATEGIES.addAll(PluginManager.DECK_STRATEGY_PLUGINS.stream().flatMap(deckPluginWrapper -> {
                 deckPluginWrapper.enabledProperty().addListener((observableValue, aBoolean, t1) -> runnable.run());
-                return deckPluginWrapper.isEnabled()? deckPluginWrapper.getSpiInstance().stream().filter(deckStrategy -> Strings.isNotBlank(deckStrategy.name()) && Strings.isNotBlank(deckStrategy.id()) && deckStrategy.id().length() == 36 && deckStrategy.runMode != null && deckStrategy.runMode.length > 0) : Stream.empty();
+                return deckPluginWrapper.isEnabled()? deckPluginWrapper.getSpiInstance().stream().filter(deckStrategy -> Strings.isNotBlank(deckStrategy.name()) && Strings.isNotBlank(deckStrategy.id()) && deckStrategy.id().length() == 36 && deckStrategy.getRunModes() != null && deckStrategy.getRunModes().length > 0) : Stream.empty();
             }).toList());
         };
         runnable.run();

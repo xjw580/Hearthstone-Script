@@ -22,6 +22,8 @@ public class ScriptApplication{
     private static List<String> args;
 
     public static void main(String[] args) throws Exception {
+//        Test test = new Test();
+//        test.test();
         ScriptApplication.args = List.of(args);
         Application.launch(UIApplication.class, args);
     }

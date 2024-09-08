@@ -1,143 +1,195 @@
-package club.xiaojiawei.bean;
+package club.xiaojiawei.bean
 
-import club.xiaojiawei.custom.CustomToStringGenerator;
-import club.xiaojiawei.enums.CardRaceEnum;
-import club.xiaojiawei.enums.CardTypeEnum;
-import club.xiaojiawei.mapper.BaseCardMapper;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.extern.slf4j.Slf4j;
+import club.xiaojiawei.custom.CustomToStringGenerator.generateToString
+import club.xiaojiawei.enums.CardRaceEnum
+import club.xiaojiawei.enums.CardTypeEnum
+import club.xiaojiawei.mapper.BaseCardMapper
+import kotlin.concurrent.Volatile
 
 /**
  * @author 肖嘉威 xjw580@qq.com
  * @date 2024/8/29 10:25
  */
-@EqualsAndHashCode(callSuper = true)
-@Data
-@Slf4j
-public class BaseCard extends Entity implements Cloneable{
+open class BaseCard : Entity(), Cloneable {
 
-    public BaseCard() {
-    }
+    @Volatile
+    var cardType: CardTypeEnum = CardTypeEnum.UNKNOWN
 
-    private volatile CardTypeEnum cardType;
-    private volatile int cost;
-    private volatile int atc;
-    private volatile int health;
-    private volatile int armor;
-    private volatile int damage;
+    @Volatile
+    var cost = 0
+
+    @Volatile
+    var atc = 0
+
+    @Volatile
+    var health = 0
+
+    @Volatile
+    var armor = 0
+
+    @Volatile
+    var damage = 0
+
     /**
      * 相邻增益
      */
-    private volatile boolean adjacentBuff;
+    @Volatile
+    var isAdjacentBuff = false
+
     /**
      * 剧毒
      */
-    private volatile boolean poisonous;
+    @Volatile
+    var isPoisonous = false
+
     /**
      * 亡语
      */
-    private volatile boolean deathRattle;
+    @Volatile
+    var isDeathRattle = false
+
     /**
      * 创建者id
      */
-    private volatile String creatorEntityId;
+    @Volatile
+    var creatorEntityId: String = ""
+
     /**
      * 嘲讽
      */
-    private volatile boolean taunt;
+    @Volatile
+    var isTaunt = false
+
     /**
      * 圣盾
      */
-    private volatile boolean divineShield;
+    @Volatile
+    var isDivineShield = false
+
     /**
      * 光环
      */
-    private volatile boolean aura;
+    @Volatile
+    var isAura = false
+
     /**
      * 潜行
      */
-    private volatile boolean stealth;
+    @Volatile
+    var isStealth = false
+
     /**
      * 冰冻
      */
-    private volatile boolean frozen;
+    @Volatile
+    var isFrozen = false
+
     /**
      * 疲劳
      */
-    private volatile boolean exhausted;
+    @Volatile
+    var isExhausted = false
+
     /**
      * 风怒
      */
-    private volatile boolean windFury;
+    @Volatile
+    var isWindFury = false
+
     /**
      * 战吼
      */
-    private volatile boolean battlecry;
+    @Volatile
+    var isBattlecry = false
+
     /**
      * 发现
      */
-    private volatile boolean discover;
+    @Volatile
+    var isDiscover = false
+
     /**
      * 不能被法术指向
      */
-    private volatile boolean cantBeTargetedBySpells;
+    @Volatile
+    var isCantBeTargetedBySpells = false
+
     /**
      * 不能被英雄技能指向
      */
-    private volatile boolean cantBeTargetedByHeroPowers;
+    @Volatile
+    var isCantBeTargetedByHeroPowers = false
+
     /**
      * 刷出时间计数
      */
-    private volatile boolean spawnTimeCount;
+    @Volatile
+    var isSpawnTimeCount = false
+
     /**
      * 休眠
      */
-    private volatile boolean dormantAwakenConditionEnchant;
+    @Volatile
+    var isDormantAwakenConditionEnchant = false
+
     /**
      * 免疫
      */
-    private volatile boolean immune;
+    @Volatile
+    var isImmune = false
+
     /**
      * 种族
      */
-    private volatile CardRaceEnum cardRace;
+    @Volatile
+    var cardRace: CardRaceEnum = CardRaceEnum.UNKNOWN
+
     /**
      * 磁力
      */
-    private volatile boolean modular;
-    private volatile String creator;
+    @Volatile
+    var isModular = false
+
+    @Volatile
+    var creator: String = ""
 
     /**
      * 衍生物
      */
-    private volatile boolean premium;
-    private volatile String controller;
+    @Volatile
+    var isPremium = false
+
+    @Volatile
+    var controller: String = ""
+
     /**
      * 泰坦
      */
-    private volatile boolean titan;
-    private volatile int spellPower;
+    @Volatile
+    var isTitan = false
 
-    private volatile boolean dormant;
+    @Volatile
+    var spellPower = 0
 
-    @Override
-    public BaseCard clone() {
+    @Volatile
+    var isDormant = false
+
+    public override fun clone(): BaseCard {
         try {
-            BaseCard card = (BaseCard) super.clone();
-            BaseCardMapper.INSTANCE.update(this, card);
-            return card;
-        } catch (CloneNotSupportedException e) {
-            throw new RuntimeException(e);
+            val card = super.clone() as BaseCard
+            BaseCardMapper.INSTANCE.update(this, card)
+            return card
+        } catch (e: CloneNotSupportedException) {
+            throw RuntimeException(e)
         }
+
     }
 
-    @Override
-    public String toString() {
-        return CustomToStringGenerator.generateToString(this, true);
+    override fun toString(): String {
+        return generateToString(this, true)
     }
 
-    public String toSimpleString(){
-        return "【entityId:" + getEntityId() + "，entityName:" + getEntityName() + "，cardId:" + getCardId() + "】";
+    fun toSimpleString(): String {
+        return "【entityId:$entityId，entityName:$entityName，cardId:${cardId}】"
     }
 }

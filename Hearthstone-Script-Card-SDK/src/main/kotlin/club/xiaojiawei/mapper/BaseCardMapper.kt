@@ -1,19 +1,22 @@
-package club.xiaojiawei.mapper;
+package club.xiaojiawei.mapper
 
-import club.xiaojiawei.bean.BaseCard;
-import org.mapstruct.Mapper;
-import org.mapstruct.MappingTarget;
-import org.mapstruct.factory.Mappers;
+import club.xiaojiawei.bean.BaseCard
+import org.mapstruct.Mapper
+import org.mapstruct.MappingTarget
+import org.mapstruct.factory.Mappers
 
 /**
- * @author 肖嘉威 xjw580@qq.com
- * @date 2024/1/6 18:38
+ * @author 肖嘉威
+ * @date 2024/9/8 19:13
  */
+//todo 测试mapstruct
 @Mapper
-public interface BaseCardMapper {
+interface BaseCardMapper {
 
-    BaseCardMapper INSTANCE = Mappers.getMapper(BaseCardMapper.class);
+    companion object {
+        val INSTANCE: BaseCardMapper = Mappers.getMapper(BaseCardMapper::class.java)
+    }
 
-    void update(BaseCard sourceCard, @MappingTarget BaseCard targetCard);
+    fun update(sourceCard: BaseCard?, @MappingTarget targetCard: BaseCard?)
 
 }

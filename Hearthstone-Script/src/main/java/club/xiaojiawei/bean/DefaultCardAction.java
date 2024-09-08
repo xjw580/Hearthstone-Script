@@ -16,6 +16,8 @@ import java.util.Objects;
  */
 public class DefaultCardAction extends CardAction {
 
+    public static final CardAction DEFAULT = new DefaultCardAction();
+
     protected GameRect lastRect;
 
     protected GameRect getCardRect(Card card){
@@ -24,25 +26,25 @@ public class DefaultCardAction extends CardAction {
         }
         Area area = card.getArea();
         int index;
-        if (Objects.equals(area, War.getMe().getPlayArea())){
+        if (Objects.equals(area, War.INSTANCE.getMe().getPlayArea())){
             if ((index = area.indexOfCard(card)) >= 0) {
                 return GameUtil.getMyHandCardRect(index, area.cardSize());
             }
-        }else if (Objects.equals(area, War.getRival().getPlayArea())){
+        }else if (Objects.equals(area, War.INSTANCE.getRival().getPlayArea())){
             if ((index = area.indexOfCard(card)) >= 0) {
                 return GameUtil.getRivalPlayCardRect(index, area.cardSize());
             }
-        }else if (Objects.equals(area, War.getMe().getHandArea())){
+        }else if (Objects.equals(area, War.INSTANCE.getMe().getHandArea())){
             if ((index = area.indexOfCard(card)) >= 0) {
                 return GameUtil.getMyHandCardRect(index, area.cardSize());
             }
-        }else if (Objects.equals(card, War.getMe().getPlayArea().getHero())){
+        }else if (Objects.equals(card, War.INSTANCE.getMe().getPlayArea().getHero())){
             return GameUtil.MY_HERO_RECT;
-        }else if (Objects.equals(card, War.getRival().getPlayArea().getHero())){
+        }else if (Objects.equals(card, War.INSTANCE.getRival().getPlayArea().getHero())){
             return GameUtil.RIVAL_HERO_RECT;
-        }else if (Objects.equals(card, War.getMe().getPlayArea().getPower())){
+        }else if (Objects.equals(card, War.INSTANCE.getMe().getPlayArea().getPower())){
             return GameUtil.MY_POWER_RECT;
-        }else if (Objects.equals(card, War.getRival().getPlayArea().getPower())){
+        }else if (Objects.equals(card, War.INSTANCE.getRival().getPlayArea().getPower())){
             return GameUtil.RIVAL_POWER_RECT;
         }
         return GameRect.INVALID;
@@ -55,13 +57,13 @@ public class DefaultCardAction extends CardAction {
 
     @Override
     public boolean execPower() {
-        return execPower(Math.max(War.getMe().getPlayArea().cardSize() - 1, 0));
+        return execPower(Math.max(War.INSTANCE.getMe().getPlayArea().cardSize() - 1, 0));
     }
 
     @Override
     public boolean execPower(Card card) {
         GameRect startRect;
-        if ((startRect = GameUtil.getMyHandCardRect(War.getMe().getHandArea().indexOfCard(getBelongCard()), getBelongCard().getArea().cardSize())).isValid()){
+        if ((startRect = GameUtil.getMyHandCardRect(War.INSTANCE.getMe().getHandArea().indexOfCard(getBelongCard()), getBelongCard().getArea().cardSize())).isValid()){
             if (card.getArea() instanceof PlayArea){
                 GameRect endRect = getCardRect(card);
                 if (endRect.isValid()){
@@ -77,8 +79,8 @@ public class DefaultCardAction extends CardAction {
     @Override
     public boolean execPower(int index) {
         GameRect startRect;
-        if ((startRect = GameUtil.getMyHandCardRect(War.getMe().getHandArea().indexOfCard(getBelongCard()), getBelongCard().getArea().cardSize())).isValid()){
-            GameRect endRect = GameUtil.getMyPlayCardRect(index, War.getMe().getPlayArea().cardSize());
+        if ((startRect = GameUtil.getMyHandCardRect(War.INSTANCE.getMe().getHandArea().indexOfCard(getBelongCard()), getBelongCard().getArea().cardSize())).isValid()){
+            GameRect endRect = GameUtil.getMyPlayCardRect(index, War.INSTANCE.getMe().getPlayArea().cardSize());
             if (endRect.isValid()){
                 startRect.lClickMoveLClick(endRect);
                 lastRect = endRect;
@@ -90,9 +92,9 @@ public class DefaultCardAction extends CardAction {
 
     @Override
     public boolean execAttackMinion(Card card) {
-        GameRect startRect = GameUtil.getMyPlayCardRect(War.getMe().getPlayArea().indexOfCard(getBelongCard()), getBelongCard().getArea().cardSize());
+        GameRect startRect = GameUtil.getMyPlayCardRect(War.INSTANCE.getMe().getPlayArea().indexOfCard(getBelongCard()), getBelongCard().getArea().cardSize());
         if (startRect.isValid()){
-            if (Objects.equals(card.getArea(), War.getRival().getPlayArea())){
+            if (Objects.equals(card.getArea(), War.INSTANCE.getRival().getPlayArea())){
                 GameRect endRect = getCardRect(card);
                 if (endRect.isValid()){
                     startRect.lClickMoveLClick(endRect);
@@ -106,9 +108,9 @@ public class DefaultCardAction extends CardAction {
 
     @Override
     public boolean execAttackHero() {
-        GameRect startRect = GameUtil.getMyPlayCardRect(War.getMe().getPlayArea().indexOfCard(getBelongCard()), getBelongCard().getArea().cardSize());
+        GameRect startRect = GameUtil.getMyPlayCardRect(War.INSTANCE.getMe().getPlayArea().indexOfCard(getBelongCard()), getBelongCard().getArea().cardSize());
         if (startRect.isValid()){
-            if (Objects.equals(getBelongCard().getArea(), War.getMe().getPlayArea())){
+            if (Objects.equals(getBelongCard().getArea(), War.INSTANCE.getMe().getPlayArea())){
                 startRect.lClickMoveLClick(GameUtil.RIVAL_HERO_RECT);
                 lastRect = GameUtil.RIVAL_HERO_RECT;
                 return true;

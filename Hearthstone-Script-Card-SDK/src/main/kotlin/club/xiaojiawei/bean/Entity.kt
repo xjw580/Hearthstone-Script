@@ -1,52 +1,37 @@
-package club.xiaojiawei.bean;
+package club.xiaojiawei.bean
 
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-import java.util.Objects;
+import javafx.beans.property.SimpleStringProperty
+import javafx.beans.property.StringProperty
+import java.util.*
 
 /**
  * @author 肖嘉威
  * @date 2022/11/28 19:18
  */
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-public abstract class Entity {
+abstract class Entity {
 
-    public static final String UNKNOWN_ENTITY_NAME = "UNKNOWN ENTITY";
+    var entityId: String = ""
 
-    private String entityId;
+    var entityName: String = ""
 
-    private String entityName;
+    val cardIdProperty: StringProperty = SimpleStringProperty("")
 
-    private final StringProperty cardId = new SimpleStringProperty();
+    var cardId: String
+        get() = cardIdProperty.get() // getter 方法
+        set(value) = cardIdProperty.set(value) // setter 方法
 
-    public String getCardId() {
-        return cardId.get();
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other == null || javaClass != other.javaClass) return false
+        val entity = other as Entity
+        return entityId == entity.entityId
     }
 
-    public StringProperty cardIdProperty() {
-        return cardId;
+    override fun hashCode(): Int {
+        return Objects.hash(entityId)
     }
 
-    public void setCardId(String cardId) {
-        this.cardId.set(cardId);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Entity entity = (Entity) o;
-        return Objects.equals(entityId, entity.entityId);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(entityId);
+    companion object {
+        const val UNKNOWN_ENTITY_NAME: String = "UNKNOWN ENTITY"
     }
 }

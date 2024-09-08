@@ -16,7 +16,7 @@ import lombok.ToString;
 @ToString(callSuper = true)
 public class ExtraCard{
 
-    private BaseCard card = new BaseCard();
+    public BaseCard card = new BaseCard();
 
     private ZoneEnum zone;
 

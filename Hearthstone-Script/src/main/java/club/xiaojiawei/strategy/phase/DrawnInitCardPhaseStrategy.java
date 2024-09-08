@@ -1,7 +1,6 @@
 package club.xiaojiawei.strategy.phase;
 
 import club.xiaojiawei.bean.Entity;
-import club.xiaojiawei.data.ScriptStaticData;
 import club.xiaojiawei.bean.Card;
 import club.xiaojiawei.bean.log.ExtraEntity;
 import club.xiaojiawei.bean.log.TagChangeEntity;
@@ -37,16 +36,16 @@ public class DrawnInitCardPhaseStrategy extends AbstractPhaseStrategy{
         if (reverse){
             playerId = Objects.equals(playerId, "1")? "2" : "1";
         }
-        if (War.getMe() == null && Strings.isNotBlank(playerId)) {
+        if (War.INSTANCE.getMe() == null && Strings.isNotBlank(playerId)) {
             switch (playerId) {
                 case "1" -> {
-                    War.setMe(War.getPlayer1());
-                    War.setRival(War.getPlayer2());
+                    War.INSTANCE.setMe(War.INSTANCE.getPlayer1());
+                    War.INSTANCE.setRival(War.INSTANCE.getPlayer2());
                     log.info("确定双方玩家号，我方1号，对方2号");
                 }
                 case "2" -> {
-                    War.setMe(War.getPlayer2());
-                    War.setRival(War.getPlayer1());
+                    War.INSTANCE.setMe(War.INSTANCE.getPlayer2());
+                    War.INSTANCE.setRival(War.INSTANCE.getPlayer1());
                     log.info("确定双方玩家号，我方2号，对方1号");
                 }
                 default -> log.warn("不支持的playId");
@@ -59,7 +58,7 @@ public class DrawnInitCardPhaseStrategy extends AbstractPhaseStrategy{
         if (tagChangeEntity.getTag() == ZONE){
             verifyPlayer(tagChangeEntity.getPlayerId(), true);
         }else if (tagChangeEntity.getTag() == NEXT_STEP && Objects.equals(tagChangeEntity.getValue(), BEGIN_MULLIGAN.name())){
-            War.setCurrentPhase(WarPhaseEnum.REPLACE_CARD_PHASE);
+            War.INSTANCE.setCurrentPhase(WarPhaseEnum.REPLACE_CARD_PHASE);
             return true;
         }
         return false;
@@ -85,16 +84,16 @@ public class DrawnInitCardPhaseStrategy extends AbstractPhaseStrategy{
         if (Objects.equals(card.getEntityName(), Entity.UNKNOWN_ENTITY_NAME) || Objects.equals(card.getEntityName(), "幸运币")){
             card.setEntityName("幸运币");
             if (Strings.isNotBlank(card.getCardId())){
-                War.getRival().setGameId(War.getFirstPlayerGameId());
-                log.info("对方游戏id：" + War.getFirstPlayerGameId());
+                War.INSTANCE.getRival().setGameId(War.INSTANCE.getFirstPlayerGameId());
+                log.info("对方游戏id：" + War.INSTANCE.getFirstPlayerGameId());
             }else {
-                War.getMe().setGameId(War.getFirstPlayerGameId());
-                log.info("我方游戏id：" + War.getFirstPlayerGameId());
+                War.INSTANCE.getMe().setGameId(War.INSTANCE.getFirstPlayerGameId());
+                log.info("我方游戏id：" + War.INSTANCE.getFirstPlayerGameId());
             }
-            if (Objects.equals(War.getMe().getGameId(), War.getFirstPlayerGameId()) || (War.getRival().getGameId() != null && !Objects.equals(War.getRival().getGameId(), War.getFirstPlayerGameId()))){
-                War.setCurrentPlayer(War.getMe());
+            if (Objects.equals(War.INSTANCE.getMe().getGameId(), War.INSTANCE.getFirstPlayerGameId()) || (War.INSTANCE.getRival().getGameId() != null && !Objects.equals(War.INSTANCE.getRival().getGameId(), War.INSTANCE.getFirstPlayerGameId()))){
+                War.INSTANCE.setCurrentPlayer(War.INSTANCE.getMe());
             }else {
-                War.setCurrentPlayer(War.getRival());
+                War.INSTANCE.setCurrentPlayer(War.INSTANCE.getRival());
             }
         }
         return false;

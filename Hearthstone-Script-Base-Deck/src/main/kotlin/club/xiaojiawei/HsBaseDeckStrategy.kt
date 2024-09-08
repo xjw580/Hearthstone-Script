@@ -26,15 +26,19 @@ class HsBaseDeckStrategy: DeckStrategy() {
         return "e71234fa-base-deck-97e9-1f4e126cd33b"
     }
 
-    override fun executeChangeCard(cards: HashSet<Card>?) {
-        cards!!.removeIf { card -> card.cost > 2 }
+    override fun executeChangeCard(cards: HashSet<Card>) {
+        cards.removeIf { card -> card.cost > 2 }
     }
 
     override fun executeOutCard() {
-        val me = War.getMe()
+        val me = War.me
+        val rival = War.rival
+        me?:return
+        rival?:return
+        
         val handArea = me.handArea
         val playArea = me.playArea
-        val rivalPlayArea = War.getRival().playArea
+        val rivalPlayArea = rival.playArea
 
         val cards: MutableList<Card> = ArrayList(handArea.cards)
         for (card in cards) {
@@ -63,7 +67,7 @@ class HsBaseDeckStrategy: DeckStrategy() {
         }
     }
 
-    override fun executeDiscoverChooseCard(vararg cards: Card?): Int {
+    override fun executeDiscoverChooseCard(vararg cards: Card): Int {
         return 0
     }
 }

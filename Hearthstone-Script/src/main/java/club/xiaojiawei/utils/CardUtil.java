@@ -24,7 +24,7 @@ public class CardUtil {
 
     public static void addAreaListener(Card card){
         if (card == null) return;
-        card.areaProperty().addListener((observableValue, area1, t1) -> {
+        card.getAreaProperty().addListener((observableValue, area1, t1) -> {
             CARD_AREA_MAP.remove(card.getEntityId());
             CARD_AREA_MAP.put(card.getEntityId(), t1);
         });
@@ -32,16 +32,16 @@ public class CardUtil {
 
     public static void updateCardByExtraEntity(ExtraEntity extraEntity, Card card){
         if (extraEntity == null || card == null) return;
-        BaseCardMapper.INSTANCE.update(extraEntity.getExtraCard().getCard(), card);
-        EntityMapper.INSTANCE.update(extraEntity, card);
+        BaseCardMapper.Companion.getINSTANCE().update(extraEntity.getExtraCard().getCard(), card);
+        EntityMapper.Companion.getINSTANCE().update(extraEntity, card);
     }
 
     public static Card exchangeAreaOfCard(ExtraEntity extraEntity){
         Area sourceArea = CARD_AREA_MAP.get(extraEntity.getEntityId());
         if (sourceArea == null){
-            sourceArea = War.getPlayer(extraEntity.getPlayerId()).getArea(extraEntity.getZone());
+            sourceArea = War.INSTANCE.getPlayer(extraEntity.getPlayerId()).getArea(extraEntity.getZone());
         }
-        Area targetArea = War.getPlayer(extraEntity.getPlayerId()).getArea(extraEntity.getExtraCard().getZone());
+        Area targetArea = War.INSTANCE.getPlayer(extraEntity.getPlayerId()).getArea(extraEntity.getExtraCard().getZone());
         Card card = sourceArea.removeByEntityId(extraEntity.getEntityId());
         updateCardByExtraEntity(extraEntity, card);
         targetArea.add(card, extraEntity.getExtraCard().getZonePos());
@@ -50,7 +50,7 @@ public class CardUtil {
 
     public static void exchangeAreaOfCard(TagChangeEntity tagChangeEntity){
         Area sourceArea = CARD_AREA_MAP.get(tagChangeEntity.getEntityId());
-        Area targetArea = War.getPlayer(tagChangeEntity.getPlayerId()).getArea(ZoneEnum.valueOf(tagChangeEntity.getValue()));
+        Area targetArea = War.INSTANCE.getPlayer(tagChangeEntity.getPlayerId()).getArea(ZoneEnum.valueOf(tagChangeEntity.getValue()));
         targetArea.add(sourceArea.removeByEntityId(tagChangeEntity.getEntityId()), 0);
     }
 
@@ -61,7 +61,7 @@ public class CardUtil {
         Supplier<CardAction> supplier = CardActionManager.CARD_ACTION_MAP.get(card.getCardId());
         CardAction cardAction;
         if (supplier == null){
-            cardAction = card.getAction() == null? new DefaultCardAction() : card.getAction();
+            cardAction = card.getAction() == DefaultCardAction.DEFAULT? new DefaultCardAction() : card.getAction();
         }else {
             cardAction = supplier.get();
         }

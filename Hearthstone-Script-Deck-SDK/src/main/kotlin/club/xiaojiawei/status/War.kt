@@ -1,218 +1,239 @@
-package club.xiaojiawei.status;
+package club.xiaojiawei.status
 
-import club.xiaojiawei.Plugin;
-import club.xiaojiawei.bean.Player;
-import club.xiaojiawei.bean.area.Area;
-import club.xiaojiawei.enums.RunModeEnum;
-import club.xiaojiawei.enums.StepEnum;
-import club.xiaojiawei.enums.WarPhaseEnum;
-import javafx.beans.property.SimpleIntegerProperty;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import static club.xiaojiawei.enums.WarPhaseEnum.FILL_DECK_PHASE;
+import club.xiaojiawei.bean.Player
+import club.xiaojiawei.bean.area.Area
+import club.xiaojiawei.enums.RunModeEnum
+import club.xiaojiawei.enums.StepEnum
+import club.xiaojiawei.enums.WarPhaseEnum
+import club.xiaojiawei.log
+import javafx.beans.property.SimpleIntegerProperty
+import java.util.concurrent.atomic.AtomicInteger
+import java.util.function.Consumer
+import kotlin.concurrent.Volatile
+import kotlin.math.min
 
 /**
  * 游戏对局状态
  * @author 肖嘉威
  * @date 2022/11/25 20:57
  */
-@Slf4j
-public class War {
+object War {
 
-    @Getter
-    private volatile static Player currentPlayer;
-    @Getter
-    private volatile static String firstPlayerGameId;
-    @Getter
-    @Setter
-    private volatile static WarPhaseEnum currentPhase = FILL_DECK_PHASE;
-    @Getter
-    private volatile static StepEnum currentTurnStep;
-    @Getter
-    @Setter
-    private volatile static Player me;
-    @Getter
-    @Setter
-    private volatile static Player rival;
-    @Getter
-    private volatile static Player player1;
-    @Getter
-    private volatile static Player player2;
-    @Getter
-    @Setter
-    private volatile static int warTurn;
-    @Getter
-    @Setter
-    private volatile static String won;
-    @Getter
-    @Setter
-    private volatile static String lost;
-    @Getter
-    @Setter
-    private volatile static String conceded;
-    @Setter
-    @Getter
-    private volatile static long startTime;
-    @Getter
-    @Setter
-    private volatile static long endTime;
-    @Getter
-    @Setter
-    private volatile static boolean myTurn;
+    @Volatile
+    var currentPlayer: Player? = null
+        @Synchronized set(value) {
+            field = value
+            field?.let {
+                log.info { "${it.gameId} 的回合" }
+            }
+        }
 
-    private volatile static RunModeEnum currentRunMode;
+    @Volatile
+    var firstPlayerGameId: String = ""
+        @Synchronized set(value) {
+            field = value
+            log.info { "先手玩家：$value" }
+        }
 
-    private final static List<Runnable> resetCallbackList = new ArrayList<>();
-    private final static List<Runnable> endCallbackList = new ArrayList<>();
+    @Volatile
+    var currentPhase = WarPhaseEnum.FILL_DECK_PHASE
 
-    public final static SimpleIntegerProperty WAR_COUNT = new SimpleIntegerProperty();
-    public final static AtomicInteger WIN_COUNT = new AtomicInteger();
+    @Volatile
+    var currentTurnStep: StepEnum? = null
+        @Synchronized set(value) {
+            field = value
+            field?.let {
+                log.info { it.comment }
+            }
+        }
+
+    @Volatile
+    var me: Player? = null
+
+    @Volatile
+    var rival: Player? = null
+
+    @Volatile
+    var player1: Player? = null
+
+    @Volatile
+    var player2: Player? = null
+
+    @Volatile
+    var warTurn = 0
+
+    @Volatile
+    var won: String = ""
+
+    @Volatile
+    var lost: String = ""
+
+    @Volatile
+    var conceded: String = ""
+
+    @Volatile
+    var startTime: Long = 0
+
+    @Volatile
+    var endTime: Long = 0
+
+    @Volatile
+    var isMyTurn = false
+
+    @Volatile
+    var currentRunMode: RunModeEnum? = null
+
+    private val resetCallbackList: MutableList<Runnable> = ArrayList()
+
+    private val endCallbackList: MutableList<Runnable> = ArrayList()
+
+    @JvmField
+    val WAR_COUNT: SimpleIntegerProperty = SimpleIntegerProperty()
+
+    @JvmField
+    val WIN_COUNT: AtomicInteger = AtomicInteger()
 
     /**
      * 单位：min
      */
-    public final static AtomicInteger GAME_TIME = new AtomicInteger();
-    public final static AtomicInteger EXP = new AtomicInteger();
+    @JvmField
+    val GAME_TIME: AtomicInteger = AtomicInteger()
 
-    public static synchronized void reset(){
-        firstPlayerGameId = null;
-        currentPhase = FILL_DECK_PHASE;
-        currentTurnStep = null;
-        currentPlayer = me = rival = null;
-        player1 = new Player("1");
-        player2 = new Player("2");
-        warTurn = 0;
-        won = lost = conceded = "";
-        startTime = endTime = 0;
-        resetCallbackList.forEach(Runnable::run);
-        log.info("已重置游戏状态");
+    @JvmField
+    val EXP: AtomicInteger = AtomicInteger()
+
+    @Synchronized
+    fun reset() {
+        firstPlayerGameId = ""
+        currentPhase = WarPhaseEnum.FILL_DECK_PHASE
+        currentTurnStep = null
+        rival = null
+        me = rival
+        currentPlayer = me
+        player1 = Player("1")
+        player2 = Player("2")
+        warTurn = 0
+        conceded = ""
+        lost = conceded
+        won = lost
+        endTime = 0
+        startTime = endTime
+        resetCallbackList.forEach(Consumer { obj: Runnable -> obj.run() })
+        log.info { "已重置游戏状态" }
     }
 
-    public static synchronized void addResetCallback(Runnable runnable){
-        resetCallbackList.add(runnable);
+    @Synchronized
+    fun addResetCallback(runnable: Runnable) {
+        resetCallbackList.add(runnable)
     }
 
-    public static synchronized void addEndCallback(Runnable runnable){
-        endCallbackList.add(runnable);
+    @Synchronized
+    fun addEndCallback(runnable: Runnable) {
+        endCallbackList.add(runnable)
     }
 
-    public static synchronized void setCurrentTurnStep(StepEnum currentTurnStep) {
-        log.info((War.currentTurnStep = currentTurnStep).getComment());
+    @Synchronized
+    fun startWar(runModeEnum: RunModeEnum?) {
+        currentRunMode = runModeEnum
     }
 
-    public static synchronized void startWar(RunModeEnum runModeEnum){
-        currentRunMode = runModeEnum;
-    }
-
-    public static synchronized void endWar(){
-        boolean flag = false;
-        if (War.getMe() != null){
-            flag = printResult();
+    @Synchronized
+    fun endWar() {
+        var flag = false
+        if (me != null) {
+            flag = printResult()
         }
-        long time = (endTime - startTime) / 1000 / 60;
-        log.info("本局游戏时长：" + time + "分钟");
-        GAME_TIME.set((int) (time + GAME_TIME.get()));
-        int winExp, lostExp;
-        switch (currentRunMode){
-            case STANDARD, WILD,CLASSIC, TWIST -> {
-                winExp = 8;
-                lostExp = 6;
+        val time = (endTime - startTime) / 1000 / 60
+        log.info("本局游戏时长：" + time + "分钟")
+        GAME_TIME.set((time + GAME_TIME.get()).toInt())
+        val winExp: Int
+        val lostExp: Int
+        when (currentRunMode) {
+            RunModeEnum.STANDARD, RunModeEnum.WILD, RunModeEnum.CLASSIC, RunModeEnum.TWIST -> {
+                winExp = 8
+                lostExp = 6
             }
-            case CASUAL, BACON->{
-                winExp = 6;
-                lostExp = 4;
+
+            RunModeEnum.CASUAL, RunModeEnum.BACON -> {
+                winExp = 6
+                lostExp = 4
             }
-            default -> {
-                winExp = 0;
-                lostExp = 0;
-                log.warn("未知模式，增加经验值0");
+
+            else -> {
+                winExp = 0
+                lostExp = 0
+                log.warn("未知模式，增加经验值0")
             }
         }
-        long earnExp = Math.min(time, 30) * (flag ? winExp : lostExp);
-        log.info("本局游戏获得经验值：" + earnExp);
-        EXP.set((int) (EXP.get() + earnExp));
-        endCallbackList.forEach(Runnable::run);
-        WAR_COUNT.set(WAR_COUNT.get() + 1);
+        val earnExp = (min(time.toDouble(), 30.0) * (if (flag) winExp else lostExp)).toLong()
+        log.info("本局游戏获得经验值：$earnExp")
+        EXP.set((EXP.get() + earnExp).toInt())
+        endCallbackList.forEach(Consumer { obj: Runnable -> obj.run() })
+        WAR_COUNT.set(WAR_COUNT.get() + 1)
     }
 
-    private static boolean printResult(){
-        boolean flag = false;
-        if (Objects.equals(War.getWon(), War.getMe().getGameId())){
-            War.WIN_COUNT.incrementAndGet();
-            flag = true;
+    private fun printResult(): Boolean {
+        var flag = false
+        if (won == me?.gameId) {
+            WIN_COUNT.incrementAndGet()
+            flag = true
         }
-        log.info("本局游戏胜者：" + won);
-        log.info("本局游戏败者：" + lost);
-        log.info("本局游戏投降者：" + conceded);
-        return flag;
+        log.info("本局游戏胜者：" + won)
+        log.info("本局游戏败者：" + lost)
+        log.info("本局游戏投降者：" + conceded)
+        return flag
     }
 
-    public static synchronized void setFirstPlayerGameId(String firstPlayerGameId) {
-        log.info("先手玩家：" + (War.firstPlayerGameId = firstPlayerGameId));
+    @Synchronized
+    fun getPlayer(playerId: String): Player? {
+        return if (player1!!.playerId == playerId) player1 else player2
     }
 
-    public static synchronized void setCurrentPlayer(Player currentPlayer) {
-        log.info((War.currentPlayer = currentPlayer).getGameId() + " 的回合");
+    @Synchronized
+    fun getReversePlayer(playerId: String): Player? {
+        return if (player1!!.playerId == playerId) player2 else player1
     }
 
-    public static synchronized Player getPlayer(String playerId){
-        return player1.getPlayerId().equals(playerId)? player1 : player2;
-    }
-    public static synchronized Player getReversePlayer(String playerId){
-        return player1.getPlayerId().equals(playerId)? player2 : player1;
-    }
-
-
-    public static synchronized Player getPlayerByArea(Area area){
-        if (area == player1.getPlayArea()
-                || area == player1.getHandArea()
-                || area == player1.getDeckArea()
-                || area == player1.getGraveyardArea()
-                || area == player1.getRemovedfromgameArea()
-                || area == player1.getSecretArea()
-                || area == player1.getSetasideArea()
-        ){
-            return player1;
+    @Synchronized
+    fun getPlayerByArea(area: Area): Player? {
+        if (area === player1!!.playArea || area === player1!!.handArea || area === player1!!.deckArea || area === player1!!.graveyardArea || area === player1!!.removedfromgameArea || area === player1!!.secretArea || area === player1!!.setasideArea
+        ) {
+            return player1
         }
-        return player2;
+        return player2
     }
-    public static synchronized Area getReverseArea(Area area){
-        if (area == player1.getPlayArea()){
-            return player2.getPlayArea();
-        }else if (area == player1.getHandArea()){
-            return player2.getHandArea();
-        }else if (area == player1.getDeckArea()){
-            return player2.getDeckArea();
-        }else if (area == player1.getGraveyardArea()){
-            return player2.getGraveyardArea();
-        }else if (area == player1.getRemovedfromgameArea()){
-            return player2.getRemovedfromgameArea();
-        }else if (area == player1.getSecretArea()){
-            return player2.getSecretArea();
-        }else if (area == player1.getSetasideArea()){
-            return player2.getSetasideArea();
-        }else if (area == player2.getPlayArea()){
-            return player1.getPlayArea();
-        }else if (area == player2.getHandArea()){
-            return player1.getHandArea();
-        }else if (area == player2.getDeckArea()){
-            return player1.getDeckArea();
-        }else if (area == player2.getGraveyardArea()){
-            return player1.getGraveyardArea();
-        }else if (area == player2.getRemovedfromgameArea()){
-            return player1.getRemovedfromgameArea();
-        }else if (area == player2.getSecretArea()){
-            return player1.getSecretArea();
-        }else if (area == player2.getSetasideArea()){
-            return player1.getSetasideArea();
+
+    @Synchronized
+    fun getReverseArea(area: Area): Area? {
+        if (area === player1!!.playArea) {
+            return player2!!.playArea
+        } else if (area === player1!!.handArea) {
+            return player2!!.handArea
+        } else if (area === player1!!.deckArea) {
+            return player2!!.deckArea
+        } else if (area === player1!!.graveyardArea) {
+            return player2!!.graveyardArea
+        } else if (area === player1!!.removedfromgameArea) {
+            return player2!!.removedfromgameArea
+        } else if (area === player1!!.secretArea) {
+            return player2!!.secretArea
+        } else if (area === player1!!.setasideArea) {
+            return player2!!.setasideArea
+        } else if (area === player2!!.playArea) {
+            return player1!!.playArea
+        } else if (area === player2!!.handArea) {
+            return player1!!.handArea
+        } else if (area === player2!!.deckArea) {
+            return player1!!.deckArea
+        } else if (area === player2!!.graveyardArea) {
+            return player1!!.graveyardArea
+        } else if (area === player2!!.removedfromgameArea) {
+            return player1!!.removedfromgameArea
+        } else if (area === player2!!.secretArea) {
+            return player1!!.secretArea
+        } else if (area === player2!!.setasideArea) {
+            return player1!!.setasideArea
         }
-        return null;
+        return null
     }
 }

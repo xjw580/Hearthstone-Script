@@ -1,7 +1,6 @@
 package club.xiaojiawei.strategy.phase;
 
 import club.xiaojiawei.bean.log.TagChangeEntity;
-import club.xiaojiawei.controller.javafx.MainController;
 import club.xiaojiawei.enums.TagEnum;
 import club.xiaojiawei.enums.WarPhaseEnum;
 import club.xiaojiawei.status.DeckStrategyManager;
@@ -25,7 +24,7 @@ public class FillDeckPhaseStrategy extends AbstractPhaseStrategy {
     @Override
     protected boolean dealTagChangeThenIsOver(String line, TagChangeEntity tagChangeEntity) {
         if (tagChangeEntity.getTag() == TagEnum.TURN && Objects.equals(tagChangeEntity.getValue(), "1")){
-            War.setCurrentPhase(WarPhaseEnum.DRAWN_INIT_CARD_PHASE);
+            War.INSTANCE.setCurrentPhase(WarPhaseEnum.DRAWN_INIT_CARD_PHASE);
             return true;
         }
         return false;
@@ -35,7 +34,7 @@ public class FillDeckPhaseStrategy extends AbstractPhaseStrategy {
     protected boolean dealOtherThenIsOver(String line) {
         if (line.contains("CREATE_GAME")){
             deckStrategyActuator.setDeckStrategy(DeckStrategyManager.CURRENT_DECK_STRATEGY.get());
-            War.startWar(DeckStrategyManager.CURRENT_DECK_STRATEGY.get().runMode[0]);
+            War.INSTANCE.startWar(DeckStrategyManager.CURRENT_DECK_STRATEGY.get().getRunModes()[0]);
         }
         return super.dealOtherThenIsOver(line);
     }

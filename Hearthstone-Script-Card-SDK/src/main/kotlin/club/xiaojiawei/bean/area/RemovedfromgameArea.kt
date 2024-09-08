@@ -1,7 +1,7 @@
-package club.xiaojiawei.bean.area;
+package club.xiaojiawei.bean.area
 
-import club.xiaojiawei.bean.Card;
-import club.xiaojiawei.bean.Player;
+import club.xiaojiawei.bean.Card
+import club.xiaojiawei.bean.Player
 
 /**
  * 移除区
@@ -9,15 +9,8 @@ import club.xiaojiawei.bean.Player;
  * @author 肖嘉威
  * @date 2022/12/3 21:37
  */
-public class RemovedfromgameArea extends Area {
-
-    public RemovedfromgameArea(Player player) {
-        super(Integer.MAX_VALUE, player);
+class RemovedfromgameArea(player: Player) : Area(Int.MAX_VALUE, player) {
+    override fun addZeroCard(card: Card?) {
+        add(card)
     }
-
-    @Override
-    protected void addZeroCard(Card card) {
-        add(card);
-    }
-
 }

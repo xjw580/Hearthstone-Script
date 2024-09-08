@@ -36,7 +36,7 @@ public enum TagEnum {
             null),
     STEP("步骤",
             (card, tagChangeEntity, player, area) -> {
-                War.setCurrentTurnStep(StepEnum.valueOf(tagChangeEntity.getValue()));
+                War.INSTANCE.setCurrentTurnStep(StepEnum.valueOf(tagChangeEntity.getValue()));
             },
             null),
     NEXT_STEP("下一步骤",
@@ -48,29 +48,29 @@ public enum TagEnum {
      */
     RESOURCES("水晶数",
             (card, tagChangeEntity, player, area) -> {
-                if (War.getCurrentPlayer() != null){
-                    War.getCurrentPlayer().setResources(Integer.parseInt(tagChangeEntity.getValue()));
+                if (War.INSTANCE.getCurrentPlayer() != null){
+                    War.INSTANCE.getCurrentPlayer().setResources(Integer.parseInt(tagChangeEntity.getValue()));
                 }
             },
             null),
     RESOURCES_USED("已使用水晶数",
             (card, tagChangeEntity, player, area) -> {
-                if (War.getCurrentPlayer() != null){
-                    War.getCurrentPlayer().setResourcesUsed(Integer.parseInt(tagChangeEntity.getValue()));
+                if (War.INSTANCE.getCurrentPlayer() != null){
+                    War.INSTANCE.getCurrentPlayer().setResourcesUsed(Integer.parseInt(tagChangeEntity.getValue()));
                 }
             },
             null),
     TEMP_RESOURCES("临时水晶数",
             (card, tagChangeEntity, player, area) -> {
-                if (War.getCurrentPlayer() != null){
-                    War.getCurrentPlayer().setTempResources(Integer.parseInt(tagChangeEntity.getValue()));
+                if (War.INSTANCE.getCurrentPlayer() != null){
+                    War.INSTANCE.getCurrentPlayer().setTempResources(Integer.parseInt(tagChangeEntity.getValue()));
                 }
             },
             null),
 //    设置游戏id
     CURRENT_PLAYER("当前玩家",
             (card, tagChangeEntity, player, area) -> {
-                if (War.getMe() != null){
+                if (War.INSTANCE.getMe() != null){
                     String gameId = tagChangeEntity.getEntity();
                     if (isTrue(tagChangeEntity.getValue())){
 //                        匹配战网id后缀正则
@@ -78,15 +78,15 @@ public enum TagEnum {
                             log.warn("非正常游戏id：" + gameId);
                         }
 //                        是我
-                        if (Objects.equals(War.getMe().getGameId(), gameId) || (War.getRival().getGameId() != null && !Objects.equals(War.getRival().getGameId(), gameId))){
-                            War.setCurrentPlayer(War.getMe());
-                            War.getMe().resetResources();
-                            War.getMe().setGameId(gameId);
+                        if (Objects.equals(War.INSTANCE.getMe().getGameId(), gameId) || (War.INSTANCE.getRival().getGameId() != null && !Objects.equals(War.INSTANCE.getRival().getGameId(), gameId))){
+                            War.INSTANCE.setCurrentPlayer(War.INSTANCE.getMe());
+                            War.INSTANCE.getMe().resetResources();
+                            War.INSTANCE.getMe().setGameId(gameId);
                         }else {
 //                        是对手
-                            War.setCurrentPlayer(War.getRival());
-                            War.getMe().resetResources();
-                            War.getRival().setGameId(gameId);
+                            War.INSTANCE.setCurrentPlayer(War.INSTANCE.getRival());
+                            War.INSTANCE.getMe().resetResources();
+                            War.INSTANCE.getRival().setGameId(gameId);
                         }
                     }
                 }
@@ -95,7 +95,7 @@ public enum TagEnum {
     FIRST_PLAYER("先手玩家",
             (card, tagChangeEntity, player, area) -> {
                 String gameId = tagChangeEntity.getEntity();
-                War.setFirstPlayerGameId(gameId);
+                War.INSTANCE.setFirstPlayerGameId(gameId);
             },
             null),
     CARDTYPE("卡牌类型",
@@ -123,18 +123,18 @@ public enum TagEnum {
             (card, tagChangeEntity, player, area) -> {
                 String gameId = tagChangeEntity.getEntity();
                 if (Objects.equals(tagChangeEntity.getValue(), WON)){
-                    War.setWon(gameId);
+                    War.INSTANCE.setWon(gameId);
                 }else if (Objects.equals(tagChangeEntity.getValue(), LOST)){
-                    War.setLost(gameId);
+                    War.INSTANCE.setLost(gameId);
                 }else if (Objects.equals(tagChangeEntity.getValue(), CONCEDED)){
-                    War.setConceded(gameId);
+                    War.INSTANCE.setConceded(gameId);
                 }
             },
             null),
     TIMEOUT("剩余时间",
             (card, tagChangeEntity, player, area) -> {
-                if (War.getCurrentPlayer() != null){
-                    War.getCurrentPlayer().setTimeOut(Integer.parseInt(tagChangeEntity.getValue()));
+                if (War.INSTANCE.getCurrentPlayer() != null){
+                    War.INSTANCE.getCurrentPlayer().setTimeOut(Integer.parseInt(tagChangeEntity.getValue()));
                 }
             },
             null),
@@ -142,9 +142,9 @@ public enum TagEnum {
     TURN("自己的回合数",
             (card, tagChangeEntity, player, area) -> {
                 if (Objects.equals(tagChangeEntity.getEntity(), "GameEntity")){
-                    War.setWarTurn(Integer.parseInt(tagChangeEntity.getValue()));
-                }else if (War.getCurrentPlayer() != null){
-                    War.getCurrentPlayer().setTurn(Integer.parseInt(tagChangeEntity.getValue()));
+                    War.INSTANCE.setWarTurn(Integer.parseInt(tagChangeEntity.getValue()));
+                }else if (War.INSTANCE.getCurrentPlayer() != null){
+                    War.INSTANCE.getCurrentPlayer().setTurn(Integer.parseInt(tagChangeEntity.getValue()));
                 }
             },
             null),
@@ -162,10 +162,10 @@ public enum TagEnum {
     MAX_SLOTS_PER_PLAYER_OVERRIDE("最大槽位",
             (card, tagChangeEntity, player, area) -> {
                 PlayArea playArea;
-                if (Objects.equals(tagChangeEntity.getEntity(), War.getMe().getGameId())){
-                    playArea = War.getMe().getPlayArea();
+                if (Objects.equals(tagChangeEntity.getEntity(), War.INSTANCE.getMe().getGameId())){
+                    playArea = War.INSTANCE.getMe().getPlayArea();
                 }else {
-                    playArea = War.getRival().getPlayArea();
+                    playArea = War.INSTANCE.getRival().getPlayArea();
                 }
                 if (Objects.equals(tagChangeEntity.getValue(), "1")){
                     playArea.setOldMaxSize(playArea.getMaxSize());
@@ -377,7 +377,7 @@ public enum TagEnum {
             (card, tagChangeEntity, player, area) -> {
                 card.setController(tagChangeEntity.getValue());
                 card = area.removeByEntityId(tagChangeEntity.getEntityId());
-                Area reverseArea = War.getReverseArea(area);
+                Area reverseArea = War.INSTANCE.getReverseArea(area);
                 reverseArea.add(card, 0);
                 log(player, card, "控制者", tagChangeEntity.getValue());
             },

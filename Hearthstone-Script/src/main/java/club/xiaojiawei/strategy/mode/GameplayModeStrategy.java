@@ -1,6 +1,5 @@
 package club.xiaojiawei.strategy.mode;
 
-import club.xiaojiawei.bean.GameRect;
 import club.xiaojiawei.enums.ModeEnum;
 import club.xiaojiawei.status.Mode;
 import club.xiaojiawei.strategy.AbstractModeStrategy;

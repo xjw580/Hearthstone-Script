@@ -52,7 +52,6 @@ import java.util.*;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -307,7 +306,7 @@ public class MainController implements Initializable {
         });
         runModeMap = new HashMap<>();
         for (DeckStrategy deckStrategy : DeckStrategyManager.DECK_STRATEGIES) {
-            for (RunModeEnum runModeEnum : deckStrategy.runMode) {
+            for (RunModeEnum runModeEnum : deckStrategy.getRunModes()) {
                 List<DeckStrategy> strategies = runModeMap.getOrDefault(runModeEnum, new ArrayList<>());
                 strategies.add(deckStrategy);
                 runModeMap.put(runModeEnum, strategies);
@@ -325,11 +324,11 @@ public class MainController implements Initializable {
         deckBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
 //                将卡组策略的第一个运行模式改为当前运行模式
-                for (int i = 0; i < newValue.runMode.length; i++) {
-                    RunModeEnum runModeEnum = newValue.runMode[i];
+                for (int i = 0; i < newValue.getRunModes().length; i++) {
+                    RunModeEnum runModeEnum = newValue.getRunModes()[i];
                     if (Objects.equals(runModeEnum, runModeBox.getValue())) {
-                        newValue.runMode[i] = newValue.runMode[0];
-                        newValue.runMode[0] = runModeEnum;
+                        newValue.getRunModes()[i] = newValue.getRunModes()[0];
+                        newValue.getRunModes()[0] = runModeEnum;
                         break;
                     }
                 }
@@ -338,14 +337,14 @@ public class MainController implements Initializable {
         });
 
         Optional<DeckStrategy> defaultDeck = DeckStrategyManager.DECK_STRATEGIES.stream().filter(deckStrategy -> Objects.equals(scriptConfiguration.getProperty(DEFAULT_DECK_STRATEGY.getKey()), deckStrategy.id())).findFirst();
-        if (defaultDeck.isPresent() && defaultDeck.get().runMode != null) {
-            runModeBox.setValue(defaultDeck.get().runMode[0]);
+        if (defaultDeck.isPresent() && defaultDeck.get().getRunModes() != null) {
+            runModeBox.setValue(defaultDeck.get().getRunModes()[0]);
             deckBox.setValue(defaultDeck.get());
         }
 
         DeckStrategyManager.CURRENT_DECK_STRATEGY.addListener((observableValue, deck, t1) -> {
-            if (t1 != null && t1.runMode != null){
-                runModeBox.setValue(t1.runMode[0]);
+            if (t1 != null && t1.getRunModes() != null){
+                runModeBox.setValue(t1.getRunModes()[0]);
                 deckBox.setValue(t1);
             }
         });

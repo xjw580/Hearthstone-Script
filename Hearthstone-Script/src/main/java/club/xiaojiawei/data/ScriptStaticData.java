@@ -134,7 +134,7 @@ public class ScriptStaticData {
     public static final Map<String, CardTypeEnum> CARD_TYPE_MAP;
 
     static {
-        War.addResetCallback(CARD_AREA_MAP::clear);
+        War.INSTANCE.addResetCallback(CARD_AREA_MAP::clear);
         try {
             ROBOT = new Robot();
         } catch (AWTException e) {

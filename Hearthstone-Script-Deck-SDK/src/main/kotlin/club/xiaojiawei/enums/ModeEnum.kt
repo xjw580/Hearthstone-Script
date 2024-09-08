@@ -1,17 +1,15 @@
-package club.xiaojiawei.enums;
+package club.xiaojiawei.enums
 
-import club.xiaojiawei.interfaces.ModeStrategy;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import club.xiaojiawei.interfaces.ModeStrategy
+import lombok.Getter
+import lombok.Setter
+import lombok.ToString
 
 /**
  * @author 肖嘉威
  * @date 2022/11/25 0:10
  */
-@Getter
-@ToString
-public enum ModeEnum {
+enum class ModeEnum(val comment: String, modeStrategyClassName: String) {
 
     STARTUP("准备界面", "StartupModeStrategy"),
     LOGIN("登录界面", "LoginModeStrategy"),
@@ -28,17 +26,10 @@ public enum ModeEnum {
     DRAFT("竞技场界面", "DraftModeStrategy"),
     PVP_DUNGEON_RUN("对决界面", "PvpDungeonRunModeStrategy"),
     FRIENDLY("友谊赛界面", "FriendlyModeStrategy"),
-    TAVERN_BRAWL("乱斗界面", "TavernBrawlModeStrategy")
-    ;
-    private static final String PACKAGE_NAME = "club.xiaojiawei.strategy.mode";
-    private final String comment;
-    private final String modeStrategyClassName;
-    @Setter
-    private ModeStrategy<Object> modeStrategy;
+    TAVERN_BRAWL("乱斗界面", "TavernBrawlModeStrategy");
 
-    ModeEnum(String comment, String modeStrategyClassName) {
-        this.comment = comment;
-        this.modeStrategyClassName = PACKAGE_NAME + "." + modeStrategyClassName;
-    }
+    val modeStrategyClassName: String = "club.xiaojiawei.strategy.mode.$modeStrategyClassName"
+
+    var modeStrategy: ModeStrategy<Any>? = null
 
 }

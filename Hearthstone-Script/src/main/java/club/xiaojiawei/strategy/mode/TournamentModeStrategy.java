@@ -23,7 +23,6 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
-import java.util.Properties;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
@@ -42,7 +41,7 @@ public class TournamentModeStrategy extends AbstractModeStrategy<Object> impleme
     public static final GameRect START_RECT = new GameRect(0.2586D, 0.3459D, 0.2706D, 0.3794D);
 
     //    TODO ADD
-    public static final GameRect ERROR_RECT = new GameRect(0.2586D, 0.3459D, 0.2706D, 0.3794D);
+    public static final GameRect ERROR_RECT = new GameRect(-0.0251D, 0.0530D, 0.3203D, 0.3802D);
 
     public static final GameRect CHANGE_MODE_RECT = new GameRect(0.2868D, 0.3256D, -0.4672D, -0.4279D);
 
@@ -60,8 +59,6 @@ public class TournamentModeStrategy extends AbstractModeStrategy<Object> impleme
 
     public static final GameRect CANCEL_RECT = new GameRect(-0.0251D, 0.0530D, 0.3203D, 0.3802D);
 
-    @Resource
-    private Properties scriptConfiguration;
     @Resource
     private PowerLogListener powerLogListener;
     @Resource
@@ -104,7 +101,7 @@ public class TournamentModeStrategy extends AbstractModeStrategy<Object> impleme
 
             DeckStrategy deckStrategy = DeckStrategyManager.CURRENT_DECK_STRATEGY.get();
             RunModeEnum runModeEnum;
-            if (deckStrategy != null && ((runModeEnum = deckStrategy.runMode[0]) == RunModeEnum.CASUAL || runModeEnum == RunModeEnum.CLASSIC || runModeEnum == RunModeEnum.WILD || runModeEnum == RunModeEnum.STANDARD) && runModeEnum.isEnable()){
+            if (deckStrategy != null && ((runModeEnum = deckStrategy.getRunModes()[0]) == RunModeEnum.CASUAL || runModeEnum == RunModeEnum.CLASSIC || runModeEnum == RunModeEnum.WILD || runModeEnum == RunModeEnum.STANDARD) && runModeEnum.isEnable()){
                 if (!(checkPowerLogSize())){
                     return;
                 }
@@ -203,8 +200,11 @@ public class TournamentModeStrategy extends AbstractModeStrategy<Object> impleme
      * 生成匹配失败时兜底的定时器
      */
     private void generateTimer(){
+        if (errorScheduledFuture != null && !errorScheduledFuture.isDone()){
+            errorScheduledFuture.cancel(true);
+        }
         errorScheduledFuture = extraThreadPool.schedule(new LogRunnable(() -> {
-            if (isPause.get().get()){
+            if (isPause.get().get() || Thread.currentThread().isInterrupted()){
                 errorScheduledFuture.cancel(true);
             }else {
                 log.info("匹配失败，再次匹配中");
@@ -218,7 +218,7 @@ public class TournamentModeStrategy extends AbstractModeStrategy<Object> impleme
                 GameUtil.reconnect();
                 afterEnter(null);
             }
-        }), 60, TimeUnit.SECONDS);
+        }), 90, TimeUnit.SECONDS);
     }
 
     @Override

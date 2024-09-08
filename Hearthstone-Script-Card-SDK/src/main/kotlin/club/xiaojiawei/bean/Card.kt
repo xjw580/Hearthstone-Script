@@ -1,37 +1,23 @@
-package club.xiaojiawei.bean;
+package club.xiaojiawei.bean
 
-import club.xiaojiawei.CardAction;
-import club.xiaojiawei.bean.area.Area;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.extern.slf4j.Slf4j;
-
+import club.xiaojiawei.CardAction
+import club.xiaojiawei.bean.area.Area
+import javafx.beans.property.ObjectProperty
+import javafx.beans.property.SimpleObjectProperty
+import javafx.beans.property.SimpleStringProperty
+import javafx.beans.property.StringProperty
 
 /**
  * @author 肖嘉威
  * @date 2022/11/27 14:56
  */
-@EqualsAndHashCode(callSuper = true)
-@Data
-@Slf4j
-public class Card extends BaseCard{
+class Card(var action: CardAction) : BaseCard() {
 
-    private CardAction action;
+    val areaProperty: ObjectProperty<Area?> = SimpleObjectProperty()
 
-    private final ObjectProperty<Area> area = new SimpleObjectProperty<>();
-
-    public Area getArea() {
-        return area.get();
-    }
-
-    public ObjectProperty<Area> areaProperty() {
-        return area;
-    }
-
-    public void setArea(Area area) {
-        this.area.set(area);
-    }
-
+    var area: Area?
+        get() = areaProperty.get()
+        set(value) {
+            areaProperty.set(value)
+        }
 }
