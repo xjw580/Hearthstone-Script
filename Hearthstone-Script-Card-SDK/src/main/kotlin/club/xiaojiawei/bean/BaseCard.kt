@@ -178,6 +178,7 @@ open class BaseCard : Entity(), Cloneable {
         try {
             val card = super.clone() as BaseCard
             BaseCardMapper.INSTANCE.update(this, card)
+
             return card
         } catch (e: CloneNotSupportedException) {
             throw RuntimeException(e)

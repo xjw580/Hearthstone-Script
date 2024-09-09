@@ -9,7 +9,6 @@ import org.mapstruct.factory.Mappers
  * @author 肖嘉威
  * @date 2024/9/8 19:13
  */
-//todo 测试mapstruct
 @Mapper
 interface BaseCardMapper {
 

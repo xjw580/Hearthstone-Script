@@ -14,8 +14,8 @@ class Player(val playerId: String) : Entity() {
     @Volatile
     var gameId: String = ""
     set(value) {
-        log.info { "playerId:$playerId,gameId:$gameId" }
         field = value
+        log.info { "playerId:$playerId,gameId:$gameId" }
     }
 
     val handArea = HandArea(this)

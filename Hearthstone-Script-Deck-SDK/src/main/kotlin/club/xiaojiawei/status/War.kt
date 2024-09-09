@@ -32,7 +32,9 @@ object War {
     var firstPlayerGameId: String = ""
         @Synchronized set(value) {
             field = value
-            log.info { "先手玩家：$value" }
+            if (value.isNotEmpty()) {
+                log.info { "先手玩家：$value" }
+            }
         }
 
     @Volatile
@@ -144,7 +146,7 @@ object War {
             flag = printResult()
         }
         val time = (endTime - startTime) / 1000 / 60
-        log.info("本局游戏时长：" + time + "分钟")
+        log.info{"本局游戏时长：${time}分钟"}
         GAME_TIME.set((time + GAME_TIME.get()).toInt())
         val winExp: Int
         val lostExp: Int
@@ -162,11 +164,11 @@ object War {
             else -> {
                 winExp = 0
                 lostExp = 0
-                log.warn("未知模式，增加经验值0")
+                log.info{"未知模式，增加经验值0"}
             }
         }
         val earnExp = (min(time.toDouble(), 30.0) * (if (flag) winExp else lostExp)).toLong()
-        log.info("本局游戏获得经验值：$earnExp")
+        log.info { "本局游戏获得经验值：$earnExp" }
         EXP.set((EXP.get() + earnExp).toInt())
         endCallbackList.forEach(Consumer { obj: Runnable -> obj.run() })
         WAR_COUNT.set(WAR_COUNT.get() + 1)
@@ -178,9 +180,9 @@ object War {
             WIN_COUNT.incrementAndGet()
             flag = true
         }
-        log.info("本局游戏胜者：" + won)
-        log.info("本局游戏败者：" + lost)
-        log.info("本局游戏投降者：" + conceded)
+        log.info{ "本局游戏胜者：$won" }
+        log.info{ "本局游戏败者：$lost" }
+        log.info{ "本局游戏投降者：$conceded" }
         return flag
     }
 

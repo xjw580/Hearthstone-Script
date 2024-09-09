@@ -1,15 +1,13 @@
 package club.xiaojiawei.enums
 
 import club.xiaojiawei.interfaces.PhaseStrategy
-import lombok.Getter
-import lombok.Setter
-import lombok.ToString
 
 /**
  * @author 肖嘉威
  * @date 2022/11/26 17:18
  */
 enum class WarPhaseEnum(val comment: String, phaseStrategyClassName: String) {
+
     FILL_DECK_PHASE("填充牌库阶段", "FillDeckPhaseStrategy"),
     DRAWN_INIT_CARD_PHASE("摸起始手牌阶段", "DrawnInitCardPhaseStrategy"),
     REPLACE_CARD_PHASE("更换手牌阶段", "ReplaceCardPhaseStrategy"),

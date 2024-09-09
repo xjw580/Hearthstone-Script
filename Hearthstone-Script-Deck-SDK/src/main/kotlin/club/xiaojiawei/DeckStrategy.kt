@@ -10,7 +10,7 @@ import java.util.*
  */
 abstract class DeckStrategy {
 
-    val runModes: Array<RunModeEnum> by lazy {getRunMode()}
+    val runModes: Array<RunModeEnum> by lazy { getRunMode() }
 
     /**
      * 卡组名，将会显示在界面中
@@ -35,7 +35,6 @@ abstract class DeckStrategy {
      * @return 非空，长度必需为36
      */
     abstract fun id(): String
-
 
     /**
      * 执行换牌策略

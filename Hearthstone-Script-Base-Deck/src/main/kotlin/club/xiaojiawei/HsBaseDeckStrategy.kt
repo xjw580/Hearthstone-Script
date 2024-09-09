@@ -9,7 +9,8 @@ import club.xiaojiawei.status.War
  * @author 肖嘉威
  * @date 2024/9/8 14:56
  */
-class HsBaseDeckStrategy: DeckStrategy() {
+class HsBaseDeckStrategy : DeckStrategy() {
+
     override fun name(): String {
         return "基础策略"
     }
@@ -33,9 +34,9 @@ class HsBaseDeckStrategy: DeckStrategy() {
     override fun executeOutCard() {
         val me = War.me
         val rival = War.rival
-        me?:return
-        rival?:return
-        
+        me ?: return
+        rival ?: return
+
         val handArea = me.handArea
         val playArea = me.playArea
         val rivalPlayArea = rival.playArea

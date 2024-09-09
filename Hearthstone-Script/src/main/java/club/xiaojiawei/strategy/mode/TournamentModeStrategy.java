@@ -55,6 +55,11 @@ public class TournamentModeStrategy extends AbstractModeStrategy<Object> impleme
 
     public static final GameRect FIRST_DECK_RECT = new GameRect(-0.4108D, -0.2487D, -0.2811D, -0.1894D);
 
+    /**
+     * 顶栏有限时借用套牌时使用
+     */
+    public static final GameRect FIRST_DECK_RECT_BACK = new GameRect(-0.4072D, -0.2516D, -0.0696D, 0.0139D);
+
     public static final GameRect BACK_RECT = new GameRect(0.4041D, 0.4575D, 0.4083D, 0.4410D);
 
     public static final GameRect CANCEL_RECT = new GameRect(-0.0251D, 0.0530D, 0.3203D, 0.3802D);
@@ -165,6 +170,8 @@ public class TournamentModeStrategy extends AbstractModeStrategy<Object> impleme
         }
         log.info("选择套牌");
 
+        FIRST_DECK_RECT_BACK.lClick();
+        SystemUtil.delayShort();
         FIRST_DECK_RECT.lClick();
         SystemUtil.delayShort();
         FIRST_DECK_RECT.lClick();

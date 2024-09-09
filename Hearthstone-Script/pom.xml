@@ -31,6 +31,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>club.xiaojiawei</groupId>
             <artifactId>hs-script-base-deck</artifactId>
         </dependency>

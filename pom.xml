@@ -82,12 +82,6 @@
             <version>${kotlin.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>${lombok-version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
             <groupId>org.mapstruct</groupId>
             <artifactId>mapstruct</artifactId>
             <version>${mapstruct-version}</version>
@@ -97,6 +91,7 @@
             <artifactId>slf4j-api</artifactId>
             <version>${slf4j-version}</version>
         </dependency>
+        <!--kt日志封装-->
         <dependency>
             <groupId>io.github.oshai</groupId>
             <artifactId>kotlin-logging-jvm</artifactId>
@@ -112,12 +107,12 @@
                 <version>${hs-script-base-deck-version}</version>
                 <scope>provided</scope>
             </dependency>
-            <!--sdk-->
             <dependency>
                 <groupId>club.xiaojiawei</groupId>
                 <artifactId>hs-script-base</artifactId>
                 <version>${hs-script-base-version}</version>
             </dependency>
+            <!--sdk-->
             <dependency>
                 <groupId>club.xiaojiawei</groupId>
                 <artifactId>hs-script-plugin-sdk</artifactId>
@@ -132,6 +127,13 @@
                 <groupId>club.xiaojiawei</groupId>
                 <artifactId>hs-script-deck-sdk</artifactId>
                 <version>${hs-script-deck-sdk-version}</version>
+            </dependency>
+            <!--set get-->
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>${lombok-version}</version>
+                <scope>provided</scope>
             </dependency>
             <!--javafx-->
             <dependency>
@@ -154,12 +156,6 @@
                 <groupId>com.github.xjw580</groupId>
                 <artifactId>javafx-ui</artifactId>
                 <version>${javafx-ui-version}</version>
-            </dependency>
-            <!--更新bean-->
-            <dependency>
-                <groupId>org.mapstruct</groupId>
-                <artifactId>mapstruct</artifactId>
-                <version>${mapstruct-version}</version>
             </dependency>
             <!-- 监听全局键鼠包 -->
             <dependency>
@@ -185,7 +181,6 @@
                 <artifactId>jna-platform</artifactId>
                 <version>${jna-version}</version>
             </dependency>
-
         </dependencies>
     </dependencyManagement>
 
@@ -244,6 +239,21 @@
                             <goal>test-compile</goal>
                         </goals>
                     </execution>
+                    <execution>
+                        <id>kapt</id>
+                        <goals>
+                            <goal>kapt</goal>
+                        </goals>
+                        <configuration>
+                            <annotationProcessorPaths>
+                                <path>
+                                    <groupId>org.mapstruct</groupId>
+                                    <artifactId>mapstruct-processor</artifactId>
+                                    <version>${mapstruct-version}</version>
+                                </path>
+                            </annotationProcessorPaths>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
 
@@ -292,6 +302,7 @@
                     </annotationProcessorPaths>
                 </configuration>
             </plugin>
+
         </plugins>
     </build>
 </project>

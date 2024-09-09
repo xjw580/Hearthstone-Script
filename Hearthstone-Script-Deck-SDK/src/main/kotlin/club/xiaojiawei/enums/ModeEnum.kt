@@ -1,9 +1,6 @@
 package club.xiaojiawei.enums
 
 import club.xiaojiawei.interfaces.ModeStrategy
-import lombok.Getter
-import lombok.Setter
-import lombok.ToString
 
 /**
  * @author 肖嘉威
