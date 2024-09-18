@@ -21,6 +21,10 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
+import static com.sun.jna.platform.win32.Win32VK.VK_ESCAPE;
+import static com.sun.jna.platform.win32.WinUser.WM_KEYDOWN;
+import static com.sun.jna.platform.win32.WinUser.WM_KEYUP;
+
 /**
  * 游戏工具类
  * @author 肖嘉威
@@ -287,13 +291,15 @@ public class GameUtil implements ModeTaskCloser {
      * 游戏里投降
      */
     public static void surrender(){
-//        todo
         SystemUtil.closeGameThread();
         SystemUtil.delay(10000);
 //        SystemUtil.frontWindow(ScriptStaticData.getGameHWND());
 //        按ESC键弹出投降界面
-        ScriptStaticData.ROBOT.keyPress(27);
-        ScriptStaticData.ROBOT.keyRelease(27);
+//        ScriptStaticData.ROBOT.keyPress(27);
+//        ScriptStaticData.ROBOT.keyRelease(27);
+        int width = ScriptStaticData.GAME_RECT.right - ScriptStaticData.GAME_RECT.left;
+        int height = ScriptStaticData.GAME_RECT.bottom - ScriptStaticData.GAME_RECT.top;
+        GameUtil.leftButtonClick(new Point((int) (width - width * 0.0072992700729927D), (int) (height - height * 0.015625D)));
         SystemUtil.delay(1500);
         SURRENDER_RECT.lClick();
         clickGameEndPageTask();

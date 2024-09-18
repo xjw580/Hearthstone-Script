@@ -5,6 +5,7 @@ import club.xiaojiawei.enums.ModeEnum;
 import club.xiaojiawei.status.DeckStrategyManager;
 import club.xiaojiawei.status.Mode;
 import club.xiaojiawei.strategy.AbstractModeStrategy;
+import club.xiaojiawei.utils.GameUtil;
 import club.xiaojiawei.utils.SystemUtil;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
@@ -24,8 +25,11 @@ public class HubModeStrategy extends AbstractModeStrategy<Object> {
     public static final GameRect TOURNAMENT_MODE_RECT = new GameRect(-0.0790D, 0.0811D, -0.2090D, -0.1737D);
     //    TODO ADD
     public static final GameRect CLOSE_AD1_RECT = new GameRect(-0.0790D, 0.0811D, -0.2090D, -0.1737D);
-    //    TODO ADD
-    public static final GameRect CLOSE_AD2_RECT = new GameRect(-0.0790D, 0.0811D, -0.2090D, -0.1737D);
+
+    public static final GameRect CLOSE_AD2_RECT = new GameRect(-0.0296D, 0.0431D, 0.2502D, 0.2552D);
+//    public static final GameRect RECT = new GameRect(-0.0296D, 0.0431D, 0.2502D, 0.2940D);
+
+
 
     @Resource
     private Properties scriptConfiguration;

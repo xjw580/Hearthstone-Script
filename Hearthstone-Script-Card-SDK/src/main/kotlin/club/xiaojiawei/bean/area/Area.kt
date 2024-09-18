@@ -87,9 +87,9 @@ abstract class Area @JvmOverloads constructor(
         val zoneComment = ZoneEnum.valueOf(className.substring(0, className.lastIndexOf(Area::class.java.simpleName)).uppercase(Locale.getDefault())).comment
 
         return String.format(
-            "向玩家%s【%s】的【%s】%s添加卡牌，entityId:%s，entityName:%s，cardId:%s，size:%d",
+            "向玩家%s%s的【%s】%s添加卡牌，entityId:%s，entityName:%s，cardId:%s，size:%d",
             player.playerId,
-            player.gameId,
+            if (player.gameId.isBlank()) "" else "【${player.gameId}】",
             zoneComment,
             extraMsg,
             card.entityId,

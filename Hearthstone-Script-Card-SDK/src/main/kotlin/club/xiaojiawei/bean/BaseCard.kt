@@ -264,9 +264,9 @@ open class BaseCard : Entity() {
     /**
      * 能不能动
      */
-    fun canMove(): Boolean {
+    fun canAttack(ignoreExhausted: Boolean = false): Boolean {
         return (cardType === CardTypeEnum.MINION || cardType === CardTypeEnum.HERO)
-                && !(isExhausted || isFrozen || isDormantAwakenConditionEnchant || atc <= 0)
+                && !((isExhausted && !ignoreExhausted) || isFrozen || isDormantAwakenConditionEnchant || atc <= 0)
     }
 
     /**

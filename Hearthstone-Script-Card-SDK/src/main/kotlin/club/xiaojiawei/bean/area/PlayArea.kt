@@ -15,10 +15,10 @@ class PlayArea(player: Player) : Area(7, player) {
 
     @Volatile var heroType: HeroTypeEnum? = null
 
-    @Volatile lateinit var hero: Card
+    @Volatile var hero: Card? = null
     @Volatile var heroHide: Card? = null
 
-    @Volatile lateinit var power: Card
+    @Volatile var power: Card? = null
     @Volatile var powerHide: Card? = null
 
     @Volatile var weapon: Card? = null

@@ -2,6 +2,7 @@ package club.xiaojiawei.utils;
 
 import club.xiaojiawei.bean.Card;
 import club.xiaojiawei.bean.DefaultCardAction;
+import club.xiaojiawei.bean.Entity;
 import club.xiaojiawei.bean.Player;
 import club.xiaojiawei.bean.area.Area;
 import club.xiaojiawei.bean.log.CommonEntity;
@@ -18,6 +19,7 @@ import org.apache.logging.log4j.util.Strings;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 
 import static club.xiaojiawei.data.ScriptStaticData.*;
 import static club.xiaojiawei.enums.TagEnum.UNKNOWN;

@@ -20,7 +20,7 @@ abstract class CardAction {
         try {
             Thread.sleep(time.toLong())
         } catch (e: InterruptedException) {
-            log.warn(e) {}
+//            log.warn(e) {}
         }
     }
 

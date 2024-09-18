@@ -47,25 +47,21 @@ class HsBaseDeckStrategy : DeckStrategy() {
                 card.action.power()
             }
         }
+        if (DeckStrategyUtil.cleanTaunt()){
 
-        val rivalPlayCards = ArrayList(rivalPlayArea.cards)
-        cards.clear()
-        cards.addAll(playArea.cards)
-        for (rivalPlayCard in rivalPlayCards) {
-            if (rivalPlayCard.isTaunt && rivalPlayCard.health - rivalPlayCard.damage > 0) {
-                for (card in cards) {
-                    if (!card.isExhausted) {
-                        card.action.attack(rivalPlayCard)
-                    }
+            DeckStrategyUtil.cleanNormal()
+
+            cards.clear()
+            cards.addAll(playArea.cards)
+
+            for (card in cards) {
+                if (!card.isExhausted) {
+                    card.action.attackHero()
                 }
             }
         }
 
-        for (card in cards) {
-            if (!card.isExhausted) {
-                card.action.attackHero()
-            }
-        }
+
     }
 
     override fun executeDiscoverChooseCard(vararg cards: Card): Int {

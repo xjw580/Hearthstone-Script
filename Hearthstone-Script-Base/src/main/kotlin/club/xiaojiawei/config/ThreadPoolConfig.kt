@@ -13,7 +13,7 @@ import java.util.concurrent.atomic.AtomicInteger
  */
 
 val CALC_THREAD_POOL: ThreadPoolExecutor by lazy {
-    ThreadPoolExecutor(4, 10, 60, TimeUnit.SECONDS, ArrayBlockingQueue(1), object : ThreadFactory {
+    ThreadPoolExecutor(8, 12, 60, TimeUnit.SECONDS, ArrayBlockingQueue(1), object : ThreadFactory {
         private val num = AtomicInteger(0)
         override fun newThread(r: Runnable): Thread {
             return LogThread(r, "CalcPool Thread-" + num.getAndIncrement())

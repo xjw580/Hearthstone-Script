@@ -41,8 +41,8 @@ public class ReplaceCardPhaseStrategy extends AbstractPhaseStrategy implements G
                 SystemUtil.delayShortMedium();
                 thread.stop();
             }
-        } catch (Exception e) {
-            log.warn("换牌线程已停止", e);
+        } catch (UnsupportedOperationException e) {
+//            log.warn("换牌线程已停止", e);
         }
     }
 
