@@ -28,6 +28,10 @@
             <groupId>club.xiaojiawei</groupId>
             <artifactId>hs-script-deck-sdk</artifactId>
         </dependency>
+        <dependency>
+            <groupId>club.xiaojiawei</groupId>
+            <artifactId>hs-script-base</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

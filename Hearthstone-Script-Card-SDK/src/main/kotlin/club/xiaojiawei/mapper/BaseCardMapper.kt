@@ -1,6 +1,7 @@
 package club.xiaojiawei.mapper
 
 import club.xiaojiawei.bean.BaseCard
+import club.xiaojiawei.bean.Card
 import org.mapstruct.Mapper
 import org.mapstruct.MappingTarget
 import org.mapstruct.factory.Mappers
@@ -17,5 +18,7 @@ interface BaseCardMapper {
     }
 
     fun update(sourceCard: BaseCard?, @MappingTarget targetCard: BaseCard?)
+
+    fun update(sourceCard: BaseCard?, @MappingTarget targetCard: Card?)
 
 }

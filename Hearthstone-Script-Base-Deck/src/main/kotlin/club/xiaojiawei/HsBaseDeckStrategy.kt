@@ -55,7 +55,7 @@ class HsBaseDeckStrategy : DeckStrategy() {
             if (rivalPlayCard.isTaunt && rivalPlayCard.health - rivalPlayCard.damage > 0) {
                 for (card in cards) {
                     if (!card.isExhausted) {
-                        card.action.attackMinion(rivalPlayCard)
+                        card.action.attack(rivalPlayCard)
                     }
                 }
             }

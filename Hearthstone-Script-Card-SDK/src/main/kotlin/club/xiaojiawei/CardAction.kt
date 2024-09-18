@@ -44,9 +44,9 @@ abstract class CardAction {
         return result
     }
 
-    fun attackMinion(card: Card?): Boolean {
+    fun attack(card: Card?): Boolean {
         return card?.let {
-            val result = execAttackMinion(it)
+            val result = execAttack(it)
             delay()
             result
         }?:false
@@ -73,7 +73,7 @@ abstract class CardAction {
 
     protected abstract fun execPower(index: Int): Boolean
 
-    protected abstract fun execAttackMinion(card: Card): Boolean
+    protected abstract fun execAttack(card: Card): Boolean
 
     protected abstract fun execAttackHero(): Boolean
 

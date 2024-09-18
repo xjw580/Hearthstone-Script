@@ -17,8 +17,8 @@ abstract class Entity {
     val cardIdProperty: StringProperty = SimpleStringProperty("")
 
     var cardId: String
-        get() = cardIdProperty.get() // getter 方法
-        set(value) = cardIdProperty.set(value) // setter 方法
+        get() = cardIdProperty.get()
+        set(value) = cardIdProperty.set(value)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -34,4 +34,9 @@ abstract class Entity {
     companion object {
         const val UNKNOWN_ENTITY_NAME: String = "UNKNOWN ENTITY"
     }
+
+    override fun toString(): String {
+        return "【entityId:$entityId，entityName:$entityName，cardId:${cardId}】"
+    }
+
 }

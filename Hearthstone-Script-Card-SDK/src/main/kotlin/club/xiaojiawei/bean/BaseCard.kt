@@ -3,14 +3,14 @@ package club.xiaojiawei.bean
 import club.xiaojiawei.custom.CustomToStringGenerator.generateToString
 import club.xiaojiawei.enums.CardRaceEnum
 import club.xiaojiawei.enums.CardTypeEnum
-import club.xiaojiawei.mapper.BaseCardMapper
 import kotlin.concurrent.Volatile
 
 /**
  * @author 肖嘉威 xjw580@qq.com
  * @date 2024/8/29 10:25
  */
-open class BaseCard : Entity(), Cloneable {
+@Suppress("unused")
+open class BaseCard : Entity() {
 
     @Volatile
     var cardType: CardTypeEnum = CardTypeEnum.UNKNOWN
@@ -121,13 +121,25 @@ open class BaseCard : Entity(), Cloneable {
     var isCantBeTargetedByHeroPowers = false
 
     /**
+     * 不能被对手指向
+     */
+    @Volatile
+    var isCantBeTargetedByOpponents = false
+
+    /**
+     * 无法被法术和英雄技能指向
+     */
+    @Volatile
+    var isElusive = false
+
+    /**
      * 刷出时间计数
      */
     @Volatile
     var isSpawnTimeCount = false
 
     /**
-     * 休眠
+     * 休眠状态
      */
     @Volatile
     var isDormantAwakenConditionEnchant = false
@@ -174,16 +186,94 @@ open class BaseCard : Entity(), Cloneable {
     @Volatile
     var isDormant = false
 
-    public override fun clone(): BaseCard {
-        try {
-            val card = super.clone() as BaseCard
-            BaseCardMapper.INSTANCE.update(this, card)
+    fun minusHealth(health: Int) {
+        this.health -= health
+    }
 
-            return card
-        } catch (e: CloneNotSupportedException) {
-            throw RuntimeException(e)
-        }
+    /**
+     * 是否包含cardId
+     */
+    fun cardContains(baseCard: BaseCard): Boolean {
+        return cardContains(baseCard.cardId)
+    }
 
+    fun cardContains(cardId: String): Boolean {
+        return this.cardId.contains(cardId)
+    }
+
+    /**
+     * cardId是否相同
+     */
+    fun cardEquals(baseCard: BaseCard): Boolean {
+        return cardEquals(baseCard.cardId)
+    }
+
+    fun cardEquals(cardId: String): Boolean {
+        return this.cardId == cardId
+    }
+
+    /**
+     * 能不能被敌方法术指向
+     */
+    fun canBeTargetedByRivalSpells(): Boolean {
+        return !(isElusive || isCantBeTargetedBySpells || !canBeTargetedByRival())
+    }
+
+    /**
+     * 能不能被我方法术指向
+     */
+    fun canBeTargetedByMySpells(): Boolean {
+        return !(isElusive || isCantBeTargetedBySpells || !canBeTargetedByMe())
+    }
+
+    /**
+     * 能不能被敌方英雄技能指向
+     */
+    fun canBeTargetedByRivalHeroPowers(): Boolean {
+        return canBeTargetedByRivalSpells()
+    }
+
+    /**
+     * 能不能被我方英雄技能指向
+     */
+    fun canBeTargetedByMyHeroPowers(): Boolean {
+        return canBeTargetedByMySpells()
+    }
+
+    /**
+     * 能不能被敌方指向
+     */
+    fun canBeTargetedByRival(): Boolean {
+        return !(isImmune || isStealth || isDormantAwakenConditionEnchant)
+    }
+
+    /**
+     * 能不能被我方指向
+     */
+    fun canBeTargetedByMe(): Boolean {
+        return !(isImmune || isDormantAwakenConditionEnchant)
+    }
+
+    /**
+     * 能不能被攻击
+     */
+    fun canBeAttacked(): Boolean {
+        return (cardType === CardTypeEnum.MINION || cardType === CardTypeEnum.HERO) && canBeTargetedByRival()
+    }
+
+    /**
+     * 能不能动
+     */
+    fun canMove(): Boolean {
+        return (cardType === CardTypeEnum.MINION || cardType === CardTypeEnum.HERO)
+                && !(isExhausted || isFrozen || isDormantAwakenConditionEnchant || atc <= 0)
+    }
+
+    /**
+     * 是不是魔免
+     */
+    fun isImmunityMagic(): Boolean {
+        return (isCantBeTargetedByHeroPowers && isCantBeTargetedBySpells) || isElusive
     }
 
     override fun toString(): String {
@@ -191,6 +281,7 @@ open class BaseCard : Entity(), Cloneable {
     }
 
     fun toSimpleString(): String {
-        return "【entityId:$entityId，entityName:$entityName，cardId:${cardId}】"
+        return super.toString()
     }
+
 }

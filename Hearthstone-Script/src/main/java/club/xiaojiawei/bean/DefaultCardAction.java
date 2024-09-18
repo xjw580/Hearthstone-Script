@@ -91,7 +91,7 @@ public class DefaultCardAction extends CardAction {
     }
 
     @Override
-    public boolean execAttackMinion(Card card) {
+    public boolean execAttack(Card card) {
         GameRect startRect = GameUtil.getMyPlayCardRect(War.INSTANCE.getMe().getPlayArea().indexOfCard(getBelongCard()), getBelongCard().getArea().cardSize());
         if (startRect.isValid()){
             if (Objects.equals(card.getArea(), War.INSTANCE.getRival().getPlayArea())){

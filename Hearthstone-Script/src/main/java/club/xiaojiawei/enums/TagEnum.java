@@ -331,18 +331,34 @@ public enum TagEnum {
             (extraEntity, value) -> {
                 extraEntity.getExtraCard().getCard().setCantBeTargetedByHeroPowers(isTrue(value));
             }),
+    CANT_BE_TARGETED_BY_OPPONENTS("不能被对手指向",
+            (card, tagChangeEntity, player, area) -> {
+                card.setCantBeTargetedByOpponents(isTrue(tagChangeEntity.getValue()));
+                log(player, card, "不能被对手指向", tagChangeEntity.getValue());
+            },
+            (extraEntity, value) -> {
+                extraEntity.getExtraCard().getCard().setCantBeTargetedByOpponents(isTrue(value));
+            }),
     SPAWN_TIME_COUNT("刷出时间计数",
             null,
             (extraEntity, value) -> {
                 extraEntity.getExtraCard().getCard().setSpawnTimeCount(isTrue(value));
             }),
-    DORMANT_AWAKEN_CONDITION_ENCHANT("休眠",
+    DORMANT_AWAKEN_CONDITION_ENCHANT("休眠状态",
             (card, tagChangeEntity, player, area) -> {
                 card.setDormantAwakenConditionEnchant(isTrue(tagChangeEntity.getValue()));
-                log(player, card, "休眠", tagChangeEntity.getValue());
+                log(player, card, "休眠状态", tagChangeEntity.getValue());
             },
             (extraEntity, value) -> {
                 extraEntity.getExtraCard().getCard().setDormantAwakenConditionEnchant(isTrue(value));
+            }),
+    ELUSIVE("无法被法术和英雄技能指向",
+            (card, tagChangeEntity, player, area) -> {
+                card.setElusive(isTrue(tagChangeEntity.getValue()));
+                log(player, card, "无法被法术和英雄技能指向", tagChangeEntity.getValue());
+            },
+            (extraEntity, value) -> {
+                extraEntity.getExtraCard().getCard().setElusive(isTrue(value));
             }),
     IMMUNE("免疫",
             (card, tagChangeEntity, player, area) -> {
