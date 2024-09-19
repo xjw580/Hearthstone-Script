@@ -1,8 +1,10 @@
-package club.xiaojiawei
+package club.xiaojiawei.util
 
+import club.xiaojiawei.bean.SimulateCard
 import club.xiaojiawei.bean.Card
 import club.xiaojiawei.bean.Player
 import club.xiaojiawei.bean.area.PlayArea
+import club.xiaojiawei.log
 import club.xiaojiawei.status.War
 import java.util.function.Function
 
@@ -13,6 +15,8 @@ import java.util.function.Function
 class DeckStrategyUtil {
 
     companion object {
+
+        const val EXEC_ACTION:Boolean = false
 
         private var me: Player? = null
         private lateinit var myPlayArea: PlayArea
@@ -78,11 +82,13 @@ class DeckStrategyUtil {
          * @param rivalAtcWeight 敌方随从攻击力权重，rivalAtcWeight/myAtcWeight小于1时认为我方随从更加厉害，防止出现我方2-2解对方2-2的情况
          * @param lazyWeight 随从不动的权重
          */
-        private fun cleanPlay(
+        private fun clean(
             myAtcWeight: Double,
             rivalAtcWeight: Double,
             lazyWeight: Double,
-            rivalAttackCountCalc: Function<Card, Int>
+            rivalAttackCountCalc: Function<Card, Int>,
+            myCardWeightCalc: Function<Card, Double> = Function { if (it.isDeathRattle) 0.5 else 1.0 },
+            rivalCardWeightCalc: Function<Card, Double> = Function { if (it.isDeathRattle) 0.3 else 1.0 },
         ): Result {
             val myCards = mutableListOf<SimulateCard>()
             val rivalCards = mutableListOf<SimulateCard>()
@@ -98,7 +104,8 @@ class DeckStrategyUtil {
                     myPlayCard,
                     attackCount,
                     myPlayCard.health + myPlayCard.armor - myPlayCard.damage,
-                    myAtcWeight
+                    myAtcWeight,
+                    isDivineShield = myPlayCard.isDivineShield
                 )
                 myCards.add(simulateCard)
             }
@@ -108,7 +115,8 @@ class DeckStrategyUtil {
                     rivalCard,
                     attackCount,
                     rivalCard.health + rivalCard.armor - rivalCard.damage,
-                    rivalAtcWeight
+                    rivalAtcWeight,
+                    isDivineShield = rivalCard.isDivineShield,
                 )
                 rivalCards.add(simulateCard)
             }
@@ -128,8 +136,10 @@ class DeckStrategyUtil {
                 0, lazyAtkWeight,
                 atcActions, result
             )
-//            println("思考解怪耗时：" + (System.currentTimeMillis() - start) + "ms")
             log.info { "思考解怪耗时：" + (System.currentTimeMillis() - start) + "ms" }
+            if (!EXEC_ACTION){
+                println("思考解怪耗时：" + (System.currentTimeMillis() - start) + "ms")
+            }
             return result
         }
 
@@ -195,14 +205,28 @@ class DeckStrategyUtil {
                         log.info {
                             "${myCard.card.entityName}攻击${rivalCard.card.entityName}"
                         }
-//                        println("${myCard.card.entityName}攻击${rivalCard.card.entityName}")
-                        myCard.card.action.attack(rivalCard.card)
+                        if (EXEC_ACTION){
+                            myCard.card.action.attack(rivalCard.card)
+                        }else{
+                            println("${myCard.card.entityName}攻击${rivalCard.card.entityName}")
+                        }
                     }
                 }
 
+                val myDivineShield = myCard.isDivineShield
+                val rivalDivineShield = rivalCard.isDivineShield
+
                 myCard.attackCount--
-                myCard.blood -= rivalCard.card.atc
-                rivalCard.blood -= myCard.card.atc
+                if (myDivineShield) {
+                    myCard.isDivineShield = false
+                } else {
+                    myCard.blood -= rivalCard.card.atc
+                }
+                if (rivalDivineShield) {
+                    rivalCard.isDivineShield = false
+                } else {
+                    rivalCard.blood -= myCard.card.atc
+                }
 
                 val nextIndex = if (myCard.attackCount > 0) myIndex else myIndex + 1
                 recursionCleanPlay(
@@ -215,8 +239,16 @@ class DeckStrategyUtil {
                 )
 
                 myCard.attackCount++
-                myCard.blood += rivalCard.card.atc
-                rivalCard.blood += myCard.card.atc
+                if (myDivineShield) {
+                    myCard.isDivineShield = true
+                } else {
+                    myCard.blood += rivalCard.card.atc
+                }
+                if (rivalDivineShield) {
+                    rivalCard.isDivineShield = true
+                } else {
+                    rivalCard.blood += myCard.card.atc
+                }
 
                 atcActions?.removeAt(index)
             }
@@ -243,31 +275,31 @@ class DeckStrategyUtil {
         }
 
         fun cleanTaunt(
-            myAtcWeight: Double = 1.1,
-            rivalAtcWeight: Double = 10.0,
-            residualAtkWeight: Double = 0.5
+            myAtcWeight: Double = 1.0,
+            rivalAtcWeight: Double = 1.05,
+            lazyWeight: Double = 0.0
         ): Boolean {
             assign()
-            val result = cleanPlay(myAtcWeight, rivalAtcWeight, residualAtkWeight) { card ->
+            val result = clean(myAtcWeight, rivalAtcWeight, lazyWeight, { card ->
                 if (card.isTaunt && !card.isFrozen && !card.isDormantAwakenConditionEnchant) {
                     if (card.isWindFury) 2 else 1
                 } else 0
-            }
+            })
             result.execAction()
             return findTauntCard(rivalPlayCards) == -1
         }
 
         fun cleanNormal(
-            myAtcWeight: Double = 1.2,
-            rivalAtcWeight: Double = 1.3,
-            lazyWeight: Double = 1.2
+            myAtcWeight: Double = 1.0,
+            rivalAtcWeight: Double = 1.05,
+            lazyWeight: Double = 1.1
         ): Boolean {
             assign()
-            val result = cleanPlay(myAtcWeight, rivalAtcWeight, lazyWeight) { card ->
+            val result = clean(myAtcWeight, rivalAtcWeight, lazyWeight, { card ->
                 if (card.isFrozen || card.isDormantAwakenConditionEnchant) 0 else {
                     if (card.isWindFury) 2 else 1
                 }
-            }
+            })
             result.execAction()
             return !Result.isFalse(result)
         }

@@ -1,8 +1,10 @@
-package club.xiaojiawei
+package club.xiaojiawei.test
 
+import club.xiaojiawei.CardAction
 import club.xiaojiawei.bean.Card
 import club.xiaojiawei.enums.CardTypeEnum
 import club.xiaojiawei.status.War
+import club.xiaojiawei.util.DeckStrategyUtil
 
 /**
  * @author 肖嘉威 xjw580@qq.com
@@ -51,10 +53,11 @@ fun main() {
 
 //    test1()
 //    test2()
-    test3()
+//    test3()
+    test4()
 
-//    DeckStrategyUtil.cleanNormal()
-    DeckStrategyUtil.cleanTaunt()
+    DeckStrategyUtil.cleanNormal()
+//    DeckStrategyUtil.cleanTaunt()
 }
 
 fun test1(){
@@ -260,6 +263,52 @@ fun test3(){
             isTaunt = true
             atc = 8
             health = 9
+            cardType = CardTypeEnum.MINION
+        }
+        it.playArea.add(card)
+    }
+}
+
+fun test4(){
+    War.me?.let {
+        var card = Card(MyCardAction())
+        card.apply {
+            entityName = "m1"
+            atc = 7
+            health = 7
+//            isDivineShield = true
+            isWindFury = true
+            cardType = CardTypeEnum.MINION
+        }
+        it.playArea.add(card)
+    }
+
+    War.rival?.let {
+        var card = Card(MyCardAction())
+        card.apply {
+            entityName = "r1"
+            atc = 4
+            health = 5
+            isTaunt = true
+            isDeathRattle = true
+            cardType = CardTypeEnum.MINION
+        }
+        it.playArea.add(card)
+
+        card = Card(MyCardAction())
+        card.apply {
+            entityName = "r2"
+            atc = 1
+            health = 1
+            cardType = CardTypeEnum.MINION
+        }
+        it.playArea.add(card)
+
+        card = Card(MyCardAction())
+        card.apply {
+            entityName = "r4"
+            atc = 6
+            health = 7
             cardType = CardTypeEnum.MINION
         }
         it.playArea.add(card)
