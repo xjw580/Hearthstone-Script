@@ -4,6 +4,7 @@ import club.xiaojiawei.bean.SimulateCard
 import club.xiaojiawei.bean.Card
 import club.xiaojiawei.bean.Player
 import club.xiaojiawei.bean.area.PlayArea
+import club.xiaojiawei.enums.CardTypeEnum
 import club.xiaojiawei.log
 import club.xiaojiawei.status.War
 import java.util.function.Function
@@ -16,7 +17,7 @@ class DeckStrategyUtil {
 
     companion object {
 
-        const val EXEC_ACTION:Boolean = false
+        const val EXEC_ACTION: Boolean = false
 
         private var me: Player? = null
         private lateinit var myPlayArea: PlayArea
@@ -77,6 +78,10 @@ class DeckStrategyUtil {
             return rivalPlayCards.withIndex().find { it.value.isTaunt && it.value.canBeAttacked() }?.index ?: -1
         }
 
+        private fun calcBlood(card: Card): Int {
+            return card.health + card.armor - card.damage
+        }
+
         /**
          * @param myAtcWeight 我方随从攻击力权重，大于1表示攻击力比生命值重要
          * @param rivalAtcWeight 敌方随从攻击力权重，rivalAtcWeight/myAtcWeight小于1时认为我方随从更加厉害，防止出现我方2-2解对方2-2的情况
@@ -85,59 +90,83 @@ class DeckStrategyUtil {
         private fun clean(
             myAtcWeight: Double,
             rivalAtcWeight: Double,
-            lazyWeight: Double,
             rivalAttackCountCalc: Function<Card, Int>,
             myCardWeightCalc: Function<Card, Double> = Function { if (it.isDeathRattle) 0.5 else 1.0 },
-            rivalCardWeightCalc: Function<Card, Double> = Function { if (it.isDeathRattle) 0.3 else 1.0 },
+            rivalCardWeightCalc: Function<Card, Double> = Function { if (it.isDeathRattle) 0.5 else 1.0 },
         ): Result {
             val myCards = mutableListOf<SimulateCard>()
             val rivalCards = mutableListOf<SimulateCard>()
-            val myPlay = myPlayCards.toMutableList()
-            myPlayArea.hero?.let { myPlay.add(it) }
-            val rivalPlay = rivalPlayCards.toMutableList()
-            rivalPlayArea.hero?.let { rivalPlay.add(it) }
-            for (myPlayCard in myPlay) {
+
+            val myPlayCards = myPlayCards.toMutableList()
+            val rivalPlayCards = rivalPlayCards.toMutableList()
+            myPlayArea.hero?.let { myPlayCards.add(it) }
+            rivalPlayArea.hero?.let { rivalPlayCards.add(it) }
+
+            for (myPlayCard in myPlayCards) {
                 val attackCount = if (myPlayCard.canAttack()) {
                     if (myPlayCard.isWindFury) 2 else 1
                 } else 0
+                val inversionAttackCount = if (myPlayCard.canBeAttacked()) 1 else 0
                 val simulateCard = SimulateCard(
                     myPlayCard,
                     attackCount,
-                    myPlayCard.health + myPlayCard.armor - myPlayCard.damage,
+                    inversionAttackCount,
                     myAtcWeight,
-                    isDivineShield = myPlayCard.isDivineShield
+                    rivalAtcWeight,
+                    calcBlood(myPlayCard),
+                    cardWeight = if (myPlayCard.cardType === CardTypeEnum.HERO) myCardWeightCalc.apply(myPlayCard) + 0.01 else myCardWeightCalc.apply(
+                        myPlayCard
+                    ),
+                    isDivineShield = myPlayCard.isDivineShield,
                 )
                 myCards.add(simulateCard)
             }
-            for (rivalCard in rivalPlay) {
+            for (rivalCard in rivalPlayCards) {
                 val attackCount = rivalAttackCountCalc.apply(rivalCard)
+                val inversionAttackCount = if (rivalCard.canAttack(true)) {
+                    if (rivalCard.isWindFury) 2 else 1
+                } else 0
                 val simulateCard = SimulateCard(
                     rivalCard,
                     attackCount,
-                    rivalCard.health + rivalCard.armor - rivalCard.damage,
+                    inversionAttackCount,
                     rivalAtcWeight,
+                    myAtcWeight,
+                    calcBlood(rivalCard),
+                    cardWeight = if (rivalCard.cardType === CardTypeEnum.HERO) rivalCardWeightCalc.apply(rivalCard) + 0.01 else rivalCardWeightCalc.apply(
+                        rivalCard
+                    ),
                     isDivineShield = rivalCard.isDivineShield,
                 )
                 rivalCards.add(simulateCard)
             }
-            return cleanPlay(myCards, rivalCards, lazyWeight)
+
+            return cleanPlay(myCards, rivalCards)
         }
 
         private fun cleanPlay(
             myCards: List<SimulateCard>, rivalCards: List<SimulateCard>,
-            lazyAtkWeight: Double
         ): Result {
             val start = System.currentTimeMillis()
-            val result = Result(calcAllWeight(myCards, rivalCards, lazyAtkWeight))
-
+            val initWeight = calcAllWeight(myCards, rivalCards, false)
+            val inversionResult = Result()
+            recursionCleanPlay(
+                copySimulateList(rivalCards),
+                copySimulateList(myCards),
+                0,
+                mutableListOf(),
+                inversionResult,
+                true
+            )
+            val result = Result(0.6 * initWeight - 0.4 * inversionResult.allWeight)
             val atcActions = mutableListOf<Runnable>()
             recursionCleanPlay(
                 myCards, rivalCards,
-                0, lazyAtkWeight,
-                atcActions, result
+                0,
+                atcActions, result, false
             )
             log.info { "思考解怪耗时：" + (System.currentTimeMillis() - start) + "ms" }
-            if (!EXEC_ACTION){
+            if (!EXEC_ACTION) {
                 println("思考解怪耗时：" + (System.currentTimeMillis() - start) + "ms")
             }
             return result
@@ -145,27 +174,42 @@ class DeckStrategyUtil {
 
         private fun recursionCleanPlay(
             myCards: List<SimulateCard>, rivalCards: List<SimulateCard>,
-            myIndex: Int, lazyWeight: Double,
+            myIndex: Int,
             atcActions: MutableList<Runnable>?, result: Result,
+            inversion: Boolean,
         ) {
             if (myIndex == myCards.size) {
-                val weight = calcAllWeight(myCards, rivalCards, lazyWeight)
-                result.setNewResult(weight, atcActions)
+                val weight = calcAllWeight(myCards, rivalCards, inversion)
+                if (inversion) {
+                    result.setNewResult(weight, atcActions)
+                }else{
+                    val inversionResult = Result()
+                    recursionCleanPlay(
+                        copySimulateList(rivalCards),
+                        copySimulateList(myCards),
+                        0,
+                        mutableListOf(),
+                        inversionResult,
+                        true
+                    )
+                    val inversionWeight = inversionResult.allWeight
+                    result.setNewResult(0.6 * weight - 0.4 * inversionWeight, atcActions)
+                }
                 return
             }
 
             val myCard = myCards[myIndex]
-            if (myCard.canAttack()) {
+            if (myCard.canAttack(inversion)) {
                 for (rivalCard in rivalCards) {
                     attack(
                         myCards,
                         rivalCards,
                         myIndex,
-                        lazyWeight,
                         atcActions,
                         result,
                         myCard,
                         rivalCard,
+                        inversion
                     )
                 }
             }
@@ -173,19 +217,16 @@ class DeckStrategyUtil {
                 myCards,
                 rivalCards,
                 myIndex + 1,
-                lazyWeight,
                 atcActions,
                 result,
+                inversion
             )
         }
 
-        private fun copySimulateList(cards: List<SimulateCard>, resetInit: Boolean = false): List<SimulateCard> {
+        private fun copySimulateList(cards: List<SimulateCard>): List<SimulateCard> {
             val copyList = mutableListOf<SimulateCard>()
             for (card in cards) {
                 val clone = card.clone()
-                if (resetInit) {
-                    clone.attackCount = card.initAttackCount
-                }
                 copyList.add(clone)
             }
             return copyList
@@ -193,11 +234,12 @@ class DeckStrategyUtil {
 
         private fun attack(
             myCards: List<SimulateCard>, rivalCards: List<SimulateCard>,
-            myIndex: Int, lazyWeight: Double,
+            myIndex: Int,
             atcActions: MutableList<Runnable>?, result: Result,
             myCard: SimulateCard, rivalCard: SimulateCard,
+            inversion: Boolean,
         ) {
-            if (rivalCard.canBeAttacked()) {
+            if (rivalCard.canBeAttacked(inversion)) {
                 var index = 0
                 atcActions?.let {
                     index = atcActions.size
@@ -205,9 +247,9 @@ class DeckStrategyUtil {
                         log.info {
                             "${myCard.card.entityName}攻击${rivalCard.card.entityName}"
                         }
-                        if (EXEC_ACTION){
+                        if (EXEC_ACTION) {
                             myCard.card.action.attack(rivalCard.card)
-                        }else{
+                        } else {
                             println("${myCard.card.entityName}攻击${rivalCard.card.entityName}")
                         }
                     }
@@ -216,7 +258,11 @@ class DeckStrategyUtil {
                 val myDivineShield = myCard.isDivineShield
                 val rivalDivineShield = rivalCard.isDivineShield
 
-                myCard.attackCount--
+                if (inversion) {
+                    myCard.inversionAttackCount--
+                } else {
+                    myCard.attackCount--
+                }
                 if (myDivineShield) {
                     myCard.isDivineShield = false
                 } else {
@@ -233,12 +279,16 @@ class DeckStrategyUtil {
                     myCards,
                     rivalCards,
                     nextIndex,
-                    lazyWeight,
                     atcActions,
                     result,
+                    inversion
                 )
 
-                myCard.attackCount++
+                if (inversion) {
+                    myCard.inversionAttackCount++
+                } else {
+                    myCard.attackCount++
+                }
                 if (myDivineShield) {
                     myCard.isDivineShield = true
                 } else {
@@ -255,16 +305,14 @@ class DeckStrategyUtil {
         }
 
         private fun calcAllWeight(
-            myCards: List<SimulateCard>, rivalCards: List<SimulateCard>, lazyWeight: Double
+            myCards: List<SimulateCard>, rivalCards: List<SimulateCard>, inversion: Boolean
         ): Double {
-            return calcSelfWeight(myCards) +
-                    calcLazyWeight(myCards, lazyWeight) -
-                    calcSelfWeight(rivalCards)
+            return calcSelfWeight(myCards, inversion) - calcSelfWeight(rivalCards, inversion)
         }
 
-        private fun calcSelfWeight(simulateCards: List<SimulateCard>): Double {
+        private fun calcSelfWeight(simulateCards: List<SimulateCard>, inversion: Boolean): Double {
             return simulateCards.sumOf { card ->
-                card.calcSelfWeight()
+                card.calcSelfWeight(inversion)
             }
         }
 
@@ -275,12 +323,11 @@ class DeckStrategyUtil {
         }
 
         fun cleanTaunt(
-            myAtcWeight: Double = 1.0,
-            rivalAtcWeight: Double = 1.05,
-            lazyWeight: Double = 0.0
+            myAtcWeight: Double = 1.2,
+            rivalAtcWeight: Double = 1.25,
         ): Boolean {
             assign()
-            val result = clean(myAtcWeight, rivalAtcWeight, lazyWeight, { card ->
+            val result = clean(myAtcWeight, rivalAtcWeight, { card ->
                 if (card.isTaunt && !card.isFrozen && !card.isDormantAwakenConditionEnchant) {
                     if (card.isWindFury) 2 else 1
                 } else 0
@@ -290,12 +337,11 @@ class DeckStrategyUtil {
         }
 
         fun cleanNormal(
-            myAtcWeight: Double = 1.0,
-            rivalAtcWeight: Double = 1.05,
-            lazyWeight: Double = 1.1
+            myAtcWeight: Double = 1.2,
+            rivalAtcWeight: Double = 1.2,
         ): Boolean {
             assign()
-            val result = clean(myAtcWeight, rivalAtcWeight, lazyWeight, { card ->
+            val result = clean(myAtcWeight, rivalAtcWeight, rivalAttackCountCalc = { card ->
                 if (card.isFrozen || card.isDormantAwakenConditionEnchant) 0 else {
                     if (card.isWindFury) 2 else 1
                 }

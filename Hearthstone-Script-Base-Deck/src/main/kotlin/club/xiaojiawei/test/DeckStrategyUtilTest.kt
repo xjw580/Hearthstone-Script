@@ -51,10 +51,10 @@ fun main() {
     War.me = War.player1
     War.rival = War.player2
 
-//    test1()
+    test1()
 //    test2()
 //    test3()
-    test4()
+//    test4()
 
     DeckStrategyUtil.cleanNormal()
 //    DeckStrategyUtil.cleanTaunt()
@@ -85,7 +85,7 @@ fun test1(){
             entityName = "m3"
             atc = 2
             health = 10
-            isWindFury = true
+//            isWindFury = true
             cardType = CardTypeEnum.MINION
         }
         it.playArea.add(card2)
@@ -180,7 +180,7 @@ fun test1(){
             health = 5
             cardType = CardTypeEnum.MINION
         }
-        it.playArea.add(card)
+//        it.playArea.add(card)
 
         card = Card(MyCardAction())
         card.apply {
@@ -188,6 +188,15 @@ fun test1(){
             atc = 3
             health = 5
             cardType = CardTypeEnum.MINION
+        }
+//        it.playArea.add(card)
+
+        card = Card(MyCardAction())
+        card.apply {
+            entityName = "rHero"
+            atc = 0
+            health = 20
+            cardType = CardTypeEnum.HERO
         }
         it.playArea.add(card)
     }
@@ -276,21 +285,32 @@ fun test4(){
             entityName = "m1"
             atc = 7
             health = 7
-//            isDivineShield = true
+            isDivineShield = true
             isWindFury = true
             cardType = CardTypeEnum.MINION
         }
         it.playArea.add(card)
+//
+//        card = Card(MyCardAction())
+//        card.apply {
+//            entityName = "mHero"
+//            atc = 0
+//            health = 30
+////            isDivineShield = true
+//            isWindFury = true
+//            cardType = CardTypeEnum.HERO
+//        }
+//        it.playArea.add(card)
     }
 
     War.rival?.let {
         var card = Card(MyCardAction())
         card.apply {
             entityName = "r1"
-            atc = 4
-            health = 5
+            atc = 6
+            health = 6
             isTaunt = true
-            isDeathRattle = true
+//            isDeathRattle = true
             cardType = CardTypeEnum.MINION
         }
         it.playArea.add(card)
@@ -302,14 +322,34 @@ fun test4(){
             health = 1
             cardType = CardTypeEnum.MINION
         }
-        it.playArea.add(card)
+//        it.playArea.add(card)
 
         card = Card(MyCardAction())
         card.apply {
-            entityName = "r4"
+            entityName = "r3"
             atc = 6
-            health = 7
+            health = 6
+            isTaunt = true
+//            isDeathRattle = true
             cardType = CardTypeEnum.MINION
+        }
+        it.playArea.add(card)
+//
+//        card = Card(MyCardAction())
+//        card.apply {
+//            entityName = "r4"
+//            atc = 6
+//            health = 7
+//            cardType = CardTypeEnum.MINION
+//        }
+//        it.playArea.add(card)
+//
+        card = Card(MyCardAction())
+        card.apply {
+            entityName = "rHero"
+            atc = 0
+            health = 10
+            cardType = CardTypeEnum.HERO
         }
         it.playArea.add(card)
     }

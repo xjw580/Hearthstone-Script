@@ -9,32 +9,33 @@ import kotlin.math.max
  */
 class SimulateCard(
     val card: Card,
-    var attackCount: Int = 0,
-    var blood: Int = 0,
-    val atcWeight: Double = 1.0,
+    var attackCount: Int,
+    var inversionAttackCount: Int,
+    val atcWeight: Double,
+    val inversionAtcWeight: Double,
+    var blood: Int,
     val cardWeight: Double = 1.0,
     var isDivineShield: Boolean = false,
-    val initAttackCount: Int = attackCount,
 ) : Cloneable {
 
     fun isAlive(): Boolean {
         return blood > 0
     }
 
-    fun canAttack(): Boolean {
-        return isAlive() && attackCount > 0 && card.canAttack()
+    fun canAttack(inversion: Boolean): Boolean {
+        return isAlive() && if (inversion) inversionAttackCount > 0 else attackCount > 0
     }
 
-    fun canBeAttacked(): Boolean {
-        return isAlive() && attackCount > 0
+    fun canBeAttacked(inversion: Boolean): Boolean {
+        return isAlive() && if (inversion) inversionAttackCount > 0 else attackCount > 0
     }
 
-    fun calcSelfWeight(): Double {
+    fun calcSelfWeight(inversion: Boolean): Double {
         return if (blood > 0) {
-            (1 + blood + max(
+            (blood + max(
                 0,
                 card.atc
-            ) * atcWeight) * cardWeight + if (card.cardType === CardTypeEnum.HERO) Int.MAX_VALUE else 0
+            ) * (if (inversion) inversionAtcWeight else atcWeight)) * cardWeight + (if (card.cardType === CardTypeEnum.HERO) 1_000_000 else 0)
         } else 0.0
     }
 
@@ -45,7 +46,7 @@ class SimulateCard(
     }
 
     public override fun clone(): SimulateCard {
-        return SimulateCard(card, attackCount, blood, atcWeight, cardWeight)
+        return SimulateCard(card, attackCount, inversionAttackCount, atcWeight, inversionAtcWeight, blood, cardWeight, isDivineShield)
     }
 
 }
