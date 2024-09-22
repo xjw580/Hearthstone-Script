@@ -2,6 +2,7 @@ package club.xiaojiawei.strategy.mode;
 
 import club.xiaojiawei.bean.GameRect;
 import club.xiaojiawei.bean.LogRunnable;
+import club.xiaojiawei.config.ThreadPoolConfigKt;
 import club.xiaojiawei.enums.ModeEnum;
 import club.xiaojiawei.interfaces.closer.ModeTaskCloser;
 import club.xiaojiawei.status.Mode;
@@ -34,7 +35,7 @@ public class AdventureModeStrategy extends AbstractModeStrategy<Object> implemen
 
     @Override
     public void wantEnter() {
-        wantEnterSchedule = extraThreadPool.scheduleWithFixedDelay(new LogRunnable(() -> {
+        wantEnterSchedule = ThreadPoolConfigKt.getEXTRA_THREAD_POOL().scheduleWithFixedDelay(new LogRunnable(() -> {
             if (isPause.get().get()){
                 cancelTask();
             }else if (Mode.getCurrMode() == ModeEnum.HUB) {

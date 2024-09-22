@@ -1,5 +1,6 @@
 package club.xiaojiawei.core;
 
+import club.xiaojiawei.config.ThreadPoolConfigKt;
 import club.xiaojiawei.controller.javafx.MainController;
 import club.xiaojiawei.data.ScriptStaticData;
 import club.xiaojiawei.enums.WindowEnum;
@@ -33,8 +34,6 @@ public class Core{
     private AtomicReference<BooleanProperty> isPause;
     @Resource
     private MainController javafxMainController;
-    @Resource
-    private ThreadPoolExecutor coreThreadPool;
 
     /**
      * 启动脚本
@@ -45,7 +44,7 @@ public class Core{
             return;
         }
         Work.setWorking(true);
-        coreThreadPool.execute(() -> {
+        ThreadPoolConfigKt.getCORE_THREAD_POOL().execute(() -> {
             if (!ScriptStaticData.isSetPath()){
                 SystemUtil.notice("需要配置" + ScriptStaticData.GAME_CN_NAME + "和" + ScriptStaticData.PLATFORM_CN_NAME + "的路径");
                 Platform.runLater(() -> WindowUtil.showStage(WindowEnum.SETTINGS));
@@ -62,7 +61,7 @@ public class Core{
      * 重启脚本
      */
     public void restart(){
-        coreThreadPool.execute(() -> {
+        ThreadPoolConfigKt.getCORE_THREAD_POOL().execute(() -> {
             isPause.get().set(true);
             SystemUtil.killGame();
             log.info("游戏重启中……");

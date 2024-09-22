@@ -1,5 +1,6 @@
 package club.xiaojiawei.starter;
 
+import club.xiaojiawei.config.ThreadPoolConfigKt;
 import club.xiaojiawei.interfaces.closer.StarterTaskCloser;
 import club.xiaojiawei.bean.LogRunnable;
 import club.xiaojiawei.data.ScriptStaticData;
@@ -31,10 +32,6 @@ public class GameStarter extends AbstractStarter implements StarterTaskCloser {
 
     @Resource
     private AtomicReference<BooleanProperty> isPause;
-    @Resource
-    private ScheduledThreadPoolExecutor launchProgramThreadPool;
-    @Resource
-    private ScheduledThreadPoolExecutor extraThreadPool;
     @Lazy
     @Resource
     private AbstractStarter starter;
@@ -51,7 +48,7 @@ public class GameStarter extends AbstractStarter implements StarterTaskCloser {
             return;
         }
         final AtomicInteger launchCount = new AtomicInteger();
-        scheduledFuture = launchProgramThreadPool.scheduleAtFixedRate(new LogRunnable(() -> {
+        scheduledFuture = ThreadPoolConfigKt.getLAUNCH_PROGRAM_THREAD_POOL().scheduleAtFixedRate(new LogRunnable(() -> {
             if (isPause.get().get()) {
                 cancelGameTimer();
             } else {
@@ -60,7 +57,7 @@ public class GameStarter extends AbstractStarter implements StarterTaskCloser {
                 }else if (launchCount.incrementAndGet() > 4){
                     log.warn("打开炉石失败次数过多，重新执行启动器链");
                     cancelGameTimer();
-                    extraThreadPool.schedule(() -> {
+                    ThreadPoolConfigKt.getEXTRA_THREAD_POOL().schedule(() -> {
                         SystemUtil.killLoginPlatform();
                         SystemUtil.killPlatform();
                         launchCount.set(0);
@@ -98,7 +95,7 @@ public class GameStarter extends AbstractStarter implements StarterTaskCloser {
         log.info(ScriptStaticData.GAME_CN_NAME + "正在运行");
         cancelGameTimer();
         GameUtil.hidePlatformWindow();
-        extraThreadPool.schedule(() -> {
+        ThreadPoolConfigKt.getEXTRA_THREAD_POOL().schedule(() -> {
             ScriptStaticData.setGameHWND(gameHWND);
             SystemUtil.updateGameRect();
             startNextStarter();

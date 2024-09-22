@@ -1,5 +1,6 @@
 package club.xiaojiawei.strategy.mode;
 
+import club.xiaojiawei.config.ThreadPoolConfigKt;
 import club.xiaojiawei.interfaces.closer.ModeTaskCloser;
 import club.xiaojiawei.bean.LogRunnable;
 import club.xiaojiawei.strategy.AbstractModeStrategy;
@@ -37,7 +38,7 @@ public class LoginModeStrategy extends AbstractModeStrategy<Object> implements M
     protected void afterEnter(Object o) {
         cancelTask();
 //        去除国服登陆时恼人的点击开始和进入主界面时弹出的每日任务
-        scheduledFuture = extraThreadPool.scheduleWithFixedDelay(new LogRunnable(() -> {
+        scheduledFuture = ThreadPoolConfigKt.getEXTRA_THREAD_POOL().scheduleWithFixedDelay(new LogRunnable(() -> {
             if (isPause.get().get()){
                 cancelTask();
             }else {

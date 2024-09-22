@@ -1,7 +1,9 @@
 package club.xiaojiawei;
 
+import club.xiaojiawei.bean.CommonCardAction;
 import club.xiaojiawei.bean.LogRunnable;
 import club.xiaojiawei.bean.LogThread;
+import club.xiaojiawei.config.ThreadPoolConfigKt;
 import club.xiaojiawei.controller.javafx.StartupController;
 import club.xiaojiawei.data.ScriptStaticData;
 import club.xiaojiawei.data.SpringData;
@@ -31,8 +33,6 @@ import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
-import java.util.Properties;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -52,18 +52,15 @@ public class UIApplication extends Application implements ApplicationRunner {
     @Resource
     private AbstractInitializer initializer;
     @Resource
-    private Properties scriptConfiguration;
-    @Resource
     private SpringData springData;
     @Resource
     private AtomicReference<BooleanProperty> isPause;
-    @Resource
-    private ScheduledThreadPoolExecutor extraThreadPool;
 
     private ChangeListener<Boolean> mainShowingListener;
 
     @Override
     public void start(Stage stage) throws IOException {
+        CardAction.Companion.setCommonActionFactory(CommonCardAction.Companion.getDEFAULT()::createNewInstance);
         Platform.setImplicitExit(false);
         Thread.ofVirtual().name("Launch VThread").start(new LogRunnable(() -> {
             launchSpringBoot();
@@ -138,13 +135,13 @@ public class UIApplication extends Application implements ApplicationRunner {
         }
         if (Objects.equals("false", pause)){
             log.info("接收到开始参数，开始脚本");
-            extraThreadPool.schedule(() -> Platform.runLater(() -> isPause.get().set(false)), 1500, TimeUnit.MILLISECONDS);
+            ThreadPoolConfigKt.getEXTRA_THREAD_POOL().schedule(() -> Platform.runLater(() -> isPause.get().set(false)), 1500, TimeUnit.MILLISECONDS);
         }
     }
 
     @Override
     public void run(ApplicationArguments args) {
-        extraThreadPool.submit(() -> initializer.init());
+        ThreadPoolConfigKt.getEXTRA_THREAD_POOL().submit(() -> initializer.init());
     }
 
 }

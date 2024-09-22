@@ -48,41 +48,43 @@ public enum TagEnum {
      */
     RESOURCES("水晶数",
             (card, tagChangeEntity, player, area) -> {
-                if (War.INSTANCE.getCurrentPlayer() != null){
+                if (War.INSTANCE.getCurrentPlayer() != null) {
                     War.INSTANCE.getCurrentPlayer().setResources(Integer.parseInt(tagChangeEntity.getValue()));
                 }
             },
             null),
     RESOURCES_USED("已使用水晶数",
             (card, tagChangeEntity, player, area) -> {
-                if (War.INSTANCE.getCurrentPlayer() != null){
+                if (War.INSTANCE.getCurrentPlayer() != null) {
                     War.INSTANCE.getCurrentPlayer().setResourcesUsed(Integer.parseInt(tagChangeEntity.getValue()));
                 }
             },
             null),
     TEMP_RESOURCES("临时水晶数",
             (card, tagChangeEntity, player, area) -> {
-                if (War.INSTANCE.getCurrentPlayer() != null){
+                if (War.INSTANCE.getCurrentPlayer() != null) {
                     War.INSTANCE.getCurrentPlayer().setTempResources(Integer.parseInt(tagChangeEntity.getValue()));
                 }
             },
             null),
-//    设置游戏id
+    //    设置游戏id
     CURRENT_PLAYER("当前玩家",
             (card, tagChangeEntity, player, area) -> {
-                if (War.INSTANCE.getMe() != null){
+                if (War.INSTANCE.getMe() != null) {
                     String gameId = tagChangeEntity.getEntity();
-                    if (isTrue(tagChangeEntity.getValue())){
+                    if (isTrue(tagChangeEntity.getValue())) {
 //                        匹配战网id后缀正则
-                        if (!gameId.matches("^.+#\\d+$")){
+                        if (!gameId.matches("^.+#\\d+$")) {
                             log.warn("非正常游戏id：" + gameId);
                         }
 //                        是我
-                        if (Objects.equals(War.INSTANCE.getMe().getGameId(), gameId) || (War.INSTANCE.getRival().getGameId() != null && !Objects.equals(War.INSTANCE.getRival().getGameId(), gameId))){
+                        if (Objects.equals(War.INSTANCE.getMe().getGameId(), gameId)
+                                || (!War.INSTANCE.getRival().getGameId().isBlank() && !Objects.equals(War.INSTANCE.getRival().getGameId(), gameId))
+                        ) {
                             War.INSTANCE.setCurrentPlayer(War.INSTANCE.getMe());
                             War.INSTANCE.getMe().resetResources();
                             War.INSTANCE.getMe().setGameId(gameId);
-                        }else {
+                        } else {
 //                        是对手
                             War.INSTANCE.setCurrentPlayer(War.INSTANCE.getRival());
                             War.INSTANCE.getMe().resetResources();
@@ -122,55 +124,55 @@ public enum TagEnum {
     PLAYSTATE("游戏状态",
             (card, tagChangeEntity, player, area) -> {
                 String gameId = tagChangeEntity.getEntity();
-                if (Objects.equals(tagChangeEntity.getValue(), WON)){
+                if (Objects.equals(tagChangeEntity.getValue(), WON)) {
                     War.INSTANCE.setWon(gameId);
-                }else if (Objects.equals(tagChangeEntity.getValue(), LOST)){
+                } else if (Objects.equals(tagChangeEntity.getValue(), LOST)) {
                     War.INSTANCE.setLost(gameId);
-                }else if (Objects.equals(tagChangeEntity.getValue(), CONCEDED)){
+                } else if (Objects.equals(tagChangeEntity.getValue(), CONCEDED)) {
                     War.INSTANCE.setConceded(gameId);
                 }
             },
             null),
     TIMEOUT("剩余时间",
             (card, tagChangeEntity, player, area) -> {
-                if (War.INSTANCE.getCurrentPlayer() != null){
+                if (War.INSTANCE.getCurrentPlayer() != null) {
                     War.INSTANCE.getCurrentPlayer().setTimeOut(Integer.parseInt(tagChangeEntity.getValue()));
                 }
             },
             null),
-//    回合结束后值改变
+    //    回合结束后值改变
     TURN("自己的回合数",
             (card, tagChangeEntity, player, area) -> {
-                if (Objects.equals(tagChangeEntity.getEntity(), "GameEntity")){
+                if (Objects.equals(tagChangeEntity.getEntity(), "GameEntity")) {
                     War.INSTANCE.setWarTurn(Integer.parseInt(tagChangeEntity.getValue()));
-                }else if (War.INSTANCE.getCurrentPlayer() != null){
+                } else if (War.INSTANCE.getCurrentPlayer() != null) {
                     War.INSTANCE.getCurrentPlayer().setTurn(Integer.parseInt(tagChangeEntity.getValue()));
                 }
             },
             null),
-//    回合结束后值改变
+    //    回合结束后值改变
     NUM_TURNS_IN_PLAY("在本局呆的回合数",
             null,
             null),
     NUM_CARDS_DRAWN_THIS_TURN("本回合抽牌数",
             null,
             null),
-//    tagChange和tag里都有出现
+    //    tagChange和tag里都有出现
     REVEALED("揭示",
             null,
             null),
     MAX_SLOTS_PER_PLAYER_OVERRIDE("最大槽位",
             (card, tagChangeEntity, player, area) -> {
                 PlayArea playArea;
-                if (Objects.equals(tagChangeEntity.getEntity(), War.INSTANCE.getMe().getGameId())){
+                if (Objects.equals(tagChangeEntity.getEntity(), War.INSTANCE.getMe().getGameId())) {
                     playArea = War.INSTANCE.getMe().getPlayArea();
-                }else {
+                } else {
                     playArea = War.INSTANCE.getRival().getPlayArea();
                 }
-                if (Objects.equals(tagChangeEntity.getValue(), "1")){
+                if (Objects.equals(tagChangeEntity.getValue(), "1")) {
                     playArea.setOldMaxSize(playArea.getMaxSize());
                     playArea.setMaxSize(1);
-                }else if (Objects.equals(tagChangeEntity.getValue(), "0")){
+                } else if (Objects.equals(tagChangeEntity.getValue(), "0")) {
                     playArea.setOldMaxSize(playArea.getMaxSize());
                     playArea.setMaxSize(playArea.getDefaultMaxSize());
                 }
@@ -352,10 +354,10 @@ public enum TagEnum {
             (extraEntity, value) -> {
                 extraEntity.getExtraCard().getCard().setDormantAwakenConditionEnchant(isTrue(value));
             }),
-    ELUSIVE("无法被法术和英雄技能指向",
+    ELUSIVE("扰魔",
             (card, tagChangeEntity, player, area) -> {
                 card.setElusive(isTrue(tagChangeEntity.getValue()));
-                log(player, card, "无法被法术和英雄技能指向", tagChangeEntity.getValue());
+                log(player, card, "扰魔", tagChangeEntity.getValue());
             },
             (extraEntity, value) -> {
                 extraEntity.getExtraCard().getCard().setElusive(isTrue(value));
@@ -423,24 +425,69 @@ public enum TagEnum {
             (extraEntity, value) -> {
                 extraEntity.getExtraCard().getCard().setDormant(isTrue(value));
             }),
+    ATTACKABLE_BY_RUSH("突袭攻击",
+            (card, tagChangeEntity, player, area) -> {
+                card.setAttackableByRush(isTrue(tagChangeEntity.getValue()));
+                log(player, card, "突袭攻击", tagChangeEntity.getValue());
+            },
+            (extraEntity, value) -> {
+                extraEntity.getExtraCard().getCard().setAttackableByRush(isTrue(value));
+            }),
+    IMMUNE_WHILE_ATTACKING("攻击时免疫",
+            (card, tagChangeEntity, player, area) -> {
+                card.setImmuneWhileAttacking(isTrue(tagChangeEntity.getValue()));
+                log(player, card, "攻击时免疫", tagChangeEntity.getValue());
+            },
+            (extraEntity, value) -> {
+                extraEntity.getExtraCard().getCard().setImmuneWhileAttacking(isTrue(value));
+            }),
+    REBORN("复生",
+            (card, tagChangeEntity, player, area) -> {
+                card.setReborn(isTrue(tagChangeEntity.getValue()));
+                log(player, card, "复生", tagChangeEntity.getValue());
+            },
+            (extraEntity, value) -> {
+                extraEntity.getExtraCard().getCard().setReborn(isTrue(value));
+            }),
+    TRIGGER_VISUAL("视觉触发",
+            (card, tagChangeEntity, player, area) -> {
+                card.setTriggerVisual(isTrue(tagChangeEntity.getValue()));
+                log(player, card, "视觉触发", tagChangeEntity.getValue());
+            },
+            (extraEntity, value) -> {
+                extraEntity.getExtraCard().getCard().setTriggerVisual(isTrue(value));
+            }),
+    LIFESTEAL("吸血",
+            (card, tagChangeEntity, player, area) -> {
+                card.setLifesteal(isTrue(tagChangeEntity.getValue()));
+                log(player, card, "吸血", tagChangeEntity.getValue());
+            },
+            (extraEntity, value) -> {
+                extraEntity.getExtraCard().getCard().setLifesteal(isTrue(value));
+            }),
+    COIN_CARD("硬币",
+            null,
+            (extraEntity, value) -> {
+                extraEntity.getExtraCard().getCard().setCoinCard(isTrue(value));
+            }),
     /*+++++++++++++++++++++++++++++++++++++++++++++++*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
     UNKNOWN("未知",
             null,
             null),
     ;
 
-    private static void log(Player player, Card card, String tagComment, Object value){
+    private static void log(Player player, Card card, String tagComment, Object value) {
         String playerId = "", gameId = "", entityId = "", cardId = "", entityName = "";
-        if (player != null){
+        if (player != null) {
             playerId = player.getPlayerId();
             gameId = player.getGameId();
         }
-        if (card != null){
+        if (card != null) {
             entityId = card.getEntityId();
             cardId = card.getCardId();
-            entityName = Objects.equals(Entity.UNKNOWN_ENTITY_NAME, card.getEntityName())? "" : card.getEntityName();
+            entityName = Objects.equals(Entity.UNKNOWN_ENTITY_NAME, card.getEntityName()) ? "" : card.getEntityName();
         }
-        if (log.isDebugEnabled()){
+        if (log.isDebugEnabled()) {
             log.debug(String.format("【玩家%s:%s，entityId:%s，entityName:%s，cardId:%s】的【%s】发生变化:%s",
                     playerId,
                     gameId,
@@ -452,7 +499,8 @@ public enum TagEnum {
             ));
         }
     }
-    private static boolean isTrue(String s){
+
+    private static boolean isTrue(String s) {
         return Objects.equals(s, "1");
     }
 

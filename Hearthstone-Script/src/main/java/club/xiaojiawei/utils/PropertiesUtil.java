@@ -24,7 +24,7 @@ public class PropertiesUtil {
     private SpringData springData;
     @Resource
     @Getter
-    private Properties scriptConfiguration;
+    public Properties scriptConfiguration;
 
     public void storeScriptProperties(){
         try(FileOutputStream fileOutputStream = new FileOutputStream(springData.getScriptConfigurationFile())){

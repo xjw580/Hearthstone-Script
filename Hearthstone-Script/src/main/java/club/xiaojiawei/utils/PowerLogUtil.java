@@ -1,7 +1,7 @@
 package club.xiaojiawei.utils;
 
 import club.xiaojiawei.bean.Card;
-import club.xiaojiawei.bean.DefaultCardAction;
+import club.xiaojiawei.bean.CommonCardAction;
 import club.xiaojiawei.bean.Entity;
 import club.xiaojiawei.bean.Player;
 import club.xiaojiawei.bean.area.Area;
@@ -61,7 +61,7 @@ public class PowerLogUtil {
         //        不退出客户端的情况下断线重连会导致牌库的牌重新在日志中输出
         if (CARD_AREA_MAP.get(extraEntity.getEntityId()) == null){
             Area area;
-            Card card = new Card(DefaultCardAction.DEFAULT);
+            Card card = new Card(CommonCardAction.Companion.getDEFAULT());
             CardUtil.addAreaListener(card);
             CardUtil.updateCardByExtraEntity(extraEntity, card);
             CardUtil.setCardAction(card);
@@ -113,6 +113,9 @@ public class PowerLogUtil {
                 DealTagChange dealTagChange = tagChangeEntity.getTag().getDealTagChange();
                 if (dealTagChange != null){
                     dealTagChange.dealTagChange(card, tagChangeEntity, player, area);
+                }
+                if (!tagChangeEntity.getEntityName().isBlank() && !Objects.equals(tagChangeEntity.getEntityName(), Entity.UNKNOWN_ENTITY_NAME)){
+                    card.setEntityName(tagChangeEntity.getEntityName());
                 }
             }else {
 //            处理简单

@@ -1,6 +1,7 @@
 package club.xiaojiawei.listener.log;
 
 import club.xiaojiawei.config.LogListenerConfig;
+import club.xiaojiawei.config.ThreadPoolConfigKt;
 import jakarta.annotation.Resource;
 import javafx.beans.property.BooleanProperty;
 import lombok.Getter;
@@ -23,8 +24,6 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 @Slf4j
 public abstract class AbstractLogListener {
-    @Resource
-    protected ScheduledThreadPoolExecutor listenFileThreadPool;
     @Resource
     protected AtomicReference<BooleanProperty> isPause;
     @Setter
@@ -77,7 +76,7 @@ public abstract class AbstractLogListener {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        logScheduledFuture = listenFileThreadPool.scheduleAtFixedRate(() -> {
+        logScheduledFuture = ThreadPoolConfigKt.getLISTEN_LOG_THREAD_POOL().scheduleAtFixedRate(() -> {
             if (isPause.get().get()){
                 cancelListener();
             }else {

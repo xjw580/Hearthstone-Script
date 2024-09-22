@@ -2,7 +2,7 @@ package club.xiaojiawei.bean
 
 import club.xiaojiawei.bean.area.*
 import club.xiaojiawei.enums.ZoneEnum
-import club.xiaojiawei.log
+import club.xiaojiawei.config.log
 import kotlin.concurrent.Volatile
 
 /**

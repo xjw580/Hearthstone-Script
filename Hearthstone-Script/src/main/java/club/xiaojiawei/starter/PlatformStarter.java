@@ -1,5 +1,6 @@
 package club.xiaojiawei.starter;
 
+import club.xiaojiawei.config.ThreadPoolConfigKt;
 import club.xiaojiawei.interfaces.closer.StarterTaskCloser;
 import club.xiaojiawei.data.ScriptStaticData;
 import club.xiaojiawei.utils.GameUtil;
@@ -26,10 +27,6 @@ public class PlatformStarter extends AbstractStarter implements StarterTaskClose
     @Resource
     private AtomicReference<BooleanProperty> isPause;
     @Resource
-    private ScheduledThreadPoolExecutor launchProgramThreadPool;
-    @Resource
-    private ScheduledThreadPoolExecutor extraThreadPool;
-    @Resource
     private GameUtil gameUtil;
     private ScheduledFuture<?> scheduledFuture;
 
@@ -40,9 +37,9 @@ public class PlatformStarter extends AbstractStarter implements StarterTaskClose
             return;
         }
         log.info("正在进入" + ScriptStaticData.PLATFORM_CN_NAME + ScriptStaticData.GAME_CN_NAME + "启动页");
-        gameUtil.cmdLaunchGame();
+        GameUtil.cmdLaunchGame();
         GameUtil.hidePlatformWindow();
-        scheduledFuture = launchProgramThreadPool.scheduleAtFixedRate(() -> {
+        scheduledFuture = ThreadPoolConfigKt.getLAUNCH_PROGRAM_THREAD_POOL().scheduleAtFixedRate(() -> {
             if (isPause.get().get()){
                 cancelPlatformTimer();
             }else if (SystemUtil.findPlatformHWND() != null || SystemUtil.findLoginPlatformHWND() != null){
@@ -59,7 +56,7 @@ public class PlatformStarter extends AbstractStarter implements StarterTaskClose
 
     private void cancelAndStartNext(){
         cancelPlatformTimer();
-        extraThreadPool.schedule(this::startNextStarter, 0, TimeUnit.SECONDS);
+        ThreadPoolConfigKt.getEXTRA_THREAD_POOL().schedule(this::startNextStarter, 0, TimeUnit.SECONDS);
     }
 
     @Override

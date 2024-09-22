@@ -1,5 +1,6 @@
 package club.xiaojiawei.starter;
 
+import club.xiaojiawei.config.ThreadPoolConfigKt;
 import club.xiaojiawei.interfaces.closer.StarterTaskCloser;
 import club.xiaojiawei.data.ScriptStaticData;
 import club.xiaojiawei.dll.SystemDll;
@@ -33,8 +34,6 @@ public class LoginPlatformStarter extends AbstractStarter implements StarterTask
     @Resource
     private Properties scriptConfiguration;
     @Resource
-    private ScheduledThreadPoolExecutor extraThreadPool;
-    @Resource
     private AtomicReference<BooleanProperty> isPause;
     @Lazy
     @Resource
@@ -53,7 +52,7 @@ public class LoginPlatformStarter extends AbstractStarter implements StarterTask
             return;
         }
         final AtomicInteger loginCount = new AtomicInteger();
-        scheduledFuture = extraThreadPool.scheduleAtFixedRate(() -> {
+        scheduledFuture = ThreadPoolConfigKt.getEXTRA_THREAD_POOL().scheduleAtFixedRate(() -> {
             WinDef.HWND loginPlatformHWND;
             if (isPause.get().get()){
                 cancelLoginPlatformTimer();
@@ -63,7 +62,7 @@ public class LoginPlatformStarter extends AbstractStarter implements StarterTask
                 if (loginCount.incrementAndGet() > 4){
                     log.warn("登录战网失败次数过多，重新执行启动器链");
                     cancelLoginPlatformTimer();
-                    extraThreadPool.schedule(() -> {
+                    ThreadPoolConfigKt.getEXTRA_THREAD_POOL().schedule(() -> {
                         SystemUtil.killLoginPlatform();
                         SystemUtil.killPlatform();
                         loginCount.set(0);
@@ -120,7 +119,7 @@ public class LoginPlatformStarter extends AbstractStarter implements StarterTask
 
     private void cancelAndStartNext(){
         cancelLoginPlatformTimer();
-        extraThreadPool.schedule(this::startNextStarter, 0, TimeUnit.SECONDS);
+        ThreadPoolConfigKt.getEXTRA_THREAD_POOL().schedule(this::startNextStarter, 0, TimeUnit.SECONDS);
     }
 
     @Override

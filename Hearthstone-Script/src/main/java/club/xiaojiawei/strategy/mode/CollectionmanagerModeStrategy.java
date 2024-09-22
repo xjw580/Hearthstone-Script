@@ -1,6 +1,7 @@
 package club.xiaojiawei.strategy.mode;
 
 import club.xiaojiawei.bean.GameRect;
+import club.xiaojiawei.config.ThreadPoolConfigKt;
 import club.xiaojiawei.interfaces.closer.ModeTaskCloser;
 import club.xiaojiawei.bean.LogRunnable;
 import club.xiaojiawei.strategy.AbstractModeStrategy;
@@ -32,7 +33,7 @@ public class CollectionmanagerModeStrategy extends AbstractModeStrategy<Object> 
     @Override
     protected void afterEnter(Object o) {
         cancelTask();
-        scheduledFuture = extraThreadPool.scheduleWithFixedDelay(new LogRunnable(() -> {
+        scheduledFuture = ThreadPoolConfigKt.getEXTRA_THREAD_POOL().scheduleWithFixedDelay(new LogRunnable(() -> {
             SystemUtil.updateGameRect();
             BACK_RECT.lClick();
         }), DELAY_TIME, 500, TimeUnit.MILLISECONDS);

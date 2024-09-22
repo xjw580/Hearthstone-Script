@@ -1,6 +1,6 @@
 package club.xiaojiawei.bean
 
-import club.xiaojiawei.log
+import club.xiaojiawei.config.log
 
 /**
  * @author 肖嘉威

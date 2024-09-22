@@ -7,6 +7,7 @@ import club.xiaojiawei.enums.WarPhaseEnum;
 import club.xiaojiawei.interfaces.closer.GameThreadCloser;
 import club.xiaojiawei.status.War;
 import club.xiaojiawei.strategy.AbstractPhaseStrategy;
+import club.xiaojiawei.strategy.DeckStrategyActuator;
 import club.xiaojiawei.utils.SystemUtil;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
@@ -50,7 +51,7 @@ public class ReplaceCardPhaseStrategy extends AbstractPhaseStrategy implements G
     protected boolean dealTagChangeThenIsOver(String line, TagChangeEntity tagChangeEntity) {
         if (tagChangeEntity.getTag() == MULLIGAN_STATE && Objects.equals(tagChangeEntity.getValue(), INPUT.name())) {
             String gameId = tagChangeEntity.getEntity();
-            if (Objects.equals(War.INSTANCE.getMe().getGameId(), gameId) || (War.INSTANCE.getRival().getGameId() != null && !Objects.equals(War.INSTANCE.getRival().getGameId(), gameId))) {
+            if (Objects.equals(War.INSTANCE.getMe().getGameId(), gameId) || (!War.INSTANCE.getRival().getGameId().isBlank() && !Objects.equals(War.INSTANCE.getRival().getGameId(), gameId))) {
                 stopThread();
                 //        执行换牌策略
                 (thread = new LogThread(() -> {
@@ -58,7 +59,7 @@ public class ReplaceCardPhaseStrategy extends AbstractPhaseStrategy implements G
                     log.info("2号玩家牌库数量：" + War.INSTANCE.getPlayer2().getDeckArea().getCards().size());
 //                    因为傻逼畸变模式导致开局动画增加，这又加了4.5秒
                     SystemUtil.delay(24_500);
-                    deckStrategyActuator.changeCard();
+                    DeckStrategyActuator.INSTANCE.changeCard();
                 }, "Change Card Thread")).start();
             }
         } else if (tagChangeEntity.getTag() == NEXT_STEP && Objects.equals(StepEnum.MAIN_READY.name(), tagChangeEntity.getValue())) {

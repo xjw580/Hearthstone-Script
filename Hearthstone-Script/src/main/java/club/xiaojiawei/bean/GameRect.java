@@ -43,7 +43,11 @@ public record GameRect(double left, double right, double top, double bottom) {
     }
 
     public void lClick() {
-        cancel();
+        lClick(true);
+    }
+
+    public void lClick(boolean isCancel) {
+        if (isCancel) cancel();
         GameUtil.leftButtonClick(getClickPos());
     }
 
@@ -52,10 +56,14 @@ public record GameRect(double left, double right, double top, double bottom) {
     }
 
     public void lClickMoveLClick(GameRect endRect) {
+        lClickMoveLClick(endRect, true);
+    }
+
+    public void lClickMoveLClick(GameRect endRect, boolean isCancel) {
         if (endRect == null) {
             return;
         }
-        cancel();
+        if (isCancel) cancel();
         Point startPos = getClickPos();
         Point endPos = endRect.getClickPos();
         GameUtil.leftButtonClick(startPos);

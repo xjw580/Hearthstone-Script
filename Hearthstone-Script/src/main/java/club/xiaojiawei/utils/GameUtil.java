@@ -2,6 +2,7 @@ package club.xiaojiawei.utils;
 
 import club.xiaojiawei.annotations.NotNull;
 import club.xiaojiawei.bean.GameRect;
+import club.xiaojiawei.config.ThreadPoolConfigKt;
 import club.xiaojiawei.interfaces.closer.ModeTaskCloser;
 import club.xiaojiawei.data.ScriptStaticData;
 import club.xiaojiawei.enums.ConfigurationEnum;
@@ -34,14 +35,12 @@ import static com.sun.jna.platform.win32.WinUser.WM_KEYUP;
 @Slf4j
 public class GameUtil implements ModeTaskCloser {
 
-    private static ScheduledThreadPoolExecutor extraThreadPool;
 
     private static AtomicReference<BooleanProperty> isPause;
 
     private static Properties scriptConfiguration;
 
-    public GameUtil(ScheduledThreadPoolExecutor extraThreadPool, AtomicReference<BooleanProperty> isPause, Properties scriptConfiguration) {
-        GameUtil.extraThreadPool = extraThreadPool;
+    public GameUtil(AtomicReference<BooleanProperty> isPause, Properties scriptConfiguration) {
         GameUtil.isPause = isPause;
         GameUtil.scriptConfiguration = scriptConfiguration;
     }
@@ -327,7 +326,7 @@ public class GameUtil implements ModeTaskCloser {
     public static void clickGameEndPageTask(){
         cancelTask();
         log.info("点掉游戏结束结算页面");
-        clickGameEndPageTask = extraThreadPool.scheduleWithFixedDelay(
+        clickGameEndPageTask = ThreadPoolConfigKt.getEXTRA_THREAD_POOL().scheduleWithFixedDelay(
             () -> {
                 if (isPause.get().get()){
                     cancelTask();

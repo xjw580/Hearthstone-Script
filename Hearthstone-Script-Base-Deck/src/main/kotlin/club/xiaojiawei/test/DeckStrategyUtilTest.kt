@@ -11,7 +11,7 @@ import club.xiaojiawei.util.DeckStrategyUtil
  * @date 2024/9/18 17:44
  */
 
-class MyCardAction: CardAction() {
+class MyCardAction : CardAction() {
     override fun getCardId(): String {
         TODO("Not yet implemented")
     }
@@ -44,6 +44,10 @@ class MyCardAction: CardAction() {
         TODO("Not yet implemented")
     }
 
+    override fun lClick(): Boolean {
+        TODO("Not yet implemented")
+    }
+
 }
 
 fun main() {
@@ -51,20 +55,22 @@ fun main() {
     War.me = War.player1
     War.rival = War.player2
 
-    test1()
+//    test1()
 //    test2()
 //    test3()
 //    test4()
+    testTaunt()
 
-    DeckStrategyUtil.cleanNormal()
+    DeckStrategyUtil.cleanPlay()
 //    DeckStrategyUtil.cleanTaunt()
 }
 
-fun test1(){
+fun test1() {
     War.me?.let {
         var card = Card(MyCardAction())
         card.apply {
             entityName = "m1"
+            entityId = "m1"
             atc = 3
             health = 5
             cardType = CardTypeEnum.MINION
@@ -74,6 +80,7 @@ fun test1(){
         val card1 = Card(MyCardAction())
         card1.apply {
             entityName = "m2"
+            entityId = "m2"
             atc = 6
             health = 3
             cardType = CardTypeEnum.MINION
@@ -83,6 +90,7 @@ fun test1(){
         val card2 = Card(MyCardAction())
         card2.apply {
             entityName = "m3"
+            entityId = "m3"
             atc = 2
             health = 10
 //            isWindFury = true
@@ -93,6 +101,7 @@ fun test1(){
         card = Card(MyCardAction())
         card.apply {
             entityName = "m4"
+            entityId = "m4"
             atc = 3
             health = 2
             cardType = CardTypeEnum.MINION
@@ -102,6 +111,7 @@ fun test1(){
         card = Card(MyCardAction())
         card.apply {
             entityName = "m5"
+            entityId = "m5"
             atc = 4
             health = 4
             cardType = CardTypeEnum.MINION
@@ -111,6 +121,7 @@ fun test1(){
         card = Card(MyCardAction())
         card.apply {
             entityName = "m6"
+            entityId = "m6"
             atc = 5
             health = 2
             cardType = CardTypeEnum.MINION
@@ -120,9 +131,20 @@ fun test1(){
         card = Card(MyCardAction())
         card.apply {
             entityName = "m7"
+            entityId = "m7"
             atc = 2
             health = 1
             cardType = CardTypeEnum.MINION
+        }
+        it.playArea.add(card)
+
+        card = Card(MyCardAction())
+        card.apply {
+            entityName = "mHero"
+            entityId = "mHero"
+            atc = 0
+            health = 30
+            cardType = CardTypeEnum.HERO
         }
         it.playArea.add(card)
     }
@@ -131,6 +153,7 @@ fun test1(){
         var card = Card(MyCardAction())
         card.apply {
             entityName = "r1"
+            entityId = "r1"
             atc = 3
             health = 5
             cardType = CardTypeEnum.MINION
@@ -140,6 +163,7 @@ fun test1(){
         card = Card(MyCardAction())
         card.apply {
             entityName = "r2"
+            entityId = "r2"
             atc = 3
             health = 3
             cardType = CardTypeEnum.MINION
@@ -149,6 +173,7 @@ fun test1(){
         card = Card(MyCardAction())
         card.apply {
             entityName = "r3"
+            entityId = "r3"
             atc = 1
             health = 2
             cardType = CardTypeEnum.MINION
@@ -158,8 +183,10 @@ fun test1(){
         card = Card(MyCardAction())
         card.apply {
             entityName = "r4"
+            entityId = "r4"
             atc = 5
-            health = 3
+            health = 20
+            isTaunt = true
             cardType = CardTypeEnum.MINION
         }
         it.playArea.add(card)
@@ -167,15 +194,17 @@ fun test1(){
         card = Card(MyCardAction())
         card.apply {
             entityName = "r5"
-            atc = 4
-            health = 2
+            entityId = "r5"
+            atc = 5
+            health = 10
             cardType = CardTypeEnum.MINION
         }
-        it.playArea.add(card)
+//        it.playArea.add(card)
 
         card = Card(MyCardAction())
         card.apply {
             entityName = "r6"
+            entityId = "r6"
             atc = 8
             health = 5
             cardType = CardTypeEnum.MINION
@@ -185,6 +214,7 @@ fun test1(){
         card = Card(MyCardAction())
         card.apply {
             entityName = "r7"
+            entityId = "r7"
             atc = 3
             health = 5
             cardType = CardTypeEnum.MINION
@@ -194,19 +224,21 @@ fun test1(){
         card = Card(MyCardAction())
         card.apply {
             entityName = "rHero"
+            entityId = "rHero"
             atc = 0
-            health = 20
+            health = 30
             cardType = CardTypeEnum.HERO
         }
         it.playArea.add(card)
     }
 }
 
-fun test2(){
+fun test2() {
     War.me?.let {
         val card = Card(MyCardAction())
         card.apply {
             entityName = "m1"
+            entityId = "m1"
             atc = 5
             health = 5
             cardType = CardTypeEnum.MINION
@@ -218,6 +250,7 @@ fun test2(){
         var card = Card(MyCardAction())
         card.apply {
             entityName = "r1"
+            entityId = "r1"
             atc = 5
             health = 5
             cardType = CardTypeEnum.MINION
@@ -226,11 +259,12 @@ fun test2(){
     }
 }
 
-fun test3(){
+fun test3() {
     War.me?.let {
         var card = Card(MyCardAction())
         card.apply {
             entityName = "m1"
+            entityId = "m1"
             atc = 7
             health = 6
             cardType = CardTypeEnum.MINION
@@ -240,6 +274,7 @@ fun test3(){
         card = Card(MyCardAction())
         card.apply {
             entityName = "m2"
+            entityId = "m2"
             atc = 2
             health = 2
             cardType = CardTypeEnum.MINION
@@ -251,6 +286,7 @@ fun test3(){
         var card = Card(MyCardAction())
         card.apply {
             entityName = "r1"
+            entityId = "r1"
             atc = 5
             health = 7
             cardType = CardTypeEnum.MINION
@@ -260,6 +296,7 @@ fun test3(){
         card = Card(MyCardAction())
         card.apply {
             entityName = "r2"
+            entityId = "r2"
             atc = 1
             health = 1
             cardType = CardTypeEnum.MINION
@@ -269,6 +306,7 @@ fun test3(){
         card = Card(MyCardAction())
         card.apply {
             entityName = "r4"
+            entityId = "r4"
             isTaunt = true
             atc = 8
             health = 9
@@ -278,11 +316,12 @@ fun test3(){
     }
 }
 
-fun test4(){
+fun test4() {
     War.me?.let {
         var card = Card(MyCardAction())
         card.apply {
             entityName = "m1"
+            entityId = "m1"
             atc = 7
             health = 7
             isDivineShield = true
@@ -307,6 +346,7 @@ fun test4(){
         var card = Card(MyCardAction())
         card.apply {
             entityName = "r1"
+            entityId = "r1"
             atc = 6
             health = 6
             isTaunt = true
@@ -318,6 +358,7 @@ fun test4(){
         card = Card(MyCardAction())
         card.apply {
             entityName = "r2"
+            entityId = "r2"
             atc = 1
             health = 1
             cardType = CardTypeEnum.MINION
@@ -327,6 +368,7 @@ fun test4(){
         card = Card(MyCardAction())
         card.apply {
             entityName = "r3"
+            entityId = "r3"
             atc = 6
             health = 6
             isTaunt = true
@@ -347,8 +389,175 @@ fun test4(){
         card = Card(MyCardAction())
         card.apply {
             entityName = "rHero"
+            entityId = "rHero"
             atc = 0
             health = 10
+            cardType = CardTypeEnum.HERO
+        }
+        it.playArea.add(card)
+    }
+}
+
+fun testTaunt() {
+    War.me?.let {
+        var card = Card(MyCardAction())
+        card.apply {
+            entityName = "m1"
+            entityId = "m1"
+            atc = 5
+            health = 5
+            cardType = CardTypeEnum.MINION
+        }
+        it.playArea.add(card)
+
+        card = Card(MyCardAction())
+        card.apply {
+            entityName = "m2"
+            entityId = "m2"
+            atc = 5
+            health = 5
+            cardType = CardTypeEnum.MINION
+        }
+        it.playArea.add(card)
+
+        card = Card(MyCardAction())
+        card.apply {
+            entityName = "m3"
+            entityId = "m3"
+            atc = 5
+            health = 5
+            cardType = CardTypeEnum.MINION
+        }
+        it.playArea.add(card)
+
+        card = Card(MyCardAction())
+        card.apply {
+            entityName = "m4"
+            entityId = "m3"
+            atc = 5
+            health = 5
+            cardType = CardTypeEnum.MINION
+        }
+        it.playArea.add(card)
+
+        card = Card(MyCardAction())
+        card.apply {
+            entityName = "m2"
+            entityId = "m2"
+            atc = 5
+            health = 5
+            cardType = CardTypeEnum.MINION
+        }
+        it.playArea.add(card)
+
+        card = Card(MyCardAction())
+        card.apply {
+            entityName = "m3"
+            entityId = "m3"
+            atc = 5
+            health = 5
+            cardType = CardTypeEnum.MINION
+        }
+        it.playArea.add(card)
+
+        card = Card(MyCardAction())
+        card.apply {
+            entityName = "m4"
+            entityId = "m3"
+            atc = 5
+            health = 5
+            cardType = CardTypeEnum.MINION
+        }
+        it.playArea.add(card)
+
+        card = Card(MyCardAction())
+        card.apply {
+            entityName = "mHero"
+            entityId = "mHero"
+            atc = 1
+            health = 30
+            cardType = CardTypeEnum.HERO
+        }
+        it.playArea.add(card)
+    }
+
+    War.rival?.let {
+        var card = Card(MyCardAction())
+        card.apply {
+            entityName = "r1"
+            entityId = "r1"
+            atc = 5
+            health = 10
+            cardType = CardTypeEnum.MINION
+        }
+        it.playArea.add(card)
+
+        card = Card(MyCardAction())
+        card.apply {
+            entityName = "r2"
+            entityId = "r1"
+            atc = 5
+            health = 10
+            cardType = CardTypeEnum.MINION
+        }
+        it.playArea.add(card)
+
+        card = Card(MyCardAction())
+        card.apply {
+            entityName = "r3"
+            entityId = "r1"
+            atc = 5
+            health = 10
+            cardType = CardTypeEnum.MINION
+        }
+        it.playArea.add(card)
+
+        card = Card(MyCardAction())
+        card.apply {
+            entityName = "r4"
+            entityId = "r1"
+            atc = 5
+            health = 10
+            cardType = CardTypeEnum.MINION
+        }
+        it.playArea.add(card)
+
+        card = Card(MyCardAction())
+        card.apply {
+            entityName = "r5"
+            entityId = "r1"
+            atc = 5
+            health = 10
+            cardType = CardTypeEnum.MINION
+        }
+        it.playArea.add(card)
+
+        card = Card(MyCardAction())
+        card.apply {
+            entityName = "r6"
+            entityId = "r1"
+            atc = 5
+            health = 10
+            cardType = CardTypeEnum.MINION
+        }
+        it.playArea.add(card)
+
+        card = Card(MyCardAction())
+        card.apply {
+            entityName = "r7"
+            entityId = "r1"
+            atc = 5
+            health = 10
+            cardType = CardTypeEnum.MINION
+        }
+        it.playArea.add(card)
+
+        card = Card(MyCardAction())
+        card.apply {
+            entityName = "rHero"
+            entityId = "rHero"
+            atc = 1
+            health = 30
             cardType = CardTypeEnum.HERO
         }
         it.playArea.add(card)

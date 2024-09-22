@@ -34,7 +34,7 @@ public class MouseUtil {
     /**
      * 鼠标每次移动后的间隔时间：ms
      */
-    private static final int MIN_MOVE_INTERVAL = 15;
+    private static final int MIN_MOVE_INTERVAL = 4;
     /**
      * 鼠标每次移动的距离：px
      */
@@ -57,7 +57,6 @@ public class MouseUtil {
         if (!isPause.get().get() && validPoint(pos)) {
             SystemDll.INSTANCE.leftClick(pos.x, pos.y, hwnd);
             savePos(pos);
-
         }
     }
 

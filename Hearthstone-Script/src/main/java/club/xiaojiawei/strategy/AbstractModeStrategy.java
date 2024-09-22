@@ -26,8 +26,6 @@ public abstract class AbstractModeStrategy<T> implements ModeStrategy<T> {
     protected GameUtil gameUtil;
     @Resource
     protected AtomicReference<BooleanProperty> isPause;
-    @Resource
-    protected ScheduledThreadPoolExecutor extraThreadPool;
     protected final static int INTERVAL_TIME = 5000;
     protected final static int DELAY_TIME = 1000;
 

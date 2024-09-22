@@ -5,7 +5,7 @@ import club.xiaojiawei.bean.area.Area
 import club.xiaojiawei.enums.RunModeEnum
 import club.xiaojiawei.enums.StepEnum
 import club.xiaojiawei.enums.WarPhaseEnum
-import club.xiaojiawei.log
+import club.xiaojiawei.config.log
 import javafx.beans.property.SimpleIntegerProperty
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.function.Consumer
@@ -51,9 +51,19 @@ object War {
 
     @Volatile
     var me: Player? = null
+        set(value) {
+            if (value == null || field == null) {
+                field = value
+            }
+        }
 
     @Volatile
     var rival: Player? = null
+        set(value) {
+            if (value == null || field == null) {
+                field = value
+            }
+        }
 
     @Volatile
     var player1: Player? = null
@@ -111,7 +121,7 @@ object War {
         currentTurnStep = null
         rival = null
         me = rival
-        currentPlayer = me
+        currentPlayer = null
         player1 = Player("1")
         player2 = Player("2")
         warTurn = 0
@@ -146,7 +156,7 @@ object War {
             flag = printResult()
         }
         val time = (endTime - startTime) / 1000 / 60
-        log.info{"本局游戏时长：${time}分钟"}
+        log.info { "本局游戏时长：${time}分钟" }
         GAME_TIME.set((time + GAME_TIME.get()).toInt())
         val winExp: Int
         val lostExp: Int
@@ -164,7 +174,7 @@ object War {
             else -> {
                 winExp = 0
                 lostExp = 0
-                log.info{"未知模式，增加经验值0"}
+                log.info { "未知模式，增加经验值0" }
             }
         }
         val earnExp = (min(time.toDouble(), 30.0) * (if (flag) winExp else lostExp)).toLong()
@@ -180,9 +190,9 @@ object War {
             WIN_COUNT.incrementAndGet()
             flag = true
         }
-        log.info{ "本局游戏胜者：$won" }
-        log.info{ "本局游戏败者：$lost" }
-        log.info{ "本局游戏投降者：$conceded" }
+        log.info { "本局游戏胜者：$won" }
+        log.info { "本局游戏败者：$lost" }
+        log.info { "本局游戏投降者：$conceded" }
         return flag
     }
 

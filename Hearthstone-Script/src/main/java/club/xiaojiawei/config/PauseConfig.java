@@ -3,11 +3,13 @@ package club.xiaojiawei.config;
 import club.xiaojiawei.bean.WsResult;
 import club.xiaojiawei.controller.javafx.MainController;
 import club.xiaojiawei.core.Core;
+import club.xiaojiawei.data.ScriptStaticData;
 import club.xiaojiawei.dll.SystemDll;
 import club.xiaojiawei.enums.WsResultTypeEnum;
 import club.xiaojiawei.status.Work;
 import club.xiaojiawei.utils.SystemUtil;
 import club.xiaojiawei.ws.WebSocketServer;
+import com.sun.jna.platform.win32.WinDef;
 import jakarta.annotation.Resource;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -42,7 +44,8 @@ public class PauseConfig {
             javafxMainController.changeSwitch(newValue);
             WebSocketServer.sendAllMessage(WsResult.ofNew(WsResultTypeEnum.PAUSE, newValue));
             if (newValue){
-                SystemDll.INSTANCE.uninstallDll(SystemUtil.findGameHWND());
+                SystemDll.INSTANCE.changeInput(ScriptStaticData.getGameHWND(), false);
+                SystemDll.INSTANCE.changeWindow(ScriptStaticData.getGameHWND(), false);
                 SystemUtil.closeAll();
                 Work.setWorking(false);
             }else {

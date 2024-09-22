@@ -10,6 +10,8 @@ import java.util.*
  */
 abstract class DeckStrategy {
 
+    var pluginId: String = ""
+
     val runModes: Array<RunModeEnum> by lazy { getRunMode() }
 
     /**
@@ -32,7 +34,7 @@ abstract class DeckStrategy {
 
     /**
      * 卡组唯一标识
-     * @return 非空，长度必需为36
+     * @return 非空
      */
     abstract fun id(): String
 

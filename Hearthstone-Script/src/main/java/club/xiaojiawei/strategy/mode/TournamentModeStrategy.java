@@ -3,6 +3,7 @@ package club.xiaojiawei.strategy.mode;
 import club.xiaojiawei.DeckStrategy;
 import club.xiaojiawei.bean.Deck;
 import club.xiaojiawei.bean.GameRect;
+import club.xiaojiawei.config.ThreadPoolConfigKt;
 import club.xiaojiawei.interfaces.closer.ModeTaskCloser;
 import club.xiaojiawei.core.Core;
 import club.xiaojiawei.bean.LogRunnable;
@@ -40,8 +41,8 @@ public class TournamentModeStrategy extends AbstractModeStrategy<Object> impleme
 
     public static final GameRect START_RECT = new GameRect(0.2586D, 0.3459D, 0.2706D, 0.3794D);
 
-    //    TODO ADD
-    public static final GameRect ERROR_RECT = new GameRect(-0.0251D, 0.0530D, 0.3203D, 0.3802D);
+    public static final GameRect ERROR_RECT = new GameRect(-0.0397D, 0.0325D, 0.0856D, 0.1249D);
+
 
     public static final GameRect CHANGE_MODE_RECT = new GameRect(0.2868D, 0.3256D, -0.4672D, -0.4279D);
 
@@ -85,7 +86,7 @@ public class TournamentModeStrategy extends AbstractModeStrategy<Object> impleme
     @Override
     public void wantEnter() {
         cancelTask();
-        scheduledFuture = extraThreadPool.scheduleWithFixedDelay(new LogRunnable(() -> {
+        scheduledFuture = ThreadPoolConfigKt.getEXTRA_THREAD_POOL().scheduleWithFixedDelay(new LogRunnable(() -> {
             if (isPause.get().get()){
                 cancelTask();
             } else if (Mode.getCurrMode() == ModeEnum.HUB){
@@ -127,7 +128,7 @@ public class TournamentModeStrategy extends AbstractModeStrategy<Object> impleme
         }
     }
 
-    private static final int RESERVE_SIZE = 1500 * 1024;
+    private static final int RESERVE_SIZE = 2 * 1024 * 1024;
 
     private boolean checkPowerLogSize(){
         try {
@@ -210,7 +211,7 @@ public class TournamentModeStrategy extends AbstractModeStrategy<Object> impleme
         if (errorScheduledFuture != null && !errorScheduledFuture.isDone()){
             errorScheduledFuture.cancel(true);
         }
-        errorScheduledFuture = extraThreadPool.schedule(new LogRunnable(() -> {
+        errorScheduledFuture = ThreadPoolConfigKt.getEXTRA_THREAD_POOL().schedule(new LogRunnable(() -> {
             if (isPause.get().get() || Thread.currentThread().isInterrupted()){
                 errorScheduledFuture.cancel(true);
             }else {

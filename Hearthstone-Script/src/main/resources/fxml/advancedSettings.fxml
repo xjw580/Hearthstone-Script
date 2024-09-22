@@ -26,7 +26,7 @@
             <HBox HBox.hgrow="ALWAYS"/>
             <Switch fx:id="verifySwitch"/>
         </HBox>
-        <HBox styleClass="h-box">
+        <HBox styleClass="h-box" visible="false" managed="false">
             <Text text="执行策略"/>
             <Label>
                 <graphic>

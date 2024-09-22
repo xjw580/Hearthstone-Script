@@ -4,7 +4,7 @@ import club.xiaojiawei.bean.Card
 import club.xiaojiawei.bean.Player
 import club.xiaojiawei.enums.CardTypeEnum
 import club.xiaojiawei.enums.HeroTypeEnum
-import club.xiaojiawei.log
+import club.xiaojiawei.config.log
 
 /**
  * 战场

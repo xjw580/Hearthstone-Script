@@ -23,6 +23,7 @@
         <module>Hearthstone-Script-Plugin-SDK</module>
         <module>Hearthstone-Script-Card-SDK</module>
         <module>Hearthstone-Script-Deck-SDK</module>
+        <module>Hearthstone-Script-Base-Card</module>
         <module>Hearthstone-Script-Base-Deck</module>
     </modules>
 
@@ -62,6 +63,7 @@
         <kotlin-logging-jvm-version>5.1.4</kotlin-logging-jvm-version>
 
         <hs-script-base-deck-version>1.0.0</hs-script-base-deck-version>
+        <hs-script-base-card-version>1.0.0</hs-script-base-card-version>
 
         <!--sdk-->
         <hs-script-base-version>1.0.0</hs-script-base-version>
@@ -101,6 +103,12 @@
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>club.xiaojiawei</groupId>
+                <artifactId>hs-script-base-card</artifactId>
+                <version>${hs-script-base-card-version}</version>
+                <scope>provided</scope>
+            </dependency>
             <dependency>
                 <groupId>club.xiaojiawei</groupId>
                 <artifactId>hs-script-base-deck</artifactId>

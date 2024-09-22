@@ -16,7 +16,7 @@ public class PluginInitializer extends AbstractInitializer{
     @Override
     public void exec() {
         try {
-            PluginManager.loadAllPlugins();
+            PluginManager.INSTANCE.loadAllPlugins();
         } catch (Exception e) {
             log.warn("插件加载失败", e);
         }

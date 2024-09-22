@@ -39,6 +39,10 @@
             <groupId>club.xiaojiawei</groupId>
             <artifactId>hs-script-base-deck</artifactId>
         </dependency>
+        <dependency>
+            <groupId>club.xiaojiawei</groupId>
+            <artifactId>hs-script-base-card</artifactId>
+        </dependency>
         <!--javafx-->
         <dependency>
             <groupId>org.openjfx</groupId>

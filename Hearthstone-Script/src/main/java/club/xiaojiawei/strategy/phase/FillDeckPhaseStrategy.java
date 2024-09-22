@@ -6,6 +6,7 @@ import club.xiaojiawei.enums.WarPhaseEnum;
 import club.xiaojiawei.status.DeckStrategyManager;
 import club.xiaojiawei.status.War;
 import club.xiaojiawei.strategy.AbstractPhaseStrategy;
+import club.xiaojiawei.strategy.DeckStrategyActuator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -33,7 +34,7 @@ public class FillDeckPhaseStrategy extends AbstractPhaseStrategy {
     @Override
     protected boolean dealOtherThenIsOver(String line) {
         if (line.contains("CREATE_GAME")){
-            deckStrategyActuator.setDeckStrategy(DeckStrategyManager.CURRENT_DECK_STRATEGY.get());
+            DeckStrategyActuator.INSTANCE.setDeckStrategy(DeckStrategyManager.CURRENT_DECK_STRATEGY.get());
             War.INSTANCE.startWar(DeckStrategyManager.CURRENT_DECK_STRATEGY.get().getRunModes()[0]);
         }
         return super.dealOtherThenIsOver(line);

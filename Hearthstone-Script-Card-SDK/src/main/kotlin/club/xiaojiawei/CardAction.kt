@@ -1,71 +1,121 @@
 package club.xiaojiawei
 
 import club.xiaojiawei.bean.Card
+import java.util.function.Supplier
 
 /**
  * @author 肖嘉威
  * @date 2024/9/8 18:42
  */
-abstract class CardAction {
+abstract class CardAction(createDefaultAction: Boolean = true) {
 
-    companion object {
-        var mouseActionInterval: Int = 3500
-    }
+    var commonAction: CardAction? = null
 
     var belongCard: Card? = null
+        set(value) {
+            field = value
+            commonAction?.belongCard = belongCard
+        }
 
-    abstract fun getCardId(): String
+    init {
+        if (createDefaultAction) {
+            this.commonAction = commonActionFactory?.get()
+            this.commonAction?.belongCard = belongCard
+        }
+    }
 
-    protected fun delay(time: Int = mouseActionInterval) {
+    fun power(isPause:Boolean = true): CardAction? {
+        val result = execPower()
+        if (result) {
+            if (isPause) {
+                this.delay()
+            }else{
+                delay(SHORT_PAUSE_TIME)
+            }
+            return this
+        }
+        return null
+    }
+
+    fun power(card: Card?, isPause:Boolean = true): CardAction?  {
+        return card?.let {
+            val result = execPower(it)
+            if (result) {
+                if (isPause) {
+                    this.delay()
+                }else{
+                    delay(SHORT_PAUSE_TIME)
+                }
+                return this
+            }else{
+                return null
+            }
+        }
+    }
+
+    fun power(index: Int, isPause:Boolean = true): CardAction?  {
+        val result = execPower(index)
+        if (result) {
+            if (isPause) {
+                this.delay()
+            }else{
+                delay(SHORT_PAUSE_TIME)
+            }
+            return this
+        }
+        return null
+    }
+
+    fun attack(card: Card?, isPause:Boolean = true): CardAction?  {
+        return card?.let {
+            val result = execAttack(it)
+            if (result) {
+                if (isPause) {
+                    this.delay()
+                }else{
+                    delay(SHORT_PAUSE_TIME)
+                }
+                return this
+            }
+            return null
+        }
+    }
+
+    fun attackHero(isPause:Boolean = true): CardAction?  {
+        val result = execAttackHero()
+        if (result) {
+            if (isPause) {
+                this.delay()
+            }else{
+                delay(SHORT_PAUSE_TIME)
+            }
+            return this
+        }
+        return null
+    }
+
+    fun pointTo(card: Card?, isPause:Boolean = true): CardAction?  {
+        return card?.let {
+            val result = execPointTo(card)
+            if (result) {
+                if (isPause) {
+                    this.delay()
+                }else{
+                    delay(SHORT_PAUSE_TIME)
+                }
+                return this
+            }
+            return null
+        }
+    }
+
+    fun delay(time: Int = mouseActionInterval) {
         try {
             Thread.sleep(time.toLong())
         } catch (e: InterruptedException) {
 //            log.warn(e) {}
         }
     }
-
-    fun power(): Boolean {
-        val result = execPower()
-        delay()
-        return result
-    }
-
-    fun power(card: Card?): Boolean {
-        return card?.let {
-            val result = execPower(it)
-            delay()
-            return result
-        }?:false
-    }
-
-    fun power(index: Int): Boolean {
-        val result = execPower(index)
-        delay()
-        return result
-    }
-
-    fun attack(card: Card?): Boolean {
-        return card?.let {
-            val result = execAttack(it)
-            delay()
-            result
-        }?:false
-    }
-
-    fun attackHero(): Boolean {
-        val result = execAttackHero()
-        delay()
-        return result
-    }
-
-    fun pointTo(card: Card?): Boolean {
-        return card?.let {
-            val result = execPointTo(card)
-            delay(mouseActionInterval shr 1)
-            result
-        }?: false
-    }
-
 
     protected abstract fun execPower(): Boolean
 
@@ -77,7 +127,54 @@ abstract class CardAction {
 
     protected abstract fun execAttackHero(): Boolean
 
+    /**
+     * 移向card，然后左击
+     */
     protected abstract fun execPointTo(card: Card): Boolean
 
     abstract fun createNewInstance(): CardAction
+
+    abstract fun lClick(): Boolean
+
+    abstract fun getCardId(): String
+
+    companion object {
+        var mouseActionInterval: Int = 3500
+
+        private const val SHORT_PAUSE_TIME = 200
+
+        var commonActionFactory: Supplier<CardAction>? = null
+    }
+
+    abstract class DefaultCardAction : CardAction() {
+
+        override fun execPower(): Boolean {
+            return commonAction?.execPower() ?: false
+        }
+
+        override fun execPower(card: Card): Boolean {
+            return commonAction?.execPower(card) ?: false
+        }
+
+        override fun execPower(index: Int): Boolean {
+            return commonAction?.execPower(index) ?: false
+        }
+
+        override fun execAttack(card: Card): Boolean {
+            return commonAction?.execAttack(card) ?: false
+        }
+
+        override fun execAttackHero(): Boolean {
+            return commonAction?.execAttackHero() ?: false
+        }
+
+        override fun execPointTo(card: Card): Boolean {
+            return commonAction?.execPointTo(card) ?: false
+        }
+
+        override fun lClick(): Boolean {
+            return commonAction?.lClick() ?: false
+        }
+    }
+
 }

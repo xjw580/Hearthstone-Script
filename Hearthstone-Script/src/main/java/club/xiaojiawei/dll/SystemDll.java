@@ -46,4 +46,18 @@ public interface SystemDll extends Library {
 
     void uninstallDll(WinDef.HWND hwnd);
 
+    /**
+     * 是否禁用输入
+     * @param hwnd
+     * @param disable
+     */
+    void changeInput(WinDef.HWND hwnd, boolean disable);
+
+    /**
+     * 是否禁用窗口调整
+     * @param hwnd
+     * @param disable
+     */
+    void changeWindow(WinDef.HWND hwnd, boolean disable);
+
 }

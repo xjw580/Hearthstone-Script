@@ -127,7 +127,7 @@ open class BaseCard : Entity() {
     var isCantBeTargetedByOpponents = false
 
     /**
-     * 无法被法术和英雄技能指向
+     * 扰魔（无法被法术和英雄技能指向）
      */
     @Volatile
     var isElusive = false
@@ -180,11 +180,54 @@ open class BaseCard : Entity() {
     @Volatile
     var isTitan = false
 
+    /**
+     * 法强
+     */
     @Volatile
     var spellPower = 0
 
+    /**
+     * 休眠
+     */
     @Volatile
     var isDormant = false
+
+    /**
+     * 具有突袭词条的随从进入战场时此值改为true，回合结束变为false
+     */
+    @Volatile
+    var isAttackableByRush = false
+
+    /**
+     * 攻击时免疫
+     */
+    @Volatile
+    var isImmuneWhileAttacking = false
+
+    /**
+     * 复生
+     */
+    @Volatile
+    var isReborn = false
+
+    /**
+     * 视觉触发（闪电标志）
+     */
+    @Volatile
+    var isTriggerVisual = false
+
+    /**
+     * 吸血
+     */
+    @Volatile
+    var isLifesteal = false
+
+    /**
+     * 硬币
+     */
+    @Volatile
+    var isCoinCard = false
+
 
     fun minusHealth(health: Int) {
         this.health -= health
@@ -276,9 +319,9 @@ open class BaseCard : Entity() {
         return (isCantBeTargetedByHeroPowers && isCantBeTargetedBySpells) || isElusive
     }
 
-    override fun toString(): String {
-        return generateToString(this, true)
-    }
+//    override fun toString(): String {
+//        return generateToString(this, true)
+//    }
 
     fun toSimpleString(): String {
         return super.toString()

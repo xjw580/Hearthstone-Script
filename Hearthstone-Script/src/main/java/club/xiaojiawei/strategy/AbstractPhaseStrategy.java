@@ -43,8 +43,6 @@ public abstract class AbstractPhaseStrategy implements PhaseStrategy {
     protected AtomicReference<BooleanProperty> isPause;
     @Resource
     protected Properties scriptConfiguration;
-    @Resource
-    protected DeckStrategyActuator deckStrategyActuator;
     /**
      * 告诉Power.log监听器，AbstractPhaseStrategy是否正在处理日志
      */
@@ -81,10 +79,10 @@ public abstract class AbstractPhaseStrategy implements PhaseStrategy {
                                 && Objects.equals(cards.get(size - 1).getCreator(), cards.get(size - 2).getCreator())
                                 && Objects.equals(cards.get(size - 1).getCreator(), cards.get(size - 3).getCreator())
                         ){
-                            log.info("触发发现动作");
                             lastDiscoverEntityId = cards.getLast().getEntityId();
                             if (War.INSTANCE.getCurrentPhase() != REPLACE_CARD_PHASE){
-                                deckStrategyActuator.discoverChooseCard(cards.get(size - 3), cards.get(size - 2), cards.get(size - 1));
+                                log.info("触发发现动作");
+                                DeckStrategyActuator.INSTANCE.discoverChooseCard(cards.get(size - 3), cards.get(size - 2), cards.get(size - 1));
                             }
                         }
                     }

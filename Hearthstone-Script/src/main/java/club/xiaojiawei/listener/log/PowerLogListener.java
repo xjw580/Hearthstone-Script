@@ -1,5 +1,6 @@
 package club.xiaojiawei.listener.log;
 
+import club.xiaojiawei.config.ThreadPoolConfigKt;
 import club.xiaojiawei.data.ScriptStaticData;
 import club.xiaojiawei.enums.WarPhaseEnum;
 import club.xiaojiawei.interfaces.closer.LogListenerCloser;
@@ -65,7 +66,7 @@ public class PowerLogListener extends AbstractLogListener implements LogListener
     protected void otherListen() {
         lastWorkTime = System.currentTimeMillis();
         log.info("开始监听异常情况");
-        errorScheduledFuture = listenFileThreadPool.scheduleAtFixedRate(new LogRunnable(() -> {
+        errorScheduledFuture = ThreadPoolConfigKt.getLISTEN_LOG_THREAD_POOL().scheduleAtFixedRate(new LogRunnable(() -> {
             if (!isPause.get().get() && System.currentTimeMillis() - lastWorkTime > MAX_IDLE_TIME){
                 log.info("监听到异常情况，准备重启游戏");
                 lastWorkTime = System.currentTimeMillis();

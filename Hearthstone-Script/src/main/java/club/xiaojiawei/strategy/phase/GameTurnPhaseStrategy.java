@@ -19,6 +19,7 @@ import static club.xiaojiawei.enums.TagEnum.STEP;
 
 /**
  * 游戏回合阶段
+ *
  * @author 肖嘉威
  * @date 2022/11/26 17:24
  */
@@ -32,23 +33,23 @@ public class GameTurnPhaseStrategy extends AbstractPhaseStrategy implements Game
     private DeckStrategyActuator deckStrategyActuator;
 
     @SuppressWarnings("all")
-    private void stopThread(){
-        try{
-            if (thread != null && thread.isAlive()){
+    private void stopThread() {
+        try {
+            if (thread != null && thread.isAlive()) {
                 thread.interrupt();
                 SystemUtil.delayShortMedium();
                 thread.stop();
             }
-        }catch (UnsupportedOperationException e){
+        } catch (UnsupportedOperationException e) {
 //            log.warn("出牌线程已停止", e);
         }
     }
 
     @Override
     protected boolean dealTagChangeThenIsOver(String line, TagChangeEntity tagChangeEntity) {
-        if (tagChangeEntity.getTag() == STEP){
-            if (Objects.equals(tagChangeEntity.getValue(), MAIN_ACTION.name())){
-                if (War.INSTANCE.getMe() == War.INSTANCE.getCurrentPlayer()){
+        if (tagChangeEntity.getTag() == STEP) {
+            if (Objects.equals(tagChangeEntity.getValue(), MAIN_ACTION.name())) {
+                if (War.INSTANCE.getMe() == War.INSTANCE.getCurrentPlayer()) {
                     log.info("我方回合");
                     SystemUtil.updateGameRect();
                     stopThread();
@@ -59,12 +60,12 @@ public class GameTurnPhaseStrategy extends AbstractPhaseStrategy implements Game
                         SystemUtil.delay(4000);
                         deckStrategyActuator.outCard();
                     }, "OutCard Thread")).start();
-                }else {
+                } else {
                     log.info("对方回合");
                     War.INSTANCE.setMyTurn(false);
                     stopThread();
                 }
-            }else if (Objects.equals(tagChangeEntity.getValue(), MAIN_END.name())){
+            } else if (Objects.equals(tagChangeEntity.getValue(), MAIN_END.name())) {
                 War.INSTANCE.setMyTurn(false);
                 stopThread();
             }

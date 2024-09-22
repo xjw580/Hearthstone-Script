@@ -4,6 +4,7 @@ import club.xiaojiawei.DeckStrategy;
 import club.xiaojiawei.bean.Release;
 import club.xiaojiawei.bean.single.repository.GiteeRepository;
 import club.xiaojiawei.bean.single.repository.GithubRepository;
+import club.xiaojiawei.config.ThreadPoolConfigKt;
 import club.xiaojiawei.controls.NotificationManager;
 import club.xiaojiawei.controls.Time;
 import club.xiaojiawei.controls.ico.*;
@@ -130,20 +131,14 @@ public class MainController implements Initializable {
     private static VBox staticLogVBox;
     @Getter
     private static Accordion staticAccordion;
-    private static NotificationManager staticNotificationManger;
+    private static NotificationManager<String> staticNotificationManger;
     private static ProgressBar staticDownloadProgress;
     private static AtomicReference<BooleanProperty> staticIsPause;
-    private static ScheduledThreadPoolExecutor extraThreadPool;
     private static final SimpleBooleanProperty UPDATING = new SimpleBooleanProperty(false);
     private static final String VERSION_FILE_FLAG_NAME = "downloaded.flag";
     private boolean isNotHoverLog = true;
     @FXML
     private TitledPane titledPaneControl;
-
-    @Autowired
-    private void set(ScheduledThreadPoolExecutor extraThreadPool) {
-        MainController.extraThreadPool = extraThreadPool;
-    }
 
     public void expandedLogPane() {
         accordion.setExpandedPane(titledPaneLog);
@@ -154,7 +149,7 @@ public class MainController implements Initializable {
             return;
         }
         UPDATING.set(true);
-        extraThreadPool.submit(() -> {
+        ThreadPoolConfigKt.getEXTRA_THREAD_POOL().submit(() -> {
             String path = null;
             try {
                 File file = Path.of(TEMP_VERSION_PATH, release.getTagName(), VERSION_FILE_FLAG_NAME).toFile();

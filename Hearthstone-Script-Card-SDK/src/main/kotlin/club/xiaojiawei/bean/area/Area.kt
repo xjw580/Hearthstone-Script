@@ -4,7 +4,7 @@ import club.xiaojiawei.bean.Card
 import club.xiaojiawei.bean.Entity
 import club.xiaojiawei.bean.Player
 import club.xiaojiawei.enums.ZoneEnum
-import club.xiaojiawei.log
+import club.xiaojiawei.config.log
 import java.util.*
 import kotlin.concurrent.Volatile
 
