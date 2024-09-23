@@ -1,7 +1,7 @@
 ![GitHub release](https://img.shields.io/github/release/xjw580/Hearthstone-Script.svg)  ![GitHub](https://img.shields.io/github/license/xjw580/Hearthstone-Script?style=flat-square)
 
 # 炉石传说脚本（网易暴雪复婚，本项目恢复更新，下个稳定版将在炉石国服可玩后更新）
-![favicon.ico](Hearthstone-Script/src/main/resources/fxml/img/favicon.png)
+![favicon.ico](Hearthstone-Script/src/main/resources/static/img/favicon.ico)
 
 
 
@@ -70,6 +70,7 @@
 
 1. 在[release](https://gitee.com/zergqueen/Hearthstone-Script/releases)处下载zip包，解压将lib目录下的**hs-script-deck-sdk.jar** , **hs-script-card-sdk.jar** ,  **hs-script-plugin-sdk.jar** , **hs-script-base.jar**包引入项目
 2. 参考 [Hearthstone-Script-Base-Card](Hearthstone-Script-Base-Card)  [Hearthstone-Script-Base-Deck](Hearthstone-Script-Base-Deck) 两个插件项目
+3. 打包好的插件放入软件根目录下的plugin文件夹（不存在则自行创建）
 
 
 
