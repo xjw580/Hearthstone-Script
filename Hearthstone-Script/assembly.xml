@@ -54,6 +54,13 @@
             <outputDirectory/>
         </fileSet>
         <fileSet>
+            <directory>${project.basedir}/src/main/resources/dll</directory>
+            <includes>
+                <include>*.dll</include>
+            </includes>
+            <outputDirectory>lib/dll/</outputDirectory>
+        </fileSet>
+        <fileSet>
             <directory>${project.build.directory}</directory>
             <outputDirectory/>
             <includes>

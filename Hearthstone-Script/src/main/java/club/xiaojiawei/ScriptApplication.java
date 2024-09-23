@@ -1,5 +1,7 @@
 package club.xiaojiawei;
 
+import club.xiaojiawei.dll.SystemDll;
+import club.xiaojiawei.utils.SystemUtil;
 import javafx.application.Application;
 import lombok.Getter;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -22,6 +24,7 @@ public class ScriptApplication{
     private static List<String> args;
 
     public static void main(String[] args) throws Exception {
+        System.setProperty("jna.library.path", "lib");
         ScriptApplication.args = List.of(args);
         Application.launch(UIApplication.class, args);
     }

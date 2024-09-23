@@ -27,17 +27,18 @@ public class InjectStarter extends AbstractStarter implements StarterTaskCloser 
         String rootPath = System.getProperty("user.dir");
         String injectUtilName = "injectUtil.exe";
         String dllName = "libHS.dll";
+        String dllDir = "dll";
 
         File injectFile = Path.of(rootPath, injectUtilName).toFile();
         File dllFile;
 
         if (injectFile.exists()) {
-            dllFile = Path.of(rootPath, ScriptStaticData.LIB_DIR, dllName).toFile();
+            dllFile = Path.of(rootPath, ScriptStaticData.LIB_DIR, dllDir, dllName).toFile();
             inject(injectFile.getAbsolutePath(), dllFile.getAbsolutePath());
         }else {
             injectFile = new File(Objects.requireNonNull(this.getClass().getClassLoader().getResource("exe/" + injectUtilName)).getPath());
             if (injectFile.exists()) {
-                dllFile = new File(Objects.requireNonNull(this.getClass().getClassLoader().getResource("dll/" + dllName)).getPath());
+                dllFile = new File(Objects.requireNonNull(this.getClass().getClassLoader().getResource(dllDir + File.separator + dllName)).getPath());
                 if (dllFile.exists()) {
                     inject(injectFile.getAbsolutePath(), dllFile.getAbsolutePath());
                 }else {

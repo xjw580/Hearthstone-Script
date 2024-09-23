@@ -122,8 +122,9 @@
                 <artifactId>maven-jar-plugin</artifactId>
                 <configuration>
                     <excludes>
-                        <exclude>**/bat/**</exclude>
-                        <exclude>**/exe/**</exclude>
+                        <exclude>bat/**</exclude>
+                        <exclude>exe/**</exclude>
+                        <exclude>dll/**</exclude>
                         <exclude>application.yml</exclude>
                     </excludes>
                     <archive>

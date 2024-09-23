@@ -1,6 +1,7 @@
 package club.xiaojiawei.utils;
 
 import club.xiaojiawei.bean.LogRunnable;
+import club.xiaojiawei.data.ScriptStaticData;
 import club.xiaojiawei.interfaces.closer.GameThreadCloser;
 import club.xiaojiawei.interfaces.closer.LogListenerCloser;
 import club.xiaojiawei.interfaces.closer.ModeTaskCloser;
@@ -420,7 +421,9 @@ public class SystemUtil {
      * 关闭本软件
      */
     public static void shutdown(){
-        SystemDll.INSTANCE.uninstallDll(SystemUtil.findGameHWND());
+        if (ScriptStaticData.getGameHWND() != null){
+            SystemDll.INSTANCE.uninstallDll(ScriptStaticData.getGameHWND());
+        }
         SystemUtil.removeTray();
         isPause.get().set(true);
         Platform.exit();

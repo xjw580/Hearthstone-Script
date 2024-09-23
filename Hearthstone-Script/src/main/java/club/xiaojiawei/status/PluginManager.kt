@@ -54,14 +54,14 @@ object PluginManager {
 
     private fun loadDeckPlugin() {
         loadDeck.set(false)
-        loadPlugin(DeckStrategy::class.java, DeckPlugin::class.java, "deck", DECK_STRATEGY_PLUGINS)
+        loadPlugin(DeckStrategy::class.java, DeckPlugin::class.java, DECK_STRATEGY_PLUGINS)
         loadDeck.set(true)
         DeckStrategyManager.DECK_STRATEGIES
     }
 
     private fun loadCardPlugin() {
         loadCard.set(false)
-        loadPlugin(CardAction::class.java, CardPlugin::class.java, "card", CARD_ACTION_PLUGINS)
+        loadPlugin(CardAction::class.java, CardPlugin::class.java, CARD_ACTION_PLUGINS)
         loadCard.set(true)
         CardActionManager.CARD_ACTION_MAP
     }
@@ -69,11 +69,10 @@ object PluginManager {
     private fun <T, P : Plugin> loadPlugin(
         aClass: Class<T>,
         pluginClass: Class<P>,
-        pluginDir: String,
         pluginWrapperMap: MutableMap<String, MutableList<PluginWrapper<T>>>
     ) {
         pluginWrapperMap.clear()
-        val deckClassLoaders = ClassLoaderUtil.getClassLoader(SPI_ROOT_PATH.resolve(pluginDir).toFile())
+        val deckClassLoaders = ClassLoaderUtil.getClassLoader(SPI_ROOT_PATH.toFile())
 
         var pluginWrapper: PluginWrapper<T>
 
@@ -98,14 +97,14 @@ object PluginManager {
             if (plugin is CardPlugin) {
                 val pluginScope = plugin.pluginScope()
                 if (pluginScope === PluginScope.PUBLIC) {
-                    addPluginWrapper(pluginWrapper, pluginWrapperMap, "", pluginDir)
+                    addPluginWrapper(pluginWrapper, pluginWrapperMap, "", pluginClass.simpleName)
                 } else if (pluginScope !== PluginScope.PROTECTED) {
                     for (id in pluginScope) {
-                        addPluginWrapper(pluginWrapper, pluginWrapperMap, id, pluginDir)
+                        addPluginWrapper(pluginWrapper, pluginWrapperMap, id, pluginClass.simpleName)
                     }
                 }
             }
-            addPluginWrapper(pluginWrapper, pluginWrapperMap, pluginId, pluginDir)
+            addPluginWrapper(pluginWrapper, pluginWrapperMap, pluginId, pluginClass.simpleName)
         }
 
         //        加载外部spi
@@ -132,7 +131,7 @@ object PluginManager {
                     }
                     pluginWrapper = PluginWrapper(plugins.last, stream.toList())
                     val pluginId = pluginWrapper.plugin.id()
-                    addPluginWrapper(pluginWrapper, pluginWrapperMap, pluginId, pluginDir)
+                    addPluginWrapper(pluginWrapper, pluginWrapperMap, pluginId, pluginClass.simpleName)
                 }
             } catch (e: ServiceConfigurationError) {
                 log.warn(e) { "加载SPI错误" }
@@ -156,7 +155,7 @@ object PluginManager {
         } else {
             pluginWrapperList.add(pluginWrapper)
         }
-        log.info { "加载${type}插件: 【${pluginWrapper.plugin.getInfoString()}】" }
+        log.info { "加载${type}: 【${pluginWrapper.plugin.getInfoString()}】" }
     }
 
     private fun equalsPlugin(plugin1: Plugin?, plugin2: Plugin?): Boolean {

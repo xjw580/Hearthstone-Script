@@ -5,5 +5,5 @@ cd /d %~dp0
 set curdir=%cd%
 
 for /f "delims=\" %%a in ('dir /b /a-d /o-d "%curdir%\*.jar"') do (
-    java -Dfile.encoding=gbk -jar %%a %1
+    java -Dfile.encoding=gbk -Djna.library.path="%curdir%" -jar %%a %1
 )
