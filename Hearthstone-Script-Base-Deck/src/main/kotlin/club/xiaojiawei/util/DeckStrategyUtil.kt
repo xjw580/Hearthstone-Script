@@ -20,6 +20,8 @@ import kotlin.math.min
  */
 private const val EXEC_ACTION: Boolean = true
 
+private val MAX_INVERSION_CALC_COUNT = min(12, Runtime.getRuntime().availableProcessors())
+
 object DeckStrategyUtil {
 
     private var me: Player? = null
@@ -325,8 +327,8 @@ object DeckStrategyUtil {
         var realDisableInversion = disableInversion
         if (!realDisableInversion) {
             realDisableInversion =
-                rivalCards.sumOf { it.inversionAttackCount } + myCards.sumOf { it.attackCount } > 12
-                        || rivalCards.sumOf { it.attackCount } + myCards.sumOf { it.inversionAttackCount } > 12
+                rivalCards.sumOf { it.inversionAttackCount } + myCards.sumOf { it.attackCount } > MAX_INVERSION_CALC_COUNT
+                        || rivalCards.sumOf { it.attackCount } + myCards.sumOf { it.inversionAttackCount } > MAX_INVERSION_CALC_COUNT
         }
         text = if (realDisableInversion) {
             "禁用反演"

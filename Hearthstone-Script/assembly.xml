@@ -1,6 +1,5 @@
-<assembly xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2"
-          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-          xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2 http://maven.apache.org/xsd/assembly-1.1.2.xsd">
+<assembly xmlns="http://maven.apache.org/ASSEMBLY/2.2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/ASSEMBLY/2.2.0 https://maven.apache.org/xsd/assembly-2.2.0.xsd">
 
     <id>app</id>
 
@@ -17,9 +16,26 @@
             <useProjectArtifact>false</useProjectArtifact>
             <outputDirectory>lib</outputDirectory>
             <unpack>false</unpack>
+            <excludes>
+                <exclude>club.xiaojiawei:hs-script-base-card</exclude>
+                <exclude>club.xiaojiawei:hs-script-base-deck</exclude>
+            </excludes>
+        </dependencySet>
+        <dependencySet>
+            <outputDirectory>plugin</outputDirectory>
+            <includes>
+                <include>club.xiaojiawei:hs-script-base-card</include>
+                <include>club.xiaojiawei:hs-script-base-deck</include>
+            </includes>
         </dependencySet>
     </dependencySets>
 
+    <files>
+        <file>
+            <source>${project.build.directory}/${project.build.finalName}.jar</source>
+            <outputDirectory>lib</outputDirectory> <!-- 将生成的 JAR 移到 lib 目录 -->
+        </file>
+    </files>
     <!--设置需要分离的文件-->
     <fileSets>
         <fileSet>
@@ -60,12 +76,12 @@
             </includes>
             <outputDirectory>lib/dll/</outputDirectory>
         </fileSet>
-        <fileSet>
-            <directory>${project.build.directory}</directory>
-            <outputDirectory/>
-            <includes>
-                <include>*.jar</include>
-            </includes>
-        </fileSet>
+<!--        <fileSet>-->
+<!--            <directory>${project.build.directory}</directory>-->
+<!--            <outputDirectory/>-->
+<!--            <includes>-->
+<!--                <include>*.jar</include>-->
+<!--            </includes>-->
+<!--        </fileSet>-->
     </fileSets>
 </assembly>

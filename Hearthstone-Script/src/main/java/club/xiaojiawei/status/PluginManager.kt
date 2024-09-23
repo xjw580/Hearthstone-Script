@@ -18,7 +18,7 @@ import java.util.stream.StreamSupport
  */
 object PluginManager {
 
-    private val SPI_ROOT_PATH: Path = Path.of(System.getProperty("user.dir"), "plugin")
+    private val PLUGIN_ROOT_PATH: Path = Path.of(System.getProperty("user.dir"), "plugin")
 
     /**
      * key：pluginId
@@ -48,8 +48,8 @@ object PluginManager {
     }
 
     fun loadAllPlugins() {
-        loadDeckPlugin()
         loadCardPlugin()
+        loadDeckPlugin()
     }
 
     private fun loadDeckPlugin() {
@@ -72,7 +72,7 @@ object PluginManager {
         pluginWrapperMap: MutableMap<String, MutableList<PluginWrapper<T>>>
     ) {
         pluginWrapperMap.clear()
-        val deckClassLoaders = ClassLoaderUtil.getClassLoader(SPI_ROOT_PATH.toFile())
+        val deckClassLoaders = ClassLoaderUtil.getClassLoader(PLUGIN_ROOT_PATH.toFile())
 
         var pluginWrapper: PluginWrapper<T>
 
