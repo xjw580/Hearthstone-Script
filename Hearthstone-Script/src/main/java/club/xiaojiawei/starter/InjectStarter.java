@@ -4,7 +4,6 @@ import club.xiaojiawei.data.ScriptStaticData;
 import club.xiaojiawei.dll.SystemDll;
 import club.xiaojiawei.interfaces.closer.StarterTaskCloser;
 import club.xiaojiawei.utils.CMDUtil;
-import club.xiaojiawei.utils.SystemUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
