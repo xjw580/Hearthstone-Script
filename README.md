@@ -1,7 +1,7 @@
 ![GitHub release](https://img.shields.io/github/release/xjw580/Hearthstone-Script.svg)  ![GitHub](https://img.shields.io/github/license/xjw580/Hearthstone-Script?style=flat-square)
 
 # 炉石传说脚本（网易暴雪复婚，本项目恢复更新，下个稳定版将在炉石国服可玩后更新）
-![favicon.ico](Hearthstone-Script/src/main/resources/static/img/favicon.ico)
+![favicon.ico](Hearthstone-Script/src/main/resources/fxml/img/favicon.png)
 
 
 
