@@ -41,3 +41,6 @@ embedded_*
 config.json
 /easy-release_static/
 /plugin
+/log
+/resource
+/config

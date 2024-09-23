@@ -120,8 +120,6 @@ public class UIApplication extends Application implements ApplicationRunner {
 
         Runtime.getRuntime().addShutdownHook(new LogThread(() -> SystemDll.INSTANCE.uninstallDll(SystemUtil.findGameHWND())));
 
-        log.info("脚本数据路径：" + springData.getScriptPath());
-
         List<String> args = this.getParameters().getRaw();
 
         String pause = "";

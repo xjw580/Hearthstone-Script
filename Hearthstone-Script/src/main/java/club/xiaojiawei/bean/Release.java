@@ -5,6 +5,8 @@ import lombok.Data;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.Locale;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -45,11 +47,33 @@ public class Release implements Comparable<Release>{
         }
         String[] v1 = matcher1.group().split("\\."), v2 = matcher2.group().split("\\.");
         int minLength = Math.min(v1.length, v2.length);
+        int result = 0;
         for (int i = 0; i < minLength; i++) {
             String s1 = v1[i], s2 = v2[i];
-            int result = Integer.compare(Integer.parseInt(s1), Integer.parseInt(s2));
+            result = Integer.compare(Integer.parseInt(s1), Integer.parseInt(s2));
             if (result != 0){
                 return result;
+            }
+        }
+        if (v1.length == v2.length){
+            String[] split1 = version1.split("-");
+            String[] split2 = version2.split("-");
+            if (split1.length > 1 && split2.length > 1){
+                int type1 = switch (split1[1].toLowerCase(Locale.ROOT)) {
+                    case "ga" -> 5;
+                    case "dev" -> 4;
+                    case "beta" -> 3;
+                    default -> 0;
+                };
+                int type2 = switch (split2[1].toLowerCase(Locale.ROOT)) {
+                    case "ga" -> 5;
+                    case "dev" -> 4;
+                    case "beta" -> 3;
+                    default -> 0;
+                };
+                return type1 - type2;
+            }else {
+                return split1.length - split2.length;
             }
         }
         return Integer.compare(v1.length, v2.length);

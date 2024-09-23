@@ -36,7 +36,7 @@ open class ConfigurationConfig {
     private fun reloadScriptProperties(properties: Properties) {
         val scriptConfigurationFile = File(springData!!.scriptConfigurationFile)
         if (!scriptConfigurationFile.exists()) {
-            File(springData.scriptPath).mkdir()
+            scriptConfigurationFile.parentFile.mkdirs()
             try {
                 FileWriter(scriptConfigurationFile).use { fileWriter ->
                     writeDefaultScriptProperties(fileWriter, properties)

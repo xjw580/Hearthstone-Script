@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Paths;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
@@ -91,7 +92,7 @@ public class SystemUtil {
                 byte[] appIDBytes = SCRIPT_NAME.getBytes(StandardCharsets.UTF_8);
                 byte[] titleBytes = title.getBytes(StandardCharsets.UTF_8);
                 byte[] msgBytes = content.getBytes(StandardCharsets.UTF_8);
-                byte[] icoPathBytes = (springData.getResourcePath() + MAIN_IMG_PNG_NAME).getBytes(StandardCharsets.UTF_8);
+                byte[] icoPathBytes = Paths.get(springData.getResourcePath() + MAIN_IMG_PNG_NAME).toAbsolutePath().normalize().toString().getBytes(StandardCharsets.UTF_8);
                 byte[] btnTextBytes = btnText.getBytes(StandardCharsets.UTF_8);
                 byte[] btnURLBytes = btnURL.getBytes(StandardCharsets.UTF_8);
                 NoticeDll.INSTANCE.notice(
