@@ -76,7 +76,8 @@ public class MainController implements Initializable {
     @FXML
     private StackPane rootPane;
     @FXML
-    private NotificationManager notificationManger;
+    @Getter
+    private NotificationManager<Object> notificationManger;
     @FXML
     private ScrollPane logScrollPane;
     @FXML
@@ -131,7 +132,8 @@ public class MainController implements Initializable {
     private static VBox staticLogVBox;
     @Getter
     private static Accordion staticAccordion;
-    private static NotificationManager<String> staticNotificationManger;
+    @Getter
+    private static NotificationManager<Object> staticNotificationManger;
     private static ProgressBar staticDownloadProgress;
     private static AtomicReference<BooleanProperty> staticIsPause;
     private static final SimpleBooleanProperty UPDATING = new SimpleBooleanProperty(false);

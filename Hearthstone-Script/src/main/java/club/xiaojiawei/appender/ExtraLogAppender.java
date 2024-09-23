@@ -5,6 +5,7 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.UnsynchronizedAppenderBase;
 import club.xiaojiawei.bean.WsResult;
 import club.xiaojiawei.controller.javafx.MainController;
+import club.xiaojiawei.controls.CopyLabel;
 import club.xiaojiawei.controls.ico.CopyIco;
 import club.xiaojiawei.controls.ico.OKIco;
 import club.xiaojiawei.enums.WsResultTypeEnum;
@@ -42,7 +43,8 @@ public class ExtraLogAppender extends UnsynchronizedAppenderBase<ILoggingEvent> 
                 if (list.size() > 250){
                     list.clear();
                 }
-                Label label = new Label();
+                CopyLabel label = new CopyLabel();
+                label.setNotificationManager(MainController.getStaticNotificationManger());
                 label.setStyle("-fx-wrap-text: true");
                 label.prefWidthProperty().bind(MainController.getStaticAccordion().widthProperty().subtract(15));
 
