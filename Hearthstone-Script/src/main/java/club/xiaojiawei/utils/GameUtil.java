@@ -253,7 +253,7 @@ public class GameUtil implements ModeTaskCloser {
     public static void clickDiscover(int index, int discoverSize){
         if (discoverSize == 3){
             getThreeDiscoverCardRect(index).lClick();
-        }else if (discoverSize == 4){
+        }else {
             getFourDiscoverCardRect(index).lClick();
         }
     }

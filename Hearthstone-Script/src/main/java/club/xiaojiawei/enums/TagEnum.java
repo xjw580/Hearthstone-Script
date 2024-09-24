@@ -78,6 +78,7 @@ public enum TagEnum {
                             log.warn("非正常游戏id：" + gameId);
                         }
 //                        是我
+
                         if (Objects.equals(War.INSTANCE.getMe().getGameId(), gameId)
                                 || (!War.INSTANCE.getRival().getGameId().isBlank() && !Objects.equals(War.INSTANCE.getRival().getGameId(), gameId))
                         ) {

@@ -49,7 +49,7 @@ public class GameTurnPhaseStrategy extends AbstractPhaseStrategy implements Game
     protected boolean dealTagChangeThenIsOver(String line, TagChangeEntity tagChangeEntity) {
         if (tagChangeEntity.getTag() == STEP) {
             if (Objects.equals(tagChangeEntity.getValue(), MAIN_ACTION.name())) {
-                if (War.INSTANCE.getMe() == War.INSTANCE.getCurrentPlayer()) {
+                if (War.INSTANCE.getMe() == War.INSTANCE.getCurrentPlayer() && War.INSTANCE.getMe() != null) {
                     log.info("我方回合");
                     SystemUtil.updateGameRect();
                     stopThread();

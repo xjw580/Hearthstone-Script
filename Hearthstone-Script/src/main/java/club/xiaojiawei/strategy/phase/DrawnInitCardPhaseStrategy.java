@@ -90,7 +90,9 @@ public class DrawnInitCardPhaseStrategy extends AbstractPhaseStrategy{
                 War.INSTANCE.getMe().setGameId(War.INSTANCE.getFirstPlayerGameId());
                 log.info("我方游戏id：" + War.INSTANCE.getFirstPlayerGameId());
             }
-            if (Objects.equals(War.INSTANCE.getMe().getGameId(), War.INSTANCE.getFirstPlayerGameId()) || !(War.INSTANCE.getRival().getGameId().isBlank() && !Objects.equals(War.INSTANCE.getRival().getGameId(), War.INSTANCE.getFirstPlayerGameId()))){
+            if (Objects.equals(War.INSTANCE.getMe().getGameId(), War.INSTANCE.getFirstPlayerGameId())
+                    || (!War.INSTANCE.getRival().getGameId().isBlank() && !Objects.equals(War.INSTANCE.getRival().getGameId(), War.INSTANCE.getFirstPlayerGameId()))
+            ) {
                 War.INSTANCE.setCurrentPlayer(War.INSTANCE.getMe());
             }else {
                 War.INSTANCE.setCurrentPlayer(War.INSTANCE.getRival());

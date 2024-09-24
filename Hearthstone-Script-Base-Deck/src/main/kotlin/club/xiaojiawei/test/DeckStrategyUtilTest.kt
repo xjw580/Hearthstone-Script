@@ -5,6 +5,7 @@ import club.xiaojiawei.bean.Card
 import club.xiaojiawei.enums.CardTypeEnum
 import club.xiaojiawei.status.War
 import club.xiaojiawei.util.DeckStrategyUtil
+import kotlin.math.cos
 
 /**
  * @author 肖嘉威 xjw580@qq.com
@@ -60,9 +61,46 @@ fun main() {
 //    test3()
 //    test4()
     testTaunt()
+    val me = War.player1
+    if (me == null){
+        return
+    }
+    val cards = me.handArea.cards.toList()
+    println(cards)
+    val toMutableList = cards.toMutableList()
+    toMutableList.removeAll { card -> card.cardType != CardTypeEnum.MINION || card.isBattlecry }
+//    val (num, resultCards) = findClosestSum(toMutableList, 1)
+    println(toMutableList)
+    val (num, resultCards) = DeckStrategyUtil.calcPowerOrder(toMutableList, 0)
+    println(resultCards)
+    println(num)
 
-    DeckStrategyUtil.cleanPlay()
+//    DeckStrategyUtil.cleanPlay()
 //    DeckStrategyUtil.cleanTaunt()
+}
+
+fun findClosestSum(numbers: List<Card>, target: Int): Pair<Int, List<Card>> {
+    var closest = 0
+    val bestCombination = mutableListOf<Card>()
+
+    fun backtrack(start: Int, currentSum: Int, currentCombination: MutableList<Card>) {
+        if (currentSum > target) return // 超过目标，不再继续
+
+        if (currentSum > closest) {
+            closest = currentSum // 更新最接近的和
+            bestCombination.clear()
+            bestCombination.addAll(currentCombination) // 更新最佳组合
+        }
+
+        for (i in start until numbers.size) {
+            currentCombination.add(numbers[i]) // 选择当前数
+            backtrack(i + 1, currentSum + numbers[i].cost, currentCombination) // 递归
+            currentCombination.removeAt(currentCombination.size - 1) // 回溯，移除当前数
+        }
+    }
+
+    backtrack(0, 0, mutableListOf())
+    return Pair(closest, bestCombination)
 }
 
 fun test1() {
@@ -454,11 +492,12 @@ fun testTaunt() {
         card.apply {
             entityName = "m3"
             entityId = "m3"
+            cost = 0
             atc = 5
             health = 5
             cardType = CardTypeEnum.MINION
         }
-        it.playArea.add(card)
+        it.handArea.add(card)
 
         card = Card(MyCardAction())
         card.apply {
@@ -466,9 +505,10 @@ fun testTaunt() {
             entityId = "m3"
             atc = 5
             health = 5
+            cost = 0
             cardType = CardTypeEnum.MINION
         }
-        it.playArea.add(card)
+        it.handArea.add(card)
 
         card = Card(MyCardAction())
         card.apply {
@@ -478,7 +518,7 @@ fun testTaunt() {
             health = 30
             cardType = CardTypeEnum.HERO
         }
-        it.playArea.add(card)
+        it.handArea.add(card)
     }
 
     War.rival?.let {
@@ -490,7 +530,7 @@ fun testTaunt() {
             health = 10
             cardType = CardTypeEnum.MINION
         }
-        it.playArea.add(card)
+        it.handArea.add(card)
 
         card = Card(MyCardAction())
         card.apply {
@@ -500,7 +540,7 @@ fun testTaunt() {
             health = 10
             cardType = CardTypeEnum.MINION
         }
-        it.playArea.add(card)
+        it.handArea.add(card)
 
         card = Card(MyCardAction())
         card.apply {
@@ -510,7 +550,7 @@ fun testTaunt() {
             health = 10
             cardType = CardTypeEnum.MINION
         }
-        it.playArea.add(card)
+        it.handArea.add(card)
 
         card = Card(MyCardAction())
         card.apply {
@@ -520,7 +560,7 @@ fun testTaunt() {
             health = 10
             cardType = CardTypeEnum.MINION
         }
-        it.playArea.add(card)
+        it.handArea.add(card)
 
         card = Card(MyCardAction())
         card.apply {
@@ -530,7 +570,7 @@ fun testTaunt() {
             health = 10
             cardType = CardTypeEnum.MINION
         }
-        it.playArea.add(card)
+        it.handArea.add(card)
 
         card = Card(MyCardAction())
         card.apply {
@@ -540,7 +580,7 @@ fun testTaunt() {
             health = 10
             cardType = CardTypeEnum.MINION
         }
-        it.playArea.add(card)
+        it.handArea.add(card)
 
         card = Card(MyCardAction())
         card.apply {
@@ -550,7 +590,7 @@ fun testTaunt() {
             health = 10
             cardType = CardTypeEnum.MINION
         }
-        it.playArea.add(card)
+        it.handArea.add(card)
 
         card = Card(MyCardAction())
         card.apply {
@@ -560,6 +600,6 @@ fun testTaunt() {
             health = 30
             cardType = CardTypeEnum.HERO
         }
-        it.playArea.add(card)
+        it.handArea.add(card)
     }
 }

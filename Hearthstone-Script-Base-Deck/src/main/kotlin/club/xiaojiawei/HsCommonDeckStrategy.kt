@@ -75,13 +75,11 @@ class HsCommonDeckStrategy : DeckStrategy() {
         if (coinCard != null) {
             val (num1, resultCards1) = DeckStrategyUtil.calcPowerOrder(toMutableList, me.usableResource + 1)
             if (num1 > me.usableResource) {
-                resultCards.forEach { log.info { it.entityName } }
                 coinCard.action.power()
                 resultCards1.forEach { it.action.power() }
                 return
             }
         }
-        resultCards.forEach { log.info { it.entityName } }
         resultCards.forEach { card ->
             card.action.power()
         }

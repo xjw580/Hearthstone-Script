@@ -561,27 +561,34 @@ object DeckStrategyUtil {
     }
 
     fun calcPowerOrder(cards: List<Card>, target: Int): Pair<Int, List<Card>> {
-        val dp = IntArray(target + 1) // dp[i] 表示能得到的最大和不超过 i
-        val path = Array(target + 1) { mutableListOf<Card>() } // 路径记录
+        val dp = IntArray(target + 1)
+        val chosenCards = Array(target + 1) { mutableListOf<Card>() }
 
         for (card in cards) {
-            for (j in target downTo card.cost) { // 从后向前更新
-                if (dp[j - card.cost] + card.cost > dp[j]) {
-                    dp[j] = dp[j - card.cost] + card.cost // 更新最大和
-                    path[j] = (path[j - card.cost] + listOf(card)).toMutableList() // 更新路径
+            for (j in target downTo card.cost) {
+                if (dp[j] < dp[j - card.cost] + card.cost) {
+                    dp[j] = dp[j - card.cost] + card.cost
+                    chosenCards[j] = chosenCards[j - card.cost].toMutableList().apply { add(card) }
                 }
             }
         }
 
-        // 找到最大的 dp[i]，即最接近目标的和
-        var closestSum = 0
-        for (i in 0..target) {
-            if (dp[i] > closestSum) {
-                closestSum = dp[i]
+        // 处理选择cost为0的卡片
+        if (target == 0) {
+            chosenCards[0] = cards.filter { it.cost == 0 }.toMutableList()
+        } else {
+            for (card in cards) {
+                if (card.cost == 0) {
+                    for (j in target downTo 0) {
+                        if (dp[j] > 0) {  // 如果当前总cost大于0，可以选择cost为0的卡片
+                            chosenCards[j].add(card)
+                        }
+                    }
+                }
             }
         }
 
-        return Pair(closestSum, path[closestSum]) // 返回最接近的和及对应的组合
+        return Pair(dp[target], chosenCards[target])
     }
 
 }
