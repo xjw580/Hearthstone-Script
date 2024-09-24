@@ -1,31 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import club.xiaojiawei.controls.NotificationManager?>
-<?import club.xiaojiawei.controls.Switch?>
+<?import club.xiaojiawei.controls.*?>
 <?import club.xiaojiawei.factory.NotificationFactory?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.text.Text?>
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             stylesheets="@css/pluginSettings.css"
             fx:id="rootPane"
             fx:controller="club.xiaojiawei.controller.javafx.PluginSettingsController">
-    <SplitPane dividerPositions="0.5" prefHeight="${rootPane.height}" prefWidth="${rootPane.width}">
-        <ListView fx:id="pluginListView"/>
-        <VBox style="-fx-background-color: white">
+    <SplitPane dividerPositions="0.3" style="-fx-background: white"
+               prefHeight="${rootPane.height}" prefWidth="${rootPane.width}">
+        <ListView fx:id="pluginListView" styleClass="list-view-ui"/>
+        <VBox fx:id="pluginInfo" style="-fx-background-color: white" visible="false">
             <VBox spacing="3" style="-fx-padding: 5">
-                <Text style="-fx-font-size: 18;-fx-font-weight: bold" text="hs-base-deck"/>
+                <CopyLabel fx:id="pluginName" notificationManager="${notificationManager}"
+                           style="-fx-font-size: 18;-fx-font-weight: bold"/>
                 <HBox spacing="15" alignment="CENTER_LEFT">
-                    <Label text="XiaoJiawei"/>
-                    <Hyperlink text="插件首页"/>
+                    <CopyLabel fx:id="pluginAuthor" notificationManager="${notificationManager}"/>
+                    <Hyperlink text="插件首页" onAction="#jumpToHome"/>
+                    <CopyLabel fx:id="pluginId" notificationManager="${notificationManager}"/>
                 </HBox>
-                <Text text="1.0.0"/>
+                <CopyLabel fx:id="pluginVersion" notificationManager="${notificationManager}"/>
             </VBox>
-            <TabPane styleClass="tab-pane-ui, tab-pane-ui-small" tabClosingPolicy="UNAVAILABLE">
-                <Tab text="描述">
-                    <VBox style="-fx-padding: 5">
-                        <Text text="大幅度发生多少分了，大丰收"/>
+            <TabPane styleClass="tab-pane-ui, tab-pane-ui-small" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
+                <Tab text="描述" fx:id="desRoot">
+                    <VBox fx:id="desRootPane" style="-fx-padding: 5;">
+                        <CopyLabel fx:id="pluginDescription" notificationManager="${notificationManager}" wrapText="true"/>
                     </VBox>
                 </Tab>
             </TabPane>

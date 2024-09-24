@@ -1,30 +1,26 @@
 package club.xiaojiawei.controller.javafx;
 
-import club.xiaojiawei.DeckStrategy;
-import club.xiaojiawei.bean.PluginWrapper;
 import club.xiaojiawei.component.PluginItem;
+import club.xiaojiawei.controls.CopyLabel;
 import club.xiaojiawei.controls.NotificationManager;
-import club.xiaojiawei.status.DeckStrategyManager;
 import club.xiaojiawei.status.PluginManager;
 import club.xiaojiawei.utils.PropertiesUtil;
+import club.xiaojiawei.utils.SystemUtil;
 import jakarta.annotation.Resource;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.net.URL;
 import java.util.Collection;
-import java.util.List;
 import java.util.Properties;
 import java.util.ResourceBundle;
+import java.util.stream.Stream;
 
 /**
  * @author 肖嘉威
@@ -34,17 +30,29 @@ import java.util.ResourceBundle;
 @Slf4j
 public class PluginSettingsController implements Initializable {
 
-    @Resource
-    private Properties scriptConfiguration;
-    @Resource
-    private PropertiesUtil propertiesUtil;
-
+    @FXML
+    private CopyLabel pluginDescription;
+    @FXML
+    private VBox pluginInfo;
+    @FXML
+    private CopyLabel pluginName;
+    @FXML
+    private CopyLabel pluginAuthor;
+    @FXML
+    private CopyLabel pluginId;
+    @FXML
+    private CopyLabel pluginVersion;
     @FXML
     private AnchorPane rootPane;
     @FXML
     private NotificationManager<Object> notificationManager;
     @FXML
-    private ListView<VBox> pluginListView;
+    private ListView<PluginItem> pluginListView;
+
+    @Resource
+    private Properties scriptConfiguration;
+    @Resource
+    private PropertiesUtil propertiesUtil;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -53,14 +61,24 @@ public class PluginSettingsController implements Initializable {
     }
 
     private void initValue() {
-        List<PluginWrapper<DeckStrategy>> list = PluginManager.INSTANCE.getDECK_STRATEGY_PLUGINS().values().stream().flatMap(Collection::stream).toList();
         var pluginItems = pluginListView.getItems();
-        for (PluginWrapper<DeckStrategy> deckStrategyPluginWrapper : list) {
-            pluginItems.add(new PluginItem(deckStrategyPluginWrapper));
-        }
+        Stream.concat(
+                PluginManager.INSTANCE.getDECK_STRATEGY_PLUGINS().values().stream().flatMap(Collection::stream),
+                PluginManager.INSTANCE.getCARD_ACTION_PLUGINS().values().stream().flatMap(Collection::stream)
+        ).forEach(plugin -> pluginItems.add(new PluginItem(plugin, notificationManager)));
     }
 
     private void listen() {
+        pluginListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+           pluginInfo.setVisible(newValue != null);
+           if (newValue != null) {
+               pluginName.setText(newValue.getPluginWrapper().getPlugin().name());
+               pluginAuthor.setText(newValue.getPluginWrapper().getPlugin().author());
+               pluginId.setText(newValue.getPluginWrapper().getPlugin().id());
+               pluginVersion.setText(newValue.getPluginWrapper().getPlugin().version());
+               pluginDescription.setText(newValue.getPluginWrapper().getPlugin().description());
+           }
+        });
     }
 
 
@@ -71,4 +89,14 @@ public class PluginSettingsController implements Initializable {
     public void save(ActionEvent actionEvent) {
 
     }
+
+    @FXML
+    protected void jumpToHome(ActionEvent actionEvent) {
+        PluginItem selectedItem = pluginListView.getSelectionModel().getSelectedItem();
+        if (selectedItem == null) return;
+        String homeUrl = selectedItem.getPluginWrapper().getPlugin().homeUrl();
+        if (homeUrl.isBlank() || !homeUrl.contains("http")) return;
+        SystemUtil.openUrlByBrowser(homeUrl);
+    }
+
 }

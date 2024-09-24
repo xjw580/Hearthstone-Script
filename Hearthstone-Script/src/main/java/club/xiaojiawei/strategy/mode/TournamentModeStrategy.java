@@ -106,8 +106,14 @@ public class TournamentModeStrategy extends AbstractModeStrategy<Object> impleme
             SystemUtil.updateGameRect();
 
             DeckStrategy deckStrategy = DeckStrategyManager.CURRENT_DECK_STRATEGY.get();
+            if (deckStrategy == null){
+                SystemUtil.notice("未选择卡组");
+                log.info("未选择卡组");
+                isPause.get().set(true);
+                return;
+            }
             RunModeEnum runModeEnum;
-            if (deckStrategy != null && ((runModeEnum = deckStrategy.getRunModes()[0]) == RunModeEnum.CASUAL || runModeEnum == RunModeEnum.CLASSIC || runModeEnum == RunModeEnum.WILD || runModeEnum == RunModeEnum.STANDARD) && runModeEnum.isEnable()){
+            if (((runModeEnum = deckStrategy.getRunModes()[0]) == RunModeEnum.CASUAL || runModeEnum == RunModeEnum.CLASSIC || runModeEnum == RunModeEnum.WILD || runModeEnum == RunModeEnum.STANDARD) && runModeEnum.isEnable()){
                 if (!(checkPowerLogSize())){
                     return;
                 }
@@ -128,7 +134,7 @@ public class TournamentModeStrategy extends AbstractModeStrategy<Object> impleme
         }
     }
 
-    private static final int RESERVE_SIZE = 2 * 1024 * 1024;
+    private static final int RESERVE_SIZE = 4 * 1024 * 1024;
 
     private boolean checkPowerLogSize(){
         try {

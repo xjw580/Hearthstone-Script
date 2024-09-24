@@ -2,8 +2,10 @@ package club.xiaojiawei.status
 
 import club.xiaojiawei.*
 import club.xiaojiawei.bean.PluginWrapper
+import club.xiaojiawei.config.ConfigurationConfig
 import club.xiaojiawei.config.PluginScope
 import club.xiaojiawei.config.log
+import club.xiaojiawei.enums.ConfigurationEnum
 import club.xiaojiawei.utils.ClassLoaderUtil
 import javafx.beans.property.ReadOnlyBooleanProperty
 import javafx.beans.property.ReadOnlyBooleanWrapper
@@ -75,6 +77,19 @@ object PluginManager {
         val deckClassLoaders = ClassLoaderUtil.getClassLoader(PLUGIN_ROOT_PATH.toFile())
 
         var pluginWrapper: PluginWrapper<T>
+        val disableSet:MutableSet<String> =
+        if (pluginClass == CardPlugin::class.java) {
+            ConfigurationConfig.scriptConfiguration.getProperty(
+                ConfigurationEnum.CARD_PLUGIN_DISABLED.key,
+                ConfigurationEnum.CARD_PLUGIN_DISABLED.defaultValue
+            ).split(",")
+        }else{
+            ConfigurationConfig.scriptConfiguration.getProperty(
+                ConfigurationEnum.DECK_PLUGIN_DISABLED.key,
+                ConfigurationEnum.DECK_PLUGIN_DISABLED.defaultValue
+            ).split(",")
+        }.toMutableSet()
+        disableSet.removeAll { it.trim().isEmpty() }
 
         //        加载内部spi
         val basePlugin = StreamSupport.stream(
@@ -92,6 +107,9 @@ object PluginManager {
                 false
             ).toList()
             pluginWrapper = PluginWrapper(basePlugin.first(), baseInstance)
+            if (disableSet.contains(pluginWrapper.plugin.id())){
+                pluginWrapper.setEnabled(false)
+            }
             val plugin = pluginWrapper.plugin
             val pluginId = plugin.id()
             if (plugin is CardPlugin) {
@@ -130,6 +148,9 @@ object PluginManager {
                         }
                     }
                     pluginWrapper = PluginWrapper(plugins.last, stream.toList())
+                    if (disableSet.contains(pluginWrapper.plugin.id())){
+                        pluginWrapper.setEnabled(false)
+                    }
                     val pluginId = pluginWrapper.plugin.id()
                     addPluginWrapper(pluginWrapper, pluginWrapperMap, pluginId, pluginClass.simpleName)
                 }

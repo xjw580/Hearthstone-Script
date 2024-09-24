@@ -5,11 +5,11 @@ import club.xiaojiawei.bean.MagePower
 import club.xiaojiawei.bean.Player
 import club.xiaojiawei.bean.PriestPower
 import club.xiaojiawei.bean.abs.PointPower
+import club.xiaojiawei.config.log
 import club.xiaojiawei.enums.CardTypeEnum
 import club.xiaojiawei.enums.RunModeEnum
 import club.xiaojiawei.status.War
 import club.xiaojiawei.util.DeckStrategyUtil
-import kotlin.collections.HashSet
 
 /**
  * @author 肖嘉威
@@ -50,41 +50,44 @@ class HsCommonDeckStrategy : DeckStrategy() {
         powerCard(me, rival)
 
         me.playArea.power?.let {
-            if (!me.playArea.isFull && me.usableResource >= it.cost){
-                if (it.action is PointPower){
-                    if (it.action is MagePower){
+            if (!me.playArea.isFull && me.usableResource >= it.cost) {
+                if (it.action is PointPower) {
+                    if (it.action is MagePower) {
                         it.action.power(false)?.pointTo(rival.playArea.hero)
-                    }else if (it.action is PriestPower){
+                    } else if (it.action is PriestPower) {
                         it.action.power(false)?.pointTo(me.playArea.hero)
                     }
-                }else{
+                } else {
                     it.action.power()
                 }
             }
         }
     }
 
-    private fun powerCard(me: Player, rival: Player){
-        val playArea = me.playArea
+    private fun powerCard(me: Player, rival: Player) {
         val cards = me.handArea.cards.toList()
-        for (card in cards) {
-            if (playArea.isFull){
-                break
+        val toMutableList = cards.toMutableList()
+        toMutableList.removeAll { card -> card.cardType != CardTypeEnum.MINION || card.isBattlecry }
+
+        val (num, resultCards) = DeckStrategyUtil.calcPowerOrder(toMutableList, me.usableResource)
+
+        val coinCard = findCoin(cards)
+        if (coinCard != null) {
+            val (num1, resultCards1) = DeckStrategyUtil.calcPowerOrder(toMutableList, me.usableResource + 1)
+            if (num1 > me.usableResource) {
+                resultCards.forEach { log.info { it.entityName } }
+                coinCard.action.power()
+                resultCards1.forEach { it.action.power() }
+                return
             }
-            if (card.cardType == CardTypeEnum.MINION && !card.isBattlecry) {
-                if (me.usableResource >= card.cost){
-                    card.action.power()
-                }else if (me.usableResource + 1 >= card.cost){
-                    findCoin(cards)?.let {
-                        it.action.power()
-                        card.action.power()
-                    }
-                }
-            }
+        }
+        resultCards.forEach { log.info { it.entityName } }
+        resultCards.forEach { card ->
+            card.action.power()
         }
     }
 
-    private fun findCoin(cards: List<Card>):Card?{
+    private fun findCoin(cards: List<Card>): Card? {
         return cards.find { it.isCoinCard }
     }
 

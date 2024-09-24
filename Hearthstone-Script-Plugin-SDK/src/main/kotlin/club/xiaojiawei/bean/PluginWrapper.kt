@@ -3,6 +3,7 @@ package club.xiaojiawei.bean
 import club.xiaojiawei.Plugin
 import javafx.beans.property.BooleanProperty
 import javafx.beans.property.SimpleBooleanProperty
+import javafx.beans.value.ChangeListener
 
 /**
  * @author 肖嘉威
@@ -10,10 +11,19 @@ import javafx.beans.property.SimpleBooleanProperty
  */
 class PluginWrapper<T>(val plugin: Plugin, val spiInstance: List<T>) {
 
+    var isListen = false
+
     private val enabled: BooleanProperty = SimpleBooleanProperty(true)
 
     fun isEnabled(): Boolean {
         return enabled.get()
+    }
+
+    fun addEnabledListener(listener: ChangeListener<in Boolean>) {
+        if (!isListen) {
+            enabledProperty().addListener(listener)
+            isListen = true
+        }
     }
 
     fun enabledProperty(): BooleanProperty {
@@ -36,5 +46,6 @@ class PluginWrapper<T>(val plugin: Plugin, val spiInstance: List<T>) {
     override fun hashCode(): Int {
         return plugin.id().hashCode()
     }
+
 
 }

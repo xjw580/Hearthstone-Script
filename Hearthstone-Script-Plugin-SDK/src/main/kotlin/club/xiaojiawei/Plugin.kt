@@ -31,6 +31,18 @@ sealed interface Plugin {
      */
     fun name(): String
 
+    /**
+     * 插件主页链接
+     */
+    fun homeUrl(): String
+
+    /**
+     * 插件更新链接
+     */
+    fun updateUrl(): String{
+        return ""
+    }
+
     fun getInfoString(): String{
         return "name: ${name()}, version: ${version()}, author: ${author()}, id: ${id()}, description: ${description()}"
     }

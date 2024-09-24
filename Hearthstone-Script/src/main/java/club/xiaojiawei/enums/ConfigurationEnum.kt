@@ -81,11 +81,24 @@ enum class ConfigurationEnum(
     SEND_NOTICE("sendNotice", "true"),
 
     /**
-     * 鼠标操作完一套流程的停顿时间
+     * 动作间隔/ms
      */
     MOUSE_ACTION_INTERVAL("mouseActionInterval", "3500"),
 
+    /**
+     * 鼠标移动间隔/ms
+     */
     MOUSE_MOVE_INTERVAL("mouseMoveInterval", "4"),
+
+    /**
+     * 套牌插件禁用列表
+     */
+    DECK_PLUGIN_DISABLED("deckPluginDisabled", ""),
+
+    /**
+     * 卡牌插件禁用列表
+     */
+    CARD_PLUGIN_DISABLED("cardPluginDisabled", ""),
     ;
 
 }

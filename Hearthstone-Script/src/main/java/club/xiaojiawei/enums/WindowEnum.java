@@ -27,7 +27,7 @@ public enum WindowEnum {
     ),
     STARTUP(
             "startup.fxml", ScriptStaticData.SCRIPT_NAME + "-启动页",
-            683D, 400D, -1, -1,
+            558D, 400D, -1, -1,
             false, UNDECORATED
     ),
     ;

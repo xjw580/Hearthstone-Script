@@ -23,6 +23,7 @@ import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.ObservableList;
+import javafx.collections.SetChangeListener;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
@@ -274,7 +275,7 @@ public class MainController implements Initializable {
         staticNotificationManger = notificationManger;
     }
 
-    private Map<RunModeEnum, List<DeckStrategy>> runModeMap;
+    private Map<RunModeEnum, List<DeckStrategy>> runModeMap = new HashMap<>();
 
     /**
      * 初始化模式和卡组
@@ -302,25 +303,22 @@ public class MainController implements Initializable {
                 return null;
             }
         });
-        runModeMap = new HashMap<>();
-        for (DeckStrategy deckStrategy : DeckStrategyManager.DECK_STRATEGIES) {
-            for (RunModeEnum runModeEnum : deckStrategy.getRunModes()) {
-                List<DeckStrategy> strategies = runModeMap.getOrDefault(runModeEnum, new ArrayList<>());
-                strategies.add(deckStrategy);
-                runModeMap.put(runModeEnum, strategies);
-            }
-        }
 
-        runModeBox.getItems().addAll(runModeMap.keySet());
+        reloadRunMode();
 
 //        模式更改监听
         runModeBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            deckBox.getItems().setAll(runModeMap.get(newValue));
+            deckBox.getSelectionModel().select(null);
+            if (newValue == null){
+                deckBox.getItems().clear();
+            }else {
+                deckBox.getItems().setAll(runModeMap.get(newValue));
+            }
         });
 
 //        卡组更改监听
         deckBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue != null) {
+            if (newValue != null){
 //                将卡组策略的第一个运行模式改为当前运行模式
                 for (int i = 0; i < newValue.getRunModes().length; i++) {
                     RunModeEnum runModeEnum = newValue.getRunModes()[i];
@@ -330,26 +328,43 @@ public class MainController implements Initializable {
                         break;
                     }
                 }
-                DeckStrategyManager.CURRENT_DECK_STRATEGY.set(newValue);
             }
+            DeckStrategyManager.CURRENT_DECK_STRATEGY.set(newValue);
         });
 
         Optional<DeckStrategy> defaultDeck = DeckStrategyManager.DECK_STRATEGIES.stream().filter(deckStrategy -> Objects.equals(scriptConfiguration.getProperty(DEFAULT_DECK_STRATEGY.getKey()), deckStrategy.id())).findFirst();
-        if (defaultDeck.isPresent() && defaultDeck.get().getRunModes() != null) {
+        if (defaultDeck.isPresent()) {
+            defaultDeck.get().getRunModes();
             runModeBox.setValue(defaultDeck.get().getRunModes()[0]);
             deckBox.setValue(defaultDeck.get());
         }
 
         DeckStrategyManager.CURRENT_DECK_STRATEGY.addListener((observableValue, deck, t1) -> {
-            if (t1 != null && t1.getRunModes() != null){
+            if (t1 != null) {
+                t1.getRunModes();
                 runModeBox.setValue(t1.getRunModes()[0]);
                 deckBox.setValue(t1);
             }
         });
     }
 
+    public void reloadRunMode() {
+        runModeMap.clear();
+        for (DeckStrategy deckStrategy : DeckStrategyManager.DECK_STRATEGIES) {
+            for (RunModeEnum runModeEnum : deckStrategy.getRunModes()) {
+                List<DeckStrategy> strategies = runModeMap.getOrDefault(runModeEnum, new ArrayList<>());
+                strategies.add(deckStrategy);
+                runModeMap.put(runModeEnum, strategies);
+            }
+        }
+        runModeBox.getItems().setAll(runModeMap.keySet());
+    }
+
 
     private void addListener() {
+        DeckStrategyManager.DECK_STRATEGIES.addListener((SetChangeListener<? super DeckStrategy>) observable -> {
+            reloadRunMode();
+        });
         //        是否在更新中监听
         UPDATING.addListener((observable, oldValue, newValue) -> updateBtn.setDisable(newValue));
         //        监听日志自动滑到底部

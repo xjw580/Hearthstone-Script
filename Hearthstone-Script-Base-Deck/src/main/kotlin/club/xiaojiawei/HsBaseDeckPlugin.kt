@@ -14,7 +14,7 @@ class HsBaseDeckPlugin: DeckPlugin {
     }
 
     override fun description(): String {
-        return "捆绑"
+        return "捆绑，通用策略，未对卡牌和卡组适配，自行组一套无战吼无法术的套牌即可"
     }
 
     override fun id(): String {
@@ -23,5 +23,9 @@ class HsBaseDeckPlugin: DeckPlugin {
 
     override fun name(): String {
         return "基础"
+    }
+
+    override fun homeUrl(): String {
+        return "https://github.com/xjw580/Hearthstone-Script"
     }
 }

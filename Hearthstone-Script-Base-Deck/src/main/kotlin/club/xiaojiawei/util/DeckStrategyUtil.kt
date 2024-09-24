@@ -559,4 +559,29 @@ object DeckStrategyUtil {
         assign()
         clean(myAtcWeight, rivalAtcWeight)
     }
+
+    fun calcPowerOrder(cards: List<Card>, target: Int): Pair<Int, List<Card>> {
+        val dp = IntArray(target + 1) // dp[i] 表示能得到的最大和不超过 i
+        val path = Array(target + 1) { mutableListOf<Card>() } // 路径记录
+
+        for (card in cards) {
+            for (j in target downTo card.cost) { // 从后向前更新
+                if (dp[j - card.cost] + card.cost > dp[j]) {
+                    dp[j] = dp[j - card.cost] + card.cost // 更新最大和
+                    path[j] = (path[j - card.cost] + listOf(card)).toMutableList() // 更新路径
+                }
+            }
+        }
+
+        // 找到最大的 dp[i]，即最接近目标的和
+        var closestSum = 0
+        for (i in 0..target) {
+            if (dp[i] > closestSum) {
+                closestSum = dp[i]
+            }
+        }
+
+        return Pair(closestSum, path[closestSum]) // 返回最接近的和及对应的组合
+    }
+
 }

@@ -32,7 +32,7 @@ class DeckStrategyManager(propertiesUtil: PropertiesUtil?) {
     }
 
     companion object {
-        private var propertiesUtil: PropertiesUtil? = null
+        var propertiesUtil: PropertiesUtil? = null
 
         @JvmField
         val CURRENT_DECK_STRATEGY: ObjectProperty<DeckStrategy> = SimpleObjectProperty()
@@ -40,27 +40,25 @@ class DeckStrategyManager(propertiesUtil: PropertiesUtil?) {
         @JvmField
         val DECK_STRATEGIES: ObservableSet<DeckStrategy> = FXCollections.observableSet()
 
-        private lateinit var runnable: Runnable
-
         init {
             CURRENT_DECK_STRATEGY.addListener { _: ObservableValue<out DeckStrategy>?, _: DeckStrategy?, t1: DeckStrategy? ->
                 if (t1 == null) {
-                    propertiesUtil!!.scriptConfiguration.setProperty(
+                    propertiesUtil?.scriptConfiguration?.setProperty(
                         ConfigurationEnum.DEFAULT_DECK_STRATEGY.key,
                         ""
                     )
                     propertiesUtil!!.storeScriptProperties()
                     WebSocketServer.sendAllMessage(WsResult.ofNew(WsResultTypeEnum.MODE, ""))
                     WebSocketServer.sendAllMessage(WsResult.ofNew(WsResultTypeEnum.DECK, ""))
-                } else if (propertiesUtil!!.scriptConfiguration.getProperty(
+                } else if (propertiesUtil?.scriptConfiguration?.getProperty(
                         ConfigurationEnum.DEFAULT_DECK_STRATEGY.key
                     ) != t1.id()
                 ) {
-                    propertiesUtil!!.scriptConfiguration.setProperty(
+                    propertiesUtil?.scriptConfiguration?.setProperty(
                         ConfigurationEnum.DEFAULT_DECK_STRATEGY.key,
                         t1.id()
                     )
-                    propertiesUtil!!.storeScriptProperties()
+                    propertiesUtil?.storeScriptProperties()
                     WebSocketServer.sendAllMessage(
                         WsResult.ofNew(
                             WsResultTypeEnum.MODE,
@@ -68,36 +66,44 @@ class DeckStrategyManager(propertiesUtil: PropertiesUtil?) {
                         )
                     )
                     WebSocketServer.sendAllMessage(WsResult.ofNew(WsResultTypeEnum.DECK, t1.name()))
-                    SystemUtil.notice("挂机卡组改为：" + t1.name())
-                    log.info { "挂机卡组改为：" + t1.name() }
+                    val text = "挂机卡组改为: ${t1.name()}，模式: ${t1.runModes[0].comment}"
+                    SystemUtil.notice(text)
+                    log.info { text }
                     if (t1.deckCode().isNotBlank() && t1.deckCode().isNotBlank()) {
                         log.info { "$" + t1.deckCode() }
                     }
                 }
             }
 
-            runnable = Runnable {
-                DECK_STRATEGIES.clear()
-                DECK_STRATEGIES.addAll(
-                    DECK_STRATEGY_PLUGINS.values.stream()
-                        .flatMap { list: List<PluginWrapper<DeckStrategy>> -> list.stream() }
-                        .flatMap { deckPluginWrapper: PluginWrapper<DeckStrategy> ->
-                            deckPluginWrapper.enabledProperty()
-                                .addListener { _: ObservableValue<out Boolean?>?, _: Boolean?, _: Boolean? -> runnable.run() }
-                            if (deckPluginWrapper.isEnabled()) deckPluginWrapper.spiInstance.stream()
-                                .filter { deckStrategy: DeckStrategy ->
-                                    deckStrategy.pluginId = deckPluginWrapper.plugin.id()
-                                    Strings.isNotBlank(deckStrategy.name()) && Strings.isNotBlank(deckStrategy.id()) && deckStrategy.runModes.isNotEmpty()
-                                } else Stream.empty()
-                        }.toList()
-                )
-            }
-            runnable.run()
+            load()
             loadDeckProperty().addListener { _: ObservableValue<out Boolean>?, _: Boolean?, t1: Boolean ->
                 if (t1) {
-                    runnable.run()
+                    reload()
                 }
             }
+        }
+
+        private fun load():List<DeckStrategy>{
+            return DECK_STRATEGY_PLUGINS.values.stream()
+                .flatMap { list: List<PluginWrapper<DeckStrategy>> -> list.stream() }
+                .flatMap { deckPluginWrapper: PluginWrapper<DeckStrategy> ->
+                    if (!deckPluginWrapper.isListen){
+                        deckPluginWrapper.addEnabledListener{ _: ObservableValue<out Boolean?>?, _: Boolean?, _: Boolean? ->
+                            reload()
+                        }
+                    }
+                    if (deckPluginWrapper.isEnabled()) deckPluginWrapper.spiInstance.stream()
+                        .filter { deckStrategy: DeckStrategy ->
+                            deckStrategy.pluginId = deckPluginWrapper.plugin.id()
+                            Strings.isNotBlank(deckStrategy.name()) && Strings.isNotBlank(deckStrategy.id()) && deckStrategy.runModes.isNotEmpty()
+                        } else Stream.empty()
+                }.toList()
+        }
+
+        private fun reload() {
+            DECK_STRATEGIES.clear()
+            DECK_STRATEGIES.addAll(load())
+            log.info { "重新加载套牌库" }
         }
     }
 }

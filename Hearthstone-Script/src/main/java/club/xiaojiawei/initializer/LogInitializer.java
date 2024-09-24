@@ -70,9 +70,9 @@ public class LogInitializer extends AbstractInitializer{
         try(BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(file))){
             bufferedWriter.write("""
                     [Log]
-                    FileSizeLimit.Int=20480
+                    FileSizeLimit.Int=24576
                     """);
-            ScriptStaticData.MAX_LOG_SIZE = 20480 * 1024;
+            ScriptStaticData.MAX_LOG_SIZE = 24576 * 1024;
         } catch (IOException e) {
             log.warn("", e);
         }

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.control.CheckBox?>
+<fx:root type="HBox" xmlns="http://javafx.com/javafx"
+         stylesheets="@css/pluginItem.css"
+         spacing="10" alignment="CENTER_LEFT"
+         xmlns:fx="http://javafx.com/fxml">
+    <CheckBox fx:id="enable" styleClass="check-box-ui, check-box-ui-main"/>
+    <VBox HBox.hgrow="ALWAYS">
+        <HBox>
+            <Text fx:id="name" styleClass="main-info"/>
+            <HBox HBox.hgrow="ALWAYS"/>
+            <Label fx:id="type" styleClass="label-ui, label-ui-small" style="-fx-font-size: 11;-fx-padding: 1 2 1 2!important;"/>
+        </HBox>
+        <HBox spacing="10">
+            <Text fx:id="author" styleClass="secondary-info"/>
+            <Text fx:id="version" styleClass="secondary-info"/>
+            <HBox HBox.hgrow="ALWAYS"/>
+        </HBox>
+    </VBox>
+</fx:root>

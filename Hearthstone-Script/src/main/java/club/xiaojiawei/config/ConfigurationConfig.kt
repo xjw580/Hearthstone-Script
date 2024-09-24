@@ -20,6 +20,10 @@ import java.util.*
 @Configuration
 open class ConfigurationConfig {
 
+    companion object{
+        lateinit var scriptConfiguration: Properties
+    }
+
     @Resource
     private val springData: SpringData? = null
 
@@ -30,6 +34,7 @@ open class ConfigurationConfig {
     open fun scriptConfiguration(): Properties {
         val properties = Properties()
         reloadScriptProperties(properties)
+        scriptConfiguration = properties
         return properties
     }
 

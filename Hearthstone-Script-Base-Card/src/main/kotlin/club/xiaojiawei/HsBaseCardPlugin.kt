@@ -26,4 +26,8 @@ class HsBaseCardPlugin : CardPlugin {
         return "基础"
     }
 
+    override fun homeUrl(): String {
+        return "https://github.com/xjw580/Hearthstone-Script"
+    }
+
 }
