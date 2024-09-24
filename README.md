@@ -70,7 +70,7 @@
 
 1. 在[release](https://gitee.com/zergqueen/Hearthstone-Script/releases)处下载zip包，解压将lib目录下的**hs-script-deck-sdk.jar** , **hs-script-card-sdk.jar** ,  **hs-script-plugin-sdk.jar** , **hs-script-base.jar**包引入项目
 2. 参考 [Hearthstone-Script-Base-Card](Hearthstone-Script-Base-Card)  [Hearthstone-Script-Base-Deck](Hearthstone-Script-Base-Deck) 两个插件项目
-3. 打包好的插件放入软件根目录下的plugin文件夹（不存在则自行创建）
+3. 打成jar包，放入软件根目录下的plugin文件夹（不存在则自行创建）
 
 
 
