@@ -37,7 +37,7 @@ import static club.xiaojiawei.enums.ConfigurationEnum.*;
 public class AdvancedSettingsController implements Initializable {
 
     @FXML private VBox mainVBox;
-    @FXML private NotificationManager notificationManager;
+    @FXML private NotificationManager<Object> notificationManager;
     @FXML private Switch webSwitch;
     @FXML private Switch strategySwitch;
     @FXML private Switch verifySwitch;

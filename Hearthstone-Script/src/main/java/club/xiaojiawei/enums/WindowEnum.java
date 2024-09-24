@@ -18,7 +18,7 @@ public enum WindowEnum {
     SETTINGS(
             "settings.fxml", ScriptStaticData.SCRIPT_NAME + "-设置",
             600D, 400D, -1, -1,
-            false, DECORATED
+            true, DECORATED
     ),
     MAIN(
             "main.fxml", ScriptStaticData.SCRIPT_NAME, 220D,

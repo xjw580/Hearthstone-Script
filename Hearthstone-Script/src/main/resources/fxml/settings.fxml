@@ -15,6 +15,9 @@
             <fx:include source="advancedSettings.fxml"/>
         </ScrollPane>
     </Tab>
+    <Tab text="插件设置">
+        <fx:include source="pluginSettings.fxml"/>
+    </Tab>
     <Tab text="策略设置">
         <fx:include source="strategySettings.fxml"/>
     </Tab>
