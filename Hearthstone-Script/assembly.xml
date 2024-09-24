@@ -16,18 +16,18 @@
             <useProjectArtifact>false</useProjectArtifact>
             <outputDirectory>lib</outputDirectory>
             <unpack>false</unpack>
-<!--            <excludes>-->
-<!--                <exclude>club.xiaojiawei:hs-script-base-card</exclude>-->
-<!--                <exclude>club.xiaojiawei:hs-script-base-deck</exclude>-->
-<!--            </excludes>-->
+            <excludes>
+                <exclude>club.xiaojiawei:hs-script-base-card</exclude>
+                <exclude>club.xiaojiawei:hs-script-base-deck</exclude>
+            </excludes>
         </dependencySet>
-<!--        <dependencySet>-->
-<!--            <outputDirectory>plugin</outputDirectory>-->
-<!--            <includes>-->
-<!--                <include>club.xiaojiawei:hs-script-base-card</include>-->
-<!--                <include>club.xiaojiawei:hs-script-base-deck</include>-->
-<!--            </includes>-->
-<!--        </dependencySet>-->
+        <dependencySet>
+            <outputDirectory>plugin</outputDirectory>
+            <includes>
+                <include>club.xiaojiawei:hs-script-base-card</include>
+                <include>club.xiaojiawei:hs-script-base-deck</include>
+            </includes>
+        </dependencySet>
     </dependencySets>
 
 <!--    <files>-->

@@ -107,13 +107,13 @@
                 <groupId>club.xiaojiawei</groupId>
                 <artifactId>hs-script-base-card</artifactId>
                 <version>${hs-script-base-card-version}</version>
-<!--                <scope>provided</scope>-->
+                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>club.xiaojiawei</groupId>
                 <artifactId>hs-script-base-deck</artifactId>
                 <version>${hs-script-base-deck-version}</version>
-<!--                <scope>provided</scope>-->
+                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>club.xiaojiawei</groupId>
