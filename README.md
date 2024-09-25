@@ -1,6 +1,6 @@
 ![GitHub release](https://img.shields.io/github/release/xjw580/Hearthstone-Script.svg)  ![GitHub](https://img.shields.io/github/license/xjw580/Hearthstone-Script?style=flat-square)
 
-# 炉石传说脚本（网易暴雪复婚，本项目恢复更新，下个稳定版将在炉石国服可玩后更新）
+# 炉石传说脚本（前女友回来了）
 ![favicon.ico](Hearthstone-Script/src/main/resources/static/img/favicon.ico)
 
 
@@ -12,8 +12,6 @@
 
 
 ### 问题反馈
-
-> 目前处于项目维护阶段，只处理脚本运行状况问题，不处理出牌策略等相关问题。
 
 1. **任何问题都要通过提issue的方式提问**
 2. 在提issue时，请及时地回复作者的消息
