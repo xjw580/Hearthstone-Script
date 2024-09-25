@@ -44,7 +44,7 @@
 
 - **下载脚本**
   - 在[release](https://gitee.com/zergqueen/Hearthstone-Script/releases)处下载
-  - HearthstoneScript.zip包含完整依赖，一般下载此文件
+  - hs-script.zip包含完整依赖，一般下载此文件
   
 - **初次使用**：
   - 配置卡组：鼠标悬浮在日志栏里的卡组代码上点击复制按钮，然后自行到游戏里创建卡组，再将此卡组移动到一号卡组位
