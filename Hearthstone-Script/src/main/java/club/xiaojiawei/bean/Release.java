@@ -63,12 +63,14 @@ public class Release implements Comparable<Release>{
                     case "ga" -> 5;
                     case "dev" -> 4;
                     case "beta" -> 3;
+                    case "patch" -> 2;
                     default -> 0;
                 };
                 int type2 = switch (split2[1].toLowerCase(Locale.ROOT)) {
                     case "ga" -> 5;
                     case "dev" -> 4;
                     case "beta" -> 3;
+                    case "patch" -> 2;
                     default -> 0;
                 };
                 return type1 - type2;
