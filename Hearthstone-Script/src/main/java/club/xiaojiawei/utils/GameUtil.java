@@ -343,7 +343,7 @@ public class GameUtil implements ModeTaskCloser {
     public static void hidePlatformWindow(){
         WinDef.HWND platformHWND = SystemUtil.findPlatformHWND();
         if (platformHWND != null && !User32.INSTANCE.ShowWindow(platformHWND, WinUser.SW_MINIMIZE)){
-            log.error("最小化战网窗口异常，错误代码：{}", Kernel32.INSTANCE.GetLastError());
+            log.warn("最小化战网窗口异常，错误代码：{}", Kernel32.INSTANCE.GetLastError());
         }
     }
 

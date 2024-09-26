@@ -31,14 +31,20 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.ini4j</groupId>
+            <artifactId>ini4j</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <scope>provided</scope>
         </dependency>
+        <!--卡组插件-->
         <dependency>
             <groupId>club.xiaojiawei</groupId>
             <artifactId>hs-script-base-deck</artifactId>
         </dependency>
+        <!--卡牌插件-->
         <dependency>
             <groupId>club.xiaojiawei</groupId>
             <artifactId>hs-script-base-card</artifactId>

@@ -89,6 +89,7 @@ public abstract class AbstractLogListener {
                 }
             }
         }, listenInitialDelay, listenPeriod, listenTimeUnit);
+        cancelOtherListener();
         otherListen();
         if (nextLogListener != null){
             nextLogListener.listen();

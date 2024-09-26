@@ -141,9 +141,9 @@ public class ScriptStaticData {
             throw new RuntimeException(e);
         }
         GraphicsDevice[] screenDevices = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices();
-        if (screenDevices.length > 1){
-            log.info("检测到有多台显示器，请将炉石传说放到主显示器运行");
-        }
+//        if (screenDevices.length > 1){
+//            log.info("检测到有多台显示器，请将炉石传说放到主显示器运行");
+//        }
         AffineTransform tx = screenDevices[0].getDefaultConfiguration().getDefaultTransform();
         DISPLAY_SCALE_X = tx.getScaleX();
         DISPLAY_SCALE_Y = tx.getScaleY();

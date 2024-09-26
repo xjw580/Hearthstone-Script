@@ -61,6 +61,7 @@
         <fastjson-version>2.0.20</fastjson-version>
         <jna-version>5.14.0</jna-version>
         <kotlin-logging-jvm-version>5.1.4</kotlin-logging-jvm-version>
+        <ini-version>0.5.4</ini-version>
 
         <hs-script-base-deck-version>1.0.0</hs-script-base-deck-version>
         <hs-script-base-card-version>1.0.0</hs-script-base-card-version>
@@ -189,6 +190,13 @@
                 <artifactId>jna-platform</artifactId>
                 <version>${jna-version}</version>
             </dependency>
+            <!--ini配置读写-->
+            <dependency>
+                <groupId>org.ini4j</groupId>
+                <artifactId>ini4j</artifactId>
+                <version>${ini-version}</version>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 
