@@ -3,19 +3,11 @@ package club.xiaojiawei.strategy
 import club.xiaojiawei.DeckStrategy
 import club.xiaojiawei.bean.Card
 import club.xiaojiawei.config.log
-import club.xiaojiawei.enums.ConfigurationEnum
+import club.xiaojiawei.status.War
 import club.xiaojiawei.status.War.isMyTurn
-import club.xiaojiawei.status.War.me
-import club.xiaojiawei.status.War.rival
 import club.xiaojiawei.utils.GameUtil
 import club.xiaojiawei.utils.SystemUtil
-import jakarta.annotation.Resource
-import javafx.beans.property.BooleanProperty
-import lombok.Setter
-import lombok.extern.slf4j.Slf4j
 import org.springframework.stereotype.Component
-import java.util.*
-import java.util.concurrent.atomic.AtomicReference
 
 /**
  * 卡牌策略抽象类
@@ -28,11 +20,19 @@ object DeckStrategyActuator {
     var deckStrategy: DeckStrategy? = null
 
     fun changeCard() {
-        val me = me
-        val rival = rival
+        log.info { "执行换牌策略" }
+        val me = War.me
+        val rival = War.rival
+        me ?: let {
+            log.info { "me为null" }
+            return
+        }
+        rival ?: let {
+            log.info { "rival为null" }
+            return
+        }
         try {
-            log.info { "执行换牌策略" }
-            val copyHandCards = HashSet(me!!.handArea.cards)
+            val copyHandCards = HashSet(me.handArea.cards)
             deckStrategy!!.executeChangeCard(copyHandCards)
             for (i in me.handArea.cards.indices) {
                 val card = me.handArea.cards[i]
@@ -54,16 +54,19 @@ object DeckStrategyActuator {
     fun outCard() {
         try {
             log.info { "执行出牌策略" }
-            log.info { "回合开始可用水晶数：" + me!!.usableResource }
+            War.me?.let {
+                log.info { "回合开始可用水晶数：" + it.usableResource }
+            } ?: let {
+                log.info { "me为null" }
+            }
             deckStrategy!!.executeOutCard()
             log.info { "执行出牌策略完毕" }
         } finally {
             GameUtil.cancelAction()
-            var i = 0
-            while (i < 3 && isMyTurn) {
-                SystemUtil.delayMedium()
+            for (i in 0 until 3) {
+                if (!isMyTurn) break
                 GameUtil.END_TURN_RECT.lClick()
-                i++
+                SystemUtil.delayMedium()
             }
         }
     }
@@ -72,10 +75,14 @@ object DeckStrategyActuator {
         SystemUtil.delay(1000)
         log.info { "执行发现选牌策略" }
         val index = deckStrategy!!.executeDiscoverChooseCard(*cards)
-        GameUtil.clickDiscover(index, me!!.handArea.cardSize())
-        SystemUtil.delayShortMedium()
-        val card = cards[index]
-        log.info { "选择了：" + card.toSimpleString() }
+        War.me?.let {
+            GameUtil.clickDiscover(index, it.handArea.cardSize())
+            SystemUtil.delayShortMedium()
+            val card = cards[index]
+            log.info { "选择了：" + card.toSimpleString() }
+        } ?: let {
+            log.info { "me为null" }
+        }
         log.info { "执行发现选牌策略完毕" }
     }
 }
