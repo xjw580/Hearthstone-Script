@@ -1,9 +1,12 @@
-name: Build to Artifact
+name: Build and Release
 
 on:
-  workflow_dispatch:
-    branches:
-      - master
+  push:
+    tags:
+      - 'v*.*.*-*'
+
+permissions:
+  contents: write
 
 jobs:
   build:
@@ -15,24 +18,43 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Set up JDK 1.8
+      - name: Cache local Maven repository
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
+      - name: Set up JDK
         uses: actions/setup-java@v2
         with:
-          java-version: 21
+          java-version: '21'
           distribution: 'temurin'
-          
-      # - name: Cache Maven packages
-      #   uses: actions/cache@v2
-      #   with:
-      #     path: ~/.m2
-      #     key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-      #     restore-keys: ${{ runner.os }}-m2
 
       - name: Build with Maven
-        run: mvn clean install -B -V
-      
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v4
+        run: mvn clean package -B -V
+
+      - name: Determine if prerelease
+        id: prerelease
+        run: |
+          if [[ "${{ github.ref_name }}" == *"DEV" ]] || [[ "${{ github.ref_name }}" == *"BETA" ]]; then
+            echo "prerelease=true" >> $GITHUB_ENV
+          else
+            echo "prerelease=false" >> $GITHUB_ENV
+          fi
+
+      - name: List target directory
+        run: ls -l Hearthstone-Script/target/
+
+      - name: Upload Release Assets
+        uses: softprops/action-gh-release@v1
         with:
-          name: hs-script-artifact
-          path: /home/runner/work/Hearthstone-Script/Hearthstone-Script/Hearthstone-Script/target/hs-script_v4.0.0.1-PATCH.zip
+          name: hs-script_${{ github.ref_name }}
+          body: ${{ steps.get_commit.outputs.message }}
+          prerelease: ${{ env.prerelease }}
+          files: |
+            Hearthstone-Script/target/hs-script_${{ github.ref_name }}.zip
+            Hearthstone-Script/target/hs-script_${{ github.ref_name }}.jar
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
