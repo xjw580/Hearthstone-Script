@@ -4,7 +4,7 @@ import club.xiaojiawei.DeckStrategy
 import club.xiaojiawei.bean.PluginWrapper
 import club.xiaojiawei.bean.WsResult
 import club.xiaojiawei.config.log
-import club.xiaojiawei.enums.ConfigurationEnum
+import club.xiaojiawei.enums.ConfigEnum
 import club.xiaojiawei.enums.WsResultTypeEnum
 import club.xiaojiawei.status.PluginManager.DECK_STRATEGY_PLUGINS
 import club.xiaojiawei.status.PluginManager.loadDeckProperty
@@ -44,18 +44,18 @@ class DeckStrategyManager(propertiesUtil: PropertiesUtil?) {
             CURRENT_DECK_STRATEGY.addListener { _: ObservableValue<out DeckStrategy>?, _: DeckStrategy?, t1: DeckStrategy? ->
                 if (t1 == null) {
                     propertiesUtil?.scriptConfiguration?.setProperty(
-                        ConfigurationEnum.DEFAULT_DECK_STRATEGY.key,
+                        ConfigEnum.DEFAULT_DECK_STRATEGY.key,
                         ""
                     )
                     propertiesUtil!!.storeScriptProperties()
                     WebSocketServer.sendAllMessage(WsResult.ofNew(WsResultTypeEnum.MODE, ""))
                     WebSocketServer.sendAllMessage(WsResult.ofNew(WsResultTypeEnum.DECK, ""))
                 } else if (propertiesUtil?.scriptConfiguration?.getProperty(
-                        ConfigurationEnum.DEFAULT_DECK_STRATEGY.key
+                        ConfigEnum.DEFAULT_DECK_STRATEGY.key
                     ) != t1.id()
                 ) {
                     propertiesUtil?.scriptConfiguration?.setProperty(
-                        ConfigurationEnum.DEFAULT_DECK_STRATEGY.key,
+                        ConfigEnum.DEFAULT_DECK_STRATEGY.key,
                         t1.id()
                     )
                     propertiesUtil?.storeScriptProperties()

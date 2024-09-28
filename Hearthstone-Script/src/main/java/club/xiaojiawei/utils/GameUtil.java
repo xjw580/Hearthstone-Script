@@ -5,7 +5,7 @@ import club.xiaojiawei.bean.GameRect;
 import club.xiaojiawei.config.ThreadPoolConfigKt;
 import club.xiaojiawei.interfaces.closer.ModeTaskCloser;
 import club.xiaojiawei.data.ScriptStaticData;
-import club.xiaojiawei.enums.ConfigurationEnum;
+import club.xiaojiawei.enums.ConfigEnum;
 import com.sun.jna.platform.win32.Kernel32;
 import com.sun.jna.platform.win32.User32;
 import com.sun.jna.platform.win32.WinDef;
@@ -18,13 +18,8 @@ import java.awt.*;
 import java.io.IOException;
 import java.util.Properties;
 import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
-
-import static com.sun.jna.platform.win32.Win32VK.VK_ESCAPE;
-import static com.sun.jna.platform.win32.WinUser.WM_KEYDOWN;
-import static com.sun.jna.platform.win32.WinUser.WM_KEYUP;
 
 /**
  * 游戏工具类
@@ -278,9 +273,9 @@ public class GameUtil implements ModeTaskCloser {
     /**
      * 如果战网不在运行则相当于启动战网，如果战网已经运行则为启动炉石
      */
-    public static void cmdLaunchGame(){
+    public static void cmdLaunchPlatformAndGame(){
         try {
-            Runtime.getRuntime().exec("\"" + scriptConfiguration.getProperty(ConfigurationEnum.PLATFORM_PATH.getKey()) + "\"" + " --exec=\"launch WTCG\"");
+            Runtime.getRuntime().exec("\"" + scriptConfiguration.getProperty(ConfigEnum.PLATFORM_PATH.getKey()) + "\"" + " --exec=\"launch WTCG\"");
         } catch (IOException e) {
             log.error("命令行启动炉石异常", e);
         }

@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.util.Objects;
 import java.util.Properties;
 
-import static club.xiaojiawei.enums.ConfigurationEnum.ENABLE_VERIFY;
+import static club.xiaojiawei.enums.ConfigEnum.ENABLE_VERIFY;
 
 /**
  * 鉴权

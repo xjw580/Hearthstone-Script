@@ -1,7 +1,7 @@
 package club.xiaojiawei.utils;
 
 import club.xiaojiawei.dll.SystemDll;
-import club.xiaojiawei.enums.ConfigurationEnum;
+import club.xiaojiawei.enums.ConfigEnum;
 import com.sun.jna.platform.win32.WinDef;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -125,16 +125,16 @@ public class MouseUtil {
 
     private static int getMaxMoveInterval() {
         if (scriptConfiguration == null) {
-            return Integer.parseInt(ConfigurationEnum.MOUSE_MOVE_INTERVAL.getDefaultValue());
+            return Integer.parseInt(ConfigEnum.MOUSE_MOVE_INTERVAL.getDefaultValue());
         }
-        return Integer.parseInt(scriptConfiguration.getProperty(ConfigurationEnum.MOUSE_MOVE_INTERVAL.getKey(), ConfigurationEnum.MOUSE_MOVE_INTERVAL.getDefaultValue()));
+        return Integer.parseInt(scriptConfiguration.getProperty(ConfigEnum.MOUSE_MOVE_INTERVAL.getKey(), ConfigEnum.MOUSE_MOVE_INTERVAL.getDefaultValue()));
     }
 
     private static int getMouseActionInterval() {
         if (scriptConfiguration == null) {
-            return Integer.parseInt(ConfigurationEnum.MOUSE_ACTION_INTERVAL.getDefaultValue());
+            return Integer.parseInt(ConfigEnum.MOUSE_ACTION_INTERVAL.getDefaultValue());
         }
-        return Integer.parseInt(scriptConfiguration.getProperty(ConfigurationEnum.MOUSE_ACTION_INTERVAL.getKey(), ConfigurationEnum.MOUSE_ACTION_INTERVAL.getDefaultValue()));
+        return Integer.parseInt(scriptConfiguration.getProperty(ConfigEnum.MOUSE_ACTION_INTERVAL.getKey(), ConfigEnum.MOUSE_ACTION_INTERVAL.getDefaultValue()));
     }
 
 }

@@ -2,7 +2,7 @@ package club.xiaojiawei.utils
 
 import club.xiaojiawei.data.ScriptStaticData
 import club.xiaojiawei.data.SpringData
-import club.xiaojiawei.enums.ConfigurationEnum
+import club.xiaojiawei.enums.ConfigEnum
 import jakarta.annotation.Resource
 import lombok.Getter
 import org.springframework.stereotype.Component
@@ -38,7 +38,7 @@ class PropertiesUtil {
 
     fun storeGamePath(gameInstallPath: String): Boolean {
         if (File(gameInstallPath + File.separator + ScriptStaticData.GAME_PROGRAM_NAME).exists()) {
-            scriptConfiguration!!.setProperty(ConfigurationEnum.GAME_PATH.key, gameInstallPath)
+            scriptConfiguration!!.setProperty(ConfigEnum.GAME_PATH.key, gameInstallPath)
             storeScriptProperties()
             return true
         }
@@ -52,7 +52,7 @@ class PropertiesUtil {
             platformInstallPath + File.separator + ScriptStaticData.PLATFORM_PROGRAM_NAME
         }
         if (File(programAbsolutePath).exists()) {
-            scriptConfiguration!!.setProperty(ConfigurationEnum.PLATFORM_PATH.key, programAbsolutePath)
+            scriptConfiguration!!.setProperty(ConfigEnum.PLATFORM_PATH.key, programAbsolutePath)
             storeScriptProperties()
             return true
         }

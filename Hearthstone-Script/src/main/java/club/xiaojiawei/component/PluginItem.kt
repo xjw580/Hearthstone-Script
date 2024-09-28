@@ -4,7 +4,7 @@ import club.xiaojiawei.DeckPlugin
 import club.xiaojiawei.bean.PluginWrapper
 import club.xiaojiawei.config.ConfigurationConfig
 import club.xiaojiawei.controls.NotificationManager
-import club.xiaojiawei.enums.ConfigurationEnum
+import club.xiaojiawei.enums.ConfigEnum
 import club.xiaojiawei.status.DeckStrategyManager
 import javafx.fxml.FXML
 import javafx.fxml.FXMLLoader
@@ -64,13 +64,13 @@ class PluginItem(val pluginWrapper: PluginWrapper<*>, var notificationManager: N
                 2
             )
             val key = if (pluginWrapper.plugin is DeckPlugin) {
-                ConfigurationEnum.DECK_PLUGIN_DISABLED
+                ConfigEnum.DECK_PLUGIN_DISABLED
             } else {
-                ConfigurationEnum.CARD_PLUGIN_DISABLED
+                ConfigEnum.CARD_PLUGIN_DISABLED
             }
 
             val disableList = ConfigurationConfig.scriptConfiguration.getProperty(
-                key.key,
+                key.name,
                 key.defaultValue
             ).split(",").toMutableList()
             disableList.removeAll { it.trim().isEmpty() }
@@ -81,7 +81,7 @@ class PluginItem(val pluginWrapper: PluginWrapper<*>, var notificationManager: N
                 disableList.add(pluginWrapper.plugin.id())
             }
 
-            ConfigurationConfig.scriptConfiguration[key.key] = disableList.joinToString(",")
+            ConfigurationConfig.scriptConfiguration[key.name] = disableList.joinToString(",")
             DeckStrategyManager.propertiesUtil?.storeScriptProperties()
         }
     }

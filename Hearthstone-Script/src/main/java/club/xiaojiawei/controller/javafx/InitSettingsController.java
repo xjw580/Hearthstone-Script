@@ -3,7 +3,7 @@ package club.xiaojiawei.controller.javafx;
 import club.xiaojiawei.controls.NotificationManager;
 import club.xiaojiawei.controls.PasswordTextField;
 import club.xiaojiawei.data.ScriptStaticData;
-import club.xiaojiawei.enums.ConfigurationEnum;
+import club.xiaojiawei.enums.ConfigEnum;
 import club.xiaojiawei.enums.WindowEnum;
 import club.xiaojiawei.utils.PropertiesUtil;
 import club.xiaojiawei.utils.WindowUtil;
@@ -13,10 +13,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.Button;
 import javafx.scene.layout.*;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.*;
 import javafx.scene.text.Text;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
@@ -97,7 +95,7 @@ public class InitSettingsController implements Initializable {
     }
 
     private boolean checkConfiguration(){
-        scriptConfiguration.setProperty(ConfigurationEnum.PLATFORM_PASSWORD.getKey(), password.getText());
+        scriptConfiguration.setProperty(ConfigEnum.PLATFORM_PASSWORD.getKey(), password.getText());
         propertiesUtil.storeScriptProperties();
         if (!propertiesUtil.storePlatformPath(platformPath.getText())){
             notificationManager.showError(ScriptStaticData.PLATFORM_CN_NAME + "安装路径不正确,请重新选择", 3);
@@ -125,9 +123,9 @@ public class InitSettingsController implements Initializable {
     }
 
     private void initValue(){
-        gamePath.setText(scriptConfiguration.getProperty(ConfigurationEnum.GAME_PATH.getKey()));
-        platformPath.setText(scriptConfiguration.getProperty(ConfigurationEnum.PLATFORM_PATH.getKey()));
-        password.setText(scriptConfiguration.getProperty(ConfigurationEnum.PLATFORM_PASSWORD.getKey()));
+        gamePath.setText(scriptConfiguration.getProperty(ConfigEnum.GAME_PATH.getKey()));
+        platformPath.setText(scriptConfiguration.getProperty(ConfigEnum.PLATFORM_PATH.getKey()));
+        password.setText(scriptConfiguration.getProperty(ConfigEnum.PLATFORM_PASSWORD.getKey()));
     }
 
 }

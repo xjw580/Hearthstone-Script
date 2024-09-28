@@ -7,12 +7,9 @@ import club.xiaojiawei.data.SpringData;
 import club.xiaojiawei.utils.SystemUtil;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.Resource;
-import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.ReadOnlyBooleanWrapper;
-import javafx.beans.property.SimpleBooleanProperty;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -22,7 +19,7 @@ import java.util.Objects;
 import java.util.Properties;
 
 import static club.xiaojiawei.data.ScriptStaticData.PROJECT_NAME;
-import static club.xiaojiawei.enums.ConfigurationEnum.UPDATE_DEV;
+import static club.xiaojiawei.enums.ConfigEnum.UPDATE_DEV;
 
 /**
  * 脚本版本监听器，定时查看是否需要更新

@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import java.util.Objects;
 import java.util.Properties;
 
-import static club.xiaojiawei.enums.ConfigurationEnum.AUTO_OPEN_WEB;
+import static club.xiaojiawei.enums.ConfigEnum.AUTO_OPEN_WEB;
 
 /**
  * 打开Web页面

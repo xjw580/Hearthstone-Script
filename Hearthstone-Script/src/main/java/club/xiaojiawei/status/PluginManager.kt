@@ -5,7 +5,7 @@ import club.xiaojiawei.bean.PluginWrapper
 import club.xiaojiawei.config.ConfigurationConfig
 import club.xiaojiawei.config.PluginScope
 import club.xiaojiawei.config.log
-import club.xiaojiawei.enums.ConfigurationEnum
+import club.xiaojiawei.enums.ConfigEnum
 import club.xiaojiawei.utils.ClassLoaderUtil
 import javafx.beans.property.ReadOnlyBooleanProperty
 import javafx.beans.property.ReadOnlyBooleanWrapper
@@ -80,13 +80,13 @@ object PluginManager {
         val disableSet:MutableSet<String> =
         if (pluginClass == CardPlugin::class.java) {
             ConfigurationConfig.scriptConfiguration.getProperty(
-                ConfigurationEnum.CARD_PLUGIN_DISABLED.key,
-                ConfigurationEnum.CARD_PLUGIN_DISABLED.defaultValue
+                ConfigEnum.CARD_PLUGIN_DISABLED.key,
+                ConfigEnum.CARD_PLUGIN_DISABLED.defaultValue
             ).split(",")
         }else{
             ConfigurationConfig.scriptConfiguration.getProperty(
-                ConfigurationEnum.DECK_PLUGIN_DISABLED.key,
-                ConfigurationEnum.DECK_PLUGIN_DISABLED.defaultValue
+                ConfigEnum.DECK_PLUGIN_DISABLED.key,
+                ConfigEnum.DECK_PLUGIN_DISABLED.defaultValue
             ).split(",")
         }.toMutableSet()
         disableSet.removeAll { it.trim().isEmpty() }

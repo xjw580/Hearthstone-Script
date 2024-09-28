@@ -58,7 +58,7 @@ public class GameOverPhaseStrategy extends AbstractPhaseStrategy{
         War.INSTANCE.endWar();
         try {
             SystemUtil.delay(1000);
-            RandomAccessFile accessFile = powerLogListener.getAccessFile();
+            RandomAccessFile accessFile = powerLogListener.getInnerLogFile();
             accessFile.seek(accessFile.length());
         } catch (IOException e) {
             throw new RuntimeException(e);

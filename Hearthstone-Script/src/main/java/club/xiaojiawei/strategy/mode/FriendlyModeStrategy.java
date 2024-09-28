@@ -1,6 +1,5 @@
 package club.xiaojiawei.strategy.mode;
 
-import club.xiaojiawei.enums.ConfigurationEnum;
 import club.xiaojiawei.status.DeckStrategyManager;
 import club.xiaojiawei.status.Work;
 import club.xiaojiawei.strategy.AbstractModeStrategy;

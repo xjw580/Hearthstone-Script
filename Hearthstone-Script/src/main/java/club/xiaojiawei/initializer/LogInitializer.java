@@ -2,7 +2,7 @@ package club.xiaojiawei.initializer;
 
 import club.xiaojiawei.data.ScriptStaticData;
 import club.xiaojiawei.data.SpringData;
-import club.xiaojiawei.enums.ConfigurationEnum;
+import club.xiaojiawei.enums.ConfigEnum;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -58,7 +58,7 @@ public class LogInitializer extends AbstractInitializer{
             throw new RuntimeException("文件重写失败，游戏日志未打开，脚本无法运行", e);
         }
 
-        File file = Path.of(scriptConfiguration.getProperty(ConfigurationEnum.GAME_PATH.getKey()), "client.config").toFile();
+        File file = Path.of(scriptConfiguration.getProperty(ConfigEnum.GAME_PATH.getKey()), "client.config").toFile();
         if (file.exists()) {
             try {
                 file.createNewFile();

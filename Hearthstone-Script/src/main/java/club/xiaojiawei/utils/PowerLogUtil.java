@@ -8,12 +8,16 @@ import club.xiaojiawei.bean.area.Area;
 import club.xiaojiawei.bean.log.CommonEntity;
 import club.xiaojiawei.bean.log.ExtraEntity;
 import club.xiaojiawei.bean.log.TagChangeEntity;
+import club.xiaojiawei.core.Core;
+import club.xiaojiawei.data.ScriptStaticData;
 import club.xiaojiawei.enums.ZoneEnum;
 import club.xiaojiawei.interfaces.DealTagChange;
 import club.xiaojiawei.interfaces.ParseExtraEntity;
+import club.xiaojiawei.starter.ExceptionListenStarter;
 import club.xiaojiawei.status.War;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import org.apache.logging.log4j.util.Strings;
 
 import java.io.IOException;
@@ -218,4 +222,17 @@ public class PowerLogUtil {
         return s == null? null : new String(s.getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8);
     }
 
+    public static boolean isRelevance(String l){
+        var flag = false;
+        if (l.contains("Truncating log")) {
+            val text = "power.log达到" + (ScriptStaticData.MAX_LOG_SIZE / 1024) + "KB，游戏停止输出日志，准备重启游戏";
+            log.info(text);
+            SystemUtil.notice(text);
+            Core.INSTANCE.restart();
+        } else {
+            flag = l.contains("PowerTaskList");
+        }
+        ExceptionListenStarter.INSTANCE.setLastActiveTime(System.currentTimeMillis());
+        return flag;
+    }
 }

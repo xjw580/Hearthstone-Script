@@ -1,7 +1,7 @@
 package club.xiaojiawei.config
 
 import club.xiaojiawei.data.SpringData
-import club.xiaojiawei.enums.ConfigurationEnum
+import club.xiaojiawei.enums.ConfigEnum
 import jakarta.annotation.Resource
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -64,10 +64,10 @@ open class ConfigurationConfig {
     }
 
     private fun writeDefaultScriptProperties(fileWriter: FileWriter, properties: Properties) {
-        for (configurationEnum in ConfigurationEnum.entries) {
-            if (!properties.containsKey(configurationEnum.key)) {
+        for (configurationEnum in ConfigEnum.entries) {
+            if (!properties.containsKey(configurationEnum.name)) {
                 try {
-                    fileWriter.write(configurationEnum.key + "=" + configurationEnum.defaultValue + "\n")
+                    fileWriter.write(configurationEnum.name + "=" + configurationEnum.defaultValue + "\n")
                 } catch (e: IOException) {
                     throw RuntimeException(e)
                 }

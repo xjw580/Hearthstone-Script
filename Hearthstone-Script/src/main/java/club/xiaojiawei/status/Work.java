@@ -11,7 +11,6 @@ import club.xiaojiawei.utils.SystemUtil;
 import club.xiaojiawei.ws.WebSocketServer;
 import jakarta.annotation.Resource;
 import javafx.application.Platform;
-import javafx.beans.property.BooleanProperty;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -20,19 +19,16 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import java.io.File;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Objects;
 import java.util.Properties;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.atomic.AtomicReference;
 
-import static club.xiaojiawei.data.ScriptStaticData.TEMP_VERSION_PATH;
-import static club.xiaojiawei.enums.ConfigurationEnum.*;
+import static club.xiaojiawei.enums.ConfigEnum.*;
 
 /**
  * 工作状态
+ *
  * @author 肖嘉威
  * @date 2023/9/10 22:04
  */
@@ -63,39 +59,37 @@ public class Work {
     private static String[] workTimeArr;
     private static PropertiesUtil propertiesUtil;
     private static Properties scriptProperties;
-    private static AtomicReference<BooleanProperty> isPause;
     private static Core core;
     private static boolean enableUpdate = true;
 
     @Autowired
-    private void set(Properties scriptConfiguration, AtomicReference<BooleanProperty> isPause, PropertiesUtil propertiesUtil){
+    private void set(Properties scriptConfiguration, PropertiesUtil propertiesUtil) {
         Work.scriptProperties = scriptConfiguration;
-        String workDayFlagStr = scriptConfiguration.getProperty(WORK_DAY_FLAG.getKey());
+        String workDayFlagStr = scriptConfiguration.getProperty(WORK_DAY_FLAG.name());
         workDayFlagArr = workDayFlagStr.split(",");
-        String workTimeFlagStr = scriptConfiguration.getProperty(WORK_TIME_FLAG.getKey());
+        String workTimeFlagStr = scriptConfiguration.getProperty(WORK_TIME_FLAG.name());
         workTimeFlagArr = workTimeFlagStr.split(",");
-        String workTimeStr = scriptConfiguration.getProperty(WORK_TIME.getKey());
+        String workTimeStr = scriptConfiguration.getProperty(WORK_TIME.name());
         workTimeArr = workTimeStr.split(",");
-        Work.isPause = isPause;
         Work.propertiesUtil = propertiesUtil;
     }
 
     @Resource
     @Lazy
-    public void setCore(Core core){
+    public void setCore(Core core) {
         Work.core = core;
     }
 
-    public static void storeWorkDate(){
-        scriptProperties.setProperty(WORK_DAY_FLAG.getKey(), String.join(",", workDayFlagArr));
-        scriptProperties.setProperty(WORK_TIME_FLAG.getKey(), String.join(",", workTimeFlagArr));
-        scriptProperties.setProperty(WORK_TIME.getKey(), String.join(",", workTimeArr));
+    public static void storeWorkDate() {
+        scriptProperties.setProperty(WORK_DAY_FLAG.name(), String.join(",", workDayFlagArr));
+        scriptProperties.setProperty(WORK_TIME_FLAG.name(), String.join(",", workTimeFlagArr));
+        scriptProperties.setProperty(WORK_TIME.name(), String.join(",", workTimeArr));
         propertiesUtil.storeScriptProperties();
         WebSocketServer.sendAllMessage(WsResult.ofNew(WsResultTypeEnum.WORK_DATE, new String[][]{Work.getWorkDayFlagArr(), Work.getWorkTimeFlagArr(), Work.getWorkTimeArr()}));
         checkWork();
     }
 
-    public static void stopWork(){
+    public static void stopWork() {
         working = false;
         SystemUtil.closeAll();
         cannotWorkLog();
@@ -103,32 +97,32 @@ public class Work {
         SystemUtil.killGame();
     }
 
-    public static void cannotWorkLog(){
+    public static void cannotWorkLog() {
         String context = "现在是下班时间 🌜";
         SystemUtil.notice(context);
         log.info(context);
     }
 
-    public static void workLog(){
+    public static void workLog() {
         log.info("现在是上班时间 🌞");
     }
 
     @Scheduled(fixedDelay = 1000 * 60)
-    void workSchedule(){
+    void workSchedule() {
         checkWork();
     }
 
-    private static void checkWork(){
-        if (!working){
-            if (!isPause.get().get() && isDuringWorkDate()){
+    private static void checkWork() {
+        if (!working) {
+            if (!PauseStatus.INSTANCE.isPause() && isDuringWorkDate()) {
                 workLog();
                 core.start();
-            }else if (enableUpdate && Objects.equals(scriptProperties.getProperty(AUTO_UPDATE.getKey()), "true") && VersionListener.isCanUpdate()){
+            } else if (enableUpdate && Objects.equals(scriptProperties.getProperty(AUTO_UPDATE.name()), "true") && VersionListener.isCanUpdate()) {
                 MainController.downloadRelease(VersionListener.getLatestRelease(), false, path -> {
                     enableUpdate = false;
-                    if (path == null){
+                    if (path == null) {
                         log.warn(String.format("新版本<%s>下载失败", VersionListener.getLatestRelease().getTagName()));
-                    }else {
+                    } else {
                         Platform.runLater(() -> MainController.execUpdate(path));
                     }
                 });
@@ -138,26 +132,27 @@ public class Work {
 
     /**
      * 验证是否在工作时间内
+     *
      * @return
      */
-    public static boolean isDuringWorkDate(){
+    public static boolean isDuringWorkDate() {
         //        天校验
-        if (!Objects.equals(workDayFlagArr[0], "true") && Objects.equals(workDayFlagArr[LocalDate.now().getDayOfWeek().getValue()], "false")){
+        if (!Objects.equals(workDayFlagArr[0], "true") && Objects.equals(workDayFlagArr[LocalDate.now().getDayOfWeek().getValue()], "false")) {
             return false;
         }
         //        段校验
         LocalTime localTime = LocalTime.now();
         for (int i = 0; i < workTimeFlagArr.length; i++) {
-            if (Objects.equals(workTimeFlagArr[i], "true") && !Objects.equals(workTimeArr[i],  "null")){
+            if (Objects.equals(workTimeFlagArr[i], "true") && !Objects.equals(workTimeArr[i], "null")) {
                 String[] time = workTimeArr[i].split("-");
                 String start = time[0], end = time[1], nowTime = TimeSelector.TIME_FORMATTER.format(localTime);
                 if (
                         end.compareTo(start) == 0
                                 ||
-                        (end.compareTo(start) > 0 && nowTime.compareTo(start) >= 0 && nowTime.compareTo(end) <= 0)
+                                (end.compareTo(start) > 0 && nowTime.compareTo(start) >= 0 && nowTime.compareTo(end) <= 0)
                                 ||
-                        (end.compareTo(start) < 0 && (nowTime.compareTo(start) >= 0 || nowTime.compareTo(end) <= 0))
-                ){
+                                (end.compareTo(start) < 0 && (nowTime.compareTo(start) >= 0 || nowTime.compareTo(end) <= 0))
+                ) {
                     return true;
                 }
             }

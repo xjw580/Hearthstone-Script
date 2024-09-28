@@ -8,7 +8,6 @@ import club.xiaojiawei.enums.WarPhaseEnum;
 import club.xiaojiawei.interfaces.PhaseStrategy;
 import club.xiaojiawei.listener.log.PowerLogListener;
 import club.xiaojiawei.status.War;
-import club.xiaojiawei.strategy.phase.ReplaceCardPhaseStrategy;
 import club.xiaojiawei.utils.GameUtil;
 import club.xiaojiawei.utils.PowerLogUtil;
 import club.xiaojiawei.utils.SystemUtil;
@@ -63,7 +62,7 @@ public abstract class AbstractPhaseStrategy implements PhaseStrategy {
     }
 
     private void dealLog(String line){
-        RandomAccessFile accessFile = powerLogListener.getAccessFile();
+        RandomAccessFile accessFile = powerLogListener.getInnerLogFile();
         long mark;
         while (!isPause.get().get()) {
             try {
@@ -86,7 +85,7 @@ public abstract class AbstractPhaseStrategy implements PhaseStrategy {
                             }
                         }
                     }
-                }else if (powerLogListener.isRelevance(line)){
+                }else if (PowerLogUtil.isRelevance(line)){
                     if (log.isDebugEnabled()){
                         log.debug(line);
                     }

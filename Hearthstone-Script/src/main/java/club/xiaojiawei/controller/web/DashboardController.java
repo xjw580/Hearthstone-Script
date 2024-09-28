@@ -30,8 +30,8 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static club.xiaojiawei.data.ScriptStaticData.ROBOT;
-import static club.xiaojiawei.enums.ConfigurationEnum.ENABLE_VERIFY;
-import static club.xiaojiawei.enums.ConfigurationEnum.VERIFY_PASSWORD;
+import static club.xiaojiawei.enums.ConfigEnum.ENABLE_VERIFY;
+import static club.xiaojiawei.enums.ConfigEnum.VERIFY_PASSWORD;
 
 
 /**
