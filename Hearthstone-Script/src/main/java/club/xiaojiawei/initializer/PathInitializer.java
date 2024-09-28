@@ -1,8 +1,7 @@
 package club.xiaojiawei.initializer;
 
-import club.xiaojiawei.ScriptApplication;
 import club.xiaojiawei.data.ScriptStaticData;
-import club.xiaojiawei.enums.ConfigurationEnum;
+import club.xiaojiawei.enums.ConfigEnum;
 import club.xiaojiawei.enums.RegCommonNameEnum;
 import club.xiaojiawei.utils.PropertiesUtil;
 import jakarta.annotation.Resource;
@@ -10,7 +9,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Component;
 
-import java.io.File;
 import java.util.Properties;
 
 import static club.xiaojiawei.utils.SystemUtil.registryGetStringValueForUserProgram;
@@ -33,7 +31,7 @@ public class PathInitializer extends AbstractInitializer{
     @Override
     public void exec() {
         String platformInstallLocation, gameInstallLocation;
-        if (Strings.isBlank(scriptConfiguration.getProperty(ConfigurationEnum.PLATFORM_PATH.getKey()))){
+        if (Strings.isBlank(scriptConfiguration.getProperty(ConfigEnum.PLATFORM_PATH.getKey()))){
             log.info(String.format("未配置%s安装路径，尝试从注册表读取", ScriptStaticData.PLATFORM_CN_NAME));
             if (Strings.isNotBlank(platformInstallLocation = registryGetStringValueForUserProgram(RegCommonNameEnum.INSTALL_LOCATION, ScriptStaticData.PLATFORM_US_NAME))){
                 log.info(String.format("从注册表读取到%s安装路径", ScriptStaticData.PLATFORM_CN_NAME));
@@ -46,7 +44,7 @@ public class PathInitializer extends AbstractInitializer{
                 ScriptStaticData.setSetPath(false);
             }
         }
-        if (Strings.isBlank(scriptConfiguration.getProperty(ConfigurationEnum.GAME_PATH.getKey()))){
+        if (Strings.isBlank(scriptConfiguration.getProperty(ConfigEnum.GAME_PATH.getKey()))){
             log.info(String.format("未配置%s安装路径，尝试从注册表读取", ScriptStaticData.GAME_CN_NAME));
             if (Strings.isNotBlank(gameInstallLocation = registryGetStringValueForUserProgram(RegCommonNameEnum.INSTALL_LOCATION, ScriptStaticData.GAME_US_NAME))){
                 log.info(String.format("从注册表读取到%s安装路径", ScriptStaticData.GAME_CN_NAME));

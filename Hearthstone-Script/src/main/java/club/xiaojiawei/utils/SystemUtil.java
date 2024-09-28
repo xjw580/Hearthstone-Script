@@ -10,7 +10,7 @@ import club.xiaojiawei.custom.MouseClickListener;
 import club.xiaojiawei.data.SpringData;
 import club.xiaojiawei.dll.NoticeDll;
 import club.xiaojiawei.dll.SystemDll;
-import club.xiaojiawei.enums.ConfigurationEnum;
+import club.xiaojiawei.enums.ConfigEnum;
 import club.xiaojiawei.enums.RegCommonNameEnum;
 import club.xiaojiawei.ws.WebSocketServer;
 import com.sun.jna.platform.win32.*;
@@ -87,7 +87,7 @@ public class SystemUtil {
      */
     public static void notice(String title, String content, String btnText, String btnURL){
         Thread.ofVirtual().name("Notice VThread").start(new LogRunnable(() -> {
-            if (Objects.equals(scriptConfiguration.getProperty(ConfigurationEnum.SEND_NOTICE.getKey()), "true")){
+            if (Objects.equals(scriptConfiguration.getProperty(ConfigEnum.SEND_NOTICE.getKey()), "true")){
 //        trayIcon.displayMessage(title, content, TrayIcon.MessageType.NONE);
                 byte[] appIDBytes = SCRIPT_NAME.getBytes(StandardCharsets.UTF_8);
                 byte[] titleBytes = title.getBytes(StandardCharsets.UTF_8);

@@ -41,7 +41,6 @@ import javafx.util.Duration;
 import javafx.util.StringConverter;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.*;
@@ -52,14 +51,13 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.*;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import static club.xiaojiawei.data.ScriptStaticData.TEMP_VERSION_PATH;
-import static club.xiaojiawei.enums.ConfigurationEnum.DEFAULT_DECK_STRATEGY;
+import static club.xiaojiawei.enums.ConfigEnum.DEFAULT_DECK_STRATEGY;
 
 /**
  * @author 肖嘉威

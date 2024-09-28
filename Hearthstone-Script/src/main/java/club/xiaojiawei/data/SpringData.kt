@@ -1,7 +1,10 @@
 package club.xiaojiawei.data
 
-import lombok.Getter
+import jakarta.annotation.Resource
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.boot.ApplicationArguments
+import org.springframework.boot.ApplicationRunner
+import org.springframework.context.ApplicationContext
 import org.springframework.stereotype.Component
 
 /**
@@ -11,43 +14,44 @@ import org.springframework.stereotype.Component
  */
 @Component
 class SpringData {
+
     /**
      * 游戏日志配置路径
      */
     @Value("\${game.log.configuration.path}")
-    var gameLogConfigurationPath: String? = null
+    val gameLogConfigurationPath: String? = null
 
     /**
      * 脚本配置文件路径
      */
     @Value("\${script.configuration.file}")
-    var scriptConfigurationFile: String? = null
+    val scriptConfigurationFile: String? = null
 
     @Value("\${script.version}")
-    var version: String? = null
+    val version: String? = null
 
     @Value("\${script.path}")
-    var scriptPath: String? = null
+    val scriptPath: String? = null
 
     @Value("\${script.resource}")
-    var resourcePath: String? = null
+    val resourcePath: String? = null
 
     @Value("\${game.log.out.path}")
-    var gameLogPath: String? = null
+    val gameLogPath: String? = null
 
     @Value("\${game.log.out.file.screen}")
-    var screenLogName: String? = null
+    val screenLogName: String? = null
 
     @Value("\${game.log.out.file.power}")
-    var powerLogName: String? = null
+    val powerLogName: String? = null
 
     @Value("\${game.log.out.file.deck}")
-    var deckLogName: String? = null
+    val deckLogName: String? = null
 
     @Value("\${spring.main.web-application-type}")
-    var webType: String? = null
+    val webType: String? = null
 
     @Value("\${server.port}")
-    var serverPort: String? = null
+    val serverPort: String? = null
 
 }

@@ -2,7 +2,7 @@ package club.xiaojiawei.initializer;
 
 import club.xiaojiawei.data.ScriptStaticData;
 import club.xiaojiawei.data.SpringData;
-import club.xiaojiawei.enums.ConfigurationEnum;
+import club.xiaojiawei.enums.ConfigEnum;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -58,17 +58,12 @@ public class LogInitializer extends AbstractInitializer{
             throw new RuntimeException("文件重写失败，游戏日志未打开，脚本无法运行", e);
         }
 
-        String gamePath = scriptConfiguration.getProperty(ConfigurationEnum.GAME_PATH.getKey());
-        if (gamePath.isBlank()) {
-            log.warn("未设置游戏安装目录，无法修改日志限制");
-            return;
-        }
-        File file = Path.of(gamePath, "client.config").toFile();
-        if (!file.exists()) {
+        File file = Path.of(scriptConfiguration.getProperty(ConfigEnum.GAME_PATH.getKey()), "client.config").toFile();
+        if (file.exists()) {
             try {
                 file.createNewFile();
             } catch (IOException e) {
-                log.warn(e.getMessage());
+                log.warn("", e);
                 return;
             }
         }
@@ -79,7 +74,7 @@ public class LogInitializer extends AbstractInitializer{
                     """);
             ScriptStaticData.MAX_LOG_SIZE = 24576 * 1024;
         } catch (IOException e) {
-            log.warn(e.getMessage());
+            log.warn("", e);
         }
 
     }

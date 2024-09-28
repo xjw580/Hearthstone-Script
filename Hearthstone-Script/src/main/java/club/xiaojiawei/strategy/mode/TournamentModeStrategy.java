@@ -138,7 +138,7 @@ public class TournamentModeStrategy extends AbstractModeStrategy<Object> impleme
 
     private boolean checkPowerLogSize(){
         try {
-            if (powerLogListener.getAccessFile() != null && powerLogListener.getAccessFile().length() + RESERVE_SIZE >= MAX_LOG_SIZE){
+            if (powerLogListener.getInnerLogFile() != null && powerLogListener.getInnerLogFile().length() + RESERVE_SIZE >= MAX_LOG_SIZE){
                 log.info("power.log即将达到" + (MAX_LOG_SIZE / 1024) + "KB，准备重启游戏");
                 core.restart();
                 return false;

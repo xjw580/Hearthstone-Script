@@ -1,7 +1,6 @@
 package club.xiaojiawei.ws;
 
 import club.xiaojiawei.bean.WsResult;
-import club.xiaojiawei.enums.ConfigurationEnum;
 import club.xiaojiawei.enums.RunModeEnum;
 import club.xiaojiawei.enums.WsResultTypeEnum;
 import club.xiaojiawei.listener.WarCountListener;

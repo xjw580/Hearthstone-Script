@@ -2,7 +2,6 @@ package club.xiaojiawei.controller.javafx;
 
 import club.xiaojiawei.controls.NotificationManager;
 import club.xiaojiawei.controls.NumberField;
-import club.xiaojiawei.enums.ConfigurationEnum;
 import club.xiaojiawei.enums.WindowEnum;
 import club.xiaojiawei.utils.PropertiesUtil;
 import club.xiaojiawei.utils.WindowUtil;
@@ -12,8 +11,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.layout.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import lombok.extern.slf4j.Slf4j;
@@ -23,7 +20,7 @@ import java.net.URL;
 import java.util.Properties;
 import java.util.ResourceBundle;
 
-import static club.xiaojiawei.enums.ConfigurationEnum.*;
+import static club.xiaojiawei.enums.ConfigEnum.*;
 
 /**
  *

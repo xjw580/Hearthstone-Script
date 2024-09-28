@@ -7,7 +7,6 @@ import club.xiaojiawei.controls.Switch;
 import club.xiaojiawei.utils.PropertiesUtil;
 import club.xiaojiawei.utils.main.MeasureApplication;
 import jakarta.annotation.Resource;
-import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
@@ -25,7 +24,7 @@ import java.util.Objects;
 import java.util.Properties;
 import java.util.ResourceBundle;
 
-import static club.xiaojiawei.enums.ConfigurationEnum.*;
+import static club.xiaojiawei.enums.ConfigEnum.*;
 
 /**
  *
