@@ -50,7 +50,8 @@ public class PowerLogUtil {
                     .findByEntityId(extraEntity.getEntityId());
             CardUtil.updateCardByExtraEntity(extraEntity, card);
         }else {
-            CardUtil.exchangeAreaOfCard(extraEntity);
+            Card card = CardUtil.exchangeAreaOfCard(extraEntity);
+            CardUtil.INSTANCE.updateCardByExtraEntity(extraEntity, card);
         }
         return extraEntity;
     }
