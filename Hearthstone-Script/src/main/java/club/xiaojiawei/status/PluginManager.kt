@@ -173,11 +173,11 @@ object PluginManager {
         if (pluginWrapperList == null) {
             pluginWrapperList = mutableListOf(pluginWrapper)
             pluginWrapperMap[pluginId] = pluginWrapperList
-            pluginWrapper.plugin.apply {
-                log.info { "加载${type}: 【name: ${name()}, version: ${version()}, author: ${author()}, id: ${id()}, description: ${description()}】" }
-            }
         } else {
             pluginWrapperList.add(pluginWrapper)
+        }
+        pluginWrapper.plugin.apply {
+            log.info { "加载${type}: 【name: ${name()}, version: ${version()}, author: ${author()}, id: ${id()}, description: ${description()}】" }
         }
     }
 
