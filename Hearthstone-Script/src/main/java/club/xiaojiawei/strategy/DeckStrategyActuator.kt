@@ -14,7 +14,6 @@ import org.springframework.stereotype.Component
  * @author 肖嘉威
  * @date 2022/11/29 17:29
  */
-@Component
 object DeckStrategyActuator {
 
     var deckStrategy: DeckStrategy? = null

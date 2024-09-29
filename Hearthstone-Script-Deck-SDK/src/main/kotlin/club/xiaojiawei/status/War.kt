@@ -1,11 +1,14 @@
 package club.xiaojiawei.status
 
 import club.xiaojiawei.bean.Player
-import club.xiaojiawei.bean.area.Area
+import club.xiaojiawei.bean.area.*
+import club.xiaojiawei.bean.isValid
+import club.xiaojiawei.bean.safeRun
 import club.xiaojiawei.enums.RunModeEnum
 import club.xiaojiawei.enums.StepEnum
 import club.xiaojiawei.enums.WarPhaseEnum
 import club.xiaojiawei.config.log
+import club.xiaojiawei.util.isTrue
 import javafx.beans.property.SimpleIntegerProperty
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.function.Consumer
@@ -20,11 +23,11 @@ import kotlin.math.min
 object War {
 
     @Volatile
-    var currentPlayer: Player? = null
+    var currentPlayer: Player = Player.INVALID_PLAYER
         @Synchronized set(value) {
             field = value
-            field?.let {
-                log.info { "${it.gameId} 的回合" }
+            value.safeRun {
+                log.info { "${value.gameId} 的回合" }
             }
         }
 
@@ -32,7 +35,7 @@ object War {
     var firstPlayerGameId: String = ""
         @Synchronized set(value) {
             field = value
-            if (value.isNotEmpty()) {
+            value.isNotEmpty().isTrue {
                 log.info { "先手玩家：$value" }
             }
         }
@@ -50,26 +53,16 @@ object War {
         }
 
     @Volatile
-    var me: Player? = null
-        set(value) {
-            if (value == null || field == null) {
-                field = value
-            }
-        }
+    var me: Player = Player.INVALID_PLAYER
 
     @Volatile
-    var rival: Player? = null
-        set(value) {
-            if (value == null || field == null) {
-                field = value
-            }
-        }
+    var rival: Player = Player.INVALID_PLAYER
 
     @Volatile
-    var player1: Player? = null
+    var player1: Player = Player("1")
 
     @Volatile
-    var player2: Player? = null
+    var player2: Player = Player("2")
 
     @Volatile
     var warTurn = 0
@@ -119,9 +112,9 @@ object War {
         firstPlayerGameId = ""
         currentPhase = WarPhaseEnum.FILL_DECK_PHASE
         currentTurnStep = null
-        rival = null
-        me = rival
-        currentPlayer = null
+        rival = Player.INVALID_PLAYER
+        me = Player.INVALID_PLAYER
+        currentPlayer = Player.INVALID_PLAYER
         player1 = Player("1")
         player2 = Player("2")
         warTurn = 0
@@ -152,7 +145,7 @@ object War {
     @Synchronized
     fun endWar() {
         var flag = false
-        if (me != null) {
+        if (me !== Player.INVALID_PLAYER) {
             flag = printResult()
         }
         val time = (endTime - startTime) / 1000 / 60
@@ -186,7 +179,7 @@ object War {
 
     private fun printResult(): Boolean {
         var flag = false
-        if (won == me?.gameId) {
+        if (won == me.gameId) {
             WIN_COUNT.incrementAndGet()
             flag = true
         }
@@ -196,56 +189,54 @@ object War {
         return flag
     }
 
-    @Synchronized
-    fun getPlayer(playerId: String): Player? {
-        return if (player1!!.playerId == playerId) player1 else player2
-    }
-
-    @Synchronized
-    fun getReversePlayer(playerId: String): Player? {
-        return if (player1!!.playerId == playerId) player2 else player1
-    }
-
-    @Synchronized
-    fun getPlayerByArea(area: Area): Player? {
-        if (area === player1!!.playArea || area === player1!!.handArea || area === player1!!.deckArea || area === player1!!.graveyardArea || area === player1!!.removedfromgameArea || area === player1!!.secretArea || area === player1!!.setasideArea
-        ) {
-            return player1
+    fun getPlayer(playerId: String): Player {
+        return when (playerId) {
+            player1.playerId -> player1
+            player2.playerId -> player2
+            else -> Player.INVALID_PLAYER
         }
-        return player2
     }
 
     @Synchronized
     fun getReverseArea(area: Area): Area? {
-        if (area === player1!!.playArea) {
-            return player2!!.playArea
-        } else if (area === player1!!.handArea) {
-            return player2!!.handArea
-        } else if (area === player1!!.deckArea) {
-            return player2!!.deckArea
-        } else if (area === player1!!.graveyardArea) {
-            return player2!!.graveyardArea
-        } else if (area === player1!!.removedfromgameArea) {
-            return player2!!.removedfromgameArea
-        } else if (area === player1!!.secretArea) {
-            return player2!!.secretArea
-        } else if (area === player1!!.setasideArea) {
-            return player2!!.setasideArea
-        } else if (area === player2!!.playArea) {
-            return player1!!.playArea
-        } else if (area === player2!!.handArea) {
-            return player1!!.handArea
-        } else if (area === player2!!.deckArea) {
-            return player1!!.deckArea
-        } else if (area === player2!!.graveyardArea) {
-            return player1!!.graveyardArea
-        } else if (area === player2!!.removedfromgameArea) {
-            return player1!!.removedfromgameArea
-        } else if (area === player2!!.secretArea) {
-            return player1!!.secretArea
-        } else if (area === player2!!.setasideArea) {
-            return player1!!.setasideArea
+        return when (area.player) {
+            player1 -> player2
+            player2 -> player1
+            else -> null
+        }?.let {
+            when (area) {
+                is PlayArea -> {
+                    return it.playArea
+                }
+
+                is HandArea -> {
+                    return it.handArea
+                }
+
+                is DeckArea -> {
+                    return it.deckArea
+                }
+
+                is GraveyardArea -> {
+                    return it.graveyardArea
+                }
+
+                is RemovedfromgameArea -> {
+                    return it.removedfromgameArea
+                }
+
+                is SecretArea -> {
+                    return it.secretArea
+                }
+
+                is SetasideArea -> {
+                    return it.setasideArea
+                }
+
+                else -> {
+                    return null
+                }
+            }
         }
-        return null
     }
 }
