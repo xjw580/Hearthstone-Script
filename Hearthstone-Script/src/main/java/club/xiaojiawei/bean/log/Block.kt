@@ -1,17 +1,16 @@
-package club.xiaojiawei.bean.log;
+package club.xiaojiawei.bean.log
 
-import club.xiaojiawei.enums.BlockTypeEnum;
-import lombok.Data;
+import club.xiaojiawei.enums.BlockTypeEnum
+import lombok.Data
 
 /**
  * @author 肖嘉威
  * @date 2022/11/30 17:48
  */
-@Data
-public class Block {
+class Block {
 
-    private BlockTypeEnum blockType;
+    var blockType: BlockTypeEnum? = null
 
-    private CommonEntity entity;
+    var entity: CommonEntity? = null
 
 }

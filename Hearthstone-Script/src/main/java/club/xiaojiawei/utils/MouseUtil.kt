@@ -1,140 +1,126 @@
-package club.xiaojiawei.utils;
+package club.xiaojiawei.utils
 
-import club.xiaojiawei.dll.SystemDll;
-import club.xiaojiawei.enums.ConfigEnum;
-import com.sun.jna.platform.win32.WinDef;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
-
-import java.awt.*;
-import java.util.Properties;
-import java.util.concurrent.atomic.AtomicReference;
+import club.xiaojiawei.dll.SystemDll
+import club.xiaojiawei.enums.ConfigEnum
+import club.xiaojiawei.status.PauseStatus
+import club.xiaojiawei.utils.MouseUtil
+import com.sun.jna.platform.win32.WinDef.HWND
+import javafx.beans.property.BooleanProperty
+import javafx.beans.property.SimpleBooleanProperty
+import lombok.Getter
+import lombok.extern.slf4j.Slf4j
+import org.springframework.stereotype.Component
+import java.awt.Point
+import java.util.Properties
+import java.util.concurrent.atomic.AtomicReference
+import kotlin.math.abs
 
 /**
  * 鼠标工具类
  * @author 肖嘉威
  * @date 2022/11/24 11:18
  */
-@Slf4j
-@Component
-public class MouseUtil {
-
-    private static Properties scriptConfiguration;
-
-    private static AtomicReference<BooleanProperty> isPause = new AtomicReference<>(new SimpleBooleanProperty());
-
-    public MouseUtil(Properties scriptConfiguration, AtomicReference<BooleanProperty> isPause) {
-        MouseUtil.scriptConfiguration = scriptConfiguration;
-        MouseUtil.isPause = isPause;
-    }
+object MouseUtil {
 
     /**
-     * 鼠标每次移动后的间隔时间：ms
+     * 鼠标每次移动后的最小间隔时间：ms
      */
-    private static final int MIN_MOVE_INTERVAL = 4;
+    private const val MIN_MOVE_INTERVAL = 1
+
+    private val MAX_MOVE_INTERVAL = ConfigUtil.getInt(ConfigEnum.MOUSE_MOVE_INTERVAL)
+
     /**
      * 鼠标每次移动的距离：px
      */
-    private static final int MOVE_DISTANCE = 10;
+    private const val MOVE_DISTANCE = 10
 
-    @Getter
-    private static final Point lastPoint = new Point(-1, -1);
+    private val lastPoint = Point(-1, -1)
 
-    private static boolean validPoint(Point point) {
-        if (point == null) {
-            return false;
-        }
-        return point.x != -1 && point.y != -1;
+    private fun validPoint(point: Point?): Boolean {
+        return point?.let {
+            it.x != -1 && it.y != -1
+        } == true
     }
 
-    public static void leftButtonClick(WinDef.HWND hwnd) {
-        leftButtonClick(lastPoint, hwnd);
-    }
-    public static void leftButtonClick(Point pos, WinDef.HWND hwnd) {
-        if (!isPause.get().get() && validPoint(pos)) {
-            SystemDll.INSTANCE.leftClick(pos.x, pos.y, hwnd);
-            savePos(pos);
-        }
-    }
-
-    public static void rightButtonClick(WinDef.HWND hwnd) {
-        rightButtonClick(lastPoint, hwnd);
-    }
-    public static void rightButtonClick(Point pos, WinDef.HWND hwnd) {
-        if (!isPause.get().get() && validPoint(pos)) {
-            SystemDll.INSTANCE.rightClick(pos.x, pos.y, hwnd);
-            savePos(pos);
-        }
-    }
-
-
-    public static void moveMouseByLine(Point endPos, WinDef.HWND hwnd) {
-        moveMouseByLine(null, endPos, hwnd);
-    }
-
-    /**
-     * 鼠标按照直线方式移动
-     */
-    public static void moveMouseByLine(Point startPos, Point endPos, WinDef.HWND hwnd) {
-        if (!isPause.get().get() && validPoint(endPos)) {
-            int endX = endPos.x;
-            int endY = endPos.y;
-            if (validPoint(startPos)) {
-                int startX = startPos.x;
-                int startY = startPos.y;
-                if (Math.abs(startY - endY) <= 5) {
-                    for (startX -= MOVE_DISTANCE; startX >= endX && !isPause.get().get(); startX -= MOVE_DISTANCE) {
-                        SystemDll.INSTANCE.moveMouse(startX, startY, hwnd);
-                        SystemUtil.delay(MIN_MOVE_INTERVAL, getMaxMoveInterval());
-                    }
-                } else if (Math.abs(startX - endX) <= 5) {
-                    for (startY -= MOVE_DISTANCE; startY >= endY && !isPause.get().get(); startY -= MOVE_DISTANCE) {
-                        SystemDll.INSTANCE.moveMouse(startX, startY, hwnd);
-                        SystemUtil.delay(MIN_MOVE_INTERVAL, getMaxMoveInterval());
-                    }
-                } else {
-                    double k = calcK(startX, startY, endX, endY);
-                    double b = startY - k * startX;
-                    for (startY -= MOVE_DISTANCE; startY >= endY && !isPause.get().get(); startY -= MOVE_DISTANCE) {
-                        int x = (int) ((startY - b) / k);
-                        SystemDll.INSTANCE.moveMouse(x, startY, hwnd);
-                        SystemUtil.delay(MIN_MOVE_INTERVAL, getMaxMoveInterval());
-                    }
-                }
-            }
-            SystemDll.INSTANCE.moveMouse(endX, endY, hwnd);
-            savePos(endPos);
-        }
-    }
-
-    private static void savePos(Point pos) {
-        lastPoint.x = pos.x;
-        lastPoint.y = pos.y;
+    private fun savePos(pos: Point) {
+        lastPoint.x = pos.x
+        lastPoint.y = pos.y
     }
 
     /**
      * 计算斜率
      * @return double 斜率
      */
-    private static double calcK(int startX, int startY, int endX, int endY) {
-        return (double) (startY - endY) / (startX - endX);
+    private fun calcK(startX: Int, startY: Int, endX: Int, endY: Int): Double {
+        return (startY - endY).toDouble() / (startX - endX)
     }
 
-    private static int getMaxMoveInterval() {
-        if (scriptConfiguration == null) {
-            return Integer.parseInt(ConfigEnum.MOUSE_MOVE_INTERVAL.getDefaultValue());
-        }
-        return Integer.parseInt(scriptConfiguration.getProperty(ConfigEnum.MOUSE_MOVE_INTERVAL.getKey(), ConfigEnum.MOUSE_MOVE_INTERVAL.getDefaultValue()));
+    fun leftButtonClick(hwnd: HWND) {
+        leftButtonClick(lastPoint, hwnd)
     }
 
-    private static int getMouseActionInterval() {
-        if (scriptConfiguration == null) {
-            return Integer.parseInt(ConfigEnum.MOUSE_ACTION_INTERVAL.getDefaultValue());
+    fun leftButtonClick(pos: Point, hwnd: HWND) {
+        if (!PauseStatus.isPause && validPoint(pos)) {
+            SystemDll.INSTANCE.leftClick(pos.x.toLong(), pos.y.toLong(), hwnd)
+            savePos(pos)
         }
-        return Integer.parseInt(scriptConfiguration.getProperty(ConfigEnum.MOUSE_ACTION_INTERVAL.getKey(), ConfigEnum.MOUSE_ACTION_INTERVAL.getDefaultValue()));
+    }
+
+    fun rightButtonClick(hwnd: HWND) {
+        rightButtonClick(lastPoint, hwnd)
+    }
+
+    fun rightButtonClick(pos: Point, hwnd: HWND) {
+        if (!PauseStatus.isPause && validPoint(pos)) {
+            SystemDll.INSTANCE.rightClick(pos.x.toLong(), pos.y.toLong(), hwnd)
+            savePos(pos)
+        }
+    }
+
+
+    fun moveMouseByLine(endPos: Point, hwnd: HWND) {
+        moveMouseByLine(null, endPos, hwnd)
+    }
+
+    /**
+     * 鼠标按照直线方式移动
+     */
+    fun moveMouseByLine(startPos: Point?, endPos: Point, hwnd: HWND) {
+        if (!PauseStatus.isPause && validPoint(endPos)) {
+            val endX = endPos.x
+            val endY = endPos.y
+            if (validPoint(startPos)) {
+                var startX = startPos!!.x
+                var startY = startPos.y
+                if (abs((startY - endY).toDouble()) <= 5) {
+                    startX -= MOVE_DISTANCE
+                    while (startX >= endX && !PauseStatus.isPause) {
+                        SystemDll.INSTANCE.moveMouse(startX.toLong(), startY.toLong(), hwnd)
+                        SystemUtil.delay(MIN_MOVE_INTERVAL, MAX_MOVE_INTERVAL)
+                        startX -= MOVE_DISTANCE
+                    }
+                } else if (abs((startX - endX).toDouble()) <= 5) {
+                    startY -= MOVE_DISTANCE
+                    while (startY >= endY && !PauseStatus.isPause) {
+                        SystemDll.INSTANCE.moveMouse(startX.toLong(), startY.toLong(), hwnd)
+                        SystemUtil.delay(MIN_MOVE_INTERVAL, MAX_MOVE_INTERVAL)
+                        startY -= MOVE_DISTANCE
+                    }
+                } else {
+                    val k = calcK(startX, startY, endX, endY)
+                    val b = startY - k * startX
+                    startY -= MOVE_DISTANCE
+                    while (startY >= endY && !PauseStatus.isPause) {
+                        val x = ((startY - b) / k).toInt()
+                        SystemDll.INSTANCE.moveMouse(x.toLong(), startY.toLong(), hwnd)
+                        SystemUtil.delay(MIN_MOVE_INTERVAL, MAX_MOVE_INTERVAL)
+                        startY -= MOVE_DISTANCE
+                    }
+                }
+            }
+            SystemDll.INSTANCE.moveMouse(endX.toLong(), endY.toLong(), hwnd)
+            savePos(endPos)
+        }
     }
 
 }

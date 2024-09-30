@@ -1,21 +1,16 @@
-package club.xiaojiawei.bean.log;
+package club.xiaojiawei.bean.log
 
-import club.xiaojiawei.enums.TagEnum;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+import club.xiaojiawei.enums.TagEnum
 
 /**
  * @author 肖嘉威
  * @date 2022/11/29 14:24
  */
-@EqualsAndHashCode(callSuper = true)
-@Data
-@ToString(callSuper = true)
-public class TagChangeEntity extends CommonEntity {
 
-    private TagEnum tag;
+class TagChangeEntity : CommonEntity() {
 
-    private String value;
+    var tag: TagEnum? = null
+
+    var value: String = ""
 
 }

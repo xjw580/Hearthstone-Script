@@ -15,7 +15,7 @@ script:
   resource: ${script.path}resource/
   configuration:
     path: ${script.path}config/
-    file: ${script.configuration.path}script.properties
+    file: ${script.configuration.path}script.ini
 
 logging:
   level:
