@@ -1,27 +1,20 @@
-package club.xiaojiawei.bean.log;
+package club.xiaojiawei.bean.log
 
-import club.xiaojiawei.bean.BaseCard;
-import club.xiaojiawei.bean.area.Area;
-import club.xiaojiawei.bean.Card;
-import club.xiaojiawei.enums.ZoneEnum;
-import javafx.beans.property.ObjectProperty;
-import lombok.Data;
-import lombok.ToString;
+import club.xiaojiawei.bean.BaseCard
+import club.xiaojiawei.enums.ZoneEnum
 
 /**
  * @author 肖嘉威
  * @date 2022/11/30 12:33
  */
-@Data
-@ToString(callSuper = true)
-public class ExtraCard{
+class ExtraCard {
 
-    public BaseCard card = new BaseCard();
+    val card: BaseCard = BaseCard()
 
-    private ZoneEnum zone;
+    var zone: ZoneEnum? = null
 
-    private int zonePos;
+    var zonePos = 0
 
-    private String controllerPlayerId;
+    var controllerPlayerId: String = ""
 
 }

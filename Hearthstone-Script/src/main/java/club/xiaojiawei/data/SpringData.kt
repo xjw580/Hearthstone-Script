@@ -25,7 +25,7 @@ class SpringData {
      * 脚本配置文件路径
      */
     @Value("\${script.configuration.file}")
-    val scriptConfigurationFile: String? = null
+    val scriptConfigurationFile: String = ""
 
     @Value("\${script.version}")
     val version: String? = null

@@ -1,513 +1,549 @@
-package club.xiaojiawei.enums;
+package club.xiaojiawei.enums
 
-import club.xiaojiawei.bean.BaseCard;
-import club.xiaojiawei.bean.Entity;
-import club.xiaojiawei.bean.area.PlayArea;
-import club.xiaojiawei.interfaces.DealTagChange;
-import club.xiaojiawei.interfaces.ParseExtraEntity;
-import club.xiaojiawei.bean.Card;
-import club.xiaojiawei.bean.Player;
-import club.xiaojiawei.bean.area.Area;
-import club.xiaojiawei.status.War;
-import club.xiaojiawei.utils.CardUtil;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.ToString;
-import lombok.extern.slf4j.Slf4j;
-
-import java.util.Objects;
-
-import static club.xiaojiawei.data.ScriptStaticData.*;
+import club.xiaojiawei.bean.Card
+import club.xiaojiawei.bean.Entity
+import club.xiaojiawei.bean.Player
+import club.xiaojiawei.bean.area.Area
+import club.xiaojiawei.bean.isValid
+import club.xiaojiawei.bean.log.ExtraEntity
+import club.xiaojiawei.bean.log.TagChangeEntity
+import club.xiaojiawei.config.log
+import club.xiaojiawei.data.ScriptStaticData
+import club.xiaojiawei.interfaces.TagChangeHandler
+import club.xiaojiawei.interfaces.ExtraEntityHandler
+import club.xiaojiawei.status.War
+import club.xiaojiawei.util.isTrue
+import club.xiaojiawei.utils.CardUtil
 
 /**
  * @author 肖嘉威
  * @date 2022/11/29 14:30
  */
-@Slf4j
-@Getter
-@ToString
-@AllArgsConstructor
-public enum TagEnum {
+enum class TagEnum(
+    val comment: String = "",
+    val tagChangeHandler: TagChangeHandler? = null,
+    val extraEntityHandler: ExtraEntityHandler? = null
+) {
     /**
      * 调度标签
      */
-    MULLIGAN_STATE("调度阶段",
-            null,
-            null),
-    STEP("步骤",
-            (card, tagChangeEntity, player, area) -> {
-                War.INSTANCE.setCurrentTurnStep(StepEnum.valueOf(tagChangeEntity.getValue()));
-            },
-            null),
-    NEXT_STEP("下一步骤",
-            null,
-            null),
-    /*++++++++++++++++++++++++++++++++++++++++++*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+    MULLIGAN_STATE(
+        "调度阶段",
+        null,
+        null
+    ),
+    STEP(
+        "步骤",
+        tagChangeHandler = { card: Card?, tagChangeEntity: TagChangeEntity, player: Player?, area: Area? ->
+            War.currentTurnStep = StepEnum.valueOf(tagChangeEntity.value)
+        },
+        null
+    ),
+    NEXT_STEP(
+        "下一步骤",
+        null,
+        null
+    ),  /*++++++++++++++++++++++++++++++++++++++++++*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+
     /**
      * 游戏标签
      */
-    RESOURCES("水晶数",
-            (card, tagChangeEntity, player, area) -> {
-                if (War.INSTANCE.getCurrentPlayer() != null) {
-                    War.INSTANCE.getCurrentPlayer().setResources(Integer.parseInt(tagChangeEntity.getValue()));
-                }
-            },
-            null),
-    RESOURCES_USED("已使用水晶数",
-            (card, tagChangeEntity, player, area) -> {
-                if (War.INSTANCE.getCurrentPlayer() != null) {
-                    War.INSTANCE.getCurrentPlayer().setResourcesUsed(Integer.parseInt(tagChangeEntity.getValue()));
-                }
-            },
-            null),
-    TEMP_RESOURCES("临时水晶数",
-            (card, tagChangeEntity, player, area) -> {
-                if (War.INSTANCE.getCurrentPlayer() != null) {
-                    War.INSTANCE.getCurrentPlayer().setTempResources(Integer.parseInt(tagChangeEntity.getValue()));
-                }
-            },
-            null),
-    //    设置游戏id
-    CURRENT_PLAYER("当前玩家",
-            (card, tagChangeEntity, player, area) -> {
-                if (War.INSTANCE.getMe() != null) {
-                    String gameId = tagChangeEntity.getEntity();
-                    if (isTrue(tagChangeEntity.getValue())) {
-//                        匹配战网id后缀正则
-                        if (!gameId.matches("^.+#\\d+$")) {
-                            log.warn("非正常游戏id：" + gameId);
-                        }
-//                        是我
+    RESOURCES(
+        "水晶数",
+        TagChangeHandler { card: Card?, tagChangeEntity: TagChangeEntity, player: Player?, area: Area? ->
+            War.currentPlayer.resources = tagChangeEntity.value.toInt()
+        },
+        null
+    ),
+    RESOURCES_USED(
+        "已使用水晶数",
+        TagChangeHandler { card: Card?, tagChangeEntity: TagChangeEntity, player: Player?, area: Area? ->
+            War.currentPlayer.resourcesUsed = tagChangeEntity.value.toInt()
+        },
+        null
+    ),
+    TEMP_RESOURCES(
+        "临时水晶数",
+        TagChangeHandler { card: Card?, tagChangeEntity: TagChangeEntity, player: Player?, area: Area? ->
+            War.currentPlayer.tempResources = tagChangeEntity.value.toInt()
+        },
+        null
+    ),
 
-                        if (Objects.equals(War.INSTANCE.getMe().getGameId(), gameId)
-                                || (!War.INSTANCE.getRival().getGameId().isBlank() && !Objects.equals(War.INSTANCE.getRival().getGameId(), gameId))
-                        ) {
-                            War.INSTANCE.setCurrentPlayer(War.INSTANCE.getMe());
-                            War.INSTANCE.getMe().resetResources();
-                            War.INSTANCE.getMe().setGameId(gameId);
-                        } else {
+    //    设置游戏id
+    CURRENT_PLAYER(
+        "当前玩家",
+        TagChangeHandler { card: Card?, tagChangeEntity: TagChangeEntity, player: Player?, area: Area? ->
+            War.me.isValid().isTrue {
+                val gameId = tagChangeEntity.entity
+                if (isTrue(tagChangeEntity.value)) {
+//                        匹配战网id后缀正则
+                    if (!gameId.matches("^.+#\\d+$".toRegex())) {
+                        log.warn("非正常游戏id：" + gameId)
+                    }
+
+                    //                        是我
+                    if (War.me.gameId == gameId
+                        || (!War.rival.gameId.isBlank() && War.rival.gameId != gameId)
+                    ) {
+                        War.currentPlayer = War.me
+                        War.me.resetResources()
+                        War.me.gameId = gameId
+                    } else {
 //                        是对手
-                            War.INSTANCE.setCurrentPlayer(War.INSTANCE.getRival());
-                            War.INSTANCE.getMe().resetResources();
-                            War.INSTANCE.getRival().setGameId(gameId);
-                        }
+                        War.currentPlayer = War.rival
+                        War.me.resetResources()
+                        War.rival.gameId = gameId
                     }
                 }
-            },
-            null),
-    FIRST_PLAYER("先手玩家",
-            (card, tagChangeEntity, player, area) -> {
-                String gameId = tagChangeEntity.getEntity();
-                War.INSTANCE.setFirstPlayerGameId(gameId);
-            },
-            null),
-    CARDTYPE("卡牌类型",
-            null,
-            (extraEntity, value) -> {
-                extraEntity.getExtraCard().getCard().setCardType(CARD_TYPE_MAP.getOrDefault(value, CardTypeEnum.UNKNOWN));
             }
+        },
+        null
+    ),
+    FIRST_PLAYER(
+        "先手玩家",
+        TagChangeHandler { card: Card?, tagChangeEntity: TagChangeEntity, player: Player?, area: Area? ->
+            val gameId = tagChangeEntity.entity
+            War.firstPlayerGameId = gameId
+        },
+        null
+    ),
+    CARDTYPE("卡牌类型",
+        null,
+        ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
+            extraEntity.extraCard.card.cardType =
+                ScriptStaticData.CARD_TYPE_MAP.getOrDefault(value, CardTypeEnum.UNKNOWN)
+        }
     ),
     ZONE_POSITION("区位置",
-            (card, tagChangeEntity, player, area) -> {
-                card = area.removeByEntityIdInZeroArea(tagChangeEntity.getEntityId());
-                area.add(card, Integer.parseInt(tagChangeEntity.getValue()));
-            },
-            (extraEntity, value) -> {
-                extraEntity.getExtraCard().setZonePos(Integer.parseInt(value));
-            }),
+        TagChangeHandler { _: Card?, tagChangeEntity: TagChangeEntity, player: Player?, area: Area? ->
+            area ?: return@TagChangeHandler
+            val card = area.removeByEntityIdInZeroArea(tagChangeEntity.entityId)
+            area.add(card, tagChangeEntity.value.toInt())
+        },
+        ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
+            extraEntity.extraCard.zonePos = value.toInt()
+        }),
     ZONE("区域",
-            (card, tagChangeEntity, player, area) -> {
-                CardUtil.exchangeAreaOfCard(tagChangeEntity);
-            },
-            (extraEntity, value) -> {
-                extraEntity.getExtraCard().setZone(ZoneEnum.valueOf(value));
-            }),
-    PLAYSTATE("游戏状态",
-            (card, tagChangeEntity, player, area) -> {
-                String gameId = tagChangeEntity.getEntity();
-                if (Objects.equals(tagChangeEntity.getValue(), WON)) {
-                    War.INSTANCE.setWon(gameId);
-                } else if (Objects.equals(tagChangeEntity.getValue(), LOST)) {
-                    War.INSTANCE.setLost(gameId);
-                } else if (Objects.equals(tagChangeEntity.getValue(), CONCEDED)) {
-                    War.INSTANCE.setConceded(gameId);
-                }
-            },
-            null),
-    TIMEOUT("剩余时间",
-            (card, tagChangeEntity, player, area) -> {
-                if (War.INSTANCE.getCurrentPlayer() != null) {
-                    War.INSTANCE.getCurrentPlayer().setTimeOut(Integer.parseInt(tagChangeEntity.getValue()));
-                }
-            },
-            null),
+        TagChangeHandler { card: Card?, tagChangeEntity: TagChangeEntity, player: Player?, area: Area? ->
+            CardUtil.exchangeAreaOfCard(tagChangeEntity)
+        },
+        ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
+            extraEntity.extraCard.zone = ZoneEnum.valueOf(value)
+        }),
+    PLAYSTATE(
+        "游戏状态",
+        TagChangeHandler { card: Card?, tagChangeEntity: TagChangeEntity, player: Player?, area: Area? ->
+            val gameId = tagChangeEntity.entity
+            if (tagChangeEntity.value == ScriptStaticData.WON) {
+                War.won = gameId
+            } else if (tagChangeEntity.value == ScriptStaticData.LOST) {
+                War.lost = gameId
+            } else if (tagChangeEntity.value == ScriptStaticData.CONCEDED) {
+                War.conceded = gameId
+            }
+        },
+        null
+    ),
+    TIMEOUT(
+        "剩余时间",
+        TagChangeHandler { card: Card?, tagChangeEntity: TagChangeEntity, player: Player?, area: Area? ->
+            War.currentPlayer.timeOut = tagChangeEntity.value.toInt()
+        },
+        null
+    ),
+
     //    回合结束后值改变
-    TURN("自己的回合数",
-            (card, tagChangeEntity, player, area) -> {
-                if (Objects.equals(tagChangeEntity.getEntity(), "GameEntity")) {
-                    War.INSTANCE.setWarTurn(Integer.parseInt(tagChangeEntity.getValue()));
-                } else if (War.INSTANCE.getCurrentPlayer() != null) {
-                    War.INSTANCE.getCurrentPlayer().setTurn(Integer.parseInt(tagChangeEntity.getValue()));
-                }
-            },
-            null),
+    TURN(
+        "自己的回合数",
+        TagChangeHandler { card: Card?, tagChangeEntity: TagChangeEntity, player: Player?, area: Area? ->
+            if (tagChangeEntity.entity == "GameEntity") {
+                War.warTurn = tagChangeEntity.value.toInt()
+            } else {
+                War.currentPlayer.turn = tagChangeEntity.value.toInt()
+            }
+        },
+        null
+    ),
+
     //    回合结束后值改变
-    NUM_TURNS_IN_PLAY("在本局呆的回合数",
-            null,
-            null),
-    NUM_CARDS_DRAWN_THIS_TURN("本回合抽牌数",
-            null,
-            null),
+    NUM_TURNS_IN_PLAY(
+        "在本局呆的回合数",
+        null,
+        null
+    ),
+    NUM_CARDS_DRAWN_THIS_TURN(
+        "本回合抽牌数",
+        null,
+        null
+    ),
+
     //    tagChange和tag里都有出现
-    REVEALED("揭示",
-            null,
-            null),
-    MAX_SLOTS_PER_PLAYER_OVERRIDE("最大槽位",
-            (card, tagChangeEntity, player, area) -> {
-                PlayArea playArea;
-                if (Objects.equals(tagChangeEntity.getEntity(), War.INSTANCE.getMe().getGameId())) {
-                    playArea = War.INSTANCE.getMe().getPlayArea();
-                } else {
-                    playArea = War.INSTANCE.getRival().getPlayArea();
-                }
-                if (Objects.equals(tagChangeEntity.getValue(), "1")) {
-                    playArea.setOldMaxSize(playArea.getMaxSize());
-                    playArea.setMaxSize(1);
-                } else if (Objects.equals(tagChangeEntity.getValue(), "0")) {
-                    playArea.setOldMaxSize(playArea.getMaxSize());
-                    playArea.setMaxSize(playArea.getDefaultMaxSize());
-                }
-            },
-            null),
+    REVEALED(
+        "揭示",
+        null,
+        null
+    ),
+    MAX_SLOTS_PER_PLAYER_OVERRIDE(
+        "最大槽位",
+        TagChangeHandler { card: Card?, tagChangeEntity: TagChangeEntity, player: Player?, area: Area? ->
+            var playArea = if (tagChangeEntity.entity == War.me.gameId) {
+                War.me.playArea
+            } else {
+                War.rival.playArea
+            }
+            if (tagChangeEntity.value == "1") {
+                playArea.oldMaxSize = playArea.maxSize
+                playArea.maxSize = 1
+            } else if (tagChangeEntity.value == "0") {
+                playArea.oldMaxSize = playArea.maxSize
+                playArea.maxSize = playArea.defaultMaxSize
+            }
+        },
+        null
+    ),
     /*++++++++++++++++++++++++++++++++++*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+
     /**
      * 卡牌属性标签-复杂TAG_CHANGE
-     * {@link BaseCard}里添加
+     * [BaseCard]里添加
      */
     HEALTH("生命值",
-            (card, tagChangeEntity, player, area) -> {
-                card.setHealth(Integer.parseInt(tagChangeEntity.getValue()));
-                log(player, card, "生命值", tagChangeEntity.getValue());
-            },
-            (extraEntity, value) -> {
-                extraEntity.getExtraCard().getCard().setHealth(Integer.parseInt(value));
-            }),
+        TagChangeHandler { card: Card?, tagChangeEntity: TagChangeEntity, player: Player?, area: Area? ->
+            card.health = tagChangeEntity.value.toInt()
+            TagEnum.Companion.log(player, card, "生命值", tagChangeEntity.value)
+        },
+        ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
+            extraEntity.extraCard.card.health = value.toInt()
+        }),
     ATK("攻击力",
-            (card, tagChangeEntity, player, area) -> {
-                card.setAtc(Integer.parseInt(tagChangeEntity.getValue()));
-                log(player, card, "攻击力", tagChangeEntity.getValue());
-            },
-            (extraEntity, value) -> {
-                extraEntity.getExtraCard().getCard().setAtc(Integer.parseInt(value));
-            }),
+        TagChangeHandler { card: Card?, tagChangeEntity: TagChangeEntity, player: Player?, area: Area? ->
+            card.atc = tagChangeEntity.value.toInt()
+            TagEnum.Companion.log(player, card, "攻击力", tagChangeEntity.value)
+        },
+        ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
+            extraEntity.extraCard.card.atc = value.toInt()
+        }),
     COST("法力值",
-            (card, tagChangeEntity, player, area) -> {
-                card.setCost(Integer.parseInt(tagChangeEntity.getValue()));
-                log(player, card, "法力值", tagChangeEntity.getValue());
-            },
-            (extraEntity, value) -> {
-                extraEntity.getExtraCard().getCard().setCost(Integer.parseInt(value));
-            }),
+        TagChangeHandler { card: Card?, tagChangeEntity: TagChangeEntity, player: Player?, area: Area? ->
+            card.cost = tagChangeEntity.value.toInt()
+            TagEnum.Companion.log(player, card, "法力值", tagChangeEntity.value)
+        },
+        ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
+            extraEntity.extraCard.card.cost = value.toInt()
+        }),
     FROZEN("冻结",
-            (card, tagChangeEntity, player, area) -> {
-                card.setFrozen(isTrue(tagChangeEntity.getValue()));
-                log(player, card, "冻结", tagChangeEntity.getValue());
-            },
-            (extraEntity, value) -> {
-                extraEntity.getExtraCard().getCard().setFrozen(isTrue(value));
-            }),
+        TagChangeHandler { card: Card?, tagChangeEntity: TagChangeEntity, player: Player?, area: Area? ->
+            card.isFrozen = TagEnum.Companion.isTrue(tagChangeEntity.value)
+            TagEnum.Companion.log(player, card, "冻结", tagChangeEntity.value)
+        },
+        ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
+            extraEntity.extraCard.card.isFrozen = TagEnum.Companion.isTrue(value)
+        }),
     EXHAUSTED("疲劳",
-            (card, tagChangeEntity, player, area) -> {
-                card.setExhausted(isTrue(tagChangeEntity.getValue()));
-                log(player, card, "疲劳", tagChangeEntity.getValue());
-            },
-            (extraEntity, value) -> {
-                extraEntity.getExtraCard().getCard().setExhausted(isTrue(value));
-            }),
-    DAMAGE("受到的伤害",
-            (card, tagChangeEntity, player, area) -> {
-                card.setDamage(Integer.parseInt(tagChangeEntity.getValue()));
-                log(player, card, "受到的伤害", tagChangeEntity.getValue());
-            },
-            null),
+        TagChangeHandler { card: Card?, tagChangeEntity: TagChangeEntity, player: Player?, area: Area? ->
+            card.isExhausted = TagEnum.Companion.isTrue(tagChangeEntity.value)
+            TagEnum.Companion.log(player, card, "疲劳", tagChangeEntity.value)
+        },
+        ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
+            extraEntity.extraCard.card.isExhausted = TagEnum.Companion.isTrue(value)
+        }),
+    DAMAGE(
+        "受到的伤害",
+        TagChangeHandler { card: Card?, tagChangeEntity: TagChangeEntity, player: Player?, area: Area? ->
+            card.damage = tagChangeEntity.value.toInt()
+            TagEnum.Companion.log(player, card, "受到的伤害", tagChangeEntity.value)
+        },
+        null
+    ),
     TAUNT("嘲讽",
-            (card, tagChangeEntity, player, area) -> {
-                card.setTaunt(isTrue(tagChangeEntity.getValue()));
-                log(player, card, "嘲讽", tagChangeEntity.getValue());
-            },
-            (extraEntity, value) -> {
-                extraEntity.getExtraCard().getCard().setTaunt(isTrue(value));
-            }),
+        TagChangeHandler { card: Card?, tagChangeEntity: TagChangeEntity, player: Player?, area: Area? ->
+            card.isTaunt = TagEnum.Companion.isTrue(tagChangeEntity.value)
+            TagEnum.Companion.log(player, card, "嘲讽", tagChangeEntity.value)
+        },
+        ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
+            extraEntity.extraCard.card.isTaunt = TagEnum.Companion.isTrue(value)
+        }),
     ARMOR("护甲",
-            (card, tagChangeEntity, player, area) -> {
-                card.setArmor(Integer.parseInt(tagChangeEntity.getValue()));
-                log(player, card, "护甲", tagChangeEntity.getValue());
-            },
-            (extraEntity, value) -> {
-                extraEntity.getExtraCard().getCard().setArmor(Integer.parseInt(value));
-            }),
+        TagChangeHandler { card: Card?, tagChangeEntity: TagChangeEntity, player: Player?, area: Area? ->
+            card.armor = tagChangeEntity.value.toInt()
+            TagEnum.Companion.log(player, card, "护甲", tagChangeEntity.value)
+        },
+        ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
+            extraEntity.extraCard.card.armor = value.toInt()
+        }),
     DIVINE_SHIELD("圣盾",
-            (card, tagChangeEntity, player, area) -> {
-                card.setDivineShield(isTrue(tagChangeEntity.getValue()));
-                log(player, card, "圣盾", tagChangeEntity.getValue());
-            },
-            (extraEntity, value) -> {
-                extraEntity.getExtraCard().getCard().setDivineShield(isTrue(value));
-            }),
+        TagChangeHandler { card: Card?, tagChangeEntity: TagChangeEntity, player: Player?, area: Area? ->
+            card.isDivineShield = TagEnum.Companion.isTrue(tagChangeEntity.value)
+            TagEnum.Companion.log(player, card, "圣盾", tagChangeEntity.value)
+        },
+        ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
+            extraEntity.extraCard.card.isDivineShield = TagEnum.Companion.isTrue(value)
+        }),
     DEATHRATTLE("亡语",
-            (card, tagChangeEntity, player, area) -> {
-                card.setDeathRattle(isTrue(tagChangeEntity.getValue()));
-                log(player, card, "亡语", tagChangeEntity.getValue());
-            },
-            (extraEntity, value) -> {
-                extraEntity.getExtraCard().getCard().setDeathRattle(isTrue(value));
-            }),
+        TagChangeHandler { card: Card?, tagChangeEntity: TagChangeEntity, player: Player?, area: Area? ->
+            card.isDeathRattle = TagEnum.Companion.isTrue(tagChangeEntity.value)
+            TagEnum.Companion.log(player, card, "亡语", tagChangeEntity.value)
+        },
+        ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
+            extraEntity.extraCard.card.isDeathRattle = TagEnum.Companion.isTrue(value)
+        }),
     POISONOUS("剧毒",
-            (card, tagChangeEntity, player, area) -> {
-                card.setPoisonous(isTrue(tagChangeEntity.getValue()));
-                log(player, card, "剧毒", tagChangeEntity.getValue());
-            },
-            (extraEntity, value) -> {
-                extraEntity.getExtraCard().getCard().setPoisonous(isTrue(value));
-            }),
+        TagChangeHandler { card: Card?, tagChangeEntity: TagChangeEntity, player: Player?, area: Area? ->
+            card.isPoisonous = TagEnum.Companion.isTrue(tagChangeEntity.value)
+            TagEnum.Companion.log(player, card, "剧毒", tagChangeEntity.value)
+        },
+        ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
+            extraEntity.extraCard.card.isPoisonous = TagEnum.Companion.isTrue(value)
+        }),
     AURA("光环",
-            (card, tagChangeEntity, player, area) -> {
-                card.setAura(isTrue(tagChangeEntity.getValue()));
-                log(player, card, "光环", tagChangeEntity.getValue());
-            },
-            (extraEntity, value) -> {
-                extraEntity.getExtraCard().getCard().setAura(isTrue(value));
-            }),
+        TagChangeHandler { card: Card?, tagChangeEntity: TagChangeEntity, player: Player?, area: Area? ->
+            card.isAura = TagEnum.Companion.isTrue(tagChangeEntity.value)
+            TagEnum.Companion.log(player, card, "光环", tagChangeEntity.value)
+        },
+        ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
+            extraEntity.extraCard.card.isAura = TagEnum.Companion.isTrue(value)
+        }),
     STEALTH("潜行",
-            (card, tagChangeEntity, player, area) -> {
-                card.setStealth(isTrue(tagChangeEntity.getValue()));
-                log(player, card, "潜行", tagChangeEntity.getValue());
-            },
-            (extraEntity, value) -> {
-                extraEntity.getExtraCard().getCard().setStealth(isTrue(value));
-            }),
+        TagChangeHandler { card: Card?, tagChangeEntity: TagChangeEntity, player: Player?, area: Area? ->
+            card.isStealth = TagEnum.Companion.isTrue(tagChangeEntity.value)
+            TagEnum.Companion.log(player, card, "潜行", tagChangeEntity.value)
+        },
+        ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
+            extraEntity.extraCard.card.isStealth = TagEnum.Companion.isTrue(value)
+        }),
     WINDFURY("风怒",
-            (card, tagChangeEntity, player, area) -> {
-                card.setWindFury(isTrue(tagChangeEntity.getValue()));
-                log(player, card, "风怒", tagChangeEntity.getValue());
-            },
-            (extraEntity, value) -> {
-                extraEntity.getExtraCard().getCard().setWindFury(isTrue(value));
-            }),
+        TagChangeHandler { card: Card?, tagChangeEntity: TagChangeEntity, player: Player?, area: Area? ->
+            card.isWindFury = TagEnum.Companion.isTrue(tagChangeEntity.value)
+            TagEnum.Companion.log(player, card, "风怒", tagChangeEntity.value)
+        },
+        ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
+            extraEntity.extraCard.card.isWindFury = TagEnum.Companion.isTrue(value)
+        }),
     BATTLECRY("战吼",
-            (card, tagChangeEntity, player, area) -> {
-                card.setBattlecry(isTrue(tagChangeEntity.getValue()));
-                log(player, card, "战吼", tagChangeEntity.getValue());
-            },
-            (extraEntity, value) -> {
-                extraEntity.getExtraCard().getCard().setBattlecry(isTrue(value));
-            }),
+        TagChangeHandler { card: Card?, tagChangeEntity: TagChangeEntity, player: Player?, area: Area? ->
+            card.isBattlecry = TagEnum.Companion.isTrue(tagChangeEntity.value)
+            TagEnum.Companion.log(player, card, "战吼", tagChangeEntity.value)
+        },
+        ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
+            extraEntity.extraCard.card.isBattlecry = TagEnum.Companion.isTrue(value)
+        }),
     DISCOVER("发现",
-            (card, tagChangeEntity, player, area) -> {
-                card.setDiscover(isTrue(tagChangeEntity.getValue()));
-                log(player, card, "发现", tagChangeEntity.getValue());
-            },
-            (extraEntity, value) -> {
-                extraEntity.getExtraCard().getCard().setDiscover(isTrue(value));
-            }),
+        TagChangeHandler { card: Card?, tagChangeEntity: TagChangeEntity, player: Player?, area: Area? ->
+            card.isDiscover = TagEnum.Companion.isTrue(tagChangeEntity.value)
+            TagEnum.Companion.log(player, card, "发现", tagChangeEntity.value)
+        },
+        ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
+            extraEntity.extraCard.card.isDiscover = TagEnum.Companion.isTrue(value)
+        }),
     ADJACENT_BUFF("相邻增益",
-            (card, tagChangeEntity, player, area) -> {
-                card.setAdjacentBuff(isTrue(tagChangeEntity.getValue()));
-                log(player, card, "相邻增益", tagChangeEntity.getValue());
-            },
-            (extraEntity, value) -> {
-                extraEntity.getExtraCard().getCard().setAdjacentBuff(isTrue(value));
-            }),
+        TagChangeHandler { card: Card?, tagChangeEntity: TagChangeEntity, player: Player?, area: Area? ->
+            card.isAdjacentBuff = TagEnum.Companion.isTrue(tagChangeEntity.value)
+            TagEnum.Companion.log(player, card, "相邻增益", tagChangeEntity.value)
+        },
+        ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
+            extraEntity.extraCard.card.isAdjacentBuff = TagEnum.Companion.isTrue(value)
+        }),
     CANT_BE_TARGETED_BY_SPELLS("不能被法术指向",
-            (card, tagChangeEntity, player, area) -> {
-                card.setCantBeTargetedBySpells(isTrue(tagChangeEntity.getValue()));
-                log(player, card, "不能被法术指向", tagChangeEntity.getValue());
-            },
-            (extraEntity, value) -> {
-                extraEntity.getExtraCard().getCard().setCantBeTargetedBySpells(isTrue(value));
-            }),
+        TagChangeHandler { card: Card?, tagChangeEntity: TagChangeEntity, player: Player?, area: Area? ->
+            card.isCantBeTargetedBySpells = TagEnum.Companion.isTrue(tagChangeEntity.value)
+            TagEnum.Companion.log(player, card, "不能被法术指向", tagChangeEntity.value)
+        },
+        ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
+            extraEntity.extraCard.card.isCantBeTargetedBySpells = TagEnum.Companion.isTrue(value)
+        }),
     CANT_BE_TARGETED_BY_HERO_POWERS("不能被英雄技能指向",
-            (card, tagChangeEntity, player, area) -> {
-                card.setCantBeTargetedByHeroPowers(isTrue(tagChangeEntity.getValue()));
-                log(player, card, "不能被英雄技能指向", tagChangeEntity.getValue());
-            },
-            (extraEntity, value) -> {
-                extraEntity.getExtraCard().getCard().setCantBeTargetedByHeroPowers(isTrue(value));
-            }),
+        TagChangeHandler { card: Card?, tagChangeEntity: TagChangeEntity, player: Player?, area: Area? ->
+            card.isCantBeTargetedByHeroPowers = TagEnum.Companion.isTrue(tagChangeEntity.value)
+            TagEnum.Companion.log(player, card, "不能被英雄技能指向", tagChangeEntity.value)
+        },
+        ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
+            extraEntity.extraCard.card.isCantBeTargetedByHeroPowers = TagEnum.Companion.isTrue(value)
+        }),
     CANT_BE_TARGETED_BY_OPPONENTS("不能被对手指向",
-            (card, tagChangeEntity, player, area) -> {
-                card.setCantBeTargetedByOpponents(isTrue(tagChangeEntity.getValue()));
-                log(player, card, "不能被对手指向", tagChangeEntity.getValue());
-            },
-            (extraEntity, value) -> {
-                extraEntity.getExtraCard().getCard().setCantBeTargetedByOpponents(isTrue(value));
-            }),
+        TagChangeHandler { card: Card?, tagChangeEntity: TagChangeEntity, player: Player?, area: Area? ->
+            card.isCantBeTargetedByOpponents = TagEnum.Companion.isTrue(tagChangeEntity.value)
+            TagEnum.Companion.log(player, card, "不能被对手指向", tagChangeEntity.value)
+        },
+        ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
+            extraEntity.extraCard.card.isCantBeTargetedByOpponents = TagEnum.Companion.isTrue(value)
+        }),
     SPAWN_TIME_COUNT("刷出时间计数",
-            null,
-            (extraEntity, value) -> {
-                extraEntity.getExtraCard().getCard().setSpawnTimeCount(isTrue(value));
-            }),
+        null,
+        ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
+            extraEntity.extraCard.card.isSpawnTimeCount = TagEnum.Companion.isTrue(value)
+        }),
     DORMANT_AWAKEN_CONDITION_ENCHANT("休眠状态",
-            (card, tagChangeEntity, player, area) -> {
-                card.setDormantAwakenConditionEnchant(isTrue(tagChangeEntity.getValue()));
-                log(player, card, "休眠状态", tagChangeEntity.getValue());
-            },
-            (extraEntity, value) -> {
-                extraEntity.getExtraCard().getCard().setDormantAwakenConditionEnchant(isTrue(value));
-            }),
+        TagChangeHandler { card: Card?, tagChangeEntity: TagChangeEntity, player: Player?, area: Area? ->
+            card.isDormantAwakenConditionEnchant = TagEnum.Companion.isTrue(tagChangeEntity.value)
+            TagEnum.Companion.log(player, card, "休眠状态", tagChangeEntity.value)
+        },
+        ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
+            extraEntity.extraCard.card.isDormantAwakenConditionEnchant = TagEnum.Companion.isTrue(value)
+        }),
     ELUSIVE("扰魔",
-            (card, tagChangeEntity, player, area) -> {
-                card.setElusive(isTrue(tagChangeEntity.getValue()));
-                log(player, card, "扰魔", tagChangeEntity.getValue());
-            },
-            (extraEntity, value) -> {
-                extraEntity.getExtraCard().getCard().setElusive(isTrue(value));
-            }),
+        TagChangeHandler { card: Card?, tagChangeEntity: TagChangeEntity, player: Player?, area: Area? ->
+            card.isElusive = TagEnum.Companion.isTrue(tagChangeEntity.value)
+            TagEnum.Companion.log(player, card, "扰魔", tagChangeEntity.value)
+        },
+        ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
+            extraEntity.extraCard.card.isElusive = TagEnum.Companion.isTrue(value)
+        }),
     IMMUNE("免疫",
-            (card, tagChangeEntity, player, area) -> {
-                card.setImmune(isTrue(tagChangeEntity.getValue()));
-                log(player, card, "免疫", tagChangeEntity.getValue());
-            },
-            (extraEntity, value) -> {
-                extraEntity.getExtraCard().getCard().setImmune(isTrue(value));
-            }),
+        TagChangeHandler { card: Card?, tagChangeEntity: TagChangeEntity, player: Player?, area: Area? ->
+            card.isImmune = TagEnum.Companion.isTrue(tagChangeEntity.value)
+            TagEnum.Companion.log(player, card, "免疫", tagChangeEntity.value)
+        },
+        ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
+            extraEntity.extraCard.card.isImmune = TagEnum.Companion.isTrue(value)
+        }),
     CARDRACE("种族",
-            (card, tagChangeEntity, player, area) -> {
-                card.setCardRace(CARD_RACE_MAP.getOrDefault(tagChangeEntity.getValue(), CardRaceEnum.UNKNOWN));
-                log(player, card, "种族", tagChangeEntity.getValue());
-            },
-            (extraEntity, value) -> {
-                extraEntity.getExtraCard().getCard().setCardRace(CARD_RACE_MAP.getOrDefault(value, CardRaceEnum.UNKNOWN));
-            }),
+        TagChangeHandler { card: Card?, tagChangeEntity: TagChangeEntity, player: Player?, area: Area? ->
+            card.cardRace = ScriptStaticData.CARD_RACE_MAP.getOrDefault(tagChangeEntity.value, CardRaceEnum.UNKNOWN)
+            TagEnum.Companion.log(player, card, "种族", tagChangeEntity.value)
+        },
+        ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
+            extraEntity.extraCard.card.cardRace =
+                ScriptStaticData.CARD_RACE_MAP.getOrDefault(value, CardRaceEnum.UNKNOWN)
+        }),
     PREMIUM("衍生物",
-            null,
-            (extraEntity, value) -> {
-                extraEntity.getExtraCard().getCard().setPremium(isTrue(value));
-            }),
+        null,
+        ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
+            extraEntity.extraCard.card.isPremium = TagEnum.Companion.isTrue(value)
+        }),
     MODULAR("磁力",
-            (card, tagChangeEntity, player, area) -> {
-                card.setModular(isTrue(tagChangeEntity.getValue()));
-                log(player, card, "磁力", tagChangeEntity.getValue());
-            },
-            (extraEntity, value) -> {
-                extraEntity.getExtraCard().getCard().setModular(isTrue(value));
-            }),
+        TagChangeHandler { card: Card?, tagChangeEntity: TagChangeEntity, player: Player?, area: Area? ->
+            card.isModular = TagEnum.Companion.isTrue(tagChangeEntity.value)
+            TagEnum.Companion.log(player, card, "磁力", tagChangeEntity.value)
+        },
+        ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
+            extraEntity.extraCard.card.isModular = TagEnum.Companion.isTrue(value)
+        }),
     CONTROLLER("控制者",
-            (card, tagChangeEntity, player, area) -> {
-                card.setController(tagChangeEntity.getValue());
-                card = area.removeByEntityId(tagChangeEntity.getEntityId());
-                Area reverseArea = War.INSTANCE.getReverseArea(area);
-                reverseArea.add(card, 0);
-                log(player, card, "控制者", tagChangeEntity.getValue());
-            },
-            (extraEntity, value) -> {
-                extraEntity.getExtraCard().getCard().setModular(isTrue(value));
-            }),
+        TagChangeHandler { card: Card?, tagChangeEntity: TagChangeEntity, player: Player?, area: Area? ->
+            var card = card
+            card.controller = tagChangeEntity.value
+            card = area.removeByEntityId(tagChangeEntity.entityId)
+            val reverseArea = War.getReverseArea(area)
+            reverseArea.add(card, 0)
+            TagEnum.Companion.log(player, card, "控制者", tagChangeEntity.value)
+        },
+        ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
+            extraEntity.extraCard.card.isModular = TagEnum.Companion.isTrue(value)
+        }),
     CREATOR("创建者",
-            null,
-            (extraEntity, value) -> {
-                extraEntity.getExtraCard().getCard().setCreator(value);
-            }),
+        null,
+        ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
+            extraEntity.extraCard.card.creator = value
+        }),
     TITAN("泰坦",
-            null,
-            (extraEntity, value) -> {
-                extraEntity.getExtraCard().getCard().setTitan(isTrue(value));
-            }),
+        null,
+        ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
+            extraEntity.extraCard.card.isTitan = TagEnum.Companion.isTrue(value)
+        }),
     SPELLPOWER("法强",
-            (card, tagChangeEntity, player, area) -> {
-                card.setSpellPower(Integer.parseInt(tagChangeEntity.getValue()));
-                log(player, card, "法强", tagChangeEntity.getValue());
-            },
-            (extraEntity, value) -> {
-                extraEntity.getExtraCard().getCard().setSpellPower(Integer.parseInt(value));
-            }),
+        TagChangeHandler { card: Card?, tagChangeEntity: TagChangeEntity, player: Player?, area: Area? ->
+            card.spellPower = tagChangeEntity.value.toInt()
+            TagEnum.Companion.log(player, card, "法强", tagChangeEntity.value)
+        },
+        ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
+            extraEntity.extraCard.card.spellPower = value.toInt()
+        }),
     DORMANT("休眠",
-            null,
-            (extraEntity, value) -> {
-                extraEntity.getExtraCard().getCard().setDormant(isTrue(value));
-            }),
+        null,
+        ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
+            extraEntity.extraCard.card.isDormant = TagEnum.Companion.isTrue(value)
+        }),
     ATTACKABLE_BY_RUSH("突袭攻击",
-            (card, tagChangeEntity, player, area) -> {
-                card.setAttackableByRush(isTrue(tagChangeEntity.getValue()));
-                log(player, card, "突袭攻击", tagChangeEntity.getValue());
-            },
-            (extraEntity, value) -> {
-                extraEntity.getExtraCard().getCard().setAttackableByRush(isTrue(value));
-            }),
+        TagChangeHandler { card: Card?, tagChangeEntity: TagChangeEntity, player: Player?, area: Area? ->
+            card.isAttackableByRush = TagEnum.Companion.isTrue(tagChangeEntity.value)
+            TagEnum.Companion.log(player, card, "突袭攻击", tagChangeEntity.value)
+        },
+        ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
+            extraEntity.extraCard.card.isAttackableByRush = TagEnum.Companion.isTrue(value)
+        }),
     IMMUNE_WHILE_ATTACKING("攻击时免疫",
-            (card, tagChangeEntity, player, area) -> {
-                card.setImmuneWhileAttacking(isTrue(tagChangeEntity.getValue()));
-                log(player, card, "攻击时免疫", tagChangeEntity.getValue());
-            },
-            (extraEntity, value) -> {
-                extraEntity.getExtraCard().getCard().setImmuneWhileAttacking(isTrue(value));
-            }),
+        TagChangeHandler { card: Card?, tagChangeEntity: TagChangeEntity, player: Player?, area: Area? ->
+            card.isImmuneWhileAttacking = TagEnum.Companion.isTrue(tagChangeEntity.value)
+            TagEnum.Companion.log(player, card, "攻击时免疫", tagChangeEntity.value)
+        },
+        ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
+            extraEntity.extraCard.card.isImmuneWhileAttacking = TagEnum.Companion.isTrue(value)
+        }),
     REBORN("复生",
-            (card, tagChangeEntity, player, area) -> {
-                card.setReborn(isTrue(tagChangeEntity.getValue()));
-                log(player, card, "复生", tagChangeEntity.getValue());
-            },
-            (extraEntity, value) -> {
-                extraEntity.getExtraCard().getCard().setReborn(isTrue(value));
-            }),
+        TagChangeHandler { card: Card?, tagChangeEntity: TagChangeEntity, player: Player?, area: Area? ->
+            card.isReborn = TagEnum.Companion.isTrue(tagChangeEntity.value)
+            TagEnum.Companion.log(player, card, "复生", tagChangeEntity.value)
+        },
+        ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
+            extraEntity.extraCard.card.isReborn = TagEnum.Companion.isTrue(value)
+        }),
     TRIGGER_VISUAL("视觉触发",
-            (card, tagChangeEntity, player, area) -> {
-                card.setTriggerVisual(isTrue(tagChangeEntity.getValue()));
-                log(player, card, "视觉触发", tagChangeEntity.getValue());
-            },
-            (extraEntity, value) -> {
-                extraEntity.getExtraCard().getCard().setTriggerVisual(isTrue(value));
-            }),
+        TagChangeHandler { card: Card?, tagChangeEntity: TagChangeEntity, player: Player?, area: Area? ->
+            card.isTriggerVisual = TagEnum.Companion.isTrue(tagChangeEntity.value)
+            TagEnum.Companion.log(player, card, "视觉触发", tagChangeEntity.value)
+        },
+        ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
+            extraEntity.extraCard.card.isTriggerVisual = TagEnum.Companion.isTrue(value)
+        }),
     LIFESTEAL("吸血",
-            (card, tagChangeEntity, player, area) -> {
-                card.setLifesteal(isTrue(tagChangeEntity.getValue()));
-                log(player, card, "吸血", tagChangeEntity.getValue());
-            },
-            (extraEntity, value) -> {
-                extraEntity.getExtraCard().getCard().setLifesteal(isTrue(value));
-            }),
+        TagChangeHandler { card: Card?, tagChangeEntity: TagChangeEntity, player: Player?, area: Area? ->
+            card.isLifesteal = TagEnum.Companion.isTrue(tagChangeEntity.value)
+            TagEnum.Companion.log(player, card, "吸血", tagChangeEntity.value)
+        },
+        ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
+            extraEntity.extraCard.card.isLifesteal = TagEnum.Companion.isTrue(value)
+        }),
     COIN_CARD("硬币",
-            null,
-            (extraEntity, value) -> {
-                extraEntity.getExtraCard().getCard().setCoinCard(isTrue(value));
-            }),
+        null,
+        ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
+            extraEntity.extraCard.card.isCoinCard = TagEnum.Companion.isTrue(value)
+        }),
+
     /*+++++++++++++++++++++++++++++++++++++++++++++++*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
-    UNKNOWN("未知",
-            null,
-            null),
+    UNKNOWN(
+        "未知",
+        null,
+        null
+    ),
     ;
 
-    private static void log(Player player, Card card, String tagComment, Object value) {
-        String playerId = "", gameId = "", entityId = "", cardId = "", entityName = "";
-        if (player != null) {
-            playerId = player.getPlayerId();
-            gameId = player.getGameId();
+
+    companion object {
+
+        private fun log(player: Player?, card: Card?, tagComment: String, value: Any) {
+            var playerId = ""
+            var gameId = ""
+            var entityId = ""
+            var cardId = ""
+            var entityName = ""
+            if (player != null) {
+                playerId = player.playerId
+                gameId = player.gameId
+            }
+            if (card != null) {
+                entityId = card.entityId
+                cardId = card.cardId
+                entityName = if (Entity.UNKNOWN_ENTITY_NAME == card.entityName) "" else card.entityName
+            }
+            if (log.isDebugEnabled()) {
+                log.debug {
+                    String.format(
+                        "【玩家%s:%s，entityId:%s，entityName:%s，cardId:%s】的【%s】发生变化:%s",
+                        playerId,
+                        gameId,
+                        entityId,
+                        entityName,
+                        cardId,
+                        tagComment,
+                        value.toString()
+                    )
+                }
+            }
         }
-        if (card != null) {
-            entityId = card.getEntityId();
-            cardId = card.getCardId();
-            entityName = Objects.equals(Entity.UNKNOWN_ENTITY_NAME, card.getEntityName()) ? "" : card.getEntityName();
-        }
-        if (log.isDebugEnabled()) {
-            log.debug(String.format("【玩家%s:%s，entityId:%s，entityName:%s，cardId:%s】的【%s】发生变化:%s",
-                    playerId,
-                    gameId,
-                    entityId,
-                    entityName,
-                    cardId,
-                    tagComment,
-                    value.toString()
-            ));
+
+        private fun isTrue(s: String): Boolean {
+            return s == "1"
         }
     }
-
-    private static boolean isTrue(String s) {
-        return Objects.equals(s, "1");
-    }
-
-    private final String comment;
-
-    private final DealTagChange dealTagChange;
-
-    private final ParseExtraEntity parseExtraEntity;
 }

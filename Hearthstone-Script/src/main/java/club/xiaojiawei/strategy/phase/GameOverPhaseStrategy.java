@@ -63,6 +63,6 @@ public class GameOverPhaseStrategy extends AbstractPhaseStrategy{
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        GameUtil.clickGameEndPageTask();
+        GameUtil.addGameEndTask();
     }
 }

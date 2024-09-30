@@ -1,10 +1,14 @@
 package club.xiaojiawei.utils
 
+import club.xiaojiawei.config.SpringBeanConfig
+import club.xiaojiawei.config.log
 import club.xiaojiawei.enums.ConfigEnum
+import club.xiaojiawei.util.isFalse
+import club.xiaojiawei.util.isTrue
 import com.alibaba.fastjson.JSON
 import org.ini4j.Config
 import org.ini4j.Ini
-import java.nio.file.Path
+import java.io.File
 
 
 /**
@@ -13,12 +17,18 @@ import java.nio.file.Path
  */
 object ConfigUtil {
 
-    private var CONFIG: Ini = Ini(Path.of("", "config.ini").toFile())
+    private var CONFIG: Ini = Ini()
 
     init {
-        val config = Config()
-//        todo set path
-        CONFIG.config = config
+        val cfg = Config()
+        SpringBeanConfig.springData
+        val configFile = File(SpringBeanConfig.springData.scriptConfigurationFile)
+        configFile.exists().isTrue {
+            CONFIG.load(configFile)
+        }.isFalse {
+            log.warn { "配置文件【${configFile.absolutePath}】不存在" }
+        }
+        CONFIG.config = cfg
     }
 
     /* *************************************************************************
@@ -58,7 +68,8 @@ object ConfigUtil {
      * 读取整型数字
      */
     fun getInt(key: ConfigEnum): Int {
-        return (CONFIG[key.group]?.get(key.name) ?: key.defaultValue).toInt()
+        return (CONFIG[key.group]?.get(key.name) ?: key.defaultValue).toIntOrNull() ?: key.defaultValue.toIntOrNull()
+        ?: 0
     }
 
     /**
@@ -75,7 +86,8 @@ object ConfigUtil {
      * 读取长整型数字
      */
     fun getLong(key: ConfigEnum): Long {
-        return (CONFIG[key.group]?.get(key.name) ?: key.defaultValue).toLong()
+        return (CONFIG[key.group]?.get(key.name) ?: key.defaultValue).toLongOrNull() ?: key.defaultValue.toLongOrNull()
+        ?: 0L
     }
 
     /**
@@ -92,7 +104,8 @@ object ConfigUtil {
      * 读取Float数字
      */
     fun getFloat(key: ConfigEnum): Float {
-        return (CONFIG[key.group]?.get(key.name) ?: key.defaultValue).toFloat()
+        return (CONFIG[key.group]?.get(key.name) ?: key.defaultValue).toFloatOrNull() ?: key.defaultValue.toFloatOrNull()
+        ?: 0.0f
     }
 
     /**
@@ -125,7 +138,7 @@ object ConfigUtil {
     /**
      * 读取数组类型数据
      */
-    fun<T> getArray(key: ConfigEnum, clazz: Class<T>): MutableList<T> {
+    fun <T> getArray(key: ConfigEnum, clazz: Class<T>): MutableList<T> {
         val value = CONFIG[key.group]?.get(key.name) ?: key.defaultValue
         return JSON.parseArray(value, clazz)
     }
@@ -143,12 +156,12 @@ object ConfigUtil {
     /**
      * 读取任意类型数据
      */
-    fun<T> getObject(key: ConfigEnum, clazz: Class<T>): T {
+    fun <T> getObject(key: ConfigEnum, clazz: Class<T>): T {
         val value = CONFIG[key.group]?.get(key.name) ?: key.defaultValue
         return JSON.parseObject(value, clazz)
     }
 
-    fun remove(key: ConfigEnum):String {
+    fun remove(key: ConfigEnum): String {
         return CONFIG[key.group]?.remove(key.name).toString()
     }
 
@@ -162,7 +175,7 @@ object ConfigUtil {
         }
     }
 
-    fun store(){
+    fun store() {
         CONFIG.store()
     }
 

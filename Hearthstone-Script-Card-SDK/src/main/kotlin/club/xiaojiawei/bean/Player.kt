@@ -10,18 +10,19 @@ import kotlin.concurrent.Volatile
 /**
  * @author 肖嘉威
  * @date 2022/11/27 15:03
- */class Player(val playerId: String) : Entity() {
+ */
+class Player(val playerId: String) : Entity() {
 
-    constructor(playerId: String, gameId: String) : this(playerId){
+    constructor(playerId: String, gameId: String) : this(playerId) {
         this.gameId = gameId
     }
 
     @Volatile
     var gameId: String = ""
-    set(value) {
-        field = value
-        log.info { "playerId:$playerId,gameId:$gameId" }
-    }
+        set(value) {
+            field = value
+            log.info { "playerId:$playerId,gameId:$gameId" }
+        }
 
     val handArea = HandArea(this)
 
@@ -60,15 +61,17 @@ import kotlin.concurrent.Volatile
         tempResources = 0
     }
 
-    fun getArea(zoneEnum: ZoneEnum): Area {
-        return when (zoneEnum) {
-            ZoneEnum.DECK -> deckArea
-            ZoneEnum.HAND -> handArea
-            ZoneEnum.PLAY -> playArea
-            ZoneEnum.SETASIDE -> setasideArea
-            ZoneEnum.SECRET -> secretArea
-            ZoneEnum.GRAVEYARD -> graveyardArea
-            ZoneEnum.REMOVEDFROMGAME -> removedfromgameArea
+    fun getArea(zoneEnum: ZoneEnum?): Area? {
+        return zoneEnum?.let {
+            when (it) {
+                ZoneEnum.DECK -> deckArea
+                ZoneEnum.HAND -> handArea
+                ZoneEnum.PLAY -> playArea
+                ZoneEnum.SETASIDE -> setasideArea
+                ZoneEnum.SECRET -> secretArea
+                ZoneEnum.GRAVEYARD -> graveyardArea
+                ZoneEnum.REMOVEDFROMGAME -> removedfromgameArea
+            }
         }
     }
 
@@ -86,7 +89,7 @@ import kotlin.concurrent.Volatile
 fun Player.safeRun(block: () -> Unit): Player {
     if (this === INVALID_PLAYER) {
         return this
-    }else{
+    } else {
         block()
         return this
     }
