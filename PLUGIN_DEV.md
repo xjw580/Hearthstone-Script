@@ -31,7 +31,13 @@
 
      > 所有出牌逻辑都按此类规定执行
      >
-     > API使用可参考[模板](https://github.com/xjw580/Deck-Plugin-Market/blob/master/Deck-Plugin-Template/src/main/kotlin/TemplateStrategyDeck.kt) 和 [基础策略](https://github.com/xjw580/Hearthstone-Script/blob/master/Hearthstone-Script-Base-Deck/src/main/kotlin/club/xiaojiawei/HsCommonDeckStrategy.kt) 
+     > API使用可参考[模板](https://github.com/xjw580/Deck-Plugin-Market/blob/master/Deck-Plugin-Template/src/main/kotlin/TemplateStrategyDeck.kt) 和 [基础策略](https://github.com/xjw580/Hearthstone-Script/blob/master/Hearthstone-Script-Base-Deck/src/main/kotlin/club/xiaojiawei/HsCommonDeckStrategy.kt)
+     >
+     > 连接模板项目下的[hs_cards.db](https://github.com/xjw580/Deck-Plugin-Market/blob/master/hs_cards.db)（sqlite数据库）可查看卡牌信息
+     > ```sql
+     > select * from cards
+     > ```
+   
 
    - 在resources目录下新建`META-INF/services`目录
 
