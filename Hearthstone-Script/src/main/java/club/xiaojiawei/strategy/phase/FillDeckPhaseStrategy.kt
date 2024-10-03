@@ -8,8 +8,6 @@ import club.xiaojiawei.status.War.currentPhase
 import club.xiaojiawei.status.War.startWar
 import club.xiaojiawei.strategy.AbstractPhaseStrategy
 import club.xiaojiawei.strategy.DeckStrategyActuator.deckStrategy
-import lombok.extern.slf4j.Slf4j
-import org.springframework.stereotype.Component
 
 /**
  * 起始填充牌库阶段
@@ -20,7 +18,7 @@ object FillDeckPhaseStrategy : AbstractPhaseStrategy() {
 
     override fun dealTagChangeThenIsOver(line: String, tagChangeEntity: TagChangeEntity): Boolean {
         if (tagChangeEntity.tag == TagEnum.TURN && tagChangeEntity.value == "1") {
-            currentPhase = WarPhaseEnum.DRAWN_INIT_CARD_PHASE
+            currentPhase = WarPhaseEnum.DRAWN_INIT_CARD
             return true
         }
         return false

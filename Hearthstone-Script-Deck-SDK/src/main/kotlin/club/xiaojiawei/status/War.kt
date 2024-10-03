@@ -2,7 +2,6 @@ package club.xiaojiawei.status
 
 import club.xiaojiawei.bean.Player
 import club.xiaojiawei.bean.area.*
-import club.xiaojiawei.bean.isValid
 import club.xiaojiawei.bean.safeRun
 import club.xiaojiawei.enums.RunModeEnum
 import club.xiaojiawei.enums.StepEnum
@@ -41,7 +40,7 @@ object War {
         }
 
     @Volatile
-    var currentPhase = WarPhaseEnum.FILL_DECK_PHASE
+    var currentPhase = WarPhaseEnum.FILL_DECK
 
     @Volatile
     var currentTurnStep: StepEnum? = null
@@ -110,7 +109,7 @@ object War {
     @Synchronized
     fun reset() {
         firstPlayerGameId = ""
-        currentPhase = WarPhaseEnum.FILL_DECK_PHASE
+        currentPhase = WarPhaseEnum.FILL_DECK
         currentTurnStep = null
         rival = Player.INVALID_PLAYER
         me = Player.INVALID_PLAYER

@@ -20,7 +20,7 @@ object ConfigUtil {
 
     private var CONFIG: Ini = Ini()
 
-    init {
+    fun loadConfig(){
         val cfg = Config()
         SpringBeanConfig.springData
         val configFile = File(SpringBeanConfig.springData.scriptConfigurationFile)
@@ -34,6 +34,7 @@ object ConfigUtil {
     }
 
     private fun checkConfig(configFile: File){
+        CONFIG.clear()
         CONFIG.load(configFile)
         val existKeys = CONFIG.keys.stream().collect(Collectors.toSet())
         FileWriter(configFile).use {

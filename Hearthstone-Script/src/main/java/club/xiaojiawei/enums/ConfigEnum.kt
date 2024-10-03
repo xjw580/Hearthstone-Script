@@ -11,20 +11,6 @@ enum class ConfigEnum(
     val group: String = "",
     val defaultValue: String = "",
 ) {
-    /**
-     * 自动打开web页
-     */
-    AUTO_OPEN_WEB(group = "web", defaultValue = "false"),
-
-    /**
-     * WEB访问密码
-     */
-    VERIFY_PASSWORD(group = "web", defaultValue = ""),
-
-    /**
-     * WEB启用密码
-     */
-    ENABLE_VERIFY(group = "web", defaultValue = "false"),
 
     /**
      * 游戏路径
@@ -97,6 +83,11 @@ enum class ConfigEnum(
      * 战网密码
      */
     PLATFORM_PASSWORD(group = "other"),
+
+    /**
+     * 游戏最大日志/KB
+     */
+    GAME_MAX_LOG_SIZE(group = "other", defaultValue = "30720"),
 
     /**
      * 允许发送windows通知

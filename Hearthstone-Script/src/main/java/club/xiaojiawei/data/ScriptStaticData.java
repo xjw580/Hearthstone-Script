@@ -46,7 +46,7 @@ public class ScriptStaticData {
     public static final String UPDATE_PROGRAM_NAME = "update.exe";
     public static final String LIB_DIR = "lib";
     public static final String TEMP_VERSION_PATH = System.getProperty("user.dir") + File.separator + TEMP_VERSION_DIR + File.separator;
-    public static int MAX_LOG_SIZE = 10240 * 1024;
+    public static int MAX_LOG_SIZE_B = 10240 * 1024;
     /**
      * 游戏窗口信息
      */

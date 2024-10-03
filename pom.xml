@@ -105,6 +105,11 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
+                <groupId>org.jetbrains.kotlin</groupId>
+                <artifactId>kotlin-reflect</artifactId>
+                <version>${kotlin.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>club.xiaojiawei</groupId>
                 <artifactId>hs-script-base-card</artifactId>
                 <version>${hs-script-base-card-version}</version>
