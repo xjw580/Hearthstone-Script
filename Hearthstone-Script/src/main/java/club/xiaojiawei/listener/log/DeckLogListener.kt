@@ -60,7 +60,7 @@ object DeckLogListener : AbstractLogListener(SpringBeanConfig.springData.deckLog
     private fun createDeck(line: String): Deck {
         var l = line
         return Deck(
-            PowerLogUtil.iso88591_To_utf8(l.substring(l.indexOf("#") + 4)),
+            PowerLogUtil.iso88591ToUtf8(l.substring(l.indexOf("#") + 4)),
             (innerLogFile!!.readLine().also { l = it }).substring(l.indexOf("#") + 11),
             (innerLogFile!!.readLine().also { l = it }).substring(l.lastIndexOf(" ") + 1)
         )

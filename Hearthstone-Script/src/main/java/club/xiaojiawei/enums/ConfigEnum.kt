@@ -1,5 +1,7 @@
 package club.xiaojiawei.enums
 
+import com.alibaba.fastjson.JSON
+
 /**
  * 脚本配置信息，在[ConfigurationConfig]里写入
  * @author 肖嘉威
@@ -37,17 +39,17 @@ enum class ConfigEnum(
     /**
      * 工作日标记
      */
-    WORK_DAY_FLAG(group = "time", defaultValue = "true,false,false,false,false,false,false,false"),
+    WORK_DAY_FLAG(group = "time", defaultValue = JSON.toJSONString(listOf(true,false,false,false,false,false,false,false))),
 
     /**
      * 工作时间标记
      */
-    WORK_TIME_FLAG(group = "time", defaultValue = "true,false,false"),
+    WORK_TIME_FLAG(group = "time", defaultValue = JSON.toJSONString(listOf(true,false,false))),
 
     /**
      * 工作时间，具体时间段
      */
-    WORK_TIME(group = "time", defaultValue = "00:00-00:00,null,null"),
+    WORK_TIME(group = "time", defaultValue = "[00:00-00:00,null,null]"),
 
     /**
      * 更新开发版
@@ -70,6 +72,11 @@ enum class ConfigEnum(
      * 鼠标移动间隔/ms
      */
     MOUSE_MOVE_INTERVAL(group = "action", defaultValue = "4"),
+
+    /**
+     * 适配畸变模式
+     */
+    DISTORTION(group = "action", defaultValue = "false"),
 
     /**
      * 套牌插件禁用列表

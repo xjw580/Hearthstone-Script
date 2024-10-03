@@ -1,243 +1,207 @@
-package club.xiaojiawei.strategy.mode;
+package club.xiaojiawei.strategy.mode
 
-import club.xiaojiawei.DeckStrategy;
-import club.xiaojiawei.bean.Deck;
-import club.xiaojiawei.bean.GameRect;
-import club.xiaojiawei.config.ThreadPoolConfigKt;
-import club.xiaojiawei.interfaces.closer.ModeTaskCloser;
-import club.xiaojiawei.core.Core;
-import club.xiaojiawei.bean.LogRunnable;
-import club.xiaojiawei.enums.ModeEnum;
-import club.xiaojiawei.enums.RunModeEnum;
-import club.xiaojiawei.listener.log.DeckLogListener;
-import club.xiaojiawei.listener.log.PowerLogListener;
-import club.xiaojiawei.status.DeckStrategyManager;
-import club.xiaojiawei.status.Mode;
-import club.xiaojiawei.status.Work;
-import club.xiaojiawei.strategy.AbstractModeStrategy;
-import club.xiaojiawei.utils.GameUtil;
-import club.xiaojiawei.utils.SystemUtil;
-import jakarta.annotation.Resource;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
-
-import java.io.IOException;
-import java.util.List;
-import java.util.Objects;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
-
-import static club.xiaojiawei.data.ScriptStaticData.MAX_LOG_SIZE;
-
+import club.xiaojiawei.DeckStrategy
+import club.xiaojiawei.bean.Deck
+import club.xiaojiawei.bean.GameRect
+import club.xiaojiawei.bean.LogRunnable
+import club.xiaojiawei.config.EXTRA_THREAD_POOL
+import club.xiaojiawei.config.log
+import club.xiaojiawei.core.Core
+import club.xiaojiawei.data.ScriptStaticData
+import club.xiaojiawei.enums.ModeEnum
+import club.xiaojiawei.enums.RunModeEnum
+import club.xiaojiawei.interfaces.closer.ModeTaskCloser
+import club.xiaojiawei.listener.log.DeckLogListener.DECKS
+import club.xiaojiawei.listener.log.PowerLogListener
+import club.xiaojiawei.status.DeckStrategyManager
+import club.xiaojiawei.status.Mode.currMode
+import club.xiaojiawei.status.PauseStatus
+import club.xiaojiawei.status.Work
+import club.xiaojiawei.strategy.AbstractModeStrategy
+import club.xiaojiawei.utils.GameUtil.reconnect
+import club.xiaojiawei.utils.SystemUtil
+import jakarta.annotation.Resource
+import java.io.IOException
+import java.util.concurrent.ScheduledFuture
+import java.util.concurrent.TimeUnit
 
 /**
  * 传统对战
  * @author 肖嘉威
  * @date 2022/11/25 12:39
  */
-@Slf4j
-@Component
-public class TournamentModeStrategy extends AbstractModeStrategy<Object> implements ModeTaskCloser {
+object TournamentModeStrategy : AbstractModeStrategy<Any?>() {
 
-    public static final GameRect START_RECT = new GameRect(0.2586D, 0.3459D, 0.2706D, 0.3794D);
+    val START_RECT: GameRect = GameRect(0.2586, 0.3459, 0.2706, 0.3794)
 
-    public static final GameRect ERROR_RECT = new GameRect(-0.0397D, 0.0325D, 0.0856D, 0.1249D);
+    val ERROR_RECT: GameRect = GameRect(-0.0397, 0.0325, 0.0856, 0.1249)
 
 
-    public static final GameRect CHANGE_MODE_RECT = new GameRect(0.2868D, 0.3256D, -0.4672D, -0.4279D);
+    val CHANGE_MODE_RECT: GameRect = GameRect(0.2868, 0.3256, -0.4672, -0.4279)
 
-    public static final GameRect STANDARD_MODE_RECT = new GameRect(-0.2012D, -0.0295D, -0.2156D, -0.0400D);
+    val STANDARD_MODE_RECT: GameRect = GameRect(-0.2012, -0.0295, -0.2156, -0.0400)
 
-    public static final GameRect WILD_MODE_RECT = new GameRect(0.0295D, 0.2012D, -0.2156D, -0.0400D);
+    val WILD_MODE_RECT: GameRect = GameRect(0.0295, 0.2012, -0.2156, -0.0400)
 
-    public static final GameRect CASUAL_MODE_RECT = new GameRect(0.2557D, 0.4278D, -0.1769D, 0.0014D);
+    val CASUAL_MODE_RECT: GameRect = GameRect(0.2557, 0.4278, -0.1769, 0.0014)
 
-    public static final GameRect CLASSIC_MODE_RECT = new GameRect(-0.4278D, -0.2557D, -0.1769D, 0.0014D);
+    val CLASSIC_MODE_RECT: GameRect = GameRect(-0.4278, -0.2557, -0.1769, 0.0014)
 
-    public static final GameRect FIRST_DECK_RECT = new GameRect(-0.4108D, -0.2487D, -0.2811D, -0.1894D);
+    val FIRST_DECK_RECT: GameRect = GameRect(-0.4108, -0.2487, -0.2811, -0.1894)
 
     /**
      * 顶栏有限时借用套牌时使用
      */
-    public static final GameRect FIRST_DECK_RECT_BACK = new GameRect(-0.4072D, -0.2516D, -0.0696D, 0.0139D);
+    val FIRST_DECK_RECT_BACK: GameRect = GameRect(-0.4072, -0.2516, -0.0696, 0.0139)
 
-    public static final GameRect BACK_RECT = new GameRect(0.4041D, 0.4575D, 0.4083D, 0.4410D);
+    val BACK_RECT: GameRect = GameRect(0.4041, 0.4575, 0.4083, 0.4410)
 
-    public static final GameRect CANCEL_RECT = new GameRect(-0.0251D, 0.0530D, 0.3203D, 0.3802D);
+    val CANCEL_RECT: GameRect = GameRect(-0.0251, 0.0530, 0.3203, 0.3802)
 
-    @Resource
-    private PowerLogListener powerLogListener;
-    @Resource
-    private Core core;
+    private const val RESERVE_SIZE = 4 * 1024 * 1024
 
-    private ScheduledFuture<?> scheduledFuture;
-
-    private ScheduledFuture<?> errorScheduledFuture;
-
-    private void cancelTask(){
-        if (scheduledFuture != null && !scheduledFuture.isDone()){
-            scheduledFuture.cancel(true);
-        }
-        if (errorScheduledFuture != null && !errorScheduledFuture.isDone()){
-            errorScheduledFuture.cancel(true);
-        }
+    override fun wantEnter() {
+        addWantEnterTask(EXTRA_THREAD_POOL.scheduleWithFixedDelay(LogRunnable {
+            if (PauseStatus.isPause) {
+                cancelAllWantEnterTasks()
+            } else if (currMode == ModeEnum.HUB) {
+                HubModeStrategy.TOURNAMENT_MODE_RECT.lClick()
+            } else if (currMode == ModeEnum.GAME_MODE) {
+                cancelAllWantEnterTasks()
+                BACK_RECT.lClick()
+            } else {
+                cancelAllWantEnterTasks()
+            }
+        }, DELAY_TIME.toLong(), INTERVAL_TIME.toLong(), TimeUnit.MILLISECONDS))
     }
 
-    @Override
-    public void wantEnter() {
-        cancelTask();
-        scheduledFuture = ThreadPoolConfigKt.getEXTRA_THREAD_POOL().scheduleWithFixedDelay(new LogRunnable(() -> {
-            if (isPause.get().get()){
-                cancelTask();
-            } else if (Mode.getCurrMode() == ModeEnum.HUB){
-                HubModeStrategy.TOURNAMENT_MODE_RECT.lClick();
-            }else if (Mode.getCurrMode() == ModeEnum.GAME_MODE){
-                cancelTask();
-                SystemUtil.updateGameRect();
-                BACK_RECT.lClick();
-            }else {
-                cancelTask();
+    override fun afterEnter(t: Any?) {
+        if (Work.isDuringWorkDate()) {
+            val deckStrategy = DeckStrategyManager.CURRENT_DECK_STRATEGY.get()
+            if (deckStrategy == null) {
+                SystemUtil.notice("未选择卡组")
+                log.info { "未选择卡组" }
+                PauseStatus.isPause = true
+                return
             }
-        }), DELAY_TIME, INTERVAL_TIME, TimeUnit.MILLISECONDS);
-    }
-    @Override
-    protected void afterEnter(Object o) {
-        if (Work.isDuringWorkDate()){
-            SystemUtil.updateGameRect();
-
-            DeckStrategy deckStrategy = DeckStrategyManager.CURRENT_DECK_STRATEGY.get();
-            if (deckStrategy == null){
-                SystemUtil.notice("未选择卡组");
-                log.info("未选择卡组");
-                isPause.get().set(true);
-                return;
-            }
-            RunModeEnum runModeEnum;
-            if (((runModeEnum = deckStrategy.getRunModes()[0]) == RunModeEnum.CASUAL || runModeEnum == RunModeEnum.CLASSIC || runModeEnum == RunModeEnum.WILD || runModeEnum == RunModeEnum.STANDARD) && runModeEnum.isEnable()){
-                if (!(checkPowerLogSize())){
-                    return;
+            var runModeEnum: RunModeEnum
+            if (((deckStrategy.runModes[0].also {
+                    runModeEnum = it
+                }) == RunModeEnum.CASUAL || runModeEnum == RunModeEnum.CLASSIC || runModeEnum == RunModeEnum.WILD || runModeEnum == RunModeEnum.STANDARD) && runModeEnum.isEnable) {
+                if (!(checkPowerLogSize())) {
+                    return
                 }
-                SystemUtil.delayMedium();
-                clickModeChangeButton();
-                SystemUtil.delayMedium();
-                changeMode(runModeEnum);
-                SystemUtil.delayMedium();
-                selectDeck(deckStrategy);
-                SystemUtil.delayShort();
-                startMatching();
-            }else {
+                SystemUtil.delayMedium()
+                clickModeChangeButton()
+                SystemUtil.delayMedium()
+                changeMode(runModeEnum)
+                SystemUtil.delayMedium()
+                selectDeck(deckStrategy)
+                SystemUtil.delayShort()
+                startMatching()
+            } else {
 //            退出该界面
-                BACK_RECT.lClick();
+                BACK_RECT.lClick()
             }
-        }else {
-            Work.stopWork();
+        } else {
+            Work.stopWork()
         }
     }
 
-    private static final int RESERVE_SIZE = 4 * 1024 * 1024;
+    private fun checkPowerLogSize(): Boolean {
+        val logFile = PowerLogListener.logFile
+        logFile ?: return false
 
-    private boolean checkPowerLogSize(){
-        try {
-            if (powerLogListener.getInnerLogFile() != null && powerLogListener.getInnerLogFile().length() + RESERVE_SIZE >= MAX_LOG_SIZE){
-                log.info("power.log即将达到" + (MAX_LOG_SIZE / 1024) + "KB，准备重启游戏");
-                core.restart();
-                return false;
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        if (logFile.length() + RESERVE_SIZE >= ScriptStaticData.MAX_LOG_SIZE) {
+            log.info { "power.log即将达到" + (ScriptStaticData.MAX_LOG_SIZE / 1024) + "KB，准备重启游戏" }
+            Core.restart()
+            return false
         }
-        return true;
+        return true
     }
 
-    private void clickModeChangeButton(){
-        log.info("点击切换模式按钮");
-        CHANGE_MODE_RECT.lClick();
+    private fun clickModeChangeButton() {
+        log.info { "点击切换模式按钮" }
+        CHANGE_MODE_RECT.lClick()
     }
 
-    private void changeMode(RunModeEnum runModeEnum){
-        switch (runModeEnum){
-            case CLASSIC -> changeModeToClassic();
-            case STANDARD -> changeModeToStandard();
-            case WILD -> changeModeToWild();
-            case CASUAL -> changeModeToCasual();
-            default -> throw new RuntimeException("不支持此模式：" + runModeEnum.getComment());
+    private fun changeMode(runModeEnum: RunModeEnum) {
+        when (runModeEnum) {
+            RunModeEnum.CLASSIC -> changeModeToClassic()
+            RunModeEnum.STANDARD -> changeModeToStandard()
+            RunModeEnum.WILD -> changeModeToWild()
+            RunModeEnum.CASUAL -> changeModeToCasual()
+            else -> throw RuntimeException("不支持此模式：" + runModeEnum.comment)
         }
     }
 
-    public void selectDeck(DeckStrategy deckStrategy){
+    fun selectDeck(deckStrategy: DeckStrategy?) {
         if (deckStrategy != null) {
-            List<Deck> decks = DeckLogListener.getDECKS();
-            for (int i = decks.size() - 1; i >= 0; i--) {
-                Deck d = decks.get(i);
-                if (Objects.equals(d.getCode(), deckStrategy.deckCode()) || Objects.equals(d.getName(), deckStrategy.name())){
-                    log.info("找到套牌:" + deckStrategy.name());
-                    break;
+            val decks: List<Deck> = DECKS
+            for (i in decks.indices.reversed()) {
+                val d = decks[i]
+                if (d.code == deckStrategy.deckCode() || d.name == deckStrategy.name()) {
+                    log.info { "找到套牌:" + deckStrategy.name() }
+                    break
                 }
             }
         }
-        log.info("选择套牌");
+        log.info { "选择套牌" }
 
-        FIRST_DECK_RECT_BACK.lClick();
-        SystemUtil.delayShort();
-        FIRST_DECK_RECT.lClick();
-        SystemUtil.delayShort();
-        FIRST_DECK_RECT.lClick();
+        FIRST_DECK_RECT_BACK.lClick()
+        SystemUtil.delayShort()
+        FIRST_DECK_RECT.lClick()
+        SystemUtil.delayShort()
+        FIRST_DECK_RECT.lClick()
     }
 
-    private void changeModeToClassic(){
-        log.info("切换至经典模式");
-        CLASSIC_MODE_RECT.lClick();
+    private fun changeModeToClassic() {
+        log.info { "切换至经典模式" }
+        CLASSIC_MODE_RECT.lClick()
     }
 
-    private void changeModeToStandard(){
-        log.info("切换至标准模式");
-        STANDARD_MODE_RECT.lClick();
+    private fun changeModeToStandard() {
+        log.info { "切换至标准模式" }
+        STANDARD_MODE_RECT.lClick()
     }
 
-    private void changeModeToWild(){
-        log.info("切换至狂野模式");
-        WILD_MODE_RECT.lClick();
+    private fun changeModeToWild() {
+        log.info { "切换至狂野模式" }
+        WILD_MODE_RECT.lClick()
     }
 
-    private void changeModeToCasual(){
-        log.info("切换至休闲模式");
-        CASUAL_MODE_RECT.lClick();
+    private fun changeModeToCasual() {
+        log.info { "切换至休闲模式" }
+        CASUAL_MODE_RECT.lClick()
     }
 
-    public void startMatching(){
-        log.info("开始匹配");
-        START_RECT.lClick();
-        generateTimer();
+    fun startMatching() {
+        log.info { "开始匹配" }
+        START_RECT.lClick()
+        generateTimer()
     }
 
     /**
      * 生成匹配失败时兜底的定时器
      */
-    private void generateTimer(){
-        if (errorScheduledFuture != null && !errorScheduledFuture.isDone()){
-            errorScheduledFuture.cancel(true);
-        }
-        errorScheduledFuture = ThreadPoolConfigKt.getEXTRA_THREAD_POOL().schedule(new LogRunnable(() -> {
-            if (isPause.get().get() || Thread.currentThread().isInterrupted()){
-                errorScheduledFuture.cancel(true);
-            }else {
-                log.info("匹配失败，再次匹配中");
-                SystemUtil.notice("匹配失败，再次匹配中");
+    private fun generateTimer() {
+        cancelAllEnteredTasks()
+        addEnteredTask(EXTRA_THREAD_POOL.schedule(LogRunnable {
+            if (PauseStatus.isPause || Thread.currentThread().isInterrupted) {
+                cancelAllEnteredTasks()
+            } else {
+                log.info { "匹配失败，再次匹配中" }
+                SystemUtil.notice("匹配失败，再次匹配中")
 //                点击取消匹配按钮
-                CANCEL_RECT.lClick();
-                SystemUtil.delayLong();
+                CANCEL_RECT.lClick()
+                SystemUtil.delayLong()
 //                点击错误按钮
-                ERROR_RECT.lClick();
-                SystemUtil.delayMedium();
-                GameUtil.reconnect();
-                afterEnter(null);
+                ERROR_RECT.lClick()
+                SystemUtil.delayMedium()
+                reconnect()
+                afterEnter(null)
             }
-        }), 90, TimeUnit.SECONDS);
-    }
-
-    @Override
-    public void closeModeTask() {
-        cancelTask();
+        }, 90, TimeUnit.SECONDS))
     }
 
 }

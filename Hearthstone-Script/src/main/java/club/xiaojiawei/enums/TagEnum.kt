@@ -1,7 +1,6 @@
 package club.xiaojiawei.enums
 
 import club.xiaojiawei.bean.Card
-import club.xiaojiawei.bean.Entity
 import club.xiaojiawei.bean.Player
 import club.xiaojiawei.bean.area.Area
 import club.xiaojiawei.bean.isValid
@@ -9,8 +8,8 @@ import club.xiaojiawei.bean.log.ExtraEntity
 import club.xiaojiawei.bean.log.TagChangeEntity
 import club.xiaojiawei.config.log
 import club.xiaojiawei.data.ScriptStaticData
-import club.xiaojiawei.interfaces.TagChangeHandler
 import club.xiaojiawei.interfaces.ExtraEntityHandler
+import club.xiaojiawei.interfaces.TagChangeHandler
 import club.xiaojiawei.status.War
 import club.xiaojiawei.util.isTrue
 import club.xiaojiawei.utils.CardUtil
@@ -19,6 +18,28 @@ import club.xiaojiawei.utils.CardUtil
  * @author 肖嘉威
  * @date 2022/11/29 14:30
  */
+
+private fun log(player: Player?, card: Card?, tagComment: String, value: Any) {
+    if (log.isDebugEnabled()) {
+        log.debug {
+            String.format(
+                "【玩家%s:%s，entityId:%s，entityName:%s，cardId:%s】的【%s】发生变化:%s",
+                player?.playerId,
+                player?.gameId,
+                card?.entityId,
+                card?.entityName,
+                card?.cardId,
+                tagComment,
+                value.toString()
+            )
+        }
+    }
+}
+
+private fun isTrue(s: String): Boolean {
+    return s == "1"
+}
+
 enum class TagEnum(
     val comment: String = "",
     val tagChangeHandler: TagChangeHandler? = null,
@@ -210,197 +231,197 @@ enum class TagEnum(
      */
     HEALTH("生命值",
         TagChangeHandler { card: Card?, tagChangeEntity: TagChangeEntity, player: Player?, area: Area? ->
-            card.health = tagChangeEntity.value.toInt()
-            TagEnum.Companion.log(player, card, "生命值", tagChangeEntity.value)
+            card?.health = tagChangeEntity.value.toInt()
+            log(player, card, "生命值", tagChangeEntity.value)
         },
         ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
             extraEntity.extraCard.card.health = value.toInt()
         }),
     ATK("攻击力",
         TagChangeHandler { card: Card?, tagChangeEntity: TagChangeEntity, player: Player?, area: Area? ->
-            card.atc = tagChangeEntity.value.toInt()
-            TagEnum.Companion.log(player, card, "攻击力", tagChangeEntity.value)
+            card?.atc = tagChangeEntity.value.toInt()
+            log(player, card, "攻击力", tagChangeEntity.value)
         },
         ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
             extraEntity.extraCard.card.atc = value.toInt()
         }),
     COST("法力值",
         TagChangeHandler { card: Card?, tagChangeEntity: TagChangeEntity, player: Player?, area: Area? ->
-            card.cost = tagChangeEntity.value.toInt()
-            TagEnum.Companion.log(player, card, "法力值", tagChangeEntity.value)
+            card?.cost = tagChangeEntity.value.toInt()
+            log(player, card, "法力值", tagChangeEntity.value)
         },
         ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
             extraEntity.extraCard.card.cost = value.toInt()
         }),
     FROZEN("冻结",
         TagChangeHandler { card: Card?, tagChangeEntity: TagChangeEntity, player: Player?, area: Area? ->
-            card.isFrozen = TagEnum.Companion.isTrue(tagChangeEntity.value)
-            TagEnum.Companion.log(player, card, "冻结", tagChangeEntity.value)
+            card?.isFrozen = isTrue(tagChangeEntity.value)
+            log(player, card, "冻结", tagChangeEntity.value)
         },
         ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
-            extraEntity.extraCard.card.isFrozen = TagEnum.Companion.isTrue(value)
+            extraEntity.extraCard.card.isFrozen = isTrue(value)
         }),
     EXHAUSTED("疲劳",
         TagChangeHandler { card: Card?, tagChangeEntity: TagChangeEntity, player: Player?, area: Area? ->
-            card.isExhausted = TagEnum.Companion.isTrue(tagChangeEntity.value)
-            TagEnum.Companion.log(player, card, "疲劳", tagChangeEntity.value)
+            card?.isExhausted = isTrue(tagChangeEntity.value)
+            log(player, card, "疲劳", tagChangeEntity.value)
         },
         ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
-            extraEntity.extraCard.card.isExhausted = TagEnum.Companion.isTrue(value)
+            extraEntity.extraCard.card.isExhausted = isTrue(value)
         }),
     DAMAGE(
         "受到的伤害",
         TagChangeHandler { card: Card?, tagChangeEntity: TagChangeEntity, player: Player?, area: Area? ->
-            card.damage = tagChangeEntity.value.toInt()
-            TagEnum.Companion.log(player, card, "受到的伤害", tagChangeEntity.value)
+            card?.damage = tagChangeEntity.value.toInt()
+            log(player, card, "受到的伤害", tagChangeEntity.value)
         },
         null
     ),
     TAUNT("嘲讽",
         TagChangeHandler { card: Card?, tagChangeEntity: TagChangeEntity, player: Player?, area: Area? ->
-            card.isTaunt = TagEnum.Companion.isTrue(tagChangeEntity.value)
-            TagEnum.Companion.log(player, card, "嘲讽", tagChangeEntity.value)
+            card?.isTaunt = isTrue(tagChangeEntity.value)
+            log(player, card, "嘲讽", tagChangeEntity.value)
         },
         ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
-            extraEntity.extraCard.card.isTaunt = TagEnum.Companion.isTrue(value)
+            extraEntity.extraCard.card.isTaunt = isTrue(value)
         }),
     ARMOR("护甲",
         TagChangeHandler { card: Card?, tagChangeEntity: TagChangeEntity, player: Player?, area: Area? ->
-            card.armor = tagChangeEntity.value.toInt()
-            TagEnum.Companion.log(player, card, "护甲", tagChangeEntity.value)
+            card?.armor = tagChangeEntity.value.toInt()
+            log(player, card, "护甲", tagChangeEntity.value)
         },
         ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
             extraEntity.extraCard.card.armor = value.toInt()
         }),
     DIVINE_SHIELD("圣盾",
         TagChangeHandler { card: Card?, tagChangeEntity: TagChangeEntity, player: Player?, area: Area? ->
-            card.isDivineShield = TagEnum.Companion.isTrue(tagChangeEntity.value)
-            TagEnum.Companion.log(player, card, "圣盾", tagChangeEntity.value)
+            card?.isDivineShield = isTrue(tagChangeEntity.value)
+            log(player, card, "圣盾", tagChangeEntity.value)
         },
         ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
-            extraEntity.extraCard.card.isDivineShield = TagEnum.Companion.isTrue(value)
+            extraEntity.extraCard.card.isDivineShield = isTrue(value)
         }),
     DEATHRATTLE("亡语",
         TagChangeHandler { card: Card?, tagChangeEntity: TagChangeEntity, player: Player?, area: Area? ->
-            card.isDeathRattle = TagEnum.Companion.isTrue(tagChangeEntity.value)
-            TagEnum.Companion.log(player, card, "亡语", tagChangeEntity.value)
+            card?.isDeathRattle = isTrue(tagChangeEntity.value)
+            log(player, card, "亡语", tagChangeEntity.value)
         },
         ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
-            extraEntity.extraCard.card.isDeathRattle = TagEnum.Companion.isTrue(value)
+            extraEntity.extraCard.card.isDeathRattle = isTrue(value)
         }),
     POISONOUS("剧毒",
         TagChangeHandler { card: Card?, tagChangeEntity: TagChangeEntity, player: Player?, area: Area? ->
-            card.isPoisonous = TagEnum.Companion.isTrue(tagChangeEntity.value)
-            TagEnum.Companion.log(player, card, "剧毒", tagChangeEntity.value)
+            card?.isPoisonous = isTrue(tagChangeEntity.value)
+            log(player, card, "剧毒", tagChangeEntity.value)
         },
         ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
-            extraEntity.extraCard.card.isPoisonous = TagEnum.Companion.isTrue(value)
+            extraEntity.extraCard.card.isPoisonous = isTrue(value)
         }),
     AURA("光环",
         TagChangeHandler { card: Card?, tagChangeEntity: TagChangeEntity, player: Player?, area: Area? ->
-            card.isAura = TagEnum.Companion.isTrue(tagChangeEntity.value)
-            TagEnum.Companion.log(player, card, "光环", tagChangeEntity.value)
+            card?.isAura = isTrue(tagChangeEntity.value)
+            log(player, card, "光环", tagChangeEntity.value)
         },
         ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
-            extraEntity.extraCard.card.isAura = TagEnum.Companion.isTrue(value)
+            extraEntity.extraCard.card.isAura = isTrue(value)
         }),
     STEALTH("潜行",
         TagChangeHandler { card: Card?, tagChangeEntity: TagChangeEntity, player: Player?, area: Area? ->
-            card.isStealth = TagEnum.Companion.isTrue(tagChangeEntity.value)
-            TagEnum.Companion.log(player, card, "潜行", tagChangeEntity.value)
+            card?.isStealth = isTrue(tagChangeEntity.value)
+            log(player, card, "潜行", tagChangeEntity.value)
         },
         ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
-            extraEntity.extraCard.card.isStealth = TagEnum.Companion.isTrue(value)
+            extraEntity.extraCard.card.isStealth = isTrue(value)
         }),
     WINDFURY("风怒",
         TagChangeHandler { card: Card?, tagChangeEntity: TagChangeEntity, player: Player?, area: Area? ->
-            card.isWindFury = TagEnum.Companion.isTrue(tagChangeEntity.value)
-            TagEnum.Companion.log(player, card, "风怒", tagChangeEntity.value)
+            card?.isWindFury = isTrue(tagChangeEntity.value)
+            log(player, card, "风怒", tagChangeEntity.value)
         },
         ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
-            extraEntity.extraCard.card.isWindFury = TagEnum.Companion.isTrue(value)
+            extraEntity.extraCard.card.isWindFury = isTrue(value)
         }),
     BATTLECRY("战吼",
         TagChangeHandler { card: Card?, tagChangeEntity: TagChangeEntity, player: Player?, area: Area? ->
-            card.isBattlecry = TagEnum.Companion.isTrue(tagChangeEntity.value)
-            TagEnum.Companion.log(player, card, "战吼", tagChangeEntity.value)
+            card?.isBattlecry = isTrue(tagChangeEntity.value)
+            log(player, card, "战吼", tagChangeEntity.value)
         },
         ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
-            extraEntity.extraCard.card.isBattlecry = TagEnum.Companion.isTrue(value)
+            extraEntity.extraCard.card.isBattlecry = isTrue(value)
         }),
     DISCOVER("发现",
         TagChangeHandler { card: Card?, tagChangeEntity: TagChangeEntity, player: Player?, area: Area? ->
-            card.isDiscover = TagEnum.Companion.isTrue(tagChangeEntity.value)
-            TagEnum.Companion.log(player, card, "发现", tagChangeEntity.value)
+            card?.isDiscover = isTrue(tagChangeEntity.value)
+            log(player, card, "发现", tagChangeEntity.value)
         },
         ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
-            extraEntity.extraCard.card.isDiscover = TagEnum.Companion.isTrue(value)
+            extraEntity.extraCard.card.isDiscover = isTrue(value)
         }),
     ADJACENT_BUFF("相邻增益",
         TagChangeHandler { card: Card?, tagChangeEntity: TagChangeEntity, player: Player?, area: Area? ->
-            card.isAdjacentBuff = TagEnum.Companion.isTrue(tagChangeEntity.value)
-            TagEnum.Companion.log(player, card, "相邻增益", tagChangeEntity.value)
+            card?.isAdjacentBuff = isTrue(tagChangeEntity.value)
+            log(player, card, "相邻增益", tagChangeEntity.value)
         },
         ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
-            extraEntity.extraCard.card.isAdjacentBuff = TagEnum.Companion.isTrue(value)
+            extraEntity.extraCard.card.isAdjacentBuff = isTrue(value)
         }),
     CANT_BE_TARGETED_BY_SPELLS("不能被法术指向",
         TagChangeHandler { card: Card?, tagChangeEntity: TagChangeEntity, player: Player?, area: Area? ->
-            card.isCantBeTargetedBySpells = TagEnum.Companion.isTrue(tagChangeEntity.value)
-            TagEnum.Companion.log(player, card, "不能被法术指向", tagChangeEntity.value)
+            card?.isCantBeTargetedBySpells = isTrue(tagChangeEntity.value)
+            log(player, card, "不能被法术指向", tagChangeEntity.value)
         },
         ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
-            extraEntity.extraCard.card.isCantBeTargetedBySpells = TagEnum.Companion.isTrue(value)
+            extraEntity.extraCard.card.isCantBeTargetedBySpells = isTrue(value)
         }),
     CANT_BE_TARGETED_BY_HERO_POWERS("不能被英雄技能指向",
         TagChangeHandler { card: Card?, tagChangeEntity: TagChangeEntity, player: Player?, area: Area? ->
-            card.isCantBeTargetedByHeroPowers = TagEnum.Companion.isTrue(tagChangeEntity.value)
-            TagEnum.Companion.log(player, card, "不能被英雄技能指向", tagChangeEntity.value)
+            card?.isCantBeTargetedByHeroPowers = isTrue(tagChangeEntity.value)
+            log(player, card, "不能被英雄技能指向", tagChangeEntity.value)
         },
         ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
-            extraEntity.extraCard.card.isCantBeTargetedByHeroPowers = TagEnum.Companion.isTrue(value)
+            extraEntity.extraCard.card.isCantBeTargetedByHeroPowers = isTrue(value)
         }),
     CANT_BE_TARGETED_BY_OPPONENTS("不能被对手指向",
         TagChangeHandler { card: Card?, tagChangeEntity: TagChangeEntity, player: Player?, area: Area? ->
-            card.isCantBeTargetedByOpponents = TagEnum.Companion.isTrue(tagChangeEntity.value)
-            TagEnum.Companion.log(player, card, "不能被对手指向", tagChangeEntity.value)
+            card?.isCantBeTargetedByOpponents = isTrue(tagChangeEntity.value)
+            log(player, card, "不能被对手指向", tagChangeEntity.value)
         },
         ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
-            extraEntity.extraCard.card.isCantBeTargetedByOpponents = TagEnum.Companion.isTrue(value)
+            extraEntity.extraCard.card.isCantBeTargetedByOpponents = isTrue(value)
         }),
     SPAWN_TIME_COUNT("刷出时间计数",
         null,
         ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
-            extraEntity.extraCard.card.isSpawnTimeCount = TagEnum.Companion.isTrue(value)
+            extraEntity.extraCard.card.isSpawnTimeCount = isTrue(value)
         }),
     DORMANT_AWAKEN_CONDITION_ENCHANT("休眠状态",
         TagChangeHandler { card: Card?, tagChangeEntity: TagChangeEntity, player: Player?, area: Area? ->
-            card.isDormantAwakenConditionEnchant = TagEnum.Companion.isTrue(tagChangeEntity.value)
-            TagEnum.Companion.log(player, card, "休眠状态", tagChangeEntity.value)
+            card?.isDormantAwakenConditionEnchant = isTrue(tagChangeEntity.value)
+            log(player, card, "休眠状态", tagChangeEntity.value)
         },
         ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
-            extraEntity.extraCard.card.isDormantAwakenConditionEnchant = TagEnum.Companion.isTrue(value)
+            extraEntity.extraCard.card.isDormantAwakenConditionEnchant = isTrue(value)
         }),
     ELUSIVE("扰魔",
         TagChangeHandler { card: Card?, tagChangeEntity: TagChangeEntity, player: Player?, area: Area? ->
-            card.isElusive = TagEnum.Companion.isTrue(tagChangeEntity.value)
-            TagEnum.Companion.log(player, card, "扰魔", tagChangeEntity.value)
+            card?.isElusive = isTrue(tagChangeEntity.value)
+            log(player, card, "扰魔", tagChangeEntity.value)
         },
         ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
-            extraEntity.extraCard.card.isElusive = TagEnum.Companion.isTrue(value)
+            extraEntity.extraCard.card.isElusive = isTrue(value)
         }),
     IMMUNE("免疫",
         TagChangeHandler { card: Card?, tagChangeEntity: TagChangeEntity, player: Player?, area: Area? ->
-            card.isImmune = TagEnum.Companion.isTrue(tagChangeEntity.value)
-            TagEnum.Companion.log(player, card, "免疫", tagChangeEntity.value)
+            card?.isImmune = isTrue(tagChangeEntity.value)
+            log(player, card, "免疫", tagChangeEntity.value)
         },
         ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
-            extraEntity.extraCard.card.isImmune = TagEnum.Companion.isTrue(value)
+            extraEntity.extraCard.card.isImmune = isTrue(value)
         }),
     CARDRACE("种族",
         TagChangeHandler { card: Card?, tagChangeEntity: TagChangeEntity, player: Player?, area: Area? ->
-            card.cardRace = ScriptStaticData.CARD_RACE_MAP.getOrDefault(tagChangeEntity.value, CardRaceEnum.UNKNOWN)
-            TagEnum.Companion.log(player, card, "种族", tagChangeEntity.value)
+            card?.cardRace = ScriptStaticData.CARD_RACE_MAP.getOrDefault(tagChangeEntity.value, CardRaceEnum.UNKNOWN)
+            log(player, card, "种族", tagChangeEntity.value)
         },
         ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
             extraEntity.extraCard.card.cardRace =
@@ -409,27 +430,30 @@ enum class TagEnum(
     PREMIUM("衍生物",
         null,
         ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
-            extraEntity.extraCard.card.isPremium = TagEnum.Companion.isTrue(value)
+            extraEntity.extraCard.card.isPremium = isTrue(value)
         }),
     MODULAR("磁力",
         TagChangeHandler { card: Card?, tagChangeEntity: TagChangeEntity, player: Player?, area: Area? ->
-            card.isModular = TagEnum.Companion.isTrue(tagChangeEntity.value)
-            TagEnum.Companion.log(player, card, "磁力", tagChangeEntity.value)
+            card?.isModular = isTrue(tagChangeEntity.value)
+            log(player, card, "磁力", tagChangeEntity.value)
         },
         ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
-            extraEntity.extraCard.card.isModular = TagEnum.Companion.isTrue(value)
+            extraEntity.extraCard.card.isModular = isTrue(value)
         }),
     CONTROLLER("控制者",
         TagChangeHandler { card: Card?, tagChangeEntity: TagChangeEntity, player: Player?, area: Area? ->
-            var card = card
-            card.controller = tagChangeEntity.value
-            card = area.removeByEntityId(tagChangeEntity.entityId)
-            val reverseArea = War.getReverseArea(area)
-            reverseArea.add(card, 0)
-            TagEnum.Companion.log(player, card, "控制者", tagChangeEntity.value)
+            card?.controller = tagChangeEntity.value
+
+            val newCard = area?.removeByEntityId(tagChangeEntity.entityId)
+            newCard?.let {
+                val reverseArea = War.getReverseArea(area)
+                reverseArea?.add(newCard, 0)
+            }
+
+            log(player, newCard, "控制者", tagChangeEntity.value)
         },
         ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
-            extraEntity.extraCard.card.isModular = TagEnum.Companion.isTrue(value)
+            extraEntity.extraCard.card.isModular = isTrue(value)
         }),
     CREATOR("创建者",
         null,
@@ -439,12 +463,12 @@ enum class TagEnum(
     TITAN("泰坦",
         null,
         ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
-            extraEntity.extraCard.card.isTitan = TagEnum.Companion.isTrue(value)
+            extraEntity.extraCard.card.isTitan = isTrue(value)
         }),
     SPELLPOWER("法强",
         TagChangeHandler { card: Card?, tagChangeEntity: TagChangeEntity, player: Player?, area: Area? ->
-            card.spellPower = tagChangeEntity.value.toInt()
-            TagEnum.Companion.log(player, card, "法强", tagChangeEntity.value)
+            card?.spellPower = tagChangeEntity.value.toInt()
+            log(player, card, "法强", tagChangeEntity.value)
         },
         ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
             extraEntity.extraCard.card.spellPower = value.toInt()
@@ -452,52 +476,52 @@ enum class TagEnum(
     DORMANT("休眠",
         null,
         ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
-            extraEntity.extraCard.card.isDormant = TagEnum.Companion.isTrue(value)
+            extraEntity.extraCard.card.isDormant = isTrue(value)
         }),
     ATTACKABLE_BY_RUSH("突袭攻击",
         TagChangeHandler { card: Card?, tagChangeEntity: TagChangeEntity, player: Player?, area: Area? ->
-            card.isAttackableByRush = TagEnum.Companion.isTrue(tagChangeEntity.value)
-            TagEnum.Companion.log(player, card, "突袭攻击", tagChangeEntity.value)
+            card?.isAttackableByRush = isTrue(tagChangeEntity.value)
+            log(player, card, "突袭攻击", tagChangeEntity.value)
         },
         ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
-            extraEntity.extraCard.card.isAttackableByRush = TagEnum.Companion.isTrue(value)
+            extraEntity.extraCard.card.isAttackableByRush = isTrue(value)
         }),
     IMMUNE_WHILE_ATTACKING("攻击时免疫",
         TagChangeHandler { card: Card?, tagChangeEntity: TagChangeEntity, player: Player?, area: Area? ->
-            card.isImmuneWhileAttacking = TagEnum.Companion.isTrue(tagChangeEntity.value)
-            TagEnum.Companion.log(player, card, "攻击时免疫", tagChangeEntity.value)
+            card?.isImmuneWhileAttacking = isTrue(tagChangeEntity.value)
+            log(player, card, "攻击时免疫", tagChangeEntity.value)
         },
         ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
-            extraEntity.extraCard.card.isImmuneWhileAttacking = TagEnum.Companion.isTrue(value)
+            extraEntity.extraCard.card.isImmuneWhileAttacking = isTrue(value)
         }),
     REBORN("复生",
         TagChangeHandler { card: Card?, tagChangeEntity: TagChangeEntity, player: Player?, area: Area? ->
-            card.isReborn = TagEnum.Companion.isTrue(tagChangeEntity.value)
-            TagEnum.Companion.log(player, card, "复生", tagChangeEntity.value)
+            card?.isReborn = isTrue(tagChangeEntity.value)
+            log(player, card, "复生", tagChangeEntity.value)
         },
         ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
-            extraEntity.extraCard.card.isReborn = TagEnum.Companion.isTrue(value)
+            extraEntity.extraCard.card.isReborn = isTrue(value)
         }),
     TRIGGER_VISUAL("视觉触发",
         TagChangeHandler { card: Card?, tagChangeEntity: TagChangeEntity, player: Player?, area: Area? ->
-            card.isTriggerVisual = TagEnum.Companion.isTrue(tagChangeEntity.value)
-            TagEnum.Companion.log(player, card, "视觉触发", tagChangeEntity.value)
+            card?.isTriggerVisual = isTrue(tagChangeEntity.value)
+            log(player, card, "视觉触发", tagChangeEntity.value)
         },
         ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
-            extraEntity.extraCard.card.isTriggerVisual = TagEnum.Companion.isTrue(value)
+            extraEntity.extraCard.card.isTriggerVisual = isTrue(value)
         }),
     LIFESTEAL("吸血",
         TagChangeHandler { card: Card?, tagChangeEntity: TagChangeEntity, player: Player?, area: Area? ->
-            card.isLifesteal = TagEnum.Companion.isTrue(tagChangeEntity.value)
-            TagEnum.Companion.log(player, card, "吸血", tagChangeEntity.value)
+            card?.isLifesteal = isTrue(tagChangeEntity.value)
+            log(player, card, "吸血", tagChangeEntity.value)
         },
         ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
-            extraEntity.extraCard.card.isLifesteal = TagEnum.Companion.isTrue(value)
+            extraEntity.extraCard.card.isLifesteal = isTrue(value)
         }),
     COIN_CARD("硬币",
         null,
         ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
-            extraEntity.extraCard.card.isCoinCard = TagEnum.Companion.isTrue(value)
+            extraEntity.extraCard.card.isCoinCard = isTrue(value)
         }),
 
     /*+++++++++++++++++++++++++++++++++++++++++++++++*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
@@ -508,42 +532,14 @@ enum class TagEnum(
     ),
     ;
 
-
-    companion object {
-
-        private fun log(player: Player?, card: Card?, tagComment: String, value: Any) {
-            var playerId = ""
-            var gameId = ""
-            var entityId = ""
-            var cardId = ""
-            var entityName = ""
-            if (player != null) {
-                playerId = player.playerId
-                gameId = player.gameId
+    companion object{
+        fun getByName(tagEnumName: String): TagEnum {
+            return try {
+                valueOf(tagEnumName)
+            } catch (e: IllegalArgumentException) {
+                UNKNOWN
             }
-            if (card != null) {
-                entityId = card.entityId
-                cardId = card.cardId
-                entityName = if (Entity.UNKNOWN_ENTITY_NAME == card.entityName) "" else card.entityName
-            }
-            if (log.isDebugEnabled()) {
-                log.debug {
-                    String.format(
-                        "【玩家%s:%s，entityId:%s，entityName:%s，cardId:%s】的【%s】发生变化:%s",
-                        playerId,
-                        gameId,
-                        entityId,
-                        entityName,
-                        cardId,
-                        tagComment,
-                        value.toString()
-                    )
-                }
-            }
-        }
-
-        private fun isTrue(s: String): Boolean {
-            return s == "1"
         }
     }
+
 }

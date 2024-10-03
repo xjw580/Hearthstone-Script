@@ -5,5 +5,7 @@ package club.xiaojiawei.interfaces
  * @date 2024/9/7 13:48
  */
 interface PhaseStrategy {
-    fun deal(line: String?)
+
+    fun deal(line: String)
+
 }

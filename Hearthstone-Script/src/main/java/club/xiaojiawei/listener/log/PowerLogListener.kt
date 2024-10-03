@@ -25,7 +25,7 @@ object PowerLogListener :
     }
 
     override fun dealNewLog() {
-        while (!PauseStatus.isPause && !AbstractPhaseStrategy.isDealing()) {
+        while (!PauseStatus.isPause && !AbstractPhaseStrategy.dealing) {
             innerLogFile?.let {
                 val line = it.readLine()
                 if (line == null) {
@@ -41,16 +41,16 @@ object PowerLogListener :
         when (War.currentPhase) {
             WarPhaseEnum.FILL_DECK_PHASE -> {
                 War.startTime = System.currentTimeMillis()
-                WarPhaseEnum.FILL_DECK_PHASE.phaseStrategy!!.deal(line)
+                WarPhaseEnum.FILL_DECK_PHASE.phaseStrategy?.deal(line)
             }
 
             WarPhaseEnum.GAME_OVER_PHASE -> {
                 War.endTime = if (War.startTime == 0L) 0 else System.currentTimeMillis()
-                WarPhaseEnum.GAME_OVER_PHASE.phaseStrategy!!.deal(line)
+                WarPhaseEnum.GAME_OVER_PHASE.phaseStrategy?.deal(line)
                 War.reset()
             }
 
-            else -> War.currentPhase.phaseStrategy!!.deal(line)
+            else -> War.currentPhase.phaseStrategy?.deal(line)
         }
         if (War.currentTurnStep == StepEnum.FINAL_GAMEOVER) {
             War.currentPhase = WarPhaseEnum.GAME_OVER_PHASE

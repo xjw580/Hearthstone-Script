@@ -1,53 +1,30 @@
-package club.xiaojiawei.strategy.mode;
+package club.xiaojiawei.strategy.mode
 
-import club.xiaojiawei.bean.GameRect;
-import club.xiaojiawei.config.ThreadPoolConfigKt;
-import club.xiaojiawei.interfaces.closer.ModeTaskCloser;
-import club.xiaojiawei.bean.LogRunnable;
-import club.xiaojiawei.strategy.AbstractModeStrategy;
-import club.xiaojiawei.utils.SystemUtil;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
-
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
+import club.xiaojiawei.bean.GameRect
+import club.xiaojiawei.bean.LogRunnable
+import club.xiaojiawei.config.EXTRA_THREAD_POOL
+import club.xiaojiawei.interfaces.closer.ModeTaskCloser
+import club.xiaojiawei.strategy.AbstractModeStrategy
+import club.xiaojiawei.utils.SystemUtil
+import java.util.concurrent.TimeUnit
 
 /**
  * 我的收藏
  * @author 肖嘉威
  * @date 2022/11/25 12:40
  */
-@Slf4j
-@Component
-public class CollectionmanagerModeStrategy extends AbstractModeStrategy<Object> implements ModeTaskCloser {
+object CollectionmanagerModeStrategy : AbstractModeStrategy<Any?>() {
 
-    public static final GameRect BACK_RECT = new GameRect(0.4041D, 0.4604D, 0.4122D, 0.4489D);
+    val BACK_RECT: GameRect = GameRect(0.4041, 0.4604, 0.4122, 0.4489)
 
-    private ScheduledFuture<?> scheduledFuture;
-
-    @Override
-    public void wantEnter() {
-        SystemUtil.copyToClipboard(" ");
+    override fun wantEnter() {
+        SystemUtil.copyToClipboard(" ")
     }
 
-    @Override
-    protected void afterEnter(Object o) {
-        cancelTask();
-        scheduledFuture = ThreadPoolConfigKt.getEXTRA_THREAD_POOL().scheduleWithFixedDelay(new LogRunnable(() -> {
-            SystemUtil.updateGameRect();
-            BACK_RECT.lClick();
-        }), DELAY_TIME, 500, TimeUnit.MILLISECONDS);
-    }
-
-    private void cancelTask() {
-        if (scheduledFuture != null && !scheduledFuture.isDone()){
-            scheduledFuture.cancel(true);
-        }
-    }
-
-    @Override
-    public void closeModeTask() {
-        cancelTask();
+    override fun afterEnter(t: Any?) {
+        addEnteredTask(EXTRA_THREAD_POOL.scheduleWithFixedDelay(LogRunnable {
+            BACK_RECT.lClick()
+        }, DELAY_TIME, 500, TimeUnit.MILLISECONDS))
     }
 
 }

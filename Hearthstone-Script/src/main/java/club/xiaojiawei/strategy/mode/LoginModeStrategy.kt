@@ -1,55 +1,31 @@
-package club.xiaojiawei.strategy.mode;
+package club.xiaojiawei.strategy.mode
 
-import club.xiaojiawei.config.ThreadPoolConfigKt;
-import club.xiaojiawei.interfaces.closer.ModeTaskCloser;
-import club.xiaojiawei.bean.LogRunnable;
-import club.xiaojiawei.strategy.AbstractModeStrategy;
-import club.xiaojiawei.utils.GameUtil;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
-
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
-
+import club.xiaojiawei.bean.LogRunnable
+import club.xiaojiawei.config.EXTRA_THREAD_POOL
+import club.xiaojiawei.status.PauseStatus
+import club.xiaojiawei.strategy.AbstractModeStrategy
+import club.xiaojiawei.utils.GameUtil
+import java.util.concurrent.TimeUnit
 
 /**
  * 登录界面
  * @author 肖嘉威
  * @date 2022/11/25 12:27
  */
-@Slf4j
-@Component
-public class LoginModeStrategy extends AbstractModeStrategy<Object> implements ModeTaskCloser {
+object LoginModeStrategy : AbstractModeStrategy<Any?>() {
 
-    private ScheduledFuture<?> scheduledFuture;
-
-    private void cancelTask(){
-        if (scheduledFuture != null && !scheduledFuture.isDone()){
-            scheduledFuture.cancel(true);
-        }
+    override fun wantEnter() {
     }
 
-    @Override
-    public void wantEnter() {
-
-    }
-
-    @Override
-    protected void afterEnter(Object o) {
-        cancelTask();
-//        去除国服登陆时恼人的点击开始和进入主界面时弹出的每日任务
-        scheduledFuture = ThreadPoolConfigKt.getEXTRA_THREAD_POOL().scheduleWithFixedDelay(new LogRunnable(() -> {
-            if (isPause.get().get()){
-                cancelTask();
-            }else {
-                GameUtil.lClickCenter();
+    override fun afterEnter(t: Any?) {
+        //        去除国服登陆时恼人的点击开始和进入主界面时弹出的每日任务
+        addEnteredTask(EXTRA_THREAD_POOL.scheduleWithFixedDelay(LogRunnable {
+            if (PauseStatus.isPause) {
+                cancelAllEnteredTasks()
+            } else {
+                GameUtil.lClickCenter()
             }
-        }), 3000, 2000, TimeUnit.MILLISECONDS);
-    }
-
-    @Override
-    public void closeModeTask() {
-        cancelTask();
+        }, 3000, 2000, TimeUnit.MILLISECONDS))
     }
 
 }

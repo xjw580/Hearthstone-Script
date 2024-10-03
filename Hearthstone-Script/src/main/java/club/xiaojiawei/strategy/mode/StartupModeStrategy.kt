@@ -1,22 +1,16 @@
-package club.xiaojiawei.strategy.mode;
+package club.xiaojiawei.strategy.mode
 
-import club.xiaojiawei.strategy.AbstractModeStrategy;
-import org.springframework.stereotype.Component;
+import club.xiaojiawei.strategy.AbstractModeStrategy
 
 /**
  * 准备界面
  * @author 肖嘉威
  * @date 2023/7/6 16:28
  */
-@Component
-public class StartupModeStrategy extends AbstractModeStrategy<Object> {
-
-    @Override
-    public void wantEnter() {
+object StartupModeStrategy : AbstractModeStrategy<Any?>() {
+    override fun wantEnter() {
     }
 
-    @Override
-    protected void afterEnter(Object o) {
+    override fun afterEnter(t: Any?) {
     }
-
 }

@@ -24,12 +24,13 @@ abstract class CardAction(createDefaultAction: Boolean = true) {
         }
     }
 
-    fun power(isPause:Boolean = true): CardAction? {
+    fun power(isPause: Boolean = true): CardAction? {
+        if (isStop()) return null
         val result = execPower()
         if (result) {
             if (isPause) {
                 this.delay()
-            }else{
+            } else {
                 delay(SHORT_PAUSE_TIME)
             }
             return this
@@ -37,28 +38,30 @@ abstract class CardAction(createDefaultAction: Boolean = true) {
         return null
     }
 
-    fun power(card: Card?, isPause:Boolean = true): CardAction?  {
+    fun power(card: Card?, isPause: Boolean = true): CardAction? {
+        if (isStop()) return null
         return card?.let {
             val result = execPower(it)
             if (result) {
                 if (isPause) {
                     this.delay()
-                }else{
+                } else {
                     delay(SHORT_PAUSE_TIME)
                 }
                 return this
-            }else{
+            } else {
                 return null
             }
         }
     }
 
-    fun power(index: Int, isPause:Boolean = true): CardAction?  {
+    fun power(index: Int, isPause: Boolean = true): CardAction? {
+        if (isStop()) return null
         val result = execPower(index)
         if (result) {
             if (isPause) {
                 this.delay()
-            }else{
+            } else {
                 delay(SHORT_PAUSE_TIME)
             }
             return this
@@ -66,13 +69,14 @@ abstract class CardAction(createDefaultAction: Boolean = true) {
         return null
     }
 
-    fun attack(card: Card?, isPause:Boolean = true): CardAction?  {
+    fun attack(card: Card?, isPause: Boolean = true): CardAction? {
+        if (isStop()) return null
         return card?.let {
             val result = execAttack(it)
             if (result) {
                 if (isPause) {
                     this.delay()
-                }else{
+                } else {
                     delay(SHORT_PAUSE_TIME)
                 }
                 return this
@@ -81,12 +85,13 @@ abstract class CardAction(createDefaultAction: Boolean = true) {
         }
     }
 
-    fun attackHero(isPause:Boolean = true): CardAction?  {
+    fun attackHero(isPause: Boolean = true): CardAction? {
+        if (isStop()) return null
         val result = execAttackHero()
         if (result) {
             if (isPause) {
                 this.delay()
-            }else{
+            } else {
                 delay(SHORT_PAUSE_TIME)
             }
             return this
@@ -94,13 +99,14 @@ abstract class CardAction(createDefaultAction: Boolean = true) {
         return null
     }
 
-    fun pointTo(card: Card?, isPause:Boolean = true): CardAction?  {
+    fun pointTo(card: Card?, isPause: Boolean = true): CardAction? {
+        if (isStop()) return null
         return card?.let {
             val result = execPointTo(card)
             if (result) {
                 if (isPause) {
                     this.delay()
-                }else{
+                } else {
                     delay(SHORT_PAUSE_TIME)
                 }
                 return this
@@ -110,11 +116,16 @@ abstract class CardAction(createDefaultAction: Boolean = true) {
     }
 
     fun delay(time: Int = mouseActionInterval) {
+        if (isStop()) return
         try {
             Thread.sleep(time.toLong())
         } catch (e: InterruptedException) {
 //            log.warn(e) {}
         }
+    }
+
+    private fun isStop(): Boolean {
+        return Thread.currentThread().isInterrupted
     }
 
     protected abstract fun execPower(): Boolean

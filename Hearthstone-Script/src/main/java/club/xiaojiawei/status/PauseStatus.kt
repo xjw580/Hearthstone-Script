@@ -16,13 +16,6 @@ import org.springframework.context.annotation.Lazy
  */
 object PauseStatus {
 
-    private val javafxMainController: MainController? = null
-
-    //    todo refactor
-    @Resource
-    @Lazy
-    private val core: Core? = null
-
     private val isPauseProperty: ReadOnlyBooleanWrapper = ReadOnlyBooleanWrapper(false)
     //    todo move
 //        get() {

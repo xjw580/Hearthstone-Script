@@ -1,68 +1,62 @@
-package club.xiaojiawei.strategy.phase;
+package club.xiaojiawei.strategy.phase
 
-import club.xiaojiawei.bean.log.ExtraEntity;
-import club.xiaojiawei.bean.log.TagChangeEntity;
-import club.xiaojiawei.status.War;
-import club.xiaojiawei.strategy.AbstractPhaseStrategy;
-import club.xiaojiawei.utils.GameUtil;
-import club.xiaojiawei.utils.SystemUtil;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
-
-import java.io.IOException;
-import java.io.RandomAccessFile;
+import club.xiaojiawei.bean.log.ExtraEntity
+import club.xiaojiawei.bean.log.TagChangeEntity
+import club.xiaojiawei.listener.log.PowerLogListener
+import club.xiaojiawei.status.War.endWar
+import club.xiaojiawei.status.War.isMyTurn
+import club.xiaojiawei.strategy.AbstractPhaseStrategy
+import club.xiaojiawei.utils.GameUtil.addGameEndTask
+import club.xiaojiawei.utils.GameUtil.hidePlatformWindow
+import club.xiaojiawei.utils.SystemUtil
+import lombok.extern.slf4j.Slf4j
+import org.springframework.stereotype.Component
+import java.io.IOException
+import java.io.RandomAccessFile
 
 /**
  * 游戏结束阶段
  * @author 肖嘉威
  * @date 2022/11/27 13:44
  */
-@Slf4j
-@Component
-public class GameOverPhaseStrategy extends AbstractPhaseStrategy{
-
-    @Override
-    protected boolean dealTagChangeThenIsOver(String line, TagChangeEntity tagChangeEntity) {
-        over();
-        return true;
+object GameOverPhaseStrategy : AbstractPhaseStrategy() {
+    override fun dealTagChangeThenIsOver(line: String, tagChangeEntity: TagChangeEntity): Boolean {
+        over()
+        return true
     }
 
-    @Override
-    protected boolean dealShowEntityThenIsOver(String line, ExtraEntity extraEntity) {
-        over();
-        return true;
+    override fun dealShowEntityThenIsOver(line: String, extraEntity: ExtraEntity): Boolean {
+        over()
+        return true
     }
 
-    @Override
-    protected boolean dealFullEntityThenIsOver(String line, ExtraEntity extraEntity) {
-        over();
-        return true;
+    override fun dealFullEntityThenIsOver(line: String, extraEntity: ExtraEntity): Boolean {
+        over()
+        return true
     }
 
-    @Override
-    protected boolean dealChangeEntityThenIsOver(String line, ExtraEntity extraEntity) {
-        over();
-        return true;
+    override fun dealChangeEntityThenIsOver(line: String, extraEntity: ExtraEntity): Boolean {
+        over()
+        return true
     }
 
-    @Override
-    protected boolean dealOtherThenIsOver(String line) {
-        over();
-        return true;
+    override fun dealOtherThenIsOver(line: String): Boolean {
+        over()
+        return true
     }
 
-    private void over(){
-        GameUtil.hidePlatformWindow();
-        War.INSTANCE.setMyTurn(false);
-        SystemUtil.closeGameThread();
-        War.INSTANCE.endWar();
+    private fun over() {
+        hidePlatformWindow()
+        isMyTurn = false
+        cancelAllTask()
+        endWar()
         try {
-            SystemUtil.delay(1000);
-            RandomAccessFile accessFile = powerLogListener.getInnerLogFile();
-            accessFile.seek(accessFile.length());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+            SystemUtil.delay(1000)
+            val accessFile = PowerLogListener.logFile
+            accessFile?.seek(accessFile.length())
+        } catch (e: IOException) {
+            throw RuntimeException(e)
         }
-        GameUtil.addGameEndTask();
+        addGameEndTask()
     }
 }

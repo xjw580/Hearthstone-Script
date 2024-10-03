@@ -8,6 +8,7 @@ import club.xiaojiawei.data.ScriptStaticData
 import club.xiaojiawei.enums.WindowEnum
 import club.xiaojiawei.status.PauseStatus
 import club.xiaojiawei.status.Work
+import club.xiaojiawei.utils.GameUtil
 import club.xiaojiawei.utils.SystemUtil
 import club.xiaojiawei.utils.WindowUtil
 import club.xiaojiawei.utils.platformRunLater
@@ -19,9 +20,6 @@ import javafx.application.Platform
  * @date 2023/7/5 13:15
  */
 object Core {
-
-    //    todo refactor
-    private val javafxMainController: MainController? = null
 
     /**
      * 启动脚本
@@ -39,7 +37,10 @@ object Core {
                 platformRunLater { WindowUtil.showStage(WindowEnum.SETTINGS) }
                 PauseStatus.isPause = true
             } else if (!PauseStatus.isPause) {
-                javafxMainController!!.expandedLogPane()
+                val controller = WindowUtil.getController(WindowEnum.MAIN)
+                if (controller is MainController){
+                    controller.expandedLogPane()
+                }
 //                todo refactor
                 log.info { "热键：Ctrl+P 开始/停止程序,Alt+P 关闭程序" }
                 StarterConfig.starter.start()
@@ -53,7 +54,7 @@ object Core {
     fun restart() {
         CORE_THREAD_POOL.execute {
             PauseStatus.isPause = true
-            SystemUtil.killGame()
+            GameUtil.killGame()
             log.info { "游戏重启中……" }
             PauseStatus.isPause = false
         }

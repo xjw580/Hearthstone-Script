@@ -12,6 +12,10 @@ import club.xiaojiawei.bean.log.TagChangeEntity
  */
 fun interface TagChangeHandler {
 
+    fun handle(tagChangeEntity: TagChangeEntity){
+        handle(null, tagChangeEntity, null, null)
+    }
+
     fun handle(card: Card?, tagChangeEntity: TagChangeEntity, player: Player?, area: Area?)
 
 }

@@ -1,54 +1,96 @@
-package club.xiaojiawei.strategy;
+package club.xiaojiawei.strategy
 
-import club.xiaojiawei.interfaces.ModeStrategy;
-import club.xiaojiawei.status.Mode;
-import club.xiaojiawei.utils.GameUtil;
-import club.xiaojiawei.utils.MouseUtil;
-import club.xiaojiawei.utils.SystemUtil;
-import jakarta.annotation.Resource;
-import javafx.beans.property.BooleanProperty;
-import lombok.extern.slf4j.Slf4j;
-
-import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.atomic.AtomicReference;
+import club.xiaojiawei.config.log
+import club.xiaojiawei.interfaces.ModeStrategy
+import club.xiaojiawei.status.Mode
+import club.xiaojiawei.util.isFalse
+import java.util.*
+import java.util.concurrent.ScheduledFuture
 
 /**
  * 游戏模式抽象类
  * @author 肖嘉威
  * @date 2022/11/26 17:39
  */
-@Slf4j
-public abstract class AbstractModeStrategy<T> implements ModeStrategy<T> {
+abstract class AbstractModeStrategy<T> : ModeStrategy<T> {
 
-    @Resource
-    protected MouseUtil mouseUtil;
-    @Resource
-    protected GameUtil gameUtil;
-    @Resource
-    protected AtomicReference<BooleanProperty> isPause;
-    protected final static int INTERVAL_TIME = 5000;
-    protected final static int DELAY_TIME = 1000;
+    override fun entering() {
+        entering(null)
+    }
 
-    @Override
-    public abstract void wantEnter();
-    @Override
-    public void afterLeave(){}
-    @Override
-    public final void entering(){
-        entering(null);
+    override fun entering(t: T?) {
+        beforeEnter()
+        log.info { "切換到" + Mode.currMode?.comment }
+        afterEnter(t)
     }
-    @Override
-    public final void entering(T t) {
-        beforeEnter();
-        log();
-        afterEnter(t);
+
+    override fun afterLeave() {
+        cancelAllEnteredTasks()
     }
-    protected abstract void afterEnter(T t);
-    protected void beforeEnter(){
-        SystemUtil.closeModeTask();
+
+    protected abstract fun afterEnter(t: T?)
+
+    protected fun beforeEnter() {
+        cancelAllWantEnterTasks()
     }
-    protected void log(){
-        log.info("切換到" + Mode.getCurrMode().getComment());
+
+    protected fun addWantEnterTask(task: ScheduledFuture<*>): ScheduledFuture<*> {
+        wantEnterTasks.add(task)
+        return task
+    }
+
+    protected fun cancelWantEnterTask(task: ScheduledFuture<*>) {
+        task.isDone.isFalse {
+            wantEnterTasks.remove(task)
+            task.cancel(true)
+        }
+    }
+
+    protected fun addEnteredTask(task: ScheduledFuture<*>): ScheduledFuture<*> {
+        enteredTasks.add(task)
+        return task
+    }
+
+    protected fun cancelEnteredTask(task: ScheduledFuture<*>) {
+        task.isDone.isFalse {
+            enteredTasks.remove(task)
+            task.cancel(true)
+        }
+    }
+
+
+    companion object {
+        const val INTERVAL_TIME: Long = 5000
+        const val DELAY_TIME: Long = 1000
+
+        private var wantEnterTasks: MutableList<ScheduledFuture<*>> = Collections.synchronizedList(mutableListOf())
+        private var enteredTasks: MutableList<ScheduledFuture<*>> = Collections.synchronizedList(mutableListOf())
+
+        fun cancelAllEnteredTasks() {
+            val listOf = enteredTasks.toList()
+            enteredTasks.clear()
+            listOf.forEach {
+                it.isDone.isFalse {
+                    it.cancel(true)
+                }
+            }
+        }
+
+        fun cancelAllWantEnterTasks() {
+            val listOf = wantEnterTasks.toList()
+            wantEnterTasks.clear()
+            listOf.forEach {
+                it.isDone.isFalse {
+                    it.cancel(true)
+                }
+            }
+        }
+
+        fun cancelAllTask() {
+            cancelAllEnteredTasks()
+            cancelAllWantEnterTasks()
+        }
+
     }
 
 }
