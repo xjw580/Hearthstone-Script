@@ -39,21 +39,21 @@ object PowerLogListener :
 
     private fun resolveLog(line: String) {
         when (War.currentPhase) {
-            WarPhaseEnum.FILL_DECK_PHASE -> {
+            WarPhaseEnum.FILL_DECK -> {
                 War.startTime = System.currentTimeMillis()
-                WarPhaseEnum.FILL_DECK_PHASE.phaseStrategy?.deal(line)
+                WarPhaseEnum.FILL_DECK.phaseStrategy?.deal(line)
             }
 
-            WarPhaseEnum.GAME_OVER_PHASE -> {
+            WarPhaseEnum.GAME_OVER -> {
                 War.endTime = if (War.startTime == 0L) 0 else System.currentTimeMillis()
-                WarPhaseEnum.GAME_OVER_PHASE.phaseStrategy?.deal(line)
+                WarPhaseEnum.GAME_OVER.phaseStrategy?.deal(line)
                 War.reset()
             }
 
             else -> War.currentPhase.phaseStrategy?.deal(line)
         }
         if (War.currentTurnStep == StepEnum.FINAL_GAMEOVER) {
-            War.currentPhase = WarPhaseEnum.GAME_OVER_PHASE
+            War.currentPhase = WarPhaseEnum.GAME_OVER
         }
     }
 

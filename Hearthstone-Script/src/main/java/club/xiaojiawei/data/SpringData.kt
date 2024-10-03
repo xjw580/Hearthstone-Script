@@ -19,7 +19,7 @@ class SpringData {
      * 游戏日志配置路径
      */
     @Value("\${game.log.configuration.path}")
-    val gameLogConfigurationPath: String? = null
+    val gameLogConfigurationPath: String = ""
 
     /**
      * 脚本配置文件路径

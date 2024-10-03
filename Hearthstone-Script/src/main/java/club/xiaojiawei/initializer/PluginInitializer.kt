@@ -1,8 +1,9 @@
-package club.xiaojiawei.initializer;
+package club.xiaojiawei.initializer
 
-import club.xiaojiawei.status.PluginManager;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
+import club.xiaojiawei.config.log
+import club.xiaojiawei.status.PluginManager.loadAllPlugins
+import lombok.extern.slf4j.Slf4j
+import org.springframework.stereotype.Component
 
 /**
  * 开启游戏日志输出
@@ -11,19 +12,13 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @Slf4j
-public class PluginInitializer extends AbstractInitializer{
-
-    @Override
-    public void exec() {
+object PluginInitializer : AbstractInitializer() {
+    public override fun exec() {
         try {
-            PluginManager.INSTANCE.loadAllPlugins();
-        } catch (Exception e) {
-            log.warn("插件加载失败", e);
+            loadAllPlugins()
+        } catch (e: Exception) {
+            log.warn(e) { "插件加载失败" }
         }
     }
 
-    @Override
-    public int getOrder() {
-        return 200;
-    }
 }

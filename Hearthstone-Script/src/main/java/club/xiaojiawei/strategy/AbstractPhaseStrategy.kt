@@ -61,7 +61,7 @@ abstract class AbstractPhaseStrategy : PhaseStrategy {
                             && cards[size - 1].creator == cards[size - 3].creator
                         ) {
                             lastDiscoverEntityId = cards.last().entityId
-                            if (currentPhase != WarPhaseEnum.REPLACE_CARD_PHASE) {
+                            if (currentPhase != WarPhaseEnum.REPLACE_CARD) {
                                 log.info { "触发发现动作" }
                                 discoverChooseCard(
                                     cards[size - 3],

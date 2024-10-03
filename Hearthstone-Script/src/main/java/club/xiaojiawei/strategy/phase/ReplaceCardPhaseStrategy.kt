@@ -37,7 +37,7 @@ object ReplaceCardPhaseStrategy : AbstractPhaseStrategy() {
                 }, "Change Card Thread").also { addTask(it) }).start()
             }
         } else if (tagChangeEntity.tag == TagEnum.NEXT_STEP && StepEnum.MAIN_READY.name == tagChangeEntity.value) {
-            currentPhase = WarPhaseEnum.SPECIAL_EFFECT_TRIGGER_PHASE
+            currentPhase = WarPhaseEnum.SPECIAL_EFFECT_TRIGGER
             return true
         }
         return false

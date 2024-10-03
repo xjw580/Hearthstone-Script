@@ -26,6 +26,6 @@ enum class ModeEnum(val comment: String) {
     TAVERN_BRAWL("乱斗界面")
     ;
 
-    var modeStrategy: ModeStrategy<Any>? = null
+    var modeStrategy: ModeStrategy<*>? = null
 
 }

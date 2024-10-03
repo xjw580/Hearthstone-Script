@@ -60,7 +60,7 @@ object DrawnInitCardPhaseStrategy : AbstractPhaseStrategy() {
         if (tagChangeEntity.tag == TagEnum.ZONE) {
             verifyPlayer(tagChangeEntity.playerId, true)
         } else if (tagChangeEntity.tag == TagEnum.NEXT_STEP && tagChangeEntity.value == StepEnum.BEGIN_MULLIGAN.name) {
-            currentPhase = WarPhaseEnum.REPLACE_CARD_PHASE
+            currentPhase = WarPhaseEnum.REPLACE_CARD
             return true
         }
         return false
