@@ -5,11 +5,13 @@ package club.xiaojiawei.interfaces
  * @date 2024/9/7 13:50
  */
 interface ModeStrategy<T> {
+
     fun wantEnter()
 
     fun afterLeave()
 
     fun entering()
 
-    fun entering(t: T)
+    fun entering(t: T?)
+
 }

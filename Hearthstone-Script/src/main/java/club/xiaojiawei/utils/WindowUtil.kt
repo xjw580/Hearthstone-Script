@@ -1,56 +1,52 @@
-package club.xiaojiawei.utils;
+package club.xiaojiawei.utils
 
-import club.xiaojiawei.JavaFXUI;
-import club.xiaojiawei.data.ScriptStaticData;
-import club.xiaojiawei.enums.WindowEnum;
-import jakarta.annotation.Resource;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.fxml.FXMLLoader;
-import javafx.geometry.Pos;
-import javafx.scene.Scene;
-import javafx.scene.control.*;
-import javafx.scene.image.Image;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
-import javafx.scene.paint.Paint;
-import javafx.stage.*;
-import org.springframework.context.ApplicationContext;
-import org.springframework.stereotype.Component;
-
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import club.xiaojiawei.JavaFXUI
+import club.xiaojiawei.data.ScriptStaticData
+import club.xiaojiawei.enums.WindowEnum
+import club.xiaojiawei.util.isTrue
+import club.xiaojiawei.utils.SystemUtil.findHWND
+import club.xiaojiawei.utils.SystemUtil.showWindow
+import javafx.beans.value.ObservableValue
+import javafx.event.ActionEvent
+import javafx.event.EventHandler
+import javafx.fxml.FXMLLoader
+import javafx.geometry.Pos
+import javafx.scene.Scene
+import javafx.scene.control.Button
+import javafx.scene.control.Label
+import javafx.scene.image.Image
+import javafx.scene.layout.HBox
+import javafx.scene.layout.VBox
+import javafx.scene.paint.Paint
+import javafx.stage.*
+import java.io.IOException
+import java.util.*
 
 /**
  * 窗口工具类
  * @author 肖嘉威
  * @date 2023/2/10 19:42
  */
-@Component
-public class WindowUtil {
+object WindowUtil {
 
-    private static ApplicationContext context;
+    private const val CONTROLLER_KEY = "controller"
 
-    private final static Map<WindowEnum, Stage> STAGE_MAP = new HashMap<>();
+    private val STAGE_MAP: MutableMap<WindowEnum, Stage> = mutableMapOf()
 
-    @Resource
-    public void setContext(ApplicationContext context) {
-        WindowUtil.context = context;
-    }
+    fun createMenuPopup(vararg labels: Label?): Popup {
+        val popup = Popup()
 
-    public static Popup createMenuPopup(Label... labels){
-        Popup popup = new Popup();
+        val vBox: VBox = object : VBox() {
+            init {
+                style =
+                    "-fx-effect: dropshadow(gaussian, rgba(128, 128, 128, 0.67), 10, 0, 3, 3);-fx-padding: 5 3 5 3;-fx-background-color: white"
+            }
+        }
+        vBox.styleClass.add("radius-ui")
 
-        VBox vBox = new VBox(){{
-            setStyle("-fx-effect: dropshadow(gaussian, rgba(128, 128, 128, 0.67), 10, 0, 3, 3);-fx-padding: 5 3 5 3;-fx-background-color: white");
-        }};
-        vBox.getStyleClass().add("radius-ui");
-
-        popup.setAutoHide(true);
-        popup.getContent().add(vBox);
-        return popup;
+        popup.isAutoHide = true
+        popup.content.add(vBox)
+        return popup
     }
 
     /**
@@ -61,124 +57,152 @@ public class WindowUtil {
      * @param cancelHandler
      * @return
      */
-    public static Stage createAlert(
-            String headerText,
-            String contentText,
-            EventHandler<ActionEvent> okHandler,
-            EventHandler<ActionEvent> cancelHandler,
-            Window window
-    ){
-        Stage stage = new Stage();
-        VBox rootPane = new VBox();
-        rootPane.setStyle("-fx-effect: dropshadow(gaussian, rgba(128, 128, 128, 0.67), 10, 0, 0, 0);-fx-background-radius: 5;-fx-background-insets: 10;-fx-padding: 10");
-        Button okBtn = new javafx.scene.control.Button("确认");
-        okBtn.getStyleClass().addAll("btn-ui", "btn-ui-success");
-        okBtn.setOnAction(actionEvent -> {
-            stage.hide();
-            if (okHandler != null) {
-                okHandler.handle(actionEvent);
+    fun createAlert(
+        headerText: String?,
+        contentText: String?,
+        okHandler: EventHandler<ActionEvent?>?,
+        cancelHandler: EventHandler<ActionEvent?>?,
+        window: Window?
+    ): Stage {
+        val stage = Stage()
+        val rootPane = VBox()
+        rootPane.style =
+            "-fx-effect: dropshadow(gaussian, rgba(128, 128, 128, 0.67), 10, 0, 0, 0);-fx-background-radius: 5;-fx-background-insets: 10;-fx-padding: 10"
+        val okBtn = Button("确认")
+        okBtn.styleClass.addAll("btn-ui", "btn-ui-success")
+        okBtn.onAction = EventHandler { actionEvent: ActionEvent? ->
+            stage.hide()
+            okHandler?.handle(actionEvent)
+        }
+        val cancelBtn = Button("取消")
+        cancelBtn.styleClass.addAll("btn-ui")
+        cancelBtn.onAction = EventHandler { actionEvent: ActionEvent? ->
+            stage.hide()
+            cancelHandler?.handle(actionEvent)
+        }
+        val head = HBox(object : Label(headerText) {
+            init {
+                style = "-fx-wrap-text: true"
             }
-        });
-        Button cancelBtn = new javafx.scene.control.Button("取消");
-        cancelBtn.getStyleClass().addAll("btn-ui");
-        cancelBtn.setOnAction(actionEvent -> {
-            stage.hide();
-            if (cancelHandler != null) {
-                cancelHandler.handle(actionEvent);
+        })
+        val center = HBox(object : Label(contentText) {
+            init {
+                style = "-fx-wrap-text: true"
             }
-        });
-        HBox head = new HBox(new Label(headerText){{setStyle("-fx-wrap-text: true");}});
-        HBox center = new HBox(new Label(contentText){{setStyle("-fx-wrap-text: true");}});
-        HBox bottom = new HBox(okBtn, cancelBtn);
-        head.setAlignment(Pos.CENTER_LEFT);
-        center.setAlignment(Pos.CENTER_LEFT);
-        bottom.setAlignment(Pos.CENTER_RIGHT);
-        head.setStyle("-fx-padding: 15;-fx-font-weight: bold");
-        center.setStyle("-fx-padding: 10 30 10 30;-fx-font-size: 14");
-        bottom.setStyle("-fx-padding: 10;-fx-spacing: 20");
-        rootPane.getChildren().addAll(head, center, bottom);
-        Scene scene = new Scene(rootPane, 400, -1);
-        scene.setFill(Paint.valueOf("#FFFFFF00"));
-        JavaFXUI.addjavafxUIStylesheet(scene);
-        stage.setMaximized(false);
-        stage.setResizable(false);
-        stage.initStyle(StageStyle.TRANSPARENT);
-        stage.setScene(scene);
-        stage.getIcons().add(new Image(Objects.requireNonNull(WindowUtil.class.getResource(ScriptStaticData.SCRIPT_ICON_PATH)).toExternalForm()));
-        stage.showingProperty().addListener((observableValue, aBoolean, t1) -> {
-            if (!t1 && cancelHandler != null) {
-                cancelHandler.handle(null);
+        })
+        val bottom = HBox(okBtn, cancelBtn)
+        head.alignment = Pos.CENTER_LEFT
+        center.alignment = Pos.CENTER_LEFT
+        bottom.alignment = Pos.CENTER_RIGHT
+        head.style = "-fx-padding: 15;-fx-font-weight: bold"
+        center.style = "-fx-padding: 10 30 10 30;-fx-font-size: 14"
+        bottom.style = "-fx-padding: 10;-fx-spacing: 20"
+        rootPane.children.addAll(head, center, bottom)
+        val scene = Scene(rootPane, 400.0, -1.0)
+        scene.fill = Paint.valueOf("#FFFFFF00")
+        JavaFXUI.addjavafxUIStylesheet(scene)
+        stage.isMaximized = false
+        stage.isResizable = false
+        stage.initStyle(StageStyle.TRANSPARENT)
+        stage.scene = scene
+        stage.icons.add(
+            Image(
+                Objects.requireNonNull(WindowUtil::class.java.getResource(ScriptStaticData.SCRIPT_ICON_PATH))
+                    .toExternalForm()
+            )
+        )
+        stage.showingProperty()
+            .addListener { _: ObservableValue<out Boolean?>?, _: Boolean?, t1: Boolean? ->
+                if (!t1!! && cancelHandler != null) {
+                    cancelHandler.handle(null)
+                }
             }
-        });
-        stage.initModality(Modality.APPLICATION_MODAL);
-        stage.initOwner(window);
-        return stage;
+        stage.initModality(Modality.APPLICATION_MODAL)
+        stage.initOwner(window)
+        return stage
     }
 
-    public static Stage createAlert(String headerText, String contentText, Window window){
-        return createAlert(headerText, contentText, null, null, window);
+    fun createAlert(headerText: String?, contentText: String?, window: Window?): Stage {
+        return createAlert(headerText, contentText, null, null, window)
     }
 
 
-    public static void showStage(WindowEnum windowEnum){
-        Stage stage = buildStage(windowEnum);
-        if (stage.isShowing()){
-            SystemUtil.frontWindow(SystemUtil.findHWND(windowEnum.getTitle()));
-            stage.requestFocus();
-        }else {
-            stage.show();
-        }
-    }
-    public static void hideStage(WindowEnum windowEnum){
-        Stage stage = buildStage(windowEnum, false);
-        if (stage != null && stage.isShowing()){
-            stage.hide();
+    fun showStage(windowEnum: WindowEnum) {
+        val stage = buildStage(windowEnum)
+        if (stage.isShowing) {
+            showWindow(findHWND(windowEnum.title))
+            stage.requestFocus()
+        } else {
+            stage.show()
         }
     }
 
-    public static void hideAllStage(){
-        for (WindowEnum value : WindowEnum.values()) {
-            hideStage(value);
+    fun hideStage(windowEnum: WindowEnum) {
+        getStage(windowEnum)?.let {
+            it.isShowing.isTrue {
+                it.hide()
+            }
         }
     }
-    public static Stage buildStage(WindowEnum windowEnum){
-        return buildStage(windowEnum, true);
-    }
-    public static Stage buildStage(WindowEnum windowEnum, boolean createStage){
-        Stage stage = STAGE_MAP.get(windowEnum);
-        if (stage == null && createStage){
-            STAGE_MAP.put(windowEnum, stage = createStage(windowEnum));
+
+    fun hideAllStage() {
+        for (value in WindowEnum.entries) {
+            hideStage(value)
         }
-        return stage;
     }
-    private static Stage createStage(WindowEnum windowEnum){
-        Stage stage = new Stage();
+
+    fun getController(windowEnum: WindowEnum): Any? {
+        val stage = STAGE_MAP[windowEnum]
+        return stage?.let {
+            stage.properties[CONTROLLER_KEY]
+        }
+    }
+
+    fun buildStage(windowEnum: WindowEnum): Stage {
+        return buildStage(windowEnum, true)
+    }
+
+    fun buildStage(windowEnum: WindowEnum, createStage: Boolean): Stage {
+        var stage = STAGE_MAP[windowEnum]
+        if (stage == null || createStage) {
+            stage = createStage(windowEnum)
+            STAGE_MAP[windowEnum] = stage
+        }
+        return stage
+    }
+
+    private fun createStage(windowEnum: WindowEnum): Stage {
+        val stage = Stage()
         try {
-            FXMLLoader fxmlLoader = new FXMLLoader(WindowUtil.class.getResource(ScriptStaticData.FXML_PATH + windowEnum.getFxmlName()));
-            if (context != null){
-                fxmlLoader.setControllerFactory(context::getBean);
+            val fxmlLoader =
+                FXMLLoader(WindowUtil::class.java.getResource(ScriptStaticData.FXML_PATH + windowEnum.fxmlName))
+            stage.properties[CONTROLLER_KEY] = fxmlLoader.getController()
+            val scene = Scene(fxmlLoader.load())
+            scene.stylesheets.add(JavaFXUI.javafxUIStylesheet())
+            stage.scene = scene
+            stage.title = windowEnum.title
+            stage.icons.add(
+                Image(
+                    Objects.requireNonNull(WindowUtil::class.java.getResource(ScriptStaticData.SCRIPT_ICON_PATH))
+                        .toExternalForm()
+                )
+            )
+            stage.width = windowEnum.width
+            stage.height = windowEnum.height
+            stage.minHeight = windowEnum.height
+            stage.minWidth = windowEnum.width
+            if (windowEnum.x != -1.0) {
+                stage.x = windowEnum.x
             }
-            Scene scene = new Scene(fxmlLoader.load());
-            scene.getStylesheets().add(JavaFXUI.javafxUIStylesheet());
-            stage.setScene(scene);
-            stage.setTitle(windowEnum.getTitle());
-            stage.getIcons().add(new Image(Objects.requireNonNull(WindowUtil.class.getResource(ScriptStaticData.SCRIPT_ICON_PATH)).toExternalForm()));
-            stage.setWidth(windowEnum.getWidth());
-            stage.setHeight(windowEnum.getHeight());
-            stage.setMinHeight(windowEnum.getHeight());
-            stage.setMinWidth(windowEnum.getWidth());
-            if (windowEnum.getX() != -1){
-                stage.setX(windowEnum.getX());
+            if (windowEnum.y != -1.0) {
+                stage.y = windowEnum.y
             }
-            if (windowEnum.getY() != -1){
-                stage.setY(windowEnum.getY());
-            }
-            stage.setAlwaysOnTop(windowEnum.isAlwaysOnTop());
-            stage.initStyle(windowEnum.getInitStyle());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+            stage.isAlwaysOnTop = windowEnum.isAlwaysOnTop
+            stage.initStyle(windowEnum.initStyle)
+        } catch (e: IOException) {
+            throw RuntimeException(e)
         }
-        return stage;
+        return stage
     }
 
     /**
@@ -186,7 +210,8 @@ public class WindowUtil {
      * @param windowEnum
      * @return
      */
-    public static Stage getStage(WindowEnum windowEnum){
-        return STAGE_MAP.get(windowEnum);
+    fun getStage(windowEnum: WindowEnum): Stage? {
+        return STAGE_MAP[windowEnum]
     }
+
 }

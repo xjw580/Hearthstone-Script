@@ -11,16 +11,14 @@ import club.xiaojiawei.core.Core.restart
 import club.xiaojiawei.data.ScriptStaticData
 import club.xiaojiawei.enums.TagEnum
 import club.xiaojiawei.enums.ZoneEnum
-import club.xiaojiawei.starter.ExceptionListenStarter.lastActiveTime
-import club.xiaojiawei.status.War.getPlayer
+import club.xiaojiawei.starter.ExceptionListenStarter
+import club.xiaojiawei.status.War
 import club.xiaojiawei.utils.CardUtil.addAreaListener
 import club.xiaojiawei.utils.CardUtil.exchangeAreaOfCard
 import club.xiaojiawei.utils.CardUtil.setCardAction
 import club.xiaojiawei.utils.CardUtil.updateCardByExtraEntity
-import javafx.beans.value.ChangeListener
 import javafx.beans.value.ObservableValue
 import org.apache.logging.log4j.util.Strings
-import java.io.IOException
 import java.io.RandomAccessFile
 import java.nio.charset.StandardCharsets
 
@@ -63,20 +61,18 @@ object PowerLogUtil {
             addAreaListener(card)
             updateCardByExtraEntity(extraEntity, card)
             setCardAction(card)
-            card.cardIdProperty.addListener(ChangeListener { observableValue: ObservableValue<out String?>?, s: String?, t1: String? ->
+            card.cardIdProperty.addListener { _: ObservableValue<out String?>?, _: String?, _: String? ->
                 setCardAction(card)
-            })
+            }
 
-            getPlayer(extraEntity.playerId).getArea(extraEntity.extraCard.zone)
+            War.getPlayer(extraEntity.playerId).getArea(extraEntity.extraCard.zone)
                 ?.add(card, extraEntity.extraCard.zonePos)
                 ?: let {
-                    log.warn { "生成的card${card}未发现area" }
+                    log.warn { "生成的card【entityId:${card.entityId}】不应没有area" }
                 }
         } else {
-            if (log.isDebugEnabled()) {
-                //        不退出客户端的情况下断线重连会导致牌库的牌重新在日志中输出
-                log.debug { "生成的card重复，将不会生成新Card，疑似掉线重连" }
-            }
+            //        不退出客户端的情况下断线重连会导致牌库的牌重新在日志中输出
+            log.debug { "生成的card重复，将不会生成新Card，疑似掉线重连" }
         }
         return extraEntity
     }
@@ -94,7 +90,7 @@ object PowerLogUtil {
             String.format(
                 "玩家%s【%s】 的 【entityId:%s】 由 【entityName:%s，cardId:%s】 变形成了 【entityName:，cardId:%s】",
                 extraEntity.playerId,
-                getPlayer(extraEntity.playerId).gameId,
+                War.getPlayer(extraEntity.playerId).gameId,
                 extraEntity.entityId,
                 card?.entityName,
                 card?.cardId,
@@ -114,29 +110,30 @@ object PowerLogUtil {
     fun dealTagChange(line: String): TagChangeEntity {
         val tagChangeEntity: TagChangeEntity = parseTagChange(line)
         tagChangeEntity.logType = ScriptStaticData.TAG_CHANGE
+
         if (tagChangeEntity.tag !== TagEnum.UNKNOWN) {
-//        处理复杂
-            if (tagChangeEntity.getEntity() == null) {
-                val player = getPlayer(tagChangeEntity.getPlayerId())
-                val area = ScriptStaticData.CARD_AREA_MAP.get(tagChangeEntity.entityId)
-                if (area == null) {
+//        处理复杂，例：TAG_CHANGE Entity=[entityName=UNKNOWN ENTITY [cardType=INVALID] id=89 zone=HAND zonePos=4 cardId= player=2] tag=ZONE_POSITION value=0
+            if (tagChangeEntity.entity.isBlank()) {
+                val area = ScriptStaticData.CARD_AREA_MAP[tagChangeEntity.entityId] ?: let {
+                    log.warn { "不应找不到area,【entityId:${tagChangeEntity.entityId}】" }
                     return tagChangeEntity
                 }
-                val card = area.findByEntityId(tagChangeEntity.entityId)
-                //            只列出可能被修改的属性
-                val dealTagChange = tagChangeEntity.tag?.fullTagChangeHandler
-                if (dealTagChange != null) {
-                    dealTagChange.handle(card, tagChangeEntity, player, area)
+
+                val card = area.findByEntityId(tagChangeEntity.entityId) ?: let {
+                    log.warn { "area不应找不到card【entityId:${tagChangeEntity.entityId}】" }
+                    return tagChangeEntity
                 }
-                if (!tagChangeEntity.entityName.isBlank() && tagChangeEntity.entityName != Entity.UNKNOWN_ENTITY_NAME) {
-                    card!!.entityName = tagChangeEntity.entityName
+
+                val player = War.getPlayer(tagChangeEntity.playerId)
+                //            只列出可能被修改的属性
+                tagChangeEntity.tag?.tagChangeHandler?.handle(card, tagChangeEntity, player, area)
+
+                if (tagChangeEntity.entityName.isNotBlank() && tagChangeEntity.entityName != Entity.UNKNOWN_ENTITY_NAME) {
+                    card.entityName = tagChangeEntity.entityName
                 }
             } else {
-//            处理简单
-                val dealTagChange = tagChangeEntity.tag?.tagChangeHandler
-                if (dealTagChange != null) {
-                    dealTagChange.handle(tagChangeEntity)
-                }
+//            处理简单，例：TAG_CHANGE Entity=BouncyBear tag=NUM_TURNS_LEFT value=1
+                tagChangeEntity.tag?.tagChangeHandler?.handle(tagChangeEntity)
             }
         }
         return tagChangeEntity
@@ -148,15 +145,15 @@ object PowerLogUtil {
         val index = line.lastIndexOf("]")
         val tagChangeEntity = TagChangeEntity()
         val tagName = line.substring(tagIndex + 4, valueIndex).trim()
-        tagChangeEntity.setTag(ScriptStaticData.TAG_MAP.getOrDefault(tagName, TagEnum.UNKNOWN))
+        tagChangeEntity.tag = ScriptStaticData.TAG_MAP.getOrDefault(tagName, TagEnum.UNKNOWN)
         var value = line.substring(valueIndex + 6).trim()
         //        可能会有这样的日志：TAG_CHANGE Entity=128 tag=DISPLAYED_CREATOR value=46 DEF CHANGE
         if ((value.indexOf(" ").also { valueIndex = it }) != -1) {
             value = value.substring(0, valueIndex)
         }
-        tagChangeEntity.setValue(value)
+        tagChangeEntity.value = value
         if (index < 100) {
-            tagChangeEntity.setEntity(iso88591_To_utf8(line.substring(line.indexOf("Entity") + 7, tagIndex).trim()))
+            tagChangeEntity.entity = iso88591ToUtf8(line.substring(line.indexOf("Entity") + 7, tagIndex).trim())
         } else {
             parseCommonEntity(tagChangeEntity, line)
         }
@@ -170,39 +167,31 @@ object PowerLogUtil {
      * @param accessFile
      * @return
      */
-    @SneakyThrows(value = [IOException::class])
-    fun parseExtraEntity(line: String, accessFile: RandomAccessFile, logType: String?): ExtraEntity {
-        var line = line
+    private fun parseExtraEntity(line: String, accessFile: RandomAccessFile, logType: String): ExtraEntity {
+        var l = line
         val extraEntity = ExtraEntity()
-        extraEntity.setLogType(logType)
-        parseCommonEntity(extraEntity, line)
-        var mark = accessFile.getFilePointer()
+        extraEntity.logType = logType
+        parseCommonEntity(extraEntity, l)
+        var mark = accessFile.filePointer
         var tagIndex: Int
         while (true) {
-            if ((accessFile.readLine().also { line = it }) == null) {
+            if ((accessFile.readLine().also { l = it }) == null) {
                 SystemUtil.delay(1000)
-            } else if ((line.indexOf(ScriptStaticData.TAG).also { tagIndex = it }) >= 0 && tagIndex < 70) {
-                val valueIndex = line.lastIndexOf(ScriptStaticData.VALUE)
-                val value = line.substring(tagIndex + 4, valueIndex - 1).trim()
+            } else if ((l.indexOf(ScriptStaticData.TAG).also { tagIndex = it }) >= 0 && tagIndex < 70) {
+                val valueIndex = l.lastIndexOf(ScriptStaticData.VALUE)
+                val value = l.substring(tagIndex + 4, valueIndex - 1).trim()
                 if (log.isDebugEnabled()) {
-                    log.debug(line)
-                    log.debug("tag:" + ScriptStaticData.TAG_MAP.getOrDefault(value, TagEnum.UNKNOWN).name)
-                    log.debug("extraEntity:" + extraEntity)
+                    log.debug { l }
+                    log.debug { "tag:" + TagEnum.getByName(value).name }
+                    log.debug { "extraEntity:$extraEntity" }
                 }
-                val parseExtraEntity =
-                    ScriptStaticData.TAG_MAP.getOrDefault(value, TagEnum.UNKNOWN).getParseExtraEntity()
-                if (parseExtraEntity != null) {
-                    parseExtraEntity.parseExtraEntity(extraEntity, line.substring(valueIndex + 6).trim())
-                }
+                TagEnum.getByName(value).extraEntityHandler?.handle(extraEntity, l.substring(valueIndex + 6).trim())
             } else {
-                if (log.isDebugEnabled()) {
-                    log.debug(line)
-                }
-                //                将指针恢复到这行日志开头，以便后面重新读取
+                log.debug { l }
                 accessFile.seek(mark)
                 break
             }
-            mark = accessFile.getFilePointer()
+            mark = accessFile.filePointer
         }
         return extraEntity
     }
@@ -217,40 +206,42 @@ object PowerLogUtil {
         val cardTypeIndex = line.lastIndexOf("cardType", entityIdIndex)
         val entityNameIndex = line.lastIndexOf("entityName", entityIdIndex)
         val cardIDIndex = line.lastIndexOf("CardID")
-        if (cardIDIndex != -1) {
-            commonEntity.cardId = line.substring(cardIDIndex + 7).trim()
+
+        commonEntity.apply {
+            if (cardIDIndex != -1) {
+                cardId = line.substring(cardIDIndex + 7).trim()
+            }
+            if (Strings.isBlank(cardId)) {
+                cardId = line.substring(cardIdIndex + 7, playerIndex).trim()
+            }
+            playerId = line.substring(playerIndex + 7, index).trim()
+            zone = ZoneEnum.valueOf(line.substring(zoneIndex + 5, zonePosIndex).trim())
+            zonePos = line.substring(zonePosIndex + 8, cardIdIndex).trim().toInt()
+            entityId = line.substring(entityIdIndex + 3, zoneIndex).trim()
+            entityName = iso88591ToUtf8(
+                line.substring(
+                    entityNameIndex + 11,
+                    if (cardTypeIndex == -1) entityIdIndex else cardTypeIndex - 1
+                ).trim()
+            )
         }
-        if (Strings.isBlank(commonEntity.cardId)) {
-            commonEntity.cardId = line.substring(cardIdIndex + 7, playerIndex).trim()
-        }
-        commonEntity.setPlayerId(line.substring(playerIndex + 7, index).trim())
-        commonEntity.setZone(ZoneEnum.valueOf(line.substring(zoneIndex + 5, zonePosIndex).trim()))
-        commonEntity.setZonePos(line.substring(zonePosIndex + 8, cardIdIndex).trim().toInt())
-        commonEntity.entityId = line.substring(entityIdIndex + 3, zoneIndex).trim()
-        commonEntity.entityName = PowerLogUtil.iso88591_To_utf8(
-            line.substring(
-                entityNameIndex + 11,
-                if (cardTypeIndex == -1) entityIdIndex else cardTypeIndex - 1
-            ).trim()
-        )!!
     }
 
-    fun iso88591_To_utf8(s: String?): String? {
-        return if (s == null) null else String(s.toByteArray(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8)
+    fun iso88591ToUtf8(s: String): String {
+        return String(s.toByteArray(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8)
     }
 
-    @JvmStatic
     fun isRelevance(l: String): Boolean {
         var flag = false
         if (l.contains("Truncating log")) {
             val text = "power.log达到" + (ScriptStaticData.MAX_LOG_SIZE / 1024) + "KB，游戏停止输出日志，准备重启游戏"
-            log.info(text)
+            log.info { text }
             SystemUtil.notice(text)
             restart()
         } else {
             flag = l.contains("PowerTaskList")
         }
-        lastActiveTime = System.currentTimeMillis()
+        ExceptionListenStarter.lastActiveTime = System.currentTimeMillis()
         return flag
     }
 }

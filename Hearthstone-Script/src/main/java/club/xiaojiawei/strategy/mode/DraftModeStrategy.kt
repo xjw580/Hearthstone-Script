@@ -1,24 +1,18 @@
-package club.xiaojiawei.strategy.mode;
+package club.xiaojiawei.strategy.mode
 
-import club.xiaojiawei.strategy.AbstractModeStrategy;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
+import club.xiaojiawei.strategy.AbstractModeStrategy
 
 /**
  * 竞技场
  * @author 肖嘉威
  * @date 2022/11/25 13:00
  */
-@Slf4j
-@Component
-public class DraftModeStrategy extends AbstractModeStrategy<Object> {
+object DraftModeStrategy : AbstractModeStrategy<Any?>() {
 
-    @Override
-    public void wantEnter() {
+    override fun wantEnter() {
     }
 
-    @Override
-    protected void afterEnter(Object o) {
+    override fun afterEnter(t: Any?) {
     }
 
 }

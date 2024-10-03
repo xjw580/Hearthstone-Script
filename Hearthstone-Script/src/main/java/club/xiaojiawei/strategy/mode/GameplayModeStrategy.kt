@@ -1,10 +1,10 @@
-package club.xiaojiawei.strategy.mode;
+package club.xiaojiawei.strategy.mode
 
-import club.xiaojiawei.enums.ModeEnum;
-import club.xiaojiawei.status.Mode;
-import club.xiaojiawei.strategy.AbstractModeStrategy;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
+import club.xiaojiawei.config.log
+import club.xiaojiawei.enums.ModeEnum
+import club.xiaojiawei.status.Mode.prevMode
+import club.xiaojiawei.strategy.AbstractModeStrategy
+import club.xiaojiawei.utils.GameUtil
 
 /**
  * 游戏界面
@@ -12,20 +12,15 @@ import org.springframework.stereotype.Component;
  * @author 肖嘉威
  * @date 2022/11/25 12:43
  */
-@Slf4j
-@Component
-public class GameplayModeStrategy extends AbstractModeStrategy<Object> {
+object GameplayModeStrategy : AbstractModeStrategy<Any?>() {
 
-    @Override
-    public void wantEnter() {
+    override fun wantEnter() {
     }
 
-    @Override
-    protected void afterEnter(Object o) {
-        if (Mode.getPrevMode() == ModeEnum.LOGIN || Mode.getPrevMode() == null) {
-            log.info("当前对局不完整，准备投降");
-            gameUtil.surrender();
+    override fun afterEnter(t: Any?) {
+        if (prevMode == ModeEnum.LOGIN || prevMode == null) {
+            log.info { "当前对局不完整，准备投降" }
+            GameUtil.surrender()
         }
     }
-
 }

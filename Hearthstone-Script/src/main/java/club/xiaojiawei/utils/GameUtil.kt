@@ -5,11 +5,14 @@ import club.xiaojiawei.bean.LogRunnable
 import club.xiaojiawei.config.EXTRA_THREAD_POOL
 import club.xiaojiawei.config.log
 import club.xiaojiawei.data.ScriptStaticData
+import club.xiaojiawei.dll.SystemDll
 import club.xiaojiawei.enums.ConfigEnum
 import club.xiaojiawei.status.PauseStatus
 import club.xiaojiawei.util.isFalse
+import club.xiaojiawei.utils.SystemUtil.delay
 import com.sun.jna.platform.win32.Kernel32
 import com.sun.jna.platform.win32.User32
+import com.sun.jna.platform.win32.WinDef
 import com.sun.jna.platform.win32.WinUser
 import java.awt.Point
 import java.io.IOException
@@ -37,7 +40,7 @@ object GameUtil {
 
     val SURRENDER_RECT: GameRect = GameRect(-0.0629, 0.0607, -0.1677, -0.1279)
 
-//    表情
+    //    表情
     val THANK_RECT: GameRect = GameRect(-0.1604, -0.0404, 0.1153, 0.1502)
     val PRAISE_RECT: GameRect = GameRect(-0.1930, -0.0730, 0.1971, 0.2320)
     val GREET_RECT: GameRect = GameRect(-0.1907, -0.0707, 0.2799, 0.3148)
@@ -201,30 +204,30 @@ object GameUtil {
         return FOUR_DISCOVER_RECTS[index]
     }
 
-    fun getMyHandCardRect(index: Int, size: Int): GameRect? {
+    fun getMyHandCardRect(index: Int, size: Int): GameRect {
         if (index < 0 || index > size - 1 || size > MY_HAND_DECK_RECTS.size - 1) {
             return GameRect.INVALID
         }
         return MY_HAND_DECK_RECTS[size - 1][index]
     }
 
-    fun getMyPlayCardRect(index: Int, size: Int): GameRect? {
+    fun getMyPlayCardRect(index: Int, size: Int): GameRect {
         return getPlayCardRect(index, size, MY_PLAY_DECK_RECTS)
     }
 
-    fun getRivalPlayCardRect(index: Int, size: Int): GameRect? {
+    fun getRivalPlayCardRect(index: Int, size: Int): GameRect {
         return getPlayCardRect(index, size, RIVAL_PLAY_DECK_RECTS)
     }
 
-    private fun getPlayCardRect(index: Int, size: Int, gameRects: Array<Array<GameRect>>): GameRect? {
-        var index = index
-        var size = size
-        size = max(size, 0)
-        val rects: Array<GameRect> = gameRects[size and 1]
-        val offset: Int = (rects.size - size) shr 1
-        index = max((offset + index), 0)
-        index = min(index, (rects.size - 1))
-        return rects[index]
+    private fun getPlayCardRect(index: Int, size: Int, gameRects: Array<Array<GameRect>>): GameRect {
+        var i = index
+        var s = size
+        s = max(s, 0)
+        val rects: Array<GameRect> = gameRects[s and 1]
+        val offset: Int = (rects.size - s) shr 1
+        i = max((offset + i), 0)
+        i = min(i, (rects.size - 1))
+        return rects[i]
     }
 
     fun clickDiscover(index: Int, discoverSize: Int) {
@@ -267,7 +270,6 @@ object GameUtil {
      * 游戏里投降
      */
     fun surrender() {
-        SystemUtil.closeGameThread()
         SystemUtil.delay(10000)
         //        SystemUtil.frontWindow(ScriptStaticData.getGameHWND());
 //        按ESC键弹出投降界面
@@ -302,7 +304,7 @@ object GameUtil {
      */
     fun addGameEndTask() {
         cancelGameEndTask()
-        log.info{"点掉游戏结束结算页面"}
+        log.info { "点掉游戏结束结算页面" }
         gameEndTask = EXTRA_THREAD_POOL.scheduleWithFixedDelay(
             LogRunnable {
                 if (PauseStatus.isPause) {
@@ -318,9 +320,79 @@ object GameUtil {
     }
 
     fun hidePlatformWindow() {
-        val platformHWND = SystemUtil.findPlatformHWND()
+        val platformHWND = findPlatformHWND()
         if (platformHWND != null && !User32.INSTANCE.ShowWindow(platformHWND, WinUser.SW_MINIMIZE)) {
-            log.warn{"最小化战网窗口异常，错误代码：" + Kernel32.INSTANCE.GetLastError()}
+            log.warn { "最小化战网窗口异常，错误代码：" + Kernel32.INSTANCE.GetLastError() }
+        }
+    }
+
+    fun isAliveOfGame(): Boolean {
+        return SystemUtil.isAliveOfProgram(ScriptStaticData.GAME_PROGRAM_NAME)
+    }
+
+    fun findGameHWND(): WinDef.HWND? {
+        return SystemUtil.findHWND("UnityWndClass", ScriptStaticData.GAME_CN_NAME)
+            ?: let { SystemUtil.findHWND("UnityWndClass", ScriptStaticData.GAME_US_NAME) }
+    }
+
+    fun findPlatformHWND(): WinDef.HWND? {
+        return SystemUtil.findHWND("Chrome_WidgetWin_0", ScriptStaticData.PLATFORM_CN_NAME)
+            ?: let { SystemUtil.findHWND("Chrome_WidgetWin_0", ScriptStaticData.PLATFORM_US_NAME) }
+    }
+
+    fun findLoginPlatformHWND(): WinDef.HWND? {
+        return SystemUtil.findHWND("Qt5151QWindowIcon", ScriptStaticData.PLATFORM_LOGIN_CN_NAME)
+    }
+
+    /**
+     * 更新游戏窗口信息
+     */
+    fun updateGameRect(updateHWNDCache: Boolean = false) {
+        if (ScriptStaticData.getGameHWND() == null || updateHWNDCache) {
+            ScriptStaticData.setGameHWND(findGameHWND())
+        }
+        SystemUtil.updateRECT(ScriptStaticData.getGameHWND(), ScriptStaticData.GAME_RECT)
+    }
+
+    /**
+     * 通过此方式停止的游戏，screen.log监听器可能无法监测到游戏被关闭
+     */
+    fun killGame() {
+        if (findGameHWND() != null) {
+            try {
+                Runtime.getRuntime().exec("cmd /c taskkill /f /t /im " + ScriptStaticData.GAME_PROGRAM_NAME)
+                    .waitFor()
+                delay(1000)
+                log.info("炉石传说已关闭")
+            } catch (e: IOException) {
+                log.error("关闭炉石传说异常", e)
+            } catch (e: InterruptedException) {
+                log.warn("关闭炉石传说异常", e)
+            }
+        } else {
+            log.info("炉石传说不在运行")
+        }
+    }
+
+    fun killPlatform() {
+        val platformHWND: WinDef.HWND? = findPlatformHWND()
+        val loginPlatformHWND: WinDef.HWND? = findLoginPlatformHWND()
+        if (platformHWND != null || loginPlatformHWND != null) {
+            SystemDll.INSTANCE.closeProgram(platformHWND)
+            SystemDll.INSTANCE.closeProgram(loginPlatformHWND)
+            log.info { "战网已关闭" }
+        } else {
+            log.info { "战网不在运行" }
+        }
+    }
+
+    fun killLoginPlatform() {
+        val loginPlatformHWND: WinDef.HWND? = findLoginPlatformHWND()
+        if (loginPlatformHWND == null) {
+            log.info { "登录战网不在运行" }
+        } else {
+            SystemDll.INSTANCE.closeProgram(loginPlatformHWND)
+            log.info { "登录战网已关闭" }
         }
     }
 
@@ -332,4 +404,5 @@ object GameUtil {
             }
         }
     }
+
 }

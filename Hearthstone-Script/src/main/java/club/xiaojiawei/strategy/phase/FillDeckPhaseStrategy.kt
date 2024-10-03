@@ -1,42 +1,37 @@
-package club.xiaojiawei.strategy.phase;
+package club.xiaojiawei.strategy.phase
 
-import club.xiaojiawei.bean.log.TagChangeEntity;
-import club.xiaojiawei.enums.TagEnum;
-import club.xiaojiawei.enums.WarPhaseEnum;
-import club.xiaojiawei.status.DeckStrategyManager;
-import club.xiaojiawei.status.War;
-import club.xiaojiawei.strategy.AbstractPhaseStrategy;
-import club.xiaojiawei.strategy.DeckStrategyActuator;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
-
-import java.util.Objects;
-
+import club.xiaojiawei.bean.log.TagChangeEntity
+import club.xiaojiawei.enums.TagEnum
+import club.xiaojiawei.enums.WarPhaseEnum
+import club.xiaojiawei.status.DeckStrategyManager
+import club.xiaojiawei.status.War.currentPhase
+import club.xiaojiawei.status.War.startWar
+import club.xiaojiawei.strategy.AbstractPhaseStrategy
+import club.xiaojiawei.strategy.DeckStrategyActuator.deckStrategy
+import lombok.extern.slf4j.Slf4j
+import org.springframework.stereotype.Component
 
 /**
  * 起始填充牌库阶段
  * @author 肖嘉威
  * @date 2022/11/27 13:35
  */
-@Slf4j
-@Component
-public class FillDeckPhaseStrategy extends AbstractPhaseStrategy {
+object FillDeckPhaseStrategy : AbstractPhaseStrategy() {
 
-    @Override
-    protected boolean dealTagChangeThenIsOver(String line, TagChangeEntity tagChangeEntity) {
-        if (tagChangeEntity.getTag() == TagEnum.TURN && Objects.equals(tagChangeEntity.getValue(), "1")){
-            War.INSTANCE.setCurrentPhase(WarPhaseEnum.DRAWN_INIT_CARD_PHASE);
-            return true;
+    override fun dealTagChangeThenIsOver(line: String, tagChangeEntity: TagChangeEntity): Boolean {
+        if (tagChangeEntity.tag == TagEnum.TURN && tagChangeEntity.value == "1") {
+            currentPhase = WarPhaseEnum.DRAWN_INIT_CARD_PHASE
+            return true
         }
-        return false;
+        return false
     }
 
-    @Override
-    protected boolean dealOtherThenIsOver(String line) {
-        if (line.contains("CREATE_GAME")){
-            DeckStrategyActuator.INSTANCE.setDeckStrategy(DeckStrategyManager.CURRENT_DECK_STRATEGY.get());
-            War.INSTANCE.startWar(DeckStrategyManager.CURRENT_DECK_STRATEGY.get().getRunModes()[0]);
+    override fun dealOtherThenIsOver(line: String): Boolean {
+        if (line.contains("CREATE_GAME")) {
+            deckStrategy = DeckStrategyManager.CURRENT_DECK_STRATEGY.get()
+            startWar(DeckStrategyManager.CURRENT_DECK_STRATEGY.get().runModes[0])
         }
-        return super.dealOtherThenIsOver(line);
+        return super.dealOtherThenIsOver(line)
     }
+
 }

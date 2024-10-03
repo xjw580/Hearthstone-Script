@@ -1,52 +1,55 @@
-package club.xiaojiawei.utils;
+package club.xiaojiawei.utils
 
-import lombok.Getter;
-
-import java.util.Random;
+import lombok.Getter
+import java.util.*
 
 /**
  * 随机数生成工具
  * @author 肖嘉威
  * @date 2022/11/24 19:41
  */
-public class RandomUtil {
+object RandomUtil {
 
-    @Getter
-    private static final Random RANDOM = new Random(System.currentTimeMillis());
+    private val RANDOM = Random(System.currentTimeMillis())
 
-    public static int getRandom(int min, int max){
-        if (min > max){
-            return getRandom(max, min);
-        }
-        return (int) (RANDOM.nextDouble() * (max - min + 1) + min);
+    fun getRandom(min: Int, max: Int): Int {
+        return if (min > max) {
+            getRandom(max, min)
+        } else (RANDOM.nextDouble() * (max - min + 1) + min).toInt()
     }
 
-    public static double getRandom(double min, double max){
-        if (min > max){
-            return getRandom(max, min);
-        }
-        return RANDOM.nextDouble(min, max);
+    fun getRandom(min: Double, max: Double): Double {
+        return if (min > max) {
+            getRandom(max, min)
+        } else RANDOM.nextDouble(min, max)
     }
 
-    public static int getHugeRandom(){
-        return getRandom(3000, 5000);
+    fun getHugeRandom(): Int {
+        return getRandom(3000, 5000)
     }
-    public static int getLongRandom(){
-        return getRandom(2000, 3000);
+
+    fun getLongRandom(): Int {
+        return getRandom(2000, 3000)
     }
-    public static int getMediumRandom(){
-        return getRandom(1000, 1600);
+
+    fun getMediumRandom(): Int {
+        return getRandom(1000, 1600)
     }
-    public static int getShortMediumRandom(){
-        return getRandom(500, 800);
+
+    fun getShortMediumRandom(): Int {
+        return getRandom(500, 800)
     }
-    public static int getShortRandom(){
-        return getRandom(250, 450);
+
+    fun getShortRandom(): Int {
+        return getRandom(250, 450)
     }
-    public static int getTinyRandom(){
-        return getRandom(100, 200);
+
+    fun getTinyRandom(): Int {
+        return getRandom(100, 200)
     }
-    public static int getHumanRandom(){
-        return getRandom(200, 2000);
+
+    fun getHumanRandom(): Int {
+        return getRandom(200, 2000)
     }
+
 }

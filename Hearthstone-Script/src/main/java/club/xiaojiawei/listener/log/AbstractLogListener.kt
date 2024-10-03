@@ -24,7 +24,7 @@ abstract class AbstractLogListener(
     protected var listenTimeUnit: TimeUnit
 ) {
 
-    var innerLogFile: RandomAccessFile? = null
+    protected var innerLogFile: RandomAccessFile? = null
 
     val logFile: RandomAccessFile?
         get() = innerLogFile

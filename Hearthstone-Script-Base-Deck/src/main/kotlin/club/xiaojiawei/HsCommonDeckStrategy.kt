@@ -40,8 +40,6 @@ class HsCommonDeckStrategy : DeckStrategy() {
     override fun executeOutCard() {
         val me = War.me
         val rival = War.rival
-        me ?: return
-        rival ?: return
 
         powerCard(me, rival)
 

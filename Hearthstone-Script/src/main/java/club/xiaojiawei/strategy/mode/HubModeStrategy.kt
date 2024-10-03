@@ -1,66 +1,48 @@
-package club.xiaojiawei.strategy.mode;
+package club.xiaojiawei.strategy.mode
 
-import club.xiaojiawei.bean.GameRect;
-import club.xiaojiawei.enums.ModeEnum;
-import club.xiaojiawei.status.DeckStrategyManager;
-import club.xiaojiawei.status.Mode;
-import club.xiaojiawei.strategy.AbstractModeStrategy;
-import club.xiaojiawei.utils.GameUtil;
-import club.xiaojiawei.utils.SystemUtil;
-import jakarta.annotation.Resource;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
-
-import java.util.Properties;
+import club.xiaojiawei.bean.GameRect
+import club.xiaojiawei.config.log
+import club.xiaojiawei.enums.ModeEnum
+import club.xiaojiawei.status.DeckStrategyManager
+import club.xiaojiawei.status.Mode.prevMode
+import club.xiaojiawei.status.PauseStatus
+import club.xiaojiawei.strategy.AbstractModeStrategy
+import club.xiaojiawei.utils.SystemUtil
 
 /**
  * 主界面
  * @author 肖嘉威
  * @date 2022/11/25 12:36
  */
-@Slf4j
-@Component
-public class HubModeStrategy extends AbstractModeStrategy<Object> {
+object HubModeStrategy : AbstractModeStrategy<Any?>() {
 
-    public static final GameRect TOURNAMENT_MODE_RECT = new GameRect(-0.0790D, 0.0811D, -0.2090D, -0.1737D);
+    val TOURNAMENT_MODE_RECT: GameRect = GameRect(-0.0790, 0.0811, -0.2090, -0.1737)
+
     //    TODO ADD
-    public static final GameRect CLOSE_AD1_RECT = new GameRect(-0.0790D, 0.0811D, -0.2090D, -0.1737D);
+    val CLOSE_AD1_RECT: GameRect = GameRect(-0.0790, 0.0811, -0.2090, -0.1737)
 
-    public static final GameRect CLOSE_AD2_RECT = new GameRect(-0.0296D, 0.0431D, 0.2502D, 0.2552D);
-//    public static final GameRect RECT = new GameRect(-0.0296D, 0.0431D, 0.2502D, 0.2940D);
+    val CLOSE_AD2_RECT: GameRect = GameRect(-0.0296, 0.0431, 0.2502, 0.2552)
 
-
-
-    @Resource
-    private Properties scriptConfiguration;
-    @Override
-    public void wantEnter() {
-
+    override fun wantEnter() {
     }
 
-    @Override
-    protected void beforeEnter() {
-        super.beforeEnter();
-    }
-
-    @Override
-    protected void afterEnter(Object o) {
-        if (Mode.getPrevMode() != ModeEnum.COLLECTIONMANAGER) {
-            log.info("点击弹窗（去除任务，活动等）");
-            for (int i = 0; i < 4; i++) {
-                if (isPause.get().get()){
-                    return;
+    override fun afterEnter(t: Any?) {
+        if (prevMode != ModeEnum.COLLECTIONMANAGER) {
+            log.info { "点击弹窗（去除任务，活动等）" }
+            for (i in 0..3) {
+                if (PauseStatus.isPause) {
+                    return
                 }
-                CLOSE_AD1_RECT.lClick();
-                SystemUtil.delay(500);
+                CLOSE_AD1_RECT.lClick()
+                SystemUtil.delay(500)
             }
-            CLOSE_AD2_RECT.lClick();
-            SystemUtil.delay(200);
+            CLOSE_AD2_RECT.lClick()
+            SystemUtil.delay(200)
         }
 
         if (DeckStrategyManager.CURRENT_DECK_STRATEGY.get() != null) {
-            log.info("准备进入指定模式");
-            DeckStrategyManager.CURRENT_DECK_STRATEGY.get().getRunModes()[0].getModeEnum().getModeStrategy().wantEnter();
+            log.info { "准备进入指定模式" }
+            DeckStrategyManager.CURRENT_DECK_STRATEGY.get().runModes[0].modeEnum.modeStrategy!!.wantEnter()
         }
     }
 

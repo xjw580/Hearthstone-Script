@@ -1,151 +1,160 @@
-package club.xiaojiawei.strategy;
+package club.xiaojiawei.strategy
 
-import club.xiaojiawei.bean.Card;
-import club.xiaojiawei.bean.log.ExtraEntity;
-import club.xiaojiawei.bean.log.TagChangeEntity;
-import club.xiaojiawei.enums.StepEnum;
-import club.xiaojiawei.enums.WarPhaseEnum;
-import club.xiaojiawei.interfaces.PhaseStrategy;
-import club.xiaojiawei.listener.log.PowerLogListener;
-import club.xiaojiawei.status.War;
-import club.xiaojiawei.utils.GameUtil;
-import club.xiaojiawei.utils.PowerLogUtil;
-import club.xiaojiawei.utils.SystemUtil;
-import jakarta.annotation.Resource;
-import javafx.beans.property.BooleanProperty;
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
-
-import java.io.IOException;
-import java.io.RandomAccessFile;
-import java.util.List;
-import java.util.Objects;
-import java.util.Properties;
-import java.util.concurrent.atomic.AtomicReference;
-
-import static club.xiaojiawei.data.ScriptStaticData.*;
-import static club.xiaojiawei.enums.WarPhaseEnum.REPLACE_CARD_PHASE;
+import club.xiaojiawei.bean.Card
+import club.xiaojiawei.bean.isValid
+import club.xiaojiawei.bean.log.ExtraEntity
+import club.xiaojiawei.bean.log.TagChangeEntity
+import club.xiaojiawei.config.log
+import club.xiaojiawei.data.ScriptStaticData
+import club.xiaojiawei.enums.StepEnum
+import club.xiaojiawei.enums.WarPhaseEnum
+import club.xiaojiawei.interfaces.PhaseStrategy
+import club.xiaojiawei.listener.log.PowerLogListener
+import club.xiaojiawei.status.PauseStatus
+import club.xiaojiawei.status.War.currentPhase
+import club.xiaojiawei.status.War.currentTurnStep
+import club.xiaojiawei.status.War.me
+import club.xiaojiawei.strategy.DeckStrategyActuator.discoverChooseCard
+import club.xiaojiawei.util.isTrue
+import club.xiaojiawei.utils.PowerLogUtil.dealChangeEntity
+import club.xiaojiawei.utils.PowerLogUtil.dealFullEntity
+import club.xiaojiawei.utils.PowerLogUtil.dealShowEntity
+import club.xiaojiawei.utils.PowerLogUtil.dealTagChange
+import club.xiaojiawei.utils.PowerLogUtil.isRelevance
+import club.xiaojiawei.utils.SystemUtil
+import java.io.IOException
 
 /**
  * 游戏阶段抽象类
  * @author 肖嘉威
  * @date 2022/11/26 17:59
  */
-@Slf4j
-public abstract class AbstractPhaseStrategy implements PhaseStrategy {
+abstract class AbstractPhaseStrategy : PhaseStrategy {
 
-    @Resource
-    protected PowerLogListener powerLogListener;
-    @Resource
-    protected GameUtil gameUtil;
-    @Resource
-    protected AtomicReference<BooleanProperty> isPause;
-    @Resource
-    protected Properties scriptConfiguration;
-    /**
-     * 告诉Power.log监听器，AbstractPhaseStrategy是否正在处理日志
-     */
-    @Getter
-    private volatile static boolean dealing;
-    private String lastDiscoverEntityId;
+    private var lastDiscoverEntityId: String? = null
 
-    @Override
-    public void deal(String line) {
-        dealing = true;
-        try{
-            beforeDeal();
-            dealLog(line);
-            afterDeal();
-        }finally {
-            dealing = false;
+    override fun deal(line: String) {
+        dealing = true
+        try {
+            beforeDeal()
+            dealLog(line)
+            afterDeal()
+        } finally {
+            dealing = false
         }
     }
 
-    private void dealLog(String line){
-        RandomAccessFile accessFile = powerLogListener.getInnerLogFile();
-        long mark;
-        while (!isPause.get().get()) {
+    private fun dealLog(line: String) {
+        val accessFile = PowerLogListener.logFile
+        accessFile ?: return
+        var l:String? = line
+        var mark: Long
+        while (!PauseStatus.isPause) {
             try {
-                if (line == null) {
-                    mark = accessFile.getFilePointer();
-                    SystemUtil.delay(1000);
-                    if (accessFile.length() <= mark && War.INSTANCE.getMe() != null){
-                        List<Card> cards = War.INSTANCE.getMe().getSetasideArea().getCards();
-                        int size = cards.size();
-                        if (
-                                size >= 3
-                                && !Objects.equals(lastDiscoverEntityId, cards.getLast().getEntityId())
-                                && Objects.equals(cards.get(size - 1).getCreator(), cards.get(size - 2).getCreator())
-                                && Objects.equals(cards.get(size - 1).getCreator(), cards.get(size - 3).getCreator())
-                        ){
-                            lastDiscoverEntityId = cards.getLast().getEntityId();
-                            if (War.INSTANCE.getCurrentPhase() != REPLACE_CARD_PHASE){
-                                log.info("触发发现动作");
-                                DeckStrategyActuator.INSTANCE.discoverChooseCard(cards.get(size - 3), cards.get(size - 2), cards.get(size - 1));
+                if (l == null) {
+                    mark = accessFile.filePointer
+                    SystemUtil.delay(1000)
+                    if (accessFile.length() <= mark && me.isValid()) {
+                        val cards: List<Card> = me.setasideArea.cards
+                        val size = cards.size
+                        if (size >= 3 && lastDiscoverEntityId != cards.last().entityId && cards[size - 1].creator == cards[size - 2].creator
+                            && cards[size - 1].creator == cards[size - 3].creator
+                        ) {
+                            lastDiscoverEntityId = cards.last().entityId
+                            if (currentPhase != WarPhaseEnum.REPLACE_CARD_PHASE) {
+                                log.info { "触发发现动作" }
+                                discoverChooseCard(
+                                    cards[size - 3],
+                                    cards[size - 2],
+                                    cards[size - 1]
+                                )
                             }
                         }
                     }
-                }else if (PowerLogUtil.isRelevance(line)){
-                    if (log.isDebugEnabled()){
-                        log.debug(line);
-                    }
-                    if (line.contains(TAG_CHANGE)){
-                        if (dealTagChangeThenIsOver(line, PowerLogUtil.dealTagChange(line)) || War.INSTANCE.getCurrentTurnStep() == StepEnum.FINAL_GAMEOVER){
-                            break;
+                } else if (isRelevance(l)) {
+                    log.debug { l }
+                    if (l.contains(ScriptStaticData.TAG_CHANGE)) {
+                        if (dealTagChangeThenIsOver(
+                                l,
+                                dealTagChange(l)
+                            ) || currentTurnStep == StepEnum.FINAL_GAMEOVER
+                        ) {
+                            break
                         }
-                    }else if (line.contains(SHOW_ENTITY)){
-                        if (dealShowEntityThenIsOver(line, PowerLogUtil.dealShowEntity(line, accessFile))){
-                            break;
+                    } else if (l.contains(ScriptStaticData.SHOW_ENTITY)) {
+                        if (dealShowEntityThenIsOver(l, dealShowEntity(l, accessFile))) {
+                            break
                         }
-                    }else if (line.contains(FULL_ENTITY)){
-                        if (dealFullEntityThenIsOver(line, PowerLogUtil.dealFullEntity(line, accessFile))){
-                            break;
+                    } else if (l.contains(ScriptStaticData.FULL_ENTITY)) {
+                        if (dealFullEntityThenIsOver(l, dealFullEntity(l, accessFile))) {
+                            break
                         }
-                    }else if (line.contains(CHANGE_ENTITY)){
-                        if (dealChangeEntityThenIsOver(line, PowerLogUtil.dealChangeEntity(line, accessFile))){
-                            break;
+                    } else if (l.contains(ScriptStaticData.CHANGE_ENTITY)) {
+                        if (dealChangeEntityThenIsOver(l, dealChangeEntity(l, accessFile))) {
+                            break
                         }
-                    }else {
-                        if (dealOtherThenIsOver(line)){
-                            break;
+                    } else {
+                        if (dealOtherThenIsOver(l)) {
+                            break
                         }
                     }
                 }
-                line = accessFile.readLine();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }
-    }
-    protected void beforeDeal(){
-        for (WarPhaseEnum value : WarPhaseEnum.values()) {
-            if (Objects.equals(this.getClass().getName(), value.getPhaseStrategyClassName())){
-                log.info("当前处于：" + value.getComment());
-            }
-        }
-    }
-    protected void afterDeal(){
-        for (WarPhaseEnum value : WarPhaseEnum.values()) {
-            if (Objects.equals(this.getClass().getName(), value.getPhaseStrategyClassName())){
-                log.info(value.getComment() + " -> 结束");
+                l = accessFile.readLine()
+            } catch (e: IOException) {
+                throw RuntimeException(e)
             }
         }
     }
 
-    protected boolean dealTagChangeThenIsOver(String line, TagChangeEntity tagChangeEntity){
-        return false;
+    protected fun beforeDeal() {
+        WarPhaseEnum.find(this)?.let {
+            log.info { "当前处于：" + it.comment }
+        }
     }
-    protected boolean dealShowEntityThenIsOver(String line, ExtraEntity extraEntity){
-        return false;
+
+    protected fun afterDeal() {
+        WarPhaseEnum.find(this)?.let {
+            log.info { it.comment + " -> 结束" }
+        }
     }
-    protected boolean dealFullEntityThenIsOver(String line, ExtraEntity extraEntity){
-        return false;
+
+    protected open fun dealTagChangeThenIsOver(line: String, tagChangeEntity: TagChangeEntity): Boolean {
+        return false
     }
-    protected boolean dealChangeEntityThenIsOver(String line, ExtraEntity extraEntity){
-        return false;
+
+    protected open fun dealShowEntityThenIsOver(line: String, extraEntity: ExtraEntity): Boolean {
+        return false
     }
-    protected boolean dealOtherThenIsOver(String line){
-        return false;
+
+    protected open fun dealFullEntityThenIsOver(line: String, extraEntity: ExtraEntity): Boolean {
+        return false
+    }
+
+    protected open fun dealChangeEntityThenIsOver(line: String, extraEntity: ExtraEntity): Boolean {
+        return false
+    }
+
+    protected open fun dealOtherThenIsOver(line: String): Boolean {
+        return false
+    }
+
+    companion object{
+        var dealing = false
+        private val tasks:MutableList<Thread> = mutableListOf()
+
+        fun addTask(task:Thread) {
+            tasks.add(task)
+        }
+
+        fun cancelAllTask(){
+            val toList = tasks.toList()
+            tasks.clear()
+            toList.forEach {
+                it.isAlive.isTrue {
+                    it.interrupt()
+                }
+            }
+        }
     }
 
 }
