@@ -5,6 +5,10 @@
 
 
 
+## [插件市场](https://github.com/xjw580/Deck-Plugin-Market/tree/master)
+
+
+
 ## 插件开发步骤
 
 ### 套牌插件
@@ -26,6 +30,8 @@
    - 创建套牌策略类并继承`DeckStrategy`类，模板项目中对应为`TemplateStrategyDeck`
 
      > 所有出牌逻辑都按此类规定执行
+     >
+     > API使用可参考[模板](https://github.com/xjw580/Deck-Plugin-Market/blob/master/Deck-Plugin-Template/src/main/kotlin/TemplateStrategyDeck.kt) 和 [基础策略](https://github.com/xjw580/Hearthstone-Script/blob/master/Hearthstone-Script-Base-Deck/src/main/kotlin/club/xiaojiawei/HsCommonDeckStrategy.kt) 
 
    - 在resources目录下新建`META-INF/services`目录
 
@@ -49,7 +55,7 @@
 
 8. ##### 软件首页也可以选择插件中的套牌策略
 
-9. ##### 自己写的插件如果想分享出来可以向[模板项目](https://github.com/xjw580/Deck-Plugin-Market)提PR
+9. ##### 自己写的插件如果想分享出来可以向[套牌插件市场项目](https://github.com/xjw580/Deck-Plugin-Market)提PR
 
 
 
