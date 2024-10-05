@@ -1,26 +1,16 @@
-package club.xiaojiawei.controller.javafx;
+package club.xiaojiawei.controller.javafx
 
-import club.xiaojiawei.component.PluginItem;
-import club.xiaojiawei.controls.CopyLabel;
-import club.xiaojiawei.controls.NotificationManager;
-import club.xiaojiawei.status.PluginManager;
-import club.xiaojiawei.utils.PropertiesUtil;
-import club.xiaojiawei.utils.SystemUtil;
-import jakarta.annotation.Resource;
-import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
-import javafx.scene.control.ListView;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.VBox;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
-
-import java.net.URL;
-import java.util.Collection;
-import java.util.Properties;
-import java.util.ResourceBundle;
-import java.util.stream.Stream;
+import club.xiaojiawei.utils.PropertiesUtil
+import club.xiaojiawei.utils.SystemUtil
+import jakarta.annotation.Resource
+import javafx.beans.value.ChangeListener
+import javafx.event.ActionEvent
+import javafx.fxml.Initializable
+import javafx.scene.control.ListView
+import org.springframework.stereotype.Component
+import java.net.URL
+import java.util.Properties
+import java.util.stream.Stream
 
 /**
  * @author 肖嘉威
@@ -28,75 +18,89 @@ import java.util.stream.Stream;
  */
 @Component
 @Slf4j
-public class PluginSettingsController implements Initializable {
+class PluginSettingsController : Initializable {
+    @FXML
+    private val pluginDescription: CopyLabel? = null
 
     @FXML
-    private CopyLabel pluginDescription;
+    private val pluginInfo: VBox? = null
+
     @FXML
-    private VBox pluginInfo;
+    private val pluginName: CopyLabel? = null
+
     @FXML
-    private CopyLabel pluginName;
+    private val pluginAuthor: CopyLabel? = null
+
     @FXML
-    private CopyLabel pluginAuthor;
+    private val pluginId: CopyLabel? = null
+
     @FXML
-    private CopyLabel pluginId;
+    private val pluginVersion: CopyLabel? = null
+
     @FXML
-    private CopyLabel pluginVersion;
+    private val rootPane: AnchorPane? = null
+
     @FXML
-    private AnchorPane rootPane;
+    private val notificationManager: NotificationManager<Any?>? = null
+
     @FXML
-    private NotificationManager<Object> notificationManager;
-    @FXML
-    private ListView<PluginItem> pluginListView;
+    private val pluginListView: ListView<PluginItem?>? = null
 
     @Resource
-    private Properties scriptConfiguration;
+    private val scriptConfiguration: Properties? = null
+
     @Resource
-    private PropertiesUtil propertiesUtil;
+    private val propertiesUtil: PropertiesUtil? = null
 
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
-        initValue();
-        listen();
+    override fun initialize(url: URL?, resourceBundle: ResourceBundle?) {
+        initValue()
+        listen()
     }
 
-    private void initValue() {
-        var pluginItems = pluginListView.getItems();
-        Stream.concat(
-                PluginManager.INSTANCE.getDECK_STRATEGY_PLUGINS().values().stream().flatMap(Collection::stream),
-                PluginManager.INSTANCE.getCARD_ACTION_PLUGINS().values().stream().flatMap(Collection::stream)
-        ).forEach(plugin -> pluginItems.add(new PluginItem(plugin, notificationManager)));
+    private fun initValue() {
+        val pluginItems: ObservableList<PluginItem?> = pluginListView!!.getItems()
+        Stream.concat<PluginWrapper<out Any?>?>(
+            PluginManager.DECK_STRATEGY_PLUGINS.values.stream()
+                .flatMap<PluginWrapper<DeckStrategy?>> { obj: MutableList<PluginWrapper<DeckStrategy?>?>? -> obj!!.stream() },
+            PluginManager.CARD_ACTION_PLUGINS.values.stream()
+                .flatMap<PluginWrapper<CardAction?>> { obj: MutableList<PluginWrapper<CardAction?>?>? -> obj!!.stream() }
+        ).forEach { plugin: PluginWrapper<out kotlin.Any?>? ->
+            pluginItems.add(
+                PluginItem(
+                    plugin,
+                    notificationManager
+                )
+            )
+        }
     }
 
-    private void listen() {
-        pluginListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-           pluginInfo.setVisible(newValue != null);
-           if (newValue != null) {
-               pluginName.setText(newValue.getPluginWrapper().getPlugin().name());
-               pluginAuthor.setText(newValue.getPluginWrapper().getPlugin().author());
-               pluginId.setText(newValue.getPluginWrapper().getPlugin().id());
-               pluginVersion.setText(newValue.getPluginWrapper().getPlugin().version());
-               pluginDescription.setText(newValue.getPluginWrapper().getPlugin().description());
-           }
-        });
+    private fun listen() {
+        pluginListView!!.getSelectionModel().selectedItemProperty()
+            .addListener(ChangeListener { observable: ObservableValue<out PluginItem?>?, oldValue: PluginItem?, newValue: PluginItem? ->
+                pluginInfo.setVisible(newValue != null)
+                if (newValue != null) {
+                    pluginName.setText(newValue.pluginWrapper.plugin.name())
+                    pluginAuthor.setText(newValue.pluginWrapper.plugin.author())
+                    pluginId.setText(newValue.pluginWrapper.plugin.id())
+                    pluginVersion.setText(newValue.pluginWrapper.plugin.version())
+                    pluginDescription.setText(newValue.pluginWrapper.plugin.description())
+                }
+            })
     }
 
 
-    public void apply(ActionEvent actionEvent) {
-
+    fun apply(actionEvent: ActionEvent?) {
     }
 
-    public void save(ActionEvent actionEvent) {
-
+    fun save(actionEvent: ActionEvent?) {
     }
 
     @FXML
-    protected void jumpToHome(ActionEvent actionEvent) {
-        PluginItem selectedItem = pluginListView.getSelectionModel().getSelectedItem();
-        if (selectedItem == null) return;
-        String homeUrl = selectedItem.getPluginWrapper().getPlugin().homeUrl();
-        if (homeUrl.isBlank() || !homeUrl.contains("http")) return;
-        SystemUtil.openUrlByBrowser(homeUrl);
+    protected fun jumpToHome(actionEvent: ActionEvent?) {
+        val selectedItem: PluginItem? = pluginListView!!.getSelectionModel().getSelectedItem()
+        if (selectedItem == null) return
+        val homeUrl: String = selectedItem.pluginWrapper.plugin.homeUrl()
+        if (homeUrl.isBlank() || !homeUrl.contains("http")) return
+        SystemUtil.openUrlByBrowser(homeUrl)
     }
-
 }

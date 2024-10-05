@@ -1,63 +1,33 @@
-package club.xiaojiawei.controller.javafx;
+package club.xiaojiawei.controller.javafx
 
-import club.xiaojiawei.DeckStrategy;
-import club.xiaojiawei.bean.Release;
-import club.xiaojiawei.bean.single.repository.GiteeRepository;
-import club.xiaojiawei.bean.single.repository.GithubRepository;
-import club.xiaojiawei.config.ThreadPoolConfigKt;
-import club.xiaojiawei.controls.NotificationManager;
-import club.xiaojiawei.controls.Time;
-import club.xiaojiawei.controls.ico.*;
-import club.xiaojiawei.data.ScriptStaticData;
-import club.xiaojiawei.enums.RunModeEnum;
-import club.xiaojiawei.enums.WindowEnum;
-import club.xiaojiawei.listener.VersionListener;
-import club.xiaojiawei.status.DeckStrategyManager;
-import club.xiaojiawei.status.Work;
-import club.xiaojiawei.utils.PropertiesUtil;
-import club.xiaojiawei.utils.WindowUtil;
-import jakarta.annotation.Resource;
-import javafx.animation.RotateTransition;
-import javafx.animation.Timeline;
-import javafx.application.Platform;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.collections.ObservableList;
-import javafx.collections.SetChangeListener;
-import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
-import javafx.scene.Node;
-import javafx.scene.control.*;
-import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.TilePane;
-import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
-import javafx.stage.Popup;
-import javafx.stage.Stage;
-import javafx.util.Duration;
-import javafx.util.StringConverter;
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
-
-import java.io.*;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
-import java.util.*;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Consumer;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
-
-import static club.xiaojiawei.data.ScriptStaticData.TEMP_VERSION_PATH;
-import static club.xiaojiawei.enums.ConfigEnum.DEFAULT_DECK_STRATEGY;
+import club.xiaojiawei.controls.Time
+import club.xiaojiawei.utils.PropertiesUtil
+import jakarta.annotation.Resource
+import javafx.application.Platform
+import javafx.beans.value.ChangeListener
+import javafx.event.ActionEvent
+import javafx.event.EventHandler
+import javafx.fxml.Initializable
+import javafx.scene.Node
+import javafx.scene.control.Button
+import javafx.scene.control.Label
+import javafx.scene.control.ScrollPane
+import javafx.scene.input.MouseEvent
+import javafx.scene.text.Text
+import javafx.stage.Popup
+import javafx.util.Duration
+import javafx.util.StringConverter
+import lombok.Getter
+import org.springframework.stereotype.Component
+import java.io.File
+import java.lang.String
+import java.net.URI
+import java.net.URL
+import java.nio.file.Path
+import java.util.ArrayList
+import java.util.Optional
+import java.util.Properties
+import java.util.function.Consumer
 
 /**
  * @author 肖嘉威
@@ -65,506 +35,610 @@ import static club.xiaojiawei.enums.ConfigEnum.DEFAULT_DECK_STRATEGY;
  */
 @Component
 @Slf4j
-public class MainController implements Initializable {
+class MainController : Initializable {
+    @FXML
+    private val startIco: StartIco? = null
 
     @FXML
-    private StartIco startIco;
+    private val pauseIco: PauseIco? = null
+
     @FXML
-    private PauseIco pauseIco;
+    private val pauseToggleGroup: ToggleGroup? = null
+
     @FXML
-    private ToggleGroup pauseToggleGroup;
-    @FXML
-    private StackPane rootPane;
-    @FXML
-    @Getter
-    private NotificationManager<Object> notificationManger;
-    @FXML
-    private ScrollPane logScrollPane;
-    @FXML
-    private Button updateBtn;
-    @FXML
-    private Button flushBtn;
-    @FXML
-    private FlushIco flushIco;
-    @FXML
-    private Text versionText;
-    @FXML
-    private VBox logVBox;
-    @FXML
-    private Accordion accordion;
-    @FXML
-    private ToggleButton startButton;
-    @FXML
-    private ToggleButton pauseButton;
-    @FXML
-    private TitledPane titledPaneLog;
+    private val rootPane: StackPane? = null
+
     @FXML
     @Getter
-    private Text gameCount;
+    private val notificationManger: NotificationManager<Any?>? = null
+
+    @FXML
+    private val logScrollPane: ScrollPane? = null
+
+    @FXML
+    private val updateBtn: Button? = null
+
+    @FXML
+    private val flushBtn: Button? = null
+
+    @FXML
+    private val flushIco: FlushIco? = null
+
+    @FXML
+    private val versionText: Text? = null
+
+    @FXML
+    private val logVBox: VBox? = null
+
+    @FXML
+    private val accordion: Accordion? = null
+
+    @FXML
+    private val startButton: ToggleButton? = null
+
+    @FXML
+    private val pauseButton: ToggleButton? = null
+
+    @FXML
+    private val titledPaneLog: TitledPane? = null
+
     @FXML
     @Getter
-    private Text winningPercentage;
+    private val gameCount: Text? = null
+
     @FXML
     @Getter
-    private Text gameTime;
+    private val winningPercentage: Text? = null
+
     @FXML
     @Getter
-    private Text exp;
+    private val gameTime: Text? = null
+
     @FXML
-    private ComboBox<RunModeEnum> runModeBox;
+    @Getter
+    private val exp: Text? = null
+
     @FXML
-    private ComboBox<DeckStrategy> deckBox;
+    private val runModeBox: ComboBox<RunModeEnum?>? = null
+
     @FXML
-    private TilePane workDay;
+    private val deckBox: ComboBox<DeckStrategy?>? = null
+
     @FXML
-    private VBox workTime;
+    private val workDay: TilePane? = null
+
     @FXML
-    private ProgressBar downloadProgress;
+    private val workTime: VBox? = null
+
+    @FXML
+    private val downloadProgress: ProgressBar? = null
+
     @Resource
-    private AtomicReference<BooleanProperty> isPause;
+    private val isPause: AtomicReference<BooleanProperty?>? = null
+
     @Resource
-    private PropertiesUtil propertiesUtil;
+    private val propertiesUtil: PropertiesUtil? = null
+
     @Resource
-    private Properties scriptConfiguration;
+    private val scriptConfiguration: Properties? = null
+
     @Resource
-    private VersionListener versionListener;
-    @Getter
-    private static VBox staticLogVBox;
-    @Getter
-    private static Accordion staticAccordion;
-    @Getter
-    private static NotificationManager<Object> staticNotificationManger;
-    private static ProgressBar staticDownloadProgress;
-    private static AtomicReference<BooleanProperty> staticIsPause;
-    private static final SimpleBooleanProperty UPDATING = new SimpleBooleanProperty(false);
-    private static final String VERSION_FILE_FLAG_NAME = "downloaded.flag";
-    private boolean isNotHoverLog = true;
+    private val versionListener: VersionListener? = null
+    private var isNotHoverLog = true
+
     @FXML
-    private TitledPane titledPaneControl;
+    private val titledPaneControl: TitledPane? = null
 
-    public void expandedLogPane() {
-        accordion.setExpandedPane(titledPaneLog);
+    fun expandedLogPane() {
+        accordion.setExpandedPane(titledPaneLog)
     }
 
-    public static void downloadRelease(Release release, boolean force, Consumer<String> callback) {
-        if (UPDATING.get()) {
-            return;
-        }
-        UPDATING.set(true);
-        ThreadPoolConfigKt.getEXTRA_THREAD_POOL().submit(() -> {
-            String path = null;
-            try {
-                File file = Path.of(TEMP_VERSION_PATH, release.getTagName(), VERSION_FILE_FLAG_NAME).toFile();
-                if (!force && file.exists()) {
-                    path = file.getParentFile().getAbsolutePath();
-                } else if ((path = downloadRelease(release, GiteeRepository.getInstance().getReleaseURL(release))) == null) {
-                    Platform.runLater(() -> staticNotificationManger.showInfo("更换下载源重新下载", 3));
-                    path = downloadRelease(release, GithubRepository.getInstance().getReleaseURL(release));
-                }
-            } finally {
-                UPDATING.set(false);
-                if (callback != null) {
-                    callback.accept(path);
-                }
-            }
-        });
+    private fun assign() {
+        MainController.Companion.staticLogVBox = logVBox
+        MainController.Companion.staticAccordion = accordion
+        MainController.Companion.staticDownloadProgress = downloadProgress
+        MainController.Companion.staticIsPause = isPause
+        MainController.Companion.staticNotificationManger = notificationManger
     }
 
-    private static String downloadRelease(Release release, String url) {
-        Path rootPath;
-        try (
-                InputStream inputStream = new URI(url)
-                        .toURL()
-                        .openConnection()
-                        .getInputStream();
-                ZipInputStream zipInputStream = new ZipInputStream(inputStream);
-        ) {
-            String startContent = "开始下载<" + release.getTagName() + ">";
-            log.info(startContent);
-            Platform.runLater(() -> staticNotificationManger.showInfo(startContent, 2));
-            staticDownloadProgress.setProgress(0D);
-            staticDownloadProgress.setVisible(true);
-            staticDownloadProgress.setManaged(true);
-            ZipEntry nextEntry;
-            double index = 0D, count = 74D;
-            rootPath = Path.of(TEMP_VERSION_PATH, release.getTagName());
-            File rootFile = rootPath.toFile();
-            if (!rootFile.exists() && !rootFile.mkdirs()) {
-                log.error(rootFile.getAbsolutePath() + "创建失败");
-                return null;
-            }
-            while ((nextEntry = zipInputStream.getNextEntry()) != null) {
-                File entryFile = rootPath.resolve(nextEntry.getName()).toFile();
-                if (nextEntry.isDirectory()) {
-                    if (entryFile.mkdirs()) {
-                        log.info("created_dir：" + entryFile.getPath());
-                    }
-                } else {
-                    File parentFile = entryFile.getParentFile();
-                    if (parentFile.exists() || parentFile.mkdirs()) {
-                        try (BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(new FileOutputStream(entryFile))) {
-                            int l;
-                            byte[] bytes = new byte[8192];
-                            while ((l = zipInputStream.read(bytes)) != -1) {
-                                bufferedOutputStream.write(bytes, 0, l);
-                            }
-                        }
-                        log.info("downloaded_file：" + entryFile.getPath());
-                    }
-                }
-                staticDownloadProgress.setProgress(++index / count);
-            }
-            writeVersionFileCompleteFlag(rootPath.toString());
-            staticDownloadProgress.setProgress(1D);
-            String endContent = "<" + release.getTagName() + ">下载完毕";
-            log.info(endContent);
-            Platform.runLater(() -> staticNotificationManger.showSuccess(endContent, 2));
-        } catch (IOException | URISyntaxException e) {
-            String errorContent = "<" + release.getTagName() + ">下载失败";
-            log.error(errorContent + "," + url, e);
-            Platform.runLater(() -> staticNotificationManger.showError(errorContent, 2));
-            return null;
-        } finally {
-            staticDownloadProgress.setVisible(false);
-            staticDownloadProgress.setManaged(false);
-        }
-        return rootPath.toString();
-    }
-
-    private static boolean writeVersionFileCompleteFlag(String path) {
-        try {
-            return Path.of(path, VERSION_FILE_FLAG_NAME).toFile().createNewFile();
-        } catch (IOException e) {
-            log.error("", e);
-        }
-        return false;
-    }
-
-    public static void execUpdate(String versionPath) {
-        try {
-            UPDATING.set(true);
-            String rootPath = System.getProperty("user.dir");
-            String updateProgramPath = rootPath + File.separator + ScriptStaticData.UPDATE_PROGRAM_NAME;
-            Files.copy(
-                    Path.of(versionPath + File.separator + ScriptStaticData.UPDATE_PROGRAM_NAME),
-                    Path.of(rootPath + File.separator + ScriptStaticData.UPDATE_PROGRAM_NAME),
-                    StandardCopyOption.REPLACE_EXISTING
-            );
-            Runtime.getRuntime().exec(String.format(
-                    "%s --target='%s' --source='%s' --pause='%s' --pid='%s'",
-                    updateProgramPath,
-                    rootPath,
-                    versionPath,
-                    staticIsPause.get().get(),
-                    ProcessHandle.current().pid()
-            ));
-        } catch (IOException e) {
-            log.error("执行版本更新失败", e);
-        } finally {
-            UPDATING.set(false);
-        }
-    }
-
-    private void assign() {
-        staticLogVBox = logVBox;
-        staticAccordion = accordion;
-        staticDownloadProgress = downloadProgress;
-        staticIsPause = isPause;
-        staticNotificationManger = notificationManger;
-    }
-
-    private Map<RunModeEnum, List<DeckStrategy>> runModeMap = new HashMap<>();
+    private val runModeMap: MutableMap<RunModeEnum?, MutableList<DeckStrategy?>> =
+        HashMap<RunModeEnum?, MutableList<DeckStrategy?>>()
 
     /**
      * 初始化模式和卡组
      */
-    private void initModeAndDeck() {
-        runModeBox.setConverter(new StringConverter<>() {
-            @Override
-            public String toString(RunModeEnum runModeEnum) {
-                return runModeEnum == null ? "" : runModeEnum.getComment();
+    private fun initModeAndDeck() {
+        runModeBox.setConverter(object : StringConverter<RunModeEnum?>() {
+            override fun toString(runModeEnum: RunModeEnum?): String {
+                return if (runModeEnum == null) "" else runModeEnum.comment
             }
 
-            @Override
-            public RunModeEnum fromString(String s) {
-                return (s == null || s.isBlank()) ? null : RunModeEnum.valueOf(s);
+            override fun fromString(s: String?): RunModeEnum? {
+                return if ((s == null || s.isBlank())) null else RunModeEnum.valueOf(s)
             }
-        });
-        deckBox.setConverter(new StringConverter<>() {
-            @Override
-            public String toString(DeckStrategy deckStrategy) {
-                return deckStrategy == null ? "" : deckStrategy.name();
+        })
+        deckBox.setConverter(object : StringConverter<DeckStrategy?>() {
+            override fun toString(deckStrategy: DeckStrategy?): String {
+                return if (deckStrategy == null) "" else deckStrategy.name()
             }
 
-            @Override
-            public DeckStrategy fromString(String s) {
-                return null;
+            override fun fromString(s: String?): DeckStrategy? {
+                return null
             }
-        });
+        })
 
-        reloadRunMode();
+        reloadRunMode()
 
-//        模式更改监听
-        runModeBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            deckBox.getSelectionModel().select(null);
-            if (newValue == null){
-                deckBox.getItems().clear();
-            }else {
-                deckBox.getItems().setAll(runModeMap.get(newValue));
-            }
-        });
+        //        模式更改监听
+        runModeBox.getSelectionModel().selectedItemProperty()
+            .addListener(ChangeListener { observable: ObservableValue<out RunModeEnum?>?, oldValue: RunModeEnum?, newValue: RunModeEnum? ->
+                deckBox.getSelectionModel().select(null)
+                if (newValue == null) {
+                    deckBox.getItems().clear()
+                } else {
+                    deckBox.getItems().setAll(runModeMap.get(newValue))
+                }
+            })
 
-//        卡组更改监听
-        deckBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue != null){
+        //        卡组更改监听
+        deckBox.getSelectionModel().selectedItemProperty()
+            .addListener(ChangeListener { observable: ObservableValue<out DeckStrategy?>?, oldValue: DeckStrategy?, newValue: DeckStrategy? ->
+                if (newValue != null) {
 //                将卡组策略的第一个运行模式改为当前运行模式
-                for (int i = 0; i < newValue.getRunModes().length; i++) {
-                    RunModeEnum runModeEnum = newValue.getRunModes()[i];
-                    if (Objects.equals(runModeEnum, runModeBox.getValue())) {
-                        newValue.getRunModes()[i] = newValue.getRunModes()[0];
-                        newValue.getRunModes()[0] = runModeEnum;
-                        break;
+                    for (i in newValue.runModes.indices) {
+                        val runModeEnum: RunModeEnum = newValue.runModes[i]
+                        if (runModeEnum == runModeBox.getValue()) {
+                            newValue.runModes[i] = newValue.runModes[0]
+                            newValue.runModes[0] = runModeEnum
+                            break
+                        }
                     }
                 }
-            }
-            DeckStrategyManager.CURRENT_DECK_STRATEGY.set(newValue);
-        });
+                DeckStrategyManager.CURRENT_DECK_STRATEGY.set(newValue)
+            })
 
-        Optional<DeckStrategy> defaultDeck = DeckStrategyManager.DECK_STRATEGIES.stream().filter(deckStrategy -> Objects.equals(scriptConfiguration.getProperty(DEFAULT_DECK_STRATEGY.getKey()), deckStrategy.id())).findFirst();
+        val defaultDeck: Optional<DeckStrategy?> = DeckStrategyManager.DECK_STRATEGIES.stream()
+            .filter { deckStrategy: DeckStrategy? -> scriptConfiguration!!.getProperty(ConfigEnum.DEFAULT_DECK_STRATEGY.getKey()) == deckStrategy.id() }
+            .findFirst()
         if (defaultDeck.isPresent()) {
-            defaultDeck.get().getRunModes();
-            runModeBox.setValue(defaultDeck.get().getRunModes()[0]);
-            deckBox.setValue(defaultDeck.get());
+            defaultDeck.get().runModes
+            runModeBox.setValue(defaultDeck.get().runModes[0])
+            deckBox.setValue(defaultDeck.get())
         }
 
-        DeckStrategyManager.CURRENT_DECK_STRATEGY.addListener((observableValue, deck, t1) -> {
+        DeckStrategyManager.CURRENT_DECK_STRATEGY.addListener(ChangeListener { observableValue: ObservableValue<out DeckStrategy?>?, deck: DeckStrategy?, t1: DeckStrategy? ->
             if (t1 != null) {
-                t1.getRunModes();
-                runModeBox.setValue(t1.getRunModes()[0]);
-                deckBox.setValue(t1);
+                t1.runModes
+                runModeBox.setValue(t1.runModes[0])
+                deckBox.setValue(t1)
             }
-        });
+        })
     }
 
-    public void reloadRunMode() {
-        runModeMap.clear();
-        for (DeckStrategy deckStrategy : DeckStrategyManager.DECK_STRATEGIES) {
-            for (RunModeEnum runModeEnum : deckStrategy.getRunModes()) {
-                List<DeckStrategy> strategies = runModeMap.getOrDefault(runModeEnum, new ArrayList<>());
-                strategies.add(deckStrategy);
-                runModeMap.put(runModeEnum, strategies);
+    fun reloadRunMode() {
+        runModeMap.clear()
+        for (deckStrategy in DeckStrategyManager.DECK_STRATEGIES) {
+            for (runModeEnum in deckStrategy.runModes) {
+                val strategies: MutableList<DeckStrategy?> =
+                    runModeMap.getOrDefault(runModeEnum, ArrayList<DeckStrategy?>())
+                strategies.add(deckStrategy)
+                runModeMap.put(runModeEnum, strategies)
             }
         }
-        runModeBox.getItems().setAll(runModeMap.keySet());
+        runModeBox.getItems().setAll(runModeMap.keys)
     }
 
 
-    private void addListener() {
-        DeckStrategyManager.DECK_STRATEGIES.addListener((SetChangeListener<? super DeckStrategy>) observable -> {
-            reloadRunMode();
-        });
+    private fun addListener() {
+        DeckStrategyManager.DECK_STRATEGIES.addListener(SetChangeListener { observable: SetChangeListener.Change<out DeckStrategy?>? ->
+            reloadRunMode()
+        } as SetChangeListener<in DeckStrategy?>)
         //        是否在更新中监听
-        UPDATING.addListener((observable, oldValue, newValue) -> updateBtn.setDisable(newValue));
+        MainController.Companion.UPDATING.addListener(ChangeListener { observable: ObservableValue<out Boolean?>?, oldValue: Boolean?, newValue: Boolean? ->
+            updateBtn!!.setDisable(
+                newValue!!
+            )
+        })
         //        监听日志自动滑到底部
-        logVBox.heightProperty().addListener((observable, oldValue, newValue) -> {
-            if (isNotHoverLog) {
-                logScrollPane.setVvalue(logScrollPane.getVmax());
-            }
-        });
-        VersionListener.canUpdateReadOnlyProperty().addListener((observable, oldValue, newValue) -> {
-            flushBtn.setVisible(!newValue);
-            flushBtn.setManaged(!newValue);
-            updateBtn.setVisible(newValue);
-            updateBtn.setManaged(newValue);
-        });
-        String btnPressedStyleClass = "btnPressed";
-        pauseToggleGroup.selectedToggleProperty().addListener((observableValue, toggle, t1) -> {
-            if (t1 == null) {
-                if (toggle != null) {
-                    pauseToggleGroup.selectToggle(toggle);
+        logVBox.heightProperty()
+            .addListener(ChangeListener { observable: ObservableValue<out kotlin.Number?>?, oldValue: Number?, newValue: Number? ->
+                if (isNotHoverLog) {
+                    logScrollPane!!.setVvalue(logScrollPane.getVmax())
                 }
-            } else {
-                startButton.getStyleClass().remove(btnPressedStyleClass);
-                pauseButton.getStyleClass().remove(btnPressedStyleClass);
-                if (t1 == startButton) {
-                    startIco.setColor("gray");
-                    pauseIco.setColor("black");
-                    startButton.getStyleClass().add(btnPressedStyleClass);
-                    isPause.get().set(false);
-                } else if (t1 == pauseButton) {
-                    pauseIco.setColor("gray");
-                    startIco.setColor("black");
-                    pauseButton.getStyleClass().add(btnPressedStyleClass);
-                    AbstractIco graphic = (AbstractIco) pauseButton.getGraphic();
-                    graphic.setColor("gray");
-                    isPause.get().set(true);
+            })
+        VersionListener.canUpdateReadOnlyProperty()
+            .addListener(ChangeListener { observable: ObservableValue<out Boolean?>?, oldValue: Boolean?, newValue: Boolean? ->
+                flushBtn!!.setVisible(!newValue!!)
+                flushBtn.setManaged(!newValue)
+                updateBtn!!.setVisible(newValue)
+                updateBtn.setManaged(newValue)
+            })
+        val btnPressedStyleClass = "btnPressed"
+        pauseToggleGroup.selectedToggleProperty()
+            .addListener(ChangeListener { observableValue: ObservableValue<out Toggle?>?, toggle: Toggle?, t1: Toggle? ->
+                if (t1 == null) {
+                    if (toggle != null) {
+                        pauseToggleGroup.selectToggle(toggle)
+                    }
+                } else {
+                    startButton.getStyleClass().remove(btnPressedStyleClass)
+                    pauseButton.getStyleClass().remove(btnPressedStyleClass)
+                    if (t1 === startButton) {
+                        startIco.setColor("gray")
+                        pauseIco.setColor("black")
+                        startButton.getStyleClass().add(btnPressedStyleClass)
+                        isPause.get().set(false)
+                    } else if (t1 === pauseButton) {
+                        pauseIco.setColor("gray")
+                        startIco.setColor("black")
+                        pauseButton.getStyleClass().add(btnPressedStyleClass)
+                        val graphic: AbstractIco = pauseButton.getGraphic() as AbstractIco
+                        graphic.setColor("gray")
+                        isPause.get().set(true)
+                    }
                 }
-            }
-        });
+            })
     }
 
-    private Popup createMenuPopup() {
-        Popup popup = new Popup();
+    private fun createMenuPopup(): Popup {
+        val popup = Popup()
 
-        Label label = new Label("清空");
-        label.setOnMouseClicked(event1 -> {
-            logVBox.getChildren().clear();
-            popup.hide();
-        });
-        label.setStyle("-fx-padding: 5 10 5 10");
-        label.setGraphic(new ClearIco());
-        label.getStyleClass().addAll("bg-hover-ui", "radius-ui");
+        val label = Label("清空")
+        label.setOnMouseClicked(EventHandler { event1: MouseEvent? ->
+            logVBox.getChildren().clear()
+            popup.hide()
+        })
+        label.setStyle("-fx-padding: 5 10 5 10")
+        label.setGraphic(ClearIco())
+        label.getStyleClass().addAll("bg-hover-ui", "radius-ui")
 
-        VBox vBox = new VBox(label) {{
-            setStyle("-fx-effect: dropshadow(gaussian, rgba(128, 128, 128, 0.67), 10, 0, 3, 3);-fx-padding: 5 3 5 3;-fx-background-color: white");
-        }};
-        vBox.getStyleClass().add("radius-ui");
+        val vBox: VBox = object : VBox(label) {
+            init {
+                setStyle("-fx-effect: dropshadow(gaussian, rgba(128, 128, 128, 0.67), 10, 0, 3, 3);-fx-padding: 5 3 5 3;-fx-background-color: white")
+            }
+        }
+        vBox.getStyleClass().add("radius-ui")
 
-        popup.setAutoHide(true);
-        popup.getContent().add(vBox);
-        return popup;
+        popup.setAutoHide(true)
+        popup.getContent().add(vBox)
+        return popup
     }
 
     /**
      * 初始化挂机时间
      */
-    public void initWorkDate() {
+    fun initWorkDate() {
 //        初始化挂机天
-        String[] workDayFlagArr = Work.getWorkDayFlagArr();
-        ObservableList<Node> workDayChildren = workDay.getChildren();
-        for (int i = 0; i < workDayFlagArr.length; i++) {
-            ((CheckBox) workDayChildren.get(i)).setSelected(Objects.equals(workDayFlagArr[i], "true"));
+        val workDayFlagArr: Array<String?> = Work.getWorkDayFlagArr()
+        val workDayChildren: ObservableList<Node?> = workDay.getChildren()
+        for (i in workDayFlagArr.indices) {
+            (workDayChildren.get(i) as CheckBox).setSelected(workDayFlagArr[i] == "true")
         }
-//        初始化挂机段
-        String[] workTimeFlagArr = Work.getWorkTimeFlagArr();
-        String[] workTimeArr = Work.getWorkTimeArr();
-        ObservableList<Node> workTimeChildren = workTime.getChildren();
-        for (int i = 0; i < workTimeFlagArr.length; i++) {
-            HBox timeHBox = (HBox) workTimeChildren.get(i);
-            ObservableList<Node> timeControls = ((HBox) timeHBox.getChildren().get(1)).getChildren();
-            if (workTimeArr[i] != null && !Objects.equals(workTimeArr[i], "null") && !workTimeArr[i].isBlank()) {
-                String[] times = workTimeArr[i].split("-");
-                ((Time) timeControls.get(0)).setTime(times[0]);
-                ((Time) timeControls.get(2)).setTime(times[1]);
-                ((CheckBox) timeHBox.getChildren().get(0)).setSelected(Objects.equals(workTimeFlagArr[i], "true"));
+        //        初始化挂机段
+        val workTimeFlagArr: Array<String?> = Work.getWorkTimeFlagArr()
+        val workTimeArr: Array<String?> = Work.getWorkTimeArr()
+        val workTimeChildren: ObservableList<Node?> = workTime.getChildren()
+        for (i in workTimeFlagArr.indices) {
+            val timeHBox: HBox = workTimeChildren.get(i) as HBox
+            val timeControls: ObservableList<Node?> = (timeHBox.getChildren().get(1) as HBox).getChildren()
+            if (workTimeArr[i] != null && workTimeArr[i] != "null" && !workTimeArr[i]!!.isBlank()) {
+                val times: Array<String?> =
+                    workTimeArr[i]!!.split("-".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+                (timeControls.get(0) as Time).setTime(times[0])
+                (timeControls.get(2) as Time).setTime(times[1])
+                (timeHBox.getChildren().get(0) as CheckBox).setSelected(workTimeFlagArr[i] == "true")
             } else {
-                ((Time) timeControls.get(0)).setTime(null);
-                ((Time) timeControls.get(2)).setTime(null);
-                ((CheckBox) timeHBox.getChildren().get(0)).setSelected(false);
+                (timeControls.get(0) as Time).setTime(null)
+                (timeControls.get(2) as Time).setTime(null)
+                (timeHBox.getChildren().get(0) as CheckBox).setSelected(false)
             }
         }
     }
 
-    public void changeSwitch(boolean isPause) {
+    fun changeSwitch(isPause: Boolean) {
         if (isPause) {
-            pauseToggleGroup.selectToggle(pauseButton);
+            pauseToggleGroup.selectToggle(pauseButton)
         } else {
-            pauseToggleGroup.selectToggle(startButton);
+            pauseToggleGroup.selectToggle(startButton)
         }
     }
 
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
-        versionText.setText("当前版本：" + VersionListener.getCurrentRelease().getTagName());
-        assign();
-        initModeAndDeck();
-        initWorkDate();
-        addListener();
+    override fun initialize(url: URL?, resourceBundle: ResourceBundle?) {
+        versionText!!.setText("当前版本：" + VersionListener.getCurrentRelease().getTagName())
+        assign()
+        initModeAndDeck()
+        initWorkDate()
+        addListener()
     }
 
     @FXML
-    protected void flushVersion() {
-        RotateTransition transition = new RotateTransition(Duration.millis(1200), flushIco);
-        transition.setFromAngle(0);
-        transition.setToAngle(360);
-        transition.setCycleCount(Timeline.INDEFINITE);
+    protected fun flushVersion() {
+        val transition: RotateTransition = RotateTransition(Duration.millis(1200.0), flushIco)
+        transition.setFromAngle(0.0)
+        transition.setToAngle(360.0)
+        transition.setCycleCount(Timeline.INDEFINITE)
         try {
-            transition.play();
-            versionListener.checkVersion();
+            transition.play()
+            versionListener.checkVersion()
             if (VersionListener.isCanUpdate()) {
-                notificationManger.showSuccess("发现新版本", 2);
+                notificationManger.showSuccess("发现新版本", 2)
             } else {
-                notificationManger.showInfo("已是最新版本", 2);
+                notificationManger.showInfo("已是最新版本", 2)
             }
         } finally {
-            transition.stop();
+            transition.stop()
         }
     }
 
     @FXML
-    protected void openSettings() {
-        Stage stage = WindowUtil.buildStage(WindowEnum.SETTINGS);
-        if (stage.getOwner() == null){
-            stage.initOwner(WindowUtil.getStage(WindowEnum.MAIN));
+    protected fun openSettings() {
+        val stage: Stage = WindowUtil.buildStage(WindowEnum.SETTINGS)
+        if (stage.getOwner() == null) {
+            stage.initOwner(WindowUtil.getStage(WindowEnum.MAIN))
         }
-        stage.show();
+        stage.show()
     }
 
     @FXML
-    protected void updateVersion() {
-        Release release = VersionListener.getLatestRelease();
+    protected fun updateVersion() {
+        val release: Release? = VersionListener.getLatestRelease()
         if (release != null) {
-            downloadRelease(release, false, path -> {
+            MainController.Companion.downloadRelease(release, false, Consumer? { path: String? ->
                 if (path == null) {
-                    Platform.runLater(() -> WindowUtil.createAlert(String.format("新版本<%s>下载失败", release.getTagName()), "", rootPane.getScene().getWindow()).show());
+                    Platform.runLater(Runnable {
+                        WindowUtil.createAlert(
+                            String.format(
+                                "新版本<%s>下载失败",
+                                release.getTagName()
+                            ), "", rootPane.getScene().getWindow()
+                        ).show()
+                    })
                 } else {
-                    Platform.runLater(() -> WindowUtil.createAlert("新版本[" + release.getTagName() + "]下载完毕", "现在更新？", event -> execUpdate(path), event -> UPDATING.set(false), rootPane.getScene().getWindow()).show());
+                    Platform.runLater(Runnable {
+                        WindowUtil.createAlert(
+                            "新版本[" + release.getTagName() + "]下载完毕",
+                            "现在更新？",
+                            EventHandler { event: ActionEvent? -> execUpdate(path) },
+                            EventHandler { event: ActionEvent? -> MainController.Companion.UPDATING.set(false) },
+                            rootPane.getScene().getWindow()
+                        ).show()
+                    })
                 }
-            });
+            })
         }
     }
 
     @FXML
-    protected void saveTime() {
+    protected fun saveTime() {
 //        检查挂机天
-        ObservableList<Node> workDayChildren = workDay.getChildren();
-        String[] workDayFlagArr = Work.getWorkDayFlagArr();
-        for (int i = 0; i < workDayChildren.size(); i++) {
-            workDayFlagArr[i] = String.valueOf(((CheckBox) workDayChildren.get(i)).isSelected());
+        val workDayChildren: ObservableList<Node?> = workDay.getChildren()
+        val workDayFlagArr: Array<String?> = Work.getWorkDayFlagArr()
+        for (i in workDayChildren.indices) {
+            workDayFlagArr[i] = (workDayChildren.get(i) as CheckBox).isSelected().toString()
         }
-//        检查挂机段
-        ObservableList<Node> workTimeChildren = workTime.getChildren();
-        String[] workTimeFlagArr = Work.getWorkTimeFlagArr();
-        String[] workTimeArr = Work.getWorkTimeArr();
-        for (int i = 0; i < workTimeChildren.size(); i++) {
-            HBox hBox = (HBox) workTimeChildren.get(i);
-            ObservableList<Node> children = ((HBox) hBox.getChildren().get(1)).getChildren();
-            Time startTime = (Time) children.get(0), endTime = (Time) children.get(2);
-            CheckBox timeCheckBox = (CheckBox) hBox.getChildren().get(0);
+        //        检查挂机段
+        val workTimeChildren: ObservableList<Node?> = workTime.getChildren()
+        val workTimeFlagArr: Array<String?> = Work.getWorkTimeFlagArr()
+        val workTimeArr: Array<String?> = Work.getWorkTimeArr()
+        for (i in workTimeChildren.indices) {
+            val hBox: HBox = workTimeChildren.get(i) as HBox
+            val children: ObservableList<Node?> = (hBox.getChildren().get(1) as HBox).getChildren()
+            val startTime = children.get(0) as Time
+            val endTime = children.get(2) as Time
+            val timeCheckBox: CheckBox = hBox.getChildren().get(0) as CheckBox
             if (startTime.timeProperty().get() != null && endTime.timeProperty().get() != null) {
-                workTimeArr[i] = String.join("-", startTime.getTime(), endTime.getTime());
-                workTimeFlagArr[i] = String.valueOf(timeCheckBox.isSelected());
+                workTimeArr[i] = String.join("-", startTime.getTime(), endTime.getTime())
+                workTimeFlagArr[i] = timeCheckBox.isSelected().toString()
             } else {
-                workTimeArr[i] = "null";
-                startTime.setTime(null);
-                endTime.setTime(null);
-                workTimeFlagArr[i] = String.valueOf(false);
-                timeCheckBox.setSelected(false);
+                workTimeArr[i] = "null"
+                startTime.setTime(null)
+                endTime.setTime(null)
+                workTimeFlagArr[i] = false.toString()
+                timeCheckBox.setSelected(false)
             }
-            startTime.refresh();
-            endTime.refresh();
+            startTime.refresh()
+            endTime.refresh()
         }
-        Work.storeWorkDate();
-        notificationManger.showSuccess("工作时间保存成功", 2);
+        Work.storeWorkDate()
+        notificationManger.showSuccess("工作时间保存成功", 2)
     }
 
     @FXML
-    protected void mouseEnteredLog() {
-        isNotHoverLog = false;
+    protected fun mouseEnteredLog() {
+        isNotHoverLog = false
     }
 
     @FXML
-    protected void mouseExitedLog() {
-        isNotHoverLog = true;
+    protected fun mouseExitedLog() {
+        isNotHoverLog = true
     }
 
     @FXML
-    protected void mouseClickedLog(MouseEvent event) {
+    protected fun mouseClickedLog(event: MouseEvent) {
         if (event.getButton() == MouseButton.SECONDARY && !logVBox.getChildren().isEmpty()) {
-            Popup menuPopup = createMenuPopup();
-            menuPopup.setAnchorX(event.getScreenX() - 5);
-            menuPopup.setAnchorY(event.getScreenY() - 5);
-            menuPopup.show(rootPane.getScene().getWindow());
+            val menuPopup = createMenuPopup()
+            menuPopup.setAnchorX(event.getScreenX() - 5)
+            menuPopup.setAnchorY(event.getScreenY() - 5)
+            menuPopup.show(rootPane.getScene().getWindow())
+        }
+    }
+
+    companion object {
+        @Getter
+        private var staticLogVBox: VBox? = null
+
+        @Getter
+        private var staticAccordion: Accordion? = null
+
+        @Getter
+        private var staticNotificationManger: NotificationManager<Any?>? = null
+        private var staticDownloadProgress: ProgressBar? = null
+        private var staticIsPause: AtomicReference<BooleanProperty?>? = null
+        private val UPDATING: SimpleBooleanProperty = SimpleBooleanProperty(false)
+        private const val VERSION_FILE_FLAG_NAME = "downloaded.flag"
+        fun downloadRelease(release: Release, force: Boolean, callback: Consumer<kotlin.String?>?) {
+            if (MainController.Companion.UPDATING.get()) {
+                return
+            }
+            MainController.Companion.UPDATING.set(true)
+            EXTRA_THREAD_POOL.submit(Runnable {
+                var path: kotlin.String? = null
+                try {
+                    val file = Path.of(
+                        ScriptStaticData.TEMP_VERSION_PATH,
+                        release.getTagName(),
+                        MainController.Companion.VERSION_FILE_FLAG_NAME
+                    ).toFile()
+                    if (!force && file.exists()) {
+                        path = file.getParentFile().getAbsolutePath()
+                    } else if ((MainController.Companion.downloadRelease(
+                            release,
+                            GiteeRepository.getInstance().getReleaseURL(release)
+                        ).also { path = it }) == null
+                    ) {
+                        Platform.runLater(Runnable {
+                            MainController.Companion.staticNotificationManger.showInfo(
+                                "更换下载源重新下载",
+                                3
+                            )
+                        })
+                        path = MainController.Companion.downloadRelease(
+                            release,
+                            GithubRepository.getInstance().getReleaseURL(release)
+                        )
+                    }
+                } finally {
+                    MainController.Companion.UPDATING.set(false)
+                    if (callback != null) {
+                        callback.accept(path)
+                    }
+                }
+            })
+        }
+
+        private fun downloadRelease(release: Release, url: kotlin.String): kotlin.String? {
+            var rootPath: Path?
+            try {
+                URI(url)
+                    .toURL()
+                    .openConnection()
+                    .getInputStream().use { inputStream ->
+                        ZipInputStream(inputStream).use { zipInputStream ->
+                            val startContent = "开始下载<" + release.getTagName() + ">"
+                            MainController.log.info(startContent)
+                            Platform.runLater(Runnable {
+                                MainController.Companion.staticNotificationManger.showInfo(
+                                    startContent,
+                                    2
+                                )
+                            })
+                            MainController.Companion.staticDownloadProgress.setProgress(0.0)
+                            MainController.Companion.staticDownloadProgress.setVisible(true)
+                            MainController.Companion.staticDownloadProgress.setManaged(true)
+                            var nextEntry: ZipEntry?
+                            var index = 0.0
+                            val count = 74.0
+                            rootPath = Path.of(ScriptStaticData.TEMP_VERSION_PATH, release.getTagName())
+                            val rootFile = rootPath.toFile()
+                            if (!rootFile.exists() && !rootFile.mkdirs()) {
+                                MainController.log.error(rootFile.getAbsolutePath() + "创建失败")
+                                return null
+                            }
+                            while ((zipInputStream.getNextEntry().also { nextEntry = it }) != null) {
+                                val entryFile: File = rootPath.resolve(nextEntry.getName()).toFile()
+                                if (nextEntry.isDirectory()) {
+                                    if (entryFile.mkdirs()) {
+                                        MainController.log.info("created_dir：" + entryFile.getPath())
+                                    }
+                                } else {
+                                    val parentFile = entryFile.getParentFile()
+                                    if (parentFile.exists() || parentFile.mkdirs()) {
+                                        BufferedOutputStream(FileOutputStream(entryFile)).use { bufferedOutputStream ->
+                                            var l: Int
+                                            val bytes = ByteArray(8192)
+                                            while ((zipInputStream.read(bytes).also { l = it }) != -1) {
+                                                bufferedOutputStream.write(bytes, 0, l)
+                                            }
+                                        }
+                                        MainController.log.info("downloaded_file：" + entryFile.getPath())
+                                    }
+                                }
+                                MainController.Companion.staticDownloadProgress.setProgress(++index / count)
+                            }
+                            MainController.Companion.writeVersionFileCompleteFlag(rootPath.toString())
+                            MainController.Companion.staticDownloadProgress.setProgress(1.0)
+                            val endContent = "<" + release.getTagName() + ">下载完毕"
+                            MainController.log.info(endContent)
+                            Platform.runLater(Runnable {
+                                MainController.Companion.staticNotificationManger.showSuccess(
+                                    endContent,
+                                    2
+                                )
+                            })
+                        }
+                    }
+            } catch (e: IOException) {
+                val errorContent = "<" + release.getTagName() + ">下载失败"
+                MainController.log.error(errorContent + "," + url, e)
+                Platform.runLater(Runnable {
+                    MainController.Companion.staticNotificationManger.showError(
+                        errorContent,
+                        2
+                    )
+                })
+                return null
+            } catch (e: URISyntaxException) {
+                val errorContent = "<" + release.getTagName() + ">下载失败"
+                MainController.log.error(errorContent + "," + url, e)
+                Platform.runLater(Runnable {
+                    MainController.Companion.staticNotificationManger.showError(
+                        errorContent,
+                        2
+                    )
+                })
+                return null
+            } finally {
+                MainController.Companion.staticDownloadProgress.setVisible(false)
+                MainController.Companion.staticDownloadProgress.setManaged(false)
+            }
+            return rootPath.toString()
+        }
+
+        private fun writeVersionFileCompleteFlag(path: kotlin.String): Boolean {
+            try {
+                return Path.of(path, MainController.Companion.VERSION_FILE_FLAG_NAME).toFile().createNewFile()
+            } catch (e: IOException) {
+                MainController.log.error("", e)
+            }
+            return false
+        }
+
+        @JvmStatic
+        fun execUpdate(versionPath: kotlin.String?) {
+            try {
+                MainController.Companion.UPDATING.set(true)
+                val rootPath = System.getProperty("user.dir")
+                val updateProgramPath = rootPath + File.separator + ScriptStaticData.UPDATE_PROGRAM_NAME
+                Files.copy(
+                    Path.of(versionPath + File.separator + ScriptStaticData.UPDATE_PROGRAM_NAME),
+                    Path.of(rootPath + File.separator + ScriptStaticData.UPDATE_PROGRAM_NAME),
+                    StandardCopyOption.REPLACE_EXISTING
+                )
+                Runtime.getRuntime().exec(
+                    kotlin.String.format(
+                        "%s --target='%s' --source='%s' --pause='%s' --pid='%s'",
+                        updateProgramPath,
+                        rootPath,
+                        versionPath,
+                        MainController.Companion.staticIsPause.get().get(),
+                        ProcessHandle.current().pid()
+                    )
+                )
+            } catch (e: IOException) {
+                MainController.log.error("执行版本更新失败", e)
+            } finally {
+                MainController.Companion.UPDATING.set(false)
+            }
         }
     }
 }
