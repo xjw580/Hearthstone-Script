@@ -53,7 +53,7 @@ class CommonCardAction : CardAction(false) {
     public override fun execPower(): Boolean {
         return me?.let {
             execPower(min((it.playArea.cardSize()), it.playArea.maxSize - 1))
-        } ?: false
+        } == true
     }
 
     public override fun execPower(card: Card): Boolean {

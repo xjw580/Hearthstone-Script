@@ -591,4 +591,41 @@ object DeckStrategyUtil {
         return Pair(dp[target], chosenCards[target])
     }
 
+//    @JvmStatic
+//    fun main(args: Array<String>) {
+//        val card = Card(MyCardAction())
+//        card.cost = 3
+//
+//        val card1 = Card(MyCardAction())
+//        card1.cost = 3
+//
+//        val card2 = Card(MyCardAction())
+//        card2.cost = 3
+//
+//        val card3 = Card(MyCardAction())
+//        card3.cost = 3
+//
+//        val card4 = Card(MyCardAction())
+//        card4.cost = 3
+//
+//        val card5 = Card(MyCardAction())
+//        card5.cost = 3
+//
+//        val card6 = Card(MyCardAction())
+//        card6.cost = 3
+//
+//        val card7 = Card(MyCardAction())
+//        card7.cost = 3
+//
+//        val card8 = Card(MyCardAction())
+//        card8.cost = 3
+//
+//        val card9 = Card(MyCardAction())
+//        card9.cost = 3
+//        val mutableListOf = mutableListOf<Card>(card, card1, card2, card3, card4, card5, card6, card7)
+//        val (first, second) = calcPowerOrder(mutableListOf, 10)
+//        println(first)
+//        println(second)
+//    }
+
 }

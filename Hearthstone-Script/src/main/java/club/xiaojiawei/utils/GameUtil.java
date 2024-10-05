@@ -225,7 +225,7 @@ public class GameUtil implements ModeTaskCloser {
 
     @NotNull
     public static GameRect getMyHandCardRect(int index, int size){
-        if (index < 0 || index > size - 1 || size > MY_HAND_DECK_RECTS.length - 1){
+        if (index < 0 || index > size - 1 || size > MY_HAND_DECK_RECTS.length){
             return GameRect.INVALID;
         }
         return MY_HAND_DECK_RECTS[size - 1][index];

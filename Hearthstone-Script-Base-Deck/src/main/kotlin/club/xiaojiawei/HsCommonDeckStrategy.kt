@@ -76,13 +76,17 @@ class HsCommonDeckStrategy : DeckStrategy() {
             val (num1, resultCards1) = DeckStrategyUtil.calcPowerOrder(toMutableList, me.usableResource + 1)
             if (num1 > me.usableResource) {
                 coinCard.action.power()
+                if (resultCards1.isNotEmpty()){
+                    log.info { resultCards }
+                }
                 resultCards1.forEach { it.action.power() }
                 return
             }
         }
-        resultCards.forEach { card ->
-            card.action.power()
+        if (resultCards.isNotEmpty()){
+            log.info { resultCards }
         }
+        resultCards.forEach { it.action.power() }
     }
 
     private fun findCoin(cards: List<Card>): Card? {
