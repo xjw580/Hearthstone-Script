@@ -31,7 +31,7 @@ object WindowUtil {
 
     private const val CONTROLLER_KEY = "controller"
 
-    private val STAGE_MAP: MutableMap<WindowEnum, Stage> = mutableMapOf()
+    private val STAGE_MAP: MutableMap<WindowEnum, MutableList<Stage>> = mutableMapOf()
 
     fun createMenuPopup(vararg labels: Label?): Popup {
         val popup = Popup()

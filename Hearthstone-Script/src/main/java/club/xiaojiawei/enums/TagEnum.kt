@@ -19,27 +19,6 @@ import club.xiaojiawei.utils.CardUtil
  * @date 2022/11/29 14:30
  */
 
-private fun log(player: Player?, card: Card?, tagComment: String, value: Any) {
-    if (log.isDebugEnabled()) {
-        log.debug {
-            String.format(
-                "【玩家%s:%s，entityId:%s，entityName:%s，cardId:%s】的【%s】发生变化:%s",
-                player?.playerId,
-                player?.gameId,
-                card?.entityId,
-                card?.entityName,
-                card?.cardId,
-                tagComment,
-                value.toString()
-            )
-        }
-    }
-}
-
-private fun isTrue(s: String): Boolean {
-    return s == "1"
-}
-
 enum class TagEnum(
     val comment: String = "",
     val tagChangeHandler: TagChangeHandler? = null,
@@ -542,4 +521,25 @@ enum class TagEnum(
         }
     }
 
+}
+
+private fun log(player: Player?, card: Card?, tagComment: String, value: Any) {
+    if (log.isDebugEnabled()) {
+        log.debug {
+            String.format(
+                "【玩家%s:%s，entityId:%s，entityName:%s，cardId:%s】的【%s】发生变化:%s",
+                player?.playerId,
+                player?.gameId,
+                card?.entityId,
+                card?.entityName,
+                card?.cardId,
+                tagComment,
+                value.toString()
+            )
+        }
+    }
+}
+
+private fun isTrue(s: String): Boolean {
+    return s == "1"
 }
