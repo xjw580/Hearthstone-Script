@@ -8,7 +8,7 @@
             xmlns:fx="http://javafx.com/fxml"
             stylesheets="@css/pluginSettings.css"
             fx:id="rootPane"
-            fx:controller="club.xiaojiawei.controller.javafx.PluginSettingsController">
+            fx:controller="club.xiaojiawei.hsscript.controller.javafx.PluginSettingsController">
     <SplitPane dividerPositions="0.3" style="-fx-background: white"
                prefHeight="${rootPane.height}" prefWidth="${rootPane.width}">
         <ListView fx:id="pluginListView" styleClass="list-view-ui"/>

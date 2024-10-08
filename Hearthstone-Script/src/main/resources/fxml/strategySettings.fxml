@@ -11,7 +11,7 @@
             xmlns:fx="http://javafx.com/fxml"
             stylesheets="@css/strategySettings.css"
             fx:id="rootPane"
-            fx:controller="club.xiaojiawei.controller.javafx.StrategySettingsController"
+            fx:controller="club.xiaojiawei.hsscript.controller.javafx.StrategySettingsController"
 >
     <VBox fx:id="mainVBox">
         <fx:define>
