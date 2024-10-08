@@ -6,26 +6,18 @@ import club.xiaojiawei.bean.LogThread;
 import club.xiaojiawei.config.ThreadPoolConfigKt;
 import club.xiaojiawei.controller.javafx.StartupController;
 import club.xiaojiawei.data.ScriptStaticData;
-import club.xiaojiawei.data.SpringData;
 import club.xiaojiawei.dll.SystemDll;
 import club.xiaojiawei.enums.WindowEnum;
-import club.xiaojiawei.initializer.AbstractInitializer;
 import club.xiaojiawei.utils.SystemUtil;
 import club.xiaojiawei.utils.WindowUtil;
-import jakarta.annotation.Resource;
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.beans.property.BooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.stage.Stage;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.core.annotation.Order;
-import org.springframework.stereotype.Component;
 
 import javax.swing.*;
 import java.awt.*;
@@ -34,7 +26,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicReference;
 
 import static club.xiaojiawei.data.ScriptStaticData.MAIN_IMG_PNG_NAME;
 
@@ -43,18 +34,7 @@ import static club.xiaojiawei.data.ScriptStaticData.MAIN_IMG_PNG_NAME;
  * @author 肖嘉威
  * @date 2023/7/6 9:46
  */
-@Slf4j
-@Component
-@Order(520)
 public class UIApplication extends Application implements ApplicationRunner {
-
-    @Lazy
-    @Resource
-    private AbstractInitializer initializer;
-    @Resource
-    private SpringData springData;
-    @Resource
-    private AtomicReference<BooleanProperty> isPause;
 
     private ChangeListener<Boolean> mainShowingListener;
 

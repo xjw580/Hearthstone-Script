@@ -1,4 +1,4 @@
-package club.xiaojiawei.utils
+@file:JvmName("SystemUtilKt")package club.xiaojiawei.utils
 
 import club.xiaojiawei.bean.LogRunnable
 import club.xiaojiawei.config.SpringBeanConfig
