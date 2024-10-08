@@ -11,7 +11,7 @@
             xmlns:fx="http://javafx.com/fxml"
             stylesheets="@css/initSettings.css"
             fx:id="rootPane"
-            fx:controller="club.xiaojiawei.controller.javafx.InitSettingsController">
+            fx:controller="club.xiaojiawei.hsscript.controller.javafx.InitSettingsController">
     <VBox fx:id="mainVBox">
         <HBox styleClass="h-box">
             <Text text="炉石传说安装路径"/>

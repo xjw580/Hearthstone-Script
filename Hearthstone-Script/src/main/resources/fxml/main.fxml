@@ -10,7 +10,7 @@
 <StackPane xmlns:fx="http://javafx.com/fxml"
            stylesheets="@css/main.css"
            fx:id="rootPane"
-           fx:controller="club.xiaojiawei.controller.javafx.MainController">
+           fx:controller="club.xiaojiawei.hsscript.controller.javafx.MainController">
     <fx:define>
         <ToggleGroup fx:id="pauseToggleGroup"/>
     </fx:define>

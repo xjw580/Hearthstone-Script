@@ -48,6 +48,8 @@
         <lombok-version>1.18.30</lombok-version>
         <slf4j-version>2.0.9</slf4j-version>
 
+        <jackson-version>2.18.0</jackson-version>
+        <spring-boot-web-version>6.1.5</spring-boot-web-version>
         <cardaction-sdk-version>1.0.0</cardaction-sdk-version>
         <mapstruct-version>1.6.0.Beta1</mapstruct-version>
         <jintellitype-version>1.4.1</jintellitype-version>
@@ -97,6 +99,17 @@
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>${jackson-version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-web</artifactId>
+                <version>${spring-boot-web-version}</version>
+            </dependency>
             <dependency>
                 <groupId>org.jetbrains.kotlin</groupId>
                 <artifactId>kotlin-reflect</artifactId>

@@ -12,7 +12,7 @@
             xmlns:fx="http://javafx.com/fxml"
             stylesheets="@css/advancedSettings.css"
             fx:id="rootPane"
-            fx:controller="club.xiaojiawei.controller.javafx.AdvancedSettingsController">
+            fx:controller="club.xiaojiawei.hsscript.controller.javafx.AdvancedSettingsController">
     <VBox fx:id="mainVBox">
         <HBox styleClass="h-box" visible="false" managed="false">
             <Text text="执行策略"/>
