@@ -1,6 +1,6 @@
 ![GitHub release](https://img.shields.io/github/release/xjw580/Hearthstone-Script.svg)  ![GitHub](https://img.shields.io/github/license/xjw580/Hearthstone-Script?style=flat-square)
 
-# 炉石传说脚本（前女友回来了）
+# 炉石传说脚本（雷火服封禁力度较严，有时间再研究优化下）
 ![favicon.ico](Hearthstone-Script/src/main/resources/static/img/favicon.ico)
 
 
