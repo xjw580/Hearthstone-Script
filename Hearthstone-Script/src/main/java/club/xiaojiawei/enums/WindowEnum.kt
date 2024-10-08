@@ -18,13 +18,12 @@ enum class WindowEnum(
     val x: Double,
     val y: Double,
     val alwaysOnTop: Boolean,
-    val alwaysCreateNew: Boolean,
     val initStyle: StageStyle
 ) {
     SETTINGS(
         "settings.fxml", ScriptStaticData.SCRIPT_NAME + "-设置",
         600.0, 400.0, -1.0, -1.0,
-        true, false, StageStyle.DECORATED
+        true, StageStyle.DECORATED
     ),
     MAIN(
         "main.fxml",
@@ -34,13 +33,12 @@ enum class WindowEnum(
         Screen.getPrimary().bounds.width - 215.0,
         (Screen.getPrimary().bounds.height - 670.0) / 2,
         true,
-        false,
         StageStyle.DECORATED
     ),
     STARTUP(
         "startup.fxml", ScriptStaticData.SCRIPT_NAME + "-启动页",
         558.0, 400.0, -1.0, -1.0,
-        false, false, StageStyle.UNDECORATED
+        false, StageStyle.UNDECORATED
     ),
     ;
 
