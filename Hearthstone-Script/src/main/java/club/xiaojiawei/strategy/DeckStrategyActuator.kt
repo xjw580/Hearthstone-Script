@@ -45,7 +45,7 @@ object DeckStrategyActuator {
             log.info { "执行换牌策略完毕" }
         } finally {
             for (i in 0..2) {
-                GameUtil.CONFIRM_RECT.lClick()
+                GameUtil.CONFIRM_RECT.lClick(false)
                 SystemUtil.delayShort()
             }
         }
@@ -63,9 +63,10 @@ object DeckStrategyActuator {
             log.info { "执行出牌策略完毕" }
         } finally {
             GameUtil.cancelAction()
+            SystemUtil.delayShort()
             for (i in 0 until 3) {
                 if (!isMyTurn) break
-                GameUtil.END_TURN_RECT.lClick()
+                GameUtil.END_TURN_RECT.lClick(false)
                 SystemUtil.delayMedium()
             }
         }

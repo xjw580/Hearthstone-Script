@@ -1,9 +1,7 @@
 package club.xiaojiawei.bean
 
-import club.xiaojiawei.custom.CustomToStringGenerator.generateToString
 import club.xiaojiawei.enums.CardRaceEnum
 import club.xiaojiawei.enums.CardTypeEnum
-import kotlin.concurrent.Volatile
 
 /**
  * @author 肖嘉威 xjw580@qq.com
@@ -12,21 +10,39 @@ import kotlin.concurrent.Volatile
 @Suppress("unused")
 open class BaseCard : Entity() {
 
+    /**
+     * 卡牌类型：随从、法术等
+     */
     @Volatile
     var cardType: CardTypeEnum = CardTypeEnum.UNKNOWN
 
+    /**
+     * 费用
+     */
     @Volatile
     var cost = 0
 
+    /**
+     * 攻击力
+     */
     @Volatile
     var atc = 0
 
+    /**
+     * 生命值（上限）
+     */
     @Volatile
     var health = 0
 
+    /**
+     * 护甲
+     */
     @Volatile
     var armor = 0
 
+    /**
+     * 受到的所有伤害
+     */
     @Volatile
     var damage = 0
 
@@ -151,7 +167,7 @@ open class BaseCard : Entity() {
     var isImmune = false
 
     /**
-     * 种族
+     * 种族：恶魔、鱼人等
      */
     @Volatile
     var cardRace: CardRaceEnum = CardRaceEnum.UNKNOWN
@@ -162,6 +178,9 @@ open class BaseCard : Entity() {
     @Volatile
     var isModular = false
 
+    /**
+     * 创建者的entityId
+     */
     @Volatile
     var creator: String = ""
 
@@ -171,6 +190,9 @@ open class BaseCard : Entity() {
     @Volatile
     var isPremium = false
 
+    /**
+     * 所有者的entityId
+     */
     @Volatile
     var controller: String = ""
 
@@ -305,7 +327,7 @@ open class BaseCard : Entity() {
     }
 
     /**
-     * 能不能动
+     * 能不能攻击
      */
     fun canAttack(ignoreExhausted: Boolean = false): Boolean {
         return (cardType === CardTypeEnum.MINION || cardType === CardTypeEnum.HERO)
@@ -317,6 +339,13 @@ open class BaseCard : Entity() {
      */
     fun isImmunityMagic(): Boolean {
         return (isCantBeTargetedByHeroPowers && isCantBeTargetedBySpells) || isElusive
+    }
+
+    /**
+     * 获取血量
+     */
+    fun blood(): Int {
+        return health + armor - damage
     }
 
 //    override fun toString(): String {

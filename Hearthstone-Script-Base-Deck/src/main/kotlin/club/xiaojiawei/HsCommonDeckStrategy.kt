@@ -65,6 +65,8 @@ class HsCommonDeckStrategy : DeckStrategy() {
     }
 
     private fun powerCard(me: Player, rival: Player) {
+        if (me.playArea.isFull) return
+
         val cards = me.handArea.cards.toList()
         val toMutableList = cards.toMutableList()
         toMutableList.removeAll { card -> card.cardType != CardTypeEnum.MINION || card.isBattlecry }
@@ -76,17 +78,23 @@ class HsCommonDeckStrategy : DeckStrategy() {
             val (num1, resultCards1) = DeckStrategyUtil.calcPowerOrder(toMutableList, me.usableResource + 1)
             if (num1 > me.usableResource) {
                 coinCard.action.power()
-                if (resultCards1.isNotEmpty()){
+                if (resultCards1.isNotEmpty()) {
                     log.info { resultCards }
                 }
-                resultCards1.forEach { it.action.power() }
+                for (card in resultCards1) {
+                    if (me.playArea.isFull) break
+                    card.action.power()
+                }
                 return
             }
         }
-        if (resultCards.isNotEmpty()){
+        if (resultCards.isNotEmpty()) {
             log.info { resultCards }
         }
-        resultCards.forEach { it.action.power() }
+        for (card in resultCards) {
+            if (me.playArea.isFull) break
+            card.action.power()
+        }
     }
 
     private fun findCoin(cards: List<Card>): Card? {
