@@ -1,6 +1,7 @@
 package club.xiaojiawei.hsscript.bean
 
 import club.xiaojiawei.config.log
+import club.xiaojiawei.hsscript.enums.VersionTypeEnum
 import com.fasterxml.jackson.annotation.JsonProperty
 import java.util.regex.Pattern
 import kotlin.math.min
@@ -12,19 +13,18 @@ import kotlin.math.min
 class Release : Comparable<Release> {
 
     @JsonProperty("tag_name")
-    private val tagName: String = ""
+    val tagName: String = ""
 
     @JsonProperty("prerelease")
-    private val preRelease = false
+    val preRelease = false
 
     @JsonProperty("name")
-    private val name: String? = null
+    val name: String? = null
 
     @JsonProperty("body")
-    private val body: String? = null
+    val body: String? = null
 
     /**
-     * 只比较纯数字，例：匹配v3.2.3.3-DEV中的3.2.3.3
      * @param release the object to be compared.
      * @return
      */
@@ -57,24 +57,10 @@ class Release : Comparable<Release> {
         if (v1.size == v2.size) {
             val split1 = version1.split("-".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
             val split2 = version2.split("-".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-            if (split1.size > 1 && split2.size > 1) {
-                val type1 = when (split1[1].lowercase()) {
-                    "ga" -> 5
-                    "dev" -> 4
-                    "beta" -> 3
-                    "patch" -> 2
-                    else -> 0
-                }
-                val type2 = when (split2[1].lowercase()) {
-                    "ga" -> 5
-                    "dev" -> 4
-                    "beta" -> 3
-                    "patch" -> 2
-                    else -> 0
-                }
-                return type1 - type2
+            return if (split1.size > 1 && split2.size > 1) {
+                VersionTypeEnum.getEnum(split1[1]).order - VersionTypeEnum.getEnum(split2[1]).order
             } else {
-                return split1.size - split2.size
+                split1.size - split2.size
             }
         }
         return v1.size.compareTo(v2.size)
