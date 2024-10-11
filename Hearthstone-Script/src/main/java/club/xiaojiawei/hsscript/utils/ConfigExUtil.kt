@@ -1,7 +1,11 @@
 package club.xiaojiawei.hsscript.utils
 
+import club.xiaojiawei.hsscript.bean.WorkDay
+import club.xiaojiawei.hsscript.bean.HotKey
+import club.xiaojiawei.hsscript.bean.WorkTime
 import club.xiaojiawei.hsscript.consts.ScriptStaticData
 import club.xiaojiawei.hsscript.enums.ConfigEnum
+import club.xiaojiawei.hsscript.listener.WorkListener
 import java.io.File
 
 /**
@@ -11,7 +15,7 @@ import java.io.File
 object ConfigExUtil {
 
     fun storeGamePath(gameInstallPath: String?): Boolean {
-        gameInstallPath?:return false
+        gameInstallPath ?: return false
         if (File(gameInstallPath + File.separator + ScriptStaticData.GAME_PROGRAM_NAME).exists()) {
             ConfigUtil.putString(ConfigEnum.GAME_PATH, gameInstallPath)
             return true
@@ -20,7 +24,7 @@ object ConfigExUtil {
     }
 
     fun storePlatformPath(platformInstallPath: String?): Boolean {
-        platformInstallPath?:return false
+        platformInstallPath ?: return false
         val programAbsolutePath = if (platformInstallPath.endsWith(".exe")) {
             platformInstallPath
         } else {
@@ -31,6 +35,49 @@ object ConfigExUtil {
             return true
         }
         return false
+    }
+
+    fun getExitHotKey(): HotKey {
+        return ConfigUtil.getObject(ConfigEnum.EXIT_HOT_KEY, HotKey::class.java)
+    }
+
+    fun storeExitHotKey(hotKey: HotKey) {
+        ConfigUtil.putObject(ConfigEnum.EXIT_HOT_KEY, hotKey)
+    }
+
+    fun getPauseHotKey(): HotKey {
+        return ConfigUtil.getObject(ConfigEnum.PAUSE_HOT_KEY, HotKey::class.java)
+    }
+
+    fun storePauseHotKey(hotKey: HotKey) {
+        ConfigUtil.putObject(ConfigEnum.PAUSE_HOT_KEY, hotKey)
+    }
+
+    fun getWorkDay(): MutableList<WorkDay>{
+        return ConfigUtil.getArray(ConfigEnum.WORK_DAY, WorkDay::class.java)
+    }
+
+    fun storeWorkDay(workDays: List<WorkDay>){
+        ConfigUtil.putArray(ConfigEnum.WORK_DAY, workDays)
+        WorkListener.checkWork()
+    }
+
+    fun getWorkTime(): MutableList<WorkTime>{
+        return ConfigUtil.getArray(ConfigEnum.WORK_TIME, WorkTime::class.java)
+    }
+
+    fun storeWorkTime(workTime: List<WorkTime>){
+        workTime.forEach {
+            val parseStartTime = it.parseStartTime()
+            val parseEndTime = it.parseEndTime()
+            if (parseStartTime != null && parseEndTime != null) {
+                if (parseEndTime.isBefore(parseStartTime)) {
+                    it.endTime = it.startTime
+                }
+            }
+        }
+        ConfigUtil.putArray(ConfigEnum.WORK_TIME, workTime)
+        WorkListener.checkWork()
     }
 
 }

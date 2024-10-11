@@ -20,6 +20,7 @@ object ConfigUtil {
 
     private var CONFIG: Ini = Ini()
 
+//    todo
     fun loadConfig(){
         val cfg = Config()
         SpringBeanConfig.springData
@@ -38,7 +39,7 @@ object ConfigUtil {
         CONFIG.load(configFile)
         val existKeys = CONFIG.keys.stream().collect(Collectors.toSet())
         FileWriter(configFile).use {
-            ConfigEnum.entries.forEach { entry ->
+            ConfigEnum.values().forEach { entry ->
                 existKeys.contains(entry.name).isFalse {
                     putString(entry, entry.defaultValue, false)
                 }

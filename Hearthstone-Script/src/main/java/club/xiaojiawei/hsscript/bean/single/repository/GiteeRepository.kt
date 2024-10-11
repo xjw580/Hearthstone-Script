@@ -1,33 +1,63 @@
-package club.xiaojiawei.hsscript.bean.single.repository;
+package club.xiaojiawei.hsscript.bean.single.repository
+
+import club.xiaojiawei.hsscript.bean.Release
+import club.xiaojiawei.hsscript.consts.ScriptStaticData
 
 /**
  * @author 肖嘉威
  * @date 2024/5/23 19:20
  */
-public class GiteeRepository extends AbstractRepository{
+object GiteeRepository : AbstractRepository() {
 
-    private GiteeRepository() {}
+    override fun getLatestRelease(isPreview: Boolean): Release? {
+        var latestRelease: Release? = null
+        if (isPreview) {
+            latestRelease = restTemplate.getForObject(
+                getLatestReleaseURL(true),
+                Release::class.java
+            )
+        } else {
+            val releases: Array<Release>? = restTemplate.getForObject(
+                getLatestReleaseURL(false),
+                Array<Release>::class.java
+            )
+            releases?.let {
+                for (i in it.indices.reversed()) {
+                    val release: Release = it[i]
+                    if (!release.isPreRelease) {
+                        if (latestRelease == null || release > latestRelease) {
+                            latestRelease = release
+                        }
+                    }
+                }
+            }
+        }
+        return latestRelease
+    }
 
-    private static class Instance{
-        private static final GiteeRepository INSTANCE = new GiteeRepository();
-
-        public static GiteeRepository getInstance(){
-            return INSTANCE;
+    override fun getLatestReleaseURL(isPreview: Boolean): String {
+        return if (isPreview) {
+            String.format(
+                "https://%s/api/v5/repos/%s/%s/releases/latest",
+                getDomain(),
+                getUserName(),
+                ScriptStaticData.PROJECT_NAME
+            )
+        } else {
+            String.format(
+                "https://api.%s/repos/%s/%s/releases/latest",
+                getDomain(), getUserName(),
+                ScriptStaticData.PROJECT_NAME
+            )
         }
     }
 
-    public static AbstractRepository getInstance() {
-        return Instance.getInstance();
+    override fun getDomain(): String {
+        return "gitee.com"
     }
 
-    @Override
-    protected String getDomain() {
-        return "gitee.com";
-    }
-
-    @Override
-    protected String getUserName() {
-        return "zergqueen";
+    override fun getUserName(): String {
+        return "zergqueen"
     }
 
 }

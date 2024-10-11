@@ -104,14 +104,14 @@
                         <HBox alignment="CENTER_LEFT" spacing="10">
                             <Text text="工作天:"/>
                             <TilePane hgap="20" vgap="5" fx:id="workDay" style="-fx-padding: 0">
-                                <CheckBox styleClass="check-box-ui, check-box-ui-main" text="每天"/>
-                                <CheckBox styleClass="check-box-ui, check-box-ui-main" text="周一"/>
-                                <CheckBox styleClass="check-box-ui, check-box-ui-main" text="周二"/>
-                                <CheckBox styleClass="check-box-ui, check-box-ui-main" text="周三"/>
-                                <CheckBox styleClass="check-box-ui, check-box-ui-main" text="周四"/>
-                                <CheckBox styleClass="check-box-ui, check-box-ui-main" text="周五"/>
-                                <CheckBox styleClass="check-box-ui, check-box-ui-main" text="周六"/>
-                                <CheckBox styleClass="check-box-ui, check-box-ui-main" text="周日"/>
+                                <CheckBox styleClass="check-box-ui, check-box-ui-main" text="每天" userData="every"/>
+                                <CheckBox styleClass="check-box-ui, check-box-ui-main" text="周一" userData="mon"/>
+                                <CheckBox styleClass="check-box-ui, check-box-ui-main" text="周二" userData="tue"/>
+                                <CheckBox styleClass="check-box-ui, check-box-ui-main" text="周三" userData="wed"/>
+                                <CheckBox styleClass="check-box-ui, check-box-ui-main" text="周四" userData="thu"/>
+                                <CheckBox styleClass="check-box-ui, check-box-ui-main" text="周五" userData="fri"/>
+                                <CheckBox styleClass="check-box-ui, check-box-ui-main" text="周六" userData="sat"/>
+                                <CheckBox styleClass="check-box-ui, check-box-ui-main" text="周日" userData="sun"/>
                             </TilePane>
                         </HBox>
 

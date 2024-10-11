@@ -26,8 +26,8 @@ object FillDeckPhaseStrategy : AbstractPhaseStrategy() {
 
     override fun dealOtherThenIsOver(line: String): Boolean {
         if (line.contains("CREATE_GAME")) {
-            deckStrategy = DeckStrategyManager.CURRENT_DECK_STRATEGY.get()
-            startWar(DeckStrategyManager.CURRENT_DECK_STRATEGY.get().runModes[0])
+            deckStrategy = DeckStrategyManager.currentDeckStrategy.get()
+            startWar(DeckStrategyManager.currentDeckStrategy.get().runModes[0])
         }
         return super.dealOtherThenIsOver(line)
     }

@@ -7,7 +7,7 @@ import club.xiaojiawei.hsscript.controller.javafx.MainController
 import club.xiaojiawei.hsscript.consts.ScriptStaticData
 import club.xiaojiawei.hsscript.enums.WindowEnum
 import club.xiaojiawei.hsscript.status.PauseStatus
-import club.xiaojiawei.hsscript.status.Work
+import club.xiaojiawei.hsscript.listener.WorkListener
 import club.xiaojiawei.hsscript.utils.GameUtil
 import club.xiaojiawei.hsscript.utils.SystemUtil
 import club.xiaojiawei.hsscript.utils.WindowUtil
@@ -25,11 +25,11 @@ object Core {
      */
     @Synchronized
     fun start() {
-        if (Work.isWorking()) {
+        if (WorkListener.isWorking()) {
             log.warn { "正在工作，无法重复工作" }
             return
         }
-        Work.setWorking(true)
+        WorkListener.setWorking(true)
         CORE_THREAD_POOL.execute {
             if (!ScriptStaticData.isSetPath()) {
                 SystemUtil.notice("需要配置" + ScriptStaticData.GAME_CN_NAME + "和" + ScriptStaticData.PLATFORM_CN_NAME + "的路径")

@@ -15,7 +15,7 @@ import club.xiaojiawei.hsscript.listener.log.PowerLogListener
 import club.xiaojiawei.hsscript.status.DeckStrategyManager
 import club.xiaojiawei.hsscript.status.Mode.currMode
 import club.xiaojiawei.hsscript.status.PauseStatus
-import club.xiaojiawei.hsscript.status.Work
+import club.xiaojiawei.hsscript.listener.WorkListener
 import club.xiaojiawei.hsscript.strategy.AbstractModeStrategy
 import club.xiaojiawei.hsscript.utils.GameUtil.reconnect
 import club.xiaojiawei.hsscript.utils.SystemUtil
@@ -72,8 +72,8 @@ object TournamentModeStrategy : AbstractModeStrategy<Any?>() {
     }
 
     override fun afterEnter(t: Any?) {
-        if (Work.isDuringWorkDate()) {
-            val deckStrategy = DeckStrategyManager.CURRENT_DECK_STRATEGY.get()
+        if (WorkListener.isDuringWorkDate()) {
+            val deckStrategy = DeckStrategyManager.currentDeckStrategy.get()
             if (deckStrategy == null) {
                 SystemUtil.notice("未选择卡组")
                 log.info { "未选择卡组" }
@@ -100,7 +100,7 @@ object TournamentModeStrategy : AbstractModeStrategy<Any?>() {
                 BACK_RECT.lClick()
             }
         } else {
-            Work.stopWork()
+            WorkListener.stopWork()
         }
     }
 

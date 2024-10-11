@@ -47,6 +47,7 @@
         <!--other-->
         <lombok-version>1.18.30</lombok-version>
         <slf4j-version>2.0.9</slf4j-version>
+        <logback-version>1.5.6</logback-version>
 
         <jackson-version>2.18.0</jackson-version>
         <spring-boot-web-version>6.1.5</spring-boot-web-version>
@@ -88,6 +89,11 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>${slf4j-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${logback-version}</version>
         </dependency>
         <!--kt日志封装-->
         <dependency>

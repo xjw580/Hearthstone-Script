@@ -40,9 +40,9 @@ object HubModeStrategy : AbstractModeStrategy<Any?>() {
             SystemUtil.delay(200)
         }
 
-        if (DeckStrategyManager.CURRENT_DECK_STRATEGY.get() != null) {
+        if (DeckStrategyManager.currentDeckStrategy.get() != null) {
             log.info { "准备进入指定模式" }
-            DeckStrategyManager.CURRENT_DECK_STRATEGY.get().runModes[0].modeEnum.modeStrategy!!.wantEnter()
+            DeckStrategyManager.currentDeckStrategy.get().runModes[0].modeEnum.modeStrategy!!.wantEnter()
         }
     }
 

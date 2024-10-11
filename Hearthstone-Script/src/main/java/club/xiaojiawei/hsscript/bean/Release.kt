@@ -13,16 +13,16 @@ import kotlin.math.min
 class Release : Comparable<Release> {
 
     @JsonProperty("tag_name")
-    val tagName: String = ""
+    var tagName: String = ""
 
     @JsonProperty("prerelease")
-    val preRelease = false
+    var isPreRelease = false
 
     @JsonProperty("name")
-    val name: String? = null
+    var name: String? = null
 
     @JsonProperty("body")
-    val body: String? = null
+    var body: String? = null
 
     /**
      * @param release the object to be compared.
@@ -69,7 +69,7 @@ class Release : Comparable<Release> {
     override fun toString(): String {
         return "Release{" +
                 "tagName='$tagName', " +
-                "preRelease=$preRelease, " +
+                "preRelease=$isPreRelease, " +
                 "name='$name', " +
                 "body='${body?.let { "\n$it".trimIndent() } ?: "null"}'" +
                 "}"

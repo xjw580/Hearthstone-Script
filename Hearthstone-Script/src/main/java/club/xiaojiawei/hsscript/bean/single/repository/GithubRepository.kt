@@ -1,33 +1,56 @@
-package club.xiaojiawei.hsscript.bean.single.repository;
+package club.xiaojiawei.hsscript.bean.single.repository
+
+import club.xiaojiawei.hsscript.bean.Release
+import club.xiaojiawei.hsscript.consts.ScriptStaticData
 
 /**
  * @author 肖嘉威
  * @date 2024/5/23 19:19
  */
-public class GithubRepository extends AbstractRepository{
+object GithubRepository : AbstractRepository() {
 
-    private GithubRepository() {}
+    override fun getLatestRelease(isPreview: Boolean): Release? {
+        var latestRelease: Release? = null
+        if (isPreview) {
+            val releases: Array<Release>? = restTemplate.getForObject(
+                getLatestReleaseURL(true),
+                Array<Release>::class.java
+            )
+            if (releases != null && releases.isNotEmpty()) {
+                latestRelease = releases[0]
+            }
+        } else {
+            latestRelease = restTemplate.getForObject(
+                getLatestReleaseURL(false),
+                Release::class.java
+            )
+        }
+        return latestRelease
+    }
 
-    private static class Instance{
-        private static final GithubRepository INSTANCE = new GithubRepository();
-
-        public static GithubRepository getInstance(){
-            return INSTANCE;
+    override fun getLatestReleaseURL(isPreview: Boolean): String {
+        return if (isPreview) {
+            String.format(
+                "https://api.%s/repos/%s/%s/releases",
+                getDomain(),
+                getUserName(),
+                ScriptStaticData.PROJECT_NAME
+            )
+        } else {
+            String.format(
+                "https://api.%s/repos/%s/%s/releases/latest",
+                getDomain(), getUserName(),
+                ScriptStaticData.PROJECT_NAME
+            )
         }
     }
 
-    public static AbstractRepository getInstance() {
-        return Instance.getInstance();
+    override fun getDomain(): String {
+        return "github.com"
     }
 
-    @Override
-    protected String getDomain() {
-        return "github.com";
-    }
-
-    @Override
-    protected String getUserName() {
-        return "xjw580";
+    override fun getUserName(): String {
+        return "xjw580"
     }
 
 }

@@ -12,13 +12,14 @@ enum class VersionTypeEnum(val order: Int, val isPreview: Boolean) {
     PATCH(8, false),
     DEV(4, true),
     BETA(2, true),
+    TEST(-1, true),
     UNKNOWN(0, true),
     ;
 
     companion object {
 
         fun getEnum(type: String): VersionTypeEnum {
-            return entries.find { it.name.trim().lowercase() == type.trim().lowercase() } ?: UNKNOWN
+            return values().find { it.name.trim().lowercase() == type.trim().lowercase() } ?: UNKNOWN
         }
 
         fun getEnum(release: Release): VersionTypeEnum {

@@ -2,10 +2,8 @@ package club.xiaojiawei.bean
 
 import club.xiaojiawei.bean.Player.Companion.INVALID_PLAYER
 import club.xiaojiawei.bean.area.*
-import club.xiaojiawei.enums.ZoneEnum
 import club.xiaojiawei.config.log
-import club.xiaojiawei.util.isTrue
-import kotlin.concurrent.Volatile
+import club.xiaojiawei.enums.ZoneEnum
 
 /**
  * @author 肖嘉威

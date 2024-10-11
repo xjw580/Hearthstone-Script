@@ -1,30 +1,20 @@
-package club.xiaojiawei.hsscript;
+package club.xiaojiawei.hsscript
 
-import javafx.application.Application;
-import lombok.Getter;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.web.servlet.ServletComponentScan;
-import org.springframework.scheduling.annotation.EnableScheduling;
-
-import java.util.List;
+import javafx.application.Application
+import java.lang.Exception
 
 /**
  * 启动类
  * @author 肖嘉威
  * @date 2022/11/24 13:34
  */
-@SpringBootApplication
-@EnableScheduling
-@ServletComponentScan
-public class ScriptApplication{
+var PROGRAM_ARGS: List<String> = emptyList()
 
-    @Getter
-    private static List<String> args;
+@Throws(Exception::class)
+@JvmStatic
+fun main(args: Array<String>) {
+    System.setProperty("jna.library.path", "lib")
+    PROGRAM_ARGS = args.toList()
 
-    public static void main(String[] args) throws Exception {
-        System.setProperty("jna.library.path", "lib");
-        ScriptApplication.args = List.of(args);
-        Application.launch(UIApplication.class, args);
-    }
-
+    Application.launch(UIApplication::class.java, *args)
 }

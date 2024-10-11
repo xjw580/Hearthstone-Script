@@ -25,14 +25,3 @@ logging:
 log:
   level: ${logging.level.root}
   path: ${script.path}
-
-server:
-  port: 8848
-
-spring:
-  thymeleaf:
-    cache: false
-  main:
-    #  web容器开关
-    web-application-type: servlet
-##    web-application-type: none

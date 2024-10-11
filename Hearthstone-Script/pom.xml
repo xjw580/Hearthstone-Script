@@ -110,6 +110,15 @@
     <build>
 <!--        <sourceDirectory>src/main/kotlin</sourceDirectory>-->
         <finalName>${project.artifactId}_${project.version}</finalName>
+        <resources>
+            <resource>
+                <directory>src/main/resources-filtered</directory>
+                <filtering>true</filtering>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
