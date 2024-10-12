@@ -20,7 +20,7 @@ enum class WarPhaseEnum(val comment: String) {
 
     companion object{
         fun find(phaseStrategy: PhaseStrategy):WarPhaseEnum? {
-            return entries.find { it.phaseStrategy === phaseStrategy }
+            return values().find { it.phaseStrategy === phaseStrategy }
         }
     }
 

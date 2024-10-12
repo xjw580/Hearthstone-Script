@@ -1,11 +1,10 @@
 package club.xiaojiawei.hsscript.initializer
 
-import club.xiaojiawei.hsscript.config.SpringBeanConfig
 import club.xiaojiawei.config.log
 import club.xiaojiawei.hsscript.enums.ConfigEnum
-import club.xiaojiawei.util.isTrue
 import club.xiaojiawei.hsscript.utils.ConfigUtil
 import club.xiaojiawei.hsscript.utils.SystemUtil
+import club.xiaojiawei.util.isTrue
 import org.ini4j.Ini
 import java.io.*
 import java.nio.file.Path

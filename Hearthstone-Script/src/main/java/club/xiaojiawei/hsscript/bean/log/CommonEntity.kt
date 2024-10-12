@@ -2,9 +2,6 @@ package club.xiaojiawei.hsscript.bean.log
 
 import club.xiaojiawei.bean.Entity
 import club.xiaojiawei.enums.ZoneEnum
-import lombok.Data
-import lombok.EqualsAndHashCode
-import lombok.ToString
 
 /**
  * @author 肖嘉威

@@ -131,7 +131,7 @@ object VersionListener {
                     StandardCopyOption.REPLACE_EXISTING
                 )
                 Runtime.getRuntime().exec(
-                    java.lang.String.format(
+                    String.format(
                         "%s --target='%s' --source='%s' --pause='%s' --pid='%s'",
                         updateProgramPath,
                         rootPath,

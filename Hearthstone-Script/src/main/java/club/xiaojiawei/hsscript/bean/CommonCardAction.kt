@@ -60,11 +60,11 @@ class CommonCardAction : CardAction(false) {
     public override fun execPower(card: Card): Boolean {
         var startRect: GameRect
         if ((GameUtil.getMyHandCardRect(me.handArea.indexOfCard(belongCard), belongCard!!.area!!.cardSize())
-                .also { startRect = it }).isValid
+                .also { startRect = it }).isValid()
         ) {
             if (card.area is PlayArea) {
                 val endRect = getCardRect(card)
-                if (endRect.isValid) {
+                if (endRect.isValid()) {
                     startRect.lClickMoveLClick(endRect)
                     lastRect = endRect
                     return true
@@ -77,10 +77,10 @@ class CommonCardAction : CardAction(false) {
     public override fun execPower(index: Int): Boolean {
         var startRect: GameRect
         if ((GameUtil.getMyHandCardRect(me.handArea.indexOfCard(belongCard), belongCard!!.area!!.cardSize())
-                .also { startRect = it }).isValid
+                .also { startRect = it }).isValid()
         ) {
             val endRect = GameUtil.getMyPlayCardRect(index, me.playArea.cardSize())
-            if (endRect.isValid) {
+            if (endRect.isValid()) {
                 startRect.lClickMoveLClick(endRect)
                 lastRect = endRect
                 return true
@@ -95,10 +95,10 @@ class CommonCardAction : CardAction(false) {
         } else {
             GameUtil.getMyPlayCardRect(me.playArea.indexOfCard(belongCard), belongCard!!.area!!.cardSize())
         }
-        if (startRect.isValid) {
+        if (startRect.isValid()) {
             if (card.area === rival.playArea) {
                 val endRect = getCardRect(card)
-                if (endRect.isValid) {
+                if (endRect.isValid()) {
                     startRect.lClickMoveLClick(endRect)
                     lastRect = endRect
                     return true
@@ -114,7 +114,7 @@ class CommonCardAction : CardAction(false) {
         } else {
             GameUtil.getMyPlayCardRect(me.playArea.indexOfCard(belongCard), belongCard!!.area!!.cardSize())
         }
-        if (startRect.isValid) {
+        if (startRect.isValid()) {
             if (belongCard!!.area == me.playArea) {
                 startRect.lClickMoveLClick(GameUtil.RIVAL_HERO_RECT)
                 lastRect = GameUtil.RIVAL_HERO_RECT
@@ -128,7 +128,7 @@ class CommonCardAction : CardAction(false) {
         var startRect: GameRect? = null
         var endRect: GameRect? = null
         lastRect?.let {
-            if (it.isValid) {
+            if (it.isValid()) {
                 startRect = it
             }
         }
@@ -136,9 +136,9 @@ class CommonCardAction : CardAction(false) {
             startRect = getCardRect(belongCard)
         }
         startRect.let {
-            if (it.isValid){
+            if (it.isValid()){
                 val cardRect = getCardRect(card)
-                if (cardRect.isValid) {
+                if (cardRect.isValid()) {
                     endRect = cardRect
                     it.move(endRect)
                     cardRect.lClick(false)
@@ -146,7 +146,7 @@ class CommonCardAction : CardAction(false) {
             }
         }
         lastRect = endRect
-        return endRect != null && endRect.isValid
+        return endRect != null && endRect.isValid()
     }
 
     override fun createNewInstance(): CardAction {
@@ -155,7 +155,7 @@ class CommonCardAction : CardAction(false) {
 
     override fun lClick(): Boolean {
         val cardRect = getCardRect(belongCard)
-        if (cardRect.isValid) {
+        if (cardRect.isValid()) {
             cardRect.lClick()
             return true
         }

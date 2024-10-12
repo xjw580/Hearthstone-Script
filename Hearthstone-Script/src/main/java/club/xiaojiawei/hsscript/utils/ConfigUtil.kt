@@ -156,7 +156,7 @@ object ConfigUtil {
     /**
      * 读取数组类型数据
      */
-    fun <T> getArray(key: ConfigEnum, clazz: Class<T>): MutableList<T> {
+    fun <T> getArray(key: ConfigEnum, clazz: Class<T>): MutableList<T>? {
         val value = CONFIG[key.group]?.get(key.name) ?: key.defaultValue
         return JSON.parseArray(value, clazz)
     }
@@ -174,13 +174,13 @@ object ConfigUtil {
     /**
      * 读取任意类型数据
      */
-    fun <T> getObject(key: ConfigEnum, clazz: Class<T>): T {
+    fun <T> getObject(key: ConfigEnum, clazz: Class<T>): T? {
         val value = CONFIG[key.group]?.get(key.name) ?: key.defaultValue
         return JSON.parseObject(value, clazz)
     }
 
-    fun remove(key: ConfigEnum): String {
-        return CONFIG[key.group]?.remove(key.name).toString()
+    fun remove(key: ConfigEnum) {
+        CONFIG[key.group]?.remove(key.name)
     }
 
     /**

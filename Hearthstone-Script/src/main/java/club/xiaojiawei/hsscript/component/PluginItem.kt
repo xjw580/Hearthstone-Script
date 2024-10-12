@@ -2,10 +2,8 @@ package club.xiaojiawei.hsscript.component
 
 import club.xiaojiawei.DeckPlugin
 import club.xiaojiawei.bean.PluginWrapper
-import club.xiaojiawei.config.ConfigurationConfig
 import club.xiaojiawei.controls.NotificationManager
-import club.xiaojiawei.hsscript.enums.ConfigEnum
-import club.xiaojiawei.hsscript.status.DeckStrategyManager
+import club.xiaojiawei.hsscript.utils.ConfigExUtil
 import javafx.fxml.FXML
 import javafx.fxml.FXMLLoader
 import javafx.scene.control.CheckBox
@@ -58,31 +56,31 @@ class PluginItem(val pluginWrapper: PluginWrapper<*>, var notificationManager: N
         version.text = pluginWrapper.plugin.version()
 
         enable.selectedProperty().bindBidirectional(pluginWrapper.enabledProperty())
-        enable.selectedProperty().addListener { _, _, newValue ->
+        enable.selectedProperty().addListener { _, _, enable ->
             notificationManager?.showSuccess(
-                "已${if (newValue) "启用" else "禁用"}${name.text}",
+                "已${if (enable) "启用" else "禁用"}${name.text}",
                 2
             )
-            val key = if (pluginWrapper.plugin is DeckPlugin) {
-                ConfigEnum.DECK_PLUGIN_DISABLED
+
+            val isDeck = pluginWrapper.plugin is DeckPlugin
+
+            val disableList = if (isDeck) {
+                ConfigExUtil.getDeckPluginDisabled()
             } else {
-                ConfigEnum.CARD_PLUGIN_DISABLED
+                ConfigExUtil.getCardPluginDisabled()
             }
 
-            val disableList = ConfigurationConfig.scriptConfiguration.getProperty(
-                key.name,
-                key.defaultValue
-            ).split(",").toMutableList()
-            disableList.removeAll { it.trim().isEmpty() }
-
-            if (newValue){
+            if (enable){
                 disableList.remove(pluginWrapper.plugin.id())
             }else{
                 disableList.add(pluginWrapper.plugin.id())
             }
 
-            ConfigurationConfig.scriptConfiguration[key.name] = disableList.joinToString(",")
-            DeckStrategyManager.propertiesUtil?.storeScriptProperties()
+            if (isDeck) {
+                ConfigExUtil.storeDeckPluginDisabled(disableList)
+            } else {
+                ConfigExUtil.storeCardPluginDisabled(disableList)
+            }
         }
     }
 

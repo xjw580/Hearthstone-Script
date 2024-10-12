@@ -1,14 +1,13 @@
 package club.xiaojiawei.hsscript.consts
 
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.stereotype.Component
 
 /**
  * 存储application.yaml里的值
  * @author 肖嘉威
  * @date 2023/7/4 18:20
  */
-@Component
+//todo refactor
 class SpringData {
 
     /**

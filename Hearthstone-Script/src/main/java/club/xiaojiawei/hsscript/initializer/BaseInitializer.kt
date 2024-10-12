@@ -19,11 +19,11 @@ object BaseInitializer : AbstractInitializer() {
     }
 
     override fun exec() {
-        ModeEnum.entries.forEach {
+        ModeEnum.values().forEach {
             it.modeStrategy =
                 Class.forName("club.xiaojiawei.strategy.mode." + toCamelCase(it.name) + "ModeStrategy").kotlin.objectInstance as ModeStrategy<*>
         }
-        WarPhaseEnum.entries.forEach {
+        WarPhaseEnum.values().forEach {
             it.phaseStrategy =
                 Class.forName("club.xiaojiawei.strategy.phase." + toCamelCase(it.name) + "PhaseStrategy").kotlin.objectInstance as PhaseStrategy?
         }

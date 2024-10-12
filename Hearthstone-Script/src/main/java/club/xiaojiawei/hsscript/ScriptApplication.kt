@@ -10,8 +10,6 @@ import java.lang.Exception
  */
 var PROGRAM_ARGS: List<String> = emptyList()
 
-@Throws(Exception::class)
-@JvmStatic
 fun main(args: Array<String>) {
     System.setProperty("jna.library.path", "lib")
     PROGRAM_ARGS = args.toList()

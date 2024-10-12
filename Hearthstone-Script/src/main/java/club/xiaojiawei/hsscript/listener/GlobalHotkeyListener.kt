@@ -30,12 +30,14 @@ object GlobalHotkeyListener : HotkeyListener {
 //    todo register()
     fun register() {
         if (JIntellitype.isJIntellitypeSupported()) {
-            var (exitModifier, exitKeyCode) = ConfigExUtil.getExitHotKey()
-            var (pauseModifier, pauseKeyCode) = ConfigExUtil.getPauseHotKey()
-            JIntellitype.getInstance()
-                .registerHotKey(HOT_KEY_EXIT, exitModifier, exitKeyCode)
-            JIntellitype.getInstance()
-                .registerHotKey(HOT_KEY_PAUSE, pauseModifier, pauseKeyCode)
+            ConfigExUtil.getExitHotKey()?.let {
+                JIntellitype.getInstance()
+                    .registerHotKey(HOT_KEY_EXIT, it.modifier, it.keyCode)
+            }
+            ConfigExUtil.getPauseHotKey()?.let {
+                JIntellitype.getInstance()
+                    .registerHotKey(HOT_KEY_PAUSE, it.modifier, it.keyCode)
+            }
         } else {
             log.warn { "当前系统不支持设置热键" }
         }

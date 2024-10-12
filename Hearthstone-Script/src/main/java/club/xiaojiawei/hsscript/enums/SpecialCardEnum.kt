@@ -1,9 +1,5 @@
 package club.xiaojiawei.hsscript.enums
 
-import lombok.AllArgsConstructor
-import lombok.Getter
-import lombok.ToString
-
 /**
  * 开局触发特殊效果的卡牌
  * @author 肖嘉威

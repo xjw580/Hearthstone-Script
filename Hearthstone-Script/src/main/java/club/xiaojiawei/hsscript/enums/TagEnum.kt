@@ -4,19 +4,20 @@ import club.xiaojiawei.bean.Card
 import club.xiaojiawei.bean.Player
 import club.xiaojiawei.bean.area.Area
 import club.xiaojiawei.bean.isValid
-import club.xiaojiawei.hsscript.bean.log.ExtraEntity
-import club.xiaojiawei.hsscript.bean.log.TagChangeEntity
 import club.xiaojiawei.config.log
-import club.xiaojiawei.hsscript.consts.ScriptStaticData
 import club.xiaojiawei.enums.CardRaceEnum
 import club.xiaojiawei.enums.CardTypeEnum
 import club.xiaojiawei.enums.StepEnum
 import club.xiaojiawei.enums.ZoneEnum
+import club.xiaojiawei.hsscript.bean.log.ExtraEntity
+import club.xiaojiawei.hsscript.bean.log.TagChangeEntity
+import club.xiaojiawei.hsscript.bean.single.WarEx
+import club.xiaojiawei.hsscript.consts.ScriptStaticData
 import club.xiaojiawei.hsscript.interfaces.ExtraEntityHandler
 import club.xiaojiawei.hsscript.interfaces.TagChangeHandler
+import club.xiaojiawei.hsscript.utils.CardUtil
 import club.xiaojiawei.status.War
 import club.xiaojiawei.util.isTrue
-import club.xiaojiawei.hsscript.utils.CardUtil
 
 /**
  * @author 肖嘉威
@@ -83,7 +84,7 @@ enum class TagEnum(
                 if (isTrue(tagChangeEntity.value)) {
 //                        匹配战网id后缀正则
                     if (!gameId.matches("^.+#\\d+$".toRegex())) {
-                        log.warn("非正常游戏id：" + gameId)
+                        log.warn { "非正常游戏id：$gameId" }
                     }
 
                     //                        是我
@@ -116,7 +117,7 @@ enum class TagEnum(
         null,
         ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
             extraEntity.extraCard.card.cardType =
-                ScriptStaticData.CARD_TYPE_MAP.getOrDefault(value, CardTypeEnum.UNKNOWN)
+                ScriptStaticData.CARD_TYPE_MAP.get(value) ?: CardTypeEnum.UNKNOWN
         }
     ),
     ZONE_POSITION("区位置",
@@ -403,12 +404,12 @@ enum class TagEnum(
         }),
     CARDRACE("种族",
         TagChangeHandler { card: Card?, tagChangeEntity: TagChangeEntity, player: Player?, area: Area? ->
-            card?.cardRace = ScriptStaticData.CARD_RACE_MAP.getOrDefault(tagChangeEntity.value, CardRaceEnum.UNKNOWN)
+            card?.cardRace = (ScriptStaticData.CARD_RACE_MAP[tagChangeEntity.value]) ?: CardRaceEnum.UNKNOWN
             log(player, card, "种族", tagChangeEntity.value)
         },
         ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
             extraEntity.extraCard.card.cardRace =
-                ScriptStaticData.CARD_RACE_MAP.getOrDefault(value, CardRaceEnum.UNKNOWN)
+                (ScriptStaticData.CARD_RACE_MAP[value]) ?: CardRaceEnum.UNKNOWN
         }),
     PREMIUM("衍生物",
         null,
@@ -429,7 +430,7 @@ enum class TagEnum(
 
             val newCard = area?.removeByEntityId(tagChangeEntity.entityId)
             newCard?.let {
-                val reverseArea = War.getReverseArea(area)
+                val reverseArea = WarEx.getReverseArea(area)
                 reverseArea?.add(newCard, 0)
             }
 
@@ -515,11 +516,11 @@ enum class TagEnum(
     ),
     ;
 
-    companion object{
+    companion object {
         fun getByName(tagEnumName: String): TagEnum {
             return try {
                 valueOf(tagEnumName)
-            } catch (e: IllegalArgumentException) {
+            } catch (_: IllegalArgumentException) {
                 UNKNOWN
             }
         }

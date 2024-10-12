@@ -1,7 +1,5 @@
 package club.xiaojiawei.hsscript.enums
 
-import lombok.Getter
-
 /**
  * @author 肖嘉威
  * @date 2023/9/13 14:55

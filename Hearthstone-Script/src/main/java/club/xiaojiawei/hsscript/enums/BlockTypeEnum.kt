@@ -1,9 +1,5 @@
 package club.xiaojiawei.hsscript.enums
 
-import lombok.AllArgsConstructor
-import lombok.Getter
-import lombok.ToString
-
 /**
  * @author 肖嘉威
  * @date 2022/11/30 17:56

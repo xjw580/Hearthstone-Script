@@ -76,12 +76,12 @@ enum class ConfigEnum(
     /**
      * 套牌插件禁用列表
      */
-    DECK_PLUGIN_DISABLED(group = "plugin"),
+    DECK_PLUGIN_DISABLED(group = "plugin", defaultValue = JSON.toJSONString(emptyList<String>())),
 
     /**
      * 卡牌插件禁用列表
      */
-    CARD_PLUGIN_DISABLED(group = "plugin"),
+    CARD_PLUGIN_DISABLED(group = "plugin", defaultValue = JSON.toJSONString(emptyList<String>())),
 
     /**
      * 默认套牌(deck id)

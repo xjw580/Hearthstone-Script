@@ -11,6 +11,7 @@ import club.xiaojiawei.hsscript.utils.ConfigUtil
 import club.xiaojiawei.hsscript.utils.GameUtil
 import club.xiaojiawei.hsscript.utils.SystemUtil
 import javafx.beans.property.ReadOnlyBooleanWrapper
+import javafx.beans.property.SimpleBooleanProperty
 import javafx.beans.property.SimpleDoubleProperty
 import java.time.LocalDate
 import java.time.LocalTime
@@ -38,12 +39,11 @@ object WorkListener {
     /**
      * 是否处于工作中
      */
-    private var workingProperty = ReadOnlyBooleanWrapper()
+    private var workingProperty = SimpleBooleanProperty(false)
 
-    val working: Boolean
+    var working: Boolean
         get() = workingProperty.get()
-
-    fun workingReadOnlyProperty() = workingProperty
+        set(value) = workingProperty.set(value)
 
     private var enableUpdate = true
 

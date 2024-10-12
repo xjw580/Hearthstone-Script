@@ -5,7 +5,6 @@ import club.xiaojiawei.bean.Card
 import club.xiaojiawei.enums.CardTypeEnum
 import club.xiaojiawei.status.War
 import club.xiaojiawei.util.DeckStrategyUtil
-import kotlin.math.cos
 
 /**
  * @author 肖嘉威 xjw580@qq.com
@@ -52,7 +51,6 @@ class MyCardAction : CardAction() {
 }
 
 fun main() {
-    War.reset()
     War.me = War.player1
     War.rival = War.player2
 

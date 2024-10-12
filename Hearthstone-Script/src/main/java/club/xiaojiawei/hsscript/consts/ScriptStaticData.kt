@@ -3,8 +3,8 @@ package club.xiaojiawei.hsscript.consts
 import club.xiaojiawei.bean.area.Area
 import club.xiaojiawei.enums.CardRaceEnum
 import club.xiaojiawei.enums.CardTypeEnum
+import club.xiaojiawei.hsscript.bean.single.WarEx
 import club.xiaojiawei.hsscript.enums.TagEnum
-import club.xiaojiawei.status.War
 import com.sun.jna.platform.win32.WinDef
 import com.sun.jna.platform.win32.WinDef.HWND
 import java.awt.GraphicsDevice
@@ -39,14 +39,12 @@ object ScriptStaticData {
     const val TEMP_VERSION_DIR: String = "new_version_temp"
     const val UPDATE_PROGRAM_NAME: String = "update.exe"
     const val LIB_DIR: String = "lib"
-    @JvmField
     val TEMP_VERSION_PATH: String = System.getProperty("user.dir") + File.separator + TEMP_VERSION_DIR + File.separator
     var MAX_LOG_SIZE_B: Int = 10240 * 1024
 
     /**
      * 游戏窗口信息
      */
-    @JvmField
     val GAME_RECT: WinDef.RECT = WinDef.RECT()
 
     /**
@@ -145,7 +143,7 @@ object ScriptStaticData {
     val CARD_TYPE_MAP: MutableMap<String?, CardTypeEnum?>
 
     init {
-        War.addResetCallback { CARD_AREA_MAP.clear() }
+        WarEx.addResetCallback { CARD_AREA_MAP.clear() }
         val screenDevices: Array<GraphicsDevice?> = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices()
         //        if (screenDevices.length > 1){
 //            log.info("检测到有多台显示器，请将炉石传说放到主显示器运行");
@@ -157,22 +155,22 @@ object ScriptStaticData {
         DISPLAY_PIXEL_HEIGHT = (Toolkit.getDefaultToolkit().getScreenSize().height * DISPLAY_SCALE_Y).toInt()
         WINDOW_TITLE_PIXEL_Y = (31 / DISPLAY_SCALE_Y).toInt()
 
-        val tagTempMap: MutableMap<String?, TagEnum?> = HashMap(TagEnum.entries.size)
-        for (value in TagEnum.entries) {
+        val tagTempMap: MutableMap<String?, TagEnum?> = HashMap(TagEnum.values().size)
+        for (value in TagEnum.values()) {
             tagTempMap.put(value.name, value)
         }
         TAG_MAP = Collections.unmodifiableMap<String?, TagEnum?>(tagTempMap)
 
         val cardRaceTempMap: MutableMap<String?, CardRaceEnum?> =
-            HashMap(CardRaceEnum.entries.size)
-        for (value in CardRaceEnum.entries) {
+            HashMap(CardRaceEnum.values().size)
+        for (value in CardRaceEnum.values()) {
             cardRaceTempMap.put(value.name, value)
         }
         CARD_RACE_MAP = Collections.unmodifiableMap<String?, CardRaceEnum?>(cardRaceTempMap)
 
         val cardTypeTempMap: MutableMap<String?, CardTypeEnum?> =
-            HashMap(CardTypeEnum.entries.size)
-        for (value in CardTypeEnum.entries) {
+            HashMap(CardTypeEnum.values().size)
+        for (value in CardTypeEnum.values()) {
             cardTypeTempMap.put(value.name, value)
         }
         CARD_TYPE_MAP = Collections.unmodifiableMap<String?, CardTypeEnum?>(cardTypeTempMap)

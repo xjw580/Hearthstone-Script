@@ -3,10 +3,9 @@ package club.xiaojiawei.bean.area
 import club.xiaojiawei.bean.Card
 import club.xiaojiawei.bean.Entity
 import club.xiaojiawei.bean.Player
-import club.xiaojiawei.enums.ZoneEnum
 import club.xiaojiawei.config.log
+import club.xiaojiawei.enums.ZoneEnum
 import java.util.*
-import kotlin.concurrent.Volatile
 
 /**
  * 区域抽象类
