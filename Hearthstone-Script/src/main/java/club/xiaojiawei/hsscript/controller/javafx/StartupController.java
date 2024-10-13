@@ -1,6 +1,5 @@
 package club.xiaojiawei.hsscript.controller.javafx;
 
-import club.xiaojiawei.hsscript.consts.ScriptStaticData;
 import club.xiaojiawei.hsscript.enums.WindowEnum;
 import club.xiaojiawei.hsscript.utils.WindowUtil;
 import javafx.application.Platform;
@@ -13,6 +12,8 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import static club.xiaojiawei.hsscript.consts.ScriptDataKt.SCRIPT_NAME;
 
 /**
  * @author 肖嘉威
@@ -31,14 +32,14 @@ public class StartupController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         staticProgressBar = progressBar;
-        tip.setText(ScriptStaticData.SCRIPT_NAME + "启动中......");
+        tip.setText(SCRIPT_NAME + "启动中......");
         timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                if (++count == 100){
+                if (++count == 100) {
                     timer.cancel();
-                }else {
+                } else {
                     Platform.runLater(() -> progressBar.setProgress((double) count / 100));
                 }
             }
@@ -48,7 +49,7 @@ public class StartupController implements Initializable {
     /**
      * 完成进度条并隐藏此窗口
      */
-    public static void complete(){
+    public static void complete() {
         timer.cancel();
         staticProgressBar.setProgress(1D);
         WindowUtil.INSTANCE.hideStage(WindowEnum.STARTUP);

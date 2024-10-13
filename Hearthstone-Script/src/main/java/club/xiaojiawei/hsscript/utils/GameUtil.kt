@@ -1,15 +1,22 @@
 package club.xiaojiawei.hsscript.utils
 
-import club.xiaojiawei.hsscript.bean.GameRect
 import club.xiaojiawei.bean.LogRunnable
 import club.xiaojiawei.config.EXTRA_THREAD_POOL
 import club.xiaojiawei.config.log
-import club.xiaojiawei.hsscript.consts.ScriptStaticData
+import club.xiaojiawei.hsscript.bean.GameRect
+import club.xiaojiawei.hsscript.consts.GAME_CN_NAME
+import club.xiaojiawei.hsscript.consts.GAME_HWND
+import club.xiaojiawei.hsscript.consts.GAME_PROGRAM_NAME
+import club.xiaojiawei.hsscript.consts.GAME_RECT
+import club.xiaojiawei.hsscript.consts.GAME_US_NAME
+import club.xiaojiawei.hsscript.consts.PLATFORM_CN_NAME
+import club.xiaojiawei.hsscript.consts.PLATFORM_LOGIN_CN_NAME
+import club.xiaojiawei.hsscript.consts.PLATFORM_US_NAME
 import club.xiaojiawei.hsscript.dll.SystemDll
 import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.status.PauseStatus
-import club.xiaojiawei.util.isFalse
 import club.xiaojiawei.hsscript.utils.SystemUtil.delay
+import club.xiaojiawei.util.isFalse
 import com.sun.jna.platform.win32.Kernel32
 import com.sun.jna.platform.win32.User32
 import com.sun.jna.platform.win32.WinDef
@@ -239,19 +246,19 @@ object GameUtil {
     }
 
     fun leftButtonClick(point: Point) {
-        MouseUtil.leftButtonClick(point, ScriptStaticData.getGameHWND())
+        MouseUtil.leftButtonClick(point, GAME_HWND)
     }
 
     fun rightButtonClick(point: Point) {
-        MouseUtil.leftButtonClick(point, ScriptStaticData.getGameHWND())
+        MouseUtil.leftButtonClick(point, GAME_HWND)
     }
 
     fun moveMouse(startPos: Point?, endPos: Point) {
-        MouseUtil.moveMouseByLine(startPos, endPos, ScriptStaticData.getGameHWND())
+        MouseUtil.moveMouseByLine(startPos, endPos, GAME_HWND)
     }
 
     fun moveMouse(endPos: Point) {
-        MouseUtil.moveMouseByLine(endPos, ScriptStaticData.getGameHWND())
+        MouseUtil.moveMouseByLine(endPos, GAME_HWND)
     }
 
 
@@ -275,8 +282,8 @@ object GameUtil {
 //        按ESC键弹出投降界面
 //        ScriptStaticData.ROBOT.keyPress(27);
 //        ScriptStaticData.ROBOT.keyRelease(27);
-        val width = ScriptStaticData.GAME_RECT.right - ScriptStaticData.GAME_RECT.left
-        val height = ScriptStaticData.GAME_RECT.bottom - ScriptStaticData.GAME_RECT.top
+        val width = GAME_RECT.right - GAME_RECT.left
+        val height = GAME_RECT.bottom - GAME_RECT.top
         leftButtonClick(Point((width - width * 0.0072992700729927).toInt(), (height - height * 0.015625).toInt()))
         SystemUtil.delay(1500)
         SURRENDER_RECT.lClick()
@@ -284,7 +291,7 @@ object GameUtil {
     }
 
     fun cancelAction() {
-        MouseUtil.rightButtonClick(ScriptStaticData.getGameHWND())
+        MouseUtil.rightButtonClick(GAME_HWND)
     }
 
     fun lClickCenter() {
@@ -327,31 +334,31 @@ object GameUtil {
     }
 
     fun isAliveOfGame(): Boolean {
-        return SystemUtil.isAliveOfProgram(ScriptStaticData.GAME_PROGRAM_NAME)
+        return SystemUtil.isAliveOfProgram(GAME_PROGRAM_NAME)
     }
 
     fun findGameHWND(): WinDef.HWND? {
-        return SystemUtil.findHWND("UnityWndClass", ScriptStaticData.GAME_CN_NAME)
-            ?: let { SystemUtil.findHWND("UnityWndClass", ScriptStaticData.GAME_US_NAME) }
+        return SystemUtil.findHWND("UnityWndClass", GAME_CN_NAME)
+            ?: let { SystemUtil.findHWND("UnityWndClass", GAME_US_NAME) }
     }
 
     fun findPlatformHWND(): WinDef.HWND? {
-        return SystemUtil.findHWND("Chrome_WidgetWin_0", ScriptStaticData.PLATFORM_CN_NAME)
-            ?: let { SystemUtil.findHWND("Chrome_WidgetWin_0", ScriptStaticData.PLATFORM_US_NAME) }
+        return SystemUtil.findHWND("Chrome_WidgetWin_0", PLATFORM_CN_NAME)
+            ?: let { SystemUtil.findHWND("Chrome_WidgetWin_0", PLATFORM_US_NAME) }
     }
 
     fun findLoginPlatformHWND(): WinDef.HWND? {
-        return SystemUtil.findHWND("Qt5151QWindowIcon", ScriptStaticData.PLATFORM_LOGIN_CN_NAME)
+        return SystemUtil.findHWND("Qt5151QWindowIcon", PLATFORM_LOGIN_CN_NAME)
     }
 
     /**
      * 更新游戏窗口信息
      */
     fun updateGameRect(updateHWNDCache: Boolean = false) {
-        if (ScriptStaticData.getGameHWND() == null || updateHWNDCache) {
-            ScriptStaticData.setGameHWND(findGameHWND())
+        if (GAME_HWND == null || updateHWNDCache) {
+            GAME_HWND = findGameHWND()
         }
-        SystemUtil.updateRECT(ScriptStaticData.getGameHWND(), ScriptStaticData.GAME_RECT)
+        SystemUtil.updateRECT(GAME_HWND, GAME_RECT)
     }
 
     /**
@@ -360,17 +367,17 @@ object GameUtil {
     fun killGame() {
         if (findGameHWND() != null) {
             try {
-                Runtime.getRuntime().exec("cmd /c taskkill /f /t /im " + ScriptStaticData.GAME_PROGRAM_NAME)
+                Runtime.getRuntime().exec("cmd /c taskkill /f /t /im $GAME_PROGRAM_NAME")
                     .waitFor()
                 delay(1000)
-                log.info("炉石传说已关闭")
+                log.info { "炉石传说已关闭" }
             } catch (e: IOException) {
-                log.error("关闭炉石传说异常", e)
+                log.error(e) { "关闭炉石传说异常" }
             } catch (e: InterruptedException) {
-                log.warn("关闭炉石传说异常", e)
+                log.warn(e) { "关闭炉石传说异常" }
             }
         } else {
-            log.info("炉石传说不在运行")
+            log.info { "炉石传说不在运行" }
         }
     }
 

@@ -10,11 +10,15 @@ import club.xiaojiawei.hsscript.starter.*
 object StarterConfig {
 
     val starter: AbstractStarter = ClearStarter
-        .setNextStarter(PlatformStarter)
-        .setNextStarter(LoginPlatformStarter)
-        .setNextStarter(GameStarter)
-        .setNextStarter(InjectStarter)
-        .setNextStarter(LogListenStarter)
-        .setNextStarter(ExceptionListenStarter)
+
+    init {
+        ClearStarter
+            .setNextStarter(PlatformStarter)
+            .setNextStarter(LoginPlatformStarter)
+            .setNextStarter(GameStarter)
+            .setNextStarter(InjectStarter)
+            .setNextStarter(LogListenStarter)
+            .setNextStarter(ExceptionListenStarter)
+    }
 
 }

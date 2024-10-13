@@ -27,13 +27,7 @@ object CardActionManager {
         }
     }
 
-    private fun reload() {
-        CARD_ACTION_MAP.clear()
-        CARD_ACTION_MAP.putAll(load())
-    }
-
     private fun load(): MutableMap<String, Map<String, Supplier<CardAction>>> {
-        log.info { "重新加载卡牌库" }
         return CARD_ACTION_PLUGINS.mapValues { entry ->
             // 将每个 PluginWrapper 的 CardAction 转换为 Map<String, Supplier<CardAction>>
             entry.value
@@ -48,5 +42,11 @@ object CardActionManager {
                     cardAction.getCardId() to Supplier { cardAction.createNewInstance() }
                 }
         }.toMutableMap()
+    }
+
+    private fun reload() {
+        log.info { "重新加载卡牌库" }
+        CARD_ACTION_MAP.clear()
+        CARD_ACTION_MAP.putAll(load())
     }
 }

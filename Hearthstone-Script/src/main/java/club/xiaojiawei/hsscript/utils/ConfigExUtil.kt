@@ -1,12 +1,14 @@
 package club.xiaojiawei.hsscript.utils
 
-import club.xiaojiawei.hsscript.bean.WorkDay
 import club.xiaojiawei.hsscript.bean.HotKey
+import club.xiaojiawei.hsscript.bean.WorkDay
 import club.xiaojiawei.hsscript.bean.WorkTime
-import club.xiaojiawei.hsscript.consts.ScriptStaticData
+import club.xiaojiawei.hsscript.consts.GAME_PROGRAM_NAME
+import club.xiaojiawei.hsscript.consts.PLATFORM_PROGRAM_NAME
 import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.listener.WorkListener
 import java.io.File
+import java.nio.file.Path
 
 /**
  * @author 肖嘉威 xjw580@qq.com
@@ -16,7 +18,8 @@ object ConfigExUtil {
 
     fun storeGamePath(gameInstallPath: String?): Boolean {
         gameInstallPath ?: return false
-        if (File(gameInstallPath + File.separator + ScriptStaticData.GAME_PROGRAM_NAME).exists()) {
+
+        if (Path.of(gameInstallPath, GAME_PROGRAM_NAME).toFile().exists()) {
             ConfigUtil.putString(ConfigEnum.GAME_PATH, gameInstallPath)
             return true
         }
@@ -28,7 +31,7 @@ object ConfigExUtil {
         val programAbsolutePath = if (platformInstallPath.endsWith(".exe")) {
             platformInstallPath
         } else {
-            platformInstallPath + File.separator + ScriptStaticData.PLATFORM_PROGRAM_NAME
+            platformInstallPath + File.separator + PLATFORM_PROGRAM_NAME
         }
         if (File(programAbsolutePath).exists()) {
             ConfigUtil.putString(ConfigEnum.PLATFORM_PATH, programAbsolutePath)

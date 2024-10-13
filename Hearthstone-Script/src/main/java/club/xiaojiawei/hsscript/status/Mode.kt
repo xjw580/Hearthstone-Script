@@ -11,18 +11,17 @@ import club.xiaojiawei.enums.ModeEnum
 object Mode {
 
     var currMode: ModeEnum? = null
+        set(value) {
+            field?.modeStrategy?.afterLeave()
+            prevMode = field
+            field = value
+            field?.modeStrategy?.entering()
+        }
 
     var prevMode: ModeEnum? = null
 
-    fun setCurrMode(currMode: ModeEnum?) {
-        Mode.currMode?.modeStrategy?.afterLeave()
-        prevMode = Mode.currMode
-        Mode.currMode = currMode
-        Mode.currMode?.modeStrategy?.entering()
-    }
-
     fun reset() {
-        setCurrMode(null)
+        currMode = null
         log.info { "已重置模式状态" }
     }
 }

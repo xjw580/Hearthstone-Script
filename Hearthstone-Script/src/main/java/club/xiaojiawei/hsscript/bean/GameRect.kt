@@ -1,7 +1,7 @@
 package club.xiaojiawei.hsscript.bean
 
+import club.xiaojiawei.hsscript.consts.GAME_RECT
 import club.xiaojiawei.hsscript.consts.GameRationConst
-import club.xiaojiawei.hsscript.consts.ScriptStaticData
 import club.xiaojiawei.hsscript.utils.GameUtil
 import club.xiaojiawei.hsscript.utils.RandomUtil
 import club.xiaojiawei.hsscript.utils.SystemUtil
@@ -16,9 +16,9 @@ import java.util.function.Consumer
 data class GameRect(val left: Double, val right: Double, val top: Double, val bottom: Double) {
 
     fun getClickPos(): Point {
-        val realH: Int = ScriptStaticData.GAME_RECT.bottom - ScriptStaticData.GAME_RECT.top
+        val realH: Int = GAME_RECT.bottom - GAME_RECT.top
         val usableH = realH
-        val realW: Int = ScriptStaticData.GAME_RECT.right - ScriptStaticData.GAME_RECT.left
+        val realW: Int = GAME_RECT.right - GAME_RECT.left
         val usableW = (realH * GameRationConst.GAME_WINDOW_ASPECT_TO_HEIGHT_RATIO).toInt()
         val middleX = realW shr 1
         val middleY = realH shr 1

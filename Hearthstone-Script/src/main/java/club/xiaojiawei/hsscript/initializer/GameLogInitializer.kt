@@ -6,7 +6,6 @@ import club.xiaojiawei.hsscript.utils.ConfigUtil
 import club.xiaojiawei.hsscript.utils.SystemUtil
 import club.xiaojiawei.util.isTrue
 import org.ini4j.Ini
-import java.io.*
 import java.nio.file.Path
 
 /**
@@ -43,12 +42,12 @@ object GameLogInitializer : AbstractInitializer() {
     }
 
     public override fun exec() {
-        val logConfigFile = File(SpringBeanConfig.springData.gameLogConfigurationPath)
-        if (!logConfigFile.exists()) {
-            logConfigFile.mkdirs()
-            logConfigFile.createNewFile()
+        val gameLogConfigFile = Path.of(System.getenv("LOCALAPPDATA"), "Blizzard", "Hearthstone", "log.config").toFile()
+        if (!gameLogConfigFile.exists()) {
+            gameLogConfigFile.mkdirs()
+            gameLogConfigFile.createNewFile()
         }
-        val gameLogIni = Ini(logConfigFile)
+        val gameLogIni = Ini(gameLogConfigFile)
 
         var modify = false
 
@@ -57,6 +56,7 @@ object GameLogInitializer : AbstractInitializer() {
         checkLogConfig(gameLogIni, "Power").isTrue { modify = true }
 
         modify.isTrue {
+            gameLogIni.store()
             SystemUtil.notice("炉石日志配置已更改，请重启游戏，否则脚本将无法运行")
             log.info { "炉石日志配置已更改，请重启游戏，否则脚本将无法运行" }
         }
@@ -68,23 +68,24 @@ object GameLogInitializer : AbstractInitializer() {
             log.warn { "未设置游戏安装目录，无法修改日志大小限制" }
             return
         }
-        val file = Path.of(gamePath, "client.config").toFile()
-        if (!file.exists()) {
-            file.mkdirs()
-            file.createNewFile()
+        val clientConfigFile = Path.of(gamePath, "client.config").toFile()
+        if (!clientConfigFile.exists()) {
+            clientConfigFile.mkdirs()
+            clientConfigFile.createNewFile()
         }
-        val ini = Ini(file)
+        val clientIni = Ini(clientConfigFile)
 
-        val logLimitSize = ini.get("Log", "FileSizeLimit.Int")
-        if (logLimitSize == null || logLimitSize.toIntOrNull() == null || logLimitSize.toInt() < ConfigUtil.getLong(
-                ConfigEnum.GAME_MAX_LOG_SIZE
+        val logLimitSize = clientIni.get("Log", "FileSizeLimit.Int")
+        if (logLimitSize == null || logLimitSize.toIntOrNull() == null || logLimitSize.toInt() < ConfigUtil.getInt(
+                ConfigEnum.GAME_LOG_LIMIT
             )
         ) {
             modify = true
-            ini.put("Log", "FileSizeLimit.Int", ConfigUtil.getLong(ConfigEnum.GAME_MAX_LOG_SIZE))
+            clientIni.put("Log", "FileSizeLimit.Int", ConfigUtil.getInt(ConfigEnum.GAME_LOG_LIMIT))
         }
 
         modify.isTrue {
+            clientIni.store()
             log.info { "游戏日志大小限制已修改，重启游戏生效" }
         }
 

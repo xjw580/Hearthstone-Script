@@ -2,14 +2,12 @@ package club.xiaojiawei.hsscript.starter
 
 import club.xiaojiawei.config.log
 import club.xiaojiawei.util.isFalse
-import lombok.extern.slf4j.Slf4j
 import java.util.concurrent.ScheduledFuture
 
 /**
  * @author 肖嘉威
  * @date 2023/7/5 14:37
  */
-@Slf4j
 abstract class AbstractStarter {
 
     private var nextStarter: AbstractStarter? = null

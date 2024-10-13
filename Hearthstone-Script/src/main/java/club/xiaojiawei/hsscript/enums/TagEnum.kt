@@ -12,7 +12,9 @@ import club.xiaojiawei.enums.ZoneEnum
 import club.xiaojiawei.hsscript.bean.log.ExtraEntity
 import club.xiaojiawei.hsscript.bean.log.TagChangeEntity
 import club.xiaojiawei.hsscript.bean.single.WarEx
-import club.xiaojiawei.hsscript.consts.ScriptStaticData
+import club.xiaojiawei.hsscript.consts.CONCEDED
+import club.xiaojiawei.hsscript.consts.LOST
+import club.xiaojiawei.hsscript.consts.WON
 import club.xiaojiawei.hsscript.interfaces.ExtraEntityHandler
 import club.xiaojiawei.hsscript.interfaces.TagChangeHandler
 import club.xiaojiawei.hsscript.utils.CardUtil
@@ -116,8 +118,7 @@ enum class TagEnum(
     CARDTYPE("卡牌类型",
         null,
         ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
-            extraEntity.extraCard.card.cardType =
-                ScriptStaticData.CARD_TYPE_MAP.get(value) ?: CardTypeEnum.UNKNOWN
+            extraEntity.extraCard.card.cardType = CardTypeEnum.fromString(value)
         }
     ),
     ZONE_POSITION("区位置",
@@ -140,11 +141,11 @@ enum class TagEnum(
         "游戏状态",
         TagChangeHandler { card: Card?, tagChangeEntity: TagChangeEntity, player: Player?, area: Area? ->
             val gameId = tagChangeEntity.entity
-            if (tagChangeEntity.value == ScriptStaticData.WON) {
+            if (tagChangeEntity.value == WON) {
                 War.won = gameId
-            } else if (tagChangeEntity.value == ScriptStaticData.LOST) {
+            } else if (tagChangeEntity.value == LOST) {
                 War.lost = gameId
-            } else if (tagChangeEntity.value == ScriptStaticData.CONCEDED) {
+            } else if (tagChangeEntity.value == CONCEDED) {
                 War.conceded = gameId
             }
         },
@@ -404,12 +405,11 @@ enum class TagEnum(
         }),
     CARDRACE("种族",
         TagChangeHandler { card: Card?, tagChangeEntity: TagChangeEntity, player: Player?, area: Area? ->
-            card?.cardRace = (ScriptStaticData.CARD_RACE_MAP[tagChangeEntity.value]) ?: CardRaceEnum.UNKNOWN
+            card?.cardRace = CardRaceEnum.fromString(tagChangeEntity.value)
             log(player, card, "种族", tagChangeEntity.value)
         },
         ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
-            extraEntity.extraCard.card.cardRace =
-                (ScriptStaticData.CARD_RACE_MAP[value]) ?: CardRaceEnum.UNKNOWN
+            extraEntity.extraCard.card.cardRace = CardRaceEnum.fromString(value)
         }),
     PREMIUM("衍生物",
         null,
@@ -517,7 +517,8 @@ enum class TagEnum(
     ;
 
     companion object {
-        fun getByName(tagEnumName: String): TagEnum {
+        fun fromString(tagEnumName: String?): TagEnum {
+            if (tagEnumName == null || tagEnumName.isBlank()) return UNKNOWN
             return try {
                 valueOf(tagEnumName)
             } catch (_: IllegalArgumentException) {

@@ -20,7 +20,7 @@ script:
 logging:
   level:
     root: info
-  config: classpath:logback-spring.xml
+  config: classpath:logback.xml
 
 log:
   level: ${logging.level.root}

@@ -1,6 +1,6 @@
 package club.xiaojiawei.hsscript.enums
 
-import club.xiaojiawei.hsscript.consts.ScriptStaticData
+import club.xiaojiawei.hsscript.consts.SCRIPT_NAME
 import javafx.stage.Screen
 import javafx.stage.StageStyle
 
@@ -19,13 +19,13 @@ enum class WindowEnum(
     val initStyle: StageStyle
 ) {
     SETTINGS(
-        "settings.fxml", ScriptStaticData.SCRIPT_NAME + "-设置",
+        "settings.fxml", "$SCRIPT_NAME-设置",
         600.0, 400.0, -1.0, -1.0,
         true, StageStyle.DECORATED
     ),
     MAIN(
         "main.fxml",
-        ScriptStaticData.SCRIPT_NAME,
+        SCRIPT_NAME,
         220.0,
         670.0,
         Screen.getPrimary().bounds.width - 215.0,
@@ -34,7 +34,7 @@ enum class WindowEnum(
         StageStyle.DECORATED
     ),
     STARTUP(
-        "startup.fxml", ScriptStaticData.SCRIPT_NAME + "-启动页",
+        "startup.fxml", SCRIPT_NAME + "-启动页",
         558.0, 400.0, -1.0, -1.0,
         false, StageStyle.UNDECORATED
     ),

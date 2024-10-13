@@ -2,26 +2,29 @@ package club.xiaojiawei.hsscript.strategy
 
 import club.xiaojiawei.bean.Card
 import club.xiaojiawei.bean.isValid
-import club.xiaojiawei.hsscript.bean.log.ExtraEntity
-import club.xiaojiawei.hsscript.bean.log.TagChangeEntity
 import club.xiaojiawei.config.log
-import club.xiaojiawei.hsscript.consts.ScriptStaticData
 import club.xiaojiawei.enums.StepEnum
 import club.xiaojiawei.enums.WarPhaseEnum
-import club.xiaojiawei.interfaces.PhaseStrategy
+import club.xiaojiawei.hsscript.bean.log.ExtraEntity
+import club.xiaojiawei.hsscript.bean.log.TagChangeEntity
+import club.xiaojiawei.hsscript.consts.CHANGE_ENTITY
+import club.xiaojiawei.hsscript.consts.FULL_ENTITY
+import club.xiaojiawei.hsscript.consts.SHOW_ENTITY
+import club.xiaojiawei.hsscript.consts.TAG_CHANGE
 import club.xiaojiawei.hsscript.listener.log.PowerLogListener
 import club.xiaojiawei.hsscript.status.PauseStatus
-import club.xiaojiawei.status.War.currentPhase
-import club.xiaojiawei.status.War.currentTurnStep
-import club.xiaojiawei.status.War.me
 import club.xiaojiawei.hsscript.strategy.DeckStrategyActuator.discoverChooseCard
-import club.xiaojiawei.util.isTrue
 import club.xiaojiawei.hsscript.utils.PowerLogUtil.dealChangeEntity
 import club.xiaojiawei.hsscript.utils.PowerLogUtil.dealFullEntity
 import club.xiaojiawei.hsscript.utils.PowerLogUtil.dealShowEntity
 import club.xiaojiawei.hsscript.utils.PowerLogUtil.dealTagChange
 import club.xiaojiawei.hsscript.utils.PowerLogUtil.isRelevance
 import club.xiaojiawei.hsscript.utils.SystemUtil
+import club.xiaojiawei.interfaces.PhaseStrategy
+import club.xiaojiawei.status.War.currentPhase
+import club.xiaojiawei.status.War.currentTurnStep
+import club.xiaojiawei.status.War.me
+import club.xiaojiawei.util.isTrue
 import java.io.IOException
 
 /**
@@ -73,7 +76,7 @@ abstract class AbstractPhaseStrategy : PhaseStrategy {
                     }
                 } else if (isRelevance(l)) {
                     log.debug { l }
-                    if (l.contains(ScriptStaticData.TAG_CHANGE)) {
+                    if (l.contains(TAG_CHANGE)) {
                         if (dealTagChangeThenIsOver(
                                 l,
                                 dealTagChange(l)
@@ -81,15 +84,15 @@ abstract class AbstractPhaseStrategy : PhaseStrategy {
                         ) {
                             break
                         }
-                    } else if (l.contains(ScriptStaticData.SHOW_ENTITY)) {
+                    } else if (l.contains(SHOW_ENTITY)) {
                         if (dealShowEntityThenIsOver(l, dealShowEntity(l, accessFile))) {
                             break
                         }
-                    } else if (l.contains(ScriptStaticData.FULL_ENTITY)) {
+                    } else if (l.contains(FULL_ENTITY)) {
                         if (dealFullEntityThenIsOver(l, dealFullEntity(l, accessFile))) {
                             break
                         }
-                    } else if (l.contains(ScriptStaticData.CHANGE_ENTITY)) {
+                    } else if (l.contains(CHANGE_ENTITY)) {
                         if (dealChangeEntityThenIsOver(l, dealChangeEntity(l, accessFile))) {
                             break
                         }

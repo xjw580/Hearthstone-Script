@@ -71,7 +71,7 @@ enum class ConfigEnum(
     /**
      * 适配畸变模式
      */
-    DISTORTION(group = "action", defaultValue = "false"),
+    DISTORTION(group = "action", defaultValue = "true"),
 
     /**
      * 套牌插件禁用列表
@@ -94,9 +94,9 @@ enum class ConfigEnum(
     PLATFORM_PASSWORD(group = "other"),
 
     /**
-     * 游戏最大日志/KB
+     * 游戏日志大小限制/KB
      */
-    GAME_MAX_LOG_SIZE(group = "other", defaultValue = "30720"),
+    GAME_LOG_LIMIT(group = "other", defaultValue = "10240"),
 
     /**
      * 允许发送windows通知
@@ -112,5 +112,6 @@ enum class ConfigEnum(
      * 暂停程序热键
      */
     PAUSE_HOT_KEY(group = "system", defaultValue = JSON.toJSONString(HotKey(JIntellitype.MOD_CONTROL, 'P'.code))),
+
     ;
 }

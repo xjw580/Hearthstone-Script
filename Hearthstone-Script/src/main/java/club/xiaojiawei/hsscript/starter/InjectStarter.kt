@@ -1,7 +1,9 @@
 package club.xiaojiawei.hsscript.starter
 
 import club.xiaojiawei.config.log
-import club.xiaojiawei.hsscript.consts.ScriptStaticData
+import club.xiaojiawei.hsscript.consts.DLL_PATH
+import club.xiaojiawei.hsscript.consts.GAME_HWND
+import club.xiaojiawei.hsscript.consts.GAME_US_NAME
 import club.xiaojiawei.hsscript.dll.SystemDll
 import club.xiaojiawei.hsscript.utils.CMDUtil
 import java.io.File
@@ -27,7 +29,7 @@ object InjectStarter : AbstractStarter() {
 
         if (injectFile.exists()) {
 //            打包查找
-            dllFile = Path.of(rootPath, ScriptStaticData.LIB_DIR, dllDir, dllName).toFile()
+            dllFile = Path.of(rootPath, DLL_PATH, dllName).toFile()
             inject(injectFile.absolutePath, dllFile.absolutePath)
         } else {
 //            IDE查找
@@ -49,14 +51,14 @@ object InjectStarter : AbstractStarter() {
                 log.error { "未找到$injectUtilName" }
             }
         }
-        SystemDll.INSTANCE.changeWindow(ScriptStaticData.getGameHWND(), true)
-        SystemDll.INSTANCE.changeInput(ScriptStaticData.getGameHWND(), true)
+        SystemDll.INSTANCE.changeWindow(GAME_HWND, true)
+        SystemDll.INSTANCE.changeInput(GAME_HWND, true)
         startNextStarter()
     }
 
     private fun inject(injectUtilPath: String, dllPath: String) {
         try {
-            val result = CMDUtil.exec(arrayOf(injectUtilPath, ScriptStaticData.GAME_US_NAME + ".exe", dllPath))
+            val result = CMDUtil.exec(arrayOf(injectUtilPath, "$GAME_US_NAME.exe", dllPath))
             log.info { "注入dll" + (if (result.contains("completed")) "成功" else "失败") }
         } catch (e: IOException) {
             log.error(e) { "注入dll异常" }

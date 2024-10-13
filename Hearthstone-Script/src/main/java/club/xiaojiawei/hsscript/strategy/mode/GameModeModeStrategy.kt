@@ -11,7 +11,7 @@ import java.util.concurrent.TimeUnit
  * @author 肖嘉威
  * @date 2022/11/26 21:44
  */
-object GameModeStrategy : AbstractModeStrategy<Any?>() {
+object GameModeModeStrategy : AbstractModeStrategy<Any?>() {
 
     val BACK_RECT: GameRect = GameRect(0.3975, 0.4558, 0.4058, 0.4376)
 

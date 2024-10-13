@@ -2,11 +2,10 @@ package club.xiaojiawei.hsscript.status
 
 import club.xiaojiawei.*
 import club.xiaojiawei.bean.PluginWrapper
-import club.xiaojiawei.config.ConfigurationConfig
 import club.xiaojiawei.config.PluginScope
 import club.xiaojiawei.config.log
-import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.utils.ClassLoaderUtil
+import club.xiaojiawei.hsscript.utils.ConfigExUtil
 import javafx.beans.property.ReadOnlyBooleanProperty
 import javafx.beans.property.ReadOnlyBooleanWrapper
 import java.nio.file.Path
@@ -55,17 +54,17 @@ object PluginManager {
     }
 
     private fun loadDeckPlugin() {
+        DeckStrategyManager
         loadDeck.set(false)
         loadPlugin(DeckStrategy::class.java, DeckPlugin::class.java, DECK_STRATEGY_PLUGINS)
         loadDeck.set(true)
-        DeckStrategyManager.deckStrategies
     }
 
     private fun loadCardPlugin() {
+        CardActionManager
         loadCard.set(false)
         loadPlugin(CardAction::class.java, CardPlugin::class.java, CARD_ACTION_PLUGINS)
         loadCard.set(true)
-        CardActionManager.CARD_ACTION_MAP
     }
 
     private fun <T, P : Plugin> loadPlugin(
@@ -79,15 +78,9 @@ object PluginManager {
         var pluginWrapper: PluginWrapper<T>
         val disableSet:MutableSet<String> =
         if (pluginClass == CardPlugin::class.java) {
-            ConfigurationConfig.scriptConfiguration.getProperty(
-                ConfigEnum.CARD_PLUGIN_DISABLED.key,
-                ConfigEnum.CARD_PLUGIN_DISABLED.defaultValue
-            ).split(",")
+            ConfigExUtil.getCardPluginDisabled()
         }else{
-            ConfigurationConfig.scriptConfiguration.getProperty(
-                ConfigEnum.DECK_PLUGIN_DISABLED.key,
-                ConfigEnum.DECK_PLUGIN_DISABLED.defaultValue
-            ).split(",")
+            ConfigExUtil.getDeckPluginDisabled()
         }.toMutableSet()
         disableSet.removeAll { it.trim().isEmpty() }
 

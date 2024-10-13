@@ -2,13 +2,14 @@ package club.xiaojiawei.hsscript.strategy.phase
 
 import club.xiaojiawei.bean.Entity
 import club.xiaojiawei.bean.isValid
+import club.xiaojiawei.config.log
+import club.xiaojiawei.enums.StepEnum
+import club.xiaojiawei.enums.WarPhaseEnum
 import club.xiaojiawei.hsscript.bean.log.ExtraEntity
 import club.xiaojiawei.hsscript.bean.log.TagChangeEntity
-import club.xiaojiawei.config.log
-import club.xiaojiawei.hsscript.consts.ScriptStaticData
-import club.xiaojiawei.enums.StepEnum
+import club.xiaojiawei.hsscript.consts.CARD_AREA_MAP
 import club.xiaojiawei.hsscript.enums.TagEnum
-import club.xiaojiawei.enums.WarPhaseEnum
+import club.xiaojiawei.hsscript.strategy.AbstractPhaseStrategy
 import club.xiaojiawei.status.War.currentPhase
 import club.xiaojiawei.status.War.currentPlayer
 import club.xiaojiawei.status.War.firstPlayerGameId
@@ -16,8 +17,6 @@ import club.xiaojiawei.status.War.me
 import club.xiaojiawei.status.War.player1
 import club.xiaojiawei.status.War.player2
 import club.xiaojiawei.status.War.rival
-import club.xiaojiawei.hsscript.strategy.AbstractPhaseStrategy
-import org.apache.logging.log4j.util.Strings
 
 /**
  * 抽起始牌阶段
@@ -37,7 +36,7 @@ object DrawnInitCardPhaseStrategy : AbstractPhaseStrategy() {
         if (reverse) {
             newPlayerId = if (newPlayerId == "1") "2" else "1"
         }
-        if (!me.isValid() && Strings.isNotBlank(newPlayerId)) {
+        if (!me.isValid() && newPlayerId.isNotBlank()) {
             when (newPlayerId) {
                 "1" -> {
                     me = player1
@@ -80,14 +79,14 @@ object DrawnInitCardPhaseStrategy : AbstractPhaseStrategy() {
      * @return
      */
     override fun dealFullEntityThenIsOver(line: String, extraEntity: ExtraEntity): Boolean {
-        val card = ScriptStaticData.CARD_AREA_MAP[extraEntity.entityId]?.findByEntityId(extraEntity.entityId)
-        card?:let {
+        val card = CARD_AREA_MAP[extraEntity.entityId]?.findByEntityId(extraEntity.entityId)
+        card ?: let {
             log.warn { "card【entityId:${extraEntity.entityId}】不应为null" }
             return false
         }
         if (card.entityName == Entity.UNKNOWN_ENTITY_NAME || card.entityName == "幸运币") {
             card.entityName = "幸运币"
-            if (Strings.isNotBlank(card.cardId)) {
+            if (card.cardId.isNotBlank()) {
                 rival.gameId = firstPlayerGameId
                 log.info { "对方游戏id：$firstPlayerGameId" }
             } else {

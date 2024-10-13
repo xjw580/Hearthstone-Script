@@ -1,7 +1,6 @@
 package club.xiaojiawei.hsscript.listener.log
 
 import club.xiaojiawei.config.LISTEN_LOG_THREAD_POOL
-import club.xiaojiawei.hsscript.config.SpringBeanConfig
 import club.xiaojiawei.config.log
 import club.xiaojiawei.hsscript.status.LogListenerStatus
 import club.xiaojiawei.hsscript.status.PauseStatus
@@ -18,7 +17,7 @@ import java.util.concurrent.TimeUnit
  * @date 2023/9/20 16:54
  */
 abstract class AbstractLogListener(
-    protected var logFileName: String?,
+    protected var logFileName: String,
     protected var listenInitialDelay: Long,
     protected var listenPeriod: Long,
     protected var listenTimeUnit: TimeUnit
@@ -87,9 +86,8 @@ abstract class AbstractLogListener(
     }
 
     private fun createLogFile(): File? {
-        return LogListenerStatus.logDir?.let {
-            val logFile = File(it.absolutePath + "/" + logFileName)
-            SpringBeanConfig.springData.deckLogName
+        return LogListenerStatus.logPath?.let {
+            val logFile = it.resolve(logFileName)
             logFile.exists().isFalse {
                 FileWriter(logFile).use { fileWriter ->
                     fileWriter.write("")

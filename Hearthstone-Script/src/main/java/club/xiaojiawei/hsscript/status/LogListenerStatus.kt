@@ -1,7 +1,10 @@
 package club.xiaojiawei.hsscript.status
 
+import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.listener.log.AbstractLogListener
+import club.xiaojiawei.hsscript.utils.ConfigUtil
 import java.io.File
+import java.nio.file.Path
 
 /**
  * @author 肖嘉威
@@ -9,7 +12,7 @@ import java.io.File
  */
 object LogListenerStatus {
 
-    var logDir: File? = null
+    var logPath: File? = null
 
     val activeListeners = mutableListOf<AbstractLogListener>()
 

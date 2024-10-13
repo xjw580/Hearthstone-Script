@@ -65,4 +65,17 @@ enum class CardRaceEnum {
      * 未知
      */
     UNKNOWN,
+
+    ;
+
+    companion object {
+        fun fromString(str: String?): CardRaceEnum {
+            if (str == null || str.isBlank()) return UNKNOWN
+            return try {
+                valueOf(str.uppercase())
+            }catch (_:Exception){
+                UNKNOWN
+            }
+        }
+    }
 }

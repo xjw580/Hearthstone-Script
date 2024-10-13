@@ -16,7 +16,7 @@ object FriendlyModeStrategy : AbstractModeStrategy<Any?>() {
 
     override fun afterEnter(t: Any?) {
         if (WorkListener.isDuringWorkDate()) {
-            TournamentModeStrategy.selectDeck(DeckStrategyManager.currentDeckStrategy.get())
+            TournamentModeStrategy.selectDeck(DeckStrategyManager.currentDeckStrategy)
             SystemUtil.delayShort()
             TournamentModeStrategy.startMatching()
         } else {

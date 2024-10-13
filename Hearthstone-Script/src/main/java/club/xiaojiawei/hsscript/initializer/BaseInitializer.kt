@@ -2,9 +2,9 @@ package club.xiaojiawei.hsscript.initializer
 
 import club.xiaojiawei.enums.ModeEnum
 import club.xiaojiawei.enums.WarPhaseEnum
+import club.xiaojiawei.hsscript.utils.ConfigUtil
 import club.xiaojiawei.interfaces.ModeStrategy
 import club.xiaojiawei.interfaces.PhaseStrategy
-import club.xiaojiawei.hsscript.utils.ConfigUtil
 
 /**
  * 开启游戏日志输出
@@ -21,13 +21,13 @@ object BaseInitializer : AbstractInitializer() {
     override fun exec() {
         ModeEnum.values().forEach {
             it.modeStrategy =
-                Class.forName("club.xiaojiawei.strategy.mode." + toCamelCase(it.name) + "ModeStrategy").kotlin.objectInstance as ModeStrategy<*>
+                Class.forName("club.xiaojiawei.hsscript.strategy.mode." + toCamelCase(it.name) + "ModeStrategy").kotlin.objectInstance as ModeStrategy<*>?
         }
         WarPhaseEnum.values().forEach {
             it.phaseStrategy =
-                Class.forName("club.xiaojiawei.strategy.phase." + toCamelCase(it.name) + "PhaseStrategy").kotlin.objectInstance as PhaseStrategy?
+                Class.forName("club.xiaojiawei.hsscript.strategy.phase." + toCamelCase(it.name) + "PhaseStrategy").kotlin.objectInstance as PhaseStrategy?
         }
-        ConfigUtil.loadConfig()
+        ConfigUtil
     }
 
 }

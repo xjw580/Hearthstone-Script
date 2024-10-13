@@ -1,11 +1,12 @@
 package club.xiaojiawei.hsscript.utils
 
 import club.xiaojiawei.JavaFXUI
-import club.xiaojiawei.hsscript.consts.ScriptStaticData
+import club.xiaojiawei.hsscript.consts.FXML_PATH
+import club.xiaojiawei.hsscript.consts.SCRIPT_ICON_PATH
 import club.xiaojiawei.hsscript.enums.WindowEnum
-import club.xiaojiawei.util.isTrue
 import club.xiaojiawei.hsscript.utils.SystemUtil.findHWND
 import club.xiaojiawei.hsscript.utils.SystemUtil.showWindow
+import club.xiaojiawei.util.isTrue
 import javafx.beans.value.ObservableValue
 import javafx.event.ActionEvent
 import javafx.event.EventHandler
@@ -107,7 +108,7 @@ object WindowUtil {
         stage.scene = scene
         stage.icons.add(
             Image(
-                Objects.requireNonNull(WindowUtil::class.java.getResource(ScriptStaticData.SCRIPT_ICON_PATH))
+                Objects.requireNonNull(WindowUtil::class.java.getResource(SCRIPT_ICON_PATH))
                     .toExternalForm()
             )
         )
@@ -146,7 +147,7 @@ object WindowUtil {
     }
 
     fun hideAllStage() {
-        for (value in WindowEnum.entries) {
+        for (value in WindowEnum.values()) {
             hideStage(value)
         }
     }
@@ -175,7 +176,7 @@ object WindowUtil {
         val stage = Stage()
         try {
             val fxmlLoader =
-                FXMLLoader(WindowUtil::class.java.getResource(ScriptStaticData.FXML_PATH + windowEnum.fxmlName))
+                FXMLLoader(WindowUtil::class.java.getResource(FXML_PATH + windowEnum.fxmlName))
             stage.properties[CONTROLLER_KEY] = fxmlLoader.getController()
             val scene = Scene(fxmlLoader.load())
             scene.stylesheets.add(JavaFXUI.javafxUIStylesheet())
@@ -183,7 +184,7 @@ object WindowUtil {
             stage.title = windowEnum.title
             stage.icons.add(
                 Image(
-                    Objects.requireNonNull(WindowUtil::class.java.getResource(ScriptStaticData.SCRIPT_ICON_PATH))
+                    Objects.requireNonNull(WindowUtil::class.java.getResource(SCRIPT_ICON_PATH))
                         .toExternalForm()
                 )
             )

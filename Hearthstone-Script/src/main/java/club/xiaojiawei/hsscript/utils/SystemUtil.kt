@@ -1,27 +1,29 @@
 package club.xiaojiawei.hsscript.utils
 
 import club.xiaojiawei.bean.LogRunnable
-import club.xiaojiawei.hsscript.config.SpringBeanConfig
 import club.xiaojiawei.config.log
+import club.xiaojiawei.hsscript.consts.FXML_IMAGE_PATH
+import club.xiaojiawei.hsscript.consts.GAME_HWND
+import club.xiaojiawei.hsscript.consts.MAIN_IMG_NAME
+import club.xiaojiawei.hsscript.consts.RESOURCE_PATH
+import club.xiaojiawei.hsscript.consts.ROBOT
+import club.xiaojiawei.hsscript.consts.SCRIPT_NAME
 import club.xiaojiawei.hsscript.custom.MouseClickListener
-import club.xiaojiawei.hsscript.consts.ScriptStaticData
 import club.xiaojiawei.hsscript.dll.NoticeDll
 import club.xiaojiawei.hsscript.dll.SystemDll
 import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.enums.RegCommonNameEnum
 import club.xiaojiawei.hsscript.status.PauseStatus
 import club.xiaojiawei.util.isTrue
-import club.xiaojiawei.ws.WebSocketServer
 import com.sun.jna.platform.win32.*
 import javafx.application.Platform
-import org.apache.logging.log4j.util.Strings
 import java.awt.*
 import java.awt.datatransfer.StringSelection
 import java.awt.event.KeyEvent
 import java.awt.event.MouseEvent
 import java.net.URI
 import java.nio.charset.StandardCharsets
-import java.nio.file.Paths
+import java.nio.file.Path
 import java.util.function.Consumer
 import kotlin.system.exitProcess
 
@@ -47,12 +49,13 @@ object SystemUtil {
         ConfigUtil.getBoolean(ConfigEnum.SEND_NOTICE).isTrue {
             Thread.ofVirtual().name("Notice VThread").start(LogRunnable {
 //        trayIcon.displayMessage(title, content, TrayIcon.MessageType.NONE);
-                val appIDBytes: ByteArray = ScriptStaticData.SCRIPT_NAME.toByteArray(StandardCharsets.UTF_8)
+                val appIDBytes: ByteArray = SCRIPT_NAME.toByteArray(StandardCharsets.UTF_8)
                 val titleBytes = title.toByteArray(StandardCharsets.UTF_8)
                 val msgBytes = content.toByteArray(StandardCharsets.UTF_8)
+                RESOURCE_PATH
+
                 val icoPathBytes: ByteArray =
-                    Paths.get(SpringBeanConfig.springData.resourcePath + ScriptStaticData.MAIN_IMG_PNG_NAME)
-                        .toAbsolutePath()
+                    Path.of(RESOURCE_PATH, MAIN_IMG_NAME).toAbsolutePath()
                         .normalize().toString().toByteArray(
                             StandardCharsets.UTF_8
                         )
@@ -104,22 +107,22 @@ object SystemUtil {
     }
 
     fun deleteAllContent() {
-        ScriptStaticData.ROBOT.keyPress(KeyEvent.VK_CONTROL)
+        ROBOT.keyPress(KeyEvent.VK_CONTROL)
         sendKey(KeyEvent.VK_A)
-        ScriptStaticData.ROBOT.keyRelease(KeyEvent.VK_CONTROL)
+        ROBOT.keyRelease(KeyEvent.VK_CONTROL)
         delay(200)
         sendKey(KeyEvent.VK_DELETE)
     }
 
     fun pasteFromClipboard() {
-        ScriptStaticData.ROBOT.keyPress(KeyEvent.VK_CONTROL)
+        ROBOT.keyPress(KeyEvent.VK_CONTROL)
         sendKey(KeyEvent.VK_V)
-        ScriptStaticData.ROBOT.keyRelease(KeyEvent.VK_CONTROL)
+        ROBOT.keyRelease(KeyEvent.VK_CONTROL)
     }
 
     fun sendKey(keyCode: Int) {
-        ScriptStaticData.ROBOT.keyPress(keyCode)
-        ScriptStaticData.ROBOT.keyRelease(keyCode)
+        ROBOT.keyPress(keyCode)
+        ROBOT.keyRelease(keyCode)
     }
 
     /**
@@ -174,7 +177,7 @@ object SystemUtil {
      * @param delay
      */
     fun delay(delay: Int) {
-        ScriptStaticData.ROBOT.delay(delay)
+        ROBOT.delay(delay)
     }
 
     fun delay(minDelay: Int, maxDelay: Int) {
@@ -216,20 +219,18 @@ object SystemUtil {
     @Deprecated("由 {@link SystemDll#closeProgram(WinDef.HWND)} 取代")
     fun killProgram(programHWND: WinDef.HWND?) {
         showWindow(programHWND)
-        ScriptStaticData.ROBOT.keyPress(18)
-        ScriptStaticData.ROBOT.keyPress(115)
-        ScriptStaticData.ROBOT.keyRelease(115)
-        ScriptStaticData.ROBOT.keyRelease(18)
+        ROBOT.keyPress(18)
+        ROBOT.keyPress(115)
+        ROBOT.keyRelease(115)
+        ROBOT.keyRelease(18)
         log.info { "已关闭程序" }
     }
 
 
     fun isAliveOfProgram(programName: String): Boolean {
-        return Strings.isNotBlank(
-            String(
-                Runtime.getRuntime().exec("cmd /c tasklist | find \"$programName\"").inputStream.readAllBytes()
-            )
-        )
+        return String(
+            Runtime.getRuntime().exec("cmd /c tasklist | find \"$programName\"").inputStream.readAllBytes()
+        ).isNotBlank()
     }
 
     /**
@@ -252,7 +253,7 @@ object SystemUtil {
             return
         }
         val image = Toolkit.getDefaultToolkit()
-            .getImage(SystemUtil::class.java.getResource(ScriptStaticData.FXML_IMAGE_PATH + trayIconName))
+            .getImage(SystemUtil::class.java.getResource(FXML_IMAGE_PATH + trayIconName))
         //        托盘右键弹出菜单
         val popupMenu = PopupMenu()
         for (menuItem in menuItems) {
@@ -262,7 +263,7 @@ object SystemUtil {
         trayIcon = TrayIcon(image, trayName, popupMenu)
         trayIcon?.let {
             it.setImageAutoSize(true)
-            it.setToolTip(ScriptStaticData.SCRIPT_NAME)
+            it.setToolTip(SCRIPT_NAME)
             it.addMouseListener(MouseClickListener(mouseClickListener))
         }
         SystemTray.getSystemTray().add(trayIcon)
@@ -325,7 +326,7 @@ object SystemUtil {
      * 关闭本软件
      */
     fun shutdown() {
-        val gameHWND = ScriptStaticData.getGameHWND()
+        val gameHWND = GAME_HWND
         if (gameHWND != null) {
             SystemDll.INSTANCE.uninstallDll(gameHWND)
         }
@@ -335,7 +336,6 @@ object SystemUtil {
         Thread.startVirtualThread {
             try {
                 log.info { "关闭软件..." }
-                WebSocketServer.closeAll()
                 Thread.sleep(1000)
             } catch (e: InterruptedException) {
                 log.error(e) { "休眠被中断" }

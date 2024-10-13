@@ -47,22 +47,24 @@ object MouseUtil {
         return (startY - endY).toDouble() / (startX - endX)
     }
 
-    fun leftButtonClick(hwnd: HWND) {
+    fun leftButtonClick(hwnd: HWND?) {
         leftButtonClick(lastPoint, hwnd)
     }
 
-    fun leftButtonClick(pos: Point, hwnd: HWND) {
+    fun leftButtonClick(pos: Point, hwnd: HWND?) {
+        hwnd?:return
         if (!PauseStatus.isPause && validPoint(pos)) {
             SystemDll.INSTANCE.leftClick(pos.x.toLong(), pos.y.toLong(), hwnd)
             savePos(pos)
         }
     }
 
-    fun rightButtonClick(hwnd: HWND) {
+    fun rightButtonClick(hwnd: HWND?) {
         rightButtonClick(lastPoint, hwnd)
     }
 
-    fun rightButtonClick(pos: Point, hwnd: HWND) {
+    fun rightButtonClick(pos: Point, hwnd: HWND?) {
+        hwnd?:return
         if (!PauseStatus.isPause && validPoint(pos)) {
             SystemDll.INSTANCE.rightClick(pos.x.toLong(), pos.y.toLong(), hwnd)
             savePos(pos)
@@ -70,14 +72,15 @@ object MouseUtil {
     }
 
 
-    fun moveMouseByLine(endPos: Point, hwnd: HWND) {
+    fun moveMouseByLine(endPos: Point, hwnd: HWND?) {
         moveMouseByLine(null, endPos, hwnd)
     }
 
     /**
      * 鼠标按照直线方式移动
      */
-    fun moveMouseByLine(startPos: Point?, endPos: Point, hwnd: HWND) {
+    fun moveMouseByLine(startPos: Point?, endPos: Point, hwnd: HWND?) {
+        hwnd?:return
         if (!PauseStatus.isPause && validPoint(endPos)) {
             val endX = endPos.x
             val endY = endPos.y

@@ -9,10 +9,14 @@ import club.xiaojiawei.hsscript.initializer.*
  */
 object InitializerConfig {
 
-    val starter: AbstractInitializer = BaseInitializer
-        .setNextInitializer(ResourceInitializer)
-        .setNextInitializer(GamePathInitializer)
-        .setNextInitializer(GameLogInitializer)
-        .setNextInitializer(PluginInitializer)
+    val initializer: AbstractInitializer = BaseInitializer
+
+    init {
+        BaseInitializer
+            .setNextInitializer(ResourceInitializer)
+            .setNextInitializer(GamePathInitializer)
+            .setNextInitializer(GameLogInitializer)
+            .setNextInitializer(PluginInitializer)
+    }
 
 }

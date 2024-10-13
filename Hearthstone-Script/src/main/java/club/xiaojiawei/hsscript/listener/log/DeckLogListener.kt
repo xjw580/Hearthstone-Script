@@ -1,7 +1,6 @@
 package club.xiaojiawei.hsscript.listener.log
 
 import club.xiaojiawei.hsscript.bean.Deck
-import club.xiaojiawei.hsscript.config.SpringBeanConfig
 import club.xiaojiawei.hsscript.utils.PowerLogUtil
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -12,7 +11,7 @@ import java.util.concurrent.TimeUnit
  * @date 2023/9/20 16:43
  */
 
-object DeckLogListener : AbstractLogListener(SpringBeanConfig.springData.deckLogName, 0, 1500L, TimeUnit.MILLISECONDS){
+object DeckLogListener : AbstractLogListener("Decks.log", 0, 1500L, TimeUnit.MILLISECONDS){
 
     val DECKS = LinkedList<Deck>()
 
@@ -46,8 +45,10 @@ object DeckLogListener : AbstractLogListener(SpringBeanConfig.springData.deckLog
         var exist = false
         for (d in DECKS) {
             if (d.id == deck.id) {
-                d.name = deck.name
-                d.code = deck.code
+                d.apply {
+                    name = deck.name
+                    code = deck.code
+                }
                 exist = true
                 break
             }

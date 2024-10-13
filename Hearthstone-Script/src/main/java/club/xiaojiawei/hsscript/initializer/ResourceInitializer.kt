@@ -1,9 +1,10 @@
 package club.xiaojiawei.hsscript.initializer
 
-import club.xiaojiawei.hsscript.config.SpringBeanConfig
 import club.xiaojiawei.config.log
-import club.xiaojiawei.hsscript.consts.ScriptStaticData
+import club.xiaojiawei.hsscript.consts.MAIN_IMG_NAME
+import club.xiaojiawei.hsscript.consts.RESOURCE_PATH
 import java.io.*
+import java.nio.file.Path
 import java.util.*
 
 /**
@@ -14,8 +15,7 @@ import java.util.*
 object ResourceInitializer : AbstractInitializer() {
 
     override fun exec() {
-        val imgFile =
-            File(SpringBeanConfig.springData.resourcePath + File.separator + ScriptStaticData.MAIN_IMG_PNG_NAME)
+        val imgFile = Path.of(RESOURCE_PATH, MAIN_IMG_NAME).toFile()
         if (imgFile.exists()) {
             return
         }
@@ -27,7 +27,7 @@ object ResourceInitializer : AbstractInitializer() {
             BufferedInputStream(
                 Objects.requireNonNull(
                     ResourceInitializer::class.java.getResourceAsStream(
-                        "/fxml/img/" + ScriptStaticData.MAIN_IMG_PNG_NAME
+                        "/fxml/img/$MAIN_IMG_NAME"
                     )
                 )
             ).use { bufferedInputStream ->

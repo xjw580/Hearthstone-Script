@@ -1,15 +1,13 @@
 package club.xiaojiawei.hsscript.utils
 
-import club.xiaojiawei.hsscript.config.SpringBeanConfig
 import club.xiaojiawei.config.log
+import club.xiaojiawei.hsscript.consts.CONFIG_PATH
 import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.util.isFalse
 import com.alibaba.fastjson.JSON
 import org.ini4j.Config
 import org.ini4j.Ini
-import java.io.File
-import java.io.FileWriter
-import java.util.stream.Collectors
+import java.nio.file.Path
 
 
 /**
@@ -18,34 +16,29 @@ import java.util.stream.Collectors
  */
 object ConfigUtil {
 
-    private var CONFIG: Ini = Ini()
+    private val configFile = Path.of(CONFIG_PATH, "script.ini").toFile()
 
-//    todo
-    fun loadConfig(){
+    private var CONFIG: Ini = Ini(configFile)
+
+    init {
         val cfg = Config()
-        SpringBeanConfig.springData
-        val configFile = File(SpringBeanConfig.springData.scriptConfigurationFile)
         configFile.exists().isFalse {
             configFile.parentFile.mkdirs()
             configFile.createNewFile()
             log.info { "已创建配置文件【${configFile.absolutePath}】" }
         }
         CONFIG.config = cfg
-        checkConfig(configFile)
+        checkConfig()
     }
 
-    private fun checkConfig(configFile: File){
-        CONFIG.clear()
-        CONFIG.load(configFile)
-        val existKeys = CONFIG.keys.stream().collect(Collectors.toSet())
-        FileWriter(configFile).use {
-            ConfigEnum.values().forEach { entry ->
-                existKeys.contains(entry.name).isFalse {
-                    putString(entry, entry.defaultValue, false)
-                }
+    private fun checkConfig() {
+        ConfigEnum.values().forEach { entry ->
+            if (CONFIG.get(entry.group, entry.name) == null) {
+                putString(entry, entry.defaultValue, false)
             }
         }
         store()
+        log.info { "配置文件读取完毕【${configFile.absolutePath}】" }
     }
 
 
@@ -59,7 +52,7 @@ object ConfigUtil {
      * 存储字符串
      */
     fun putString(key: ConfigEnum, value: String, store: Boolean = true) {
-        CONFIG.add(key.group, key.name, value)
+        CONFIG.put(key.group, key.name, value)
         if (store) {
             store()
         }
@@ -76,7 +69,7 @@ object ConfigUtil {
      * 存储整型数字
      */
     fun putInt(key: ConfigEnum, value: Int, store: Boolean = true) {
-        CONFIG.add(key.group, key.name, value)
+        CONFIG.put(key.group, key.name, value)
         if (store) {
             store()
         }
@@ -94,7 +87,7 @@ object ConfigUtil {
      * 存储长整型数字
      */
     fun putLong(key: ConfigEnum, value: Long, store: Boolean = true) {
-        CONFIG.add(key.group, key.name, value)
+        CONFIG.put(key.group, key.name, value)
         if (store) {
             store()
         }
@@ -112,7 +105,7 @@ object ConfigUtil {
      * 存储Float数字
      */
     fun putFloat(key: ConfigEnum, value: Float, store: Boolean = true) {
-        CONFIG.add(key.group, key.name, value)
+        CONFIG.put(key.group, key.name, value)
         if (store) {
             store()
         }
@@ -122,15 +115,16 @@ object ConfigUtil {
      * 读取Float数字
      */
     fun getFloat(key: ConfigEnum): Float {
-        return (CONFIG[key.group]?.get(key.name) ?: key.defaultValue).toFloatOrNull() ?: key.defaultValue.toFloatOrNull()
-        ?: 0.0f
+        return (CONFIG[key.group]?.get(key.name) ?: key.defaultValue).toFloatOrNull()
+            ?: key.defaultValue.toFloatOrNull()
+            ?: 0.0f
     }
 
     /**
      * 存储boolean类型数据
      */
     fun putBoolean(key: ConfigEnum, value: Boolean, store: Boolean = true) {
-        CONFIG.add(key.group, key.name, value)
+        CONFIG.put(key.group, key.name, value)
         if (store) {
             store()
         }
@@ -147,7 +141,7 @@ object ConfigUtil {
      * 存储数组类型数据
      */
     fun putArray(key: ConfigEnum, value: List<Any>, store: Boolean = true) {
-        CONFIG.add(key.group, key.name, JSON.toJSONString(value))
+        CONFIG.put(key.group, key.name, JSON.toJSONString(value))
         if (store) {
             store()
         }
@@ -165,7 +159,7 @@ object ConfigUtil {
      * 存储任意类型数据
      */
     fun putObject(key: ConfigEnum, value: Any, store: Boolean = true) {
-        CONFIG.add(key.group, key.name, JSON.toJSONString(value))
+        CONFIG.put(key.group, key.name, JSON.toJSONString(value))
         if (store) {
             store()
         }

@@ -1,7 +1,7 @@
 package club.xiaojiawei.hsscript.bean.single.repository
 
 import club.xiaojiawei.hsscript.bean.Release
-import club.xiaojiawei.hsscript.consts.ScriptStaticData
+import club.xiaojiawei.hsscript.consts.PROJECT_NAME
 
 /**
  * @author 肖嘉威
@@ -34,13 +34,13 @@ object GithubRepository : AbstractRepository() {
                 "https://api.%s/repos/%s/%s/releases",
                 getDomain(),
                 getUserName(),
-                ScriptStaticData.PROJECT_NAME
+                PROJECT_NAME
             )
         } else {
             String.format(
                 "https://api.%s/repos/%s/%s/releases/latest",
                 getDomain(), getUserName(),
-                ScriptStaticData.PROJECT_NAME
+                PROJECT_NAME
             )
         }
     }

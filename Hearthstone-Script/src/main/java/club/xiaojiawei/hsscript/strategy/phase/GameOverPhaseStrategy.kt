@@ -2,13 +2,13 @@ package club.xiaojiawei.hsscript.strategy.phase
 
 import club.xiaojiawei.hsscript.bean.log.ExtraEntity
 import club.xiaojiawei.hsscript.bean.log.TagChangeEntity
+import club.xiaojiawei.hsscript.bean.single.WarEx
 import club.xiaojiawei.hsscript.listener.log.PowerLogListener
-import club.xiaojiawei.status.War.endWar
-import club.xiaojiawei.status.War.isMyTurn
 import club.xiaojiawei.hsscript.strategy.AbstractPhaseStrategy
 import club.xiaojiawei.hsscript.utils.GameUtil.addGameEndTask
 import club.xiaojiawei.hsscript.utils.GameUtil.hidePlatformWindow
 import club.xiaojiawei.hsscript.utils.SystemUtil
+import club.xiaojiawei.status.War.isMyTurn
 import java.io.IOException
 
 /**
@@ -46,7 +46,7 @@ object GameOverPhaseStrategy : AbstractPhaseStrategy() {
         hidePlatformWindow()
         isMyTurn = false
         cancelAllTask()
-        endWar()
+        WarEx.endWar()
         try {
             SystemUtil.delay(1000)
             val accessFile = PowerLogListener.logFile

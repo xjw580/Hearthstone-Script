@@ -12,7 +12,6 @@ import club.xiaojiawei.hsscript.utils.SystemUtil
 object ClearStarter : AbstractStarter() {
 
     public override fun execStart() {
-        SystemUtil.closeAll()
         Mode.reset()
         startNextStarter()
     }

@@ -1,12 +1,12 @@
 package club.xiaojiawei.hsscript.listener.log
 
-import club.xiaojiawei.hsscript.config.SpringBeanConfig
 import club.xiaojiawei.enums.StepEnum
 import club.xiaojiawei.enums.WarPhaseEnum
+import club.xiaojiawei.hsscript.bean.single.WarEx
 import club.xiaojiawei.hsscript.status.PauseStatus
-import club.xiaojiawei.status.War
 import club.xiaojiawei.hsscript.strategy.AbstractPhaseStrategy
 import club.xiaojiawei.hsscript.utils.PowerLogUtil
+import club.xiaojiawei.status.War
 import java.util.concurrent.TimeUnit
 
 /**
@@ -15,13 +15,13 @@ import java.util.concurrent.TimeUnit
  * @date 2023/7/5 20:40
  */
 object PowerLogListener :
-    AbstractLogListener(SpringBeanConfig.springData.powerLogName, 0, 1000L, TimeUnit.MILLISECONDS) {
+    AbstractLogListener("Power.log", 0, 1000L, TimeUnit.MILLISECONDS) {
 
     override fun dealOldLog() {
         innerLogFile?.let {
             it.seek(it.length())
         }
-        War.reset()
+        WarEx.reset()
     }
 
     override fun dealNewLog() {
@@ -47,7 +47,7 @@ object PowerLogListener :
             WarPhaseEnum.GAME_OVER -> {
                 War.endTime = if (War.startTime == 0L) 0 else System.currentTimeMillis()
                 WarPhaseEnum.GAME_OVER.phaseStrategy?.deal(line)
-                War.reset()
+                WarEx.reset()
             }
 
             else -> War.currentPhase.phaseStrategy?.deal(line)

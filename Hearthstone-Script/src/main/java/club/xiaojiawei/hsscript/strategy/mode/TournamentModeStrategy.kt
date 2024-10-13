@@ -7,9 +7,10 @@ import club.xiaojiawei.bean.LogRunnable
 import club.xiaojiawei.config.EXTRA_THREAD_POOL
 import club.xiaojiawei.config.log
 import club.xiaojiawei.hsscript.core.Core
-import club.xiaojiawei.hsscript.consts.ScriptStaticData
 import club.xiaojiawei.enums.ModeEnum
 import club.xiaojiawei.enums.RunModeEnum
+import club.xiaojiawei.hsscript.consts.MAX_LOG_SIZE_B
+import club.xiaojiawei.hsscript.consts.MAX_LOG_SIZE_KB
 import club.xiaojiawei.hsscript.listener.log.DeckLogListener.DECKS
 import club.xiaojiawei.hsscript.listener.log.PowerLogListener
 import club.xiaojiawei.hsscript.status.DeckStrategyManager
@@ -73,7 +74,7 @@ object TournamentModeStrategy : AbstractModeStrategy<Any?>() {
 
     override fun afterEnter(t: Any?) {
         if (WorkListener.isDuringWorkDate()) {
-            val deckStrategy = DeckStrategyManager.currentDeckStrategy.get()
+            val deckStrategy = DeckStrategyManager.currentDeckStrategy
             if (deckStrategy == null) {
                 SystemUtil.notice("未选择卡组")
                 log.info { "未选择卡组" }
@@ -108,8 +109,8 @@ object TournamentModeStrategy : AbstractModeStrategy<Any?>() {
         val logFile = PowerLogListener.logFile
         logFile ?: return false
 
-        if (logFile.length() + RESERVE_SIZE >= ScriptStaticData.MAX_LOG_SIZE) {
-            log.info { "power.log即将达到" + (ScriptStaticData.MAX_LOG_SIZE / 1024) + "KB，准备重启游戏" }
+        if (logFile.length() + RESERVE_SIZE >= MAX_LOG_SIZE_B) {
+            log.info { "power.log即将达到" + (MAX_LOG_SIZE_KB) + "KB，准备重启游戏" }
             Core.restart()
             return false
         }

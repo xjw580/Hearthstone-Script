@@ -2,18 +2,18 @@ package club.xiaojiawei.hsscript.utils
 
 import club.xiaojiawei.CardAction
 import club.xiaojiawei.bean.Card
+import club.xiaojiawei.bean.area.Area
+import club.xiaojiawei.enums.ZoneEnum
 import club.xiaojiawei.hsscript.bean.CommonCardAction
 import club.xiaojiawei.hsscript.bean.CommonCardAction.Companion.DEFAULT
-import club.xiaojiawei.bean.area.Area
 import club.xiaojiawei.hsscript.bean.log.ExtraEntity
 import club.xiaojiawei.hsscript.bean.log.TagChangeEntity
-import club.xiaojiawei.hsscript.consts.ScriptStaticData
-import club.xiaojiawei.enums.ZoneEnum
+import club.xiaojiawei.hsscript.bean.single.WarEx
+import club.xiaojiawei.hsscript.consts.CARD_AREA_MAP
+import club.xiaojiawei.hsscript.status.CardActionManager.CARD_ACTION_MAP
+import club.xiaojiawei.hsscript.strategy.DeckStrategyActuator
 import club.xiaojiawei.mapper.BaseCardMapper
 import club.xiaojiawei.mapper.EntityMapper
-import club.xiaojiawei.hsscript.status.CardActionManager.CARD_ACTION_MAP
-import club.xiaojiawei.status.War
-import club.xiaojiawei.hsscript.strategy.DeckStrategyActuator
 import javafx.beans.value.ObservableValue
 import java.util.function.Supplier
 
@@ -26,8 +26,8 @@ object CardUtil {
     fun addAreaListener(card: Card?) {
         card?.let {
             card.areaProperty.addListener { _: ObservableValue<out Area?>?, _: Area?, newArea: Area? ->
-                ScriptStaticData.CARD_AREA_MAP.remove(card.entityId)
-                ScriptStaticData.CARD_AREA_MAP[card.entityId] = newArea
+                CARD_AREA_MAP.remove(card.entityId)
+                CARD_AREA_MAP[card.entityId] = newArea
             }
         }
     }
@@ -40,10 +40,10 @@ object CardUtil {
     }
 
     fun exchangeAreaOfCard(extraEntity: ExtraEntity): Card? {
-        val sourceArea = ScriptStaticData.CARD_AREA_MAP[extraEntity.entityId] ?: let {
-            War.getPlayer(extraEntity.playerId).getArea(extraEntity.zone)
+        val sourceArea = CARD_AREA_MAP[extraEntity.entityId] ?: let {
+            WarEx.getPlayer(extraEntity.playerId).getArea(extraEntity.zone)
         } ?: return null
-        val targetArea = War.getPlayer(extraEntity.playerId).getArea(extraEntity.extraCard.zone) ?: return null
+        val targetArea = WarEx.getPlayer(extraEntity.playerId).getArea(extraEntity.extraCard.zone) ?: return null
 
         val card = sourceArea.removeByEntityId(extraEntity.entityId)
         targetArea.add(card, extraEntity.extraCard.zonePos)
@@ -52,9 +52,9 @@ object CardUtil {
     }
 
     fun exchangeAreaOfCard(tagChangeEntity: TagChangeEntity): Card? {
-        val sourceArea = ScriptStaticData.CARD_AREA_MAP[tagChangeEntity.entityId] ?: return null
+        val sourceArea = CARD_AREA_MAP[tagChangeEntity.entityId] ?: return null
         val targetArea =
-            War.getPlayer(tagChangeEntity.playerId).getArea(ZoneEnum.valueOf(tagChangeEntity.value)) ?: return null
+            WarEx.getPlayer(tagChangeEntity.playerId).getArea(ZoneEnum.valueOf(tagChangeEntity.value)) ?: return null
 
         val card = sourceArea.removeByEntityId(tagChangeEntity.entityId)
         targetArea.add(card, 0)
@@ -63,9 +63,9 @@ object CardUtil {
     }
 
     fun setCardAction(card: Card?) {
-        card?:return
+        card ?: return
         val deckStrategy = DeckStrategyActuator.deckStrategy
-        deckStrategy?:return
+        deckStrategy ?: return
 
         val supplier: Supplier<CardAction>? = (CARD_ACTION_MAP[deckStrategy.pluginId] ?: let {
             CARD_ACTION_MAP[""]

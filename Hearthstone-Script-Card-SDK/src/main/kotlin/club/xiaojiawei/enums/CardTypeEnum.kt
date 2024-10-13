@@ -59,4 +59,16 @@ enum class CardTypeEnum {
      * 未知
      */
     UNKNOWN,
+    ;
+
+    companion object {
+        fun fromString(str: String?): CardTypeEnum {
+            if (str == null || str.isBlank()) return UNKNOWN
+            return try {
+                valueOf(str.uppercase())
+            }catch (_:Exception){
+                UNKNOWN
+            }
+        }
+    }
 }

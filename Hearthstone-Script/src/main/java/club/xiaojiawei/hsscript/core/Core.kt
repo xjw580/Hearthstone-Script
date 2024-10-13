@@ -3,7 +3,9 @@ package club.xiaojiawei.hsscript.core
 import club.xiaojiawei.config.CORE_THREAD_POOL
 import club.xiaojiawei.config.log
 import club.xiaojiawei.hsscript.config.StarterConfig
-import club.xiaojiawei.hsscript.consts.ScriptStaticData
+import club.xiaojiawei.hsscript.consts.GAME_CN_NAME
+import club.xiaojiawei.hsscript.consts.PLATFORM_CN_NAME
+import club.xiaojiawei.hsscript.consts.setPath
 import club.xiaojiawei.hsscript.enums.WindowEnum
 import club.xiaojiawei.hsscript.listener.WorkListener
 import club.xiaojiawei.hsscript.status.PauseStatus
@@ -30,8 +32,8 @@ object Core {
         }
         WorkListener.working = true
         CORE_THREAD_POOL.execute {
-            if (!ScriptStaticData.setPath) {
-                SystemUtil.notice("需要配置" + ScriptStaticData.GAME_CN_NAME + "和" + ScriptStaticData.PLATFORM_CN_NAME + "的路径")
+            if (!setPath) {
+                SystemUtil.notice("需要配置" + GAME_CN_NAME + "和" + PLATFORM_CN_NAME + "的路径")
                 platformRunLater { WindowUtil.showStage(WindowEnum.SETTINGS) }
                 PauseStatus.isPause = true
             } else if (!PauseStatus.isPause) {

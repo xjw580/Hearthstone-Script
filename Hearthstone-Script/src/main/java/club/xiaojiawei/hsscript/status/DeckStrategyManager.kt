@@ -51,7 +51,6 @@ object DeckStrategyManager {
             }
         }
 
-        load()
         loadDeckProperty().addListener { _: ObservableValue<out Boolean>?, _: Boolean?, t1: Boolean ->
             if (t1) {
                 reload()
@@ -78,9 +77,9 @@ object DeckStrategyManager {
     }
 
     private fun reload() {
+        log.info { "重新加载套牌库" }
         deckStrategies.clear()
         deckStrategies.addAll(load())
-        log.info { "重新加载套牌库" }
     }
 
 }

@@ -7,8 +7,8 @@ import club.xiaojiawei.hsscript.PROGRAM_ARGS
 import club.xiaojiawei.hsscript.bean.Release
 import club.xiaojiawei.hsscript.bean.single.repository.AbstractRepository
 import club.xiaojiawei.hsscript.bean.single.repository.GithubRepository
-import club.xiaojiawei.hsscript.consts.ScriptStaticData
-import club.xiaojiawei.hsscript.consts.ScriptStaticData.TEMP_VERSION_PATH
+import club.xiaojiawei.hsscript.consts.MAIN_PATH
+import club.xiaojiawei.hsscript.consts.TEMP_VERSION_PATH
 import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.enums.VersionTypeEnum
 import club.xiaojiawei.hsscript.status.PauseStatus
@@ -43,6 +43,8 @@ import java.util.zip.ZipInputStream
 object VersionListener {
 
     const val VERSION_FILE_FLAG_NAME = "downloaded.flag"
+
+    const val UPDATE_PROGRAM_NAME: String = "update.exe"
 
     private var checkVersionTask: ScheduledFuture<*>? = null
 
@@ -123,11 +125,11 @@ object VersionListener {
                 if (updatingProperty.get()) return
                 updatingProperty.set(true)
 
-                val rootPath = System.getProperty("user.dir")
-                val updateProgramPath = Path.of(rootPath, ScriptStaticData.UPDATE_PROGRAM_NAME).toString()
+                val rootPath = MAIN_PATH
+                val updateProgramPath = Path.of(rootPath, UPDATE_PROGRAM_NAME).toString()
                 Files.copy(
-                    Path.of(versionPath, ScriptStaticData.UPDATE_PROGRAM_NAME),
-                    Path.of(rootPath, ScriptStaticData.UPDATE_PROGRAM_NAME),
+                    Path.of(versionPath, UPDATE_PROGRAM_NAME),
+                    Path.of(rootPath, UPDATE_PROGRAM_NAME),
                     StandardCopyOption.REPLACE_EXISTING
                 )
                 Runtime.getRuntime().exec(
@@ -161,9 +163,9 @@ object VersionListener {
             EXTRA_THREAD_POOL.submit {
                 var path: String? = null
                 try {
-                    val file: File = Path.of(TEMP_VERSION_PATH, release.tagName, VERSION_FILE_FLAG_NAME).toFile()
-                    if (!force && file.exists()) {
-                        path = file.parentFile.absolutePath
+                    val versionDir: File = Path.of(TEMP_VERSION_PATH, release.tagName, VERSION_FILE_FLAG_NAME).toFile()
+                    if (!force && versionDir.exists()) {
+                        path = versionDir.parentFile.absolutePath
                     } else {
                         for (repository in repositoryList) {
                             if ((downloadRelease(

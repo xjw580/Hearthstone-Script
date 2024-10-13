@@ -2,7 +2,6 @@ package club.xiaojiawei.hsscript.controller.javafx;
 
 import club.xiaojiawei.controls.NotificationManager;
 import club.xiaojiawei.controls.PasswordTextField;
-import club.xiaojiawei.hsscript.consts.ScriptStaticData;
 import club.xiaojiawei.hsscript.enums.ConfigEnum;
 import club.xiaojiawei.hsscript.enums.WindowEnum;
 import club.xiaojiawei.hsscript.utils.ConfigExUtil;
@@ -23,6 +22,8 @@ import javafx.stage.Stage;
 import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
+
+import static club.xiaojiawei.hsscript.consts.ScriptDataKt.*;
 
 
 /**
@@ -53,7 +54,7 @@ public class InitSettingsController implements Initializable {
     @FXML
     protected void gameClicked(){
         DirectoryChooser directoryChooser = new DirectoryChooser();
-        directoryChooser.setTitle("选择" + ScriptStaticData.GAME_CN_NAME + "安装路径");
+        directoryChooser.setTitle("选择" + GAME_CN_NAME + "安装路径");
         File file = directoryChooser.showDialog(new Stage());
         if (file != null){
             gamePath.setText(file.getAbsolutePath());
@@ -63,7 +64,7 @@ public class InitSettingsController implements Initializable {
     @FXML
     protected void platformClicked(){
         FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("选择" + ScriptStaticData.PLATFORM_CN_NAME + "程序");
+        fileChooser.setTitle("选择" + PLATFORM_CN_NAME + "程序");
         fileChooser.getExtensionFilters().add(
                 new FileChooser.ExtensionFilter("程序", "*.exe")
         );
@@ -90,16 +91,16 @@ public class InitSettingsController implements Initializable {
     private boolean checkConfiguration(){
         ConfigUtil.INSTANCE.putString(ConfigEnum.PLATFORM_PASSWORD, password.getText(), true);
         if (!ConfigExUtil.INSTANCE.storePlatformPath(platformPath.getText())){
-            notificationManager.showError(ScriptStaticData.PLATFORM_CN_NAME + "安装路径不正确,请重新选择", 3);
+            notificationManager.showError(PLATFORM_CN_NAME + "安装路径不正确,请重新选择", 3);
             initValue();
             return false;
         }
         if (!ConfigExUtil.INSTANCE.storeGamePath(gamePath.getText())){
-            notificationManager.showError(ScriptStaticData.GAME_CN_NAME + "安装路径不正确,请重新选择", 3);
+            notificationManager.showError(GAME_CN_NAME + "安装路径不正确,请重新选择", 3);
             initValue();
             return false;
         }
-        ScriptStaticData.INSTANCE.setSetPath(true);
+        setSetPath(true);
         return true;
     }
 

@@ -1,8 +1,8 @@
 package club.xiaojiawei.hsscript.strategy.mode
 
-import club.xiaojiawei.hsscript.bean.GameRect
 import club.xiaojiawei.config.log
 import club.xiaojiawei.enums.ModeEnum
+import club.xiaojiawei.hsscript.bean.GameRect
 import club.xiaojiawei.hsscript.status.DeckStrategyManager
 import club.xiaojiawei.hsscript.status.Mode.prevMode
 import club.xiaojiawei.hsscript.status.PauseStatus
@@ -40,9 +40,9 @@ object HubModeStrategy : AbstractModeStrategy<Any?>() {
             SystemUtil.delay(200)
         }
 
-        if (DeckStrategyManager.currentDeckStrategy.get() != null) {
+        DeckStrategyManager.currentDeckStrategy?.let {
             log.info { "准备进入指定模式" }
-            DeckStrategyManager.currentDeckStrategy.get().runModes[0].modeEnum.modeStrategy!!.wantEnter()
+            it.runModes[0].modeEnum.modeStrategy?.wantEnter()
         }
     }
 

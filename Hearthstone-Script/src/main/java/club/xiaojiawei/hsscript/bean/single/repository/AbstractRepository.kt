@@ -1,7 +1,8 @@
 package club.xiaojiawei.hsscript.bean.single.repository
 
 import club.xiaojiawei.hsscript.bean.Release
-import club.xiaojiawei.hsscript.consts.ScriptStaticData
+import club.xiaojiawei.hsscript.consts.PROJECT_NAME
+import club.xiaojiawei.hsscript.consts.SCRIPT_NAME
 import org.springframework.web.client.RestTemplate
 
 /**
@@ -26,9 +27,9 @@ abstract class AbstractRepository {
             "https://%s/%s/%s/releases/download/%s/%s_%s.zip",
             getDomain(),
             getUserName(),
-            ScriptStaticData.PROJECT_NAME,
+            PROJECT_NAME,
             release.tagName,
-            ScriptStaticData.SCRIPT_NAME,
+            SCRIPT_NAME,
             release.tagName
         )
     }
@@ -38,7 +39,7 @@ abstract class AbstractRepository {
             "https://%s/%s/%s/releases/tag/%s",
             GiteeRepository.getDomain(),
             GiteeRepository.getUserName(),
-            ScriptStaticData.PROJECT_NAME,
+            PROJECT_NAME,
             release.tagName
         )
     }

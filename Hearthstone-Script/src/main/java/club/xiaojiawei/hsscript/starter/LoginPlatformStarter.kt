@@ -1,15 +1,16 @@
 package club.xiaojiawei.hsscript.starter
 
 import club.xiaojiawei.config.EXTRA_THREAD_POOL
-import club.xiaojiawei.hsscript.config.StarterConfig
 import club.xiaojiawei.config.log
-import club.xiaojiawei.hsscript.consts.ScriptStaticData
+import club.xiaojiawei.hsscript.config.StarterConfig
+import club.xiaojiawei.hsscript.consts.PLATFORM_CN_NAME
 import club.xiaojiawei.hsscript.dll.SystemDll
 import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.status.PauseStatus
-import club.xiaojiawei.util.isTrue
 import club.xiaojiawei.hsscript.utils.ConfigUtil
+import club.xiaojiawei.hsscript.utils.GameUtil
 import club.xiaojiawei.hsscript.utils.SystemUtil
+import club.xiaojiawei.util.isTrue
 import com.sun.jna.platform.win32.WinDef.HWND
 import java.awt.event.KeyEvent
 import java.util.concurrent.TimeUnit
@@ -23,35 +24,35 @@ import java.util.concurrent.atomic.AtomicInteger
 object LoginPlatformStarter : AbstractStarter() {
 
     override fun execStart() {
-        if (SystemUtil.isAliveOfGame()) {
+        if (GameUtil.isAliveOfGame()) {
             startNextStarter()
             return
         } else if (ConfigUtil.getString(ConfigEnum.PLATFORM_PASSWORD).isBlank()) {
-            log.info { "未配置${ScriptStaticData.PLATFORM_CN_NAME}账号密码，跳过此步骤" }
+            log.info { "未配置${PLATFORM_CN_NAME}账号密码，跳过此步骤" }
             startNextStarter()
             return
         }
         val loginCount = AtomicInteger()
         addTask(
             EXTRA_THREAD_POOL.scheduleAtFixedRate({
-                var loginPlatformHWND: HWND
+                var loginPlatformHWND: HWND?
                 if (PauseStatus.isPause) {
                     stop()
-                } else if ((SystemUtil.findLoginPlatformHWND().also { loginPlatformHWND = it }) == null) {
+                } else if ((GameUtil.findLoginPlatformHWND().also { loginPlatformHWND = it }) == null) {
                     startNextStarter()
                 } else {
                     if (loginCount.incrementAndGet() > 4) {
                         log.warn { "登录战网失败次数过多，重新执行启动器链" }
                         stop()
                         EXTRA_THREAD_POOL.schedule({
-                            SystemUtil.killLoginPlatform()
-                            SystemUtil.killPlatform()
+                            GameUtil.killLoginPlatform()
+                            GameUtil.killPlatform()
                             loginCount.set(0)
                             StarterConfig.starter.start()
                         }, 1, TimeUnit.SECONDS)
                         return@scheduleAtFixedRate
                     }
-                    inputPassword(loginPlatformHWND)
+                    inputPassword(loginPlatformHWND!!)
                     SystemUtil.delayShort()
                     clickLoginButton(loginPlatformHWND)
                 }
