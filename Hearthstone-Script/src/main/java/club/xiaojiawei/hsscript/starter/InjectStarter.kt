@@ -2,9 +2,7 @@ package club.xiaojiawei.hsscript.starter
 
 import club.xiaojiawei.config.log
 import club.xiaojiawei.hsscript.consts.DLL_PATH
-import club.xiaojiawei.hsscript.consts.GAME_HWND
 import club.xiaojiawei.hsscript.consts.GAME_US_NAME
-import club.xiaojiawei.hsscript.dll.SystemDll
 import club.xiaojiawei.hsscript.utils.CMDUtil
 import java.io.File
 import java.io.IOException
@@ -29,7 +27,7 @@ object InjectStarter : AbstractStarter() {
 
         if (injectFile.exists()) {
 //            打包查找
-            dllFile = Path.of(rootPath, DLL_PATH, dllName).toFile()
+            dllFile = Path.of(DLL_PATH, dllName).toFile()
             inject(injectFile.absolutePath, dllFile.absolutePath)
         } else {
 //            IDE查找
@@ -60,7 +58,7 @@ object InjectStarter : AbstractStarter() {
             if (result.contains("completed")){
                 log.info { "注入dll成功" }
             }else{
-                log.error { "注入dll失败" }
+                log.error { "注入dll失败：${result}" }
             }
         } catch (e: IOException) {
             log.error(e) { "注入dll异常" }
