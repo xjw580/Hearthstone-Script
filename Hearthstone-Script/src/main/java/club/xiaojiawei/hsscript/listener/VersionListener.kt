@@ -246,7 +246,7 @@ object VersionListener {
                         log.info { startContent }
                         progress.set(0.0)
                         var nextEntry: ZipEntry?
-                        val count = 87.0
+                        val count = 59.0
                         val step = 0.95 / count
                         rootPath = Path.of(TEMP_VERSION_PATH, release.tagName)
                         val rootFile = rootPath.toFile()

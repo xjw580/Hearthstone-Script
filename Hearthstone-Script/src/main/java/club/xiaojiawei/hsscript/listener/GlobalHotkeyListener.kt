@@ -1,6 +1,5 @@
 package club.xiaojiawei.hsscript.listener
 
-import club.xiaojiawei.config.EXTRA_THREAD_POOL
 import club.xiaojiawei.config.log
 import club.xiaojiawei.hsscript.status.PauseStatus
 import club.xiaojiawei.hsscript.utils.ConfigExUtil
@@ -24,7 +23,7 @@ object GlobalHotkeyListener : HotkeyListener {
         JIntellitype.getInstance().addHotKeyListener(this)
     }
 
-    fun reload(){
+    fun reload() {
         unregister()
         register()
     }
@@ -34,12 +33,13 @@ object GlobalHotkeyListener : HotkeyListener {
             ConfigExUtil.getExitHotKey()?.let {
                 JIntellitype.getInstance()
                     .registerHotKey(HOT_KEY_EXIT, it.modifier, it.keyCode)
+                log.info { "退出热键：$it" }
             }
             ConfigExUtil.getPauseHotKey()?.let {
                 JIntellitype.getInstance()
                     .registerHotKey(HOT_KEY_PAUSE, it.modifier, it.keyCode)
+                log.info { "开始/暂停热键：$it" }
             }
-            log.info { "注册热键成功" }
         } else {
             log.warn { "当前系统不支持设置热键" }
         }

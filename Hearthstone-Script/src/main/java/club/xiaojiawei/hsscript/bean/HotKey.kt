@@ -1,6 +1,6 @@
 package club.xiaojiawei.hsscript.bean
 
-import java.lang.reflect.Modifier
+import com.melloware.jintellitype.JIntellitypeConstants
 
 /**
  * @author 肖嘉威
@@ -10,11 +10,20 @@ class HotKey {
 
     constructor()
 
-    constructor(modifier: Int, keyCode: Int){
+    constructor(modifier: Int, keyCode: Int) {
         this.modifier = modifier
         this.keyCode = keyCode
     }
 
     var modifier: Int = 0
     var keyCode: Int = 0
+
+    override fun toString(): String {
+        val modifierStr =
+            (if (modifier and JIntellitypeConstants.MOD_ALT == JIntellitypeConstants.MOD_ALT) "Alt+" else "") +
+                    (if (modifier and JIntellitypeConstants.MOD_CONTROL == JIntellitypeConstants.MOD_CONTROL) "Ctrl+" else "") +
+                    (if (modifier and JIntellitypeConstants.MOD_SHIFT == JIntellitypeConstants.MOD_SHIFT) "Shift+" else "") +
+                    (if (modifier and JIntellitypeConstants.MOD_WIN == JIntellitypeConstants.MOD_WIN) "Win+" else "")
+        return modifierStr + keyCode.toChar()
+    }
 }

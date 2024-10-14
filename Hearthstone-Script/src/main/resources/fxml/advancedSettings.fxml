@@ -8,6 +8,7 @@
 <?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Text?>
+<?import javafx.scene.control.TextField?>
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             stylesheets="@css/advancedSettings.css"
@@ -41,6 +42,16 @@
             <Text text="发送Windows通知"/>
             <HBox HBox.hgrow="ALWAYS"/>
             <Switch fx:id="sendNotice"/>
+        </HBox>
+        <HBox styleClass="h-box">
+            <Text text="开始/暂停快捷键"/>
+            <HBox HBox.hgrow="ALWAYS"/>
+            <TextField fx:id="pauseHotKey" styleClass="text-field-ui, text-field-ui-small" editable="false"/>
+        </HBox>
+        <HBox styleClass="h-box">
+            <Text text="退出快捷键"/>
+            <HBox HBox.hgrow="ALWAYS"/>
+            <TextField fx:id="exitHotKey" styleClass="text-field-ui, text-field-ui-small" editable="false"/>
         </HBox>
         <HBox styleClass="h-box">
             <Button text="打开测量工具" styleClass="btn-ui, btn-ui-normal, btn-ui-small" onAction="#openMeasureUtil"/>

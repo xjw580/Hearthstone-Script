@@ -2,14 +2,21 @@ package club.xiaojiawei.hsscript.controller.javafx;
 
 import club.xiaojiawei.controls.NotificationManager;
 import club.xiaojiawei.controls.Switch;
+import club.xiaojiawei.hsscript.bean.HotKey;
 import club.xiaojiawei.hsscript.enums.ConfigEnum;
+import club.xiaojiawei.hsscript.listener.GlobalHotkeyListener;
+import club.xiaojiawei.hsscript.utils.ConfigExUtil;
 import club.xiaojiawei.hsscript.utils.ConfigUtil;
 import club.xiaojiawei.hsscript.utils.main.MeasureApplication;
+import com.melloware.jintellitype.JIntellitypeConstants;
 import javafx.beans.value.ChangeListener;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
+import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -23,6 +30,10 @@ import java.util.ResourceBundle;
  */
 public class AdvancedSettingsController implements Initializable {
 
+    @FXML
+    private TextField pauseHotKey;
+    @FXML
+    private TextField exitHotKey;
     @FXML
     private VBox mainVBox;
     @FXML
@@ -51,6 +62,15 @@ public class AdvancedSettingsController implements Initializable {
         updateDev.setStatus(ConfigUtil.INSTANCE.getBoolean(ConfigEnum.UPDATE_DEV));
         autoUpdate.setStatus(ConfigUtil.INSTANCE.getBoolean(ConfigEnum.AUTO_UPDATE));
         sendNotice.setStatus(ConfigUtil.INSTANCE.getBoolean(ConfigEnum.SEND_NOTICE));
+
+        HotKey pauseKey = ConfigExUtil.INSTANCE.getPauseHotKey();
+        if (pauseKey != null) {
+            pauseHotKey.setText(pauseKey.toString());
+        }
+        HotKey exitKey = ConfigExUtil.INSTANCE.getExitHotKey();
+        if (exitKey != null) {
+            exitHotKey.setText(exitKey.toString());
+        }
     }
 
     private void listen() {
@@ -75,7 +95,72 @@ public class AdvancedSettingsController implements Initializable {
             mainVBox.sceneProperty().removeListener(sceneListener);
         };
         mainVBox.sceneProperty().addListener(sceneListener);
+
+        pauseHotKey.setOnKeyPressed(event -> {
+            HotKey hotKey = plusModifier(event);
+            if (hotKey != null) {
+                pauseHotKey.setText(hotKey.toString());
+                ConfigExUtil.INSTANCE.storePauseHotKey(hotKey);
+                GlobalHotkeyListener.INSTANCE.reload();
+                notificationManager.showSuccess("开始/暂停热键已修改", 2);
+            }
+        });
+        pauseHotKey.setOnKeyReleased(this::reduceModifier);
+        pauseHotKey.focusedProperty().addListener((observable, oldValue, newValue) -> {
+           if (!newValue) {
+               modifier = 0;
+           }
+        });
+
+        exitHotKey.setOnKeyPressed(event -> {
+            HotKey hotKey = plusModifier(event);
+            if (hotKey != null) {
+                exitHotKey.setText(hotKey.toString());
+                ConfigExUtil.INSTANCE.storeExitHotKey(hotKey);
+                GlobalHotkeyListener.INSTANCE.reload();
+                notificationManager.showSuccess("退出热键已修改", 2);
+            }
+        });
+        exitHotKey.setOnKeyReleased(this::reduceModifier);
+        exitHotKey.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue) {
+                modifier = 0;
+            }
+        });
+
     }
+
+    private HotKey plusModifier(KeyEvent event){
+        if (event.getCode() == KeyCode.ALT) {
+            modifier += JIntellitypeConstants.MOD_ALT;
+        } else if (event.getCode() == KeyCode.CONTROL) {
+            modifier += JIntellitypeConstants.MOD_CONTROL;
+        } else if (event.getCode() == KeyCode.SHIFT) {
+            modifier += JIntellitypeConstants.MOD_SHIFT;
+        } else if (event.getCode() == KeyCode.WINDOWS) {
+            modifier += JIntellitypeConstants.MOD_WIN;
+        }else {
+            int code = event.getCode().getCode();
+            if (code >= 65 && code <= 90) {
+                return new HotKey(modifier, code);
+            }
+        }
+        return null;
+    }
+
+    private void reduceModifier(KeyEvent event){
+        if (event.getCode() == KeyCode.ALT) {
+            modifier -= JIntellitypeConstants.MOD_ALT;
+        } else if (event.getCode() == KeyCode.CONTROL) {
+            modifier -= JIntellitypeConstants.MOD_CONTROL;
+        } else if (event.getCode() == KeyCode.SHIFT) {
+            modifier -= JIntellitypeConstants.MOD_SHIFT;
+        } else if (event.getCode() == KeyCode.WINDOWS) {
+            modifier -= JIntellitypeConstants.MOD_WIN;
+        }
+    }
+
+    private int modifier;
 
 
     @FXML
