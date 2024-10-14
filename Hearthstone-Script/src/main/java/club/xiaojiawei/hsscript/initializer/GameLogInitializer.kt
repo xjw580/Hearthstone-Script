@@ -76,17 +76,17 @@ object GameLogInitializer : AbstractInitializer() {
         val clientIni = Ini(clientConfigFile)
 
         val logLimitSize = clientIni.get("Log", "FileSizeLimit.Int")
-        if (logLimitSize == null || logLimitSize.toIntOrNull() == null || logLimitSize.toInt() < ConfigUtil.getInt(
-                ConfigEnum.GAME_LOG_LIMIT
-            )
+        val shouldLogLimitSize = ConfigUtil.getInt(ConfigEnum.GAME_LOG_LIMIT)
+        if (logLimitSize == null || logLimitSize.toIntOrNull() == null
+            || logLimitSize.toInt() != shouldLogLimitSize
         ) {
             modify = true
-            clientIni.put("Log", "FileSizeLimit.Int", ConfigUtil.getInt(ConfigEnum.GAME_LOG_LIMIT))
+            clientIni.put("Log", "FileSizeLimit.Int", shouldLogLimitSize)
         }
 
         modify.isTrue {
             clientIni.store()
-            log.info { "游戏日志大小限制已修改，重启游戏生效" }
+            log.info { "游戏日志大小限制已修改为${shouldLogLimitSize}KB，重启游戏生效" }
         }
 
     }

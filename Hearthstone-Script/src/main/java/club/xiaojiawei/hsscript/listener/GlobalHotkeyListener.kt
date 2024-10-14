@@ -1,11 +1,13 @@
 package club.xiaojiawei.hsscript.listener
 
+import club.xiaojiawei.config.EXTRA_THREAD_POOL
 import club.xiaojiawei.config.log
 import club.xiaojiawei.hsscript.status.PauseStatus
 import club.xiaojiawei.hsscript.utils.ConfigExUtil
 import club.xiaojiawei.hsscript.utils.SystemUtil
 import com.melloware.jintellitype.HotkeyListener
 import com.melloware.jintellitype.JIntellitype
+import javafx.application.Platform
 
 /**
  * 热键监听器
@@ -27,7 +29,6 @@ object GlobalHotkeyListener : HotkeyListener {
         register()
     }
 
-//    todo register()
     fun register() {
         if (JIntellitype.isJIntellitypeSupported()) {
             ConfigExUtil.getExitHotKey()?.let {
@@ -38,6 +39,7 @@ object GlobalHotkeyListener : HotkeyListener {
                 JIntellitype.getInstance()
                     .registerHotKey(HOT_KEY_PAUSE, it.modifier, it.keyCode)
             }
+            log.info { "注册热键成功" }
         } else {
             log.warn { "当前系统不支持设置热键" }
         }
@@ -57,17 +59,24 @@ object GlobalHotkeyListener : HotkeyListener {
     override fun onHotKey(i: Int) {
         when (i) {
             HOT_KEY_EXIT -> {
-                unregister()
-                log.info { "捕捉到热键，关闭程序" }
+                Platform.exit()
                 SystemUtil.notice("捕捉到热键，关闭程序")
+                log.info { "捕捉到热键，关闭程序" }
+                unregister()
                 SystemUtil.shutdown()
             }
 
             HOT_KEY_PAUSE -> {
                 if (!PauseStatus.isPause) {
                     log.info { "捕捉到热键,停止脚本" }
+                    Thread.ofVirtual().name("Pause VThread").start {
+                        PauseStatus.isPause = true
+                    }
                 } else {
                     log.info { "捕捉到热键,开始脚本" }
+                    Thread.ofVirtual().name("Start VThread").start {
+                        PauseStatus.isPause = false
+                    }
                 }
             }
         }

@@ -13,7 +13,7 @@ import club.xiaojiawei.config.log
  */
 class PlayArea(player: Player) : Area(7, player) {
 
-    @Volatile var heroType: HeroTypeEnum? = null
+//    @Volatile var heroType: HeroTypeEnum? = null
 
     @Volatile var hero: Card? = null
     @Volatile var heroHide: Card? = null
@@ -33,16 +33,15 @@ class PlayArea(player: Player) : Area(7, player) {
         var result = true
         if (card == null) {
             result = false
-        } else if (card.cardType == CardTypeEnum.HERO_POWER) {
+        } else if (card.cardType === CardTypeEnum.HERO_POWER) {
             powerHide = power
             power = card
             addZoneAndLog("技能", card)
-        } else if (card.cardType == CardTypeEnum.HERO) {
-//            TODO 设置heroType
+        } else if (card.cardType === CardTypeEnum.HERO) {
             heroHide = hero
             hero = card
             addZoneAndLog("英雄", card)
-        } else if (card.cardType == CardTypeEnum.WEAPON) {
+        } else if (card.cardType === CardTypeEnum.WEAPON) {
             weaponHide = weapon
             weapon = card
             addZoneAndLog("武器", card)

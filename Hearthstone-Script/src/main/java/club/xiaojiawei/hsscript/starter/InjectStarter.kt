@@ -51,15 +51,17 @@ object InjectStarter : AbstractStarter() {
                 log.error { "未找到$injectUtilName" }
             }
         }
-        SystemDll.INSTANCE.changeWindow(GAME_HWND, true)
-        SystemDll.INSTANCE.changeInput(GAME_HWND, true)
         startNextStarter()
     }
 
     private fun inject(injectUtilPath: String, dllPath: String) {
         try {
             val result = CMDUtil.exec(arrayOf(injectUtilPath, "$GAME_US_NAME.exe", dllPath))
-            log.info { "注入dll" + (if (result.contains("completed")) "成功" else "失败") }
+            if (result.contains("completed")){
+                log.info { "注入dll成功" }
+            }else{
+                log.error { "注入dll失败" }
+            }
         } catch (e: IOException) {
             log.error(e) { "注入dll异常" }
         }

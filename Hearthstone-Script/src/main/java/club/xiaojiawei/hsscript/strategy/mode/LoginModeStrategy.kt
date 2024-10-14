@@ -2,6 +2,7 @@ package club.xiaojiawei.hsscript.strategy.mode
 
 import club.xiaojiawei.bean.LogRunnable
 import club.xiaojiawei.config.EXTRA_THREAD_POOL
+import club.xiaojiawei.config.log
 import club.xiaojiawei.hsscript.status.PauseStatus
 import club.xiaojiawei.hsscript.strategy.AbstractModeStrategy
 import club.xiaojiawei.hsscript.utils.GameUtil
@@ -18,6 +19,7 @@ object LoginModeStrategy : AbstractModeStrategy<Any?>() {
     }
 
     override fun afterEnter(t: Any?) {
+        log.info { "afterEnter" }
         //        去除国服登陆时恼人的点击开始和进入主界面时弹出的每日任务
         addEnteredTask(EXTRA_THREAD_POOL.scheduleWithFixedDelay(LogRunnable {
             if (PauseStatus.isPause) {
@@ -25,7 +27,7 @@ object LoginModeStrategy : AbstractModeStrategy<Any?>() {
             } else {
                 GameUtil.lClickCenter()
             }
-        }, 3000, 2000, TimeUnit.MILLISECONDS))
+        }, 1000, 1500, TimeUnit.MILLISECONDS))
     }
 
 }

@@ -28,12 +28,12 @@ object WorkListener {
 
     private var checkVersionTask: ScheduledFuture<*>? = null
 
-    //    todo
     fun launch() {
         checkVersionTask?.let { return }
         checkVersionTask = EXTRA_THREAD_POOL.scheduleAtFixedRate(LogRunnable {
             checkWork()
         }, 0, 1000 * 60, TimeUnit.MILLISECONDS)
+        log.info { "工作时段监听已启动" }
     }
 
     /**
@@ -94,9 +94,9 @@ object WorkListener {
     fun isDuringWorkDate(): Boolean {
         //        天校验
         var workDay = ConfigExUtil.getWorkDay()
-        if (LocalDate.now().getDayOfWeek().value < workDay.size) {
-            val day = workDay[LocalDate.now().getDayOfWeek().value]
-            if (!day.enabled) {
+        val nowDay = LocalDate.now().getDayOfWeek().value
+        if (workDay.isNotEmpty()) {
+            if (!(workDay[0].enabled || workDay[nowDay].enabled)) {
                 return false
             }
         } else {

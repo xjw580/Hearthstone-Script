@@ -18,15 +18,16 @@ object ConfigUtil {
 
     private val configFile = Path.of(CONFIG_PATH, "script.ini").toFile()
 
-    private var CONFIG: Ini = Ini(configFile)
+    private val CONFIG: Ini
 
     init {
-        val cfg = Config()
         configFile.exists().isFalse {
             configFile.parentFile.mkdirs()
             configFile.createNewFile()
             log.info { "已创建配置文件【${configFile.absolutePath}】" }
         }
+        CONFIG =Ini(configFile)
+        val cfg = Config()
         CONFIG.config = cfg
         checkConfig()
     }

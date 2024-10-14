@@ -84,9 +84,6 @@ object VersionListener {
 
     fun downloadingReadOnlyProperty(): ReadOnlyBooleanProperty = downloadingProperty.readOnlyProperty
 
-    /**
-     * todo 启动监听器
-     */
     fun launch() {
         if (checkVersionTask != null) return
 //        打完包后启动this.getClass().getPackage().getImplementationVersion()能读到正确的值
@@ -99,6 +96,7 @@ object VersionListener {
         checkVersionTask = EXTRA_THREAD_POOL.scheduleAtFixedRate(LogRunnable {
             checkVersion()
         }, 500, 1000 * 60 * 60 * 12, TimeUnit.MILLISECONDS)
+        log.info { "版本更新检测已启动" }
     }
 
     /**

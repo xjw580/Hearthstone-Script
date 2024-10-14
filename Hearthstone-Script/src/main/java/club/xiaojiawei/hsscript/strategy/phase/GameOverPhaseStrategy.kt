@@ -6,7 +6,6 @@ import club.xiaojiawei.hsscript.bean.single.WarEx
 import club.xiaojiawei.hsscript.listener.log.PowerLogListener
 import club.xiaojiawei.hsscript.strategy.AbstractPhaseStrategy
 import club.xiaojiawei.hsscript.utils.GameUtil.addGameEndTask
-import club.xiaojiawei.hsscript.utils.GameUtil.hidePlatformWindow
 import club.xiaojiawei.hsscript.utils.SystemUtil
 import club.xiaojiawei.status.War.isMyTurn
 import java.io.IOException
@@ -43,7 +42,6 @@ object GameOverPhaseStrategy : AbstractPhaseStrategy() {
     }
 
     private fun over() {
-        hidePlatformWindow()
         isMyTurn = false
         cancelAllTask()
         WarEx.endWar()

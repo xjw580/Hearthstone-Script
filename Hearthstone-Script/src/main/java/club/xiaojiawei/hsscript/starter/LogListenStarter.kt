@@ -1,8 +1,8 @@
 package club.xiaojiawei.hsscript.starter
 
 import club.xiaojiawei.config.log
+import club.xiaojiawei.hsscript.config.LogListenerConfig
 import club.xiaojiawei.hsscript.enums.ConfigEnum
-import club.xiaojiawei.hsscript.listener.log.AbstractLogListener
 import club.xiaojiawei.hsscript.status.LogListenerStatus
 import club.xiaojiawei.hsscript.utils.ConfigUtil
 import club.xiaojiawei.util.isFalse
@@ -17,9 +17,6 @@ import java.util.*
  * @date 2023/9/20 17:22
  */
 object LogListenStarter : AbstractStarter() {
-
-    //    todo refactor
-    private val logListener: AbstractLogListener? = null
 
     override fun execStart() {
 
@@ -37,7 +34,7 @@ object LogListenStarter : AbstractStarter() {
                 Arrays.sort(it, Comparator.comparing { obj: File -> obj.name })
                 LogListenerStatus.logPath = it[it.size - 1]
                 log.info { "游戏日志目录读取成功：" + it[it.size - 1].absoluteFile }
-                logListener!!.listen()
+                LogListenerConfig.logListener.listen()
                 startNextStarter()
             }
         }

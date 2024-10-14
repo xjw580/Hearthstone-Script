@@ -33,10 +33,8 @@ object ScreenLogListener :
         while (!PauseStatus.isPause) {
             innerLogFile?.let {
                 it.readLine()?.let { line ->
-                    if (line.isBlank()) {
-                        return
-                    } else {
-                        Mode.currMode = resolveLog(line)
+                    resolveLog(line)?.let {
+                        Mode.currMode = it
                     }
                 } ?: return
             } ?: return

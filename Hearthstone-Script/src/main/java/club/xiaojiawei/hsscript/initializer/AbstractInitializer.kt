@@ -3,7 +3,7 @@ package club.xiaojiawei.hsscript.initializer
 import club.xiaojiawei.config.log
 
 /**
- * 在 [InitializerConfig.initializer] 添加新的Initializer
+ * 初始化器，在主页显示前执行
  * @author 肖嘉威
  * @date 2023/7/4 11:24
  */

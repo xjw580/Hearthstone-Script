@@ -11,6 +11,7 @@ import club.xiaojiawei.hsscript.consts.GAME_RECT
 import club.xiaojiawei.hsscript.consts.GAME_US_NAME
 import club.xiaojiawei.hsscript.consts.PLATFORM_CN_NAME
 import club.xiaojiawei.hsscript.consts.PLATFORM_LOGIN_CN_NAME
+import club.xiaojiawei.hsscript.consts.PLATFORM_PROGRAM_NAME
 import club.xiaojiawei.hsscript.consts.PLATFORM_US_NAME
 import club.xiaojiawei.hsscript.dll.SystemDll
 import club.xiaojiawei.hsscript.enums.ConfigEnum
@@ -265,11 +266,19 @@ object GameUtil {
     /**
      * 如果战网不在运行则相当于启动战网，如果战网已经运行则为启动炉石
      */
-    fun cmdLaunchPlatformAndGame() {
+    fun launchPlatformAndGame() {
         try {
             Runtime.getRuntime().exec("\"${ConfigUtil.getString(ConfigEnum.PLATFORM_PATH)}\" --exec=\"launch WTCG\"")
         } catch (e: IOException) {
-            log.error(e) { "命令行启动炉石异常" }
+            log.error(e) { "启动${PLATFORM_CN_NAME}及${GAME_CN_NAME}异常" }
+        }
+    }
+
+    fun launchPlatform(){
+        try {
+            Runtime.getRuntime().exec("\"${ConfigUtil.getString(ConfigEnum.PLATFORM_PATH)}\"")
+        } catch (e: IOException) {
+            log.error(e) { "启动${PLATFORM_CN_NAME}异常" }
         }
     }
 
@@ -335,6 +344,10 @@ object GameUtil {
 
     fun isAliveOfGame(): Boolean {
         return SystemUtil.isAliveOfProgram(GAME_PROGRAM_NAME)
+    }
+
+    fun isAliveOfPlatform(): Boolean {
+        return SystemUtil.isAliveOfProgram(PLATFORM_PROGRAM_NAME)
     }
 
     fun findGameHWND(): WinDef.HWND? {

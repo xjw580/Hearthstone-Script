@@ -21,9 +21,14 @@ object PlatformStarter : AbstractStarter() {
             startNextStarter()
             return
         }
-        log.info { "正在进入" + PLATFORM_CN_NAME + GAME_CN_NAME + "启动页" }
-        GameUtil.cmdLaunchPlatformAndGame()
-        GameUtil.hidePlatformWindow()
+        if (GameUtil.isAliveOfPlatform()) {
+            log.info { PLATFORM_CN_NAME + "正在运行" }
+//            GameUtil.hidePlatformWindow()
+        } else {
+            log.info { "启动$PLATFORM_CN_NAME" }
+            GameUtil.launchPlatform()
+        }
+
         addTask(
             LAUNCH_PROGRAM_THREAD_POOL.scheduleAtFixedRate(LogRunnable {
                 if (PauseStatus.isPause) {
@@ -31,7 +36,7 @@ object PlatformStarter : AbstractStarter() {
                 } else if (GameUtil.findPlatformHWND() != null || GameUtil.findLoginPlatformHWND() != null) {
                     startNextStarter()
                 }
-            }, 1, 1, TimeUnit.SECONDS)
+            }, 1, 100, TimeUnit.SECONDS)
         )
     }
 }

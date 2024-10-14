@@ -260,17 +260,12 @@ public class MainController extends MainView {
 //        日志监听
         ExtraLogAppender.addCallback(this::appendLog);
 
-        /**
-         * 暂停状态监听
-         */
-        PauseStatus.INSTANCE.addListener((observableValue, aBoolean, t1) -> {
-            changeSwitch(t1);
-        });
+//        暂停状态监听
+        PauseStatus.INSTANCE.addListener((observableValue, aBoolean, t1) -> changeSwitch(t1));
 
         WarEx warInstance = WarEx.INSTANCE;
-        /**
-         * 游戏局数监听
-         */
+
+//        游戏局数监听
         warInstance.getWarCountProperty().addListener((observableValue, number, t1) -> {
             log.info("已完成第 " + t1 + " 把游戏");
             gameCount.setText(String.valueOf(warInstance.getWarCount()));

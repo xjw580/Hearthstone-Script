@@ -28,7 +28,6 @@ abstract class AbstractStarter {
         scheduledFuture?.let {
             it.isDone.isFalse {
                 it.cancel(true)
-                log.info { "停止" + javaClass.simpleName }
             }
         }
     }

@@ -7,6 +7,7 @@ import club.xiaojiawei.config.log
 import club.xiaojiawei.hsscript.config.StarterConfig
 import club.xiaojiawei.hsscript.consts.GAME_CN_NAME
 import club.xiaojiawei.hsscript.consts.GAME_HWND
+import club.xiaojiawei.hsscript.dll.SystemDll
 import club.xiaojiawei.hsscript.status.PauseStatus
 import club.xiaojiawei.hsscript.utils.GameUtil
 import club.xiaojiawei.hsscript.utils.MouseUtil
@@ -36,10 +37,11 @@ object GameStarter : AbstractStarter() {
                 if (PauseStatus.isPause) {
                     stop()
                 } else {
-                    if (launchCount.incrementAndGet() > 3) {
-                        launchGameBySendMessage()
-                    } else if (launchCount.incrementAndGet() > 4) {
-                        log.warn { "打开炉石失败次数过多，重新执行启动器链" }
+                    if (launchCount.incrementAndGet() > 50) {
+                        log.info { "更改${GAME_CN_NAME}启动方式" }
+                        GameUtil.launchPlatformAndGame()
+                    } else if (launchCount.incrementAndGet() > 100) {
+                        log.warn { "打开${GAME_CN_NAME}失败次数过多，重新执行启动器链" }
                         stop()
                         EXTRA_THREAD_POOL.schedule({
                             GameUtil.killLoginPlatform()
@@ -55,19 +57,19 @@ object GameStarter : AbstractStarter() {
                             updateGameMsg(it)
                             startNextStarter()
                         } ?: let {
-                            log.info { "炉石传说已在运行，但未找到对应窗口句柄" }
+                            log.info { "${GAME_CN_NAME}已在运行，但未找到对应窗口句柄" }
                             return@LogRunnable
                         }
                     } else {
-                        GameUtil.cmdLaunchPlatformAndGame()
+                        launchGameBySendMessage()
                     }
                 }
-            }, 5, 20, TimeUnit.SECONDS)
+            }, 100, 200, TimeUnit.MILLISECONDS)
         )
     }
 
     private fun launchGameBySendMessage() {
-        log.info { "正在通过SendMessage打开$GAME_CN_NAME" }
+        log.info { "正在打开$GAME_CN_NAME" }
         MouseUtil.leftButtonClick(
             Point(145, 120),
             GameUtil.findPlatformHWND()
@@ -75,12 +77,15 @@ object GameStarter : AbstractStarter() {
     }
 
     private fun updateGameMsg(gameHWND: HWND) {
+        log.info { GAME_CN_NAME + "正在运行" }
         GAME_HWND = gameHWND
         GameUtil.hidePlatformWindow()
         GameUtil.updateGameRect()
         Thread.ofVirtual().name("Update GameRect VThread").start {
             Thread.sleep(3000)
             GameUtil.updateGameRect()
+            SystemDll.INSTANCE.changeWindow(GAME_HWND, true)
+            SystemDll.INSTANCE.changeInput(GAME_HWND, true)
         }
     }
 

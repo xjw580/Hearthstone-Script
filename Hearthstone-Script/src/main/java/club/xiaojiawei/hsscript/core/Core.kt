@@ -4,8 +4,10 @@ import club.xiaojiawei.config.CORE_THREAD_POOL
 import club.xiaojiawei.config.log
 import club.xiaojiawei.hsscript.config.StarterConfig
 import club.xiaojiawei.hsscript.consts.GAME_CN_NAME
+import club.xiaojiawei.hsscript.consts.GAME_HWND
 import club.xiaojiawei.hsscript.consts.PLATFORM_CN_NAME
 import club.xiaojiawei.hsscript.consts.setPath
+import club.xiaojiawei.hsscript.dll.SystemDll
 import club.xiaojiawei.hsscript.enums.WindowEnum
 import club.xiaojiawei.hsscript.listener.WorkListener
 import club.xiaojiawei.hsscript.status.PauseStatus
@@ -13,6 +15,8 @@ import club.xiaojiawei.hsscript.utils.GameUtil
 import club.xiaojiawei.hsscript.utils.SystemUtil
 import club.xiaojiawei.hsscript.utils.WindowUtil
 import club.xiaojiawei.hsscript.utils.platformRunLater
+import club.xiaojiawei.util.isFalse
+import club.xiaojiawei.util.isTrue
 
 /**
  * 控制脚本的启动
@@ -21,23 +25,43 @@ import club.xiaojiawei.hsscript.utils.platformRunLater
  */
 object Core {
 
+    init {
+        PauseStatus.addListener { _, _, newValue ->
+            newValue.isTrue {
+                SystemDll.INSTANCE.changeInput(GAME_HWND, false)
+                SystemDll.INSTANCE.changeWindow(GAME_HWND, false)
+                WorkListener.working = false
+                log.info { "当前处于停止状态" }
+            }.isFalse {
+                if (WorkListener.isDuringWorkDate()) {
+                    start()
+                } else {
+                    WorkListener.cannotWorkLog()
+                }
+                log.info { "当前处于运行状态" }
+            }
+        }
+    }
+
     /**
      * 启动脚本
      */
-    @Synchronized
     fun start() {
         if (WorkListener.working) {
             log.warn { "正在工作，无法重复工作" }
             return
         }
-        WorkListener.working = true
         CORE_THREAD_POOL.execute {
-            if (!setPath) {
-                SystemUtil.notice("需要配置" + GAME_CN_NAME + "和" + PLATFORM_CN_NAME + "的路径")
-                platformRunLater { WindowUtil.showStage(WindowEnum.SETTINGS) }
-                PauseStatus.isPause = true
-            } else if (!PauseStatus.isPause) {
-                StarterConfig.starter.start()
+            synchronized(Core.javaClass) {
+                if (WorkListener.working) return@execute
+                if (!setPath) {
+                    SystemUtil.notice("需要配置" + GAME_CN_NAME + "和" + PLATFORM_CN_NAME + "的路径")
+                    platformRunLater { WindowUtil.showStage(WindowEnum.SETTINGS) }
+                    PauseStatus.isPause = true
+                } else if (!PauseStatus.isPause) {
+                    WorkListener.working = true
+                    StarterConfig.starter.start()
+                }
             }
         }
     }

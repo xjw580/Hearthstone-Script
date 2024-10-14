@@ -4,6 +4,7 @@ import club.xiaojiawei.bean.Player.Companion.INVALID_PLAYER
 import club.xiaojiawei.bean.area.*
 import club.xiaojiawei.config.log
 import club.xiaojiawei.enums.ZoneEnum
+import club.xiaojiawei.util.isTrue
 
 /**
  * @author 肖嘉威
@@ -19,7 +20,9 @@ class Player(val playerId: String) : Entity() {
     var gameId: String = ""
         set(value) {
             field = value
-            log.info { "playerId:$playerId,gameId:$gameId" }
+            this.isValid().isTrue {
+                log.info { "playerId:$playerId,gameId:$gameId" }
+            }
         }
 
     val handArea = HandArea(this)
@@ -82,6 +85,21 @@ class Player(val playerId: String) : Entity() {
         val INVALID_PLAYER: Player = Player("INVALID", "INVALID")
     }
 
+    override fun equals(other: Any?): Boolean {
+        if (other == null) return false
+        return if (other is Player) {
+            other.gameId == gameId && other.playerId == playerId
+        } else {
+            false
+        }
+    }
+
+    override fun hashCode(): Int {
+        var result = super.hashCode()
+        result = 31 * result + playerId.hashCode()
+        result = 31 * result + gameId.hashCode()
+        return result
+    }
 }
 
 fun Player.safeRun(block: () -> Unit): Player {
@@ -94,6 +112,6 @@ fun Player.safeRun(block: () -> Unit): Player {
 }
 
 fun Player.isValid(): Boolean {
-    return this !== INVALID_PLAYER
+    return this != INVALID_PLAYER && this.gameId != "INVALID"
 }
 

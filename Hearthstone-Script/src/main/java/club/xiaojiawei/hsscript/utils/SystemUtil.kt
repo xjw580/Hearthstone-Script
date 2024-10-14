@@ -42,10 +42,10 @@ object SystemUtil {
 
     /**
      * 调用系统通知
-     * @param title
      * @param content
+     * @param title
      */
-    fun notice(title: String = "", content: String, btnText: String = "", btnURL: String = "") {
+    fun notice(content: String, title: String = "", btnText: String = "", btnURL: String = "") {
         ConfigUtil.getBoolean(ConfigEnum.SEND_NOTICE).isTrue {
             Thread.ofVirtual().name("Notice VThread").start(LogRunnable {
 //        trayIcon.displayMessage(title, content, TrayIcon.MessageType.NONE);
@@ -77,10 +77,6 @@ object SystemUtil {
                 )
             })
         }
-    }
-
-    fun notice(content: String) {
-        notice(content = content)
     }
 
     /**
@@ -241,7 +237,7 @@ object SystemUtil {
      */
     fun addTray(
         trayIconName: String,
-        trayName: String?,
+        trayName: String,
         mouseClickListener: Consumer<MouseEvent?>?,
         vararg menuItems: MenuItem?
     ) {
@@ -261,10 +257,12 @@ object SystemUtil {
         }
         //        托盘图标
         trayIcon = TrayIcon(image, trayName, popupMenu)
-        trayIcon?.let {
-            it.setImageAutoSize(true)
-            it.setToolTip(SCRIPT_NAME)
-            it.addMouseListener(MouseClickListener(mouseClickListener))
+        trayIcon?.let { tray ->
+            tray.setImageAutoSize(true)
+            tray.setToolTip(SCRIPT_NAME)
+            mouseClickListener?.let { listener ->
+                tray.addMouseListener(MouseClickListener(listener))
+            }
         }
         SystemTray.getSystemTray().add(trayIcon)
     }
