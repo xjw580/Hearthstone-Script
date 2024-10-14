@@ -133,12 +133,12 @@
                         <exclude>bat/**</exclude>
                         <exclude>exe/**</exclude>
                         <exclude>dll/**</exclude>
-                        <exclude>application.yml</exclude>
+                        <exclude>logback.xml</exclude>
                     </excludes>
                     <archive>
                         <manifest>
                             <!-- 入口Main Class -->
-                            <mainClass>club.xiaojiawei.hsscript.ScriptApplication</mainClass>
+                            <mainClass>club.xiaojiawei.hsscript.MainKt</mainClass>
                             <!-- 依赖的lib -->
                             <classpathPrefix>lib/</classpathPrefix>
                             <addClasspath>true</addClasspath>

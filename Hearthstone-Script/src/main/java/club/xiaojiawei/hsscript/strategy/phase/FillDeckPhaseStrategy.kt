@@ -6,6 +6,7 @@ import club.xiaojiawei.hsscript.bean.single.WarEx
 import club.xiaojiawei.hsscript.enums.TagEnum
 import club.xiaojiawei.hsscript.status.DeckStrategyManager
 import club.xiaojiawei.hsscript.strategy.AbstractPhaseStrategy
+import club.xiaojiawei.hsscript.strategy.DeckStrategyActuator
 import club.xiaojiawei.hsscript.strategy.DeckStrategyActuator.deckStrategy
 import club.xiaojiawei.status.War.currentPhase
 
@@ -28,6 +29,7 @@ object FillDeckPhaseStrategy : AbstractPhaseStrategy() {
         if (line.contains("CREATE_GAME")) {
             deckStrategy = DeckStrategyManager.currentDeckStrategy
             WarEx.startWar(DeckStrategyManager.currentDeckStrategy?.runModes[0])
+            DeckStrategyActuator.reset()
         }
         return super.dealOtherThenIsOver(line)
     }

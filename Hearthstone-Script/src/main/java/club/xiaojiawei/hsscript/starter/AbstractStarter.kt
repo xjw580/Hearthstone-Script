@@ -15,7 +15,7 @@ abstract class AbstractStarter {
     private var scheduledFuture: ScheduledFuture<*>? = null
 
     fun start() {
-        log.info { "执行" + javaClass.simpleName }
+        log.info { "执行【${javaClass.simpleName}】" }
         stop()
         execStart()
     }

@@ -39,19 +39,17 @@
     <!--设置需要分离的文件-->
     <fileSets>
         <fileSet>
-            <directory>${project.basedir}</directory>
+            <directory>${project.parent.basedir}</directory>
             <outputDirectory/>
             <includes>
-                <include>README*</include>
+                <include>*.md</include>
                 <include>LICENSE*</include>
-                <include>logback-spring.xml</include>
-                <include>NOTICE*</include>
             </includes>
         </fileSet>
         <fileSet>
             <directory>${project.basedir}/src/main/resources</directory>
             <includes>
-                <include>application.yml</include>
+                <include>logback.xml</include>
             </includes>
             <outputDirectory/>
         </fileSet>

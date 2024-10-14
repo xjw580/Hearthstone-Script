@@ -4,7 +4,9 @@ import club.xiaojiawei.bean.LogRunnable
 import club.xiaojiawei.config.LISTEN_LOG_THREAD_POOL
 import club.xiaojiawei.config.log
 import club.xiaojiawei.hsscript.core.Core
+import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.status.PauseStatus
+import club.xiaojiawei.hsscript.utils.ConfigUtil
 import club.xiaojiawei.util.isFalse
 import club.xiaojiawei.util.isTrue
 import javafx.beans.value.ObservableValue
@@ -21,8 +23,6 @@ object ExceptionListenStarter : AbstractStarter() {
     var lastActiveTime: Long = 0
 
     private var errorScheduledFuture: ScheduledFuture<*>? = null
-
-    private const val MAX_IDLE_TIME = 10 * 60 * 1000L
 
     init {
         PauseStatus.addListener{ _: ObservableValue<out Boolean>?, _: Boolean?, newValue: Boolean ->
@@ -46,13 +46,17 @@ object ExceptionListenStarter : AbstractStarter() {
         log.info { "开始监听异常情况" }
         lastActiveTime = System.currentTimeMillis()
         errorScheduledFuture = LISTEN_LOG_THREAD_POOL.scheduleAtFixedRate(LogRunnable {
-            if (!PauseStatus.isPause && System.currentTimeMillis() - lastActiveTime > MAX_IDLE_TIME
+            if (PauseStatus.isPause){
+                closeListener()
+                return@LogRunnable
+            }
+            if (System.currentTimeMillis() - lastActiveTime > ConfigUtil.getLong(ConfigEnum.IDLE_MAXIMUM_TIME) * 60_000L
             ) {
                 log.info { "监听到长时间无作为，准备重启游戏" }
                 lastActiveTime = System.currentTimeMillis()
                 Core.restart()
             }
-        }, 0, 10, TimeUnit.MINUTES)
+        }, 0, 1, TimeUnit.MINUTES)
     }
 
 }

@@ -19,7 +19,6 @@ object LoginModeStrategy : AbstractModeStrategy<Any?>() {
     }
 
     override fun afterEnter(t: Any?) {
-        log.info { "afterEnter" }
         //        去除国服登陆时恼人的点击开始和进入主界面时弹出的每日任务
         addEnteredTask(EXTRA_THREAD_POOL.scheduleWithFixedDelay(LogRunnable {
             if (PauseStatus.isPause) {

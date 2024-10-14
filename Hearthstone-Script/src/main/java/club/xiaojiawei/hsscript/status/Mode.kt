@@ -2,6 +2,7 @@ package club.xiaojiawei.hsscript.status
 
 import club.xiaojiawei.config.log
 import club.xiaojiawei.enums.ModeEnum
+import club.xiaojiawei.hsscript.strategy.AbstractModeStrategy
 
 /**
  * 游戏当前模式（界面）
@@ -15,13 +16,17 @@ object Mode {
             field?.modeStrategy?.afterLeave()
             prevMode = field
             field = value
-            field?.modeStrategy?.entering()
+            AbstractModeStrategy.cancelAllTask()
+            value?.modeStrategy?.entering()
+
         }
 
     var prevMode: ModeEnum? = null
 
     fun reset() {
-        currMode = null
-        log.info { "已重置模式状态" }
+        currMode?.let {
+            currMode = null
+            log.info { "已重置模式状态" }
+        }
     }
 }

@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit
  * @date 2023/7/5 14:55
  */
 object ScreenLogListener :
-    AbstractLogListener("LoadingScreen.log", 0, 1500L, TimeUnit.MILLISECONDS) {
+    AbstractLogListener("LoadingScreen.log", 0, 1000L, TimeUnit.MILLISECONDS) {
 
     override fun dealOldLog() {
         var line: String
@@ -29,16 +29,24 @@ object ScreenLogListener :
         Mode.currMode = finalMode
     }
 
+    private var dealing = false
+
     override fun dealNewLog() {
-        while (!PauseStatus.isPause) {
-            innerLogFile?.let {
-                it.readLine()?.let { line ->
-                    resolveLog(line)?.let {
-                        Mode.currMode = it
-                    }
-                } ?: return
-            } ?: return
+        if (dealing) return
+        dealing = true
+        innerLogFile?.let {
+            var line: String?
+            while (!PauseStatus.isPause) {
+                line = it.readLine()
+                if (line == null || line.isEmpty()) {
+                    break
+                }
+                resolveLog(line)?.let {
+                    Mode.currMode = it
+                }
+            }
         }
+        dealing = false
     }
 
     private fun resolveLog(line: String?): ModeEnum? {

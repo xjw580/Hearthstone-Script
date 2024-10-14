@@ -18,9 +18,16 @@ object DeckStrategyActuator {
 
     var deckStrategy: DeckStrategy? = null
 
+    fun reset(){
+        deckStrategy?.reset()
+
+        checkSurrender()
+    }
+
     fun changeCard() {
         log.info { "执行换牌策略" }
         if (!validPlayer()) return
+        if (checkSurrender()) return
 
         val me = War.me
         try {
@@ -41,11 +48,14 @@ object DeckStrategyActuator {
                 SystemUtil.delayShort()
             }
         }
+
+        checkSurrender()
     }
 
     fun outCard() {
         log.info { "执行出牌策略" }
         if (!validPlayer()) return
+        if (checkSurrender()) return
 
         try {
             War.me.let {
@@ -62,11 +72,14 @@ object DeckStrategyActuator {
                 SystemUtil.delayMedium()
             }
         }
+
+        checkSurrender()
     }
 
     fun discoverChooseCard(vararg cards: Card) {
         log.info { "执行发现选牌策略" }
         if (!validPlayer()) return
+        if (checkSurrender()) return
 
         SystemUtil.delay(1000)
         val index = deckStrategy?.executeDiscoverChooseCard(*cards)?:0
@@ -77,6 +90,8 @@ object DeckStrategyActuator {
             log.info { "选择了：" + card.toSimpleString() }
         }
         log.info { "执行发现选牌策略完毕" }
+
+        checkSurrender()
     }
 
     private fun validPlayer():Boolean{
@@ -85,6 +100,17 @@ object DeckStrategyActuator {
             return false
         }
         return true
+    }
+
+    private fun checkSurrender(): Boolean{
+        deckStrategy?.let {
+            if (it.needSurrender){
+                log.info { "触发投降" }
+                GameUtil.surrender()
+                return true
+            }
+        }
+        return false
     }
 
 }

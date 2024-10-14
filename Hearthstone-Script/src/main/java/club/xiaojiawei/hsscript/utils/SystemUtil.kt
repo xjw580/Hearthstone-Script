@@ -52,7 +52,6 @@ object SystemUtil {
                 val appIDBytes: ByteArray = SCRIPT_NAME.toByteArray(StandardCharsets.UTF_8)
                 val titleBytes = title.toByteArray(StandardCharsets.UTF_8)
                 val msgBytes = content.toByteArray(StandardCharsets.UTF_8)
-                RESOURCE_PATH
 
                 val icoPathBytes: ByteArray =
                     Path.of(RESOURCE_PATH, MAIN_IMG_NAME).toAbsolutePath()

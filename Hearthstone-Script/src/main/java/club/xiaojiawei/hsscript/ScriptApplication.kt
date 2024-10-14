@@ -135,11 +135,11 @@ class ScriptApplication : Application() {
 
 }
 
-var PROGRAM_ARGS: List<String> = emptyList()
-
-fun main(args: Array<String>) {
-    System.setProperty("jna.library.path", "lib")
-    PROGRAM_ARGS = args.toList()
-
-    Application.launch(ScriptApplication::class.java, *args)
-}
+//var PROGRAM_ARGS: List<String> = emptyList()
+//
+//fun main(args: Array<String>) {
+//    System.setProperty("jna.library.path", "lib")
+//    PROGRAM_ARGS = args.toList()
+//
+//    Application.launch(ScriptApplication::class.java, *args)
+//}

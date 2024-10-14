@@ -37,7 +37,7 @@ object HubModeStrategy : AbstractModeStrategy<Any?>() {
                 SystemUtil.delay(500)
             }
             CLOSE_AD2_RECT.lClick()
-            SystemUtil.delay(200)
+            SystemUtil.delayTiny()
         }
 
         DeckStrategyManager.currentDeckStrategy?.let {

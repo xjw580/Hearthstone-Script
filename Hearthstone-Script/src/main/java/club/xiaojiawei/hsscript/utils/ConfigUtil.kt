@@ -39,7 +39,7 @@ object ConfigUtil {
             }
         }
         store()
-        log.info { "配置文件读取完毕【${configFile.absolutePath}】" }
+        log.info { "配置文件读取完毕：${configFile.absolutePath}" }
     }
 
 

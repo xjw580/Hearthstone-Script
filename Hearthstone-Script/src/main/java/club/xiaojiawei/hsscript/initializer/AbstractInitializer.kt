@@ -12,7 +12,7 @@ abstract class AbstractInitializer {
     private var nextInitializer: AbstractInitializer? = null
 
     fun init() {
-        log.info { "执行" + javaClass.simpleName }
+        log.info { "执行【${javaClass.simpleName}】" }
         exec()
         initNextInitializer()
     }

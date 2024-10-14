@@ -11,8 +11,11 @@ import club.xiaojiawei.hsscript.dll.SystemDll
 import club.xiaojiawei.hsscript.status.PauseStatus
 import club.xiaojiawei.hsscript.utils.GameUtil
 import club.xiaojiawei.hsscript.utils.MouseUtil
+import club.xiaojiawei.hsscript.utils.SystemUtil
+import com.sun.jna.platform.win32.WinDef
 import com.sun.jna.platform.win32.WinDef.HWND
 import java.awt.Point
+import java.io.File
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicInteger
 
@@ -23,13 +26,15 @@ import java.util.concurrent.atomic.AtomicInteger
  */
 object GameStarter : AbstractStarter() {
 
+    private var latestLogDir: File? = null
+
     public override fun execStart() {
         log.info { "开始检查$GAME_CN_NAME" }
         GameUtil.findGameHWND()?.let {
-            updateGameMsg(it)
-            startNextStarter()
+            next(it)
             return
         }
+        latestLogDir = GameUtil.getLatestLogDir()
         val launchCount = AtomicInteger()
 
         addTask(
@@ -37,10 +42,10 @@ object GameStarter : AbstractStarter() {
                 if (PauseStatus.isPause) {
                     stop()
                 } else {
-                    if (launchCount.incrementAndGet() > 50) {
+                    if (launchCount.incrementAndGet() > 30) {
                         log.info { "更改${GAME_CN_NAME}启动方式" }
                         GameUtil.launchPlatformAndGame()
-                    } else if (launchCount.incrementAndGet() > 100) {
+                    } else if (launchCount.incrementAndGet() > 60) {
                         log.warn { "打开${GAME_CN_NAME}失败次数过多，重新执行启动器链" }
                         stop()
                         EXTRA_THREAD_POOL.schedule({
@@ -54,8 +59,7 @@ object GameStarter : AbstractStarter() {
                     if (GameUtil.isAliveOfGame()) {
 //                    游戏刚启动时可能找不到窗口句柄
                         GameUtil.findGameHWND()?.let {
-                            updateGameMsg(it)
-                            startNextStarter()
+                            next(it)
                         } ?: let {
                             log.info { "${GAME_CN_NAME}已在运行，但未找到对应窗口句柄" }
                             return@LogRunnable
@@ -64,22 +68,42 @@ object GameStarter : AbstractStarter() {
                         launchGameBySendMessage()
                     }
                 }
-            }, 100, 200, TimeUnit.MILLISECONDS)
+            }, 100, 500, TimeUnit.MILLISECONDS)
         )
     }
 
     private fun launchGameBySendMessage() {
         log.info { "正在打开$GAME_CN_NAME" }
+        val platformHWND = GameUtil.findPlatformHWND()
+        val rect = WinDef.RECT()
+        SystemUtil.updateRECT(platformHWND, rect)
         MouseUtil.leftButtonClick(
-            Point(145, 120),
-            GameUtil.findPlatformHWND()
+            Point(145, rect.bottom - rect.top - 150),
+            platformHWND
         )
     }
 
-    private fun updateGameMsg(gameHWND: HWND) {
+    private fun next(gameHWND: HWND) {
         log.info { GAME_CN_NAME + "正在运行" }
+        if (latestLogDir != null) {
+            log.info { "等待${GAME_CN_NAME}创建最新日志文件夹" }
+            while (!PauseStatus.isPause) {
+                val currentLatestLogDir = GameUtil.getLatestLogDir()
+                if (currentLatestLogDir != null) {
+                    if (currentLatestLogDir > latestLogDir){
+                        log.info { "${GAME_CN_NAME}已创建最新日志文件夹" }
+                        break
+                    }
+                }
+                Thread.sleep(200)
+            }
+        }
+        updateGameMsg(gameHWND)
+        startNextStarter()
+    }
+
+    private fun updateGameMsg(gameHWND: HWND) {
         GAME_HWND = gameHWND
-        GameUtil.hidePlatformWindow()
         GameUtil.updateGameRect()
         Thread.ofVirtual().name("Update GameRect VThread").start {
             Thread.sleep(3000)

@@ -60,7 +60,7 @@ abstract class AbstractLogListener(
             log.error { logFileName + "初始化失败" }
             return
         }
-        log.info { "开始监听$logFileName" }
+        log.info { "开始监听日志【$logFileName】" }
         try {
             this.innerLogFile = RandomAccessFile(logFile, "r")
             dealOldLog()
@@ -81,7 +81,7 @@ abstract class AbstractLogListener(
                 }
             }
         }, listenInitialDelay, listenPeriod, listenTimeUnit)
-
+        LogListenerStatus.addLogListener(this)
         listenNextListener()
     }
 

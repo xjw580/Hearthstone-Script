@@ -25,7 +25,7 @@
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <FileNamePattern>${logPath}/hs_script-%d{yyyy-MM-dd}.%i.log</FileNamePattern>
             <!--指定日志保存天数-->
-            <MaxHistory>2</MaxHistory>
+            <MaxHistory>3</MaxHistory>
             <TimeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
                 <!--指定每个日志文件大小-->
                 <MaxFileSize>5MB</MaxFileSize>

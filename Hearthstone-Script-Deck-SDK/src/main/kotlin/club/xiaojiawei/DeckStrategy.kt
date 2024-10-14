@@ -15,6 +15,18 @@ abstract class DeckStrategy {
     val runModes: Array<RunModeEnum> by lazy { getRunMode() }
 
     /**
+     * 是否需要投降，改为true时软件会在适合的时机投降
+     */
+    var needSurrender = false
+
+    /**
+     * 每局游戏开始时调用此方法
+     */
+    open fun reset(){
+        needSurrender = false
+    }
+
+    /**
      * 卡组名，将会显示在界面中
      * @return 非空
      */

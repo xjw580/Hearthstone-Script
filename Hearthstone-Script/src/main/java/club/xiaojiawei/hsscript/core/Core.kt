@@ -10,7 +10,9 @@ import club.xiaojiawei.hsscript.consts.setPath
 import club.xiaojiawei.hsscript.dll.SystemDll
 import club.xiaojiawei.hsscript.enums.WindowEnum
 import club.xiaojiawei.hsscript.listener.WorkListener
+import club.xiaojiawei.hsscript.status.Mode
 import club.xiaojiawei.hsscript.status.PauseStatus
+import club.xiaojiawei.hsscript.strategy.AbstractModeStrategy
 import club.xiaojiawei.hsscript.utils.GameUtil
 import club.xiaojiawei.hsscript.utils.SystemUtil
 import club.xiaojiawei.hsscript.utils.WindowUtil
@@ -31,14 +33,15 @@ object Core {
                 SystemDll.INSTANCE.changeInput(GAME_HWND, false)
                 SystemDll.INSTANCE.changeWindow(GAME_HWND, false)
                 WorkListener.working = false
-                log.info { "当前处于停止状态" }
+                Mode.reset()
+                log.info { "当前处于【停止】状态" }
             }.isFalse {
                 if (WorkListener.isDuringWorkDate()) {
                     start()
                 } else {
                     WorkListener.cannotWorkLog()
                 }
-                log.info { "当前处于运行状态" }
+                log.info { "当前处于【运行】状态" }
             }
         }
     }

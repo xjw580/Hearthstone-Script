@@ -16,6 +16,23 @@ object LogListenerStatus {
 
     val activeListeners = mutableListOf<AbstractLogListener>()
 
+    init {
+        PauseStatus.addListener{_, _, newValue ->
+            if (!newValue){
+                closeAllLogListeners()
+            }
+        }
+    }
+
+    fun addLogListener(listener: AbstractLogListener) {
+        activeListeners.add(listener)
+    }
+
+    fun removeLogListener(listener: AbstractLogListener) {
+        listener.close()
+        activeListeners.remove(listener)
+    }
+
     fun closeAllLogListeners() {
         for (listener in activeListeners) {
             listener.close()

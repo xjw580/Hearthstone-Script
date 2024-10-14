@@ -11,6 +11,7 @@ import club.xiaojiawei.enums.ModeEnum
 import club.xiaojiawei.enums.RunModeEnum
 import club.xiaojiawei.hsscript.consts.MAX_LOG_SIZE_B
 import club.xiaojiawei.hsscript.consts.MAX_LOG_SIZE_KB
+import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.listener.log.DeckLogListener.DECKS
 import club.xiaojiawei.hsscript.listener.log.PowerLogListener
 import club.xiaojiawei.hsscript.status.DeckStrategyManager
@@ -18,6 +19,7 @@ import club.xiaojiawei.hsscript.status.Mode.currMode
 import club.xiaojiawei.hsscript.status.PauseStatus
 import club.xiaojiawei.hsscript.listener.WorkListener
 import club.xiaojiawei.hsscript.strategy.AbstractModeStrategy
+import club.xiaojiawei.hsscript.utils.ConfigUtil
 import club.xiaojiawei.hsscript.utils.GameUtil.reconnect
 import club.xiaojiawei.hsscript.utils.SystemUtil
 import java.util.concurrent.TimeUnit
@@ -198,7 +200,7 @@ object TournamentModeStrategy : AbstractModeStrategy<Any?>() {
                 reconnect()
                 afterEnter(null)
             }
-        }, 90, TimeUnit.SECONDS))
+        }, ConfigUtil.getLong(ConfigEnum.MATCH_MAXIMUM_TIME), TimeUnit.SECONDS))
     }
 
 }

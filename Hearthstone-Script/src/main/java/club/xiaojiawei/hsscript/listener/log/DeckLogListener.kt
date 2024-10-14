@@ -1,6 +1,7 @@
 package club.xiaojiawei.hsscript.listener.log
 
 import club.xiaojiawei.hsscript.bean.Deck
+import club.xiaojiawei.hsscript.status.PauseStatus
 import club.xiaojiawei.hsscript.utils.PowerLogUtil
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -11,19 +12,28 @@ import java.util.concurrent.TimeUnit
  * @date 2023/9/20 16:43
  */
 
-object DeckLogListener : AbstractLogListener("Decks.log", 0, 1500L, TimeUnit.MILLISECONDS){
+object DeckLogListener : AbstractLogListener("Decks.log", 0, 1500L, TimeUnit.MILLISECONDS) {
 
     val DECKS = LinkedList<Deck>()
 
+    var dealing = false
+
     override fun dealOldLog() {
-        var line: String
-        while ((innerLogFile!!.readLine().also { line = it }) != null) {
-            if (line.contains("Deck Contents Received")) {
-                dealReceived()
-            } else if (line.contains("Finished Editing Deck")) {
-                dealEditing()
+        if (dealing) return
+        dealing = true
+        innerLogFile?.let { file ->
+            var line: String?
+            while (!PauseStatus.isPause) {
+                line = file.readLine()
+                if (line == null || line.isEmpty()) break
+                if (line.contains("Deck Contents Received")) {
+                    dealReceived()
+                } else if (line.contains("Finished Editing Deck")) {
+                    dealEditing()
+                }
             }
         }
+        dealing = false
     }
 
     private fun dealReceived() {

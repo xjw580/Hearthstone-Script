@@ -11,6 +11,7 @@ import com.melloware.jintellitype.JIntellitype
  * @author 肖嘉威
  * @date 2023/7/5 11:26
  */
+
 enum class ConfigEnum(
     val group: String = "",
     val defaultValue: String = "",
@@ -20,7 +21,6 @@ enum class ConfigEnum(
      * 游戏路径
      */
     GAME_PATH(group = "path", defaultValue = ""),
-
     /**
      * 战网路径
      */
@@ -35,7 +35,6 @@ enum class ConfigEnum(
             WorkDay("every", true)
         ))
     ),
-
     /**
      * 工作时间，具体时间段
      */
@@ -47,7 +46,6 @@ enum class ConfigEnum(
      * 更新开发版
      */
     UPDATE_DEV(group = "version", defaultValue = "false"),
-
     /**
      * 自动更新
      */
@@ -57,17 +55,14 @@ enum class ConfigEnum(
      * 是否执行策略
      */
     STRATEGY(group = "action", defaultValue = "true"),
-
     /**
      * 动作间隔/ms
      */
     MOUSE_ACTION_INTERVAL(group = "action", defaultValue = "3500"),
-
     /**
      * 鼠标移动间隔/ms
      */
     MOUSE_MOVE_INTERVAL(group = "action", defaultValue = "4"),
-
     /**
      * 适配畸变模式
      */
@@ -77,7 +72,6 @@ enum class ConfigEnum(
      * 套牌插件禁用列表
      */
     DECK_PLUGIN_DISABLED(group = "plugin", defaultValue = JSON.toJSONString(emptyList<String>())),
-
     /**
      * 卡牌插件禁用列表
      */
@@ -87,27 +81,31 @@ enum class ConfigEnum(
      * 默认套牌(deck id)
      */
     DEFAULT_DECK_STRATEGY(group = "other", defaultValue = ""),
-
     /**
      * 战网密码
      */
-    PLATFORM_PASSWORD(group = "other"),
-
+    PLATFORM_PASSWORD(group = "other", defaultValue = ""),
     /**
-     * 游戏日志大小限制/KB
+     * 游戏日志大小限制/KB，游戏默认10240
      */
-    GAME_LOG_LIMIT(group = "other", defaultValue = "10240"),
+    GAME_LOG_LIMIT(group = "other", defaultValue = "51200"),
+    /**
+     * 最长匹配时间/s（超过重新匹配）
+     */
+    MATCH_MAXIMUM_TIME(group = "other", defaultValue = "90"),
+    /**
+     * 最长空闲时间/min（超过重启游戏）
+     */
+    IDLE_MAXIMUM_TIME(group = "other", defaultValue = "10"),
 
     /**
      * 允许发送windows通知
      */
     SEND_NOTICE(group = "system", defaultValue = "true"),
-
     /**
      * 退出程序热键
      */
     EXIT_HOT_KEY(group = "system", defaultValue = JSON.toJSONString(HotKey(JIntellitype.MOD_ALT, 'P'.code))),
-
     /**
      * 暂停程序热键
      */

@@ -80,22 +80,24 @@ object WarEx {
 
     @Synchronized
     fun reset() {
-        firstPlayerGameId = ""
-        currentPhase = WarPhaseEnum.FILL_DECK
-        currentTurnStep = null
-        rival = Player.INVALID_PLAYER
-        me = Player.INVALID_PLAYER
-        currentPlayer = Player.INVALID_PLAYER
-        player1 = Player("1")
-        player2 = Player("2")
-        warTurn = 0
-        conceded = ""
-        lost = conceded
-        won = lost
-        endTime = 0
-        startTime = endTime
-        resetCallbackList.forEach(Consumer { obj: Runnable -> obj.run() })
-        log.info { "已重置游戏状态" }
+        currentTurnStep?.let {
+            firstPlayerGameId = ""
+            currentPhase = WarPhaseEnum.FILL_DECK
+            currentTurnStep = null
+            rival = Player.INVALID_PLAYER
+            me = Player.INVALID_PLAYER
+            currentPlayer = Player.INVALID_PLAYER
+            player1 = Player("1")
+            player2 = Player("2")
+            warTurn = 0
+            conceded = ""
+            lost = conceded
+            won = lost
+            endTime = 0
+            startTime = endTime
+            resetCallbackList.forEach(Consumer { obj: Runnable -> obj.run() })
+            log.info { "已重置游戏状态" }
+        }
     }
 
     @Synchronized

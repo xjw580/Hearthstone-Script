@@ -6,6 +6,7 @@ import club.xiaojiawei.config.log
 import club.xiaojiawei.hsscript.PROGRAM_ARGS
 import club.xiaojiawei.hsscript.bean.Release
 import club.xiaojiawei.hsscript.bean.single.repository.AbstractRepository
+import club.xiaojiawei.hsscript.bean.single.repository.GiteeRepository
 import club.xiaojiawei.hsscript.bean.single.repository.GithubRepository
 import club.xiaojiawei.hsscript.consts.MAIN_PATH
 import club.xiaojiawei.hsscript.consts.TEMP_VERSION_PATH
@@ -15,6 +16,7 @@ import club.xiaojiawei.hsscript.status.PauseStatus
 import club.xiaojiawei.hsscript.utils.ConfigUtil
 import club.xiaojiawei.hsscript.utils.FileUtil
 import club.xiaojiawei.hsscript.utils.SystemUtil
+import club.xiaojiawei.hsscript.utils.VersionUtil
 import javafx.beans.property.DoubleProperty
 import javafx.beans.property.ReadOnlyBooleanProperty
 import javafx.beans.property.ReadOnlyBooleanWrapper
@@ -52,7 +54,7 @@ object VersionListener {
 
     var latestRelease: Release? = null
 
-    private val repositoryList: List<AbstractRepository> = listOf()
+    private val repositoryList: List<AbstractRepository> = listOf(GiteeRepository, GithubRepository)
 
     /**
      * 能否升级
@@ -84,14 +86,13 @@ object VersionListener {
 
     fun downloadingReadOnlyProperty(): ReadOnlyBooleanProperty = downloadingProperty.readOnlyProperty
 
+    init {
+        currentRelease.tagName = VersionUtil.VERSION
+        currentRelease.isPreRelease = VersionTypeEnum.getEnum(currentRelease).isPreview
+    }
+
     fun launch() {
         if (checkVersionTask != null) return
-//        打完包后启动this.getClass().getPackage().getImplementationVersion()能读到正确的值
-        var version =
-            VersionListener::class.java.getPackage().implementationVersion?.let { if (it.isBlank()) VersionTypeEnum.UNKNOWN.name else it }
-                ?: VersionTypeEnum.UNKNOWN.name
-        currentRelease.tagName = version
-        currentRelease.isPreRelease = VersionTypeEnum.getEnum(currentRelease).isPreview
 
         checkVersionTask = EXTRA_THREAD_POOL.scheduleAtFixedRate(LogRunnable {
             checkVersion()
@@ -194,11 +195,11 @@ object VersionListener {
      */
     fun checkVersion() {
 //        在idea中启动时就不要检查更新了
-        if (Objects.requireNonNull<URL>(javaClass.getResource(""))
-                .protocol != "jar" && !PROGRAM_ARGS.contains("--update")
-        ) {
-            return
-        }
+//        if (Objects.requireNonNull<URL>(javaClass.getResource(""))
+//                .protocol != "jar" && !PROGRAM_ARGS.contains("--update")
+//        ) {
+//            return
+//        }
         synchronized(canUpdateProperty){
             val updateDev = ConfigUtil.getBoolean(ConfigEnum.UPDATE_DEV)
             log.info { "开始检查更新，更新开发版：$updateDev" }
@@ -206,6 +207,7 @@ object VersionListener {
                 try {
                     latestRelease = repository.getLatestRelease(updateDev)
                 } catch (e: Exception) {
+                    latestRelease = null
                     log.error(e) { "${repository.getDomain()}检查最新版异常" }
                     continue
                 }
@@ -214,7 +216,7 @@ object VersionListener {
             latestRelease?.let {
                 if (currentRelease < it && VersionTypeEnum.getEnum(it) !== VersionTypeEnum.TEST) {
                     canUpdateProperty.set(true)
-                    log.info { "有更新可用😊，当前版本：${currentRelease.tagName}, 最新版本：${it.tagName}" }
+                    log.info { "有更新可用😊，当前版本：【${currentRelease.tagName}】, 最新版本：【${it.tagName}】" }
                     SystemUtil.notice(
                         String.format("发现新版本：%s", it.tagName),
                         String.format("更新日志：\n%s", it.body),
@@ -222,12 +224,12 @@ object VersionListener {
                         GithubRepository.getReleasePageURL(it)
                     )
                 } else {
+                    log.info { "已是最新，当前版本：【${currentRelease.tagName}】, 最新版本：【${it.tagName}】" }
                     canUpdateProperty.set(false)
-                    log.info { "已是最新，当前版本：${currentRelease.tagName}, 最新版本：${it.tagName}" }
                 }
             } ?: {
-                canUpdateProperty.set(false)
                 log.warn { "没有任何最新版本" }
+                canUpdateProperty.set(false)
             }
         }
     }

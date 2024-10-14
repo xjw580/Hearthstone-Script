@@ -170,7 +170,7 @@ object PluginManager {
             pluginWrapperList.add(pluginWrapper)
         }
         pluginWrapper.plugin.apply {
-            log.info { "加载${type}: 【name: ${name()}, version: ${version()}, author: ${author()}, id: ${id()}, description: ${description()}】" }
+            log.info { "加载${type}：{name: ${name()}, version: ${version()}, author: ${author()}, id: ${id()}, description: ${description()}}" }
         }
     }
 

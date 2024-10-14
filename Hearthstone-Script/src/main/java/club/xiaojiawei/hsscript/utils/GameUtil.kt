@@ -3,7 +3,10 @@ package club.xiaojiawei.hsscript.utils
 import club.xiaojiawei.bean.LogRunnable
 import club.xiaojiawei.config.EXTRA_THREAD_POOL
 import club.xiaojiawei.config.log
+import club.xiaojiawei.enums.ModeEnum
+import club.xiaojiawei.enums.WarPhaseEnum
 import club.xiaojiawei.hsscript.bean.GameRect
+import club.xiaojiawei.hsscript.bean.single.WarEx
 import club.xiaojiawei.hsscript.consts.GAME_CN_NAME
 import club.xiaojiawei.hsscript.consts.GAME_HWND
 import club.xiaojiawei.hsscript.consts.GAME_PROGRAM_NAME
@@ -15,15 +18,21 @@ import club.xiaojiawei.hsscript.consts.PLATFORM_PROGRAM_NAME
 import club.xiaojiawei.hsscript.consts.PLATFORM_US_NAME
 import club.xiaojiawei.hsscript.dll.SystemDll
 import club.xiaojiawei.hsscript.enums.ConfigEnum
+import club.xiaojiawei.hsscript.status.Mode
 import club.xiaojiawei.hsscript.status.PauseStatus
 import club.xiaojiawei.hsscript.utils.SystemUtil.delay
+import club.xiaojiawei.status.War
 import club.xiaojiawei.util.isFalse
 import com.sun.jna.platform.win32.Kernel32
 import com.sun.jna.platform.win32.User32
 import com.sun.jna.platform.win32.WinDef
 import com.sun.jna.platform.win32.WinUser
 import java.awt.Point
+import java.io.File
 import java.io.IOException
+import java.nio.file.Path
+import java.util.Arrays
+import java.util.Comparator
 import java.util.concurrent.ScheduledFuture
 import java.util.concurrent.TimeUnit
 import kotlin.math.max
@@ -196,7 +205,7 @@ object GameUtil {
         ),
     )
 
-    private var gameEndTask: ScheduledFuture<*>? = null
+    private var gameEndTasks: MutableList<ScheduledFuture<*>> = mutableListOf()
 
     fun getThreeDiscoverCardRect(index: Int): GameRect {
         if (index < 0 || index > THREE_DISCOVER_RECTS.size - 1) {
@@ -274,7 +283,7 @@ object GameUtil {
         }
     }
 
-    fun launchPlatform(){
+    fun launchPlatform() {
         try {
             Runtime.getRuntime().exec("\"${ConfigUtil.getString(ConfigEnum.PLATFORM_PATH)}\"")
         } catch (e: IOException) {
@@ -286,17 +295,40 @@ object GameUtil {
      * 游戏里投降
      */
     fun surrender() {
-        SystemUtil.delay(10000)
-        //        SystemUtil.frontWindow(ScriptStaticData.getGameHWND());
+//        SystemUtil.frontWindow(ScriptStaticData.getGameHWND());
 //        按ESC键弹出投降界面
 //        ScriptStaticData.ROBOT.keyPress(27);
 //        ScriptStaticData.ROBOT.keyRelease(27);
+        if (gameEndTasks.isNotEmpty()) return
+        val warCount = WarEx.warCount
+        delay(1000)
+        gameEndTasks.add(
+            EXTRA_THREAD_POOL.scheduleWithFixedDelay(
+                LogRunnable {
+                    if (PauseStatus.isPause) {
+                        cancelGameEndTask()
+                    } else if(WarEx.warCount > warCount) {
+                        cancelGameEndTask()
+                    }else {
+                        lClickSettings()
+                        delay(500)
+                        SURRENDER_RECT.lClick()
+                    }
+                },
+                0,
+                500,
+                TimeUnit.MILLISECONDS
+            )
+        )
+    }
+
+    /**
+     * 点击设置按钮
+     */
+    fun lClickSettings() {
         val width = GAME_RECT.right - GAME_RECT.left
         val height = GAME_RECT.bottom - GAME_RECT.top
         leftButtonClick(Point((width - width * 0.0072992700729927).toInt(), (height - height * 0.015625).toInt()))
-        SystemUtil.delay(1500)
-        SURRENDER_RECT.lClick()
-        addGameEndTask()
     }
 
     fun cancelAction() {
@@ -321,17 +353,21 @@ object GameUtil {
     fun addGameEndTask() {
         cancelGameEndTask()
         log.info { "点掉游戏结束结算页面" }
-        gameEndTask = EXTRA_THREAD_POOL.scheduleWithFixedDelay(
-            LogRunnable {
-                if (PauseStatus.isPause) {
-                    cancelGameEndTask()
-                } else {
-                    lClickCenter()
-                }
-            },
-            4500,
-            2000,
-            TimeUnit.MILLISECONDS
+        gameEndTasks.add(
+            EXTRA_THREAD_POOL.scheduleWithFixedDelay(
+                LogRunnable {
+                    if (PauseStatus.isPause) {
+                        cancelGameEndTask()
+                    } else if (Mode.currMode !== ModeEnum.GAMEPLAY) {
+                        cancelGameEndTask()
+                    } else {
+                        END_TURN_RECT.lClick()
+                    }
+                },
+                1000,
+                1000,
+                TimeUnit.MILLISECONDS
+            )
         )
     }
 
@@ -417,12 +453,24 @@ object GameUtil {
     }
 
     private fun cancelGameEndTask() {
-        gameEndTask?.let {
-            it.isDone.isFalse {
-                it.cancel(true)
-                gameEndTask = null
+        for (future in gameEndTasks.toList()) {
+            future.isDone.isFalse {
+                future.cancel(true)
             }
+            gameEndTasks.remove(future)
         }
+    }
+
+    fun getLatestLogDir(): File? {
+        val gameLogDir = Path.of(ConfigUtil.getString(ConfigEnum.GAME_PATH), "Logs").toFile()
+
+        var files: Array<File>? = null
+        if (gameLogDir.exists() && gameLogDir.isDirectory) {
+            files = gameLogDir.listFiles()
+            Arrays.sort(files, Comparator.comparing { obj: File -> obj.name })
+            if (files.isNotEmpty()) return files[files.size - 1]
+        }
+        return null
     }
 
 }

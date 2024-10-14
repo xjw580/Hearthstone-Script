@@ -45,7 +45,7 @@ object GiteeRepository : AbstractRepository() {
             )
         } else {
             String.format(
-                "https://api.%s/repos/%s/%s/releases/latest",
+                "https://%s/api/v5/repos/%s/%s/releases",
                 getDomain(), getUserName(),
                 PROJECT_NAME
             )
