@@ -42,6 +42,12 @@ object HubModeStrategy : AbstractModeStrategy<Any?>() {
 
         DeckStrategyManager.currentDeckStrategy?.let {
             log.info { "准备进入指定模式" }
+            if (it.runModes.isEmpty()){
+                SystemUtil.notice("未配置卡组")
+                log.error { "未配置卡组" }
+                PauseStatus.isPause = false
+                return
+            }
             it.runModes[0].modeEnum.modeStrategy?.wantEnter()
         }
     }
