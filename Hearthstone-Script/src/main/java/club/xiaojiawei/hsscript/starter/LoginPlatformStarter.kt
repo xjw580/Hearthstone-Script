@@ -56,7 +56,7 @@ object LoginPlatformStarter : AbstractStarter() {
                     SystemUtil.delayShort()
                     clickLoginButton(loginPlatformHWND)
                 }
-            }, 5, 100, TimeUnit.SECONDS)
+            }, 5, 100, TimeUnit.MILLISECONDS)
         )
     }
 

@@ -42,10 +42,10 @@ object GameStarter : AbstractStarter() {
                 if (PauseStatus.isPause) {
                     stop()
                 } else {
-                    if (launchCount.incrementAndGet() > 30) {
+                    if (launchCount.incrementAndGet() > 25) {
                         log.info { "更改${GAME_CN_NAME}启动方式" }
                         GameUtil.launchPlatformAndGame()
-                    } else if (launchCount.incrementAndGet() > 60) {
+                    } else if (launchCount.incrementAndGet() > 30) {
                         log.warn { "打开${GAME_CN_NAME}失败次数过多，重新执行启动器链" }
                         stop()
                         EXTRA_THREAD_POOL.schedule({
@@ -68,7 +68,7 @@ object GameStarter : AbstractStarter() {
                         launchGameBySendMessage()
                     }
                 }
-            }, 100, 500, TimeUnit.MILLISECONDS)
+            }, 100, 1000, TimeUnit.MILLISECONDS)
         )
     }
 

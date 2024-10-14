@@ -3,7 +3,6 @@ package club.xiaojiawei.hsscript.starter
 import club.xiaojiawei.bean.LogRunnable
 import club.xiaojiawei.config.LAUNCH_PROGRAM_THREAD_POOL
 import club.xiaojiawei.config.log
-import club.xiaojiawei.hsscript.consts.GAME_CN_NAME
 import club.xiaojiawei.hsscript.consts.PLATFORM_CN_NAME
 import club.xiaojiawei.hsscript.status.PauseStatus
 import club.xiaojiawei.hsscript.utils.GameUtil
@@ -26,7 +25,7 @@ object PlatformStarter : AbstractStarter() {
 //            GameUtil.hidePlatformWindow()
         } else {
             log.info { "启动$PLATFORM_CN_NAME" }
-            GameUtil.launchPlatform()
+            GameUtil.launchPlatformAndGame()
         }
 
         addTask(
@@ -36,7 +35,7 @@ object PlatformStarter : AbstractStarter() {
                 } else if (GameUtil.findPlatformHWND() != null || GameUtil.findLoginPlatformHWND() != null) {
                     startNextStarter()
                 }
-            }, 1, 100, TimeUnit.SECONDS)
+            }, 1, 100, TimeUnit.MILLISECONDS)
         )
     }
 }
