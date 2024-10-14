@@ -10,7 +10,7 @@ import java.util.HashSet
  */
 class HsSurrenderDeckStrategy:DeckStrategy() {
     override fun name(): String {
-        return "投降策略"
+        return "秒投策略"
     }
 
     override fun getRunMode(): Array<RunModeEnum> {

@@ -34,7 +34,7 @@ enum class WindowEnum(
         StageStyle.DECORATED
     ),
     STARTUP(
-        "startup.fxml", SCRIPT_NAME + "-启动页",
+        "startup.fxml", "$SCRIPT_NAME-启动页",
         558.0, 400.0, -1.0, -1.0,
         false, StageStyle.UNDECORATED
     ),

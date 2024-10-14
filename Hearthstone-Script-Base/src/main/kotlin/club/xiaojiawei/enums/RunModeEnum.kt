@@ -14,4 +14,16 @@ enum class RunModeEnum(val comment: String, val modeEnum: ModeEnum, var isEnable
     BACON("酒馆战棋", ModeEnum.BACON, false),
     ;
 
+    companion object{
+
+        fun fromString(string: String): RunModeEnum?{
+            return try {
+                valueOf(string)
+            }catch (_:Exception){
+                null
+            }
+        }
+
+    }
+
 }

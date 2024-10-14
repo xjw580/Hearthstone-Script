@@ -12,16 +12,6 @@ import java.io.File
  */
 var PROGRAM_ARGS: List<String> = emptyList()
 
-fun main(args: Array<String>) {
-    System.setProperty("jna.library.path", "lib")
-
-    setLogPath()
-
-    PROGRAM_ARGS = args.toList()
-
-    Application.launch(ScriptApplication::class.java, *args)
-}
-
 private fun setLogPath(){
     try {
         val logbackConfigFile = File("logback.xml")
@@ -35,4 +25,14 @@ private fun setLogPath(){
     } catch (e: Exception) {
         e.printStackTrace()
     }
+}
+
+fun main(args: Array<String>) {
+    System.setProperty("jna.library.path", "lib")
+
+    setLogPath()
+
+    PROGRAM_ARGS = args.toList()
+
+    Application.launch(MainApplication::class.java, *args)
 }

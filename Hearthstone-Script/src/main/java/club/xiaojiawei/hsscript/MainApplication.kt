@@ -42,7 +42,7 @@ import javax.swing.AbstractAction
  * @author 肖嘉威
  * @date 2023/7/6 9:46
  */
-class ScriptApplication : Application() {
+class MainApplication : Application() {
 
     private var mainShowingListener: ChangeListener<Boolean?>? = null
 

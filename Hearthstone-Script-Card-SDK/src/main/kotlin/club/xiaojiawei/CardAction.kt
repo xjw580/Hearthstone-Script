@@ -117,11 +117,7 @@ abstract class CardAction(createDefaultAction: Boolean = true) {
 
     fun delay(time: Int = mouseActionInterval) {
         if (isStop()) return
-        try {
-            Thread.sleep(time.toLong())
-        } catch (e: InterruptedException) {
-//            log.warn(e) {}
-        }
+        Thread.sleep(time.toLong())
     }
 
     private fun isStop(): Boolean {

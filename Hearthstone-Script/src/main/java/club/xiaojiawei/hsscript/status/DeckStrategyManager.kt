@@ -42,7 +42,7 @@ object DeckStrategyManager {
             } else if (ConfigUtil.getString(ConfigEnum.DEFAULT_DECK_STRATEGY) != newStrategy.id()
             ) {
                 ConfigUtil.putString(ConfigEnum.DEFAULT_DECK_STRATEGY, newStrategy.id())
-                val text = "挂机卡组改为: ${newStrategy.name()}，模式: ${newStrategy.runModes[0].comment}"
+                val text = "挂机策略改为: ${newStrategy.name()}，模式: ${newStrategy.runModes[0].comment}"
                 SystemUtil.notice(text)
                 log.info { text }
                 if (newStrategy.deckCode().isNotBlank() && newStrategy.deckCode().isNotBlank()) {

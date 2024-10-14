@@ -19,7 +19,7 @@ object MouseUtil {
      */
     private const val MIN_MOVE_INTERVAL = 1
 
-    private val MAX_MOVE_INTERVAL = ConfigUtil.getInt(ConfigEnum.MOUSE_MOVE_INTERVAL)
+    private val MAX_MOVE_INTERVAL = 4
 
     /**
      * 鼠标每次移动的距离：px

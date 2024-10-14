@@ -1,5 +1,6 @@
 package club.xiaojiawei.hsscript.enums
 
+import club.xiaojiawei.enums.RunModeEnum
 import club.xiaojiawei.hsscript.bean.HotKey
 import club.xiaojiawei.hsscript.bean.WorkDay
 import club.xiaojiawei.hsscript.bean.WorkTime
@@ -60,10 +61,6 @@ enum class ConfigEnum(
      */
     MOUSE_ACTION_INTERVAL(group = "action", defaultValue = "3500"),
     /**
-     * 鼠标移动间隔/ms
-     */
-    MOUSE_MOVE_INTERVAL(group = "action", defaultValue = "4"),
-    /**
      * 适配畸变模式
      */
     DISTORTION(group = "action", defaultValue = "true"),
@@ -81,6 +78,10 @@ enum class ConfigEnum(
      * 默认套牌(deck id)
      */
     DEFAULT_DECK_STRATEGY(group = "other", defaultValue = ""),
+    /**
+     * 默认运行模式
+     */
+    DEFAULT_RUN_MODE(group = "other", defaultValue = RunModeEnum.CASUAL.name),
     /**
      * 战网密码
      */

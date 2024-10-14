@@ -103,6 +103,7 @@ public class MainController extends MainView {
             } else {
                 deckBox.getItems().setAll(runModeMap.get(newValue));
             }
+            ConfigUtil.INSTANCE.putString(ConfigEnum.DEFAULT_RUN_MODE, newValue == null ? "" : newValue.name(), true);
         });
 
 //        卡组更改监听
@@ -121,13 +122,23 @@ public class MainController extends MainView {
             DeckStrategyManager.INSTANCE.setCurrentDeckStrategy(newValue);
         });
 
+        String defaultDeckId = ConfigUtil.INSTANCE.getString(ConfigEnum.DEFAULT_DECK_STRATEGY);
+        RunModeEnum defaultRunModeEnum = RunModeEnum.Companion.fromString(ConfigUtil.INSTANCE.getString(ConfigEnum.DEFAULT_RUN_MODE));
         Optional<DeckStrategy> defaultDeck = DeckStrategyManager.INSTANCE.getDeckStrategies()
                 .stream()
-                .filter(deckStrategy -> Objects.equals(ConfigUtil.INSTANCE.getString(ConfigEnum.DEFAULT_DECK_STRATEGY), deckStrategy.id()))
+                .filter(deckStrategy ->
+                        Objects.equals(defaultDeckId, deckStrategy.id())
+                                &&
+                                deckStrategy.getRunModes().length > 0
+                                &&
+                                (defaultRunModeEnum == null
+                                        ||
+                                        Arrays.stream(deckStrategy.getRunModes()).anyMatch(runModeEnum -> runModeEnum == defaultRunModeEnum))
+                )
                 .findFirst();
         if (defaultDeck.isPresent()) {
             defaultDeck.get().getRunModes();
-            runModeBox.setValue(defaultDeck.get().getRunModes()[0]);
+            runModeBox.setValue(Objects.requireNonNullElseGet(defaultRunModeEnum, () -> defaultDeck.get().getRunModes()[0]));
             deckBox.setValue(defaultDeck.get());
         }
 
@@ -154,20 +165,20 @@ public class MainController extends MainView {
 
     private static String formatTime(int time) {
         String timeStr;
-        if (time == 0){
+        if (time == 0) {
             timeStr = String.format("%d", time);
-        } else if (time < 60){
+        } else if (time < 60) {
             timeStr = String.format("%dm", time);
-        }else if (time < 1440){
-            if (time % 60 == 0){
+        } else if (time < 1440) {
+            if (time % 60 == 0) {
                 timeStr = String.format("%dh", time / 60);
-            }else {
+            } else {
                 timeStr = String.format("%dh%dm", time / 60, time % 60);
             }
-        }else {
-            if (time % 1440 == 0){
+        } else {
+            if (time % 1440 == 0) {
                 timeStr = String.format("%dd", time / 1440);
-            }else {
+            } else {
                 timeStr = String.format("%dd%dh", time / 1440, time % 1440 / 60);
             }
         }
@@ -175,11 +186,11 @@ public class MainController extends MainView {
     }
 
     @SuppressWarnings("all")
-    private void appendLog(ILoggingEvent event){
+    private void appendLog(ILoggingEvent event) {
         Platform.runLater(() -> {
             ObservableList<Node> list = logVBox.getChildren();
             //                大于二百五条就清空,防止内存泄露和性能问题
-            if (list.size() > 250){
+            if (list.size() > 250) {
                 list.clear();
             }
             CopyLabel label = new CopyLabel();
@@ -199,12 +210,12 @@ public class MainController extends MainView {
                 return;
             }
             /*为日志上颜色*/
-            if (event.getThrowableProxy() == null && levelInt <= Level.INFO_INT){
+            if (event.getThrowableProxy() == null && levelInt <= Level.INFO_INT) {
                 label.setText(message);
-            }else if (levelInt <= Level.WARN_INT){
+            } else if (levelInt <= Level.WARN_INT) {
                 label.setText(message);
                 label.getStyleClass().add("warnLog");
-            }else {
+            } else {
                 label.setText(message + "，查看脚本日志获取详细错误信息");
                 label.getStyleClass().add("errorLog");
             }
@@ -212,7 +223,7 @@ public class MainController extends MainView {
         });
     }
 
-    private AnchorPane wrapLabel(Label label){
+    private AnchorPane wrapLabel(Label label) {
         AnchorPane anchorPane = new AnchorPane();
         anchorPane.getStyleClass().add("hoverRootNode");
         Node node = buildCopyNode(() -> SystemUtil.INSTANCE.copyToClipboard(label.getText()));
@@ -224,23 +235,23 @@ public class MainController extends MainView {
         return anchorPane;
     }
 
-    private Node buildCopyNode(Runnable clickHandler){
+    private Node buildCopyNode(Runnable clickHandler) {
         Label graphicLabel = new Label();
         CopyIco copyIco = new CopyIco();
         String icoColor = "#e4e4e4";
         copyIco.setColor(icoColor);
         graphicLabel.setGraphic(copyIco);
         graphicLabel.setStyle("""
-                            -fx-cursor: hand;
-                            -fx-alignment: CENTER;
-                            -fx-pref-width: 22;
-                            -fx-pref-height: 22;
-                            -fx-background-radius: 3;
-                            -fx-background-color: rgba(128,128,128,0.9);
-                            -fx-font-size: 10;
-                            """);
+                -fx-cursor: hand;
+                -fx-alignment: CENTER;
+                -fx-pref-width: 22;
+                -fx-pref-height: 22;
+                -fx-background-radius: 3;
+                -fx-background-color: rgba(128,128,128,0.9);
+                -fx-font-size: 10;
+                """);
         graphicLabel.setOnMouseClicked(actionEvent -> {
-            if (clickHandler != null){
+            if (clickHandler != null) {
                 clickHandler.run();
             }
             OKIco okIco = new OKIco();
@@ -351,7 +362,8 @@ public class MainController extends MainView {
      */
     public void initWorkDate() {
 //        初始化挂机天
-        Map<String, Boolean> workDayMap = ConfigExUtil.INSTANCE.getWorkDay().stream().collect(Collectors.toMap(WorkDay::getDay, WorkDay::getEnabled));;
+        Map<String, Boolean> workDayMap = ConfigExUtil.INSTANCE.getWorkDay().stream().collect(Collectors.toMap(WorkDay::getDay, WorkDay::getEnabled));
+        ;
         ObservableList<Node> workDayChildren = workDay.getChildren();
         for (Node workDayChild : workDayChildren) {
             if (workDayChild instanceof CheckBox checkBox) {
@@ -438,7 +450,8 @@ public class MainController extends MainView {
                             () -> WindowUtil.INSTANCE.createAlert("新版本[" + release.getTagName() + "]下载完毕",
                                     "现在更新？",
                                     event -> VersionListener.INSTANCE.execUpdate(path),
-                                    event -> {},
+                                    event -> {
+                                    },
                                     rootPane.getScene().getWindow()).show()
                     );
                 }

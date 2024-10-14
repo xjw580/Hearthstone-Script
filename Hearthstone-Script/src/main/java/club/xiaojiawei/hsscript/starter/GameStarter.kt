@@ -91,7 +91,7 @@ object GameStarter : AbstractStarter() {
                 val currentLatestLogDir = GameUtil.getLatestLogDir()
                 if (currentLatestLogDir != null) {
                     if (currentLatestLogDir > latestLogDir){
-                        log.info { "${GAME_CN_NAME}已创建最新日志文件夹" }
+                        log.info { "${GAME_CN_NAME}已创建最新日志文件夹：${currentLatestLogDir.absolutePath}" }
                         break
                     }
                 }

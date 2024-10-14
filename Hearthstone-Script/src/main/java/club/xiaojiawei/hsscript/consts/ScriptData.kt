@@ -135,3 +135,8 @@ val CARD_AREA_MAP: MutableMap<String?, Area?> = HashMap<String?, Area?>()
 //    DISPLAY_PIXEL_WIDTH = (Toolkit.getDefaultToolkit().getScreenSize().width * DISPLAY_SCALE_X).toInt()
 //    DISPLAY_PIXEL_HEIGHT = (Toolkit.getDefaultToolkit().getScreenSize().height * DISPLAY_SCALE_Y).toInt()
 //}
+
+fun reload() {
+    MAX_LOG_SIZE_KB = ConfigUtil.getInt(ConfigEnum.GAME_LOG_LIMIT)
+    MAX_LOG_SIZE_B = MAX_LOG_SIZE_KB * 1024
+}

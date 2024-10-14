@@ -3,9 +3,11 @@ package club.xiaojiawei.hsscript.bean
 import club.xiaojiawei.CardAction
 import club.xiaojiawei.bean.Card
 import club.xiaojiawei.bean.area.PlayArea
+import club.xiaojiawei.hsscript.enums.ConfigEnum
+import club.xiaojiawei.hsscript.utils.ConfigUtil
+import club.xiaojiawei.hsscript.utils.GameUtil
 import club.xiaojiawei.status.War.me
 import club.xiaojiawei.status.War.rival
-import club.xiaojiawei.hsscript.utils.GameUtil
 import kotlin.math.min
 
 /**
@@ -132,11 +134,11 @@ class CommonCardAction : CardAction(false) {
                 startRect = it
             }
         }
-        if (startRect == null){
+        if (startRect == null) {
             startRect = getCardRect(belongCard)
         }
         startRect.let {
-            if (it.isValid()){
+            if (it.isValid()) {
                 val cardRect = getCardRect(card)
                 if (cardRect.isValid()) {
                     endRect = cardRect
@@ -164,5 +166,13 @@ class CommonCardAction : CardAction(false) {
 
     companion object {
         val DEFAULT: CardAction = CommonCardAction()
+
+        fun reload() {
+            mouseActionInterval = ConfigUtil.getInt(ConfigEnum.MOUSE_ACTION_INTERVAL)
+        }
+
+        init {
+            reload()
+        }
     }
 }

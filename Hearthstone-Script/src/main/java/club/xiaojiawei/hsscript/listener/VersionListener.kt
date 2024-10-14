@@ -194,12 +194,12 @@ object VersionListener {
      * 检查最新版本
      */
     fun checkVersion() {
-//        在idea中启动时就不要检查更新了
-//        if (Objects.requireNonNull<URL>(javaClass.getResource(""))
-//                .protocol != "jar" && !PROGRAM_ARGS.contains("--update")
-//        ) {
-//            return
-//        }
+//        以IDEA启动不检查更新
+        if (Objects.requireNonNull<URL>(javaClass.getResource(""))
+                .protocol != "jar" && !PROGRAM_ARGS.contains("--update")
+        ) {
+            return
+        }
         synchronized(canUpdateProperty){
             val updateDev = ConfigUtil.getBoolean(ConfigEnum.UPDATE_DEV)
             log.info { "开始检查更新，更新开发版：$updateDev" }

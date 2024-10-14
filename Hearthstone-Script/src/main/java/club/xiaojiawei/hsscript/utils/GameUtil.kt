@@ -4,7 +4,6 @@ import club.xiaojiawei.bean.LogRunnable
 import club.xiaojiawei.config.EXTRA_THREAD_POOL
 import club.xiaojiawei.config.log
 import club.xiaojiawei.enums.ModeEnum
-import club.xiaojiawei.enums.WarPhaseEnum
 import club.xiaojiawei.hsscript.bean.GameRect
 import club.xiaojiawei.hsscript.bean.single.WarEx
 import club.xiaojiawei.hsscript.consts.GAME_CN_NAME
@@ -21,7 +20,6 @@ import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.status.Mode
 import club.xiaojiawei.hsscript.status.PauseStatus
 import club.xiaojiawei.hsscript.utils.SystemUtil.delay
-import club.xiaojiawei.status.War
 import club.xiaojiawei.util.isFalse
 import com.sun.jna.platform.win32.Kernel32
 import com.sun.jna.platform.win32.User32
@@ -307,9 +305,11 @@ object GameUtil {
                 LogRunnable {
                     if (PauseStatus.isPause) {
                         cancelGameEndTask()
-                    } else if(WarEx.warCount > warCount) {
+                    } else if(WarEx.warCount > warCount || Mode.currMode !== ModeEnum.GAMEPLAY) {
                         cancelGameEndTask()
                     }else {
+                        END_TURN_RECT.lClick()
+                        delay(100)
                         lClickSettings()
                         delay(500)
                         SURRENDER_RECT.lClick()

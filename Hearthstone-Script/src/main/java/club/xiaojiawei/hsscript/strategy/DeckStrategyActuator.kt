@@ -4,10 +4,12 @@ import club.xiaojiawei.DeckStrategy
 import club.xiaojiawei.bean.Card
 import club.xiaojiawei.bean.isValid
 import club.xiaojiawei.config.log
-import club.xiaojiawei.status.War
-import club.xiaojiawei.status.War.isMyTurn
+import club.xiaojiawei.hsscript.enums.ConfigEnum
+import club.xiaojiawei.hsscript.utils.ConfigUtil
 import club.xiaojiawei.hsscript.utils.GameUtil
 import club.xiaojiawei.hsscript.utils.SystemUtil
+import club.xiaojiawei.status.War
+import club.xiaojiawei.status.War.isMyTurn
 
 /**
  * 卡牌策略抽象类
@@ -25,6 +27,7 @@ object DeckStrategyActuator {
     }
 
     fun changeCard() {
+        if (!ConfigUtil.getBoolean(ConfigEnum.STRATEGY)) return
         log.info { "执行换牌策略" }
         if (!validPlayer()) return
         if (checkSurrender()) return
@@ -53,6 +56,7 @@ object DeckStrategyActuator {
     }
 
     fun outCard() {
+        if (!ConfigUtil.getBoolean(ConfigEnum.STRATEGY)) return
         log.info { "执行出牌策略" }
         if (!validPlayer()) return
         if (checkSurrender()) return
@@ -77,6 +81,7 @@ object DeckStrategyActuator {
     }
 
     fun discoverChooseCard(vararg cards: Card) {
+        if (!ConfigUtil.getBoolean(ConfigEnum.STRATEGY)) return
         log.info { "执行发现选牌策略" }
         if (!validPlayer()) return
         if (checkSurrender()) return
