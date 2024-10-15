@@ -9,7 +9,7 @@
     </parent>
 
     <artifactId>hs-script</artifactId>
-    <version>v4.0.1-BETA</version>
+    <version>v4.0.2-BETA</version>
     <name>Hearthstone-Script</name>
     <description>炉石传说脚本</description>
 
