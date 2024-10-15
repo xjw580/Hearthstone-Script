@@ -3,6 +3,7 @@ package club.xiaojiawei.hsscript.initializer
 import club.xiaojiawei.config.log
 import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.utils.ConfigUtil
+import club.xiaojiawei.hsscript.utils.FileUtil
 import club.xiaojiawei.hsscript.utils.SystemUtil
 import club.xiaojiawei.util.isTrue
 import org.ini4j.Ini
@@ -43,8 +44,9 @@ object GameLogInitializer : AbstractInitializer() {
 
     public override fun exec() {
         val gameLogConfigFile = Path.of(System.getenv("LOCALAPPDATA"), "Blizzard", "Hearthstone", "log.config").toFile()
-        if (!gameLogConfigFile.exists()) {
-            gameLogConfigFile.mkdirs()
+        if (gameLogConfigFile.isDirectory || !gameLogConfigFile.exists()) {
+            FileUtil.deleteFile(gameLogConfigFile)
+            gameLogConfigFile.parentFile.mkdirs()
             gameLogConfigFile.createNewFile()
         }
         val gameLogIni = Ini(gameLogConfigFile)
