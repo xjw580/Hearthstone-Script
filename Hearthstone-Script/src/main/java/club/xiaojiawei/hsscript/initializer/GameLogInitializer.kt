@@ -71,8 +71,9 @@ object GameLogInitializer : AbstractInitializer() {
             return
         }
         val clientConfigFile = Path.of(gamePath, "client.config").toFile()
-        if (!clientConfigFile.exists()) {
-            clientConfigFile.mkdirs()
+        if (clientConfigFile.isDirectory || !clientConfigFile.exists()) {
+            FileUtil.deleteFile(clientConfigFile)
+            clientConfigFile.parentFile.mkdirs()
             clientConfigFile.createNewFile()
         }
         val clientIni = Ini(clientConfigFile)
