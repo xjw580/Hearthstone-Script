@@ -6,9 +6,7 @@ import club.xiaojiawei.bean.LogThread
 import club.xiaojiawei.config.EXTRA_THREAD_POOL
 import club.xiaojiawei.config.log
 import club.xiaojiawei.hsscript.bean.CommonCardAction.Companion.DEFAULT
-import club.xiaojiawei.hsscript.bean.single.WarEx
 import club.xiaojiawei.hsscript.config.InitializerConfig
-import club.xiaojiawei.hsscript.bean.single.CARD_AREA_MAP
 import club.xiaojiawei.hsscript.consts.MAIN_IMG_NAME
 import club.xiaojiawei.hsscript.consts.SCRIPT_NAME
 import club.xiaojiawei.hsscript.controller.javafx.StartupController
@@ -20,6 +18,7 @@ import club.xiaojiawei.hsscript.listener.VersionListener
 import club.xiaojiawei.hsscript.listener.WorkListener
 import club.xiaojiawei.hsscript.status.PauseStatus
 import club.xiaojiawei.hsscript.utils.GameUtil
+import club.xiaojiawei.hsscript.utils.SystemUtil
 import club.xiaojiawei.hsscript.utils.SystemUtil.addTray
 import club.xiaojiawei.hsscript.utils.SystemUtil.shutdown
 import club.xiaojiawei.hsscript.utils.WindowUtil.buildStage
@@ -115,6 +114,11 @@ class MainApplication : Application() {
 
                 Runtime.getRuntime()
                     .addShutdownHook(LogThread({SystemDll.INSTANCE.uninstallDll(GameUtil.findGameHWND())}, "ShutdownHook Thread"))
+
+                if (!SystemDll.INSTANCE.IsRunAsAdministrator()){
+                    log.warn { "当前进程不是以管理员启动，功能受限" }
+                    SystemUtil.notice("当前进程不是以管理员启动，功能受限")
+                }
 
                 val args = this.parameters.raw
                 var pause: String? = ""

@@ -1,15 +1,13 @@
 package club.xiaojiawei.hsscript.strategy.phase
 
-import club.xiaojiawei.bean.LogThread
 import club.xiaojiawei.bean.isValid
 import club.xiaojiawei.config.log
 import club.xiaojiawei.enums.StepEnum
+import club.xiaojiawei.hsscript.bean.DeckStrategyThread
 import club.xiaojiawei.hsscript.bean.log.TagChangeEntity
 import club.xiaojiawei.hsscript.enums.TagEnum
-import club.xiaojiawei.hsscript.status.PauseStatus
 import club.xiaojiawei.hsscript.strategy.AbstractPhaseStrategy
 import club.xiaojiawei.hsscript.strategy.DeckStrategyActuator
-import club.xiaojiawei.hsscript.utils.SystemUtil
 import club.xiaojiawei.status.War
 
 /**
@@ -28,7 +26,8 @@ object GameTurnPhaseStrategy : AbstractPhaseStrategy() {
                     cancelAllTask()
                     War.isMyTurn = true
                     // 异步执行出牌策略，以便监听出牌后的卡牌变动
-                    (LogThread({
+
+                    (DeckStrategyThread({
                         DeckStrategyActuator.outCard()
                     }, "OutCard Thread").also { addTask(it) }).start()
                 } else {
@@ -42,6 +41,13 @@ object GameTurnPhaseStrategy : AbstractPhaseStrategy() {
             }
         }
         return false
+    }
+
+    @JvmStatic
+    fun main(args: Array<String>) {
+        (DeckStrategyThread({
+            println(1111)
+        }, "OutCard Thread").also { addTask(it) }).start()
     }
 
 }

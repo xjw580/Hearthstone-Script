@@ -5,6 +5,7 @@ import club.xiaojiawei.bean.isValid
 import club.xiaojiawei.config.log
 import club.xiaojiawei.enums.StepEnum
 import club.xiaojiawei.enums.WarPhaseEnum
+import club.xiaojiawei.hsscript.bean.DeckStrategyThread
 import club.xiaojiawei.hsscript.bean.log.ExtraEntity
 import club.xiaojiawei.hsscript.bean.log.TagChangeEntity
 import club.xiaojiawei.hsscript.consts.CHANGE_ENTITY
@@ -66,11 +67,14 @@ abstract class AbstractPhaseStrategy : PhaseStrategy {
                             lastDiscoverEntityId = cards.last().entityId
                             if (currentPhase != WarPhaseEnum.REPLACE_CARD) {
                                 log.info { "触发发现动作" }
-                                discoverChooseCard(
-                                    cards[size - 3],
-                                    cards[size - 2],
-                                    cards[size - 1]
-                                )
+                                (DeckStrategyThread({
+                                    discoverChooseCard(
+                                        cards[size - 3],
+                                        cards[size - 2],
+                                        cards[size - 1]
+                                    )
+                                }, "Discover Choose Card Thread").also { addTask(it) }).start()
+
                             }
                         }
                     }

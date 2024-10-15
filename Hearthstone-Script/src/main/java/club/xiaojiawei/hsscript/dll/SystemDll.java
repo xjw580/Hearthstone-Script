@@ -22,6 +22,8 @@ public interface SystemDll extends Library {
 
     void moveMouse(long x, long y, WinDef.HWND hwnd);
 
+    void simulateHumanMove(int startX, int startY, int endX, int endY, WinDef.HWND hwnd);
+
     void closeProgram(WinDef.HWND hwnd);
 
     void frontWindow(WinDef.HWND hwnd);
@@ -59,5 +61,9 @@ public interface SystemDll extends Library {
      * @param disable
      */
     void changeWindow(WinDef.HWND hwnd, boolean disable);
+
+    boolean IsRunAsAdministrator();
+
+    void MessageBox_(WinDef.HWND hwnd, String text, String title, int type);
 
 }

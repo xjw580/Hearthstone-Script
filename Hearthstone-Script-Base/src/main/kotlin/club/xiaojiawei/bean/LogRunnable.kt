@@ -11,7 +11,7 @@ class LogRunnable(private var task: Runnable?) : Runnable {
     override fun run() {
         try {
             task?.run()
-        } catch (e: Exception) {
+        }catch (e: Exception) {
             log.error(e) { "Runnable发生错误" }
         }
     }

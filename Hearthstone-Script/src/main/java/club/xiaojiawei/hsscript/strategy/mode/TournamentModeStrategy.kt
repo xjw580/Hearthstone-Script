@@ -1,23 +1,23 @@
 package club.xiaojiawei.hsscript.strategy.mode
 
 import club.xiaojiawei.DeckStrategy
-import club.xiaojiawei.hsscript.bean.Deck
-import club.xiaojiawei.hsscript.bean.GameRect
 import club.xiaojiawei.bean.LogRunnable
 import club.xiaojiawei.config.EXTRA_THREAD_POOL
 import club.xiaojiawei.config.log
-import club.xiaojiawei.hsscript.core.Core
 import club.xiaojiawei.enums.ModeEnum
 import club.xiaojiawei.enums.RunModeEnum
+import club.xiaojiawei.hsscript.bean.Deck
+import club.xiaojiawei.hsscript.bean.GameRect
 import club.xiaojiawei.hsscript.consts.MAX_LOG_SIZE_B
 import club.xiaojiawei.hsscript.consts.MAX_LOG_SIZE_KB
+import club.xiaojiawei.hsscript.core.Core
 import club.xiaojiawei.hsscript.enums.ConfigEnum
+import club.xiaojiawei.hsscript.listener.WorkListener
 import club.xiaojiawei.hsscript.listener.log.DeckLogListener.DECKS
 import club.xiaojiawei.hsscript.listener.log.PowerLogListener
 import club.xiaojiawei.hsscript.status.DeckStrategyManager
-import club.xiaojiawei.hsscript.status.Mode.currMode
+import club.xiaojiawei.hsscript.status.Mode
 import club.xiaojiawei.hsscript.status.PauseStatus
-import club.xiaojiawei.hsscript.listener.WorkListener
 import club.xiaojiawei.hsscript.strategy.AbstractModeStrategy
 import club.xiaojiawei.hsscript.utils.ConfigUtil
 import club.xiaojiawei.hsscript.utils.GameUtil.reconnect
@@ -63,9 +63,10 @@ object TournamentModeStrategy : AbstractModeStrategy<Any?>() {
         addWantEnterTask(EXTRA_THREAD_POOL.scheduleWithFixedDelay(LogRunnable {
             if (PauseStatus.isPause) {
                 cancelAllWantEnterTasks()
-            } else if (currMode == ModeEnum.HUB) {
+            } else if (Mode.currMode == ModeEnum.HUB) {
                 HubModeStrategy.TOURNAMENT_MODE_RECT.lClick()
-            } else if (currMode == ModeEnum.GAME_MODE) {
+            } else if (Mode.currMode == ModeEnum.GAME_MODE) {
+            } else if (Mode.currMode == ModeEnum.GAME_MODE) {
                 cancelAllWantEnterTasks()
                 BACK_RECT.lClick()
             } else {
@@ -186,7 +187,7 @@ object TournamentModeStrategy : AbstractModeStrategy<Any?>() {
     private fun generateTimer() {
         cancelAllEnteredTasks()
         addEnteredTask(EXTRA_THREAD_POOL.schedule(LogRunnable {
-            if (PauseStatus.isPause || Thread.currentThread().isInterrupted) {
+            if (PauseStatus.isPause || Thread.currentThread().isInterrupted || Mode.currMode === ModeEnum.GAMEPLAY) {
                 cancelAllEnteredTasks()
             } else {
                 log.info { "匹配失败，再次匹配中" }
@@ -198,6 +199,7 @@ object TournamentModeStrategy : AbstractModeStrategy<Any?>() {
                 ERROR_RECT.lClick()
                 SystemUtil.delayMedium()
                 reconnect()
+                cancelAllEnteredTasks()
                 afterEnter(null)
             }
         }, ConfigUtil.getLong(ConfigEnum.MATCH_MAXIMUM_TIME), TimeUnit.SECONDS))

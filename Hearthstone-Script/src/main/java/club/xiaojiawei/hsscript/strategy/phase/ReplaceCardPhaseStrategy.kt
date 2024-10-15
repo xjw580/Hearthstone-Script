@@ -1,7 +1,6 @@
 package club.xiaojiawei.hsscript.strategy.phase
 
 import club.xiaojiawei.bean.LogThread
-import club.xiaojiawei.config.log
 import club.xiaojiawei.enums.*
 import club.xiaojiawei.hsscript.bean.log.TagChangeEntity
 import club.xiaojiawei.hsscript.enums.MulliganStateEnum
@@ -10,8 +9,6 @@ import club.xiaojiawei.hsscript.strategy.AbstractPhaseStrategy
 import club.xiaojiawei.hsscript.strategy.DeckStrategyActuator.changeCard
 import club.xiaojiawei.status.War.currentPhase
 import club.xiaojiawei.status.War.me
-import club.xiaojiawei.status.War.player1
-import club.xiaojiawei.status.War.player2
 import club.xiaojiawei.status.War.rival
 
 /**

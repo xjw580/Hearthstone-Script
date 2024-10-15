@@ -262,11 +262,11 @@ object GameUtil {
     }
 
     fun moveMouse(startPos: Point?, endPos: Point) {
-        MouseUtil.moveMouseByLine(startPos, endPos, GAME_HWND)
+        MouseUtil.moveMouseByHuman(startPos, endPos, GAME_HWND)
     }
 
     fun moveMouse(endPos: Point) {
-        MouseUtil.moveMouseByLine(endPos, GAME_HWND)
+        MouseUtil.moveMouseByHuman(endPos, GAME_HWND)
     }
 
 
