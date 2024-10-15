@@ -5,11 +5,14 @@ import club.xiaojiawei.bean.Card
 import club.xiaojiawei.bean.isValid
 import club.xiaojiawei.config.log
 import club.xiaojiawei.hsscript.enums.ConfigEnum
+import club.xiaojiawei.hsscript.status.PauseStatus
 import club.xiaojiawei.hsscript.utils.ConfigUtil
 import club.xiaojiawei.hsscript.utils.GameUtil
 import club.xiaojiawei.hsscript.utils.SystemUtil
 import club.xiaojiawei.status.War
 import club.xiaojiawei.status.War.isMyTurn
+import club.xiaojiawei.status.War.player1
+import club.xiaojiawei.status.War.player2
 
 /**
  * 卡牌策略抽象类
@@ -28,9 +31,14 @@ object DeckStrategyActuator {
 
     fun changeCard() {
         if (!ConfigUtil.getBoolean(ConfigEnum.STRATEGY)) return
-        log.info { "执行换牌策略" }
         if (!validPlayer()) return
         if (checkSurrender()) return
+//        等待动画结束，畸变模式会导致开局动画增加
+        SystemUtil.delay(20000 + (if (ConfigUtil.getBoolean(ConfigEnum.DISTORTION)) 4500 else 0))
+        if (PauseStatus.isPause) return
+        log.info { "执行换牌策略" }
+        log.info { "1号玩家牌库数量：" + player1.deckArea.cards.size }
+        log.info { "2号玩家牌库数量：" + player2.deckArea.cards.size }
 
         val me = War.me
         try {
@@ -57,9 +65,12 @@ object DeckStrategyActuator {
 
     fun outCard() {
         if (!ConfigUtil.getBoolean(ConfigEnum.STRATEGY)) return
-        log.info { "执行出牌策略" }
         if (!validPlayer()) return
         if (checkSurrender()) return
+        // 等待动画结束
+        SystemUtil.delay(4000)
+        if (!isMyTurn || PauseStatus.isPause) return
+        log.info { "执行出牌策略" }
 
         try {
             War.me.let {
@@ -82,9 +93,9 @@ object DeckStrategyActuator {
 
     fun discoverChooseCard(vararg cards: Card) {
         if (!ConfigUtil.getBoolean(ConfigEnum.STRATEGY)) return
-        log.info { "执行发现选牌策略" }
         if (!validPlayer()) return
         if (checkSurrender()) return
+        log.info { "执行发现选牌策略" }
 
         SystemUtil.delay(1000)
         val index = deckStrategy?.executeDiscoverChooseCard(*cards)?:0
@@ -110,8 +121,8 @@ object DeckStrategyActuator {
     private fun checkSurrender(): Boolean{
         deckStrategy?.let {
             if (it.needSurrender){
-                log.info { "触发投降" }
                 GameUtil.surrender()
+                it.needSurrender = false
                 return true
             }
         }

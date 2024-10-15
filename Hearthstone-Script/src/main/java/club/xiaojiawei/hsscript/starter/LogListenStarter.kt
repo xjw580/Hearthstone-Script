@@ -17,7 +17,9 @@ object LogListenStarter : AbstractStarter() {
         latestLogDir?.let {
             LogListenerStatus.logPath = it
             log.info { "游戏日志目录读取成功：" + it.absolutePath }
-            LogListenerConfig.logListener.listen()
+            Thread.ofVirtual().name(Thread.currentThread().name.replace("Thread", "VThread")).start{
+                LogListenerConfig.logListener.listen()
+            }
             startNextStarter()
         } ?: let {
             log.error { "游戏日志目录读取失败" }

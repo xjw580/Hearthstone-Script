@@ -1,11 +1,15 @@
 package club.xiaojiawei.hsscript.consts
 
 import club.xiaojiawei.bean.area.Area
+import club.xiaojiawei.hsscript.bean.single.WarEx
 import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.utils.ConfigUtil
 import com.sun.jna.platform.win32.WinDef
 import com.sun.jna.platform.win32.WinDef.HWND
+import java.awt.GraphicsDevice
+import java.awt.GraphicsEnvironment
 import java.awt.Robot
+import java.awt.geom.AffineTransform
 
 /**
  * 存储脚本常量
@@ -115,26 +119,6 @@ const val LOST: String = "LOST"
 const val WON: String = "WON"
 const val CONCEDED: String = "CONCEDED"
 const val COIN: String = "COIN"
-
-/*游戏数据相关*/ //为什么用Map取枚举而不用valueOf()?因为用valueOf()传入的数据不在枚举中时会直接报错，影响后续运行，而map返回null不影响后续操作
-//    啥时候保证所有数据都在枚举中时就可以删掉map了
-/**
- * 存放所有卡牌所在哪一区域
- */
-val CARD_AREA_MAP: MutableMap<String?, Area?> = HashMap<String?, Area?>()
-
-//init{
-//    WarEx.addResetCallback { CARD_AREA_MAP.clear() }
-//    val screenDevices: Array<GraphicsDevice?> = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices()
-//    //        if (screenDevices.length > 1){
-////            log.info("检测到有多台显示器，请将炉石传说放到主显示器运行");
-////        }
-//    val tx: AffineTransform? = screenDevices[0]?.defaultConfiguration?.defaultTransform
-//    DISPLAY_SCALE_X = tx?.scaleX ?: 1.0
-//    DISPLAY_SCALE_Y = tx?.scaleY ?: 1.0
-//    DISPLAY_PIXEL_WIDTH = (Toolkit.getDefaultToolkit().getScreenSize().width * DISPLAY_SCALE_X).toInt()
-//    DISPLAY_PIXEL_HEIGHT = (Toolkit.getDefaultToolkit().getScreenSize().height * DISPLAY_SCALE_Y).toInt()
-//}
 
 fun reload() {
     MAX_LOG_SIZE_KB = ConfigUtil.getInt(ConfigEnum.GAME_LOG_LIMIT)

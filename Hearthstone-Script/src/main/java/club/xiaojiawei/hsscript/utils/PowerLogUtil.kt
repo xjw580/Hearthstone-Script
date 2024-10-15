@@ -9,7 +9,7 @@ import club.xiaojiawei.hsscript.bean.log.CommonEntity
 import club.xiaojiawei.hsscript.bean.log.ExtraEntity
 import club.xiaojiawei.hsscript.bean.log.TagChangeEntity
 import club.xiaojiawei.hsscript.bean.single.WarEx
-import club.xiaojiawei.hsscript.consts.CARD_AREA_MAP
+import club.xiaojiawei.hsscript.bean.single.CARD_AREA_MAP
 import club.xiaojiawei.hsscript.consts.CHANGE_ENTITY
 import club.xiaojiawei.hsscript.consts.FULL_ENTITY
 import club.xiaojiawei.hsscript.consts.MAX_LOG_SIZE_KB

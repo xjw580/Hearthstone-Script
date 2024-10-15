@@ -7,7 +7,7 @@ import club.xiaojiawei.enums.StepEnum
 import club.xiaojiawei.enums.WarPhaseEnum
 import club.xiaojiawei.hsscript.bean.log.ExtraEntity
 import club.xiaojiawei.hsscript.bean.log.TagChangeEntity
-import club.xiaojiawei.hsscript.consts.CARD_AREA_MAP
+import club.xiaojiawei.hsscript.bean.single.CARD_AREA_MAP
 import club.xiaojiawei.hsscript.enums.TagEnum
 import club.xiaojiawei.hsscript.strategy.AbstractPhaseStrategy
 import club.xiaojiawei.status.War.currentPhase

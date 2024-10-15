@@ -22,7 +22,7 @@ class HsCommonDeckStrategy : DeckStrategy() {
     }
 
     override fun getRunMode(): Array<RunModeEnum> {
-        return arrayOf(RunModeEnum.CASUAL, RunModeEnum.STANDARD)
+        return arrayOf(RunModeEnum.CASUAL, RunModeEnum.STANDARD, RunModeEnum.WILD)
     }
 
     override fun deckCode(): String {

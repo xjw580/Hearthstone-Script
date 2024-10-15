@@ -398,6 +398,7 @@ public class MainController extends MainView {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         versionText.setText("当前版本：" + VersionListener.INSTANCE.getCurrentRelease().getTagName());
+        System.out.println("当前版本：" + VersionListener.INSTANCE.getCurrentRelease().getTagName());
         initModeAndDeck();
         initWorkDate();
         addListener();
@@ -424,7 +425,10 @@ public class MainController extends MainView {
 
     @FXML
     protected void openSettings() {
-        Stage stage = WindowUtil.INSTANCE.buildStage(WindowEnum.SETTINGS);
+        Stage stage = WindowUtil.INSTANCE.getStage(WindowEnum.SETTINGS);
+        if (stage == null){
+            stage = WindowUtil.INSTANCE.buildStage(WindowEnum.SETTINGS);
+        }
         if (stage.getOwner() == null) {
             stage.initOwner(WindowUtil.INSTANCE.getStage(WindowEnum.MAIN));
         }

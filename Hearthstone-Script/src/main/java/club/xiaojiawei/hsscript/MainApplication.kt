@@ -6,7 +6,9 @@ import club.xiaojiawei.bean.LogThread
 import club.xiaojiawei.config.EXTRA_THREAD_POOL
 import club.xiaojiawei.config.log
 import club.xiaojiawei.hsscript.bean.CommonCardAction.Companion.DEFAULT
+import club.xiaojiawei.hsscript.bean.single.WarEx
 import club.xiaojiawei.hsscript.config.InitializerConfig
+import club.xiaojiawei.hsscript.bean.single.CARD_AREA_MAP
 import club.xiaojiawei.hsscript.consts.MAIN_IMG_NAME
 import club.xiaojiawei.hsscript.consts.SCRIPT_NAME
 import club.xiaojiawei.hsscript.controller.javafx.StartupController

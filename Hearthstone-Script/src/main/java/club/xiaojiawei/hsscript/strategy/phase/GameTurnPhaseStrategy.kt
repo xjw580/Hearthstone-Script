@@ -29,9 +29,6 @@ object GameTurnPhaseStrategy : AbstractPhaseStrategy() {
                     War.isMyTurn = true
                     // 异步执行出牌策略，以便监听出牌后的卡牌变动
                     (LogThread({
-                        // 等待动画结束
-                        SystemUtil.delay(4000)
-                        if (!War.isMyTurn || PauseStatus.isPause) return@LogThread
                         DeckStrategyActuator.outCard()
                     }, "OutCard Thread").also { addTask(it) }).start()
                 } else {

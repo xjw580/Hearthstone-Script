@@ -31,15 +31,12 @@ class HsSurrenderDeckStrategy:DeckStrategy() {
     }
 
     override fun executeChangeCard(cards: HashSet<Card>) {
-        needSurrender = true
     }
 
     override fun executeOutCard() {
-        needSurrender = true
     }
 
     override fun executeDiscoverChooseCard(vararg cards: Card): Int {
-        needSurrender = true
         return 0
     }
 }

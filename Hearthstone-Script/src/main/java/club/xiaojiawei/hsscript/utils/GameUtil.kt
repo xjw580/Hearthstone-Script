@@ -298,14 +298,16 @@ object GameUtil {
 //        ScriptStaticData.ROBOT.keyPress(27);
 //        ScriptStaticData.ROBOT.keyRelease(27);
         if (gameEndTasks.isNotEmpty()) return
+        log.info { "触发投降" }
         val warCount = WarEx.warCount
         delay(1000)
+        val isGamePlay = Mode.currMode === ModeEnum.GAMEPLAY
         gameEndTasks.add(
             EXTRA_THREAD_POOL.scheduleWithFixedDelay(
                 LogRunnable {
                     if (PauseStatus.isPause) {
                         cancelGameEndTask()
-                    } else if(WarEx.warCount > warCount || Mode.currMode !== ModeEnum.GAMEPLAY) {
+                    } else if(WarEx.warCount > warCount || (isGamePlay && Mode.currMode !== ModeEnum.GAMEPLAY)) {
                         cancelGameEndTask()
                     }else {
                         END_TURN_RECT.lClick()
@@ -353,22 +355,29 @@ object GameUtil {
     fun addGameEndTask() {
         cancelGameEndTask()
         log.info { "点掉游戏结束结算页面" }
-        gameEndTasks.add(
-            EXTRA_THREAD_POOL.scheduleWithFixedDelay(
-                LogRunnable {
-                    if (PauseStatus.isPause) {
-                        cancelGameEndTask()
-                    } else if (Mode.currMode !== ModeEnum.GAMEPLAY) {
-                        cancelGameEndTask()
-                    } else {
-                        END_TURN_RECT.lClick()
-                    }
-                },
-                1000,
-                1000,
-                TimeUnit.MILLISECONDS
+        if (Mode.currMode === ModeEnum.GAMEPLAY){
+            gameEndTasks.add(
+                EXTRA_THREAD_POOL.scheduleWithFixedDelay(
+                    LogRunnable {
+                        if (PauseStatus.isPause) {
+                            cancelGameEndTask()
+                        } else if (Mode.currMode !== ModeEnum.GAMEPLAY) {
+                            cancelGameEndTask()
+                        } else {
+                            END_TURN_RECT.lClick()
+                        }
+                    },
+                    1000,
+                    1000,
+                    TimeUnit.MILLISECONDS
+                )
             )
-        )
+        }else{
+            for (i in 0 until 3) {
+                END_TURN_RECT.lClick()
+                SystemUtil.delayShort()
+            }
+        }
     }
 
     fun hidePlatformWindow() {

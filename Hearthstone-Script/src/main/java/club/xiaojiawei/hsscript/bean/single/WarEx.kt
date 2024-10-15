@@ -27,6 +27,7 @@ import club.xiaojiawei.status.War.rival
 import club.xiaojiawei.status.War.startTime
 import club.xiaojiawei.status.War.warTurn
 import club.xiaojiawei.status.War.won
+import club.xiaojiawei.util.isTrue
 import javafx.beans.property.IntegerProperty
 import javafx.beans.property.SimpleIntegerProperty
 import java.util.function.Consumer
@@ -36,6 +37,11 @@ import kotlin.math.min
  * @author 肖嘉威
  * @date 2024/10/11 14:41
  */
+/**
+ * 存放所有卡牌所在哪一区域
+ */
+val CARD_AREA_MAP: MutableMap<String?, Area?> = HashMap<String?, Area?>()
+
 object WarEx {
 
     private val resetCallbackList: MutableList<Runnable> = ArrayList()
@@ -79,25 +85,26 @@ object WarEx {
         set(value) = hangingEXPProperty.set(value)
 
     @Synchronized
-    fun reset() {
-        currentTurnStep?.let {
-            firstPlayerGameId = ""
-            currentPhase = WarPhaseEnum.FILL_DECK
-            currentTurnStep = null
-            rival = Player.INVALID_PLAYER
-            me = Player.INVALID_PLAYER
-            currentPlayer = Player.INVALID_PLAYER
-            player1 = Player("1")
-            player2 = Player("2")
-            warTurn = 0
-            conceded = ""
-            lost = conceded
-            won = lost
-            endTime = 0
-            startTime = endTime
-            resetCallbackList.forEach(Consumer { obj: Runnable -> obj.run() })
+    fun reset(print: Boolean = true) {
+        firstPlayerGameId = ""
+        currentPhase = WarPhaseEnum.FILL_DECK
+        currentTurnStep = null
+        rival = Player.INVALID_PLAYER
+        me = Player.INVALID_PLAYER
+        currentPlayer = Player.INVALID_PLAYER
+        player1 = Player("1")
+        player2 = Player("2")
+        warTurn = 0
+        conceded = ""
+        lost = conceded
+        won = lost
+        endTime = 0
+        startTime = endTime
+        print.isTrue {
             log.info { "已重置游戏状态" }
         }
+        CARD_AREA_MAP.clear()
+        resetCallbackList.forEach(Consumer { obj: Runnable -> obj.run() })
     }
 
     @Synchronized
@@ -112,6 +119,7 @@ object WarEx {
 
     @Synchronized
     fun startWar(runModeEnum: RunModeEnum?) {
+        reset(false)
         currentRunMode = runModeEnum
     }
 

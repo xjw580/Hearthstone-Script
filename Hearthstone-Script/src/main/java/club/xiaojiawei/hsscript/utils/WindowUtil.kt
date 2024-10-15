@@ -129,7 +129,10 @@ object WindowUtil {
 
 
     fun showStage(windowEnum: WindowEnum) {
-        val stage = buildStage(windowEnum)
+        var stage = getStage(windowEnum)
+        if (stage == null){
+            stage = buildStage(windowEnum)
+        }
         if (stage.isShowing) {
             showWindow(findHWND(windowEnum.title))
             stage.requestFocus()
