@@ -4,7 +4,9 @@ import club.xiaojiawei.DeckStrategy
 import club.xiaojiawei.bean.Card
 import club.xiaojiawei.bean.isValid
 import club.xiaojiawei.config.log
+import club.xiaojiawei.enums.ModeEnum
 import club.xiaojiawei.hsscript.enums.ConfigEnum
+import club.xiaojiawei.hsscript.status.Mode
 import club.xiaojiawei.hsscript.status.PauseStatus
 import club.xiaojiawei.hsscript.utils.ConfigUtil
 import club.xiaojiawei.hsscript.utils.GameUtil
@@ -40,7 +42,7 @@ object DeckStrategyActuator {
         Thread.sleep(2000)
         val minTime = 1500
         val maxTime = 5000
-        while (!PauseStatus.isPause && !isMyTurn && !Thread.interrupted()) {
+        while (!PauseStatus.isPause && !isMyTurn && !Thread.interrupted() && Mode.currMode === ModeEnum.GAMEPLAY) {
             if (Random.nextInt() and 1 == 1) {
                 War.rival.playArea.hero?.action?.lClick()
             }
