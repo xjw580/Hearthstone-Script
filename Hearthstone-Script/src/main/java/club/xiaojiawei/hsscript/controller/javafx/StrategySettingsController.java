@@ -14,6 +14,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 
@@ -56,19 +57,24 @@ public class StrategySettingsController implements Initializable {
     private void initStructure(){
         actionIntervalField.setMinValue("1");
         actionIntervalField.setPromptText("默认：" + ConfigEnum.MOUSE_ACTION_INTERVAL.getDefaultValue());
+        actionIntervalField.setTooltip(new Tooltip("默认：" + ConfigEnum.MOUSE_ACTION_INTERVAL.getDefaultValue()));
 
         moveSpeedField.setMinValue("1");
         moveSpeedField.setPromptText("默认：" + ConfigEnum.PAUSE_STEP.getDefaultValue());
+        actionIntervalField.setTooltip(new Tooltip("默认：" + ConfigEnum.PAUSE_STEP.getDefaultValue()));
 
         matchMaximumTimeField.setMinValue("1");
         matchMaximumTimeField.setPromptText("默认：" + ConfigEnum.MATCH_MAXIMUM_TIME.getDefaultValue());
+        actionIntervalField.setTooltip(new Tooltip("默认：" + ConfigEnum.MATCH_MAXIMUM_TIME.getDefaultValue()));
 
         idleMaximumTimeField.setMinValue("1");
         idleMaximumTimeField.setPromptText("默认：" + ConfigEnum.IDLE_MAXIMUM_TIME.getDefaultValue());
+        actionIntervalField.setTooltip(new Tooltip("默认：" + ConfigEnum.IDLE_MAXIMUM_TIME.getDefaultValue()));
 
         logLimitField.setMinValue("1");
         logLimitField.setMaxValue("102400");
         logLimitField.setPromptText("默认：" + ConfigEnum.GAME_LOG_LIMIT.getDefaultValue());
+        actionIntervalField.setTooltip(new Tooltip("默认：" + ConfigEnum.GAME_LOG_LIMIT.getDefaultValue()));
     }
 
     private void initValue(){

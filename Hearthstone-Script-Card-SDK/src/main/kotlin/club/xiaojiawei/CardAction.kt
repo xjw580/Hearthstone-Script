@@ -1,6 +1,7 @@
 package club.xiaojiawei
 
 import club.xiaojiawei.bean.Card
+import club.xiaojiawei.enums.CardTypeEnum
 import java.util.function.Supplier
 
 /**
@@ -75,7 +76,11 @@ abstract class CardAction(createDefaultAction: Boolean = true) {
             val result = execAttack(it)
             if (result) {
                 if (isPause) {
-                    this.delay()
+                    if (card.cardType === CardTypeEnum.HERO){
+                        this.delay((mouseActionInterval - 800).coerceAtLeast(SHORT_PAUSE_TIME))
+                    }else{
+                        this.delay((mouseActionInterval - 200).coerceAtMost(SHORT_PAUSE_TIME))
+                    }
                 } else {
                     delay(SHORT_PAUSE_TIME)
                 }
