@@ -13,6 +13,7 @@ import club.xiaojiawei.status.War
 import club.xiaojiawei.status.War.isMyTurn
 import club.xiaojiawei.status.War.player1
 import club.xiaojiawei.status.War.player2
+import kotlin.random.Random
 
 /**
  * 卡牌策略抽象类
@@ -27,6 +28,43 @@ object DeckStrategyActuator {
         deckStrategy?.reset()
 
         checkSurrender()
+    }
+
+    /**
+     * 非本人回合随机做点事情
+     */
+    fun randomDoSomething(){
+        if (!ConfigUtil.getBoolean(ConfigEnum.STRATEGY)) return
+        if (!validPlayer()) return
+        log.info { "随机做点事情" }
+        Thread.sleep(2000)
+        val minTime = 1500
+        val maxTime = 5000
+        while (!PauseStatus.isPause && !isMyTurn && !Thread.interrupted()) {
+            if (Random.nextInt() and 1 == 1) {
+                War.rival.playArea.hero?.action?.lClick()
+            }
+            SystemUtil.delay(minTime, maxTime)
+            if (Random.nextInt() and 1 == 1) {
+                War.rival.playArea.power?.action?.lClick()
+            }
+            SystemUtil.delay(minTime, maxTime)
+            var toList = War.rival.playArea.cards.toList()
+            for (card in toList) {
+                if (Random.nextInt() and 1 == 1) {
+                    card.action.lClick()
+                }
+                SystemUtil.delay(minTime, maxTime)
+            }
+            toList = War.me.playArea.cards.toList()
+            for (card in toList) {
+                if (Random.nextInt() and 1 == 1) {
+                    card.action.lClick()
+                }
+                SystemUtil.delay(minTime, maxTime)
+            }
+            SystemUtil.delay(3000, 10000)
+        }
     }
 
     fun changeCard() {
@@ -68,7 +106,7 @@ object DeckStrategyActuator {
         if (!validPlayer()) return
         if (checkSurrender()) return
         // 等待动画结束
-        SystemUtil.delay(4000)
+        SystemUtil.delay(5000)
         if (!isMyTurn || PauseStatus.isPause) return
         log.info { "执行出牌策略" }
 
@@ -80,7 +118,6 @@ object DeckStrategyActuator {
             log.info { "执行出牌策略完毕" }
         } finally {
             GameUtil.cancelAction()
-            SystemUtil.delayShort()
             for (i in 0 until 3) {
                 if (!isMyTurn) break
                 GameUtil.END_TURN_RECT.lClick(false)

@@ -7,6 +7,7 @@ import club.xiaojiawei.hsscript.consts.ScriptDataKt;
 import club.xiaojiawei.hsscript.enums.ConfigEnum;
 import club.xiaojiawei.hsscript.enums.WindowEnum;
 import club.xiaojiawei.hsscript.utils.ConfigUtil;
+import club.xiaojiawei.hsscript.utils.MouseUtil;
 import club.xiaojiawei.hsscript.utils.WindowUtil;
 import javafx.beans.value.ChangeListener;
 import javafx.event.ActionEvent;
@@ -31,6 +32,8 @@ public class StrategySettingsController implements Initializable {
     @FXML
     private NumberField actionIntervalField;
     @FXML
+    private NumberField moveSpeedField;
+    @FXML
     private NumberField matchMaximumTimeField;
     @FXML
     private NumberField idleMaximumTimeField;
@@ -54,6 +57,9 @@ public class StrategySettingsController implements Initializable {
         actionIntervalField.setMinValue("1");
         actionIntervalField.setPromptText("默认：" + ConfigEnum.MOUSE_ACTION_INTERVAL.getDefaultValue());
 
+        moveSpeedField.setMinValue("1");
+        moveSpeedField.setPromptText("默认：" + ConfigEnum.PAUSE_STEP.getDefaultValue());
+
         matchMaximumTimeField.setMinValue("1");
         matchMaximumTimeField.setPromptText("默认：" + ConfigEnum.MATCH_MAXIMUM_TIME.getDefaultValue());
 
@@ -67,6 +73,7 @@ public class StrategySettingsController implements Initializable {
 
     private void initValue(){
         actionIntervalField.setText(ConfigUtil.INSTANCE.getString(ConfigEnum.MOUSE_ACTION_INTERVAL));
+        moveSpeedField.setText(ConfigUtil.INSTANCE.getString(ConfigEnum.PAUSE_STEP));
         matchMaximumTimeField.setText(ConfigUtil.INSTANCE.getString(ConfigEnum.MATCH_MAXIMUM_TIME));
         idleMaximumTimeField.setText(ConfigUtil.INSTANCE.getString(ConfigEnum.IDLE_MAXIMUM_TIME));
         logLimitField.setText(ConfigUtil.INSTANCE.getString(ConfigEnum.GAME_LOG_LIMIT));
@@ -101,6 +108,12 @@ public class StrategySettingsController implements Initializable {
             notificationManager.showWarn("操作间隔不允许为空", 2);
             return false;
         }
+        String moveSpeed = moveSpeedField.getText();
+        if (moveSpeed == null || moveSpeed.isBlank()){
+            moveSpeedField.setText(ConfigUtil.INSTANCE.getString(ConfigEnum.PAUSE_STEP));
+            notificationManager.showWarn("鼠标整体移动速度不允许为空", 2);
+            return false;
+        }
         String matchMaximumTime = matchMaximumTimeField.getText();
         if (matchMaximumTime == null || matchMaximumTime.isBlank()){
             matchMaximumTimeField.setText(ConfigUtil.INSTANCE.getString(ConfigEnum.MATCH_MAXIMUM_TIME));
@@ -121,12 +134,14 @@ public class StrategySettingsController implements Initializable {
         }
 
         ConfigUtil.INSTANCE.putString(ConfigEnum.MOUSE_ACTION_INTERVAL, actionInterval, false);
+        ConfigUtil.INSTANCE.putString(ConfigEnum.PAUSE_STEP, moveSpeed, false);
         ConfigUtil.INSTANCE.putString(ConfigEnum.MATCH_MAXIMUM_TIME, matchMaximumTime, false);
         ConfigUtil.INSTANCE.putString(ConfigEnum.IDLE_MAXIMUM_TIME, idleMaximumTime, false);
         ConfigUtil.INSTANCE.putString(ConfigEnum.GAME_LOG_LIMIT, logLimit, false);
         ConfigUtil.INSTANCE.store();
         CommonCardAction.Companion.reload();
         ScriptDataKt.reload();
+        MouseUtil.INSTANCE.reload();
         return true;
     }
 }

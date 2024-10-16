@@ -40,14 +40,11 @@ object PowerLogListener :
     private fun resolveLog(line: String) {
         when (War.currentPhase) {
             WarPhaseEnum.FILL_DECK -> {
-                War.startTime = System.currentTimeMillis()
                 WarPhaseEnum.FILL_DECK.phaseStrategy?.deal(line)
             }
 
             WarPhaseEnum.GAME_OVER -> {
-                War.endTime = if (War.startTime == 0L) 0 else System.currentTimeMillis()
                 WarPhaseEnum.GAME_OVER.phaseStrategy?.deal(line)
-                WarEx.reset()
             }
 
             else -> War.currentPhase.phaseStrategy?.deal(line)

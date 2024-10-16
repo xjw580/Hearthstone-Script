@@ -55,9 +55,9 @@ data class GameRect(val left: Double, val right: Double, val top: Double, val bo
         val startPos = getClickPos()
         val endPos = endRect.getClickPos()
         GameUtil.leftButtonClick(startPos)
-        SystemUtil.delay(100)
+        SystemUtil.delay(80, 140)
         GameUtil.moveMouse(startPos, endPos)
-        SystemUtil.delay(100)
+        SystemUtil.delay(60, 120)
         GameUtil.leftButtonClick(endPos)
     }
 

@@ -58,6 +58,7 @@ class HsCommonDeckStrategy : DeckStrategy() {
                 } else {
                     it.action.power()
                 }
+                DeckStrategyUtil.cleanPlay()
             }
         }
     }

@@ -59,11 +59,15 @@ enum class ConfigEnum(
     /**
      * 动作间隔/ms
      */
-    MOUSE_ACTION_INTERVAL(group = "action", defaultValue = "3000"),
+    MOUSE_ACTION_INTERVAL(group = "action", defaultValue = "3200"),
     /**
      * 适配畸变模式
      */
     DISTORTION(group = "action", defaultValue = "true"),
+    /**
+     * 鼠标移动暂停间隔，值越小越慢，最小为1
+     */
+    PAUSE_STEP(group = "action", defaultValue = "7"),
 
     /**
      * 套牌插件禁用列表

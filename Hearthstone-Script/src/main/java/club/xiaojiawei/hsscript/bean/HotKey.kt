@@ -19,6 +19,7 @@ class HotKey {
     var keyCode: Int = 0
 
     override fun toString(): String {
+        if (keyCode == 0) return ""
         val modifierStr =
             (if (modifier and JIntellitypeConstants.MOD_ALT == JIntellitypeConstants.MOD_ALT) "Alt+" else "") +
                     (if (modifier and JIntellitypeConstants.MOD_CONTROL == JIntellitypeConstants.MOD_CONTROL) "Ctrl+" else "") +

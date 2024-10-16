@@ -22,7 +22,7 @@ public interface SystemDll extends Library {
 
     void moveMouse(long x, long y, WinDef.HWND hwnd);
 
-    void simulateHumanMove(int startX, int startY, int endX, int endY, WinDef.HWND hwnd);
+    void simulateHumanMove(int startX, int startY, int endX, int endY, WinDef.HWND hwnd, int pauseStep);
 
     void closeProgram(WinDef.HWND hwnd);
 

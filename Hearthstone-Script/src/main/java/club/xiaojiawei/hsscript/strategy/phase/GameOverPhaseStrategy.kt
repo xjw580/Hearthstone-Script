@@ -53,5 +53,6 @@ object GameOverPhaseStrategy : AbstractPhaseStrategy() {
             throw RuntimeException(e)
         }
         addGameEndTask()
+        WarEx.reset()
     }
 }

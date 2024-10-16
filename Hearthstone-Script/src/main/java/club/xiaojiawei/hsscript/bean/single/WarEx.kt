@@ -12,6 +12,7 @@ import club.xiaojiawei.bean.area.SetasideArea
 import club.xiaojiawei.config.log
 import club.xiaojiawei.enums.RunModeEnum
 import club.xiaojiawei.enums.WarPhaseEnum
+import club.xiaojiawei.status.War
 import club.xiaojiawei.status.War.conceded
 import club.xiaojiawei.status.War.currentPhase
 import club.xiaojiawei.status.War.currentPlayer
@@ -120,6 +121,7 @@ object WarEx {
     @Synchronized
     fun startWar(runModeEnum: RunModeEnum?) {
         reset(false)
+        startTime = System.currentTimeMillis()
         currentRunMode = runModeEnum
     }
 
@@ -129,6 +131,7 @@ object WarEx {
         if (me !== Player.INVALID_PLAYER) {
             flag = printResult()
         }
+        endTime = if (startTime == 0L) 0 else System.currentTimeMillis()
         val time = (endTime - startTime) / 1000 / 60
         log.info { "本局游戏时长：${time}分钟" }
         hangingTime += time.toInt()

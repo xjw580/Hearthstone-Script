@@ -34,6 +34,9 @@ object GameTurnPhaseStrategy : AbstractPhaseStrategy() {
                     log.info { "对方回合" }
                     War.isMyTurn = false
                     cancelAllTask()
+                    (DeckStrategyThread({
+                        DeckStrategyActuator.randomDoSomething()
+                    }, "Random Do Something Thread").also { addTask(it) }).start()
                 }
             } else if (tagChangeEntity.value == StepEnum.MAIN_END.name) {
                 War.isMyTurn = false

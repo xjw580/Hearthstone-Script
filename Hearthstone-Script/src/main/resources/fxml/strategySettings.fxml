@@ -31,6 +31,11 @@
             <NumberField fx:id="actionIntervalField" styleClass="text-field-ui, text-field-ui-small" hideIcon="true" prefWidth="${fieldWidth}"/>
         </HBox>
         <HBox styleClass="h-box">
+            <Text text="鼠标整体移动速度"/>
+            <HBox HBox.hgrow="ALWAYS"/>
+            <NumberField fx:id="moveSpeedField" styleClass="text-field-ui, text-field-ui-small" hideIcon="true" prefWidth="${fieldWidth}"/>
+        </HBox>
+        <HBox styleClass="h-box">
             <Text text="单次匹配最长时间/s"/>
             <Label>
                 <graphic>

@@ -31,14 +31,18 @@ object GlobalHotkeyListener : HotkeyListener {
     fun register() {
         if (JIntellitype.isJIntellitypeSupported()) {
             ConfigExUtil.getExitHotKey()?.let {
-                JIntellitype.getInstance()
-                    .registerHotKey(HOT_KEY_EXIT, it.modifier, it.keyCode)
-                log.info { "退出热键：$it" }
+                if (it.keyCode != 0){
+                    JIntellitype.getInstance()
+                        .registerHotKey(HOT_KEY_EXIT, it.modifier, it.keyCode)
+                    log.info { "退出热键：$it" }
+                }
             }
             ConfigExUtil.getPauseHotKey()?.let {
-                JIntellitype.getInstance()
-                    .registerHotKey(HOT_KEY_PAUSE, it.modifier, it.keyCode)
-                log.info { "开始/暂停热键：$it" }
+                if (it.keyCode != 0){
+                    JIntellitype.getInstance()
+                        .registerHotKey(HOT_KEY_PAUSE, it.modifier, it.keyCode)
+                    log.info { "开始/暂停热键：$it" }
+                }
             }
         } else {
             log.warn { "当前系统不支持设置热键" }

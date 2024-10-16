@@ -91,11 +91,11 @@ object TournamentModeStrategy : AbstractModeStrategy<Any?>() {
                 if (!(checkPowerLogSize())) {
                     return
                 }
-                SystemUtil.delayMedium()
+                SystemUtil.delayShort()
                 clickModeChangeButton()
-                SystemUtil.delayMedium()
+                SystemUtil.delayShort()
                 changeMode(runModeEnum)
-                SystemUtil.delayMedium()
+                SystemUtil.delayShort()
                 selectDeck(deckStrategy)
                 SystemUtil.delayShort()
                 startMatching()
@@ -149,9 +149,9 @@ object TournamentModeStrategy : AbstractModeStrategy<Any?>() {
         log.info { "选择套牌" }
 
         FIRST_DECK_RECT_BACK.lClick()
-        SystemUtil.delayShort()
+        SystemUtil.delayTiny()
         FIRST_DECK_RECT.lClick()
-        SystemUtil.delayShort()
+        SystemUtil.delayTiny()
         FIRST_DECK_RECT.lClick()
     }
 
@@ -197,9 +197,8 @@ object TournamentModeStrategy : AbstractModeStrategy<Any?>() {
                 SystemUtil.delayLong()
 //                点击错误按钮
                 ERROR_RECT.lClick()
-                SystemUtil.delayMedium()
+                SystemUtil.delayShort()
                 reconnect()
-                cancelAllEnteredTasks()
                 afterEnter(null)
             }
         }, ConfigUtil.getLong(ConfigEnum.MATCH_MAXIMUM_TIME), TimeUnit.SECONDS))

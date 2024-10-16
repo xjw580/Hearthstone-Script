@@ -99,26 +99,40 @@ public class AdvancedSettingsController implements Initializable {
         pauseHotKey.setOnKeyPressed(event -> {
             HotKey hotKey = plusModifier(event);
             if (hotKey != null) {
-                pauseHotKey.setText(hotKey.toString());
-                ConfigExUtil.INSTANCE.storePauseHotKey(hotKey);
-                GlobalHotkeyListener.INSTANCE.reload();
-                notificationManager.showSuccess("开始/暂停热键已修改", 2);
+                if (hotKey.getKeyCode() == 0){
+                    pauseHotKey.setText("");
+                    ConfigExUtil.INSTANCE.storePauseHotKey(hotKey);
+                    GlobalHotkeyListener.INSTANCE.reload();
+                    notificationManager.showSuccess("开始/暂停热键热键已删除", 2);
+                }else {
+                    pauseHotKey.setText(hotKey.toString());
+                    ConfigExUtil.INSTANCE.storePauseHotKey(hotKey);
+                    GlobalHotkeyListener.INSTANCE.reload();
+                    notificationManager.showSuccess("开始/暂停热键已修改", 2);
+                }
             }
         });
         pauseHotKey.setOnKeyReleased(this::reduceModifier);
         pauseHotKey.focusedProperty().addListener((observable, oldValue, newValue) -> {
-           if (!newValue) {
-               modifier = 0;
-           }
+            if (!newValue) {
+                modifier = 0;
+            }
         });
 
         exitHotKey.setOnKeyPressed(event -> {
             HotKey hotKey = plusModifier(event);
             if (hotKey != null) {
-                exitHotKey.setText(hotKey.toString());
-                ConfigExUtil.INSTANCE.storeExitHotKey(hotKey);
-                GlobalHotkeyListener.INSTANCE.reload();
-                notificationManager.showSuccess("退出热键已修改", 2);
+                if (hotKey.getKeyCode() == 0){
+                    exitHotKey.setText("");
+                    ConfigExUtil.INSTANCE.storeExitHotKey(hotKey);
+                    GlobalHotkeyListener.INSTANCE.reload();
+                    notificationManager.showSuccess("退出热键已删除", 2);
+                }else {
+                    exitHotKey.setText(hotKey.toString());
+                    ConfigExUtil.INSTANCE.storeExitHotKey(hotKey);
+                    GlobalHotkeyListener.INSTANCE.reload();
+                    notificationManager.showSuccess("退出热键已修改", 2);
+                }
             }
         });
         exitHotKey.setOnKeyReleased(this::reduceModifier);
@@ -130,7 +144,7 @@ public class AdvancedSettingsController implements Initializable {
 
     }
 
-    private HotKey plusModifier(KeyEvent event){
+    private HotKey plusModifier(KeyEvent event) {
         if (event.getCode() == KeyCode.ALT) {
             modifier += JIntellitypeConstants.MOD_ALT;
         } else if (event.getCode() == KeyCode.CONTROL) {
@@ -139,7 +153,9 @@ public class AdvancedSettingsController implements Initializable {
             modifier += JIntellitypeConstants.MOD_SHIFT;
         } else if (event.getCode() == KeyCode.WINDOWS) {
             modifier += JIntellitypeConstants.MOD_WIN;
-        }else {
+        } else if (event.getCode() == KeyCode.BACK_SPACE) {
+            return new HotKey();
+        } else {
             int code = event.getCode().getCode();
             if (code >= 65 && code <= 90) {
                 return new HotKey(modifier, code);
@@ -148,7 +164,7 @@ public class AdvancedSettingsController implements Initializable {
         return null;
     }
 
-    private void reduceModifier(KeyEvent event){
+    private void reduceModifier(KeyEvent event) {
         if (event.getCode() == KeyCode.ALT) {
             modifier -= JIntellitypeConstants.MOD_ALT;
         } else if (event.getCode() == KeyCode.CONTROL) {
