@@ -77,9 +77,9 @@ abstract class CardAction(createDefaultAction: Boolean = true) {
             if (result) {
                 if (isPause) {
                     if (card.cardType === CardTypeEnum.HERO){
-                        this.delay((mouseActionInterval - 800).coerceAtLeast(SHORT_PAUSE_TIME))
+                        this.delay((mouseActionInterval - 1000).coerceAtLeast(SHORT_PAUSE_TIME))
                     }else{
-                        this.delay((mouseActionInterval - 200).coerceAtMost(SHORT_PAUSE_TIME))
+                        this.delay()
                     }
                 } else {
                     delay(SHORT_PAUSE_TIME)

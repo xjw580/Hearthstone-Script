@@ -282,8 +282,8 @@ public class MainController extends MainView {
             gameCount.setText(String.valueOf(warInstance.getWarCount()));
             winningPercentage.setText(
                     (String.format(
-                            "%.0f",
-                            warInstance.getWinCount() / warInstance.getWarCount() * 100D
+                            "%.1f",
+                            (double)warInstance.getWinCount() / warInstance.getWarCount() * 100D
                     ) + "%"));
             gameTime.setText(formatTime(warInstance.getHangingTime()));
             exp.setText(String.valueOf(warInstance.getHangingEXP()));
