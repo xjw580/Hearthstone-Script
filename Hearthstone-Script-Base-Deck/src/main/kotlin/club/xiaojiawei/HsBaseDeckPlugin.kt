@@ -14,7 +14,12 @@ class HsBaseDeckPlugin: DeckPlugin {
     }
 
     override fun description(): String {
-        return "捆绑，通用策略，未对卡牌和卡组适配，自行组一套无战吼无法术的套牌即可"
+        return """
+            捆绑。包含以下策略
+            秒投策略：开局秒投。
+            基础策略：未对卡牌和卡组适配，自行组一套无战吼无法术的套牌即可。
+            激进策略：会在基础策略的基础上使用战吼或法术牌（依旧不识别战吼或法术）。
+        """.trimIndent()
     }
 
     override fun id(): String {
