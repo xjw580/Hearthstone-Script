@@ -38,34 +38,40 @@ object DeckStrategyActuator {
     fun randomDoSomething(){
         if (!ConfigUtil.getBoolean(ConfigEnum.STRATEGY)) return
         if (!validPlayer()) return
-        log.info { "随机做点事情" }
-        Thread.sleep(2000)
-        val minTime = 1500
-        val maxTime = 5000
-        while (!PauseStatus.isPause && !isMyTurn && !Thread.interrupted() && Mode.currMode === ModeEnum.GAMEPLAY) {
-            if (Random.nextInt() and 1 == 1) {
-                War.rival.playArea.hero?.action?.lClick()
-            }
-            SystemUtil.delay(minTime, maxTime)
-            if (Random.nextInt() and 1 == 1) {
-                War.rival.playArea.power?.action?.lClick()
-            }
-            SystemUtil.delay(minTime, maxTime)
-            var toList = War.rival.playArea.cards.toList()
-            for (card in toList) {
+        if (Random.nextInt() and 1 == 1){
+            log.info { "随机做点事情" }
+            Thread.sleep(2000)
+            val minTime = 3000
+            val maxTime = 10000
+            while (!PauseStatus.isPause && !isMyTurn && !Thread.interrupted() && Mode.currMode === ModeEnum.GAMEPLAY) {
+                var toList = War.rival.playArea.cards.toList()
+                for (card in toList) {
+                    if (Random.nextInt() and 1 == 1) {
+                        card.action.lClick()
+                        log.info { "点击敌方战场卡牌：${card}" }
+                    }
+                    SystemUtil.delay(minTime, maxTime)
+                }
+                SystemUtil.delay(minTime, maxTime)
                 if (Random.nextInt() and 1 == 1) {
-                    card.action.lClick()
+                    War.rival.playArea.hero?.action?.lClick()
+                    log.info { "点击敌方英雄" }
+                }
+                SystemUtil.delay(minTime, maxTime)
+                if (Random.nextInt() and 1 == 1) {
+                    War.rival.playArea.power?.action?.lClick()
+                    log.info { "点击敌方英雄技能" }
+                }
+                toList = War.me.playArea.cards.toList()
+                for (card in toList) {
+                    if (Random.nextInt() and 1 == 1) {
+                        card.action.lClick()
+                        log.info { "点击我方战场卡牌：${card}" }
+                    }
+                    SystemUtil.delay(minTime, maxTime)
                 }
                 SystemUtil.delay(minTime, maxTime)
             }
-            toList = War.me.playArea.cards.toList()
-            for (card in toList) {
-                if (Random.nextInt() and 1 == 1) {
-                    card.action.lClick()
-                }
-                SystemUtil.delay(minTime, maxTime)
-            }
-            SystemUtil.delay(3000, 10000)
         }
     }
 
@@ -136,11 +142,11 @@ object DeckStrategyActuator {
         if (checkSurrender()) return
         log.info { "执行发现选牌策略" }
 
-        SystemUtil.delay(1000)
+        SystemUtil.delayShortMedium()
         val index = deckStrategy?.executeDiscoverChooseCard(*cards)?:0
         War.me.let {
             GameUtil.clickDiscover(index, it.handArea.cardSize())
-            SystemUtil.delayShortMedium()
+            SystemUtil.delayShort()
             val card = cards[index]
             log.info { "选择了：" + card.toSimpleString() }
         }

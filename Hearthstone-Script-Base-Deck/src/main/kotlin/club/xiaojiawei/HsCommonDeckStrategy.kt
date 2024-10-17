@@ -58,9 +58,9 @@ class HsCommonDeckStrategy : DeckStrategy() {
                 } else {
                     it.action.power()
                 }
-                DeckStrategyUtil.cleanPlay()
             }
         }
+        DeckStrategyUtil.cleanPlay()
     }
 
     private fun powerCard(me: Player, rival: Player) {
@@ -78,7 +78,7 @@ class HsCommonDeckStrategy : DeckStrategy() {
             if (num1 > me.usableResource) {
                 coinCard.action.power()
                 if (resultCards1.isNotEmpty()) {
-                    log.info { resultCards }
+                    log.info { "待出牌：$resultCards" }
                 }
                 for (card in resultCards1) {
                     if (me.playArea.isFull) break
@@ -88,7 +88,7 @@ class HsCommonDeckStrategy : DeckStrategy() {
             }
         }
         if (resultCards.isNotEmpty()) {
-            log.info { resultCards }
+            log.info { "待出牌：$resultCards" }
         }
         for (card in resultCards) {
             if (me.playArea.isFull) break

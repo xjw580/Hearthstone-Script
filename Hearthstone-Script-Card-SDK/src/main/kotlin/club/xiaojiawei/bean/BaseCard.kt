@@ -250,6 +250,12 @@ open class BaseCard : Entity() {
     @Volatile
     var isCoinCard = false
 
+    /**
+     * 不可触摸（如萨格拉斯召唤的传送门）
+     */
+    @Volatile
+    var isUntouchable = false
+
 
     fun minusHealth(health: Int) {
         this.health -= health
@@ -309,14 +315,14 @@ open class BaseCard : Entity() {
      * 能不能被敌方指向
      */
     fun canBeTargetedByRival(): Boolean {
-        return !(isImmune || isStealth || isDormantAwakenConditionEnchant)
+        return !(isStealth || isImmune || isDormantAwakenConditionEnchant || isUntouchable)
     }
 
     /**
      * 能不能被我方指向
      */
     fun canBeTargetedByMe(): Boolean {
-        return !(isImmune || isDormantAwakenConditionEnchant)
+        return !(isImmune || isDormantAwakenConditionEnchant || isUntouchable)
     }
 
     /**

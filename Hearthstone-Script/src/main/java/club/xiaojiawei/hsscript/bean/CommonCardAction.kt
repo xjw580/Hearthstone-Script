@@ -35,7 +35,7 @@ class CommonCardAction : CardAction(false) {
             return GameUtil.RIVAL_POWER_RECT
         } else if (area === me.playArea) {
             if ((area.indexOfCard(card).also { index = it }) >= 0) {
-                return GameUtil.getMyHandCardRect(index, area.cardSize())
+                return GameUtil.getMyPlayCardRect(index, area.cardSize())
             }
         } else if (area === rival.playArea) {
             if ((area.indexOfCard(card).also { index = it }) >= 0) {
