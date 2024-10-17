@@ -37,13 +37,13 @@ public class StartupController implements Initializable {
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                if (++count == 100) {
+                if (++count >= 100) {
                     timer.cancel();
                 } else {
                     Platform.runLater(() -> progressBar.setProgress((double) count / 100));
                 }
             }
-        }, 500, 10);
+        }, 0, 20);
     }
 
     /**
