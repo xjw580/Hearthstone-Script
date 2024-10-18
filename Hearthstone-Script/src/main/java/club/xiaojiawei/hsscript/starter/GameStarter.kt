@@ -8,6 +8,7 @@ import club.xiaojiawei.hsscript.config.StarterConfig
 import club.xiaojiawei.hsscript.consts.GAME_CN_NAME
 import club.xiaojiawei.hsscript.consts.GAME_HWND
 import club.xiaojiawei.hsscript.dll.SystemDll
+import club.xiaojiawei.hsscript.interfaces.closer.ScheduledCloser
 import club.xiaojiawei.hsscript.status.PauseStatus
 import club.xiaojiawei.hsscript.utils.GameUtil
 import club.xiaojiawei.hsscript.utils.MouseUtil
@@ -39,34 +40,30 @@ object GameStarter : AbstractStarter() {
 
         addTask(
             LAUNCH_PROGRAM_THREAD_POOL.scheduleAtFixedRate(LogRunnable {
-                if (PauseStatus.isPause) {
+                if (launchCount.incrementAndGet() > 15) {
+                    log.info { "更改${GAME_CN_NAME}启动方式" }
+                    GameUtil.launchPlatformAndGame()
+                } else if (launchCount.incrementAndGet() > 20) {
+                    log.warn { "打开${GAME_CN_NAME}失败次数过多，重新执行启动器链" }
                     stop()
-                } else {
-                    if (launchCount.incrementAndGet() > 15) {
-                        log.info { "更改${GAME_CN_NAME}启动方式" }
-                        GameUtil.launchPlatformAndGame()
-                    } else if (launchCount.incrementAndGet() > 20) {
-                        log.warn { "打开${GAME_CN_NAME}失败次数过多，重新执行启动器链" }
-                        stop()
-                        EXTRA_THREAD_POOL.schedule({
-                            GameUtil.killLoginPlatform()
-                            GameUtil.killPlatform()
-                            launchCount.set(0)
-                            StarterConfig.starter.start()
-                        }, 1, TimeUnit.SECONDS)
+                    EXTRA_THREAD_POOL.schedule({
+                        GameUtil.killLoginPlatform()
+                        GameUtil.killPlatform()
+                        launchCount.set(0)
+                        StarterConfig.starter.start()
+                    }, 1, TimeUnit.SECONDS)
+                    return@LogRunnable
+                }
+                if (GameUtil.isAliveOfGame()) {
+//                    游戏刚启动时可能找不到窗口句柄
+                    GameUtil.findGameHWND()?.let {
+                        next(it)
+                    } ?: let {
+                        log.info { "${GAME_CN_NAME}已在运行，但未找到对应窗口句柄" }
                         return@LogRunnable
                     }
-                    if (GameUtil.isAliveOfGame()) {
-//                    游戏刚启动时可能找不到窗口句柄
-                        GameUtil.findGameHWND()?.let {
-                            next(it)
-                        } ?: let {
-                            log.info { "${GAME_CN_NAME}已在运行，但未找到对应窗口句柄" }
-                            return@LogRunnable
-                        }
-                    } else {
-                        launchGameBySendMessage()
-                    }
+                } else {
+                    launchGameBySendMessage()
                 }
             }, 100, 2000, TimeUnit.MILLISECONDS)
         )

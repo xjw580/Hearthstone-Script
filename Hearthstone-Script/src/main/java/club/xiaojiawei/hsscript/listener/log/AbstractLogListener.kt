@@ -2,8 +2,10 @@ package club.xiaojiawei.hsscript.listener.log
 
 import club.xiaojiawei.config.LISTEN_LOG_THREAD_POOL
 import club.xiaojiawei.config.log
-import club.xiaojiawei.hsscript.status.LogListenerStatus
+import club.xiaojiawei.hsscript.interfaces.closer.ScheduledCloser
+import club.xiaojiawei.hsscript.listener.WorkListener
 import club.xiaojiawei.hsscript.status.PauseStatus
+import club.xiaojiawei.hsscript.status.TaskManager
 import club.xiaojiawei.util.isFalse
 import java.io.File
 import java.io.FileWriter
@@ -21,7 +23,11 @@ abstract class AbstractLogListener(
     protected var listenInitialDelay: Long,
     protected var listenPeriod: Long,
     protected var listenTimeUnit: TimeUnit
-) {
+): ScheduledCloser {
+
+    init {
+        TaskManager.addTask(this)
+    }
 
     protected var innerLogFile: RandomAccessFile? = null
 
@@ -69,7 +75,7 @@ abstract class AbstractLogListener(
             return
         }
         logScheduledFuture = LISTEN_LOG_THREAD_POOL.scheduleAtFixedRate({
-            if (PauseStatus.isPause) {
+            if (PauseStatus.isPause || !WorkListener.working) {
                 close()
             } else {
                 try {
@@ -81,12 +87,11 @@ abstract class AbstractLogListener(
                 }
             }
         }, listenInitialDelay, listenPeriod, listenTimeUnit)
-        LogListenerStatus.addLogListener(this)
         listenNextListener()
     }
 
     private fun createLogFile(): File? {
-        return LogListenerStatus.logPath?.let {
+        return logPath?.let {
             val logFile = it.resolve(logFileName)
             logFile.exists().isFalse {
                 FileWriter(logFile).use { fileWriter ->
@@ -112,8 +117,12 @@ abstract class AbstractLogListener(
         }
     }
 
-    open fun close() {
+    override fun close() {
         closeLogListener()
+    }
+
+    companion object{
+        var logPath: File? = null
     }
 
 }

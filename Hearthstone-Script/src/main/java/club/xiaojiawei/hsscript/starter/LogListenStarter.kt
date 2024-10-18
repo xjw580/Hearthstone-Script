@@ -2,7 +2,7 @@ package club.xiaojiawei.hsscript.starter
 
 import club.xiaojiawei.config.log
 import club.xiaojiawei.hsscript.config.LogListenerConfig
-import club.xiaojiawei.hsscript.status.LogListenerStatus
+import club.xiaojiawei.hsscript.listener.log.AbstractLogListener
 import club.xiaojiawei.hsscript.utils.GameUtil
 
 /**
@@ -15,7 +15,7 @@ object LogListenStarter : AbstractStarter() {
     override fun execStart() {
         val latestLogDir = GameUtil.getLatestLogDir()
         latestLogDir?.let {
-            LogListenerStatus.logPath = it
+            AbstractLogListener.logPath = it
             log.info { "游戏日志目录读取成功：" + it.absolutePath }
             Thread.ofVirtual().name(Thread.currentThread().name.replace("Thread", "VThread")).start{
                 LogListenerConfig.logListener.listen()

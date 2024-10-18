@@ -18,6 +18,7 @@ import club.xiaojiawei.hsscript.listener.GlobalHotkeyListener
 import club.xiaojiawei.hsscript.listener.VersionListener
 import club.xiaojiawei.hsscript.listener.WorkListener
 import club.xiaojiawei.hsscript.status.PauseStatus
+import club.xiaojiawei.hsscript.status.TaskManager
 import club.xiaojiawei.hsscript.utils.GameUtil
 import club.xiaojiawei.hsscript.utils.SystemUtil
 import club.xiaojiawei.hsscript.utils.SystemUtil.addTray
@@ -116,6 +117,7 @@ class MainApplication : Application() {
 
     private fun initClass() {
         Core
+        TaskManager
     }
 
     private fun afterShowing() {

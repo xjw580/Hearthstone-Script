@@ -17,7 +17,7 @@ import club.xiaojiawei.status.War.rival
  * @author 肖嘉威
  * @date 2022/11/26 17:24
  */
-object ReplaceCardPhaseStrategy : AbstractPhaseStrategy() {
+object ReplaceCardPhaseStrategy : AbstractPhaseStrategy(){
 
     override fun dealTagChangeThenIsOver(line: String, tagChangeEntity: TagChangeEntity): Boolean {
         if (tagChangeEntity.tag == TagEnum.MULLIGAN_STATE && tagChangeEntity.value == MulliganStateEnum.INPUT.name) {
@@ -35,5 +35,7 @@ object ReplaceCardPhaseStrategy : AbstractPhaseStrategy() {
         }
         return false
     }
+
+
 
 }

@@ -12,8 +12,10 @@ import club.xiaojiawei.hsscript.consts.CHANGE_ENTITY
 import club.xiaojiawei.hsscript.consts.FULL_ENTITY
 import club.xiaojiawei.hsscript.consts.SHOW_ENTITY
 import club.xiaojiawei.hsscript.consts.TAG_CHANGE
+import club.xiaojiawei.hsscript.interfaces.closer.ThreadCloser
 import club.xiaojiawei.hsscript.listener.log.PowerLogListener
 import club.xiaojiawei.hsscript.status.PauseStatus
+import club.xiaojiawei.hsscript.status.TaskManager
 import club.xiaojiawei.hsscript.strategy.DeckStrategyActuator.discoverChooseCard
 import club.xiaojiawei.hsscript.utils.PowerLogUtil.dealChangeEntity
 import club.xiaojiawei.hsscript.utils.PowerLogUtil.dealFullEntity
@@ -51,7 +53,7 @@ abstract class AbstractPhaseStrategy : PhaseStrategy {
     private fun dealLog(line: String) {
         val accessFile = PowerLogListener.logFile
         accessFile ?: return
-        var l:String? = line
+        var l: String? = line
         var mark: Long
         while (!PauseStatus.isPause) {
             try {
@@ -145,15 +147,20 @@ abstract class AbstractPhaseStrategy : PhaseStrategy {
         return false
     }
 
-    companion object{
-        var dealing = false
-        private val tasks:MutableList<Thread> = mutableListOf()
+    companion object : ThreadCloser {
 
-        fun addTask(task:Thread) {
+        init {
+            TaskManager.addTask(this)
+        }
+
+        var dealing = false
+        private val tasks: MutableList<Thread> = mutableListOf()
+
+        fun addTask(task: Thread) {
             tasks.add(task)
         }
 
-        fun cancelAllTask(){
+        fun cancelAllTask() {
             val toList = tasks.toList()
             tasks.clear()
             toList.forEach {
@@ -161,6 +168,10 @@ abstract class AbstractPhaseStrategy : PhaseStrategy {
                     it.interrupt()
                 }
             }
+        }
+
+        override fun close() {
+            cancelAllTask()
         }
     }
 

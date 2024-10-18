@@ -4,7 +4,6 @@ import club.xiaojiawei.bean.LogRunnable
 import club.xiaojiawei.config.LAUNCH_PROGRAM_THREAD_POOL
 import club.xiaojiawei.config.log
 import club.xiaojiawei.hsscript.consts.PLATFORM_CN_NAME
-import club.xiaojiawei.hsscript.status.PauseStatus
 import club.xiaojiawei.hsscript.utils.GameUtil
 import java.util.concurrent.TimeUnit
 
@@ -30,9 +29,7 @@ object PlatformStarter : AbstractStarter() {
 
         addTask(
             LAUNCH_PROGRAM_THREAD_POOL.scheduleAtFixedRate(LogRunnable {
-                if (PauseStatus.isPause) {
-                    stop()
-                } else if (GameUtil.findPlatformHWND() != null || GameUtil.findLoginPlatformHWND() != null) {
+                if (GameUtil.findPlatformHWND() != null || GameUtil.findLoginPlatformHWND() != null) {
                     startNextStarter()
                 }
             }, 1, 100, TimeUnit.MILLISECONDS)

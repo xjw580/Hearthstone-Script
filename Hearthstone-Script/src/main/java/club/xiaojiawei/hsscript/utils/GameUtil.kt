@@ -430,9 +430,9 @@ object GameUtil {
                 delay(1000)
                 log.info { "炉石传说已关闭" }
             } catch (e: IOException) {
-                log.error(e) { "关闭炉石传说异常" }
+                log.error(e) { "关闭${GAME_CN_NAME}异常" }
             } catch (e: InterruptedException) {
-                log.warn(e) { "关闭炉石传说异常" }
+                log.warn(e) { "关闭${GAME_CN_NAME}可能异常" }
             }
         } else {
             log.info { "炉石传说不在运行" }

@@ -1,6 +1,7 @@
 package club.xiaojiawei.hsscript.listener.log
 
 import club.xiaojiawei.hsscript.bean.Deck
+import club.xiaojiawei.hsscript.listener.WorkListener
 import club.xiaojiawei.hsscript.status.PauseStatus
 import club.xiaojiawei.hsscript.utils.PowerLogUtil
 import java.util.*
@@ -23,7 +24,7 @@ object DeckLogListener : AbstractLogListener("Decks.log", 0, 1500L, TimeUnit.MIL
         dealing = true
         innerLogFile?.let { file ->
             var line: String?
-            while (!PauseStatus.isPause) {
+            while (!PauseStatus.isPause && WorkListener.working) {
                 line = file.readLine()
                 if (line == null || line.isEmpty()) break
                 if (line.contains("Deck Contents Received")) {

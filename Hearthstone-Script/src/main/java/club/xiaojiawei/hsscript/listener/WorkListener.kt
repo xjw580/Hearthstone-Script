@@ -10,7 +10,6 @@ import club.xiaojiawei.hsscript.utils.ConfigExUtil
 import club.xiaojiawei.hsscript.utils.ConfigUtil
 import club.xiaojiawei.hsscript.utils.GameUtil
 import club.xiaojiawei.hsscript.utils.SystemUtil
-import javafx.beans.property.ReadOnlyBooleanWrapper
 import javafx.beans.property.SimpleBooleanProperty
 import javafx.beans.property.SimpleDoubleProperty
 import java.time.LocalDate
@@ -39,7 +38,7 @@ object WorkListener {
     /**
      * 是否处于工作中
      */
-    private var workingProperty = SimpleBooleanProperty(false)
+    val workingProperty = SimpleBooleanProperty(false)
 
     var working: Boolean
         get() = workingProperty.get()

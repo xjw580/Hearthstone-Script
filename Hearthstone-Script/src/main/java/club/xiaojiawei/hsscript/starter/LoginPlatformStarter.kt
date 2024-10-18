@@ -6,7 +6,6 @@ import club.xiaojiawei.hsscript.config.StarterConfig
 import club.xiaojiawei.hsscript.consts.PLATFORM_CN_NAME
 import club.xiaojiawei.hsscript.dll.SystemDll
 import club.xiaojiawei.hsscript.enums.ConfigEnum
-import club.xiaojiawei.hsscript.status.PauseStatus
 import club.xiaojiawei.hsscript.utils.ConfigUtil
 import club.xiaojiawei.hsscript.utils.GameUtil
 import club.xiaojiawei.hsscript.utils.SystemUtil
@@ -36,9 +35,7 @@ object LoginPlatformStarter : AbstractStarter() {
         addTask(
             EXTRA_THREAD_POOL.scheduleAtFixedRate({
                 var loginPlatformHWND: HWND?
-                if (PauseStatus.isPause) {
-                    stop()
-                } else if ((GameUtil.findLoginPlatformHWND().also { loginPlatformHWND = it }) == null) {
+                if ((GameUtil.findLoginPlatformHWND().also { loginPlatformHWND = it }) == null) {
                     startNextStarter()
                 } else {
                     if (loginCount.incrementAndGet() > 400) {

@@ -3,6 +3,7 @@ package club.xiaojiawei.hsscript.listener.log
 import club.xiaojiawei.enums.StepEnum
 import club.xiaojiawei.enums.WarPhaseEnum
 import club.xiaojiawei.hsscript.bean.single.WarEx
+import club.xiaojiawei.hsscript.listener.WorkListener
 import club.xiaojiawei.hsscript.status.PauseStatus
 import club.xiaojiawei.hsscript.strategy.AbstractPhaseStrategy
 import club.xiaojiawei.hsscript.utils.PowerLogUtil
@@ -25,7 +26,7 @@ object PowerLogListener :
     }
 
     override fun dealNewLog() {
-        while (!PauseStatus.isPause && !AbstractPhaseStrategy.dealing) {
+        while (!PauseStatus.isPause && !AbstractPhaseStrategy.dealing && WorkListener.working) {
             innerLogFile?.let {
                 val line = it.readLine()
                 if (line == null) {

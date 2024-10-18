@@ -1,8 +1,10 @@
 package club.xiaojiawei.hsscript.strategy
 
 import club.xiaojiawei.config.log
-import club.xiaojiawei.interfaces.ModeStrategy
+import club.xiaojiawei.hsscript.interfaces.closer.ScheduledCloser
 import club.xiaojiawei.hsscript.status.Mode
+import club.xiaojiawei.hsscript.status.TaskManager
+import club.xiaojiawei.interfaces.ModeStrategy
 import club.xiaojiawei.util.isFalse
 import java.util.*
 import java.util.concurrent.ScheduledFuture
@@ -59,7 +61,12 @@ abstract class AbstractModeStrategy<T> : ModeStrategy<T> {
     }
 
 
-    companion object {
+    companion object:ScheduledCloser {
+
+        init {
+            TaskManager.addTask(this)
+        }
+
         const val INTERVAL_TIME: Long = 5000
         const val DELAY_TIME: Long = 1000
 
@@ -89,6 +96,10 @@ abstract class AbstractModeStrategy<T> : ModeStrategy<T> {
         fun cancelAllTask() {
             cancelAllEnteredTasks()
             cancelAllWantEnterTasks()
+        }
+
+        override fun close() {
+            cancelAllTask()
         }
 
     }

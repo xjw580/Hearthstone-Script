@@ -7,10 +7,9 @@ import club.xiaojiawei.hsscript.core.Core
 import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.listener.WorkListener
 import club.xiaojiawei.hsscript.status.PauseStatus
+import club.xiaojiawei.hsscript.status.TaskManager
 import club.xiaojiawei.hsscript.utils.ConfigUtil
 import club.xiaojiawei.util.isFalse
-import club.xiaojiawei.util.isTrue
-import javafx.beans.value.ObservableValue
 import java.util.concurrent.ScheduledFuture
 import java.util.concurrent.TimeUnit
 
@@ -26,11 +25,7 @@ object ExceptionListenStarter : AbstractStarter() {
     private var errorScheduledFuture: ScheduledFuture<*>? = null
 
     init {
-        PauseStatus.addListener { _: ObservableValue<out Boolean>?, _: Boolean?, newValue: Boolean ->
-            newValue.isTrue {
-                closeListener()
-            }
-        }
+        TaskManager.addTask(this)
     }
 
     private fun closeListener() {
@@ -58,6 +53,11 @@ object ExceptionListenStarter : AbstractStarter() {
                 Core.restart()
             }
         }, 0, 1, TimeUnit.MINUTES)
+    }
+
+    override fun close() {
+        super.close()
+        closeListener()
     }
 
 }
