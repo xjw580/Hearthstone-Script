@@ -39,6 +39,19 @@
             <Switch fx:id="autoUpdate"/>
         </HBox>
         <HBox styleClass="h-box">
+            <Text text="挂机时最小化"/>
+            <Label>
+                <graphic>
+                    <HelpIco/>
+                </graphic>
+                <tooltip>
+                    <Tooltip text="挂机时将关闭软件窗口仅保留托盘，此时只能检测到Java进程"/>
+                </tooltip>
+            </Label>
+            <HBox HBox.hgrow="ALWAYS"/>
+            <Switch fx:id="runningMinimize"/>
+        </HBox>
+        <HBox styleClass="h-box">
             <Text text="发送Windows通知"/>
             <HBox HBox.hgrow="ALWAYS"/>
             <Switch fx:id="sendNotice"/>

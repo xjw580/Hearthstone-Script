@@ -398,7 +398,6 @@ public class MainController extends MainView {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         versionText.setText("当前版本：" + VersionListener.INSTANCE.getCurrentRelease().getTagName());
-        System.out.println("当前版本：" + VersionListener.INSTANCE.getCurrentRelease().getTagName());
         initModeAndDeck();
         initWorkDate();
         addListener();

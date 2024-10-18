@@ -7,6 +7,7 @@ import club.xiaojiawei.config.EXTRA_THREAD_POOL
 import club.xiaojiawei.config.log
 import club.xiaojiawei.hsscript.bean.CommonCardAction.Companion.DEFAULT
 import club.xiaojiawei.hsscript.config.InitializerConfig
+import club.xiaojiawei.hsscript.consts.GAME_CN_NAME
 import club.xiaojiawei.hsscript.consts.MAIN_IMG_NAME
 import club.xiaojiawei.hsscript.consts.SCRIPT_NAME
 import club.xiaojiawei.hsscript.controller.javafx.StartupController
@@ -26,10 +27,12 @@ import club.xiaojiawei.hsscript.utils.WindowUtil.getStage
 import club.xiaojiawei.hsscript.utils.WindowUtil.hideStage
 import club.xiaojiawei.hsscript.utils.WindowUtil.showStage
 import club.xiaojiawei.hsscript.utils.platformRunLater
+import club.xiaojiawei.util.isFalse
 import javafx.application.Application
 import javafx.application.Platform
 import javafx.beans.value.ChangeListener
 import javafx.beans.value.ObservableValue
+import javafx.stage.Screen
 import javafx.stage.Stage
 import java.awt.MenuItem
 import java.awt.event.ActionEvent
@@ -77,10 +80,23 @@ class MainApplication : Application() {
     }
 
     private fun setSystemTray() {
-        val quit = MenuItem("退出")
-        quit.addActionListener(object : AbstractAction() {
+        val quitItem = MenuItem("退出")
+        quitItem.addActionListener(object : AbstractAction() {
             override fun actionPerformed(e: ActionEvent?) {
                 shutdown()
+            }
+        })
+        val isPauseItem = MenuItem("开始")
+        isPauseItem.addActionListener(object : AbstractAction() {
+            override fun actionPerformed(e: ActionEvent?) {
+                PauseStatus.asyncSetPause(!PauseStatus.isPause)
+            }
+        })
+        PauseStatus.addListener( { observableValue: ObservableValue<out Boolean?>?, aBoolean: Boolean?, isPause: Boolean ->
+            if (isPause){
+                isPauseItem.label = "开始"
+            }else{
+                isPauseItem.label = "暂停"
             }
         })
         addTray(MAIN_IMG_NAME, SCRIPT_NAME, Consumer { e: MouseEvent? ->
@@ -95,7 +111,7 @@ class MainApplication : Application() {
                     }
                 })
             }
-        }, quit)
+        }, isPauseItem, quitItem)
     }
 
     private fun initClass() {
@@ -115,9 +131,15 @@ class MainApplication : Application() {
                 Runtime.getRuntime()
                     .addShutdownHook(LogThread({SystemDll.INSTANCE.uninstallDll(GameUtil.findGameHWND())}, "ShutdownHook Thread"))
 
-                if (!SystemDll.INSTANCE.IsRunAsAdministrator()){
+                SystemDll.INSTANCE.IsRunAsAdministrator().isFalse {
                     log.warn { "当前进程不是以管理员启动，功能受限" }
                     SystemUtil.notice("当前进程不是以管理员启动，功能受限")
+                }
+
+                Screen.getScreens()?.let {
+                    if (it.size > 1){
+                        log.info { "检测到多台显示器，开始运行后${GAME_CN_NAME}不要移动到其他显示器" }
+                    }
                 }
 
                 val args = this.parameters.raw

@@ -45,6 +45,8 @@ public class AdvancedSettingsController implements Initializable {
     @FXML
     private Switch autoUpdate;
     @FXML
+    private Switch runningMinimize;
+    @FXML
     private Switch sendNotice;
     @FXML
     private AnchorPane rootPane;
@@ -61,6 +63,7 @@ public class AdvancedSettingsController implements Initializable {
         strategySwitch.setStatus(ConfigUtil.INSTANCE.getBoolean(ConfigEnum.STRATEGY));
         updateDev.setStatus(ConfigUtil.INSTANCE.getBoolean(ConfigEnum.UPDATE_DEV));
         autoUpdate.setStatus(ConfigUtil.INSTANCE.getBoolean(ConfigEnum.AUTO_UPDATE));
+        runningMinimize.setStatus(ConfigUtil.INSTANCE.getBoolean(ConfigEnum.RUNNING_MINIMIZE));
         sendNotice.setStatus(ConfigUtil.INSTANCE.getBoolean(ConfigEnum.SEND_NOTICE));
 
         HotKey pauseKey = ConfigExUtil.INSTANCE.getPauseHotKey();
@@ -85,6 +88,10 @@ public class AdvancedSettingsController implements Initializable {
 //        监听自动更新开关
         autoUpdate.statusProperty().addListener((observable, oldValue, newValue) -> {
             ConfigUtil.INSTANCE.putBoolean(ConfigEnum.AUTO_UPDATE, newValue, true);
+        });
+//        监听运行最小化开关
+        runningMinimize.statusProperty().addListener((observable, oldValue, newValue) -> {
+            ConfigUtil.INSTANCE.putBoolean(ConfigEnum.RUNNING_MINIMIZE, newValue, true);
         });
 //        监听发送通知开关
         sendNotice.statusProperty().addListener((observable, oldValue, newValue) -> {

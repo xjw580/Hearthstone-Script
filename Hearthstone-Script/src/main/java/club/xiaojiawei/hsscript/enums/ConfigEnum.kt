@@ -102,6 +102,10 @@ enum class ConfigEnum(
      * 最长空闲时间/min（超过重启游戏）
      */
     IDLE_MAXIMUM_TIME(group = "other", defaultValue = "10"),
+    /**
+     * 运行后最小化软件
+     */
+    RUNNING_MINIMIZE(group = "other", defaultValue = "false"),
 
     /**
      * 允许发送windows通知

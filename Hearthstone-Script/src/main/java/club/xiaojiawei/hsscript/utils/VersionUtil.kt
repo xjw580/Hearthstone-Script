@@ -1,6 +1,6 @@
 package club.xiaojiawei.hsscript.utils
 
-import java.lang.RuntimeException
+import club.xiaojiawei.config.log
 import java.util.Properties
 
 /**
@@ -14,11 +14,12 @@ object VersionUtil {
     init {
         VersionUtil::class.java.getClassLoader().getResourceAsStream("build.version").use { resourceStream ->
             if (resourceStream == null) {
-                throw RuntimeException("build.version file is not found in the classpath.")
+                log.error { "build.version file is not found in the classpath." }
+            } else {
+                val properties = Properties()
+                properties.load(resourceStream)
+                VERSION = properties.getProperty("version", VERSION)
             }
-            val properties = Properties()
-            properties.load(resourceStream)
-            VERSION = properties.getProperty("version", VERSION)
         }
     }
 }

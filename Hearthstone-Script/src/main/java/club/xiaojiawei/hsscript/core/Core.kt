@@ -8,11 +8,13 @@ import club.xiaojiawei.hsscript.consts.GAME_HWND
 import club.xiaojiawei.hsscript.consts.PLATFORM_CN_NAME
 import club.xiaojiawei.hsscript.consts.setPath
 import club.xiaojiawei.hsscript.dll.SystemDll
+import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.enums.WindowEnum
 import club.xiaojiawei.hsscript.listener.WorkListener
 import club.xiaojiawei.hsscript.status.Mode
 import club.xiaojiawei.hsscript.status.PauseStatus
 import club.xiaojiawei.hsscript.strategy.AbstractModeStrategy
+import club.xiaojiawei.hsscript.utils.ConfigUtil
 import club.xiaojiawei.hsscript.utils.GameUtil
 import club.xiaojiawei.hsscript.utils.SystemUtil
 import club.xiaojiawei.hsscript.utils.WindowUtil
@@ -63,6 +65,11 @@ object Core {
                     PauseStatus.isPause = true
                 } else if (!PauseStatus.isPause) {
                     WorkListener.working = true
+                    if (ConfigUtil.getBoolean(ConfigEnum.RUNNING_MINIMIZE)){
+                        platformRunLater {
+                            WindowUtil.hideStage(WindowEnum.MAIN)
+                        }
+                    }
                     StarterConfig.starter.start()
                 }
             }

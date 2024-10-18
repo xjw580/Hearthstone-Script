@@ -46,11 +46,4 @@ object GameTurnPhaseStrategy : AbstractPhaseStrategy() {
         return false
     }
 
-    @JvmStatic
-    fun main(args: Array<String>) {
-        (DeckStrategyThread({
-            println(1111)
-        }, "OutCard Thread").also { addTask(it) }).start()
-    }
-
 }

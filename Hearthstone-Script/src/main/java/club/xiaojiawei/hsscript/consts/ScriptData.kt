@@ -1,11 +1,14 @@
 package club.xiaojiawei.hsscript.consts
 
 import club.xiaojiawei.bean.area.Area
+import club.xiaojiawei.config.log
 import club.xiaojiawei.hsscript.bean.single.WarEx
 import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.utils.ConfigUtil
 import com.sun.jna.platform.win32.WinDef
 import com.sun.jna.platform.win32.WinDef.HWND
+import javafx.scene.control.ContentDisplay
+import javafx.stage.Screen
 import java.awt.GraphicsDevice
 import java.awt.GraphicsEnvironment
 import java.awt.Robot
@@ -45,25 +48,25 @@ val GAME_RECT: WinDef.RECT = WinDef.RECT()
  */
 val ROBOT: Robot = Robot()
 
-/**
- * 显示器横向缩放
- */
-var DISPLAY_SCALE_X: Double = 1.0
-
-/**
- * 显示器纵向缩放
- */
-var DISPLAY_SCALE_Y: Double = 1.0
-
-/**
- * 显示器纵向像素数
- */
-var DISPLAY_PIXEL_HEIGHT: Int = 0
-
-/**
- * 显示器横向像素数
- */
-var DISPLAY_PIXEL_WIDTH: Int = 0
+///**
+// * 显示器横向缩放
+// */
+//var DISPLAY_SCALE_X: Double = 1.0
+//
+///**
+// * 显示器纵向缩放
+// */
+//var DISPLAY_SCALE_Y: Double = 1.0
+//
+///**
+// * 显示器纵向像素数
+// */
+//var DISPLAY_PIXEL_HEIGHT: Int = 0
+//
+///**
+// * 显示器横向像素数
+// */
+//var DISPLAY_PIXEL_WIDTH: Int = 0
 
 /**
  * 本脚本的程序名
