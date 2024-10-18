@@ -37,18 +37,15 @@ class HsRadicalDeckStrategy : DeckStrategy() {
 
     override fun executeOutCard() {
         if (War.me.isValid()){
-            log.info { "激进" }
             val me = War.me
-            if (me.usableResource > 0){
-                val handCards = me.handArea.cards
-                val hands = handCards.toList()
-                val (num, resultCards) = DeckStrategyUtil.calcPowerOrder(hands, me.usableResource)
-                if (resultCards.isNotEmpty()) {
-                    log.info { "待出牌：$resultCards" }
-                    for (card in resultCards) {
-                        if (me.playArea.isFull) break
-                        card.action.power()
-                    }
+            val handCards = me.handArea.cards
+            val hands = handCards.toList()
+            val (num, resultCards) = DeckStrategyUtil.calcPowerOrder(hands, me.usableResource)
+            if (resultCards.isNotEmpty()) {
+                log.info { "待出牌：$resultCards" }
+                for (card in resultCards) {
+                    if (me.playArea.isFull) break
+                    card.action.power()
                 }
             }
             commonDeckStrategy.executeOutCard()
