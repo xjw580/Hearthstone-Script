@@ -3,6 +3,7 @@ package club.xiaojiawei
 import club.xiaojiawei.bean.Card
 import club.xiaojiawei.bean.isValid
 import club.xiaojiawei.config.log
+import club.xiaojiawei.enums.CardTypeEnum
 import club.xiaojiawei.enums.RunModeEnum
 import club.xiaojiawei.status.War
 import club.xiaojiawei.util.DeckStrategyUtil
@@ -38,14 +39,26 @@ class HsRadicalDeckStrategy : DeckStrategy() {
     override fun executeOutCard() {
         if (War.me.isValid()){
             val me = War.me
-            val handCards = me.handArea.cards
-            val hands = handCards.toList()
-            val (num, resultCards) = DeckStrategyUtil.calcPowerOrder(hands, me.usableResource)
+            val hands = me.handArea.cards.toList()
+            val plays = me.playArea.cards.toList()
+//            使用地标
+            plays.forEach {card->
+                if (card.cardType === CardTypeEnum.LOCATION){
+                    card.action.lClick()
+                }
+            }
+            val (_, resultCards) = DeckStrategyUtil.calcPowerOrder(hands, me.usableResource)
             if (resultCards.isNotEmpty()) {
                 log.info { "待出牌：$resultCards" }
                 for (card in resultCards) {
-                    if (me.playArea.isFull) break
-                    card.action.power()
+                    if (card.cardType === CardTypeEnum.SPELL){
+                        plays.find { card-> card.canBeTargetedByMe() }.let {
+                            card.action.power(it)
+                        }
+                    }else{
+                        if (me.playArea.isFull) break
+                        card.action.power()
+                    }
                 }
             }
             commonDeckStrategy.executeOutCard()
