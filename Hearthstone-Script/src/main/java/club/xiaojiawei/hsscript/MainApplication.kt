@@ -23,6 +23,7 @@ import club.xiaojiawei.hsscript.utils.GameUtil
 import club.xiaojiawei.hsscript.utils.SystemUtil
 import club.xiaojiawei.hsscript.utils.SystemUtil.addTray
 import club.xiaojiawei.hsscript.utils.SystemUtil.shutdown
+import club.xiaojiawei.hsscript.utils.WindowUtil
 import club.xiaojiawei.hsscript.utils.WindowUtil.buildStage
 import club.xiaojiawei.hsscript.utils.WindowUtil.getStage
 import club.xiaojiawei.hsscript.utils.WindowUtil.hideStage
@@ -81,12 +82,6 @@ class MainApplication : Application() {
     }
 
     private fun setSystemTray() {
-        val quitItem = MenuItem("退出")
-        quitItem.addActionListener(object : AbstractAction() {
-            override fun actionPerformed(e: ActionEvent?) {
-                shutdown()
-            }
-        })
         val isPauseItem = MenuItem("开始")
         isPauseItem.addActionListener(object : AbstractAction() {
             override fun actionPerformed(e: ActionEvent?) {
@@ -100,6 +95,29 @@ class MainApplication : Application() {
                 isPauseItem.label = "暂停"
             }
         })
+
+        val settingsItem = MenuItem("设置")
+        settingsItem.addActionListener(object : AbstractAction() {
+            override fun actionPerformed(e: ActionEvent?) {
+                platformRunLater {
+                    val stage = getStage(WindowEnum.SETTINGS)?: buildStage(WindowEnum.SETTINGS)
+                    if (stage.owner == null){
+                        getStage(WindowEnum.MAIN)?.let {
+                            stage.initOwner(it)
+                        }
+                    }
+                    stage.show()
+                }
+            }
+        })
+
+        val quitItem = MenuItem("退出")
+        quitItem.addActionListener(object : AbstractAction() {
+            override fun actionPerformed(e: ActionEvent?) {
+                shutdown()
+            }
+        })
+
         addTray(MAIN_IMG_NAME, SCRIPT_NAME, Consumer { e: MouseEvent? ->
 //            左键点击
             if (e!!.getButton() == 1) {
@@ -112,7 +130,7 @@ class MainApplication : Application() {
                     }
                 })
             }
-        }, isPauseItem, quitItem)
+        }, isPauseItem, settingsItem, quitItem)
     }
 
     private fun initClass() {

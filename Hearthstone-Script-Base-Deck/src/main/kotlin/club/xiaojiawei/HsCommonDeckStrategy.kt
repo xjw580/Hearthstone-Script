@@ -53,6 +53,7 @@ class HsCommonDeckStrategy : DeckStrategy() {
 //        使用技能
         me.playArea.power?.let {
             if (me.usableResource >= it.cost) {
+                log.info { "技能：" + it }
                 when (it.action) {
                     is MagePower -> {
                         it.action.power(false)?.pointTo(rival.playArea.hero)
