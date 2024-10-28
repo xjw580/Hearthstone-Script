@@ -12,7 +12,7 @@ import java.io.File
  */
 var PROGRAM_ARGS: List<String> = emptyList()
 
-private fun setLogPath(){
+private fun setLogPath() {
     try {
         val logbackConfigFile = File("logback.xml")
         if (logbackConfigFile.exists()) {

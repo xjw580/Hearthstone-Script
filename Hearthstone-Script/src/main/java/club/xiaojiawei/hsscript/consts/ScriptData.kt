@@ -1,18 +1,11 @@
 package club.xiaojiawei.hsscript.consts
 
-import club.xiaojiawei.bean.area.Area
-import club.xiaojiawei.config.log
-import club.xiaojiawei.hsscript.bean.single.WarEx
 import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.utils.ConfigUtil
+import com.sun.jna.WString
 import com.sun.jna.platform.win32.WinDef
 import com.sun.jna.platform.win32.WinDef.HWND
-import javafx.scene.control.ContentDisplay
-import javafx.stage.Screen
-import java.awt.GraphicsDevice
-import java.awt.GraphicsEnvironment
 import java.awt.Robot
-import java.awt.geom.AffineTransform
 
 /**
  * 存储脚本常量
@@ -29,6 +22,7 @@ var setPath = true
  */
 var GAME_HWND: HWND? = null
 const val GAME_CN_NAME: String = "炉石传说"
+val GAME_CN_NAME_W: WString = WString(GAME_CN_NAME)
 const val PLATFORM_CN_NAME: String = "战网"
 const val PLATFORM_LOGIN_CN_NAME: String = "战网登录"
 const val GAME_US_NAME: String = "Hearthstone"

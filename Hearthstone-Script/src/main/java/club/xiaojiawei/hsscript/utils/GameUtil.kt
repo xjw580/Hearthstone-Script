@@ -21,6 +21,7 @@ import club.xiaojiawei.hsscript.status.Mode
 import club.xiaojiawei.hsscript.status.PauseStatus
 import club.xiaojiawei.hsscript.utils.SystemUtil.delay
 import club.xiaojiawei.util.isFalse
+import com.sun.jna.WString
 import com.sun.jna.platform.win32.Kernel32
 import com.sun.jna.platform.win32.User32
 import com.sun.jna.platform.win32.WinDef
@@ -42,6 +43,8 @@ import kotlin.math.min
  * @date 2022/11/27 1:42
  */
 object GameUtil {
+
+    private val GAME_CLASS_NAME = WString("UnityWndClass")
 
     val CENTER_RECT: GameRect = GameRect(-0.1, 0.1, 0.1, -0.1)
 
@@ -307,9 +310,9 @@ object GameUtil {
                 LogRunnable {
                     if (PauseStatus.isPause) {
                         cancelGameEndTask()
-                    } else if(WarEx.warCount > warCount || (isGamePlay && Mode.currMode !== ModeEnum.GAMEPLAY)) {
+                    } else if (WarEx.warCount > warCount || (isGamePlay && Mode.currMode !== ModeEnum.GAMEPLAY)) {
                         cancelGameEndTask()
-                    }else {
+                    } else {
                         END_TURN_RECT.lClick()
                         delay(100)
                         lClickSettings()
@@ -355,7 +358,7 @@ object GameUtil {
     fun addGameEndTask() {
         cancelGameEndTask()
         log.info { "点掉游戏结束结算页面" }
-        if (Mode.currMode === ModeEnum.GAMEPLAY){
+        if (Mode.currMode === ModeEnum.GAMEPLAY) {
             gameEndTasks.add(
                 EXTRA_THREAD_POOL.scheduleWithFixedDelay(
                     LogRunnable {
@@ -372,7 +375,7 @@ object GameUtil {
                     TimeUnit.MILLISECONDS
                 )
             )
-        }else{
+        } else {
             for (i in 0 until 3) {
                 END_TURN_RECT.lClick()
                 SystemUtil.delayShort()
@@ -397,6 +400,7 @@ object GameUtil {
 
     fun findGameHWND(): WinDef.HWND? {
         return SystemUtil.findHWND("UnityWndClass", GAME_CN_NAME)
+            ?: let { SystemDll.INSTANCE.FindWindowW_(GAME_CLASS_NAME, WString(GAME_CN_NAME)) }
             ?: let { SystemUtil.findHWND("UnityWndClass", GAME_US_NAME) }
     }
 

@@ -2,6 +2,7 @@ package club.xiaojiawei.hsscript.dll;
 
 import com.sun.jna.Library;
 import com.sun.jna.Native;
+import com.sun.jna.WString;
 import com.sun.jna.platform.win32.WinDef;
 
 /**
@@ -65,5 +66,7 @@ public interface SystemDll extends Library {
     boolean IsRunAsAdministrator();
 
     void MessageBox_(WinDef.HWND hwnd, String text, String title, int type);
+
+    WinDef.HWND FindWindowW_(WString className, WString windowName);
 
 }
