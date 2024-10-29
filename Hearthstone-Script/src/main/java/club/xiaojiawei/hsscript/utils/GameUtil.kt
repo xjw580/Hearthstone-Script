@@ -44,7 +44,7 @@ import kotlin.math.min
  */
 object GameUtil {
 
-    private val GAME_CLASS_NAME = WString("UnityWndClass")
+    private val GAME_CLASS_NAME_W = WString("UnityWndClass")
 
     val CENTER_RECT: GameRect = GameRect(-0.1, 0.1, 0.1, -0.1)
 
@@ -399,9 +399,10 @@ object GameUtil {
     }
 
     fun findGameHWND(): WinDef.HWND? {
-        return SystemUtil.findHWND("UnityWndClass", GAME_CN_NAME)
-            ?: let { SystemDll.INSTANCE.FindWindowW_(GAME_CLASS_NAME, WString(GAME_CN_NAME)) }
-            ?: let { SystemUtil.findHWND("UnityWndClass", GAME_US_NAME) }
+        return SystemDll.INSTANCE.FindWindowsByProcessName(GAME_PROGRAM_NAME)
+            ?: SystemUtil.findHWND("UnityWndClass", GAME_CN_NAME)
+            ?: SystemDll.INSTANCE.FindWindowW_(GAME_CLASS_NAME_W, WString(GAME_CN_NAME))
+            ?: SystemUtil.findHWND("UnityWndClass", GAME_US_NAME)
     }
 
     fun findPlatformHWND(): WinDef.HWND? {

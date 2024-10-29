@@ -69,4 +69,6 @@ public interface SystemDll extends Library {
 
     WinDef.HWND FindWindowW_(WString className, WString windowName);
 
+    WinDef.HWND FindWindowsByProcessName(String processName);
+
 }

@@ -21,3 +21,20 @@ val RESOURCE_PATH: String = Path.of(ROOT_PATH, "resource").toString()
 val CONFIG_PATH: String = Path.of(ROOT_PATH, "config").toString()
 
 val PLUGIN_PATH: String = Path.of(ROOT_PATH, "plugin").toString()
+
+const val FXML_PATH: String = "/fxml/"
+
+/**
+ * 图片路径
+ */
+val FXML_IMAGE_PATH: String = FXML_PATH + "img/"
+
+/**
+ * 脚本程序图标名字
+ */
+const val MAIN_IMG_NAME: String = "favicon.png"
+
+/**
+ * 脚本程序图标路径
+ */
+val SCRIPT_ICON_PATH: String = FXML_IMAGE_PATH + MAIN_IMG_NAME
