@@ -1,18 +1,12 @@
 package club.xiaojiawei
 
 import club.xiaojiawei.bean.Card
-import club.xiaojiawei.bean.DeathKnightPower
-import club.xiaojiawei.bean.MagePower
-import club.xiaojiawei.bean.PaladinPower
 import club.xiaojiawei.bean.Player
-import club.xiaojiawei.bean.PriestPower
-import club.xiaojiawei.bean.RoguePower
 import club.xiaojiawei.config.log
 import club.xiaojiawei.enums.CardTypeEnum
 import club.xiaojiawei.enums.RunModeEnum
 import club.xiaojiawei.status.War
 import club.xiaojiawei.util.DeckStrategyUtil
-import club.xiaojiawei.util.isFalse
 
 /**
  * @author 肖嘉威
@@ -53,26 +47,8 @@ class HsCommonDeckStrategy : DeckStrategy() {
 //        使用技能
         me.playArea.power?.let {
             if (me.usableResource >= it.cost) {
-                log.info { "技能：" + it }
-                when (it.action) {
-                    is MagePower -> {
-                        it.action.power(false)?.pointTo(rival.playArea.hero)
-                    }
-
-                    is PriestPower -> {
-                        it.action.power(false)?.pointTo(me.playArea.hero)
-                    }
-
-                    is DeathKnightPower, is PaladinPower, is RoguePower -> {
-                        me.playArea.isFull.isFalse {
-                            it.action.power()
-                        }
-                    }
-
-                    else -> {
-                        it.action.power()
-                    }
-                }
+                log.info { "技能：$it" }
+                it.action.power()
             }
         }
         DeckStrategyUtil.cleanPlay()
