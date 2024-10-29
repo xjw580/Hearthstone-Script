@@ -41,8 +41,8 @@ object DeckStrategyActuator {
         if (Random.nextInt() and 1 == 1){
             log.info { "随机做点事情" }
             Thread.sleep(2000)
-            val minTime = 3000
-            val maxTime = 10000
+            val minTime = 4000
+            val maxTime = 12000
             while (!PauseStatus.isPause && !isMyTurn && !Thread.interrupted() && Mode.currMode === ModeEnum.GAMEPLAY) {
                 var toList = War.rival.playArea.cards.toList()
                 for (card in toList) {
@@ -62,6 +62,7 @@ object DeckStrategyActuator {
                     War.rival.playArea.power?.action?.lClick()
                     log.info { "点击敌方英雄技能" }
                 }
+                SystemUtil.delay(minTime, maxTime)
                 toList = War.me.playArea.cards.toList()
                 for (card in toList) {
                     if (Random.nextInt() and 1 == 1) {

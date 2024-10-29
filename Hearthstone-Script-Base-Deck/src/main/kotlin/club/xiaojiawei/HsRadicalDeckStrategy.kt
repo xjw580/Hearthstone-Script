@@ -7,6 +7,8 @@ import club.xiaojiawei.enums.CardTypeEnum
 import club.xiaojiawei.enums.RunModeEnum
 import club.xiaojiawei.status.War
 import club.xiaojiawei.util.DeckStrategyUtil
+import club.xiaojiawei.util.isFalse
+import club.xiaojiawei.util.isTrue
 
 /**
  * @author 肖嘉威
@@ -39,26 +41,45 @@ class HsRadicalDeckStrategy : DeckStrategy() {
     override fun executeOutCard() {
         if (War.me.isValid()){
             val me = War.me
-            val hands = me.handArea.cards.toList()
-            val plays = me.playArea.cards.toList()
+            var plays = me.playArea.cards.toList()
 //            使用地标
             plays.forEach {card->
-                if (card.cardType === CardTypeEnum.LOCATION){
+                if (card.cardType === CardTypeEnum.LOCATION && !card.isLocationActionCooldown){
                     card.action.lClick()
                 }
             }
+            var hands = me.handArea.cards.toList()
             val (_, resultCards) = DeckStrategyUtil.calcPowerOrder(hands, me.usableResource)
             if (resultCards.isNotEmpty()) {
                 log.info { "待出牌：$resultCards" }
                 for (card in resultCards) {
-                    if (card.cardType === CardTypeEnum.SPELL){
-                        plays.find { card-> card.canBeTargetedByMe() }.let {
-                            card.action.power(it)
+                    if (me.usableResource >= card.cost){
+                        if (card.cardType === CardTypeEnum.SPELL){
+                            me.playArea.cards.find { card-> card.canBeTargetedByMe() }?.let {
+                                card.action.power(it)
+                            }?:let {
+                                card.action.power()
+                            }
+                        }else{
+                            if (me.playArea.isFull) break
+                            card.isBattlecry.isTrue {
+                                me.playArea.cards.find { card-> card.canAttack() }?.let {
+                                    card.action.power(it)
+                                }?:let {
+                                    card.action.power()
+                                }
+                            }.isFalse {
+                                card.action.power()
+                            }
                         }
-                    }else{
-                        if (me.playArea.isFull) break
-                        card.action.power()
                     }
+                }
+            }
+            plays = me.playArea.cards.toList()
+//            使用地标
+            plays.forEach {card->
+                if (card.cardType === CardTypeEnum.LOCATION && !card.isLocationActionCooldown){
+                    card.action.lClick()
                 }
             }
             commonDeckStrategy.executeOutCard()

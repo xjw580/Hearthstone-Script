@@ -512,6 +512,17 @@ enum class TagEnum(
         ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
             extraEntity.extraCard.card.isUntouchable = isTrue(value)
         }),
+    LOCATION_ACTION_COOLDOWN("地标冷却期",
+        TagChangeHandler { card: Card?, tagChangeEntity: TagChangeEntity, player: Player?, area: Area? ->
+            card?.isLocationActionCooldown = isTrue(tagChangeEntity.value)
+            log(player, card, "地标冷却期", tagChangeEntity.value)
+        },
+        null),
+    RUSH("突袭",
+        null,
+        ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
+            extraEntity.extraCard.card.isRush = isTrue(value)
+        }),
 
     /*+++++++++++++++++++++++++++++++++++++++++++++++*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
     UNKNOWN(

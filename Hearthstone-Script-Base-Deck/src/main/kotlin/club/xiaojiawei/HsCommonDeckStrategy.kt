@@ -47,7 +47,6 @@ class HsCommonDeckStrategy : DeckStrategy() {
 //        使用技能
         me.playArea.power?.let {
             if (me.usableResource >= it.cost) {
-                log.info { "技能：$it" }
                 it.action.power()
             }
         }
@@ -57,15 +56,15 @@ class HsCommonDeckStrategy : DeckStrategy() {
     private fun powerCard(me: Player, rival: Player) {
         if (me.playArea.isFull) return
 
-        val cards = me.handArea.cards.toList()
-        val toMutableList = cards.toMutableList()
-        toMutableList.removeAll { card -> card.cardType != CardTypeEnum.MINION || card.isBattlecry }
+        val myHandCards = me.handArea.cards.toList()
+        val myHandCardsCopy = myHandCards.toMutableList()
+        myHandCardsCopy.removeAll { card -> card.cardType != CardTypeEnum.MINION || card.isBattlecry }
 
-        val (_, resultCards) = DeckStrategyUtil.calcPowerOrder(toMutableList, me.usableResource)
+        val (_, resultCards) = DeckStrategyUtil.calcPowerOrder(myHandCardsCopy, me.usableResource)
 
-        val coinCard = findCoin(cards)
+        val coinCard = findCoin(myHandCards)
         if (coinCard != null) {
-            val (num1, resultCards1) = DeckStrategyUtil.calcPowerOrder(toMutableList, me.usableResource + 1)
+            val (num1, resultCards1) = DeckStrategyUtil.calcPowerOrder(myHandCardsCopy, me.usableResource + 1)
             if (num1 > me.usableResource) {
                 coinCard.action.power()
                 if (resultCards1.isNotEmpty()) {

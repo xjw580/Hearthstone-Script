@@ -256,6 +256,19 @@ open class BaseCard : Entity() {
     @Volatile
     var isUntouchable = false
 
+    /**
+     * 地标冷却期
+     * 当cardType为LOCATION时有效，为true表明地标无法使用
+     */
+    @Volatile
+    var isLocationActionCooldown = false
+
+    /**
+     * 突袭
+     */
+    @Volatile
+    var isRush = false
+
 
     fun minusHealth(health: Int) {
         this.health -= health
