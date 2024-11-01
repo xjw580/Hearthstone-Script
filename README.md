@@ -1,6 +1,6 @@
 ![GitHub release](https://img.shields.io/github/release/xjw580/Hearthstone-Script.svg)  ![GitHub](https://img.shields.io/github/license/xjw580/Hearthstone-Script?style=flat-square)
 
-# 炉石传说脚本（雷火服封禁力度较严，有时间再研究优化下）
+# 炉石传说脚本（雷火服封禁力度大）
 ![favicon.ico](Hearthstone-Script/src/main/resources/static/img/favicon.ico)
 
 
@@ -36,14 +36,17 @@
 ### 使用步骤
 
 - **下载软件**
-  - 在[release](https://gitee.com/zergqueen/Hearthstone-Script/releases)处下载
-  - hs-script.zip包含完整依赖，一般下载此文件
+  
+  - 在 [Gitee release](https://gitee.com/zergqueen/Hearthstone-Script/releases) 或 [Github release](https://github.com/xjw580/Hearthstone-Script/releases) 处下载（Gitee源只发布稳定版）
+  - hs-script.zip包含完整依赖，下载此文件
   
 - **初次使用**：
+  
   - 配置卡组：游戏里将要使用的卡组移动到一号卡组位
   - 选择卡组：软件里选择要使用的卡组策略(先选择模式)
   
 - **启动软件**
+  
   1. 执行 `hs-script.exe`
   
   2. 点击开始按钮或者使用热键 `Ctrl` + `P`
@@ -54,6 +57,21 @@
   - 执行`force-stop.exe` 
   - 使用热键 `Alt` + `P`  
   - 程序托盘处点击退出
+  
+- ##### 更新软件
+
+  > 软件版本分为稳定版和开发版
+  >
+  > 稳定版后缀：GA，PATCH
+  >
+  > 开发版后缀：DEV，BETA，TEST
+
+  - 软件内更新
+    1. 软件内检测到新版本后可点击下载然后更新，如需更新开发版需到设置里打开更新开发版
+  - 手动更新
+    1. 在 [Gitee release](https://gitee.com/zergqueen/Hearthstone-Script/releases) 或 [Github release](https://github.com/xjw580/Hearthstone-Script/releases) 处下载所需版本的hs-script.zip包放置在旧版软件根目录下
+    2. 手动删除根目录下的new_version_temp文件夹如果有的话
+    3. 双击根目录下的update.exe
 
 
 
