@@ -47,6 +47,28 @@ class Player(val playerId: String) : Entity() {
 
     @Volatile
     var resourcesUsed = 0
+        set(value) {
+            if (value > 0){
+                log.info { "玩家${playerId}【${gameId}】已使用${value}法力水晶" }
+            }
+            field = value
+        }
+
+    /**
+     * 回合开始过载水晶数（回合开始时才能获取到）
+     */
+    @Volatile
+    var overloadLocked = 0
+        set(value) {
+            if (overloadLocked > 0){
+                if (resourcesUsed == 0){
+                    log.warn { "游戏过载日志打印不规范" }
+                    resources -= value
+                }
+                log.info { "玩家${playerId}【${gameId}】回合开始过载${value}法力水晶" }
+            }
+            field = value
+        }
 
     @Volatile
     var tempResources = 0

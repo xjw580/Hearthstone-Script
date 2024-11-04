@@ -13,10 +13,18 @@ import java.util.*
  * @date 2022/11/28 19:48
  */
 abstract class Area @JvmOverloads constructor(
-    @Volatile var maxSize: Int,
+    maxSize: Int,
     val defaultMaxSize: Int = maxSize,
     @Volatile var player: Player = Player.UNKNOWN_PLAYER
 ) {
+
+    @Volatile
+    var maxSize = maxSize
+        set(value) {
+            val zoneComment = getChineseName()
+            log.info { "玩家${player.playerId}【${player.gameId}】的【${zoneComment}】的【maxSize】更改为【${value}】"}
+            field = value
+        }
 
     val cards: MutableList<Card> = mutableListOf()
 
@@ -39,7 +47,7 @@ abstract class Area @JvmOverloads constructor(
 
     protected open fun addZeroCard(card: Card?) {
         card ?: return
-        if (card.entityId.isNotEmpty()){
+        if (card.entityId.isNotEmpty()) {
             zeroCards[card.entityId] = card
             addZone(card)
             if (log.isDebugEnabled()) {
@@ -82,8 +90,7 @@ abstract class Area @JvmOverloads constructor(
         if (name.isNotEmpty()) {
             extraMsg = String.format("的【%s】", extraMsg)
         }
-        val className = this.javaClass.simpleName
-        val zoneComment = ZoneEnum.valueOf(className.substring(0, className.lastIndexOf(Area::class.java.simpleName)).uppercase(Locale.getDefault())).comment
+        val zoneComment = getChineseName()
 
         return String.format(
             "向玩家%s%s的【%s】%s添加卡牌，entityId:%s，entityName:%s，cardId:%s，size:%d",
@@ -96,6 +103,14 @@ abstract class Area @JvmOverloads constructor(
             card.cardId,
             cards.size
         )
+    }
+
+    private fun getChineseName(): String{
+        val className = this.javaClass.simpleName
+        return  ZoneEnum.valueOf(
+            className.substring(0, className.lastIndexOf(Area::class.java.simpleName)).uppercase(Locale.getDefault())
+        ).comment
+
     }
 
     /**
@@ -152,7 +167,7 @@ abstract class Area @JvmOverloads constructor(
         if (entityId.isEmpty()) return null
 
         var card = zeroCards[entityId]
-        if (card == null){
+        if (card == null) {
             for (c in cards) {
                 if (entityId == c.entityId) {
                     card = c
@@ -165,7 +180,7 @@ abstract class Area @JvmOverloads constructor(
 
     open fun removeByEntityId(entityId: String): Card? {
         var card = removeByEntityIdInZeroArea(entityId)
-        if (card == null){
+        if (card == null) {
             for (i in cards.indices) {
                 if (entityId == cards[i].entityId) {
                     card = removeCard(i)

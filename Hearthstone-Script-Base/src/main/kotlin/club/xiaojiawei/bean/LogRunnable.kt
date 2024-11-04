@@ -11,8 +11,12 @@ class LogRunnable(private var task: Runnable?) : Runnable {
     override fun run() {
         try {
             task?.run()
-        }catch (e: Exception) {
-            log.error(e) { "Runnable发生错误" }
+        } catch (e: Exception) {
+            if (e is InterruptedException) {
+                log.debug(e) { "Runnable发生错误" }
+            } else {
+                log.error(e) { "Runnable发生错误" }
+            }
         }
     }
 

@@ -25,6 +25,10 @@ import kotlin.random.Random
 object DeckStrategyActuator {
 
     var deckStrategy: DeckStrategy? = null
+        set(value) {
+            log.info { "本局游戏使用策略：【${value?.name()}】" }
+            field = value
+        }
 
     fun reset(){
         deckStrategy?.reset()

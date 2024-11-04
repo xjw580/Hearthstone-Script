@@ -2,7 +2,6 @@ package club.xiaojiawei.hsscript.strategy.mode
 
 import club.xiaojiawei.bean.LogRunnable
 import club.xiaojiawei.config.EXTRA_THREAD_POOL
-import club.xiaojiawei.config.log
 import club.xiaojiawei.hsscript.status.PauseStatus
 import club.xiaojiawei.hsscript.strategy.AbstractModeStrategy
 import club.xiaojiawei.hsscript.utils.GameUtil
@@ -24,7 +23,7 @@ object LoginModeStrategy : AbstractModeStrategy<Any?>() {
             if (PauseStatus.isPause) {
                 cancelAllEnteredTasks()
             } else {
-                GameUtil.lClickCenter()
+                GameUtil.lClickRightCenter()
             }
         }, 1000, 1500, TimeUnit.MILLISECONDS))
     }

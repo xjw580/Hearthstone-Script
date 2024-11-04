@@ -48,6 +48,8 @@ object GameUtil {
 
     val CENTER_RECT: GameRect = GameRect(-0.1, 0.1, 0.1, -0.1)
 
+    val RIGHT_CENTER_RECT: GameRect = GameRect(0.4, 0.5, 0.1, -0.1)
+
     val CONFIRM_RECT: GameRect = GameRect(-0.0546, 0.0601, 0.2709, 0.3222)
 
     val END_TURN_RECT: GameRect = GameRect(0.3535, 0.4533, -0.0636, -0.0196)
@@ -223,7 +225,7 @@ object GameUtil {
     }
 
     fun getMyHandCardRect(index: Int, size: Int): GameRect {
-        if (index < 0 || index > size - 1 || size > MY_HAND_DECK_RECTS.size - 1) {
+        if (index < 0 || index > size - 1 || size > MY_HAND_DECK_RECTS.size) {
             return GameRect.INVALID
         }
         return MY_HAND_DECK_RECTS[size - 1][index]
@@ -342,6 +344,10 @@ object GameUtil {
 
     fun lClickCenter() {
         CENTER_RECT.lClick()
+    }
+
+    fun lClickRightCenter() {
+        RIGHT_CENTER_RECT.lClick()
     }
 
     fun rClickCenter() {

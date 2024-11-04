@@ -12,12 +12,14 @@ object RandomUtil {
     private val RANDOM = Random(System.currentTimeMillis())
 
     fun getRandom(min: Int, max: Int): Int {
+        if (min == max) return min
         return if (min > max) {
             getRandom(max, min)
         } else (RANDOM.nextDouble() * (max - min + 1) + min).toInt()
     }
 
     fun getRandom(min: Double, max: Double): Double {
+        if (min == max) return min
         return if (min > max) {
             getRandom(max, min)
         } else RANDOM.nextDouble(min, max)

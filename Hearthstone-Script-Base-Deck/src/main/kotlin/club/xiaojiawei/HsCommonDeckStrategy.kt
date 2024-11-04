@@ -46,7 +46,7 @@ class HsCommonDeckStrategy : DeckStrategy() {
 
 //        使用技能
         me.playArea.power?.let {
-            if (me.usableResource >= it.cost) {
+            if (me.usableResource >= it.cost || it.cost == 0) {
                 it.action.power()
             }
         }

@@ -4,6 +4,7 @@ import club.xiaojiawei.config.log
 import club.xiaojiawei.enums.ModeEnum
 import club.xiaojiawei.hsscript.bean.GameRect
 import club.xiaojiawei.hsscript.status.DeckStrategyManager
+import club.xiaojiawei.hsscript.status.Mode
 import club.xiaojiawei.hsscript.status.Mode.prevMode
 import club.xiaojiawei.hsscript.status.PauseStatus
 import club.xiaojiawei.hsscript.strategy.AbstractModeStrategy
@@ -28,21 +29,21 @@ object HubModeStrategy : AbstractModeStrategy<Any?>() {
 
     override fun afterEnter(t: Any?) {
         if (prevMode != ModeEnum.COLLECTIONMANAGER) {
+            SystemUtil.delay(1000)
             log.info { "点击弹窗（去除任务，活动等）" }
-            for (i in 0..3) {
-                if (PauseStatus.isPause) {
-                    return
-                }
+            (0..3).forEach { i ->
+                if (PauseStatus.isPause || Mode.currMode !== ModeEnum.HUB) return
                 CLOSE_AD1_RECT.lClick()
                 SystemUtil.delay(500)
             }
+            if (PauseStatus.isPause || Mode.currMode !== ModeEnum.HUB) return
             CLOSE_AD2_RECT.lClick()
             SystemUtil.delayTiny()
         }
 
         DeckStrategyManager.currentDeckStrategy?.let {
             log.info { "准备进入指定模式" }
-            if (it.runModes.isEmpty()){
+            if (it.runModes.isEmpty()) {
                 SystemUtil.notice("未配置卡组")
                 log.error { "未配置卡组" }
                 PauseStatus.isPause = false

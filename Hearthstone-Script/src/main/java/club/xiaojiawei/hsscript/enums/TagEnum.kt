@@ -69,6 +69,13 @@ enum class TagEnum(
         },
         null
     ),
+    OVERLOAD_LOCKED(
+        "回合开始过载水晶数",
+        TagChangeHandler { card: Card?, tagChangeEntity: TagChangeEntity, player: Player?, area: Area? ->
+            War.currentPlayer.overloadLocked = tagChangeEntity.value.toInt()
+        },
+        null
+    ),
     TEMP_RESOURCES(
         "临时水晶数",
         TagChangeHandler { card: Card?, tagChangeEntity: TagChangeEntity, player: Player?, area: Area? ->
@@ -95,11 +102,15 @@ enum class TagEnum(
                     ) {
                         War.currentPlayer = War.me
                         War.me.resetResources()
+                        War.rival.resetResources()
+                        War.rival.overloadLocked = 0
                         War.me.gameId = gameId
                     } else {
 //                        是对手
                         War.currentPlayer = War.rival
                         War.me.resetResources()
+                        War.rival.resetResources()
+                        War.me.overloadLocked = 0
                         War.rival.gameId = gameId
                     }
                 }
@@ -512,16 +523,34 @@ enum class TagEnum(
         ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
             extraEntity.extraCard.card.isUntouchable = isTrue(value)
         }),
-    LOCATION_ACTION_COOLDOWN("地标冷却期",
+    LOCATION_ACTION_COOLDOWN(
+        "地标冷却期",
         TagChangeHandler { card: Card?, tagChangeEntity: TagChangeEntity, player: Player?, area: Area? ->
             card?.isLocationActionCooldown = isTrue(tagChangeEntity.value)
             log(player, card, "地标冷却期", tagChangeEntity.value)
         },
-        null),
+        null
+    ),
     RUSH("突袭",
         null,
         ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
             extraEntity.extraCard.card.isRush = isTrue(value)
+        }),
+    CANT_ATTACK(
+        "无法攻击",
+        TagChangeHandler { card: Card?, tagChangeEntity: TagChangeEntity, player: Player?, area: Area? ->
+            card?.isCantAttack = isTrue(tagChangeEntity.value)
+            log(player, card, "无法攻击", tagChangeEntity.value)
+        },
+        null
+    ),
+    OVERLOAD("过载",
+        TagChangeHandler { card: Card?, tagChangeEntity: TagChangeEntity, player: Player?, area: Area? ->
+            card?.overload = tagChangeEntity.value.toInt()
+            log(player, card, "过载", tagChangeEntity.value)
+        },
+        ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
+            extraEntity.extraCard.card.overload = value.toInt()
         }),
 
     /*+++++++++++++++++++++++++++++++++++++++++++++++*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/

@@ -251,7 +251,7 @@ open class BaseCard : Entity() {
     var isCoinCard = false
 
     /**
-     * 不可触摸（如萨格拉斯召唤的传送门）
+     * 不可触摸（例：萨格拉斯召唤的传送门）
      */
     @Volatile
     var isUntouchable = false
@@ -268,6 +268,18 @@ open class BaseCard : Entity() {
      */
     @Volatile
     var isRush = false
+
+    /**
+     * 无法攻击（例：威严的阿努比萨斯）
+     */
+    @Volatile
+    var isCantAttack = false
+
+    /**
+     * 过载
+     */
+    @Volatile
+    var overload = 0
 
 
     fun minusHealth(health: Int) {
@@ -350,7 +362,7 @@ open class BaseCard : Entity() {
      */
     fun canAttack(ignoreExhausted: Boolean = false): Boolean {
         return (cardType === CardTypeEnum.MINION || cardType === CardTypeEnum.HERO)
-                && !((isExhausted && !ignoreExhausted) || isFrozen || isDormantAwakenConditionEnchant || atc <= 0)
+                && !((isExhausted && !ignoreExhausted) || isCantAttack || isFrozen || isDormantAwakenConditionEnchant || atc <= 0)
     }
 
     /**
