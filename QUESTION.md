@@ -15,3 +15,11 @@
 1. 未以管理员运行软件
 2. 缺少系统库，安装[64位Visual C++ Redistributable](https://aka.ms/vs/17/release/vc_redist.x64.exe) 和 [32位Visual C++ Redistributable](https://aka.ms/vs/17/release/vc_redist.x86.exe)
 3. 杀毒软件偷偷删文件了。关闭傻软，重新下载本软件
+
+
+
+### 点击软件没有反应
+
+1. [#63](https://github.com/xjw580/Hearthstone-Script/issues/63)
+2. [#62](https://github.com/xjw580/Hearthstone-Script/issues/62)
+3. [#72](https://github.com/xjw580/Hearthstone-Script/issues/72)

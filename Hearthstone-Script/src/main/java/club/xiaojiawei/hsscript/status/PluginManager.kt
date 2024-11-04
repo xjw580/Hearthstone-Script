@@ -140,7 +140,7 @@ object PluginManager {
                             true
                         }
                     }
-                    pluginWrapper = PluginWrapper(plugins.last, stream.toList())
+                    pluginWrapper = PluginWrapper(plugins.last(), stream.toList())
                     if (disableSet.contains(pluginWrapper.plugin.id())){
                         pluginWrapper.setEnabled(false)
                     }
