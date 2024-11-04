@@ -59,7 +59,7 @@ enum class ConfigEnum(
     /**
      * 动作间隔/ms
      */
-    MOUSE_ACTION_INTERVAL(group = "action", defaultValue = "3200"),
+    MOUSE_ACTION_INTERVAL(group = "action", defaultValue = "3350"),
     /**
      * 适配畸变模式
      */
