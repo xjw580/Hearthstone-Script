@@ -173,6 +173,7 @@ object WarEx {
         return flag
     }
 
+    @Synchronized
     fun getPlayer(playerId: String): Player {
         return when (playerId) {
             player1.playerId -> player1

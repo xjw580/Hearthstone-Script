@@ -128,10 +128,13 @@ object WindowUtil {
     }
 
 
-    fun showStage(windowEnum: WindowEnum) {
+    fun showStage(windowEnum: WindowEnum, owner : Window? = null) {
         var stage = getStage(windowEnum)
-        if (stage == null){
+        if (stage == null) {
             stage = buildStage(windowEnum)
+        }
+        if (owner != null && stage.owner == null) {
+            stage.initOwner(owner)
         }
         if (stage.isShowing) {
             showWindow(findHWND(windowEnum.title))
@@ -191,10 +194,15 @@ object WindowUtil {
                         .toExternalForm()
                 )
             )
-            stage.width = windowEnum.width
-            stage.height = windowEnum.height
-            stage.minHeight = windowEnum.height
-            stage.minWidth = windowEnum.width
+            (windowEnum.width > 0).isTrue {
+                stage.width = windowEnum.width
+                stage.minWidth = windowEnum.width
+            }
+            (windowEnum.height > 0).isTrue {
+                stage.height = windowEnum.height
+                stage.minHeight = windowEnum.height
+            }
+
             if (windowEnum.x != -1.0) {
                 stage.x = windowEnum.x
             }

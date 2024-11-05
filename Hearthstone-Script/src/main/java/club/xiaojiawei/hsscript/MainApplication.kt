@@ -13,17 +13,18 @@ import club.xiaojiawei.hsscript.consts.SCRIPT_NAME
 import club.xiaojiawei.hsscript.controller.javafx.StartupController
 import club.xiaojiawei.hsscript.core.Core
 import club.xiaojiawei.hsscript.dll.SystemDll
+import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.enums.WindowEnum
 import club.xiaojiawei.hsscript.listener.GlobalHotkeyListener
 import club.xiaojiawei.hsscript.listener.VersionListener
 import club.xiaojiawei.hsscript.listener.WorkListener
 import club.xiaojiawei.hsscript.status.PauseStatus
 import club.xiaojiawei.hsscript.status.TaskManager
+import club.xiaojiawei.hsscript.utils.ConfigUtil
 import club.xiaojiawei.hsscript.utils.GameUtil
 import club.xiaojiawei.hsscript.utils.SystemUtil
 import club.xiaojiawei.hsscript.utils.SystemUtil.addTray
 import club.xiaojiawei.hsscript.utils.SystemUtil.shutdown
-import club.xiaojiawei.hsscript.utils.WindowUtil
 import club.xiaojiawei.hsscript.utils.WindowUtil.buildStage
 import club.xiaojiawei.hsscript.utils.WindowUtil.getStage
 import club.xiaojiawei.hsscript.utils.WindowUtil.hideStage
@@ -176,18 +177,14 @@ class MainApplication : Application() {
                     log.info { "接收到开始参数，开始脚本" }
                     Thread.sleep(1000)
                     PauseStatus.isPause = false
+                }else if (ConfigUtil.getBoolean(ConfigEnum.SHOW_UPDATE_MSG)){
+                    platformRunLater {
+                        showStage(WindowEnum.VERSION_MSG, getStage(WindowEnum.MAIN))
+                        ConfigUtil.putBoolean(ConfigEnum.SHOW_UPDATE_MSG, false)
+                    }
                 }
             }
         )
     }
 
 }
-
-//var PROGRAM_ARGS: List<String> = emptyList()
-//
-//fun main(args: Array<String>) {
-//    System.setProperty("jna.library.path", "lib")
-//    PROGRAM_ARGS = args.toList()
-//
-//    Application.launch(ScriptApplication::class.java, *args)
-//}

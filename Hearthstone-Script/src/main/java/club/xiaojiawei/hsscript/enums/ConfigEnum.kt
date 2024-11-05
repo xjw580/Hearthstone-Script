@@ -106,6 +106,10 @@ enum class ConfigEnum(
      * 运行后最小化软件
      */
     RUNNING_MINIMIZE(group = "other", defaultValue = "false"),
+    /**
+     * 显示版本更新信息
+     */
+    SHOW_UPDATE_MSG(group = "other", defaultValue = "true"),
 
     /**
      * 允许发送windows通知
@@ -119,6 +123,7 @@ enum class ConfigEnum(
      * 暂停程序热键
      */
     PAUSE_HOT_KEY(group = "system", defaultValue = JSON.toJSONString(HotKey(JIntellitype.MOD_CONTROL, 'P'.code))),
+
 
     ;
 }

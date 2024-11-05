@@ -38,6 +38,11 @@ enum class WindowEnum(
         558.0, 400.0, -1.0, -1.0,
         false, StageStyle.UNDECORATED
     ),
+    VERSION_MSG(
+        "version_msg.fxml", "版本说明",
+        550.0, -1.0, -1.0, -1.0,
+        true, StageStyle.DECORATED
+    ),
     ;
 
 }

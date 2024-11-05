@@ -152,7 +152,7 @@
 
                     <VBox alignment="CENTER" spacing="5">
                         <HBox spacing="5" alignment="CENTER">
-                            <Text fx:id="versionText"/>
+                            <Text fx:id="versionText" style="-fx-cursor: hand" onMouseClicked="#openVersionMsg"/>
                             <Button onAction="#updateVersion" fx:id="updateBtn" styleClass="btn-ui, btn-ui-small, btn-ui-normal" visible="false" managed="false">
                                 <tooltip>
                                     <Tooltip text="下载更新"/>

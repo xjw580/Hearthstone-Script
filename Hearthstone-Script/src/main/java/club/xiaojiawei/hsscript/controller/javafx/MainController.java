@@ -511,4 +511,9 @@ public class MainController extends MainView {
             menuPopup.show(rootPane.getScene().getWindow());
         }
     }
+
+    @FXML
+    protected void openVersionMsg(MouseEvent mouseEvent) {
+        WindowUtil.INSTANCE.showStage(WindowEnum.VERSION_MSG, rootPane.getScene().getWindow());
+    }
 }
