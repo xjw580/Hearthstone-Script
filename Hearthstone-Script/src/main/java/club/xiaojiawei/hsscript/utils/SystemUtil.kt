@@ -83,7 +83,7 @@ object SystemUtil {
      * @param windowTitle
      * @return
      */
-    fun findHWND(windowTitle: String?, className: String? = null): WinDef.HWND? {
+    fun findHWND(className: String? = null, windowTitle: String?): WinDef.HWND? {
         return User32.INSTANCE.FindWindow(className, windowTitle)
     }
 

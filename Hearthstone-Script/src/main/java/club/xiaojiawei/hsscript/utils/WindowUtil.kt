@@ -137,7 +137,7 @@ object WindowUtil {
             stage.initOwner(owner)
         }
         if (stage.isShowing) {
-            showWindow(findHWND(windowEnum.title))
+            showWindow(findHWND(windowTitle = windowEnum.title))
             stage.requestFocus()
         } else {
             stage.show()
