@@ -6,6 +6,7 @@ import club.xiaojiawei.bean.LogThread
 import club.xiaojiawei.config.EXTRA_THREAD_POOL
 import club.xiaojiawei.config.log
 import club.xiaojiawei.hsscript.bean.CommonCardAction.Companion.DEFAULT
+import club.xiaojiawei.hsscript.bean.Release
 import club.xiaojiawei.hsscript.config.InitializerConfig
 import club.xiaojiawei.hsscript.consts.GAME_CN_NAME
 import club.xiaojiawei.hsscript.consts.MAIN_IMG_NAME
@@ -25,6 +26,7 @@ import club.xiaojiawei.hsscript.utils.GameUtil
 import club.xiaojiawei.hsscript.utils.SystemUtil
 import club.xiaojiawei.hsscript.utils.SystemUtil.addTray
 import club.xiaojiawei.hsscript.utils.SystemUtil.shutdown
+import club.xiaojiawei.hsscript.utils.VersionUtil
 import club.xiaojiawei.hsscript.utils.WindowUtil.buildStage
 import club.xiaojiawei.hsscript.utils.WindowUtil.getStage
 import club.xiaojiawei.hsscript.utils.WindowUtil.hideStage
@@ -177,10 +179,13 @@ class MainApplication : Application() {
                     log.info { "接收到开始参数，开始脚本" }
                     Thread.sleep(1000)
                     PauseStatus.isPause = false
-                }else if (ConfigUtil.getBoolean(ConfigEnum.SHOW_UPDATE_MSG)){
-                    platformRunLater {
-                        showStage(WindowEnum.VERSION_MSG, getStage(WindowEnum.MAIN))
-                        ConfigUtil.putBoolean(ConfigEnum.SHOW_UPDATE_MSG, false)
+                }else {
+                    val version = ConfigUtil.getString(ConfigEnum.CURRENT_VERSION)
+                    if (Release.compareVersion(VersionUtil.VERSION, version) > 0){
+                        platformRunLater {
+                            showStage(WindowEnum.VERSION_MSG, getStage(WindowEnum.MAIN))
+                            ConfigUtil.putString(ConfigEnum.CURRENT_VERSION, VersionUtil.VERSION)
+                        }
                     }
                 }
             }

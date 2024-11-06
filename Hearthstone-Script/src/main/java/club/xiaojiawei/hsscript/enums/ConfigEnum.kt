@@ -107,9 +107,9 @@ enum class ConfigEnum(
      */
     RUNNING_MINIMIZE(group = "other", defaultValue = "false"),
     /**
-     * 显示版本更新信息
+     * 当前版本
      */
-    SHOW_UPDATE_MSG(group = "other", defaultValue = "true"),
+    CURRENT_VERSION(group = "other", defaultValue = "0.0.0-GA"),
 
     /**
      * 允许发送windows通知
