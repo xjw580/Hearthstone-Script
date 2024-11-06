@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import club.xiaojiawei.controls.ico.HelpIco?>
+<?import club.xiaojiawei.controls.NotificationManager?>
+<?import club.xiaojiawei.controls.NumberField?>
+<?import club.xiaojiawei.factory.NotificationFactory?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Text?>
+<?import java.lang.Double?>
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            stylesheets="@css/strategySettings.css"
+            fx:id="rootPane"
+            fx:controller="club.xiaojiawei.hsscript.controller.javafx.WeightSettingsController">
+    <VBox spacing="15" style="-fx-padding: 15">
+        <Label text="自定义调整卡牌权重" style="-fx-font-size: 14;-fx-font-weight: bold"/>
+        <Label text="上线时间：等鸡吃完了米 狗吃完了面 火烧断了锁" style="-fx-font-size: 14"/>
+    </VBox>
+<!--    <fx:define>-->
+<!--        <Double fx:id="fieldWidth" fx:value="60"/>-->
+<!--    </fx:define>-->
+<!--    <VBox fx:id="mainVBox">-->
+<!--        <HBox styleClass="h-box">-->
+<!--            <Text text="操作间隔/ms"/>-->
+<!--            <Label>-->
+<!--                <graphic>-->
+<!--                    <HelpIco/>-->
+<!--                </graphic>-->
+<!--                <tooltip>-->
+<!--                    <Tooltip text="对战时的攻击，出牌等视为一个操作，此值过小会因卡牌动画导致数据不同步问题"/>-->
+<!--                </tooltip>-->
+<!--            </Label>-->
+<!--            <HBox HBox.hgrow="ALWAYS"/>-->
+<!--            <NumberField fx:id="actionIntervalField" styleClass="text-field-ui, text-field-ui-small" hideIcon="true" prefWidth="${fieldWidth}"/>-->
+<!--        </HBox>-->
+<!--        <HBox styleClass="h-box">-->
+<!--            <Text text="鼠标整体移动速度"/>-->
+<!--            <HBox HBox.hgrow="ALWAYS"/>-->
+<!--            <NumberField fx:id="moveSpeedField" styleClass="text-field-ui, text-field-ui-small" hideIcon="true" prefWidth="${fieldWidth}"/>-->
+<!--        </HBox>-->
+<!--        <HBox styleClass="h-box">-->
+<!--            <Text text="单次匹配最长时间/s"/>-->
+<!--            <Label>-->
+<!--                <graphic>-->
+<!--                    <HelpIco/>-->
+<!--                </graphic>-->
+<!--                <tooltip>-->
+<!--                    <Tooltip text="超过此值将重新匹配"/>-->
+<!--                </tooltip>-->
+<!--            </Label>-->
+<!--            <HBox HBox.hgrow="ALWAYS"/>-->
+<!--            <NumberField fx:id="matchMaximumTimeField" styleClass="text-field-ui, text-field-ui-small" hideIcon="true" prefWidth="${fieldWidth}"/>-->
+<!--        </HBox>-->
+<!--        <HBox styleClass="h-box">-->
+<!--            <Text text="最长空闲时间/min"/>-->
+<!--            <Label>-->
+<!--                <graphic>-->
+<!--                    <HelpIco/>-->
+<!--                </graphic>-->
+<!--                <tooltip>-->
+<!--                    <Tooltip text="软件工作时闲置时间超过此值将重启游戏"/>-->
+<!--                </tooltip>-->
+<!--            </Label>-->
+<!--            <HBox HBox.hgrow="ALWAYS"/>-->
+<!--            <NumberField fx:id="idleMaximumTimeField" styleClass="text-field-ui, text-field-ui-small" hideIcon="true" prefWidth="${fieldWidth}"/>-->
+<!--        </HBox>-->
+<!--        <HBox styleClass="h-box">-->
+<!--            <Text text="游戏日志大小限制/KB"/>-->
+<!--            <Label>-->
+<!--                <graphic>-->
+<!--                    <HelpIco/>-->
+<!--                </graphic>-->
+<!--                <tooltip>-->
+<!--                    <Tooltip text="当游戏日志文件超过此值将重启游戏"/>-->
+<!--                </tooltip>-->
+<!--            </Label>-->
+<!--            <HBox HBox.hgrow="ALWAYS"/>-->
+<!--            <NumberField fx:id="logLimitField" styleClass="text-field-ui, text-field-ui-small" hideIcon="true" prefWidth="${fieldWidth}"/>-->
+<!--        </HBox>-->
+<!--    </VBox>-->
+<!--    <HBox AnchorPane.bottomAnchor="15" AnchorPane.rightAnchor="15" spacing="20" alignment="CENTER">-->
+<!--        <HBox spacing="5" alignment="CENTER">-->
+<!--            <Button text="应用" styleClass="btn-ui, btn-ui-normal" onAction="#apply"/>-->
+<!--        </HBox>-->
+<!--        <HBox HBox.hgrow="ALWAYS"/>-->
+<!--        <Button text="保存" styleClass="btn-ui, btn-ui-success" onAction="#save" />-->
+<!--    </HBox>-->
+<!--    <NotificationManager fx:id="notificationManager" notificationPos="BOTTOM_CENTER">-->
+<!--        <NotificationFactory showingCloseBtn="false" size="SMALL"/>-->
+<!--    </NotificationManager>-->
+</AnchorPane>

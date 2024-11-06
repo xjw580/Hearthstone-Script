@@ -21,6 +21,9 @@
     <Tab text="策略设置">
         <fx:include source="strategySettings.fxml"/>
     </Tab>
+    <Tab text="权重设置">
+        <fx:include source="weightSettings.fxml"/>
+    </Tab>
 <!--    <Tab text="关于">-->
 <!--        <fx:include source="about.fxml"/>-->
 <!--    </Tab>-->

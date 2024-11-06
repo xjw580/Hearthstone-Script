@@ -61,20 +61,20 @@ public class StrategySettingsController implements Initializable {
 
         moveSpeedField.setMinValue("1");
         moveSpeedField.setPromptText("默认：" + ConfigEnum.PAUSE_STEP.getDefaultValue());
-        actionIntervalField.setTooltip(new Tooltip("默认：" + ConfigEnum.PAUSE_STEP.getDefaultValue()));
+        moveSpeedField.setTooltip(new Tooltip("默认：" + ConfigEnum.PAUSE_STEP.getDefaultValue()));
 
         matchMaximumTimeField.setMinValue("1");
         matchMaximumTimeField.setPromptText("默认：" + ConfigEnum.MATCH_MAXIMUM_TIME.getDefaultValue());
-        actionIntervalField.setTooltip(new Tooltip("默认：" + ConfigEnum.MATCH_MAXIMUM_TIME.getDefaultValue()));
+        matchMaximumTimeField.setTooltip(new Tooltip("默认：" + ConfigEnum.MATCH_MAXIMUM_TIME.getDefaultValue()));
 
         idleMaximumTimeField.setMinValue("1");
         idleMaximumTimeField.setPromptText("默认：" + ConfigEnum.IDLE_MAXIMUM_TIME.getDefaultValue());
-        actionIntervalField.setTooltip(new Tooltip("默认：" + ConfigEnum.IDLE_MAXIMUM_TIME.getDefaultValue()));
+        idleMaximumTimeField.setTooltip(new Tooltip("默认：" + ConfigEnum.IDLE_MAXIMUM_TIME.getDefaultValue()));
 
         logLimitField.setMinValue("1");
         logLimitField.setMaxValue("102400");
         logLimitField.setPromptText("默认：" + ConfigEnum.GAME_LOG_LIMIT.getDefaultValue());
-        actionIntervalField.setTooltip(new Tooltip("默认：" + ConfigEnum.GAME_LOG_LIMIT.getDefaultValue()));
+        logLimitField.setTooltip(new Tooltip("默认：" + ConfigEnum.GAME_LOG_LIMIT.getDefaultValue()));
     }
 
     private void initValue(){
