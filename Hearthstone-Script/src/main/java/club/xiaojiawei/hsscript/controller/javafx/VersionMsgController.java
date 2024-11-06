@@ -28,10 +28,12 @@ public class VersionMsgController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         version.setText(VersionUtil.INSTANCE.getVERSION());
         versionDescription.setText("""
-                1. 修复可用水晶在使用某些过载牌时会计算错误的问题
-                2. 增加识别`无法攻击`词条
-                3. 修改在游戏主界面时的点击位置
-                4. 修复手牌为10张时不出牌的问题
+                1. 修复若干bug
+                2. 基础插件增加投降策略，激进策略，优化基础策略
+                3. 支持最小化挂机（战网不要最小化，游戏可以）
+                4. 支持修改热键
+                5. 优化鼠标移动算法
+                6. 增加若干设置项
                 """);
     }
 
