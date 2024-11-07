@@ -38,7 +38,7 @@ jobs:
       - name: Determine if prerelease
         id: prerelease
         run: |
-          if [[ "${{ github.ref_name }}" == *"DEV" ]] || [[ "${{ github.ref_name }}" == *"BETA" ]]; then
+          if [[ "${{ github.ref_name }}" == *"DEV" ]] || [[ "${{ github.ref_name }}" == *"BETA" ]] || [[ "${{ github.ref_name }}" == *"TEST" ]]; then
             echo "prerelease=true" >> $GITHUB_ENV
           else
             echo "prerelease=false" >> $GITHUB_ENV
