@@ -120,6 +120,7 @@ object VersionListener {
         if (updatingProperty.get()) return
 
         synchronized(updatingProperty) {
+            log.info { "开始更新软件【${versionPath}】" }
             try {
                 if (updatingProperty.get()) return
                 updatingProperty.set(true)

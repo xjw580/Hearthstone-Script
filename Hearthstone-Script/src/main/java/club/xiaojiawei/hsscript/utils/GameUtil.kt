@@ -405,10 +405,9 @@ object GameUtil {
     }
 
     fun findGameHWND(): WinDef.HWND? {
-        return SystemDll.INSTANCE.FindWindowsByProcessName(GAME_PROGRAM_NAME)
-            ?: SystemUtil.findHWND("UnityWndClass", GAME_CN_NAME)
-            ?: SystemDll.INSTANCE.FindWindowW_(GAME_CLASS_NAME_W, WString(GAME_CN_NAME))
+        return SystemUtil.findHWND("UnityWndClass", GAME_CN_NAME)
             ?: SystemUtil.findHWND("UnityWndClass", GAME_US_NAME)
+            ?: SystemDll.INSTANCE.FindWindowsByProcessName(GAME_PROGRAM_NAME)
     }
 
     fun findPlatformHWND(): WinDef.HWND? {
