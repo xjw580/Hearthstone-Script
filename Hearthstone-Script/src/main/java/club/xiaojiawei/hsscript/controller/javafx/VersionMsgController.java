@@ -28,12 +28,8 @@ public class VersionMsgController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         version.setText(VersionUtil.INSTANCE.getVERSION());
         versionDescription.setText("""
-                1. 修复若干bug
-                2. 基础插件增加投降策略，激进策略，优化基础策略
-                3. 支持最小化挂机（战网不要最小化，游戏可以）
-                4. 支持修改热键
-                5. 优化鼠标移动算法
-                6. 增加若干设置项
+                1. 适配练习模式（套牌插件中添加RunModeEnum.PRACTICE即可支持）
+                2. 优化鼠标移动
                 """);
     }
 
