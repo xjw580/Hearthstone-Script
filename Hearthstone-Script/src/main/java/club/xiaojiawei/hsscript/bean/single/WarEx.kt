@@ -135,8 +135,8 @@ object WarEx {
         val time = (endTime - startTime) / 1000 / 60
         log.info { "本局游戏时长：${time}分钟" }
         hangingTime += time.toInt()
-        val winExp: Int
-        val lostExp: Int
+        var winExp = 0
+        var lostExp = 0
         when (currentRunMode) {
             RunModeEnum.STANDARD, RunModeEnum.WILD, RunModeEnum.CLASSIC, RunModeEnum.TWIST -> {
                 winExp = 8
@@ -148,9 +148,10 @@ object WarEx {
                 lostExp = 4
             }
 
+            RunModeEnum.PRACTICE -> {
+            }
+
             else -> {
-                winExp = 0
-                lostExp = 0
                 log.info { "未知模式，增加经验值0" }
             }
         }

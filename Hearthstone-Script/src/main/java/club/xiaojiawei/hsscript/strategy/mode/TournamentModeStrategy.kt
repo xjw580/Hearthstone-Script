@@ -48,6 +48,8 @@ object TournamentModeStrategy : AbstractModeStrategy<Any?>() {
 
     val FIRST_DECK_RECT: GameRect = GameRect(-0.4108, -0.2487, -0.2811, -0.1894)
 
+    val TOURNAMENT_MODE_RECT: GameRect = GameRect(-0.0790, 0.0811, -0.2090, -0.1737)
+
     /**
      * 顶栏有限时借用套牌时使用
      */
@@ -64,8 +66,7 @@ object TournamentModeStrategy : AbstractModeStrategy<Any?>() {
             if (PauseStatus.isPause) {
                 cancelAllWantEnterTasks()
             } else if (Mode.currMode == ModeEnum.HUB) {
-                HubModeStrategy.TOURNAMENT_MODE_RECT.lClick()
-            } else if (Mode.currMode == ModeEnum.GAME_MODE) {
+                TOURNAMENT_MODE_RECT.lClick()
             } else if (Mode.currMode == ModeEnum.GAME_MODE) {
                 cancelAllWantEnterTasks()
                 BACK_RECT.lClick()

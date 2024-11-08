@@ -93,7 +93,7 @@ enum class TagEnum(
                 if (isTrue(tagChangeEntity.value)) {
 //                        匹配战网id后缀正则
                     if (!gameId.matches("^.+#\\d+$".toRegex())) {
-                        log.warn { "非正常游戏id：$gameId" }
+                        log.info { "人机游戏id：$gameId" }
                     }
 
                     //                        是我

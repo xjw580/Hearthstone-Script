@@ -17,10 +17,8 @@ import club.xiaojiawei.hsscript.utils.SystemUtil
  */
 object HubModeStrategy : AbstractModeStrategy<Any?>() {
 
-    val TOURNAMENT_MODE_RECT: GameRect = GameRect(-0.0790, 0.0811, -0.2090, -0.1737)
-
     //    TODO ADD
-    val CLOSE_AD1_RECT: GameRect = GameRect(-0.0790, 0.0811, -0.2090, -0.1737)
+    val CLOSE_AD1_RECT: GameRect = GameRect(-0.0296, 0.0431, 0.2502, 0.2552)
 
     val CLOSE_AD2_RECT: GameRect = GameRect(-0.0296, 0.0431, 0.2502, 0.2552)
 

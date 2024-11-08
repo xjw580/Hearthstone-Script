@@ -5,9 +5,12 @@ import club.xiaojiawei.bean.LogRunnable
 import club.xiaojiawei.config.EXTRA_THREAD_POOL
 import club.xiaojiawei.config.log
 import club.xiaojiawei.enums.ModeEnum
+import club.xiaojiawei.hsscript.listener.WorkListener
+import club.xiaojiawei.hsscript.status.DeckStrategyManager
 import club.xiaojiawei.hsscript.status.Mode
 import club.xiaojiawei.hsscript.status.PauseStatus
 import club.xiaojiawei.hsscript.strategy.AbstractModeStrategy
+import club.xiaojiawei.hsscript.strategy.mode.TournamentModeStrategy.selectDeck
 import club.xiaojiawei.hsscript.utils.SystemUtil
 import java.util.concurrent.TimeUnit
 
@@ -18,11 +21,10 @@ import java.util.concurrent.TimeUnit
  */
 object AdventureModeStrategy : AbstractModeStrategy<Any?>() {
 
-    //    todo add
-    val ADVENTURE_RECT: GameRect = GameRect.INVALID
-    val CHOOSE_RECT: GameRect = GameRect.INVALID
-    val START_RECT: GameRect = GameRect.INVALID
-    val SELECT_DECK_RECT: GameRect = GameRect.INVALID
+    val CHOOSE_RECT: GameRect = GameRect(0.2467, 0.3441, 0.2778, 0.3772)
+    val PRACTICE_RECT: GameRect = GameRect(0.1655, 0.4198, -0.4079, -0.3187)
+    val START_RECT: GameRect = GameRect(0.2564, 0.3452, 0.2690, 0.3728)
+    val FIRST_HERO_RECT: GameRect = GameRect(0.1769, 0.4162, -0.4103, -0.3551)
 
     override fun wantEnter() {
         addWantEnterTask(EXTRA_THREAD_POOL.scheduleWithFixedDelay(LogRunnable {
@@ -32,11 +34,7 @@ object AdventureModeStrategy : AbstractModeStrategy<Any?>() {
                 cancelAllWantEnterTasks()
                 ModeEnum.GAME_MODE.modeStrategy?.wantEnter()
             } else if (Mode.currMode == ModeEnum.GAME_MODE) {
-//                    点击冒险模式
-                ADVENTURE_RECT.lClick()
-                SystemUtil.delayMedium()
-//                    点击选择按钮进入冒险模式
-                CHOOSE_RECT.lClick()
+                GameModeModeStrategy.enterAdventureMode()
             } else {
                 cancelAllWantEnterTasks()
             }
@@ -44,28 +42,21 @@ object AdventureModeStrategy : AbstractModeStrategy<Any?>() {
     }
 
     override fun afterEnter(t: Any?) {
-        clickStart()
-        SystemUtil.delayLong()
-        selectDeck()
-        SystemUtil.delayMedium()
-        clickStart()
-        SystemUtil.delayLong()
-        selectHero()
-        SystemUtil.delayLong()
-        clickStart()
+        if (WorkListener.isDuringWorkDate()) {
+            PRACTICE_RECT.lClick()
+            SystemUtil.delayTiny()
+            CHOOSE_RECT.lClick()
+            SystemUtil.delayTiny()
+            TournamentModeStrategy.FIRST_DECK_RECT.lClick()
+            SystemUtil.delayTiny()
+            START_RECT.lClick()
+            SystemUtil.delayTiny()
+            FIRST_HERO_RECT.lClick()
+            SystemUtil.delayTiny()
+            START_RECT.lClick()
+        } else {
+            WorkListener.stopWork()
+        }
     }
 
-    private fun clickStart() {
-        log.info{"点击开始"}
-        START_RECT.lClick()
-    }
-
-    private fun selectDeck() {
-        log.info{"选择套牌"}
-        SELECT_DECK_RECT.lClick()
-    }
-
-    private fun selectHero() {
-        TODO("lazy")
-    }
 }
