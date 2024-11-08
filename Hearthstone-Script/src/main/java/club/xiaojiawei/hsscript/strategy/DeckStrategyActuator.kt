@@ -131,10 +131,10 @@ object DeckStrategyActuator {
             log.info { "执行出牌策略完毕" }
         } finally {
             GameUtil.cancelAction()
-            for (i in 0 until 3) {
+            for (i in 0 until 20) {
                 if (!isMyTurn) break
                 GameUtil.END_TURN_RECT.lClick(false)
-                SystemUtil.delayMedium()
+                SystemUtil.delayShortMedium()
             }
         }
 
