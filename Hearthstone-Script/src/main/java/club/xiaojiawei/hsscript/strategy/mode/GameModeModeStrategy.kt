@@ -53,19 +53,21 @@ object GameModeModeStrategy : AbstractModeStrategy<Any?>() {
                 PauseStatus.isPause = false
                 return
             }
-            val modeEnum = it.runModes[0].modeEnum
-//            modeEnum.modeStrategy?.wantEnter()
             when (it.runModes[0]) {
                 RunModeEnum.PRACTICE -> {
                     enterAdventureMode()
                 }
 
-                RunModeEnum.WILD, RunModeEnum.STANDARD, RunModeEnum.CASUAL -> {
-                    BACK_RECT.lClick()
-                }
-
                 else -> {
-
+                    addEnteredTask(EXTRA_THREAD_POOL.scheduleWithFixedDelay(LogRunnable {
+                        if (PauseStatus.isPause) {
+                            cancelAllEnteredTasks()
+                        } else if (Mode.currMode === ModeEnum.GAME_MODE) {
+                            BACK_RECT.lClick()
+                        } else {
+                            cancelAllEnteredTasks()
+                        }
+                    }, 0, 1000, TimeUnit.MILLISECONDS))
                 }
             }
         }

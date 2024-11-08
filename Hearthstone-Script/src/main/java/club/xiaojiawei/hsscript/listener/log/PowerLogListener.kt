@@ -1,8 +1,12 @@
 package club.xiaojiawei.hsscript.listener.log
 
+import club.xiaojiawei.config.log
 import club.xiaojiawei.enums.StepEnum
 import club.xiaojiawei.enums.WarPhaseEnum
 import club.xiaojiawei.hsscript.bean.single.WarEx
+import club.xiaojiawei.hsscript.consts.MAX_LOG_SIZE_B
+import club.xiaojiawei.hsscript.consts.MAX_LOG_SIZE_KB
+import club.xiaojiawei.hsscript.core.Core
 import club.xiaojiawei.hsscript.listener.WorkListener
 import club.xiaojiawei.hsscript.status.PauseStatus
 import club.xiaojiawei.hsscript.strategy.AbstractPhaseStrategy
@@ -17,6 +21,8 @@ import java.util.concurrent.TimeUnit
  */
 object PowerLogListener :
     AbstractLogListener("Power.log", 0, 1000L, TimeUnit.MILLISECONDS) {
+
+    private const val RESERVE_SIZE = 4 * 1024 * 1024
 
     override fun dealOldLog() {
         innerLogFile?.let {
@@ -53,6 +59,18 @@ object PowerLogListener :
         if (War.currentTurnStep == StepEnum.FINAL_GAMEOVER) {
             War.currentPhase = WarPhaseEnum.GAME_OVER
         }
+    }
+
+    fun checkPowerLogSize(): Boolean {
+        val logFile = logFile
+        logFile ?: return false
+
+        if (logFile.length() + RESERVE_SIZE >= MAX_LOG_SIZE_B) {
+            log.info { "power.log即将达到" + (MAX_LOG_SIZE_KB) + "KB，准备重启游戏" }
+            Core.restart()
+            return false
+        }
+        return true
     }
 
 }

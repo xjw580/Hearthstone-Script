@@ -2,6 +2,7 @@ package club.xiaojiawei.hsscript.strategy.mode
 
 import club.xiaojiawei.hsscript.status.DeckStrategyManager
 import club.xiaojiawei.hsscript.listener.WorkListener
+import club.xiaojiawei.hsscript.listener.log.PowerLogListener
 import club.xiaojiawei.hsscript.strategy.AbstractModeStrategy
 import club.xiaojiawei.hsscript.utils.SystemUtil
 
@@ -16,6 +17,9 @@ object FriendlyModeStrategy : AbstractModeStrategy<Any?>() {
 
     override fun afterEnter(t: Any?) {
         if (WorkListener.isDuringWorkDate()) {
+            if (!PowerLogListener.checkPowerLogSize()) {
+                return
+            }
             TournamentModeStrategy.selectDeck(DeckStrategyManager.currentDeckStrategy)
             SystemUtil.delayShort()
             TournamentModeStrategy.startMatching()

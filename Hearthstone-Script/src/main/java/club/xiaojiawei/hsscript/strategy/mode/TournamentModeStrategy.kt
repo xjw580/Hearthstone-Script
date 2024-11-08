@@ -59,8 +59,6 @@ object TournamentModeStrategy : AbstractModeStrategy<Any?>() {
 
     val CANCEL_RECT: GameRect = GameRect(-0.0251, 0.0530, 0.3203, 0.3802)
 
-    private const val RESERVE_SIZE = 4 * 1024 * 1024
-
     override fun wantEnter() {
         addWantEnterTask(EXTRA_THREAD_POOL.scheduleWithFixedDelay(LogRunnable {
             if (PauseStatus.isPause) {
@@ -88,8 +86,8 @@ object TournamentModeStrategy : AbstractModeStrategy<Any?>() {
             var runModeEnum: RunModeEnum
             if (((deckStrategy.runModes[0].also {
                     runModeEnum = it
-                }) == RunModeEnum.CASUAL || runModeEnum == RunModeEnum.CLASSIC || runModeEnum == RunModeEnum.WILD || runModeEnum == RunModeEnum.STANDARD) && runModeEnum.isEnable) {
-                if (!(checkPowerLogSize())) {
+                }) == RunModeEnum.CASUAL || runModeEnum === RunModeEnum.CLASSIC || runModeEnum === RunModeEnum.WILD || runModeEnum === RunModeEnum.STANDARD) && runModeEnum.isEnable) {
+                if (!PowerLogListener.checkPowerLogSize()) {
                     return
                 }
                 SystemUtil.delayShort()
@@ -101,24 +99,19 @@ object TournamentModeStrategy : AbstractModeStrategy<Any?>() {
                 SystemUtil.delayShort()
                 startMatching()
             } else {
-//            退出该界面
-                BACK_RECT.lClick()
+                addEnteredTask(EXTRA_THREAD_POOL.scheduleWithFixedDelay(LogRunnable {
+                    if (PauseStatus.isPause) {
+                        cancelAllEnteredTasks()
+                    } else if (Mode.currMode === ModeEnum.TOURNAMENT) {
+                        BACK_RECT.lClick()
+                    } else {
+                        cancelAllEnteredTasks()
+                    }
+                }, 0, 200, TimeUnit.MILLISECONDS))
             }
         } else {
             WorkListener.stopWork()
         }
-    }
-
-    private fun checkPowerLogSize(): Boolean {
-        val logFile = PowerLogListener.logFile
-        logFile ?: return false
-
-        if (logFile.length() + RESERVE_SIZE >= MAX_LOG_SIZE_B) {
-            log.info { "power.log即将达到" + (MAX_LOG_SIZE_KB) + "KB，准备重启游戏" }
-            Core.restart()
-            return false
-        }
-        return true
     }
 
     private fun clickModeChangeButton() {

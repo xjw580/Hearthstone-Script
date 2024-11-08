@@ -1,16 +1,18 @@
 package club.xiaojiawei.hsscript.strategy.mode
 
-import club.xiaojiawei.hsscript.bean.GameRect
 import club.xiaojiawei.bean.LogRunnable
 import club.xiaojiawei.config.EXTRA_THREAD_POOL
 import club.xiaojiawei.config.log
 import club.xiaojiawei.enums.ModeEnum
+import club.xiaojiawei.enums.RunModeEnum
+import club.xiaojiawei.hsscript.bean.GameRect
 import club.xiaojiawei.hsscript.listener.WorkListener
+import club.xiaojiawei.hsscript.listener.log.PowerLogListener
 import club.xiaojiawei.hsscript.status.DeckStrategyManager
 import club.xiaojiawei.hsscript.status.Mode
 import club.xiaojiawei.hsscript.status.PauseStatus
 import club.xiaojiawei.hsscript.strategy.AbstractModeStrategy
-import club.xiaojiawei.hsscript.strategy.mode.TournamentModeStrategy.selectDeck
+import club.xiaojiawei.hsscript.strategy.mode.TournamentModeStrategy.BACK_RECT
 import club.xiaojiawei.hsscript.utils.SystemUtil
 import java.util.concurrent.TimeUnit
 
@@ -43,17 +45,43 @@ object AdventureModeStrategy : AbstractModeStrategy<Any?>() {
 
     override fun afterEnter(t: Any?) {
         if (WorkListener.isDuringWorkDate()) {
-            PRACTICE_RECT.lClick()
-            SystemUtil.delayTiny()
-            CHOOSE_RECT.lClick()
-            SystemUtil.delayTiny()
-            TournamentModeStrategy.FIRST_DECK_RECT.lClick()
-            SystemUtil.delayTiny()
-            START_RECT.lClick()
-            SystemUtil.delayTiny()
-            FIRST_HERO_RECT.lClick()
-            SystemUtil.delayTiny()
-            START_RECT.lClick()
+            val deckStrategy = DeckStrategyManager.currentDeckStrategy
+            if (deckStrategy == null) {
+                SystemUtil.notice("未选择卡组")
+                log.info { "未选择卡组" }
+                PauseStatus.isPause = true
+                return
+            }
+            var runModeEnum: RunModeEnum
+            if (((deckStrategy.runModes[0].also {
+                    runModeEnum = it
+                }) == RunModeEnum.PRACTICE) && runModeEnum.isEnable) {
+                if (!PowerLogListener.checkPowerLogSize()) {
+                    return
+                }
+                PRACTICE_RECT.lClick()
+                SystemUtil.delayShort()
+                CHOOSE_RECT.lClick()
+                SystemUtil.delayShort()
+                TournamentModeStrategy.FIRST_DECK_RECT.lClick()
+                SystemUtil.delayShort()
+                START_RECT.lClick()
+                SystemUtil.delayShort()
+                FIRST_HERO_RECT.lClick()
+                SystemUtil.delayShort()
+                START_RECT.lClick()
+            } else {
+//            退出该界面
+                addEnteredTask(EXTRA_THREAD_POOL.scheduleWithFixedDelay(LogRunnable {
+                    if (PauseStatus.isPause) {
+                        cancelAllEnteredTasks()
+                    } else if (Mode.currMode === ModeEnum.ADVENTURE) {
+                        BACK_RECT.lClick()
+                    } else {
+                        cancelAllEnteredTasks()
+                    }
+                }, 0, 1000, TimeUnit.MILLISECONDS))
+            }
         } else {
             WorkListener.stopWork()
         }
