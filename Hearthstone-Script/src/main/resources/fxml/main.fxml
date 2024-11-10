@@ -60,45 +60,61 @@
                             <ComboBox prefWidth="110" styleClass="combo-box-ui, combo-box-ui-small, combo-box-ui-normal" fx:id="deckBox"/>
                         </graphic>
                     </Label>
+                    <VBox spacing="5" alignment="CENTER">
+                        <VBox>
+                            <HBox alignment="CENTER">
+                                <HBox HBox.hgrow="ALWAYS"/>
+                                <Label text="游戏局数："
+                                       contentDisplay="RIGHT">
+                                    <graphic>
+                                        <Text text="0" fx:id="gameCount"/>
+                                    </graphic>
+                                </Label>
+                                <HBox HBox.hgrow="ALWAYS"/>
+                                <Label text="胜率："
+                                       contentDisplay="RIGHT">
+                                    <graphic>
+                                        <Text text="?" fx:id="winningPercentage"/>
+                                    </graphic>
+                                </Label>
+                                <HBox HBox.hgrow="ALWAYS"/>
+                            </HBox>
+                            <VBox minHeight="5"/>
+                            <HBox alignment="CENTER">
+                                <HBox HBox.hgrow="ALWAYS"/>
+                                <Label text="游戏时长："
+                                       contentDisplay="RIGHT">
+                                    <graphic>
+                                        <Text text="0" fx:id="gameTime"/>
+                                    </graphic>
+                                </Label>
+                                <HBox HBox.hgrow="ALWAYS"/>
+                                <Label text="经验："
+                                       contentDisplay="RIGHT">
+                                    <tooltip>
+                                        <Tooltip text="预估值"/>
+                                    </tooltip>
+                                    <graphic>
+                                        <Text text="0" fx:id="exp"/>
+                                    </graphic>
+                                </Label>
+                                <HBox HBox.hgrow="ALWAYS"/>
+                            </HBox>
+                        </VBox>
+                        <VBox minHeight="5"/>
+                        <HBox spacing="5" alignment="CENTER">
+                            <Button onAction="#clearStatistics" fx:id="clearBtn" styleClass="btn-ui, btn-ui-small, btn-ui-normal" text="刷新数据">
+                                <tooltip>
+                                    <Tooltip text="清空统计数据"/>
+                                </tooltip>
+                                <graphic>
+                                    <FlushIco fx:id="flushIco"/>
+                                </graphic>
+                            </Button>
+                        </HBox>
 
-                    <HBox alignment="CENTER">
-                        <HBox HBox.hgrow="ALWAYS"/>
-                        <Label text="游戏局数："
-                               contentDisplay="RIGHT">
-                            <graphic>
-                                <Text text="0" fx:id="gameCount"/>
-                            </graphic>
-                        </Label>
-                        <HBox HBox.hgrow="ALWAYS"/>
-                        <Label text="胜率："
-                               contentDisplay="RIGHT">
-                            <graphic>
-                                <Text text="?" fx:id="winningPercentage"/>
-                            </graphic>
-                        </Label>
-                        <HBox HBox.hgrow="ALWAYS"/>
-                    </HBox>
+                    </VBox>
 
-                    <HBox alignment="CENTER">
-                        <HBox HBox.hgrow="ALWAYS"/>
-                        <Label text="游戏时长："
-                               contentDisplay="RIGHT">
-                            <graphic>
-                                <Text text="0" fx:id="gameTime"/>
-                            </graphic>
-                        </Label>
-                        <HBox HBox.hgrow="ALWAYS"/>
-                        <Label text="经验："
-                               contentDisplay="RIGHT">
-                            <tooltip>
-                                <Tooltip text="预估值"/>
-                            </tooltip>
-                            <graphic>
-                                <Text text="0" fx:id="exp"/>
-                            </graphic>
-                        </Label>
-                        <HBox HBox.hgrow="ALWAYS"/>
-                    </HBox>
 
                     <VBox alignment="CENTER" spacing="15" styleClass="workVBox">
                         <HBox alignment="CENTER_LEFT" spacing="10">
