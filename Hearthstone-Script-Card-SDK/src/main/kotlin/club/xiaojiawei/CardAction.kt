@@ -1,7 +1,5 @@
 package club.xiaojiawei
 
-import club.xiaojiawei.CardAction.`<no name provided>`.commonActionFactory
-import club.xiaojiawei.CardAction.`<no name provided>`.mouseActionInterval
 import club.xiaojiawei.bean.Card
 import club.xiaojiawei.enums.CardTypeEnum
 import java.util.function.Supplier

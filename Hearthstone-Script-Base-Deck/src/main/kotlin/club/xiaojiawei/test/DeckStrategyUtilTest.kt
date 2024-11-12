@@ -12,7 +12,7 @@ import club.xiaojiawei.util.DeckStrategyUtil
  */
 
 class MyCardAction : CardAction() {
-    override fun getCardId(): String {
+    override fun getCardId(): Array<String> {
         TODO("Not yet implemented")
     }
 

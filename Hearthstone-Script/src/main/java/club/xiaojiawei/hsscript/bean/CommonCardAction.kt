@@ -49,8 +49,8 @@ class CommonCardAction : CardAction(false) {
         return GameRect.INVALID
     }
 
-    override fun getCardId(): String {
-        return ""
+    override fun getCardId(): Array<String> {
+        return emptyArray()
     }
 
     public override fun execPower(): Boolean {
