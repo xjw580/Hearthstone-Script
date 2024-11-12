@@ -54,7 +54,7 @@ object VersionListener {
 
     var latestRelease: Release? = null
 
-    private val repositoryList: List<AbstractRepository> = listOf(GiteeRepository, GithubRepository)
+    private val repositoryList: List<AbstractRepository> = listOf(GithubRepository, GiteeRepository)
 
     /**
      * 能否升级
