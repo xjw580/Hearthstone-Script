@@ -17,13 +17,13 @@ public interface SystemDll extends Library {
 
     void normalLeftClick(int x, int y);
 
-    void leftClick(long x, long y, WinDef.HWND hwnd);
+    void leftClick(long x, long y, WinDef.HWND hwnd, boolean isReal);
 
-    void rightClick(long x, long y, WinDef.HWND hwnd);
+    void rightClick(long x, long y, WinDef.HWND hwnd, boolean isReal);
 
     void moveMouse(long x, long y, WinDef.HWND hwnd);
 
-    void simulateHumanMove(int startX, int startY, int endX, int endY, WinDef.HWND hwnd, int pauseStep);
+    void simulateHumanMove(int startX, int startY, int endX, int endY, WinDef.HWND hwnd, int pauseStep, boolean isReal);
 
     void closeProgram(WinDef.HWND hwnd);
 

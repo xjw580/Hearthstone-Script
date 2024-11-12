@@ -8,7 +8,6 @@ import club.xiaojiawei.hsscript.config.StarterConfig
 import club.xiaojiawei.hsscript.consts.GAME_CN_NAME
 import club.xiaojiawei.hsscript.consts.GAME_HWND
 import club.xiaojiawei.hsscript.dll.SystemDll
-import club.xiaojiawei.hsscript.interfaces.closer.ScheduledCloser
 import club.xiaojiawei.hsscript.status.PauseStatus
 import club.xiaojiawei.hsscript.utils.GameUtil
 import club.xiaojiawei.hsscript.utils.MouseUtil
@@ -76,7 +75,8 @@ object GameStarter : AbstractStarter() {
         SystemUtil.updateRECT(platformHWND, rect)
         MouseUtil.leftButtonClick(
             Point(145, rect.bottom - rect.top - 150),
-            platformHWND
+            platformHWND,
+            false
         )
     }
 

@@ -5,8 +5,10 @@ import club.xiaojiawei.hsscript.consts.DLL_PATH
 import club.xiaojiawei.hsscript.consts.GAME_US_NAME
 import club.xiaojiawei.hsscript.consts.SCRIPT_NAME
 import club.xiaojiawei.hsscript.dll.SystemDll
+import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.status.PauseStatus
 import club.xiaojiawei.hsscript.utils.CMDUtil
+import club.xiaojiawei.hsscript.utils.ConfigUtil
 import java.io.File
 import java.io.IOException
 import java.nio.file.Path
@@ -20,40 +22,44 @@ import java.util.*
 object InjectStarter : AbstractStarter() {
 
     public override fun execStart() {
-        val rootPath = System.getProperty("user.dir")
-        val injectUtilName = "injectUtil.exe"
-        val dllName = "libHS.dll"
-        val dllDir = "dll"
+        val controlMode = ConfigUtil.getBoolean(ConfigEnum.CONTROL_MODE)
+        log.info { "控制模式：${controlMode}" }
+        if (!controlMode) {
+            val rootPath = System.getProperty("user.dir")
+            val injectUtilName = "injectUtil.exe"
+            val dllName = "libHS.dll"
+            val dllDir = "dll"
 
-        var injectFile = Path.of(rootPath, injectUtilName).toFile()
-        val dllFile: File
+            var injectFile = Path.of(rootPath, injectUtilName).toFile()
+            val dllFile: File
 
-        if (injectFile.exists()) {
-//            打包查找
-            dllFile = Path.of(DLL_PATH, dllName).toFile()
-            if (dllFile.exists()) {
-                if (!inject(injectFile.absolutePath, dllFile.absolutePath)) return
-            } else {
-                log.error { dllFile.absolutePath + "不存在" }
-            }
-        } else {
-//            IDE查找
-            injectFile = File(
-                Objects.requireNonNull(
-                    javaClass.classLoader.getResource(
-                        "exe/$injectUtilName"
-                    )
-                ).path
-            )
             if (injectFile.exists()) {
-                dllFile = File(Objects.requireNonNull(javaClass.classLoader.getResource("$dllDir/$dllName")).path)
+//            打包查找
+                dllFile = Path.of(DLL_PATH, dllName).toFile()
                 if (dllFile.exists()) {
                     if (!inject(injectFile.absolutePath, dllFile.absolutePath)) return
                 } else {
-                    log.error { "未找到$dllName" }
+                    log.error { dllFile.absolutePath + "不存在" }
                 }
             } else {
-                log.error { "未找到$injectUtilName" }
+//            IDE查找
+                injectFile = File(
+                    Objects.requireNonNull(
+                        javaClass.classLoader.getResource(
+                            "exe/$injectUtilName"
+                        )
+                    ).path
+                )
+                if (injectFile.exists()) {
+                    dllFile = File(Objects.requireNonNull(javaClass.classLoader.getResource("$dllDir/$dllName")).path)
+                    if (dllFile.exists()) {
+                        if (!inject(injectFile.absolutePath, dllFile.absolutePath)) return
+                    } else {
+                        log.error { "未找到$dllName" }
+                    }
+                } else {
+                    log.error { "未找到$injectUtilName" }
+                }
             }
         }
         startNextStarter()

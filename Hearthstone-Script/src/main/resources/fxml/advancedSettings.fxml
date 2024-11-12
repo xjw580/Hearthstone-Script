@@ -52,6 +52,19 @@
             <Switch fx:id="runningMinimize"/>
         </HBox>
         <HBox styleClass="h-box">
+            <Text text="控制模式"/>
+            <Label>
+                <graphic>
+                    <HelpIco/>
+                </graphic>
+                <tooltip>
+                    <Tooltip text="真实控制鼠标移动，或许可能大概能降低被检测概率，修改后最好重启软件"/>
+                </tooltip>
+            </Label>
+            <HBox HBox.hgrow="ALWAYS"/>
+            <Switch fx:id="controlMode"/>
+        </HBox>
+        <HBox styleClass="h-box">
             <Text text="发送Windows通知"/>
             <HBox HBox.hgrow="ALWAYS"/>
             <Switch fx:id="sendNotice"/>

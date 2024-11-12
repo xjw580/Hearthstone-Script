@@ -22,9 +22,9 @@ data class GameRect(val left: Double, val right: Double, val top: Double, val bo
         val usableW = (realH * GameRationConst.GAME_WINDOW_ASPECT_TO_HEIGHT_RATIO).toInt()
         val middleX = realW shr 1
         val middleY = realH shr 1
-        val pointX: Double = RandomUtil.getRandom(left, right)
-        val pointY: Double = RandomUtil.getRandom(top, bottom)
-        return Point((middleX + pointX * usableW).toInt(), (middleY + pointY * usableH).toInt())
+        val pointX: Int = RandomUtil.getRandom((left * usableW).toInt(), (right * usableW).toInt())
+        val pointY: Int = RandomUtil.getRandom((top * usableH).toInt(), (bottom * usableH).toInt())
+        return Point(middleX + pointX, middleY + pointY)
     }
 
     private fun cancel() {

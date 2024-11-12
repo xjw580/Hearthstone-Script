@@ -52,7 +52,7 @@ object GameUtil {
 
     val CONFIRM_RECT: GameRect = GameRect(-0.0546, 0.0601, 0.2709, 0.3222)
 
-    val END_TURN_RECT: GameRect = GameRect(0.3535, 0.4533, -0.0636, -0.0196)
+    val END_TURN_RECT: GameRect = GameRect(0.3550, 0.4533, -0.0636, -0.0196)
 
     val RECONNECT_RECT: GameRect = GameRect(-0.1845, -0.0396, 0.2282, 0.2904)
 
