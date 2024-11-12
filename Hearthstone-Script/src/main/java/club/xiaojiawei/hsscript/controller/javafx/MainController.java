@@ -4,6 +4,7 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import club.xiaojiawei.DeckStrategy;
 import club.xiaojiawei.controls.CopyLabel;
+import club.xiaojiawei.controls.Modal;
 import club.xiaojiawei.controls.Time;
 import club.xiaojiawei.controls.ico.AbstractIco;
 import club.xiaojiawei.controls.ico.ClearIco;
@@ -282,7 +283,7 @@ public class MainController extends MainView {
             winningPercentage.setText(
                     (String.format(
                             "%.1f",
-                            (double)warInstance.getWinCount() / warInstance.getWarCount() * 100D
+                            (double) warInstance.getWinCount() / warInstance.getWarCount() * 100D
                     ) + "%"));
             gameTime.setText(formatTime(warInstance.getHangingTime()));
             exp.setText(String.valueOf(warInstance.getHangingEXP()));
@@ -424,7 +425,7 @@ public class MainController extends MainView {
     @FXML
     protected void openSettings() {
         Stage stage = WindowUtil.INSTANCE.getStage(WindowEnum.SETTINGS);
-        if (stage == null){
+        if (stage == null) {
             stage = WindowUtil.INSTANCE.buildStage(WindowEnum.SETTINGS);
         }
         if (stage.getOwner() == null) {
@@ -490,63 +491,22 @@ public class MainController extends MainView {
         initWorkDate();
         notificationManger.showSuccess("工作时间保存成功", 2);
     }
+
     @FXML
-    protected void clearStatistics() {
-        WarEx warInstance = WarEx.INSTANCE;
+    protected void resetStatistics(MouseEvent event) {
+        if (!Objects.equals(event.getButton(), MouseButton.PRIMARY)) return;
+        Modal modal = new Modal(rootPane, null, "重置统计数据？", () -> Platform.runLater(() -> {
+            WarEx.INSTANCE.resetStatistics();
 
-        // 获取当前Stage
-        Stage currentStage = (Stage) rootPane.getScene().getWindow();
+            gameCount.setText("0");
+            winningPercentage.setText("?");
+            gameTime.setText("0");
+            exp.setText("0");
 
-        // 创建弹窗
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.initOwner(currentStage); // 设置弹窗的拥有者为当前Stage
-
-        // 设置弹窗的内容
-        alert.setHeaderText(null); // 移除标题栏
-        alert.setContentText("确定要清空所有统计数据吗？");
-
-
-        // 获取DialogPane并设置大小
-        DialogPane dialogPane = alert.getDialogPane();
-        dialogPane.setPrefWidth(250); // 设置首选宽度
-        dialogPane.setPrefHeight(100); // 设置首选高度
-
-        // 设置弹窗的布局和响应
-        ButtonType confirmButtonType = new ButtonType("确定", ButtonBar.ButtonData.OK_DONE);
-        ButtonType cancelButtonType = new ButtonType("取消", ButtonBar.ButtonData.CANCEL_CLOSE);
-        alert.getButtonTypes().setAll(confirmButtonType, cancelButtonType);
-
-        // 确认按钮事件处理器
-        alert.setResultConverter(dialogButton -> {
-            if (dialogButton == confirmButtonType) {
-                // 清空统计数据
-                Platform.runLater(() -> {
-                    // 调用WarEx的方法清空累计统计数据
-                    warInstance.clearStatistics();
-
-                    // 更新UI组件显示
-                    gameCount.setText("0");
-                    winningPercentage.setText("?");
-                    gameTime.setText("0");
-                    exp.setText("0");
-
-                    // 显示成功提示
-                    notificationManger.showSuccess("数据已清空", 2);
-                });
-            }
-            return null;
-        });
-
-        // 计算弹窗的位置
-        double x = currentStage.getX() + (currentStage.getWidth() - alert.getDialogPane().getWidth()) * 2;
-        double y = currentStage.getY() - alert.getDialogPane().getHeight() - 20; // 减去20像素作为间隔
-
-        // 设置弹窗的位置
-        alert.setX(x);
-        alert.setY(y);
-
-        // 显示弹窗
-        alert.show();
+            notificationManger.showSuccess("统计数据已重置", 2);
+        }), ()->{});
+        modal.setMaskClosable(true);
+        modal.show();
     }
 
     @FXML

@@ -38,3 +38,7 @@
 .hoverRootNode:hover .hoverChildrenNode{
     visibility: true;
 }
+.resetDataIcon:hover *{
+    -fx-cursor: hand;
+    -fx-fill: red;
+}

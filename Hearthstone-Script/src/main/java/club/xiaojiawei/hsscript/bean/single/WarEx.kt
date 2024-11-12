@@ -12,7 +12,6 @@ import club.xiaojiawei.bean.area.SetasideArea
 import club.xiaojiawei.config.log
 import club.xiaojiawei.enums.RunModeEnum
 import club.xiaojiawei.enums.WarPhaseEnum
-import club.xiaojiawei.status.War
 import club.xiaojiawei.status.War.conceded
 import club.xiaojiawei.status.War.currentPhase
 import club.xiaojiawei.status.War.currentPlayer
@@ -87,7 +86,7 @@ object WarEx {
 
 
     @Synchronized
-    fun clearStatistics() {
+    fun resetStatistics() {
         warCountProperty.set(0)
         winCountProperty.set(0)
         hangingTimeProperty.set(0)

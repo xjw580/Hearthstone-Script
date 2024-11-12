@@ -7,6 +7,8 @@
 <?import javafx.scene.text.*?>
 <?import javafx.util.Duration?>
 <?import club.xiaojiawei.factory.NotificationFactory?>
+<?import javafx.scene.Group?>
+<?import java.lang.Double?>
 <StackPane xmlns:fx="http://javafx.com/fxml"
            stylesheets="@css/main.css"
            fx:id="rootPane"
@@ -14,7 +16,8 @@
     <fx:define>
         <ToggleGroup fx:id="pauseToggleGroup"/>
     </fx:define>
-    <Accordion fx:id="accordion" styleClass="accordion-ui, accordion-ui-big, accordion-ui-pure" expandedPane="$titledPaneControl">
+    <Accordion fx:id="accordion" styleClass="accordion-ui, accordion-ui-big, accordion-ui-pure"
+               expandedPane="$titledPaneControl">
         <panes>
             <TitledPane text="控制" fx:id="titledPaneControl">
                 <VBox alignment="TOP_CENTER" spacing="20" style="-fx-padding: 5 5 0 5">
@@ -33,7 +36,7 @@
                             </graphic>
                         </ToggleButton>
                         <ToggleButton fx:id="pauseButton" toggleGroup="$pauseToggleGroup" selected="true" text="暂停"
-                                styleClass="btn-ui, btn-ui-small, btn-ui-error-3d, btnPressed">
+                                      styleClass="btn-ui, btn-ui-small, btn-ui-error-3d, btnPressed">
                             <tooltip>
                                 <Tooltip text="暂停工作">
                                     <showDelay>
@@ -50,71 +53,72 @@
                     <Label text="模式："
                            contentDisplay="RIGHT">
                         <graphic>
-                            <ComboBox prefWidth="110" styleClass="combo-box-ui, combo-box-ui-small, combo-box-ui-normal" fx:id="runModeBox"/>
+                            <ComboBox prefWidth="110" styleClass="combo-box-ui, combo-box-ui-small, combo-box-ui-normal"
+                                      fx:id="runModeBox"/>
                         </graphic>
                     </Label>
 
                     <Label text="卡组："
                            contentDisplay="RIGHT">
                         <graphic>
-                            <ComboBox prefWidth="110" styleClass="combo-box-ui, combo-box-ui-small, combo-box-ui-normal" fx:id="deckBox"/>
+                            <ComboBox prefWidth="110" styleClass="combo-box-ui, combo-box-ui-small, combo-box-ui-normal"
+                                      fx:id="deckBox"/>
                         </graphic>
                     </Label>
-                    <VBox spacing="5" alignment="CENTER">
-                        <VBox>
-                            <HBox alignment="CENTER">
-                                <HBox HBox.hgrow="ALWAYS"/>
-                                <Label text="游戏局数："
-                                       contentDisplay="RIGHT">
-                                    <graphic>
-                                        <Text text="0" fx:id="gameCount"/>
-                                    </graphic>
-                                </Label>
-                                <HBox HBox.hgrow="ALWAYS"/>
-                                <Label text="胜率："
-                                       contentDisplay="RIGHT">
-                                    <graphic>
-                                        <Text text="?" fx:id="winningPercentage"/>
-                                    </graphic>
-                                </Label>
-                                <HBox HBox.hgrow="ALWAYS"/>
-                            </HBox>
-                            <VBox minHeight="5"/>
-                            <HBox alignment="CENTER">
-                                <HBox HBox.hgrow="ALWAYS"/>
-                                <Label text="游戏时长："
-                                       contentDisplay="RIGHT">
-                                    <graphic>
-                                        <Text text="0" fx:id="gameTime"/>
-                                    </graphic>
-                                </Label>
-                                <HBox HBox.hgrow="ALWAYS"/>
-                                <Label text="经验："
-                                       contentDisplay="RIGHT">
-                                    <tooltip>
-                                        <Tooltip text="预估值"/>
-                                    </tooltip>
-                                    <graphic>
-                                        <Text text="0" fx:id="exp"/>
-                                    </graphic>
-                                </Label>
-                                <HBox HBox.hgrow="ALWAYS"/>
-                            </HBox>
-                        </VBox>
-                        <VBox minHeight="5"/>
-                        <HBox spacing="5" alignment="CENTER">
-                            <Button onAction="#clearStatistics" fx:id="clearBtn" styleClass="btn-ui, btn-ui-small, btn-ui-normal" text="刷新数据">
-                                <tooltip>
-                                    <Tooltip text="清空统计数据"/>
-                                </tooltip>
-                                <graphic>
-                                    <FlushIco fx:id="flushIco"/>
-                                </graphic>
-                            </Button>
-                        </HBox>
 
-                    </VBox>
+                    <GridPane>
+                        <fx:define>
+                            <Double fx:id="dataRowHeight" fx:value="25"/>
+                        </fx:define>
+                        <columnConstraints>
+                            <ColumnConstraints halignment="CENTER" hgrow="ALWAYS"/>
+                            <ColumnConstraints halignment="CENTER" hgrow="ALWAYS"/>
+                            <ColumnConstraints halignment="CENTER" hgrow="NEVER"/>
+                        </columnConstraints>
+                        <rowConstraints>
+                            <RowConstraints prefHeight="${dataRowHeight}" vgrow="NEVER" valignment="CENTER"/>
+                            <RowConstraints prefHeight="${dataRowHeight}" vgrow="NEVER" valignment="CENTER"/>
+                        </rowConstraints>
 
+                        <Label GridPane.rowIndex="0" GridPane.columnIndex="0"
+                               text="游戏局数："
+                               contentDisplay="RIGHT">
+                            <graphic>
+                                <Text text="0" fx:id="gameCount"/>
+                            </graphic>
+                        </Label>
+
+                        <Label GridPane.rowIndex="0" GridPane.columnIndex="1"
+                               text="胜率："
+                               contentDisplay="RIGHT">
+                            <graphic>
+                                <Text text="?" fx:id="winningPercentage"/>
+                            </graphic>
+                        </Label>
+
+                        <Label GridPane.rowIndex="1" GridPane.columnIndex="0"
+                               text="游戏时长："
+                               contentDisplay="RIGHT">
+                            <graphic>
+                                <Text text="0" fx:id="gameTime"/>
+                            </graphic>
+                        </Label>
+
+                        <Label GridPane.rowIndex="1" GridPane.columnIndex="1"
+                               text="经验："
+                               contentDisplay="RIGHT">
+                            <tooltip>
+                                <Tooltip text="预估值"/>
+                            </tooltip>
+                            <graphic>
+                                <Text text="0" fx:id="exp"/>
+                            </graphic>
+                        </Label>
+
+                        <Group GridPane.rowIndex="0" GridPane.rowSpan="2" GridPane.columnIndex="2">
+                            <ClearIco styleClass="resetDataIcon" onMouseClicked="#resetStatistics"/>
+                        </Group>
+                    </GridPane>
 
                     <VBox alignment="CENTER" spacing="15" styleClass="workVBox">
                         <HBox alignment="CENTER_LEFT" spacing="10">
@@ -169,7 +173,8 @@
                     <VBox alignment="CENTER" spacing="5">
                         <HBox spacing="5" alignment="CENTER">
                             <Text fx:id="versionText" style="-fx-cursor: hand" onMouseClicked="#openVersionMsg"/>
-                            <Button onAction="#updateVersion" fx:id="updateBtn" styleClass="btn-ui, btn-ui-small, btn-ui-normal" visible="false" managed="false">
+                            <Button onAction="#updateVersion" fx:id="updateBtn"
+                                    styleClass="btn-ui, btn-ui-small, btn-ui-normal" visible="false" managed="false">
                                 <tooltip>
                                     <Tooltip text="下载更新"/>
                                 </tooltip>
@@ -177,7 +182,8 @@
                                     <UpdateIco/>
                                 </graphic>
                             </Button>
-                            <Button onAction="#flushVersion" fx:id="flushBtn" styleClass="btn-ui, btn-ui-small, btn-ui-normal">
+                            <Button onAction="#flushVersion" fx:id="flushBtn"
+                                    styleClass="btn-ui, btn-ui-small, btn-ui-normal">
                                 <tooltip>
                                     <Tooltip text="检查更新"/>
                                 </tooltip>
@@ -186,7 +192,8 @@
                                 </graphic>
                             </Button>
                         </HBox>
-                        <ProgressBar fx:id="downloadProgress" progress="1" styleClass="progress-bar-ui" prefWidth="${titledPaneControl.width}" visible="false" managed="false"/>
+                        <ProgressBar fx:id="downloadProgress" progress="1" styleClass="progress-bar-ui"
+                                     prefWidth="${titledPaneControl.width}" visible="false" managed="false"/>
                     </VBox>
 
                     <Button onAction="#openSettings" text="设置" styleClass="btn-ui, btn-ui-small">
@@ -198,7 +205,8 @@
             </TitledPane>
             <TitledPane text="日志" fx:id="titledPaneLog">
                 <ScrollPane fx:id="logScrollPane" hbarPolicy="NEVER"
-                            onMouseEntered="#mouseEnteredLog" onMouseExited="#mouseExitedLog" onMouseClicked="#mouseClickedLog">
+                            onMouseEntered="#mouseEnteredLog" onMouseExited="#mouseExitedLog"
+                            onMouseClicked="#mouseClickedLog">
                     <VBox maxWidth="${accordion.width}" spacing="5" fx:id="logVBox"/>
                 </ScrollPane>
             </TitledPane>
