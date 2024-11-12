@@ -41,6 +41,8 @@ abstract public class MainView implements Initializable {
     @FXML
     protected Text versionText;
     @FXML
+    protected Button clearBtn;
+    @FXML
     protected VBox logVBox;
     @FXML
     protected Accordion accordion;

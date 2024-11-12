@@ -34,8 +34,7 @@ import javafx.collections.ObservableList;
 import javafx.collections.SetChangeListener;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -490,6 +489,64 @@ public class MainController extends MainView {
 
         initWorkDate();
         notificationManger.showSuccess("工作时间保存成功", 2);
+    }
+    @FXML
+    protected void clearStatistics() {
+        WarEx warInstance = WarEx.INSTANCE;
+
+        // 获取当前Stage
+        Stage currentStage = (Stage) rootPane.getScene().getWindow();
+
+        // 创建弹窗
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.initOwner(currentStage); // 设置弹窗的拥有者为当前Stage
+
+        // 设置弹窗的内容
+        alert.setHeaderText(null); // 移除标题栏
+        alert.setContentText("确定要清空所有统计数据吗？");
+
+
+        // 获取DialogPane并设置大小
+        DialogPane dialogPane = alert.getDialogPane();
+        dialogPane.setPrefWidth(250); // 设置首选宽度
+        dialogPane.setPrefHeight(100); // 设置首选高度
+
+        // 设置弹窗的布局和响应
+        ButtonType confirmButtonType = new ButtonType("确定", ButtonBar.ButtonData.OK_DONE);
+        ButtonType cancelButtonType = new ButtonType("取消", ButtonBar.ButtonData.CANCEL_CLOSE);
+        alert.getButtonTypes().setAll(confirmButtonType, cancelButtonType);
+
+        // 确认按钮事件处理器
+        alert.setResultConverter(dialogButton -> {
+            if (dialogButton == confirmButtonType) {
+                // 清空统计数据
+                Platform.runLater(() -> {
+                    // 调用WarEx的方法清空累计统计数据
+                    warInstance.clearStatistics();
+
+                    // 更新UI组件显示
+                    gameCount.setText("0");
+                    winningPercentage.setText("?");
+                    gameTime.setText("0");
+                    exp.setText("0");
+
+                    // 显示成功提示
+                    notificationManger.showSuccess("数据已清空", 2);
+                });
+            }
+            return null;
+        });
+
+        // 计算弹窗的位置
+        double x = currentStage.getX() + (currentStage.getWidth() - alert.getDialogPane().getWidth()) * 2;
+        double y = currentStage.getY() - alert.getDialogPane().getHeight() - 20; // 减去20像素作为间隔
+
+        // 设置弹窗的位置
+        alert.setX(x);
+        alert.setY(y);
+
+        // 显示弹窗
+        alert.show();
     }
 
     @FXML

@@ -85,6 +85,15 @@ object WarEx {
         get() = hangingEXPProperty.get()
         set(value) = hangingEXPProperty.set(value)
 
+
+    @Synchronized
+    fun clearStatistics() {
+        warCountProperty.set(0)
+        winCountProperty.set(0)
+        hangingTimeProperty.set(0)
+        hangingEXPProperty.set(0)
+    }
+
     @Synchronized
     fun reset(print: Boolean = true) {
         firstPlayerGameId = ""
