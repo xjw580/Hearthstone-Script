@@ -10,8 +10,17 @@ import club.xiaojiawei.bean.abs.ClickPower
  */
 class WarlockPower : ClickPower(){
 
-    override fun getCardId(): String {
-        return "HERO_07bp"
+    companion object {
+        val cardIds = arrayOf<String>(
+            "HERO_07%bp",
+            "HERO_07%hp",
+            "CS2_056_H%",
+            "VAN_HERO_07%bp",
+        )
+    }
+
+    override fun getCardId(): Array<String> {
+        return cardIds
     }
 
     override fun createNewInstance(): CardAction {

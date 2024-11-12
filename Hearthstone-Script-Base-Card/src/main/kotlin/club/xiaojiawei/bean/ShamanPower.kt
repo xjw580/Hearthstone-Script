@@ -2,7 +2,6 @@ package club.xiaojiawei.bean
 
 import club.xiaojiawei.CardAction
 import club.xiaojiawei.bean.abs.ClickPower
-import club.xiaojiawei.bean.area.Area
 import club.xiaojiawei.status.War.me
 
 /**
@@ -10,10 +9,20 @@ import club.xiaojiawei.status.War.me
  * @author 肖嘉威
  * @date 2024/9/22 18:13
  */
-class RoguePower : ClickPower() {
+class ShamanPower : ClickPower() {
 
-    override fun getCardId(): String {
-        return "HERO_02bp"
+    companion object {
+        val cardIds = arrayOf<String>(
+            "HERO_02%bp",
+            "HERO_02%hp",
+            "CS2_049_H%",
+            "HERO_02ajbp_Copy",
+            "VAN_HERO_02%bp",
+        )
+    }
+
+    override fun getCardId(): Array<String> {
+        return cardIds
     }
 
     override fun execPower(): Boolean {
@@ -22,6 +31,6 @@ class RoguePower : ClickPower() {
     }
 
     override fun createNewInstance(): CardAction {
-        return RoguePower()
+        return ShamanPower()
     }
 }

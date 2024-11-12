@@ -2,6 +2,7 @@ package club.xiaojiawei.hsscript.status
 
 import club.xiaojiawei.CardAction
 import club.xiaojiawei.config.log
+import club.xiaojiawei.hsscript.bean.LikeTrie
 import club.xiaojiawei.hsscript.status.PluginManager.CARD_ACTION_PLUGINS
 import club.xiaojiawei.hsscript.status.PluginManager.loadCardProperty
 import javafx.beans.value.ObservableValue
@@ -17,7 +18,7 @@ object CardActionManager {
      * key1：pluginId
      * key2：cardId
      */
-    val CARD_ACTION_MAP: MutableMap<String, Map<String, Supplier<CardAction>>> = FXCollections.observableMap(load())
+    val CARD_ACTION_MAP: MutableMap<String, LikeTrie<Supplier<CardAction>>> = FXCollections.observableMap(load())
 
     init {
         loadCardProperty().addListener { _: ObservableValue<out Boolean>?, _: Boolean?, t1: Boolean ->
@@ -27,20 +28,26 @@ object CardActionManager {
         }
     }
 
-    private fun load(): MutableMap<String, Map<String, Supplier<CardAction>>> {
+    private fun load(): MutableMap<String, LikeTrie<Supplier<CardAction>>> {
         return CARD_ACTION_PLUGINS.mapValues { entry ->
-            // 将每个 PluginWrapper 的 CardAction 转换为 Map<String, Supplier<CardAction>>
-            entry.value
-                .flatMap { pluginWrapper ->
-                    pluginWrapper.addEnabledListener { _: ObservableValue<out Boolean?>?, _: Boolean?, _: Boolean? ->
-                        reload()
-                    }
-                    if (pluginWrapper.isEnabled()) pluginWrapper.spiInstance else emptyList()
+            val likeTrie = LikeTrie<Supplier<CardAction>>()
+
+            entry.value.flatMap { pluginWrapper ->
+                // 添加监听器，当状态变化时重新加载
+                pluginWrapper.addEnabledListener { _: ObservableValue<out Boolean?>?, _: Boolean?, _: Boolean? ->
+                    reload()
                 }
-                .associate { cardAction ->
-                    // 生成的内层 Map 的 key 可以是 CardAction 名称，并创建 Supplier
-                    cardAction.getCardId() to Supplier { cardAction.createNewInstance() }
+                // 只保留启用的插件实例
+                if (pluginWrapper.isEnabled()) pluginWrapper.spiInstance else emptyList()
+            }.forEach { cardAction ->
+                // 将每个 CardAction 生成的 Supplier 添加到 LikeTrie
+                cardAction.getCardId().forEach { cardId ->
+                    likeTrie[cardId] = Supplier { cardAction.createNewInstance() }
                 }
+
+            }
+
+            likeTrie
         }.toMutableMap()
     }
 

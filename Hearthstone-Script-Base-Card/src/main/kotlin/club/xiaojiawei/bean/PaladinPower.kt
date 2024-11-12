@@ -12,8 +12,17 @@ import club.xiaojiawei.status.War.me
  */
 class PaladinPower : ClickPower(){
 
-    override fun getCardId(): String {
-        return "HERO_04bp"
+    companion object {
+        val cardIds = arrayOf<String>(
+            "HERO_04%bp",
+            "HERO_04%hp",
+            "CS2_101_H%",
+            "RLK_Prologue_Arthas_001p",
+        )
+    }
+
+    override fun getCardId(): Array<String> {
+        return cardIds
     }
 
     override fun execPower(): Boolean {

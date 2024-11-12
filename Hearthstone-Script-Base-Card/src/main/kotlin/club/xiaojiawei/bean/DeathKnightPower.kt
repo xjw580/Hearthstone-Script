@@ -11,8 +11,18 @@ import club.xiaojiawei.status.War.me
  */
 open class DeathKnightPower : ClickPower() {
 
-    override fun getCardId(): String {
-        return "HERO_11bp"
+    companion object {
+        val cardIds = arrayOf<String>(
+            "HERO_11%bp",
+            "HERO_11%hp",
+            "RLK_Prologue_Arthas_%p",
+            "RLK_Prologue_MalGanis_%p",
+            "TUTR_HERO_11%bp"
+        )
+    }
+
+    override fun getCardId(): Array<String> {
+        return cardIds
     }
 
     override fun execPower(): Boolean {

@@ -10,8 +10,17 @@ import club.xiaojiawei.bean.abs.ClickPower
  */
 class DemonHunterPower : ClickPower() {
 
-    override fun getCardId(): String {
-        return "HERO_10bp"
+    companion object {
+        val cardIds = arrayOf<String>(
+            "HERO_10%bp",
+            "HERO_10%hp",
+            "RLK_Prologue_Illidan_%p",
+            "VAN_HERO_10%bp",
+        )
+    }
+
+    override fun getCardId(): Array<String> {
+        return cardIds
     }
 
     override fun createNewInstance(): CardAction {

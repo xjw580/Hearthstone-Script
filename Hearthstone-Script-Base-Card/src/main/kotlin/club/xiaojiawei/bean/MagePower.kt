@@ -11,8 +11,19 @@ import club.xiaojiawei.status.War.rival
  */
 class MagePower : PointPower() {
 
-    override fun getCardId(): String {
-        return "HERO_08bp"
+    companion object {
+        val cardIds = arrayOf<String>(
+            "HERO_08%bp",
+            "HERO_08%hp",
+            "DS1h_034_H%",
+            "TB_MagicalGuardians_Fireblast",
+            "TUTR_HERO_08%bp",
+            "VAN_HERO_08%bp",
+        )
+    }
+
+    override fun getCardId(): Array<String> {
+        return cardIds
     }
 
     override fun execPower(): Boolean {

@@ -8,8 +8,8 @@ import club.xiaojiawei.hsscript.bean.CommonCardAction
 import club.xiaojiawei.hsscript.bean.CommonCardAction.Companion.DEFAULT
 import club.xiaojiawei.hsscript.bean.log.ExtraEntity
 import club.xiaojiawei.hsscript.bean.log.TagChangeEntity
-import club.xiaojiawei.hsscript.bean.single.WarEx
 import club.xiaojiawei.hsscript.bean.single.CARD_AREA_MAP
+import club.xiaojiawei.hsscript.bean.single.WarEx
 import club.xiaojiawei.hsscript.status.CardActionManager.CARD_ACTION_MAP
 import club.xiaojiawei.hsscript.strategy.DeckStrategyActuator
 import club.xiaojiawei.mapper.BaseCardMapper
@@ -77,5 +77,12 @@ object CardUtil {
         cardAction.belongCard = card
         card.action = cardAction
     }
+
+//    @JvmStatic
+//    fun main(args: Array<String>) {
+//        val likeTrie = LikeTrie<String>()
+//        likeTrie["HERO_11%bp"] = "hello"
+//        println(likeTrie["HERO_11cbp"])
+//    }
 
 }

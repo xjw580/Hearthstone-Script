@@ -10,8 +10,17 @@ import club.xiaojiawei.bean.abs.ClickPower
  */
 class DruidPower : ClickPower(){
 
-    override fun getCardId(): String {
-        return "HERO_06bp"
+    companion object {
+        val cardIds = arrayOf<String>(
+            "HERO_06%bp",
+            "HERO_06%hp",
+            "CS2_017_HS%",
+            "VAN_HERO_06%bp",
+        )
+    }
+
+    override fun getCardId(): Array<String> {
+        return cardIds
     }
 
     override fun createNewInstance(): CardAction {

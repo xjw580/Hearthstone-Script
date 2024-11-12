@@ -12,8 +12,18 @@ import club.xiaojiawei.status.War.me
  */
 class PriestPower : PointPower() {
 
-    override fun getCardId(): String {
-        return "HERO_09bp"
+    companion object {
+        val cardIds = arrayOf<String>(
+            "HERO_09%bp",
+            "HERO_09%hp",
+            "CS1h_001_H%",
+            "HERO_09dbp_Copy",
+            "VAN_HERO_09%bp",
+        )
+    }
+
+    override fun getCardId(): Array<String> {
+        return cardIds
     }
 
     override fun execPower(): Boolean {

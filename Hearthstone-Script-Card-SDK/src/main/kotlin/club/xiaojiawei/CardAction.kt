@@ -1,5 +1,7 @@
 package club.xiaojiawei
 
+import club.xiaojiawei.CardAction.`<no name provided>`.commonActionFactory
+import club.xiaojiawei.CardAction.`<no name provided>`.mouseActionInterval
 import club.xiaojiawei.bean.Card
 import club.xiaojiawei.enums.CardTypeEnum
 import java.util.function.Supplier
@@ -148,7 +150,10 @@ abstract class CardAction(createDefaultAction: Boolean = true) {
 
     abstract fun lClick(): Boolean
 
-    abstract fun getCardId(): String
+    /**
+     * 适配与cardId相匹配的card，支持通配符% 匹配任意个字符
+     */
+    abstract fun getCardId(): Array<String>
 
     companion object {
         var mouseActionInterval: Int = 3500
