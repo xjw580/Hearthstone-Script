@@ -3,8 +3,12 @@ package club.xiaojiawei.hsscript.controller.javafx;
 import club.xiaojiawei.controls.NotificationManager;
 import club.xiaojiawei.controls.Switch;
 import club.xiaojiawei.hsscript.bean.HotKey;
+import club.xiaojiawei.hsscript.consts.ScriptDataKt;
+import club.xiaojiawei.hsscript.dll.SystemDll;
 import club.xiaojiawei.hsscript.enums.ConfigEnum;
 import club.xiaojiawei.hsscript.listener.GlobalHotkeyListener;
+import club.xiaojiawei.hsscript.starter.AbstractStarter;
+import club.xiaojiawei.hsscript.starter.InjectStarter;
 import club.xiaojiawei.hsscript.utils.ConfigExUtil;
 import club.xiaojiawei.hsscript.utils.ConfigUtil;
 import club.xiaojiawei.hsscript.utils.main.MeasureApplication;
@@ -99,6 +103,14 @@ public class AdvancedSettingsController implements Initializable {
 //        监听控制开关
         controlMode.statusProperty().addListener((observable, oldValue, newValue) -> {
             ConfigUtil.INSTANCE.putBoolean(ConfigEnum.CONTROL_MODE, newValue, true);
+            if (newValue){
+                SystemDll.INSTANCE.uninstallDll(ScriptDataKt.getGAME_HWND());
+            }else {
+                AbstractStarter nextStarter = InjectStarter.INSTANCE.getNextStarter();
+                InjectStarter.INSTANCE.setNextStarter(null);
+                InjectStarter.INSTANCE.start();
+                InjectStarter.INSTANCE.setNextStarter(nextStarter);
+            }
         });
 //        监听发送通知开关
         sendNotice.statusProperty().addListener((observable, oldValue, newValue) -> {

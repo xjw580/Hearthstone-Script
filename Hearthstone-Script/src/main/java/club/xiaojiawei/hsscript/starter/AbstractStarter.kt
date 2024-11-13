@@ -2,6 +2,7 @@ package club.xiaojiawei.hsscript.starter
 
 import club.xiaojiawei.config.log
 import club.xiaojiawei.hsscript.interfaces.closer.ScheduledCloser
+import club.xiaojiawei.hsscript.status.PauseStatus
 import club.xiaojiawei.hsscript.status.TaskManager
 import club.xiaojiawei.util.isFalse
 import java.util.concurrent.ScheduledFuture
@@ -26,8 +27,12 @@ abstract class AbstractStarter : ScheduledCloser {
         execStart()
     }
 
-    fun setNextStarter(nextStarter: AbstractStarter): AbstractStarter {
-        return nextStarter.also { this.nextStarter = it }
+    fun setNextStarter(nextStarter: AbstractStarter?): AbstractStarter {
+        return nextStarter?.also { this.nextStarter = it } ?: this
+    }
+
+    fun getNextStarter(): AbstractStarter? {
+        return nextStarter
     }
 
     fun stop() {
@@ -48,6 +53,11 @@ abstract class AbstractStarter : ScheduledCloser {
     protected fun startNextStarter() {
         stop()
         nextStarter?.start()
+    }
+
+    protected fun pause() {
+        stop()
+        PauseStatus.asyncSetPause(true)
     }
 
     override fun close() {
