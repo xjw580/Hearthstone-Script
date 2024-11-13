@@ -49,6 +49,8 @@
         <slf4j-version>2.0.9</slf4j-version>
         <logback-version>1.5.6</logback-version>
         <sqlite-version>3.47.0.0</sqlite-version>
+        <spring-jdbc-version>6.1.14</spring-jdbc-version>
+        <protobuf-version>4.28.3</protobuf-version>
 
         <jackson-version>2.18.0</jackson-version>
         <spring-boot-web-version>6.1.5</spring-boot-web-version>
@@ -106,6 +108,18 @@
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>com.google.protobuf</groupId>
+                <artifactId>protobuf-java</artifactId>
+                <version>${protobuf-version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-jdbc</artifactId>
+                <version>${spring-jdbc-version}</version>
+            </dependency>
+
             <dependency>
                 <groupId>org.xerial</groupId>
                 <artifactId>sqlite-jdbc</artifactId>
