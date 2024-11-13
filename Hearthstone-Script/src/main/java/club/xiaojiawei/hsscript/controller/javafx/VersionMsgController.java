@@ -29,8 +29,10 @@ public class VersionMsgController implements Initializable {
         version.setText(VersionUtil.INSTANCE.getVERSION());
 //        TODO 版本更新时修改！！！
         versionDescription.setText("""
-                1. 适配练习模式（套牌插件中添加RunModeEnum.PRACTICE即可支持）
-                2. 优化鼠标移动
+                1. 高级设置页增加控制模式
+                2. 适配所有皮肤的基础技能
+                3. 首页增加清空统计数据按钮
+                4. 卡牌插件SDK不兼容更改
                 """);
     }
 
