@@ -91,6 +91,6 @@ class HsCommonDeckStrategy : DeckStrategy() {
     }
 
     override fun executeDiscoverChooseCard(vararg cards: Card): Int {
-        return 0
+        return 1
     }
 }

@@ -183,12 +183,6 @@ enum class TagEnum(
         null
     ),
 
-    //    回合结束后值改变
-    NUM_TURNS_IN_PLAY(
-        "在本局呆的回合数",
-        null,
-        null
-    ),
     NUM_CARDS_DRAWN_THIS_TURN(
         "本回合抽牌数",
         null,
@@ -552,6 +546,22 @@ enum class TagEnum(
         ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
             extraEntity.extraCard.card.overload = value.toInt()
         }),
+    NUM_TURNS_IN_PLAY("在场上的回合数",
+        TagChangeHandler { card: Card?, tagChangeEntity: TagChangeEntity, player: Player?, area: Area? ->
+            card?.numTurnsInPlay = tagChangeEntity.value.toInt()
+            log(player, card, "在场上的回合数", tagChangeEntity.value, false)
+        },
+        ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
+            extraEntity.extraCard.card.numTurnsInPlay = value.toInt()
+        }),
+    NUM_TURNS_IN_HAND("在手上的回合数",
+        TagChangeHandler { card: Card?, tagChangeEntity: TagChangeEntity, player: Player?, area: Area? ->
+            card?.numTurnsInHand = tagChangeEntity.value.toInt()
+            log(player, card, "在手上的回合数", tagChangeEntity.value)
+        },
+        ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
+            extraEntity.extraCard.card.numTurnsInHand = value.toInt()
+        }),
 
     /*+++++++++++++++++++++++++++++++++++++++++++++++*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
     UNKNOWN(
@@ -574,20 +584,23 @@ enum class TagEnum(
 
 }
 
-private fun log(player: Player?, card: Card?, tagComment: String, value: Any) {
-    if (log.isDebugEnabled()) {
-        log.debug {
-            String.format(
-                "【玩家%s:%s，entityId:%s，entityName:%s，cardId:%s】的【%s】发生变化:%s",
-                player?.playerId,
-                player?.gameId,
-                card?.entityId,
-                card?.entityName,
-                card?.cardId,
-                tagComment,
-                value.toString()
-            )
+private fun log(player: Player?, card: Card?, tagComment: String, value: Any, isDebug: Boolean = true) {
+    val text = String.format(
+        "【玩家%s:%s，entityId:%s，entityName:%s，cardId:%s】的【%s】发生变化:%s",
+        player?.playerId,
+        player?.gameId,
+        card?.entityId,
+        card?.entityName,
+        card?.cardId,
+        tagComment,
+        value.toString()
+    )
+    if (isDebug) {
+        if (log.isDebugEnabled()){
+            log.debug { text }
         }
+    } else {
+        log.info { text }
     }
 }
 

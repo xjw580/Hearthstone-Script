@@ -215,7 +215,7 @@ open class BaseCard : Entity() {
     var isDormant = false
 
     /**
-     * 具有突袭词条的随从进入战场时此值改为true，回合结束变为false
+     * 具有突袭词条的随从进入战场时此值改为true，回合结束变为false，游戏日志对该tag的改变打印有2秒左右延迟，建议在打出突袭随从后多停顿一会
      */
     @Volatile
     var isAttackableByRush = false
@@ -280,6 +280,18 @@ open class BaseCard : Entity() {
      */
     @Volatile
     var overload = 0
+
+    /**
+     * 在场上的回合数，双方MAIN_READY阶段更新，首次进入战场该值为0
+     */
+    @Volatile
+    var numTurnsInPlay = 0
+
+    /**
+     * 在手上的回合数，我方MAIN_START和MAIN_NEXT阶段更新，首次进入手中该值为0
+     */
+    @Volatile
+    var numTurnsInHand = 0
 
 
     fun minusHealth(health: Int) {

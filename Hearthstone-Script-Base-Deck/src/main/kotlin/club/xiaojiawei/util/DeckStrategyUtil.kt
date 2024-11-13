@@ -18,7 +18,7 @@ import kotlin.math.min
  * @author 肖嘉威 xjw580@qq.com
  * @date 2024/9/13 17:39
  */
-private const val EXEC_ACTION: Boolean = true
+private const val EXEC_ACTION: Boolean = false
 
 private val MAX_INVERSION_CALC_COUNT = min(12, Runtime.getRuntime().availableProcessors())
 
@@ -146,7 +146,7 @@ object DeckStrategyUtil {
             if (it.isTitan) {
                 value += 0.5
             }
-            if (it.isTriggerVisual){
+            if (it.isTriggerVisual) {
                 value += 0.1
             }
             value += it.spellPower * 0.1
@@ -157,22 +157,22 @@ object DeckStrategyUtil {
         }
         val rivalCardWeightCalc: Function<Card, Double> = myCardWeightCalc
 
-        val myAtcWeightCalc: Function<Card, Double> = Function{
+        val myAtcWeightCalc: Function<Card, Double> = Function {
             var value = myAtcWeight
-            if (it.isLifesteal){
+            if (it.isLifesteal) {
                 value += 0.1
             }
-            if (it.isReborn){
+            if (it.isReborn) {
                 value -= max((5 - it.atc) / 10.0, 0.1)
             }
             value
         }
-        val rivalAtcWeightCalc: Function<Card, Double> = Function{
+        val rivalAtcWeightCalc: Function<Card, Double> = Function {
             var value = rivalAtcWeight
-            if (it.isLifesteal){
+            if (it.isLifesteal) {
                 value += 0.1
             }
-            if (it.isReborn){
+            if (it.isReborn) {
                 value -= max((5 - it.atc) / 10.0, 0.1)
             }
             value
@@ -412,7 +412,9 @@ object DeckStrategyUtil {
         if (myCard.canAttack(inversion)) {
             for (rivalCard in rivalCards) {
 //                敌方随从能被攻击，突袭无法攻击英雄
-                if (rivalCard.canBeAttacked(inversion) && !(rivalCard.card.cardType === CardTypeEnum.HERO && myCard.card.isAttackableByRush)) {
+                if (rivalCard.canBeAttacked(inversion)
+                    && !(rivalCard.card.cardType === CardTypeEnum.HERO && (myCard.card.isAttackableByRush || (myCard.card.isRush && myCard.card.numTurnsInPlay == 0)))
+                ) {
                     attack(
                         myCards,
                         rivalCards,
@@ -461,7 +463,7 @@ object DeckStrategyUtil {
 
         if (myCard.card.isImmuneWhileAttacking || myCard.card.isImmune) {
         } else if (myDivineShield) {
-            if (rivalCard.card.atc > 0){
+            if (rivalCard.card.atc > 0) {
                 myCard.isDivineShield = false
             }
         } else if (rivalCard.card.isPoisonous) {

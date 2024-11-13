@@ -55,25 +55,22 @@ fun main() {
     War.rival = War.player2
 
 //    test1()
-//    test2()
+    test2()
 //    test3()
 //    test4()
-    testTaunt()
+//    testTaunt()
     val me = War.player1
-    if (me == null){
-        return
-    }
     val cards = me.handArea.cards.toList()
-    println(cards)
+//    println(cards)
     val toMutableList = cards.toMutableList()
-    toMutableList.removeAll { card -> card.cardType != CardTypeEnum.MINION || card.isBattlecry }
+//    toMutableList.removeAll { card -> card.cardType != CardTypeEnum.MINION || card.isBattlecry }
 //    val (num, resultCards) = findClosestSum(toMutableList, 1)
-    println(toMutableList)
-    val (num, resultCards) = DeckStrategyUtil.calcPowerOrder(toMutableList, 0)
-    println(resultCards)
-    println(num)
+//    println(toMutableList)
+//    val (num, resultCards) = DeckStrategyUtil.calcPowerOrder(toMutableList, 0)
+//    println(resultCards)
+//    println(num)
 
-//    DeckStrategyUtil.cleanPlay()
+    DeckStrategyUtil.cleanPlay()
 //    DeckStrategyUtil.cleanTaunt()
 }
 
@@ -271,12 +268,22 @@ fun test1() {
 
 fun test2() {
     War.me?.let {
-        val card = Card(MyCardAction())
+        var card = Card(MyCardAction())
         card.apply {
             entityName = "m1"
             entityId = "m1"
-            atc = 5
-            health = 5
+            atc = 4
+            health = 2
+            cardType = CardTypeEnum.MINION
+            isAttackableByRush = true
+        }
+        it.playArea.add(card)
+        card = Card(MyCardAction())
+        card.apply {
+            entityName = "m2"
+            entityId = "m2"
+            atc = 2
+            health = 2
             cardType = CardTypeEnum.MINION
         }
         it.playArea.add(card)
@@ -287,9 +294,9 @@ fun test2() {
         card.apply {
             entityName = "r1"
             entityId = "r1"
-            atc = 5
-            health = 5
-            cardType = CardTypeEnum.MINION
+            atc = 0
+            health = 31
+            cardType = CardTypeEnum.HERO
         }
         it.playArea.add(card)
     }

@@ -106,10 +106,11 @@ public class AdvancedSettingsController implements Initializable {
             if (newValue){
                 SystemDll.INSTANCE.uninstallDll(ScriptDataKt.getGAME_HWND());
             }else {
-                AbstractStarter nextStarter = InjectStarter.INSTANCE.getNextStarter();
-                InjectStarter.INSTANCE.setNextStarter(null);
-                InjectStarter.INSTANCE.start();
-                InjectStarter.INSTANCE.setNextStarter(nextStarter);
+                InjectStarter instance = InjectStarter.INSTANCE;
+                AbstractStarter nextStarter = instance.getNextStarter();
+                instance.setNextStarter(null);
+                instance.start();
+                instance.setNextStarter(nextStarter);
             }
         });
 //        监听发送通知开关
