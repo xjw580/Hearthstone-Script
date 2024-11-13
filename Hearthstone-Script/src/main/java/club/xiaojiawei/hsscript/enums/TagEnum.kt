@@ -549,7 +549,7 @@ enum class TagEnum(
     NUM_TURNS_IN_PLAY("在场上的回合数",
         TagChangeHandler { card: Card?, tagChangeEntity: TagChangeEntity, player: Player?, area: Area? ->
             card?.numTurnsInPlay = tagChangeEntity.value.toInt()
-            log(player, card, "在场上的回合数", tagChangeEntity.value, false)
+            log(player, card, "在场上的回合数", tagChangeEntity.value)
         },
         ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
             extraEntity.extraCard.card.numTurnsInPlay = value.toInt()

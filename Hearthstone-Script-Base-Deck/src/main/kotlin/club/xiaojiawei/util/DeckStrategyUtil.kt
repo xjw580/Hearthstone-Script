@@ -18,7 +18,7 @@ import kotlin.math.min
  * @author 肖嘉威 xjw580@qq.com
  * @date 2024/9/13 17:39
  */
-private const val EXEC_ACTION: Boolean = false
+private const val EXEC_ACTION: Boolean = true
 
 private val MAX_INVERSION_CALC_COUNT = min(12, Runtime.getRuntime().availableProcessors())
 
