@@ -16,9 +16,3 @@
 .list-view-ui .list-cell:selected #Labelname {
     -fx-text-fill: black;
 }
-
-.split-pane *.split-pane-divider {
-    -fx-background-color: white;
-    -fx-border-color: #d3d3d3;
-    -fx-border-width: 0 0 0 1;
-}

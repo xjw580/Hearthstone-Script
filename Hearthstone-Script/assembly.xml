@@ -43,6 +43,7 @@
             <outputDirectory/>
             <includes>
                 <include>*.md</include>
+                <include>*.db</include>
                 <include>LICENSE*</include>
             </includes>
         </fileSet>

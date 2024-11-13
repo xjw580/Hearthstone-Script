@@ -17,3 +17,11 @@
     /*-fx-font-size: 12;*/
     /*-fx-alignment: CENTER_LEFT;*/
 }
+.split-pane-line *.split-pane-divider {
+    -fx-background-color: white;
+    -fx-border-color: #d3d3d3;
+    -fx-border-width: 0 0 0 1;
+}
+.split-pane-line {
+    -fx-background: white
+}

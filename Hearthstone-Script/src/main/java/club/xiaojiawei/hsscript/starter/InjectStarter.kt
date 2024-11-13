@@ -2,6 +2,7 @@ package club.xiaojiawei.hsscript.starter
 
 import club.xiaojiawei.config.log
 import club.xiaojiawei.hsscript.consts.DLL_PATH
+import club.xiaojiawei.hsscript.consts.GAME_HWND
 import club.xiaojiawei.hsscript.consts.GAME_US_NAME
 import club.xiaojiawei.hsscript.consts.PROJECT_NAME
 import club.xiaojiawei.hsscript.consts.SCRIPT_NAME
@@ -28,7 +29,7 @@ object InjectStarter : AbstractStarter() {
     public override fun execStart() {
         val controlMode = ConfigUtil.getBoolean(ConfigEnum.CONTROL_MODE)
         log.info { "控制模式：${controlMode}" }
-        if (!(controlMode || injectCheck())) {
+        if (!(controlMode || GAME_HWND == null || injectCheck())) {
             pause()
             return
         }

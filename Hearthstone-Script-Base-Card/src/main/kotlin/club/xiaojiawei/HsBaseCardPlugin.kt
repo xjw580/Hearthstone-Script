@@ -15,7 +15,9 @@ class HsBaseCardPlugin : CardPlugin {
     }
 
     override fun description(): String {
-        return "捆绑"
+        return """
+            捆绑。包含对基础英雄技能的适配
+        """.trimIndent()
     }
 
     override fun id(): String {

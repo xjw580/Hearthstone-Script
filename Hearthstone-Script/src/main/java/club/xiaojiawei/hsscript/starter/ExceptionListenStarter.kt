@@ -46,10 +46,11 @@ object ExceptionListenStarter : AbstractStarter() {
                 closeListener()
                 return@LogRunnable
             }
-            if (System.currentTimeMillis() - lastActiveTime > ConfigUtil.getLong(ConfigEnum.IDLE_MAXIMUM_TIME) * 60_000L
+            val idleTime = ConfigUtil.getLong(ConfigEnum.IDLE_MAXIMUM_TIME)
+            if (System.currentTimeMillis() - lastActiveTime > idleTime * 60_000L
             ) {
                 lastActiveTime = System.currentTimeMillis()
-                log.info { "监听到长时间无作为，准备重启游戏" }
+                log.info { "空闲时间超过${idleTime}分钟，准备重启游戏" }
                 Core.restart()
             }
         }, 0, 1, TimeUnit.MINUTES)

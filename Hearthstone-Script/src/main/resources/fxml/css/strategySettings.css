@@ -1,1 +1,5 @@
 @import "settings.css";
+
+.control-btn{
+    -fx-background-color: rgba(128, 128, 128, 0.5)
+}
