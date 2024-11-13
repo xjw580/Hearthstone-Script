@@ -12,6 +12,7 @@ import club.xiaojiawei.hsscript.status.DeckStrategyManager
 import club.xiaojiawei.hsscript.status.Mode
 import club.xiaojiawei.hsscript.status.PauseStatus
 import club.xiaojiawei.hsscript.strategy.AbstractModeStrategy
+import club.xiaojiawei.hsscript.strategy.DeckStrategyActuator.deckStrategy
 import club.xiaojiawei.hsscript.strategy.mode.TournamentModeStrategy.BACK_RECT
 import club.xiaojiawei.hsscript.utils.SystemUtil
 import java.util.concurrent.TimeUnit
@@ -45,10 +46,9 @@ object AdventureModeStrategy : AbstractModeStrategy<Any?>() {
 
     override fun afterEnter(t: Any?) {
         if (WorkListener.isDuringWorkDate()) {
-            val deckStrategy = DeckStrategyManager.currentDeckStrategy
-            if (deckStrategy == null) {
-                SystemUtil.notice("未选择卡组")
-                log.info { "未选择卡组" }
+            val deckStrategy = DeckStrategyManager.currentDeckStrategy ?: let {
+                SystemUtil.notice("未配置卡组策略")
+                log.warn { "未配置卡组策略" }
                 PauseStatus.isPause = true
                 return
             }

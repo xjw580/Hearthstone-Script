@@ -27,6 +27,7 @@ public class VersionMsgController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         version.setText(VersionUtil.INSTANCE.getVERSION());
+//        TODO 版本更新时修改！！！
         versionDescription.setText("""
                 1. 适配练习模式（套牌插件中添加RunModeEnum.PRACTICE即可支持）
                 2. 优化鼠标移动

@@ -78,8 +78,8 @@ object TournamentModeStrategy : AbstractModeStrategy<Any?>() {
         if (WorkListener.isDuringWorkDate()) {
             val deckStrategy = DeckStrategyManager.currentDeckStrategy
             if (deckStrategy == null) {
-                SystemUtil.notice("未选择卡组")
-                log.info { "未选择卡组" }
+                SystemUtil.notice("未配置卡组策略")
+                log.warn { "未配置卡组策略" }
                 PauseStatus.isPause = true
                 return
             }
@@ -129,15 +129,13 @@ object TournamentModeStrategy : AbstractModeStrategy<Any?>() {
         }
     }
 
-    fun selectDeck(deckStrategy: DeckStrategy?) {
-        if (deckStrategy != null) {
-            val decks: List<Deck> = DECKS
-            for (i in decks.indices.reversed()) {
-                val d = decks[i]
-                if (d.code == deckStrategy.deckCode() || d.name == deckStrategy.name()) {
-                    log.info { "找到套牌:" + deckStrategy.name() }
-                    break
-                }
+    fun selectDeck(deckStrategy: DeckStrategy) {
+        val decks: List<Deck> = DECKS
+        for (i in decks.indices.reversed()) {
+            val d = decks[i]
+            if (d.code == deckStrategy.deckCode() || d.name == deckStrategy.name()) {
+                log.info { "找到套牌:" + deckStrategy.name() }
+                break
             }
         }
         log.info { "选择套牌" }

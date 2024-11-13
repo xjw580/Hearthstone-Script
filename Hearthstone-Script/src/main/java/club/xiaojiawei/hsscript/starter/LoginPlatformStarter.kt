@@ -38,7 +38,7 @@ object LoginPlatformStarter : AbstractStarter() {
                 if ((GameUtil.findLoginPlatformHWND().also { loginPlatformHWND = it }) == null) {
                     startNextStarter()
                 } else {
-                    if (loginCount.incrementAndGet() > 400) {
+                    if (loginCount.incrementAndGet() > 10) {
                         log.warn { "登录战网失败次数过多，重新执行启动器链" }
                         stop()
                         EXTRA_THREAD_POOL.schedule({
@@ -53,7 +53,7 @@ object LoginPlatformStarter : AbstractStarter() {
                     SystemUtil.delayShort()
                     clickLoginButton(loginPlatformHWND)
                 }
-            }, 5, 100, TimeUnit.MILLISECONDS)
+            }, 1000, 5000, TimeUnit.MILLISECONDS)
         )
     }
 

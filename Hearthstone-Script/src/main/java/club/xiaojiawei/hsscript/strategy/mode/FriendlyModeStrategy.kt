@@ -1,8 +1,10 @@
 package club.xiaojiawei.hsscript.strategy.mode
 
+import club.xiaojiawei.config.log
 import club.xiaojiawei.hsscript.status.DeckStrategyManager
 import club.xiaojiawei.hsscript.listener.WorkListener
 import club.xiaojiawei.hsscript.listener.log.PowerLogListener
+import club.xiaojiawei.hsscript.status.PauseStatus
 import club.xiaojiawei.hsscript.strategy.AbstractModeStrategy
 import club.xiaojiawei.hsscript.utils.SystemUtil
 
@@ -20,9 +22,15 @@ object FriendlyModeStrategy : AbstractModeStrategy<Any?>() {
             if (!PowerLogListener.checkPowerLogSize()) {
                 return
             }
-            TournamentModeStrategy.selectDeck(DeckStrategyManager.currentDeckStrategy)
-            SystemUtil.delayShort()
-            TournamentModeStrategy.startMatching()
+            DeckStrategyManager.currentDeckStrategy?.let {
+                TournamentModeStrategy.selectDeck(it)
+                SystemUtil.delayShort()
+                TournamentModeStrategy.startMatching()
+            } ?: let {
+                SystemUtil.notice("未配置卡组策略")
+                log.warn { "未配置卡组策略" }
+                PauseStatus.isPause = true
+            }
         } else {
             WorkListener.stopWork()
         }

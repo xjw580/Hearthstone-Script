@@ -48,9 +48,9 @@ object GameModeModeStrategy : AbstractModeStrategy<Any?>() {
     override fun afterEnter(t: Any?) {
         DeckStrategyManager.currentDeckStrategy?.let {
             if (it.runModes.isEmpty()) {
-                SystemUtil.notice("未配置卡组")
-                log.error { "未配置卡组" }
-                PauseStatus.isPause = false
+                SystemUtil.notice("当前卡组策略不允许运行在任何模式中")
+                log.warn { "当前卡组策略不允许运行在任何模式中" }
+                PauseStatus.isPause = true
                 return
             }
             when (it.runModes[0]) {
@@ -70,6 +70,10 @@ object GameModeModeStrategy : AbstractModeStrategy<Any?>() {
                     }, 0, 1000, TimeUnit.MILLISECONDS))
                 }
             }
+        }?:let {
+            SystemUtil.notice("未配置卡组策略")
+            log.warn { "未配置卡组策略" }
+            PauseStatus.isPause = true
         }
     }
 
