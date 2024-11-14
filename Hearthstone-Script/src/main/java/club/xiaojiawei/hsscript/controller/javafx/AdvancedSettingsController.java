@@ -3,7 +3,7 @@ package club.xiaojiawei.hsscript.controller.javafx;
 import club.xiaojiawei.controls.NotificationManager;
 import club.xiaojiawei.controls.Switch;
 import club.xiaojiawei.hsscript.bean.HotKey;
-import club.xiaojiawei.hsscript.consts.ScriptDataKt;
+import club.xiaojiawei.hsscript.data.ScriptDataKt;
 import club.xiaojiawei.hsscript.dll.SystemDll;
 import club.xiaojiawei.hsscript.enums.ConfigEnum;
 import club.xiaojiawei.hsscript.listener.GlobalHotkeyListener;

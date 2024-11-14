@@ -13,7 +13,7 @@ import java.util.ResourceBundle;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import static club.xiaojiawei.hsscript.consts.ScriptDataKt.SCRIPT_NAME;
+import static club.xiaojiawei.hsscript.data.ScriptDataKt.SCRIPT_NAME;
 
 /**
  * @author 肖嘉威

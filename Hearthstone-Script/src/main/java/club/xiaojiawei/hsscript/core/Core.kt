@@ -3,17 +3,16 @@ package club.xiaojiawei.hsscript.core
 import club.xiaojiawei.config.CORE_THREAD_POOL
 import club.xiaojiawei.config.log
 import club.xiaojiawei.hsscript.config.StarterConfig
-import club.xiaojiawei.hsscript.consts.GAME_CN_NAME
-import club.xiaojiawei.hsscript.consts.GAME_HWND
-import club.xiaojiawei.hsscript.consts.PLATFORM_CN_NAME
-import club.xiaojiawei.hsscript.consts.setPath
+import club.xiaojiawei.hsscript.data.GAME_CN_NAME
+import club.xiaojiawei.hsscript.data.GAME_HWND
+import club.xiaojiawei.hsscript.data.PLATFORM_CN_NAME
+import club.xiaojiawei.hsscript.data.haveProgramPath
 import club.xiaojiawei.hsscript.dll.SystemDll
 import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.enums.WindowEnum
 import club.xiaojiawei.hsscript.listener.WorkListener
 import club.xiaojiawei.hsscript.status.Mode
 import club.xiaojiawei.hsscript.status.PauseStatus
-import club.xiaojiawei.hsscript.strategy.AbstractModeStrategy
 import club.xiaojiawei.hsscript.utils.ConfigUtil
 import club.xiaojiawei.hsscript.utils.GameUtil
 import club.xiaojiawei.hsscript.utils.SystemUtil
@@ -59,7 +58,7 @@ object Core {
         CORE_THREAD_POOL.execute {
             synchronized(Core.javaClass) {
                 if (WorkListener.working) return@execute
-                if (!setPath) {
+                if (!haveProgramPath) {
                     SystemUtil.notice("需要配置" + GAME_CN_NAME + "和" + PLATFORM_CN_NAME + "的路径")
                     platformRunLater { WindowUtil.showStage(WindowEnum.SETTINGS) }
                     PauseStatus.isPause = true

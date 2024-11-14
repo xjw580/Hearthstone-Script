@@ -1,4 +1,4 @@
-package club.xiaojiawei.hsscript.consts
+package club.xiaojiawei.hsscript.data
 
 import java.nio.file.Path
 
@@ -21,6 +21,8 @@ val RESOURCE_PATH: String = Path.of(ROOT_PATH, "resource").toString()
 val CONFIG_PATH: String = Path.of(ROOT_PATH, "config").toString()
 
 val PLUGIN_PATH: String = Path.of(ROOT_PATH, "plugin").toString()
+
+val WEIGHT_CONFIG_PATH = Path.of(CONFIG_PATH, "card.weight");
 
 const val FXML_PATH: String = "/fxml/"
 

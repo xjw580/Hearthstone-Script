@@ -5,12 +5,13 @@ import club.xiaojiawei.bean.LogRunnable
 import club.xiaojiawei.bean.LogThread
 import club.xiaojiawei.config.EXTRA_THREAD_POOL
 import club.xiaojiawei.config.log
+import club.xiaojiawei.data.CARD_WEIGHT_TRIE
 import club.xiaojiawei.hsscript.bean.CommonCardAction.Companion.DEFAULT
 import club.xiaojiawei.hsscript.bean.Release
 import club.xiaojiawei.hsscript.config.InitializerConfig
-import club.xiaojiawei.hsscript.consts.GAME_CN_NAME
-import club.xiaojiawei.hsscript.consts.MAIN_IMG_NAME
-import club.xiaojiawei.hsscript.consts.SCRIPT_NAME
+import club.xiaojiawei.hsscript.data.GAME_CN_NAME
+import club.xiaojiawei.hsscript.data.MAIN_IMG_NAME
+import club.xiaojiawei.hsscript.data.SCRIPT_NAME
 import club.xiaojiawei.hsscript.controller.javafx.StartupController
 import club.xiaojiawei.hsscript.core.Core
 import club.xiaojiawei.hsscript.dll.SystemDll
@@ -21,6 +22,7 @@ import club.xiaojiawei.hsscript.listener.VersionListener
 import club.xiaojiawei.hsscript.listener.WorkListener
 import club.xiaojiawei.hsscript.status.PauseStatus
 import club.xiaojiawei.hsscript.status.TaskManager
+import club.xiaojiawei.hsscript.utils.CardUtil
 import club.xiaojiawei.hsscript.utils.ConfigUtil
 import club.xiaojiawei.hsscript.utils.GameUtil
 import club.xiaojiawei.hsscript.utils.SystemUtil
@@ -148,6 +150,7 @@ class MainApplication : Application() {
                 GlobalHotkeyListener.register()
                 VersionListener.launch()
                 WorkListener.launch()
+                CardUtil.reloadCardWeight()
 
                 platformRunLater { StartupController.complete() }
 

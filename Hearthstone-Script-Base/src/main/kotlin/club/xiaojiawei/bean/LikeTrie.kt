@@ -1,11 +1,17 @@
-package club.xiaojiawei.hsscript.bean
+package club.xiaojiawei.bean
 
 /**
  * # Trie树
  * @author 肖嘉威
  * @date 2024/11/12 9:32
  */
-class LikeTrie<V> {
+class LikeTrie<V>() {
+
+    constructor(defaultValue: V) : this() {
+        this.defaultValue = defaultValue
+    }
+
+    private var defaultValue: V? = null
 
     private val root = TrieNode<V>()
 
@@ -31,10 +37,20 @@ class LikeTrie<V> {
         currentNode.value = value
     }
 
+    fun clear(){
+        root.children.clear()
+        root.value = null
+        root.regPattern.clear()
+    }
+
+    fun getOrDefault(key: String, defaultValue: V): V {
+        return getHelper(root, key.lowercase(), 0) ?: defaultValue
+    }
+
     /**
-     * 通配符%表示0至2个字符（26个小写字母加10个阿拉伯数字）
+     * 通配符%表示任意个字符
      */
-    operator fun get(pattern: String): V? = getHelper(root, pattern.lowercase(), 0)
+    operator fun get(key: String): V? = getHelper(root, key.lowercase(), 0) ?: this.defaultValue
 
     private fun getHelper(node: TrieNode<V>, str: String, index: Int): V? {
         if (index == str.length) {

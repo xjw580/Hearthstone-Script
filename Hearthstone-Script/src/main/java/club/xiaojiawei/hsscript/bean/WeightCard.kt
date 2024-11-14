@@ -9,12 +9,14 @@ import javafx.beans.property.SimpleDoubleProperty
  */
 class WeightCard() {
 
-    constructor(cardId: String, weight: Double) : this() {
+    constructor(cardId: String, name: String, weight: Double) : this() {
         this.cardId = cardId
+        this.name = name
         this.weight = weight
     }
 
     var cardId: String = ""
+    var name: String = ""
 
     @JsonIgnore
     val weightProperty = SimpleDoubleProperty(0.0)

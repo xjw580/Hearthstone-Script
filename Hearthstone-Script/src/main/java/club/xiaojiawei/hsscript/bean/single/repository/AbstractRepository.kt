@@ -1,8 +1,8 @@
 package club.xiaojiawei.hsscript.bean.single.repository
 
 import club.xiaojiawei.hsscript.bean.Release
-import club.xiaojiawei.hsscript.consts.PROJECT_NAME
-import club.xiaojiawei.hsscript.consts.SCRIPT_NAME
+import club.xiaojiawei.hsscript.data.PROJECT_NAME
+import club.xiaojiawei.hsscript.data.SCRIPT_NAME
 import org.springframework.web.client.RestTemplate
 
 /**

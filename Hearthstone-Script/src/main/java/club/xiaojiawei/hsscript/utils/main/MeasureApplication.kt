@@ -1,6 +1,6 @@
 package club.xiaojiawei.hsscript.utils.main
 
-import club.xiaojiawei.hsscript.consts.GameRationConst
+import club.xiaojiawei.hsscript.data.GameRationConst
 import club.xiaojiawei.hsscript.dll.SystemDll
 import club.xiaojiawei.hsscript.utils.GameUtil.findGameHWND
 import club.xiaojiawei.hsscript.utils.SystemUtil

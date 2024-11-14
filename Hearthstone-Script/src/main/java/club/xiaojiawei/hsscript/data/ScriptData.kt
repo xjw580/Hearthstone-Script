@@ -1,8 +1,7 @@
-package club.xiaojiawei.hsscript.consts
+package club.xiaojiawei.hsscript.data
 
 import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.utils.ConfigUtil
-import com.sun.jna.WString
 import com.sun.jna.platform.win32.WinDef
 import com.sun.jna.platform.win32.WinDef.HWND
 import java.awt.Robot
@@ -16,7 +15,7 @@ import java.awt.Robot
 /**
  * 是否设置了炉石和战网的路径
  */
-var setPath = true
+var haveProgramPath = true
 
 /**
  * 游戏窗口句柄

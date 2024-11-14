@@ -23,7 +23,7 @@ import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import static club.xiaojiawei.hsscript.consts.ScriptDataKt.*;
+import static club.xiaojiawei.hsscript.data.ScriptDataKt.*;
 
 
 /**
@@ -100,7 +100,7 @@ public class InitSettingsController implements Initializable {
             initValue();
             return false;
         }
-        setSetPath(true);
+        setHaveProgramPath(true);
         return true;
     }
 

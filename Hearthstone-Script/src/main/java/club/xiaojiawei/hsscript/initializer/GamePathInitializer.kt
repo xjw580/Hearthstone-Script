@@ -1,11 +1,11 @@
 package club.xiaojiawei.hsscript.initializer
 
 import club.xiaojiawei.config.log
-import club.xiaojiawei.hsscript.consts.GAME_CN_NAME
-import club.xiaojiawei.hsscript.consts.GAME_US_NAME
-import club.xiaojiawei.hsscript.consts.PLATFORM_CN_NAME
-import club.xiaojiawei.hsscript.consts.PLATFORM_US_NAME
-import club.xiaojiawei.hsscript.consts.setPath
+import club.xiaojiawei.hsscript.data.GAME_CN_NAME
+import club.xiaojiawei.hsscript.data.GAME_US_NAME
+import club.xiaojiawei.hsscript.data.PLATFORM_CN_NAME
+import club.xiaojiawei.hsscript.data.PLATFORM_US_NAME
+import club.xiaojiawei.hsscript.data.haveProgramPath
 import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.enums.RegCommonNameEnum
 import club.xiaojiawei.hsscript.utils.ConfigExUtil
@@ -20,7 +20,7 @@ import club.xiaojiawei.hsscript.utils.SystemUtil
 object GamePathInitializer : AbstractInitializer() {
 
     public override fun exec() {
-        setPath = true
+        haveProgramPath = true
 
         var platformInstallLocation: String?
         if (ConfigUtil.getString(ConfigEnum.PLATFORM_PATH).isBlank()) {
@@ -43,7 +43,7 @@ object GamePathInitializer : AbstractInitializer() {
                             PLATFORM_CN_NAME
                         )
                     }
-                    setPath = false
+                    haveProgramPath = false
                 }
             } else {
                 log.warn {
@@ -52,7 +52,7 @@ object GamePathInitializer : AbstractInitializer() {
                         PLATFORM_CN_NAME
                     )
                 }
-                setPath = false
+                haveProgramPath = false
             }
         }
 
@@ -74,7 +74,7 @@ object GamePathInitializer : AbstractInitializer() {
                             GAME_CN_NAME
                         )
                     }
-                    setPath = false
+                    haveProgramPath = false
                 }
             } else {
                 log.warn {
@@ -83,7 +83,7 @@ object GamePathInitializer : AbstractInitializer() {
                         GAME_CN_NAME
                     )
                 }
-                setPath = false
+                haveProgramPath = false
             }
         }
     }

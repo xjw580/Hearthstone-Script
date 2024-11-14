@@ -1,8 +1,8 @@
 package club.xiaojiawei.hsscript.utils
 
 import club.xiaojiawei.JavaFXUI
-import club.xiaojiawei.hsscript.consts.FXML_PATH
-import club.xiaojiawei.hsscript.consts.SCRIPT_ICON_PATH
+import club.xiaojiawei.hsscript.data.FXML_PATH
+import club.xiaojiawei.hsscript.data.SCRIPT_ICON_PATH
 import club.xiaojiawei.hsscript.enums.WindowEnum
 import club.xiaojiawei.hsscript.utils.SystemUtil.findHWND
 import club.xiaojiawei.hsscript.utils.SystemUtil.showWindow
@@ -12,6 +12,7 @@ import javafx.event.ActionEvent
 import javafx.event.EventHandler
 import javafx.fxml.FXMLLoader
 import javafx.geometry.Pos
+import javafx.scene.Node
 import javafx.scene.Scene
 import javafx.scene.control.Button
 import javafx.scene.control.Label
@@ -128,7 +129,7 @@ object WindowUtil {
     }
 
 
-    fun showStage(windowEnum: WindowEnum, owner : Window? = null) {
+    fun showStage(windowEnum: WindowEnum, owner: Window? = null) {
         var stage = getStage(windowEnum)
         if (stage == null) {
             stage = buildStage(windowEnum)
@@ -176,6 +177,16 @@ object WindowUtil {
             STAGE_MAP[windowEnum] = stage
         }
         return stage
+    }
+
+    fun loadRoot(windowEnum: WindowEnum): Node {
+        try {
+            val fxmlLoader =
+                FXMLLoader(WindowUtil::class.java.getResource(FXML_PATH + windowEnum.fxmlName))
+            return fxmlLoader.load<Node>()
+        } catch (e: IOException) {
+            throw RuntimeException(e)
+        }
     }
 
     private fun createStage(windowEnum: WindowEnum): Stage {

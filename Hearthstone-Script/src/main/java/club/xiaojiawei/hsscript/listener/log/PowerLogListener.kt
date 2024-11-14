@@ -4,8 +4,8 @@ import club.xiaojiawei.config.log
 import club.xiaojiawei.enums.StepEnum
 import club.xiaojiawei.enums.WarPhaseEnum
 import club.xiaojiawei.hsscript.bean.single.WarEx
-import club.xiaojiawei.hsscript.consts.MAX_LOG_SIZE_B
-import club.xiaojiawei.hsscript.consts.MAX_LOG_SIZE_KB
+import club.xiaojiawei.hsscript.data.MAX_LOG_SIZE_B
+import club.xiaojiawei.hsscript.data.MAX_LOG_SIZE_KB
 import club.xiaojiawei.hsscript.core.Core
 import club.xiaojiawei.hsscript.listener.WorkListener
 import club.xiaojiawei.hsscript.status.PauseStatus

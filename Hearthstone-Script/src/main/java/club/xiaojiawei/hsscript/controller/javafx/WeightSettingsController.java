@@ -5,7 +5,8 @@ import club.xiaojiawei.controls.NotificationManager;
 import club.xiaojiawei.controls.NumberField;
 import club.xiaojiawei.hsscript.bean.DBCard;
 import club.xiaojiawei.hsscript.bean.WeightCard;
-import club.xiaojiawei.hsscript.consts.PathDataKt;
+import club.xiaojiawei.hsscript.data.PathDataKt;
+import club.xiaojiawei.hsscript.utils.CardUtil;
 import club.xiaojiawei.hsscript.utils.DBUtil;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -46,7 +47,8 @@ import java.util.stream.IntStream;
  */
 public class WeightSettingsController implements Initializable {
 
-    private static final Logger log = LoggerFactory.getLogger(WeightSettingsController.class);
+//    private static final Logger log = LoggerFactory.getLogger(WeightSettingsController.class);
+
     @FXML
     protected NumberField limit;
     @FXML
@@ -78,6 +80,8 @@ public class WeightSettingsController implements Initializable {
     @FXML
     protected TableColumn<WeightCard, String> weightCardIdCol;
     @FXML
+    protected TableColumn<WeightCard, String> weightNameCol;
+    @FXML
     protected TableColumn<WeightCard, Number> weightCol;
     @FXML
     protected NotificationManager<String> notificationManager;
@@ -86,14 +90,11 @@ public class WeightSettingsController implements Initializable {
 
     private int currentOffset = 0;
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
-
     private static final Path WEIGHT_CONFIG_PATH = Path.of(PathDataKt.getCONFIG_PATH(), "card.weight");
 
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
         initTable();
         searchCardField.setOnFilterAction(text -> {
             if (text == null || text.isEmpty()) {
@@ -114,6 +115,11 @@ public class WeightSettingsController implements Initializable {
             }
             currentOffset = offset;
             cardTable.getItems().setAll(DBUtil.INSTANCE.queryCardByName(text, limit, offset));
+        });
+        weightTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                searchCardField.setText(newValue.getName());
+            }
         });
         readWeightConfig();
     }
@@ -137,6 +143,7 @@ public class WeightSettingsController implements Initializable {
         weightTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         weightTable.setEditable(true);
         weightCardIdCol.setCellValueFactory(new PropertyValueFactory<>("cardId"));
+        weightNameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
         weightCol.setCellValueFactory(o -> o.getValue().getWeightProperty());
         StringConverter<Number> stringConverter = new StringConverter<>() {
             @Override
@@ -154,25 +161,18 @@ public class WeightSettingsController implements Initializable {
             public void commitEdit(Number number) {
                 super.commitEdit(number);
                 saveWeightConfig();
+                notificationManager.showSuccess("修改权重成功", 2);
             }
         });
     }
 
     private void readWeightConfig(Path weigthPath) {
-        File file = weigthPath.toFile();
-        if (!file.exists()) return;
-        try {
-            List<WeightCard> cards = objectMapper.readValue(file, new TypeReference<>() {
-            });
-            HashSet<WeightCard> weightCards = new HashSet<>(weightTable.getItems());
-            for (WeightCard card : cards) {
-                if (!weightCards.contains(card)) {
-                    weightTable.getItems().add(card);
-                }
+        List<WeightCard> cards = CardUtil.INSTANCE.readWeightConfig(weigthPath);
+        HashSet<WeightCard> weightCards = new HashSet<>(weightTable.getItems());
+        for (WeightCard card : cards) {
+            if (!weightCards.contains(card)) {
+                weightTable.getItems().add(card);
             }
-        } catch (IOException e) {
-            log.error("反序列化权重文件异常", e);
-            notificationManager.showError("反序列化权重文件异常", 2);
         }
     }
 
@@ -181,29 +181,8 @@ public class WeightSettingsController implements Initializable {
     }
 
     private void saveWeightConfig(Path weigthPath) {
-        File file = weigthPath.toFile();
-        if (!file.exists()) {
-            try {
-                file.getParentFile().mkdirs();
-                file.createNewFile();
-            } catch (IOException e) {
-                log.error("权重文件创建异常," + file, e);
-                notificationManager.showError("权重文件创建异常", 2);
-                return;
-            }
-        }
-        try (FileChannel fileChannel = FileChannel.open(
-                weigthPath,
-                StandardOpenOption.CREATE,
-                StandardOpenOption.WRITE,
-                StandardOpenOption.TRUNCATE_EXISTING)
-        ) {
-            ByteBuffer buffer = ByteBuffer.wrap(objectMapper.writeValueAsBytes(weightTable.getItems()));
-            fileChannel.write(buffer);
-        } catch (IOException e) {
-            log.error("权重文件保存异常," + file, e);
-            notificationManager.showError("权重文件保存异常", 2);
-        }
+        CardUtil.INSTANCE.saveWeightConfig(weightTable.getItems(), weigthPath);
+        CardUtil.INSTANCE.reloadCardWeight(weightTable.getItems());
     }
 
     private void saveWeightConfig() {
@@ -248,25 +227,33 @@ public class WeightSettingsController implements Initializable {
     @FXML
     protected void addWeight(ActionEvent actionEvent) {
         ObservableList<DBCard> selectedItems = cardTable.getSelectionModel().getSelectedItems();
-        if (selectedItems.isEmpty()) return;
+        if (selectedItems.isEmpty()) {
+            notificationManager.showInfo("左边数据表没有选中行", 2);
+            return;
+        }
         ArrayList<DBCard> list = new ArrayList<>(selectedItems);
         HashSet<WeightCard> weightSet = new HashSet<>(weightTable.getItems());
         for (DBCard dbCard : list) {
-            WeightCard weightCard = new WeightCard(dbCard.getCardId(), 1.0);
+            WeightCard weightCard = new WeightCard(dbCard.getCardId(), dbCard.getName(), 1.0);
             if (!weightSet.contains(weightCard)) {
                 weightTable.getItems().add(weightCard);
             }
         }
         saveWeightConfig();
+        notificationManager.showSuccess("添加成功", 2);
     }
 
     @FXML
     protected void removeWeight(ActionEvent actionEvent) {
         ObservableList<WeightCard> selectedItems = weightTable.getSelectionModel().getSelectedItems();
-        if (selectedItems.isEmpty()) return;
+        if (selectedItems.isEmpty()) {
+            notificationManager.showInfo("右边权重表没有选中行", 2);
+            return;
+        }
         ArrayList<WeightCard> weightCards = new ArrayList<>(selectedItems);
         weightTable.getSelectionModel().clearSelection();
         weightTable.getItems().removeAll(weightCards);
         saveWeightConfig();
+        notificationManager.showSuccess("移除成功", 2);
     }
 }

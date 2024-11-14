@@ -1,4 +1,4 @@
-package club.xiaojiawei.hsscript.utils
+package club.xiaojiawei.util
 
 import java.util.*
 

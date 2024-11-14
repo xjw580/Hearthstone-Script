@@ -1,9 +1,9 @@
 package club.xiaojiawei.hsscript.bean
 
-import club.xiaojiawei.hsscript.consts.GAME_RECT
-import club.xiaojiawei.hsscript.consts.GameRationConst
+import club.xiaojiawei.hsscript.data.GAME_RECT
+import club.xiaojiawei.hsscript.data.GameRationConst
 import club.xiaojiawei.hsscript.utils.GameUtil
-import club.xiaojiawei.hsscript.utils.RandomUtil
+import club.xiaojiawei.util.RandomUtil
 import club.xiaojiawei.hsscript.utils.SystemUtil
 import java.awt.Point
 import java.util.ArrayList

@@ -1,4 +1,4 @@
-package club.xiaojiawei.hsscript.consts
+package club.xiaojiawei.hsscript.data
 
 import club.xiaojiawei.hsscript.bean.PureCard
 

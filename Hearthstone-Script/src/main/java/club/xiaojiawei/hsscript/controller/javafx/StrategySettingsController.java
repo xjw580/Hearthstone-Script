@@ -3,7 +3,7 @@ package club.xiaojiawei.hsscript.controller.javafx;
 import club.xiaojiawei.controls.NotificationManager;
 import club.xiaojiawei.controls.NumberField;
 import club.xiaojiawei.hsscript.bean.CommonCardAction;
-import club.xiaojiawei.hsscript.consts.ScriptDataKt;
+import club.xiaojiawei.hsscript.data.ScriptDataKt;
 import club.xiaojiawei.hsscript.enums.ConfigEnum;
 import club.xiaojiawei.hsscript.enums.WindowEnum;
 import club.xiaojiawei.hsscript.utils.ConfigUtil;

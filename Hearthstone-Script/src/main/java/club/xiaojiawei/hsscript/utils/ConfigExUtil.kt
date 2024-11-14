@@ -3,8 +3,8 @@ package club.xiaojiawei.hsscript.utils
 import club.xiaojiawei.hsscript.bean.HotKey
 import club.xiaojiawei.hsscript.bean.WorkDay
 import club.xiaojiawei.hsscript.bean.WorkTime
-import club.xiaojiawei.hsscript.consts.GAME_PROGRAM_NAME
-import club.xiaojiawei.hsscript.consts.PLATFORM_PROGRAM_NAME
+import club.xiaojiawei.hsscript.data.GAME_PROGRAM_NAME
+import club.xiaojiawei.hsscript.data.PLATFORM_PROGRAM_NAME
 import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.listener.WorkListener
 import java.io.File

@@ -8,9 +8,6 @@ import club.xiaojiawei.enums.ModeEnum
 import club.xiaojiawei.enums.RunModeEnum
 import club.xiaojiawei.hsscript.bean.Deck
 import club.xiaojiawei.hsscript.bean.GameRect
-import club.xiaojiawei.hsscript.consts.MAX_LOG_SIZE_B
-import club.xiaojiawei.hsscript.consts.MAX_LOG_SIZE_KB
-import club.xiaojiawei.hsscript.core.Core
 import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.listener.WorkListener
 import club.xiaojiawei.hsscript.listener.log.DeckLogListener.DECKS

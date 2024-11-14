@@ -6,7 +6,7 @@ package club.xiaojiawei.hsscript.bean
  */
 data class DBCard(
     var cardId: String = "",
-    var name: String? = null,
+    var name: String = "",
     var attack: Int? = null,
     var health: Int? = null,
     var cost: Int? = null,

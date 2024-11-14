@@ -8,8 +8,8 @@ import club.xiaojiawei.hsscript.bean.Release
 import club.xiaojiawei.hsscript.bean.single.repository.AbstractRepository
 import club.xiaojiawei.hsscript.bean.single.repository.GiteeRepository
 import club.xiaojiawei.hsscript.bean.single.repository.GithubRepository
-import club.xiaojiawei.hsscript.consts.MAIN_PATH
-import club.xiaojiawei.hsscript.consts.TEMP_VERSION_PATH
+import club.xiaojiawei.hsscript.data.MAIN_PATH
+import club.xiaojiawei.hsscript.data.TEMP_VERSION_PATH
 import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.enums.VersionTypeEnum
 import club.xiaojiawei.hsscript.status.PauseStatus

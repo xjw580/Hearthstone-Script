@@ -2,18 +2,19 @@ package club.xiaojiawei.hsscript.utils
 
 import club.xiaojiawei.bean.LogRunnable
 import club.xiaojiawei.config.log
-import club.xiaojiawei.hsscript.consts.FXML_IMAGE_PATH
-import club.xiaojiawei.hsscript.consts.GAME_HWND
-import club.xiaojiawei.hsscript.consts.MAIN_IMG_NAME
-import club.xiaojiawei.hsscript.consts.RESOURCE_PATH
-import club.xiaojiawei.hsscript.consts.ROBOT
-import club.xiaojiawei.hsscript.consts.SCRIPT_NAME
+import club.xiaojiawei.hsscript.data.FXML_IMAGE_PATH
+import club.xiaojiawei.hsscript.data.GAME_HWND
+import club.xiaojiawei.hsscript.data.MAIN_IMG_NAME
+import club.xiaojiawei.hsscript.data.RESOURCE_PATH
+import club.xiaojiawei.hsscript.data.ROBOT
+import club.xiaojiawei.hsscript.data.SCRIPT_NAME
 import club.xiaojiawei.hsscript.custom.MouseClickListener
 import club.xiaojiawei.hsscript.dll.NoticeDll
 import club.xiaojiawei.hsscript.dll.SystemDll
 import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.enums.RegCommonNameEnum
 import club.xiaojiawei.hsscript.status.PauseStatus
+import club.xiaojiawei.util.RandomUtil
 import club.xiaojiawei.util.isTrue
 import com.sun.jna.platform.win32.*
 import javafx.application.Platform
@@ -97,6 +98,7 @@ object SystemUtil {
         }
     }
 
+    @Deprecated("")
     fun deleteAllContent() {
         ROBOT.keyPress(KeyEvent.VK_CONTROL)
         sendKey(KeyEvent.VK_A)
@@ -105,12 +107,14 @@ object SystemUtil {
         sendKey(KeyEvent.VK_DELETE)
     }
 
+    @Deprecated("")
     fun pasteFromClipboard() {
         ROBOT.keyPress(KeyEvent.VK_CONTROL)
         sendKey(KeyEvent.VK_V)
         ROBOT.keyRelease(KeyEvent.VK_CONTROL)
     }
 
+    @Deprecated("")
     fun sendKey(keyCode: Int) {
         ROBOT.keyPress(keyCode)
         ROBOT.keyRelease(keyCode)
@@ -216,7 +220,6 @@ object SystemUtil {
         ROBOT.keyRelease(18)
         log.info { "已关闭程序" }
     }
-
 
     fun isAliveOfProgram(programName: String): Boolean {
         return String(

@@ -1,16 +1,14 @@
 package club.xiaojiawei.hsscript.starter
 
 import club.xiaojiawei.config.log
-import club.xiaojiawei.hsscript.consts.DLL_PATH
-import club.xiaojiawei.hsscript.consts.GAME_HWND
-import club.xiaojiawei.hsscript.consts.GAME_US_NAME
-import club.xiaojiawei.hsscript.consts.PROJECT_NAME
-import club.xiaojiawei.hsscript.consts.SCRIPT_NAME
+import club.xiaojiawei.hsscript.data.DLL_PATH
+import club.xiaojiawei.hsscript.data.GAME_HWND
+import club.xiaojiawei.hsscript.data.GAME_US_NAME
+import club.xiaojiawei.hsscript.data.SCRIPT_NAME
 import club.xiaojiawei.hsscript.dll.SystemDll
 import club.xiaojiawei.hsscript.dll.SystemDll.MB_ICONERROR
 import club.xiaojiawei.hsscript.dll.SystemDll.MB_OK
 import club.xiaojiawei.hsscript.enums.ConfigEnum
-import club.xiaojiawei.hsscript.status.PauseStatus
 import club.xiaojiawei.hsscript.utils.CMDUtil
 import club.xiaojiawei.hsscript.utils.ConfigUtil
 import java.io.File

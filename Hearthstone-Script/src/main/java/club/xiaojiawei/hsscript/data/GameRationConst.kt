@@ -1,4 +1,4 @@
-package club.xiaojiawei.hsscript.consts
+package club.xiaojiawei.hsscript.data
 
 /**
  * 游戏常量

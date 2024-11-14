@@ -1,8 +1,8 @@
 package club.xiaojiawei.hsscript.initializer
 
 import club.xiaojiawei.config.log
-import club.xiaojiawei.hsscript.consts.MAIN_IMG_NAME
-import club.xiaojiawei.hsscript.consts.RESOURCE_PATH
+import club.xiaojiawei.hsscript.data.MAIN_IMG_NAME
+import club.xiaojiawei.hsscript.data.RESOURCE_PATH
 import java.io.*
 import java.nio.file.Path
 import java.util.*

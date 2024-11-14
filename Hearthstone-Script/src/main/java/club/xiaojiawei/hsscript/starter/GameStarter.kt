@@ -5,8 +5,8 @@ import club.xiaojiawei.config.EXTRA_THREAD_POOL
 import club.xiaojiawei.config.LAUNCH_PROGRAM_THREAD_POOL
 import club.xiaojiawei.config.log
 import club.xiaojiawei.hsscript.config.StarterConfig
-import club.xiaojiawei.hsscript.consts.GAME_CN_NAME
-import club.xiaojiawei.hsscript.consts.GAME_HWND
+import club.xiaojiawei.hsscript.data.GAME_CN_NAME
+import club.xiaojiawei.hsscript.data.GAME_HWND
 import club.xiaojiawei.hsscript.dll.SystemDll
 import club.xiaojiawei.hsscript.status.PauseStatus
 import club.xiaojiawei.hsscript.utils.GameUtil

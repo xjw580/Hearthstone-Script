@@ -12,9 +12,9 @@ import club.xiaojiawei.enums.ZoneEnum
 import club.xiaojiawei.hsscript.bean.log.ExtraEntity
 import club.xiaojiawei.hsscript.bean.log.TagChangeEntity
 import club.xiaojiawei.hsscript.bean.single.WarEx
-import club.xiaojiawei.hsscript.consts.CONCEDED
-import club.xiaojiawei.hsscript.consts.LOST
-import club.xiaojiawei.hsscript.consts.WON
+import club.xiaojiawei.hsscript.data.CONCEDED
+import club.xiaojiawei.hsscript.data.LOST
+import club.xiaojiawei.hsscript.data.WON
 import club.xiaojiawei.hsscript.interfaces.ExtraEntityHandler
 import club.xiaojiawei.hsscript.interfaces.TagChangeHandler
 import club.xiaojiawei.hsscript.utils.CardUtil

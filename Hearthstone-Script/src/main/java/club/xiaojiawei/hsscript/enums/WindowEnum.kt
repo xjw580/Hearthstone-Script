@@ -1,6 +1,6 @@
 package club.xiaojiawei.hsscript.enums
 
-import club.xiaojiawei.hsscript.consts.SCRIPT_NAME
+import club.xiaojiawei.hsscript.data.SCRIPT_NAME
 import javafx.stage.Screen
 import javafx.stage.StageStyle
 
@@ -20,8 +20,33 @@ enum class WindowEnum(
 ) {
     SETTINGS(
         "settings.fxml", "$SCRIPT_NAME-设置",
-        600.0, 400.0, -1.0, -1.0,
+        650.0, 450.0, -1.0, -1.0,
         true, StageStyle.DECORATED
+    ),
+    INIT_SETTINGS(
+        "initSettings.fxml", "",
+        -1.0, -1.0, -1.0, -1.0,
+        false, StageStyle.DECORATED
+    ),
+    ADVANCED_SETTINGS(
+        "advancedSettings.fxml", "",
+        -1.0, -1.0, -1.0, -1.0,
+        false, StageStyle.DECORATED
+    ),
+    PLUGIN_SETTINGS(
+        "pluginSettings.fxml", "",
+        -1.0, -1.0, -1.0, -1.0,
+        false, StageStyle.DECORATED
+    ),
+    STRATEGY_SETTINGS(
+        "strategySettings.fxml", "",
+        -1.0, -1.0, -1.0, -1.0,
+        false, StageStyle.DECORATED
+    ),
+    WEIGHT_SETTINGS(
+        "weightSettings.fxml", "",
+        -1.0, -1.0, -1.0, -1.0,
+        false, StageStyle.DECORATED
     ),
     MAIN(
         "main.fxml",
