@@ -29,10 +29,10 @@ public class VersionMsgController implements Initializable {
         version.setText(VersionUtil.INSTANCE.getVERSION());
 //        TODO 版本更新时修改！！！
         versionDescription.setText("""
-                1. 高级设置页增加控制模式
-                2. 适配所有皮肤的基础技能
-                3. 首页增加清空统计数据按钮
-                4. 卡牌插件SDK不兼容更改
+                1. 修复突袭随从首次登场可能打脸的问题
+                2. 增加权重设置页
+                3. 提高设置页的打开速度
+                4. 基础策略、激进策略接入权重设置
                 """);
     }
 
