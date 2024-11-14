@@ -21,7 +21,6 @@ import club.xiaojiawei.mapper.EntityMapper
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
 import javafx.beans.value.ObservableValue
-import org.apache.commons.io.function.IOConsumer.forEach
 import java.io.IOException
 import java.nio.ByteBuffer
 import java.nio.channels.FileChannel
@@ -92,12 +91,19 @@ object CardUtil {
 
     private val objectMapper = ObjectMapper();
 
+    private var cardWeightRawData:List<WeightCard>? = null
+
+    fun getCardWeightCache(): List<WeightCard>? {
+        return cardWeightRawData
+    }
+
     fun reloadCardWeight(weightCard: List<WeightCard>? = null) {
         val list = weightCard ?: readWeightConfig()
         CARD_WEIGHT_TRIE.clear()
         list.forEach {
             CARD_WEIGHT_TRIE[it.cardId] = it.weight
         }
+        cardWeightRawData = list.toList()
     }
 
     fun readWeightConfig(weightPath: Path = WEIGHT_CONFIG_PATH): List<WeightCard> {

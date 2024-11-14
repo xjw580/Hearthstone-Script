@@ -4,9 +4,11 @@ import club.xiaojiawei.bean.Card
 import club.xiaojiawei.bean.Player
 import club.xiaojiawei.bean.SimulateCard
 import club.xiaojiawei.bean.SimulateCard.Companion.TAUNT_EXTRA_WEIGHT
+import club.xiaojiawei.bean.SimulateWeightCard
 import club.xiaojiawei.bean.area.PlayArea
 import club.xiaojiawei.config.CALC_THREAD_POOL
 import club.xiaojiawei.config.log
+import club.xiaojiawei.data.CARD_WEIGHT_TRIE
 import club.xiaojiawei.enums.CardTypeEnum
 import club.xiaojiawei.status.War
 import java.util.concurrent.CompletableFuture
@@ -127,7 +129,7 @@ object DeckStrategyUtil {
         rivalAtcWeight: Double,
     ) {
         val myCardWeightCalc: Function<Card, Double> = Function {
-            var value = 1.0
+            var value = CARD_WEIGHT_TRIE[it.cardId] ?: 1.0
             if (it.isDeathRattle) {
                 value -= 0.3
             }
@@ -562,27 +564,33 @@ object DeckStrategyUtil {
         clean(myAtcWeight, rivalAtcWeight)
     }
 
-    fun calcPowerOrder(cards: List<Card>, target: Int): Pair<Int, List<Card>> {
-        val dp = IntArray(target + 1)
-        val chosenCards = Array(target + 1) { mutableListOf<Card>() }
+    fun calcPowerOrderConvert(cards: List<Card>, target: Int): Pair<Double, List<SimulateWeightCard>> {
+        return calcPowerOrder(convertToSimulateWeightCard(cards), target)
+    }
+
+    fun calcPowerOrder(cards: List<SimulateWeightCard>, target: Int): Pair<Double, List<SimulateWeightCard>> {
+        // dp[j] 用来存储达到 cost 为 j 时的最高总权重值
+        val dp = DoubleArray(target + 1)
+        val chosenCards = Array(target + 1) { mutableListOf<SimulateWeightCard>() }
 
         for (card in cards) {
-            for (j in target downTo card.cost) {
-                if (dp[j] < dp[j - card.cost] + card.cost) {
-                    dp[j] = dp[j - card.cost] + card.cost
-                    chosenCards[j] = chosenCards[j - card.cost].toMutableList().apply { add(card) }
+            for (j in target downTo card.card.cost) {
+                val newWeight = dp[j - card.card.cost] + card.weight
+                if (newWeight > dp[j] || (newWeight == dp[j] && chosenCards[j - card.card.cost].sumOf { it.weight } < chosenCards[j].sumOf { it.weight })) {
+                    dp[j] = newWeight
+                    chosenCards[j] = chosenCards[j - card.card.cost].toMutableList().apply { add(card) }
                 }
             }
         }
 
-        // 处理选择cost为0的卡片
+        // 处理 cost 为 0 的 Card
         if (target == 0) {
-            chosenCards[0] = cards.filter { it.cost == 0 }.toMutableList()
+            chosenCards[0] = cards.filter { it.card.cost == 0 }.sortedByDescending { it.weight }.toMutableList()
         } else {
             for (card in cards) {
-                if (card.cost == 0) {
+                if (card.card.cost == 0) {
                     for (j in target downTo 0) {
-                        if (dp[j] > 0) {  // 如果当前总cost大于0，可以选择cost为0的卡片
+                        if (dp[j] > 0) { // 当前总 cost 大于 0 时才选择 cost 为 0 的 Card
                             chosenCards[j].add(card)
                         }
                     }
@@ -593,41 +601,12 @@ object DeckStrategyUtil {
         return Pair(dp[target], chosenCards[target])
     }
 
-//    @JvmStatic
-//    fun main(args: Array<String>) {
-//        val card = Card(MyCardAction())
-//        card.cost = 3
-//
-//        val card1 = Card(MyCardAction())
-//        card1.cost = 3
-//
-//        val card2 = Card(MyCardAction())
-//        card2.cost = 3
-//
-//        val card3 = Card(MyCardAction())
-//        card3.cost = 3
-//
-//        val card4 = Card(MyCardAction())
-//        card4.cost = 3
-//
-//        val card5 = Card(MyCardAction())
-//        card5.cost = 3
-//
-//        val card6 = Card(MyCardAction())
-//        card6.cost = 3
-//
-//        val card7 = Card(MyCardAction())
-//        card7.cost = 3
-//
-//        val card8 = Card(MyCardAction())
-//        card8.cost = 3
-//
-//        val card9 = Card(MyCardAction())
-//        card9.cost = 3
-//        val mutableListOf = mutableListOf<Card>(card, card1, card2, card3, card4, card5, card6, card7)
-//        val (first, second) = calcPowerOrder(mutableListOf, 10)
-//        println(first)
-//        println(second)
-//    }
+    fun convertToSimulateWeightCard(cards: List<Card>): List<SimulateWeightCard> {
+        val result = mutableListOf<SimulateWeightCard>()
+        for (card in cards) {
+            result.add(SimulateWeightCard(card, CARD_WEIGHT_TRIE[card.cardId] ?: 1.0))
+        }
+        return result
+    }
 
 }

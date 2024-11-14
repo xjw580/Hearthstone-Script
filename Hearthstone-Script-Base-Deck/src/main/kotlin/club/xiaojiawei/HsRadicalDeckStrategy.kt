@@ -49,10 +49,11 @@ class HsRadicalDeckStrategy : DeckStrategy() {
                 }
             }
             var hands = me.handArea.cards.toList()
-            val (_, resultCards) = DeckStrategyUtil.calcPowerOrder(hands, me.usableResource)
+            val (_, resultCards) = DeckStrategyUtil.calcPowerOrderConvert(hands, me.usableResource)
             if (resultCards.isNotEmpty()) {
                 log.info { "待出牌：$resultCards" }
-                for (card in resultCards) {
+                for (simulateWeightCard in resultCards) {
+                    val card = simulateWeightCard.card
                     if (me.usableResource >= card.cost){
                         if (card.cardType === CardTypeEnum.SPELL){
                             me.playArea.cards.find { card-> card.canBeTargetedByMe() }?.let {

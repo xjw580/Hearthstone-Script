@@ -60,19 +60,23 @@ class HsCommonDeckStrategy : DeckStrategy() {
         val myHandCardsCopy = myHandCards.toMutableList()
         myHandCardsCopy.removeAll { card -> card.cardType != CardTypeEnum.MINION || card.isBattlecry }
 
-        val (_, resultCards) = DeckStrategyUtil.calcPowerOrder(myHandCardsCopy, me.usableResource)
+        val (_, resultCards) = DeckStrategyUtil.calcPowerOrderConvert(
+            myHandCardsCopy, me.usableResource
+        )
 
         val coinCard = findCoin(myHandCards)
         if (coinCard != null) {
-            val (num1, resultCards1) = DeckStrategyUtil.calcPowerOrder(myHandCardsCopy, me.usableResource + 1)
+            val (num1, resultCards1) = DeckStrategyUtil.calcPowerOrderConvert(
+                myHandCardsCopy, me.usableResource + 1
+            )
             if (num1 > me.usableResource) {
                 coinCard.action.power()
                 if (resultCards1.isNotEmpty()) {
                     log.info { "待出牌：$resultCards" }
                 }
-                for (card in resultCards1) {
+                for (simulateWeightCard in resultCards1) {
                     if (me.playArea.isFull) break
-                    card.action.power()
+                    simulateWeightCard.card.action.power()
                 }
                 return
             }
@@ -80,9 +84,9 @@ class HsCommonDeckStrategy : DeckStrategy() {
         if (resultCards.isNotEmpty()) {
             log.info { "待出牌：$resultCards" }
         }
-        for (card in resultCards) {
+        for (simulateWeightCard in resultCards) {
             if (me.playArea.isFull) break
-            card.action.power()
+            simulateWeightCard.card.action.power()
         }
     }
 

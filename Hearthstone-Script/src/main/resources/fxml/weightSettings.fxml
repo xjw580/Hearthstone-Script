@@ -30,7 +30,7 @@
                     <TableColumn minWidth="${colMinWeight}" fx:id="costCol" text="费用"/>
                     <TableColumn minWidth="${colMinWeight}" fx:id="textCol" text="描述"/>
                     <TableColumn minWidth="${colMinWeight}" fx:id="typeCol" text="类型"/>
-                    <TableColumn minWidth="${colMinWeight}" fx:id="mechanicsCol" text="集合"/>
+                    <TableColumn minWidth="${colMinWeight}" fx:id="cardSetCol" text="扩展包"/>
                 </columns>
                 <columnResizePolicy>
                     <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
@@ -57,12 +57,26 @@
             <VBox alignment="CENTER" spacing="10" style="-fx-padding: 5">
                 <Button styleClass="btn-ui, btn-ui-small, control-btn" onAction="#addWeight">
                     <graphic>
-                        <NextIco color="#ecebeb"/>
+                        <Label>
+                            <graphic>
+                                <NextIco color="#ecebeb"/>
+                            </graphic>
+                            <tooltip>
+                                <Tooltip text="添加权重"/>
+                            </tooltip>
+                        </Label>
                     </graphic>
                 </Button>
                 <Button styleClass="btn-ui, btn-ui-small, control-btn" onAction="#removeWeight">
                     <graphic>
-                        <NextIco color="#ecebeb" rotate="180"/>
+                        <Label>
+                            <graphic>
+                                <NextIco color="#ecebeb" rotate="180"/>
+                            </graphic>
+                            <tooltip>
+                                <Tooltip text="移除权重"/>
+                            </tooltip>
+                        </Label>
                     </graphic>
                 </Button>
             </VBox>

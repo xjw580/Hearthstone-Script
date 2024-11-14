@@ -12,5 +12,5 @@ data class DBCard(
     var cost: Int? = null,
     var text: String? = null,
     var type: String? = null,
-    var mechanics: String? = null
+    var cardSet: String? = null
 )

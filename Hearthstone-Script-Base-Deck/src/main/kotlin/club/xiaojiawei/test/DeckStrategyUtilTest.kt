@@ -2,9 +2,11 @@ package club.xiaojiawei.test
 
 import club.xiaojiawei.CardAction
 import club.xiaojiawei.bean.Card
+import club.xiaojiawei.bean.SimulateWeightCard
 import club.xiaojiawei.enums.CardTypeEnum
 import club.xiaojiawei.status.War
 import club.xiaojiawei.util.DeckStrategyUtil
+import club.xiaojiawei.util.DeckStrategyUtil.calcPowerOrder
 
 /**
  * @author 肖嘉威 xjw580@qq.com
@@ -72,6 +74,57 @@ fun main() {
 
     DeckStrategyUtil.cleanPlay()
 //    DeckStrategyUtil.cleanTaunt()
+}
+
+fun testPower(){
+    val card = Card(MyCardAction())
+    card.cost = 3
+    card.cardId = "1"
+
+    val card1 = Card(MyCardAction())
+    card1.cost = 3
+    card1.cardId = "2"
+
+    val card2 = Card(MyCardAction())
+    card2.cost = 3
+    card2.cardId = "3"
+
+    val card3 = Card(MyCardAction())
+    card3.cost = 3
+    card3.cardId = "4"
+
+    val card4 = Card(MyCardAction())
+    card4.cost = 3
+    card4.cardId = "5"
+
+    val card5 = Card(MyCardAction())
+    card5.cost = 3
+
+    val card6 = Card(MyCardAction())
+    card6.cost = 3
+
+    val card7 = Card(MyCardAction())
+    card7.cost = 3
+
+    val card8 = Card(MyCardAction())
+    card8.cost = 3
+
+    val card9 = Card(MyCardAction())
+    card9.cost = 3
+    val mutableListOf = mutableListOf<Card>(card, card1, card2, card3, card4, card5, card6, card7)
+    val mutableListOf1 = mutableListOf<SimulateWeightCard>()
+    for (item in mutableListOf) {
+        mutableListOf1.add(SimulateWeightCard(item, 1.0))
+    }
+    mutableListOf1[0].weight = 1.5
+    mutableListOf1[1].weight = 1.5
+    mutableListOf1[2].weight = 1.5
+    mutableListOf1[3].weight = 2.0
+    val (first, second) = calcPowerOrder(mutableListOf1, 10)
+    println(first)
+    for (weightCard in second) {
+        println(weightCard.card)
+    }
 }
 
 fun findClosestSum(numbers: List<Card>, target: Int): Pair<Int, List<Card>> {

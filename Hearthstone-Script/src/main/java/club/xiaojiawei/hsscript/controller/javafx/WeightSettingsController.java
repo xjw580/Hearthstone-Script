@@ -8,9 +8,6 @@ import club.xiaojiawei.hsscript.bean.WeightCard;
 import club.xiaojiawei.hsscript.data.PathDataKt;
 import club.xiaojiawei.hsscript.utils.CardUtil;
 import club.xiaojiawei.hsscript.utils.DBUtil;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -24,16 +21,10 @@ import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.StackPane;
 import javafx.stage.FileChooser;
 import javafx.util.StringConverter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.URL;
-import java.nio.ByteBuffer;
-import java.nio.channels.FileChannel;
 import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -74,7 +65,7 @@ public class WeightSettingsController implements Initializable {
     @FXML
     protected TableColumn<DBCard, String> typeCol;
     @FXML
-    protected TableColumn<DBCard, String> mechanicsCol;
+    protected TableColumn<DBCard, String> cardSetCol;
     @FXML
     protected TableView<WeightCard> weightTable;
     @FXML
@@ -96,6 +87,19 @@ public class WeightSettingsController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         initTable();
+        addListener();
+        var cards = CardUtil.INSTANCE.getCardWeightCache();
+        if (cards != null) {
+            HashSet<WeightCard> weightCards = new HashSet<>(weightTable.getItems());
+            for (WeightCard card : cards) {
+                if (!weightCards.contains(card)) {
+                    weightTable.getItems().add(card);
+                }
+            }
+        }
+    }
+
+    private void addListener() {
         searchCardField.setOnFilterAction(text -> {
             if (text == null || text.isEmpty()) {
                 cardTable.getItems().clear();
@@ -121,7 +125,6 @@ public class WeightSettingsController implements Initializable {
                 searchCardField.setText(newValue.getName());
             }
         });
-        readWeightConfig();
     }
 
     private void initTable() {
@@ -138,7 +141,7 @@ public class WeightSettingsController implements Initializable {
         costCol.setCellValueFactory(new PropertyValueFactory<>("cost"));
         textCol.setCellValueFactory(new PropertyValueFactory<>("text"));
         typeCol.setCellValueFactory(new PropertyValueFactory<>("type"));
-        mechanicsCol.setCellValueFactory(new PropertyValueFactory<>("mechanics"));
+        cardSetCol.setCellValueFactory(new PropertyValueFactory<>("cardSet"));
 
         weightTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         weightTable.setEditable(true);
