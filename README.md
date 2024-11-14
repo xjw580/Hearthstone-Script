@@ -1,9 +1,7 @@
 ![GitHub release](https://img.shields.io/github/release/xjw580/Hearthstone-Script.svg)  ![GitHub](https://img.shields.io/github/license/xjw580/Hearthstone-Script?style=flat-square)
 
 # 炉石传说脚本（雷火服封禁力度大）
-![favicon.ico](Hearthstone-Script/src/main/resources/static/img/favicon.ico)
-
-
+<img src="Hearthstone-Script/src/main/resources/fxml/img/favicon.png" alt="Image description" width="100" height="100">
 
 ### 免责申明
 
