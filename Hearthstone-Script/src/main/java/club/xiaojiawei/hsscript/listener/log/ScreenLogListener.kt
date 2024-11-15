@@ -24,7 +24,7 @@ object ScreenLogListener :
         var finalMode: ModeEnum? = null
         while ((innerLogFile!!.readLine().also { line = it }) != null) {
             if ((line.indexOf("currMode").also { index = it }) != -1) {
-                finalMode = ModeEnum.valueOf(line.substring(index + 9))
+                finalMode = ModeEnum.fromString(line.substring(index + 9))
             }
         }
         Mode.currMode = finalMode

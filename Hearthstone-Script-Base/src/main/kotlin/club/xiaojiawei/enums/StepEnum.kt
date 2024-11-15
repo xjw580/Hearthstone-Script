@@ -1,5 +1,7 @@
 package club.xiaojiawei.enums
 
+import club.xiaojiawei.config.log
+
 /**
  * 游戏回合阶段
  * @author 肖嘉威
@@ -17,5 +19,16 @@ enum class StepEnum(val comment: String) {
     MAIN_NEXT("主游戏-下一步骤"),
     FINAL_WRAPUP("最后阶段-收尾"),
     FINAL_GAMEOVER("最后阶段-游戏结束");
+
+    companion object {
+        fun fromString(string: String): StepEnum? {
+            return try {
+                StepEnum.valueOf(string)
+            } catch (_: Exception) {
+                log.warn { "未适配${string}" }
+                null
+            }
+        }
+    }
 
 }

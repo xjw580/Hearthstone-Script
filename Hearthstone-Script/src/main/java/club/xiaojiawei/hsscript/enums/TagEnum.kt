@@ -42,7 +42,7 @@ enum class TagEnum(
     STEP(
         "步骤",
         tagChangeHandler = { card: Card?, tagChangeEntity: TagChangeEntity, player: Player?, area: Area? ->
-            War.currentTurnStep = StepEnum.valueOf(tagChangeEntity.value)
+            War.currentTurnStep = StepEnum.fromString(tagChangeEntity.value)
         },
         null
     ),

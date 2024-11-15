@@ -18,8 +18,8 @@ enum class WarPhaseEnum(val comment: String) {
 
     var phaseStrategy: PhaseStrategy? = null
 
-    companion object{
-        fun find(phaseStrategy: PhaseStrategy):WarPhaseEnum? {
+    companion object {
+        fun find(phaseStrategy: PhaseStrategy): WarPhaseEnum? {
             return values().find { it.phaseStrategy === phaseStrategy }
         }
     }

@@ -1,5 +1,6 @@
 package club.xiaojiawei.enums
 
+import club.xiaojiawei.config.log
 import club.xiaojiawei.interfaces.ModeStrategy
 
 /**
@@ -27,5 +28,16 @@ enum class ModeEnum(val comment: String) {
     ;
 
     var modeStrategy: ModeStrategy<*>? = null
+
+    companion object {
+        fun fromString(string: String): ModeEnum? {
+            return try {
+                ModeEnum.valueOf(string)
+            } catch (_: Exception) {
+                log.warn { "未适配${string}" }
+                null
+            }
+        }
+    }
 
 }

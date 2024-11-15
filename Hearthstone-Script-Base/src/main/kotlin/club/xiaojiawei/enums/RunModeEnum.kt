@@ -1,5 +1,7 @@
 package club.xiaojiawei.enums
 
+import club.xiaojiawei.config.log
+
 /**
  * @author 肖嘉威
  * @date 2023/7/6 20:20
@@ -21,6 +23,7 @@ enum class RunModeEnum(val comment: String, val modeEnum: ModeEnum, var isEnable
             return try {
                 valueOf(string)
             }catch (_:Exception){
+                log.warn { "未适配${string}" }
                 null
             }
         }
