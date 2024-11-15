@@ -1,17 +1,22 @@
-## 可用套牌插件
-
-1. [通用策略](https://github.com/xjw580/Hearthstone-Script/tree/master/Hearthstone-Script-Deck-SDK) (集成在软件中)
-2. ...
-
-
-
 ## [插件市场](https://github.com/xjw580/Deck-Plugin-Market/tree/master)
 
 
 
+## 插件开发文档
+
+1. [模板](https://github.com/xjw580/Deck-Plugin-Market/blob/master/Deck-Plugin-Template/src/main/kotlin/TemplateStrategyDeck.kt)
+
+2. [基础策略](https://github.com/xjw580/Hearthstone-Script/blob/master/Hearthstone-Script-Base-Deck/src/main/kotlin/club/xiaojiawei/HsCommonDeckStrategy.kt)
+
+3. [开发套牌策略插件时对API的使用 #29](https://github.com/xjw580/Hearthstone-Script/issues/29)
+
+4. [项目运行的方式如何加载插件 #54](https://github.com/xjw580/Hearthstone-Script/issues/54)
+
+   ## 
+
 ## 插件开发步骤
 
-### 套牌插件
+#### 套牌策略插件
 
 1. ##### 拉取模板项目
 
@@ -31,7 +36,7 @@
 
      > 所有出牌逻辑都按此类规定执行
      >
-     > API使用可参考[模板](https://github.com/xjw580/Deck-Plugin-Market/blob/master/Deck-Plugin-Template/src/main/kotlin/TemplateStrategyDeck.kt) 和 [基础策略](https://github.com/xjw580/Hearthstone-Script/blob/master/Hearthstone-Script-Base-Deck/src/main/kotlin/club/xiaojiawei/HsCommonDeckStrategy.kt)
+     > 
      >
      > 连接模板项目下的[hs_cards.db](https://github.com/xjw580/Deck-Plugin-Market/blob/master/hs_cards.db)（sqlite数据库）可查看卡牌信息
      > ```sql
@@ -65,6 +70,6 @@
 
 
 
-### 卡牌插件
+#### 卡牌插件
 
 > 未来会有较大变动，不建议编写
