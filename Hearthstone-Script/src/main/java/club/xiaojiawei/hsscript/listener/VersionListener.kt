@@ -1,6 +1,6 @@
 package club.xiaojiawei.hsscript.listener
 
-import club.xiaojiawei.bean.LogRunnable
+import club.xiaojiawei.bean.LRunnable
 import club.xiaojiawei.config.EXTRA_THREAD_POOL
 import club.xiaojiawei.config.log
 import club.xiaojiawei.hsscript.PROGRAM_ARGS
@@ -94,7 +94,7 @@ object VersionListener {
     fun launch() {
         if (checkVersionTask != null) return
 
-        checkVersionTask = EXTRA_THREAD_POOL.scheduleAtFixedRate(LogRunnable {
+        checkVersionTask = EXTRA_THREAD_POOL.scheduleAtFixedRate(LRunnable {
             checkVersion()
         }, 500, 1000 * 60 * 60 * 12, TimeUnit.MILLISECONDS)
         log.info { "版本更新检测已启动" }

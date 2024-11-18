@@ -1,6 +1,6 @@
 package club.xiaojiawei.hsscript.starter
 
-import club.xiaojiawei.bean.LogRunnable
+import club.xiaojiawei.bean.LRunnable
 import club.xiaojiawei.config.LISTEN_LOG_THREAD_POOL
 import club.xiaojiawei.config.log
 import club.xiaojiawei.hsscript.core.Core
@@ -41,10 +41,10 @@ object ExceptionListenStarter : AbstractStarter() {
         closeListener()
         log.info { "开始监听异常情况" }
         lastActiveTime = System.currentTimeMillis()
-        errorScheduledFuture = LISTEN_LOG_THREAD_POOL.scheduleAtFixedRate(LogRunnable {
+        errorScheduledFuture = LISTEN_LOG_THREAD_POOL.scheduleAtFixedRate(LRunnable {
             if (PauseStatus.isPause || !WorkListener.working) {
                 closeListener()
-                return@LogRunnable
+                return@LRunnable
             }
             val idleTime = ConfigUtil.getLong(ConfigEnum.IDLE_MAXIMUM_TIME)
             if (System.currentTimeMillis() - lastActiveTime > idleTime * 60_000L

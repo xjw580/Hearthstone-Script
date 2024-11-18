@@ -1,6 +1,6 @@
 package club.xiaojiawei.hsscript.strategy.mode
 
-import club.xiaojiawei.bean.LogRunnable
+import club.xiaojiawei.bean.LRunnable
 import club.xiaojiawei.config.EXTRA_THREAD_POOL
 import club.xiaojiawei.config.log
 import club.xiaojiawei.enums.ModeEnum
@@ -29,7 +29,7 @@ object AdventureModeStrategy : AbstractModeStrategy<Any?>() {
     val FIRST_HERO_RECT: GameRect = GameRect(0.1769, 0.4162, -0.4103, -0.3551)
 
     override fun wantEnter() {
-        addWantEnterTask(EXTRA_THREAD_POOL.scheduleWithFixedDelay(LogRunnable {
+        addWantEnterTask(EXTRA_THREAD_POOL.scheduleWithFixedDelay(LRunnable {
             if (PauseStatus.isPause) {
                 cancelAllWantEnterTasks()
             } else if (Mode.currMode == ModeEnum.HUB) {
@@ -71,7 +71,7 @@ object AdventureModeStrategy : AbstractModeStrategy<Any?>() {
                 START_RECT.lClick()
             } else {
 //            退出该界面
-                addEnteredTask(EXTRA_THREAD_POOL.scheduleWithFixedDelay(LogRunnable {
+                addEnteredTask(EXTRA_THREAD_POOL.scheduleWithFixedDelay(LRunnable {
                     if (PauseStatus.isPause) {
                         cancelAllEnteredTasks()
                     } else if (Mode.currMode === ModeEnum.ADVENTURE) {

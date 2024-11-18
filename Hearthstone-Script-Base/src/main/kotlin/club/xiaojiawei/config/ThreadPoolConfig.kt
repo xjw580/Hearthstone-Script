@@ -1,6 +1,5 @@
 package club.xiaojiawei.config
 
-import club.xiaojiawei.bean.LogThread
 import club.xiaojiawei.bean.ReadableThread
 import club.xiaojiawei.bean.WritableThread
 import java.util.concurrent.*

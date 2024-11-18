@@ -1,6 +1,6 @@
 package club.xiaojiawei.hsscript.strategy.phase
 
-import club.xiaojiawei.bean.LogThread
+import club.xiaojiawei.bean.LThread
 import club.xiaojiawei.enums.*
 import club.xiaojiawei.hsscript.bean.log.TagChangeEntity
 import club.xiaojiawei.hsscript.enums.MulliganStateEnum
@@ -25,7 +25,7 @@ object ReplaceCardPhaseStrategy : AbstractPhaseStrategy(){
             if (me.gameId == gameId || (!rival.gameId.isBlank() && rival.gameId != gameId)) {
                 cancelAllTask()
 //                执行换牌策略
-                (LogThread({
+                (LThread({
                     changeCard()
                 }, "Change Card Thread").also { addTask(it) }).start()
             }

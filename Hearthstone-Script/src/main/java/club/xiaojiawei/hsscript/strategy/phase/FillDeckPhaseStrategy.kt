@@ -1,6 +1,6 @@
 package club.xiaojiawei.hsscript.strategy.phase
 
-import club.xiaojiawei.bean.LogThread
+import club.xiaojiawei.bean.LThread
 import club.xiaojiawei.enums.WarPhaseEnum
 import club.xiaojiawei.hsscript.bean.log.TagChangeEntity
 import club.xiaojiawei.hsscript.bean.single.WarEx
@@ -30,7 +30,7 @@ object FillDeckPhaseStrategy : AbstractPhaseStrategy() {
         if (line.contains("CREATE_GAME")) {
             deckStrategy = DeckStrategyManager.currentDeckStrategy
             WarEx.startWar(DeckStrategyManager.currentDeckStrategy?.runModes[0])
-            (LogThread({
+            (LThread({
                 DeckStrategyActuator.reset()
             }, "Reset Deck Strategy Thread").also { addTask(it) }).start()
 

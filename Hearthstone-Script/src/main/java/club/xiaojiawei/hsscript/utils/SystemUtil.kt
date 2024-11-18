@@ -1,6 +1,6 @@
 package club.xiaojiawei.hsscript.utils
 
-import club.xiaojiawei.bean.LogRunnable
+import club.xiaojiawei.bean.LRunnable
 import club.xiaojiawei.config.log
 import club.xiaojiawei.hsscript.data.FXML_IMAGE_PATH
 import club.xiaojiawei.hsscript.data.GAME_HWND
@@ -48,7 +48,7 @@ object SystemUtil {
      */
     fun notice(content: String, title: String = "", btnText: String = "", btnURL: String = "") {
         ConfigUtil.getBoolean(ConfigEnum.SEND_NOTICE).isTrue {
-            Thread.ofVirtual().name("Notice VThread").start(LogRunnable {
+            Thread.ofVirtual().name("Notice VThread").start(LRunnable {
 //        trayIcon.displayMessage(title, content, TrayIcon.MessageType.NONE);
                 val appIDBytes: ByteArray = SCRIPT_NAME.toByteArray(StandardCharsets.UTF_8)
                 val titleBytes = title.toByteArray(StandardCharsets.UTF_8)

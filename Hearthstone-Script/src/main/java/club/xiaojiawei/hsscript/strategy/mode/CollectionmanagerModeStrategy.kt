@@ -1,7 +1,7 @@
 package club.xiaojiawei.hsscript.strategy.mode
 
 import club.xiaojiawei.hsscript.bean.GameRect
-import club.xiaojiawei.bean.LogRunnable
+import club.xiaojiawei.bean.LRunnable
 import club.xiaojiawei.config.EXTRA_THREAD_POOL
 import club.xiaojiawei.hsscript.strategy.AbstractModeStrategy
 import club.xiaojiawei.hsscript.utils.SystemUtil
@@ -21,7 +21,7 @@ object CollectionmanagerModeStrategy : AbstractModeStrategy<Any?>() {
     }
 
     override fun afterEnter(t: Any?) {
-        addEnteredTask(EXTRA_THREAD_POOL.scheduleWithFixedDelay(LogRunnable {
+        addEnteredTask(EXTRA_THREAD_POOL.scheduleWithFixedDelay(LRunnable {
             BACK_RECT.lClick()
         }, DELAY_TIME, 500, TimeUnit.MILLISECONDS))
     }

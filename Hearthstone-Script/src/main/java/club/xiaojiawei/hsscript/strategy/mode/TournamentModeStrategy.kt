@@ -1,7 +1,7 @@
 package club.xiaojiawei.hsscript.strategy.mode
 
 import club.xiaojiawei.DeckStrategy
-import club.xiaojiawei.bean.LogRunnable
+import club.xiaojiawei.bean.LRunnable
 import club.xiaojiawei.config.EXTRA_THREAD_POOL
 import club.xiaojiawei.config.log
 import club.xiaojiawei.enums.ModeEnum
@@ -57,7 +57,7 @@ object TournamentModeStrategy : AbstractModeStrategy<Any?>() {
     val CANCEL_RECT: GameRect = GameRect(-0.0251, 0.0530, 0.3203, 0.3802)
 
     override fun wantEnter() {
-        addWantEnterTask(EXTRA_THREAD_POOL.scheduleWithFixedDelay(LogRunnable {
+        addWantEnterTask(EXTRA_THREAD_POOL.scheduleWithFixedDelay(LRunnable {
             if (PauseStatus.isPause) {
                 cancelAllWantEnterTasks()
             } else if (Mode.currMode == ModeEnum.HUB) {
@@ -96,7 +96,7 @@ object TournamentModeStrategy : AbstractModeStrategy<Any?>() {
                 SystemUtil.delayShort()
                 startMatching()
             } else {
-                addEnteredTask(EXTRA_THREAD_POOL.scheduleWithFixedDelay(LogRunnable {
+                addEnteredTask(EXTRA_THREAD_POOL.scheduleWithFixedDelay(LRunnable {
                     if (PauseStatus.isPause) {
                         cancelAllEnteredTasks()
                     } else if (Mode.currMode === ModeEnum.TOURNAMENT) {
@@ -175,7 +175,7 @@ object TournamentModeStrategy : AbstractModeStrategy<Any?>() {
      */
     private fun generateTimer() {
         cancelAllEnteredTasks()
-        addEnteredTask(EXTRA_THREAD_POOL.schedule(LogRunnable {
+        addEnteredTask(EXTRA_THREAD_POOL.schedule(LRunnable {
             if (PauseStatus.isPause || Thread.currentThread().isInterrupted || Mode.currMode === ModeEnum.GAMEPLAY) {
                 cancelAllEnteredTasks()
             } else {

@@ -1,11 +1,10 @@
 package club.xiaojiawei.hsscript
 
 import club.xiaojiawei.CardAction.Companion.commonActionFactory
-import club.xiaojiawei.bean.LogRunnable
-import club.xiaojiawei.bean.LogThread
+import club.xiaojiawei.bean.LRunnable
+import club.xiaojiawei.bean.LThread
 import club.xiaojiawei.config.EXTRA_THREAD_POOL
 import club.xiaojiawei.config.log
-import club.xiaojiawei.data.CARD_WEIGHT_TRIE
 import club.xiaojiawei.hsscript.bean.CommonCardAction.Companion.DEFAULT
 import club.xiaojiawei.hsscript.bean.Release
 import club.xiaojiawei.hsscript.config.InitializerConfig
@@ -60,7 +59,7 @@ class MainApplication : Application() {
     override fun start(stage: Stage?) {
         commonActionFactory = Supplier { DEFAULT.createNewInstance() }
         Platform.setImplicitExit(false)
-        Thread.ofVirtual().name("Launch VThread").start(LogRunnable(Runnable {
+        Thread.ofVirtual().name("Launch VThread").start(LRunnable(Runnable {
             InitializerConfig.initializer.init()
             setSystemTray()
             Platform.runLater(Runnable { this.showMainPage() })
@@ -145,7 +144,7 @@ class MainApplication : Application() {
 
     private fun afterShowing() {
         EXTRA_THREAD_POOL.submit(
-            LogRunnable {
+            LRunnable {
                 initClass()
                 GlobalHotkeyListener.register()
                 VersionListener.launch()
@@ -155,7 +154,7 @@ class MainApplication : Application() {
                 platformRunLater { StartupController.complete() }
 
                 Runtime.getRuntime()
-                    .addShutdownHook(LogThread({SystemDll.INSTANCE.uninstallDll(GameUtil.findGameHWND())}, "ShutdownHook Thread"))
+                    .addShutdownHook(LThread({SystemDll.INSTANCE.uninstallDll(GameUtil.findGameHWND())}, "ShutdownHook Thread"))
 
                 SystemDll.INSTANCE.IsRunAsAdministrator().isFalse {
                     log.warn { "当前进程不是以管理员启动，功能受限" }

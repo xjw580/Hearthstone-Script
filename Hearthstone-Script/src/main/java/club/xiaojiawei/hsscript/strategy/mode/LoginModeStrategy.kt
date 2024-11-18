@@ -1,6 +1,6 @@
 package club.xiaojiawei.hsscript.strategy.mode
 
-import club.xiaojiawei.bean.LogRunnable
+import club.xiaojiawei.bean.LRunnable
 import club.xiaojiawei.config.EXTRA_THREAD_POOL
 import club.xiaojiawei.hsscript.status.PauseStatus
 import club.xiaojiawei.hsscript.strategy.AbstractModeStrategy
@@ -19,7 +19,7 @@ object LoginModeStrategy : AbstractModeStrategy<Any?>() {
 
     override fun afterEnter(t: Any?) {
         //        去除国服登陆时恼人的点击开始和进入主界面时弹出的每日任务
-        addEnteredTask(EXTRA_THREAD_POOL.scheduleWithFixedDelay(LogRunnable {
+        addEnteredTask(EXTRA_THREAD_POOL.scheduleWithFixedDelay(LRunnable {
             if (PauseStatus.isPause) {
                 cancelAllEnteredTasks()
             } else {

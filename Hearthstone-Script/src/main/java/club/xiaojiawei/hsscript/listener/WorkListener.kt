@@ -1,6 +1,6 @@
 package club.xiaojiawei.hsscript.listener
 
-import club.xiaojiawei.bean.LogRunnable
+import club.xiaojiawei.bean.LRunnable
 import club.xiaojiawei.config.EXTRA_THREAD_POOL
 import club.xiaojiawei.config.log
 import club.xiaojiawei.hsscript.core.Core
@@ -29,7 +29,7 @@ object WorkListener {
 
     fun launch() {
         checkVersionTask?.let { return }
-        checkVersionTask = EXTRA_THREAD_POOL.scheduleAtFixedRate(LogRunnable {
+        checkVersionTask = EXTRA_THREAD_POOL.scheduleAtFixedRate(LRunnable {
             checkWork()
         }, 0, 1000 * 60, TimeUnit.MILLISECONDS)
         log.info { "工作时段监听已启动" }

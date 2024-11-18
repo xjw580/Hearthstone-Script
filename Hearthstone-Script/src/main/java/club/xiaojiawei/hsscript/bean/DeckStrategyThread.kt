@@ -1,6 +1,6 @@
 package club.xiaojiawei.hsscript.bean
 
-import club.xiaojiawei.bean.LogThread
+import club.xiaojiawei.bean.LThread
 import java.lang.Thread
 
 /**
@@ -12,7 +12,7 @@ fun isDeckStrategyThread():Boolean{
     return Thread.currentThread() is DeckStrategyThread
 }
 
-open class DeckStrategyThread: LogThread{
+open class DeckStrategyThread: LThread{
     constructor(task: Runnable?) : super(task)
     constructor(task: Runnable?, name: String?) : super(task, name)
 }

@@ -1,6 +1,6 @@
 package club.xiaojiawei.hsscript.utils
 
-import club.xiaojiawei.bean.LogRunnable
+import club.xiaojiawei.bean.LRunnable
 import club.xiaojiawei.config.EXTRA_THREAD_POOL
 import club.xiaojiawei.config.log
 import club.xiaojiawei.enums.ModeEnum
@@ -309,7 +309,7 @@ object GameUtil {
         val isGamePlay = Mode.currMode === ModeEnum.GAMEPLAY
         gameEndTasks.add(
             EXTRA_THREAD_POOL.scheduleWithFixedDelay(
-                LogRunnable {
+                LRunnable {
                     if (PauseStatus.isPause) {
                         cancelGameEndTask()
                     } else if (WarEx.warCount > warCount || (isGamePlay && Mode.currMode !== ModeEnum.GAMEPLAY)) {
@@ -367,7 +367,7 @@ object GameUtil {
         if (Mode.currMode === ModeEnum.GAMEPLAY) {
             gameEndTasks.add(
                 EXTRA_THREAD_POOL.scheduleWithFixedDelay(
-                    LogRunnable {
+                    LRunnable {
                         if (PauseStatus.isPause) {
                             cancelGameEndTask()
                         } else if (Mode.currMode !== ModeEnum.GAMEPLAY) {

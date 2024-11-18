@@ -7,8 +7,8 @@ package club.xiaojiawei.bean
 class SimulateWeightCard(
     val card: Card,
     var weight: Double
-){
+) {
     override fun toString(): String {
-        return card.toSimpleString() + ", weight:" + weight
+        return "【entityId:${card.entityId}，entityName:${card.entityName}，cardId:${card.cardId}，weight：${weight}】"
     }
 }

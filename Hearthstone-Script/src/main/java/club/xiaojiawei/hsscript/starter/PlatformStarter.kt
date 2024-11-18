@@ -1,6 +1,6 @@
 package club.xiaojiawei.hsscript.starter
 
-import club.xiaojiawei.bean.LogRunnable
+import club.xiaojiawei.bean.LRunnable
 import club.xiaojiawei.config.LAUNCH_PROGRAM_THREAD_POOL
 import club.xiaojiawei.config.log
 import club.xiaojiawei.hsscript.data.PLATFORM_CN_NAME
@@ -28,7 +28,7 @@ object PlatformStarter : AbstractStarter() {
         }
 
         addTask(
-            LAUNCH_PROGRAM_THREAD_POOL.scheduleAtFixedRate(LogRunnable {
+            LAUNCH_PROGRAM_THREAD_POOL.scheduleAtFixedRate(LRunnable {
                 if (GameUtil.findPlatformHWND() != null || GameUtil.findLoginPlatformHWND() != null) {
                     startNextStarter()
                 }

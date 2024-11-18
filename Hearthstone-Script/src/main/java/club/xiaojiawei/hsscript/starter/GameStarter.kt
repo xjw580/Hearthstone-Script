@@ -1,6 +1,6 @@
 package club.xiaojiawei.hsscript.starter
 
-import club.xiaojiawei.bean.LogRunnable
+import club.xiaojiawei.bean.LRunnable
 import club.xiaojiawei.config.EXTRA_THREAD_POOL
 import club.xiaojiawei.config.LAUNCH_PROGRAM_THREAD_POOL
 import club.xiaojiawei.config.log
@@ -38,7 +38,7 @@ object GameStarter : AbstractStarter() {
         val launchCount = AtomicInteger()
 
         addTask(
-            LAUNCH_PROGRAM_THREAD_POOL.scheduleAtFixedRate(LogRunnable {
+            LAUNCH_PROGRAM_THREAD_POOL.scheduleAtFixedRate(LRunnable {
                 if (launchCount.incrementAndGet() > 15) {
                     log.info { "更改${GAME_CN_NAME}启动方式" }
                     GameUtil.launchPlatformAndGame()
@@ -51,7 +51,7 @@ object GameStarter : AbstractStarter() {
                         launchCount.set(0)
                         StarterConfig.starter.start()
                     }, 1, TimeUnit.SECONDS)
-                    return@LogRunnable
+                    return@LRunnable
                 }
                 if (GameUtil.isAliveOfGame()) {
 //                    游戏刚启动时可能找不到窗口句柄
@@ -59,7 +59,7 @@ object GameStarter : AbstractStarter() {
                         next(it)
                     } ?: let {
                         log.info { "${GAME_CN_NAME}已在运行，但未找到对应窗口句柄" }
-                        return@LogRunnable
+                        return@LRunnable
                     }
                 } else {
                     launchGameBySendMessage()
