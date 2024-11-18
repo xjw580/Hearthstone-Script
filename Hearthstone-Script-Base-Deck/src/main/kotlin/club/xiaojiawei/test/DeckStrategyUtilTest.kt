@@ -53,40 +53,42 @@ class MyCardAction : CardAction() {
 }
 
 fun main() {
-    War.me = War.player1
-    War.rival = War.player2
+//    War.me = War.player1
+//    War.rival = War.player2
+//
+////    test1()
+//    test2()
+////    test3()
+////    test4()
+////    testTaunt()
+//    val me = War.player1
+//    val cards = me.handArea.cards.toList()
+////    println(cards)
+//    val toMutableList = cards.toMutableList()
+////    toMutableList.removeAll { card -> card.cardType != CardTypeEnum.MINION || card.isBattlecry }
+////    val (num, resultCards) = findClosestSum(toMutableList, 1)
+////    println(toMutableList)
+////    val (num, resultCards) = DeckStrategyUtil.calcPowerOrder(toMutableList, 0)
+////    println(resultCards)
+////    println(num)
+//
+//    DeckStrategyUtil.cleanPlay()
+////    DeckStrategyUtil.cleanTaunt()
 
-//    test1()
-    test2()
-//    test3()
-//    test4()
-//    testTaunt()
-    val me = War.player1
-    val cards = me.handArea.cards.toList()
-//    println(cards)
-    val toMutableList = cards.toMutableList()
-//    toMutableList.removeAll { card -> card.cardType != CardTypeEnum.MINION || card.isBattlecry }
-//    val (num, resultCards) = findClosestSum(toMutableList, 1)
-//    println(toMutableList)
-//    val (num, resultCards) = DeckStrategyUtil.calcPowerOrder(toMutableList, 0)
-//    println(resultCards)
-//    println(num)
-
-    DeckStrategyUtil.cleanPlay()
-//    DeckStrategyUtil.cleanTaunt()
+    testPower()
 }
 
 fun testPower(){
     val card = Card(MyCardAction())
-    card.cost = 3
+    card.cost = 2
     card.cardId = "1"
 
     val card1 = Card(MyCardAction())
-    card1.cost = 3
+    card1.cost = 1
     card1.cardId = "2"
 
     val card2 = Card(MyCardAction())
-    card2.cost = 3
+    card2.cost = 1
     card2.cardId = "3"
 
     val card3 = Card(MyCardAction())
@@ -99,31 +101,36 @@ fun testPower(){
 
     val card5 = Card(MyCardAction())
     card5.cost = 3
+    card5.cardId = "6"
 
     val card6 = Card(MyCardAction())
-    card6.cost = 3
+    card6.cost = 0
+    card6.cardId = "7"
 
     val card7 = Card(MyCardAction())
     card7.cost = 3
+    card7.cardId = "8"
 
     val card8 = Card(MyCardAction())
-    card8.cost = 3
+    card8.cost = 0
+    card8.cardId = "9"
 
     val card9 = Card(MyCardAction())
-    card9.cost = 3
+    card9.cost = 5
     val mutableListOf = mutableListOf<Card>(card, card1, card2, card3, card4, card5, card6, card7)
     val mutableListOf1 = mutableListOf<SimulateWeightCard>()
     for (item in mutableListOf) {
         mutableListOf1.add(SimulateWeightCard(item, 1.0))
     }
-    mutableListOf1[0].weight = 1.5
-    mutableListOf1[1].weight = 1.5
+    mutableListOf1[0].weight = 1.0
+    mutableListOf1[1].weight = 1.9
     mutableListOf1[2].weight = 1.5
     mutableListOf1[3].weight = 2.0
-    val (first, second) = calcPowerOrder(mutableListOf1, 10)
+    mutableListOf1[7].weight = 2.0
+    val (first, second) = calcPowerOrder(mutableListOf1, 5)
     println(first)
     for (weightCard in second) {
-        println(weightCard.card)
+        println( "${weightCard.card},${weightCard.card.cost}")
     }
 }
 

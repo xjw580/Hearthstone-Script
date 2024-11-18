@@ -569,15 +569,16 @@ object DeckStrategyUtil {
     }
 
     fun calcPowerOrder(cards: List<SimulateWeightCard>, target: Int): Pair<Double, List<SimulateWeightCard>> {
-        // dp[j] 用来存储达到 cost 为 j 时的最高总权重值
+        // dp[j] 表示总 cost 为 j 时的最高 (cost + weight) 值
         val dp = DoubleArray(target + 1)
         val chosenCards = Array(target + 1) { mutableListOf<SimulateWeightCard>() }
 
         for (card in cards) {
             for (j in target downTo card.card.cost) {
-                val newWeight = dp[j - card.card.cost] + card.weight
-                if (newWeight > dp[j] || (newWeight == dp[j] && chosenCards[j - card.card.cost].sumOf { it.weight } < chosenCards[j].sumOf { it.weight })) {
-                    dp[j] = newWeight
+                val newTotal = dp[j - card.card.cost] + card.card.cost + card.weight
+                if (newTotal > dp[j] ||
+                    (newTotal == dp[j] && chosenCards[j - card.card.cost].sumOf { it.card.cost } < chosenCards[j].sumOf { it.card.cost })) {
+                    dp[j] = newTotal
                     chosenCards[j] = chosenCards[j - card.card.cost].toMutableList().apply { add(card) }
                 }
             }
@@ -585,7 +586,9 @@ object DeckStrategyUtil {
 
         // 处理 cost 为 0 的 Card
         if (target == 0) {
-            chosenCards[0] = cards.filter { it.card.cost == 0 }.sortedByDescending { it.weight }.toMutableList()
+            chosenCards[0] = cards.filter { it.card.cost == 0 }
+                .sortedByDescending { it.weight }
+                .toMutableList()
         } else {
             for (card in cards) {
                 if (card.card.cost == 0) {
@@ -600,6 +603,7 @@ object DeckStrategyUtil {
 
         return Pair(dp[target], chosenCards[target])
     }
+
 
     fun convertToSimulateWeightCard(cards: List<Card>): List<SimulateWeightCard> {
         val result = mutableListOf<SimulateWeightCard>()
