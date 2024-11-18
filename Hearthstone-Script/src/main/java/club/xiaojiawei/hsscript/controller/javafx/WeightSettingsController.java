@@ -325,14 +325,17 @@ public class WeightSettingsController implements Initializable {
         }
         ArrayList<DBCard> list = new ArrayList<>(selectedItems);
         HashSet<WeightCard> weightSet = new HashSet<>(weightTable.getItems());
+        boolean hasUpdate = false;
         for (DBCard dbCard : list) {
             WeightCard weightCard = new WeightCard(dbCard.getCardId(), dbCard.getName(), 1.0);
-            if (!weightSet.contains(weightCard)) {
+            if (weightSet.contains(weightCard)) {
+                hasUpdate = true;
+            }else {
                 weightTable.getItems().add(weightCard);
             }
         }
         saveWeightConfig();
-        notificationManager.showSuccess("添加成功", 2);
+        notificationManager.showSuccess(hasUpdate ? "更新成功" : "添加成功", 2);
     }
 
     @FXML
