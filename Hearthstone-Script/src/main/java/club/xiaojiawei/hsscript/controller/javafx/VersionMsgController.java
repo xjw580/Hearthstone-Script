@@ -29,10 +29,7 @@ public class VersionMsgController implements Initializable {
         version.setText(VersionUtil.INSTANCE.getVERSION());
 //        TODO 版本更新时修改！！！
         versionDescription.setText("""
-                1. 修复突袭随从首次登场可能打脸的问题
-                2. 增加权重设置页
-                3. 提高设置页的打开速度
-                4. 基础策略、激进策略接入权重设置
+                1. 优化基础策略、激进策略中出牌时对卡牌权重的参考
                 """);
     }
 
