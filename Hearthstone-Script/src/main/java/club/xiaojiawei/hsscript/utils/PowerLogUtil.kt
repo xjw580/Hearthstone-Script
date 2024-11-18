@@ -74,7 +74,7 @@ object PowerLogUtil {
             WarEx.getPlayer(extraEntity.playerId).getArea(extraEntity.extraCard.zone)
                 ?.add(card, extraEntity.extraCard.zonePos)
                 ?: let {
-                    log.warn { "生成的card【entityId:${card.entityId}】不应没有area" }
+                    log.debug { "生成的card【entityId:${card.entityId}】不应没有area" }
                 }
         } else {
             //        不退出客户端的情况下断线重连会导致牌库的牌重新在日志中输出
@@ -121,12 +121,12 @@ object PowerLogUtil {
 //        处理复杂，例：TAG_CHANGE Entity=[entityName=UNKNOWN ENTITY [cardType=INVALID] id=89 zone=HAND zonePos=4 cardId= player=2] tag=ZONE_POSITION value=0
             if (tagChangeEntity.entity.isBlank()) {
                 val area = CARD_AREA_MAP[tagChangeEntity.entityId] ?: let {
-                    log.warn { "不应找不到area,【entityId:${tagChangeEntity.entityId}】" }
+                    log.debug { "不应找不到area,【entityId:${tagChangeEntity.entityId}】" }
                     return tagChangeEntity
                 }
 
                 val card = area.findByEntityId(tagChangeEntity.entityId) ?: let {
-                    log.warn { "area不应找不到card【entityId:${tagChangeEntity.entityId}】" }
+                    log.debug { "area不应找不到card【entityId:${tagChangeEntity.entityId}】" }
                     return tagChangeEntity
                 }
 

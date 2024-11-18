@@ -35,7 +35,7 @@ object LoginPlatformStarter : AbstractStarter() {
         addTask(
             EXTRA_THREAD_POOL.scheduleAtFixedRate({
                 var loginPlatformHWND: HWND?
-                if ((GameUtil.findLoginPlatformHWND().also { loginPlatformHWND = it }) == null) {
+                if ((GameUtil.findLoginPlatformHWND().also { loginPlatformHWND = it }) == null || GameUtil.isAliveOfGame()) {
                     startNextStarter()
                 } else {
                     if (loginCount.incrementAndGet() > 10) {
@@ -53,7 +53,7 @@ object LoginPlatformStarter : AbstractStarter() {
                     SystemUtil.delayShort()
                     clickLoginButton(loginPlatformHWND)
                 }
-            }, 5000, 5000, TimeUnit.MILLISECONDS)
+            }, 1000, 5000, TimeUnit.MILLISECONDS)
         )
     }
 
