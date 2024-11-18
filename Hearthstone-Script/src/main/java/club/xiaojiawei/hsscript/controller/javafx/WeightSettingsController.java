@@ -8,6 +8,8 @@ import club.xiaojiawei.hsscript.bean.WeightCard;
 import club.xiaojiawei.hsscript.data.PathDataKt;
 import club.xiaojiawei.hsscript.utils.CardUtil;
 import club.xiaojiawei.hsscript.utils.DBUtil;
+import club.xiaojiawei.tablecell.NumberFieldTableCellUI;
+import club.xiaojiawei.tablecell.TextFieldTableCellUI;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -16,8 +18,10 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.StackPane;
 import javafx.stage.FileChooser;
 import javafx.util.StringConverter;
@@ -69,6 +73,8 @@ public class WeightSettingsController implements Initializable {
     @FXML
     protected TableView<WeightCard> weightTable;
     @FXML
+    protected TableColumn<WeightCard, Number> weightNoCol;
+    @FXML
     protected TableColumn<WeightCard, String> weightCardIdCol;
     @FXML
     protected TableColumn<WeightCard, String> weightNameCol;
@@ -83,6 +89,20 @@ public class WeightSettingsController implements Initializable {
 
     private static final Path WEIGHT_CONFIG_PATH = Path.of(PathDataKt.getCONFIG_PATH(), "card.weight");
 
+    static class NoEditTextFieldTableCell<S, T> extends TextFieldTableCellUI<S, T> {
+
+        public NoEditTextFieldTableCell(StringConverter<T> stringConverter) {
+            super(stringConverter);
+        }
+
+        @Override
+        public void startEdit() {
+            super.startEdit();
+            if (getGraphic() instanceof TextField textField) {
+                textField.setEditable(false);
+            }
+        }
+    }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -99,56 +119,62 @@ public class WeightSettingsController implements Initializable {
         }
     }
 
+    private void search(){
+        String text = searchCardField.getText();
+        if (text == null || text.isEmpty()) {
+            cardTable.getItems().clear();
+            return;
+        }
+        int limit;
+        int offset;
+        if (this.limit.getText().isBlank()) {
+            limit = Integer.parseInt(this.limit.getPromptText());
+        } else {
+            limit = Integer.parseInt(this.limit.getText());
+        }
+        if (this.offset.getText().isBlank()) {
+            offset = Integer.parseInt(this.offset.getPromptText());
+        } else {
+            offset = Integer.parseInt(this.offset.getText());
+        }
+        currentOffset = offset;
+        cardTable.getItems().setAll(DBUtil.INSTANCE.queryCardByName(text, limit, offset));
+    }
+
     private void addListener() {
         searchCardField.setOnFilterAction(text -> {
-            if (text == null || text.isEmpty()) {
-                cardTable.getItems().clear();
-                return;
-            }
-            int limit;
-            int offset;
-            if (this.limit.getText().isBlank()) {
-                limit = Integer.parseInt(this.limit.getPromptText());
-            } else {
-                limit = Integer.parseInt(this.limit.getText());
-            }
-            if (this.offset.getText().isBlank()) {
-                offset = Integer.parseInt(this.offset.getPromptText());
-            } else {
-                offset = Integer.parseInt(this.offset.getText());
-            }
-            currentOffset = offset;
-            cardTable.getItems().setAll(DBUtil.INSTANCE.queryCardByName(text, limit, offset));
+            search();
         });
         weightTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 searchCardField.setText(newValue.getName());
             }
         });
+        limit.addEventFilter(KeyEvent.KEY_RELEASED, event -> {
+            if (event.getCode() == KeyCode.ENTER) {
+                search();
+            }
+        });
+        offset.addEventFilter(KeyEvent.KEY_RELEASED, event -> {
+            if (event.getCode() == KeyCode.ENTER) {
+                search();
+            }
+        });
     }
 
     private void initTable() {
-        cardTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-        noCol.setCellValueFactory(param -> {
-            ObservableList<DBCard> items = param.getTableView().getItems();
-            int index = IntStream.range(0, items.size()).filter(i -> items.get(i) == param.getValue()).findFirst().orElse(-2);
-            return new SimpleIntegerProperty(index + 1 + currentOffset);
-        });
-        cardIdCol.setCellValueFactory(new PropertyValueFactory<>("cardId"));
-        nameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
-        attackCol.setCellValueFactory(new PropertyValueFactory<>("attack"));
-        healthCol.setCellValueFactory(new PropertyValueFactory<>("health"));
-        costCol.setCellValueFactory(new PropertyValueFactory<>("cost"));
-        textCol.setCellValueFactory(new PropertyValueFactory<>("text"));
-        typeCol.setCellValueFactory(new PropertyValueFactory<>("type"));
-        cardSetCol.setCellValueFactory(new PropertyValueFactory<>("cardSet"));
+        StringConverter<String> stringConverter = new StringConverter<>() {
+            @Override
+            public String toString(String object) {
+                return object;
+            }
 
-        weightTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-        weightTable.setEditable(true);
-        weightCardIdCol.setCellValueFactory(new PropertyValueFactory<>("cardId"));
-        weightNameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
-        weightCol.setCellValueFactory(o -> o.getValue().getWeightProperty());
-        StringConverter<Number> stringConverter = new StringConverter<>() {
+            @Override
+            public String fromString(String string) {
+                return string;
+            }
+        };
+        StringConverter<Number> numberConverter = new StringConverter<>() {
             @Override
             public String toString(Number number) {
                 return number == null ? "" : number.toString();
@@ -159,7 +185,70 @@ public class WeightSettingsController implements Initializable {
                 return s == null || s.isBlank() ? 0 : Double.parseDouble(s);
             }
         };
-        weightCol.setCellFactory(weightCardNumberTableColumn -> new TextFieldTableCell<>(stringConverter) {
+        cardTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        cardTable.setEditable(true);
+        noCol.setCellValueFactory(param -> {
+            var items = param.getTableView().getItems();
+            int index = IntStream.range(0, items.size()).filter(i -> items.get(i) == param.getValue()).findFirst().orElse(-2);
+            return new SimpleIntegerProperty(index + 1 + currentOffset);
+        });
+        cardIdCol.setCellValueFactory(new PropertyValueFactory<>("cardId"));
+        cardIdCol.setCellFactory(weightCardNumberTableColumn -> new NoEditTextFieldTableCell<>(stringConverter) {
+            @Override
+            public void commitEdit(String s) {
+                super.commitEdit(s);
+                notificationManager.showInfo("不允许修改", 1);
+            }
+        });
+        nameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
+        nameCol.setCellFactory(weightCardNumberTableColumn -> new NoEditTextFieldTableCell<>(stringConverter) {
+            @Override
+            public void commitEdit(String s) {
+                super.commitEdit(s);
+                notificationManager.showInfo("不允许修改", 1);
+            }
+        });
+        attackCol.setCellValueFactory(new PropertyValueFactory<>("attack"));
+        healthCol.setCellValueFactory(new PropertyValueFactory<>("health"));
+        costCol.setCellValueFactory(new PropertyValueFactory<>("cost"));
+        textCol.setCellValueFactory(new PropertyValueFactory<>("text"));
+        textCol.setCellFactory(weightCardNumberTableColumn -> new NoEditTextFieldTableCell<>(stringConverter) {
+            @Override
+            public void commitEdit(String s) {
+                super.commitEdit(s);
+                notificationManager.showInfo("不允许修改", 1);
+            }
+        });
+        typeCol.setCellValueFactory(new PropertyValueFactory<>("type"));
+        cardSetCol.setCellValueFactory(new PropertyValueFactory<>("cardSet"));
+
+        weightTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        weightTable.setEditable(true);
+        weightNoCol.setCellValueFactory(param -> {
+            var items = param.getTableView().getItems();
+            int index = IntStream.range(0, items.size()).filter(i -> items.get(i) == param.getValue()).findFirst().orElse(-2);
+            return new SimpleIntegerProperty(index + 1 + currentOffset);
+        });
+        weightCardIdCol.setCellValueFactory(new PropertyValueFactory<>("cardId"));
+        weightCardIdCol.setCellFactory(weightCardNumberTableColumn -> new TextFieldTableCellUI<>(stringConverter) {
+            @Override
+            public void commitEdit(String s) {
+                super.commitEdit(s);
+                weightTable.getItems().get(getIndex()).setCardId(s);
+                saveWeightConfig();
+                notificationManager.showSuccess("修改ID成功", 2);
+            }
+        });
+        weightNameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
+        weightNameCol.setCellFactory(weightCardNumberTableColumn -> new NoEditTextFieldTableCell<>(stringConverter) {
+            @Override
+            public void commitEdit(String s) {
+                super.commitEdit(s);
+                notificationManager.showInfo("不允许修改", 1);
+            }
+        });
+        weightCol.setCellValueFactory(o -> o.getValue().getWeightProperty());
+        weightCol.setCellFactory(weightCardNumberTableColumn -> new NumberFieldTableCellUI<>(numberConverter) {
             @Override
             public void commitEdit(Number number) {
                 super.commitEdit(number);

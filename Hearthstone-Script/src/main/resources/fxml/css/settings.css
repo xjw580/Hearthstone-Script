@@ -25,3 +25,6 @@
 .split-pane-line {
     -fx-background: white
 }
+.control-btn{
+    -fx-background-color: rgba(128, 128, 128, 0.5)
+}

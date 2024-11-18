@@ -5,6 +5,7 @@
 <TabPane xmlns="http://javafx.com/javafx"
          xmlns:fx="http://javafx.com/fxml"
          tabClosingPolicy="UNAVAILABLE"
+         stylesheets="@css/tableview.css"
          fx:controller="club.xiaojiawei.hsscript.controller.javafx.SettingsController"
          fx:id="rootPane"
          styleClass="tab-pane-ui">

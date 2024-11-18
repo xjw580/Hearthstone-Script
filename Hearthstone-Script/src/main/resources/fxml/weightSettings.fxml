@@ -12,7 +12,7 @@
 <?import java.lang.Double?>
 <StackPane xmlns="http://javafx.com/javafx"
            xmlns:fx="http://javafx.com/fxml"
-           stylesheets="@css/strategySettings.css"
+           stylesheets="@css/weightSettings.css"
            fx:id="rootPane"
            fx:controller="club.xiaojiawei.hsscript.controller.javafx.WeightSettingsController">
     <fx:define>
@@ -20,9 +20,9 @@
     </fx:define>
     <SplitPane dividerPositions="0.65" styleClass="split-pane-line">
         <VBox minWidth="0">
-            <TableView fx:id="cardTable" VBox.vgrow="ALWAYS">
+            <TableView fx:id="cardTable" styleClass="table-view-idea, table-view-idea-tiny, table-view-idea-upright" VBox.vgrow="ALWAYS">
                 <columns>
-                    <TableColumn minWidth="${colMinWeight}" fx:id="noCol" text="No"/>
+                    <TableColumn minWidth="${colMinWeight}" prefWidth="${colMinWeight}" fx:id="noCol"/>
                     <TableColumn minWidth="${colMinWeight}" fx:id="cardIdCol" text="ID"/>
                     <TableColumn minWidth="${colMinWeight}" fx:id="nameCol" text="名字"/>
                     <TableColumn minWidth="${colMinWeight}" fx:id="attackCol" text="攻击力"/>
@@ -32,13 +32,18 @@
                     <TableColumn minWidth="${colMinWeight}" fx:id="typeCol" text="类型"/>
                     <TableColumn minWidth="${colMinWeight}" fx:id="cardSetCol" text="扩展包"/>
                 </columns>
+                <placeholder>
+                    <StackPane>
+                        <Label text="2.选中此表的行，点击向右按钮添加至右侧表"/>
+                    </StackPane>
+                </placeholder>
                 <columnResizePolicy>
                     <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
                 </columnResizePolicy>
             </TableView>
             <HBox style="-fx-padding: 10;-fx-spacing: 10">
                 <FilterField fx:id="searchCardField" HBox.hgrow="ALWAYS" styleClass="text-field-ui, text-field-ui-small"
-                             promptText="输入卡牌名，支持通配符%和_"/>
+                             promptText="1.输入卡牌名，支持通配符%和_"/>
                 <Label text="limit:" contentDisplay="RIGHT">
                     <graphic>
                         <NumberField fx:id="limit" text="100" promptText="100" hideIcon="true" maxWidth="45"
@@ -81,12 +86,18 @@
                 </Button>
             </VBox>
             <VBox HBox.hgrow="ALWAYS">
-                <TableView fx:id="weightTable" VBox.vgrow="ALWAYS">
+                <TableView fx:id="weightTable" styleClass="table-view-idea, table-view-idea-tiny, table-view-idea-upright" VBox.vgrow="ALWAYS">
                     <columns>
+                        <TableColumn minWidth="${colMinWeight}" prefWidth="${colMinWeight}" fx:id="weightNoCol"/>
                         <TableColumn minWidth="${colMinWeight}" fx:id="weightCardIdCol" text="ID"/>
                         <TableColumn minWidth="${colMinWeight}" fx:id="weightNameCol" text="名字"/>
                         <TableColumn minWidth="${colMinWeight}" fx:id="weightCol" text="权重"/>
                     </columns>
+                    <placeholder>
+                        <StackPane>
+                            <Label text="3.双击权重单元格以编辑"/>
+                        </StackPane>
+                    </placeholder>
                     <columnResizePolicy>
                         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
                     </columnResizePolicy>
