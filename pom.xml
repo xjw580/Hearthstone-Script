@@ -42,7 +42,7 @@
         <!--java/fx-->
         <java.version>21</java.version>
         <javafx-version>21.0.1</javafx-version>
-        <javafx-ui-version>v2.10.0</javafx-ui-version>
+        <javafx-ui-version>v2.13.1</javafx-ui-version>
 
         <!--other-->
         <lombok-version>1.18.30</lombok-version>
