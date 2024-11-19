@@ -9,7 +9,7 @@ import club.xiaojiawei.hsscript.utils.SystemUtil
  * @date 2023/7/6 10:46
  */
 
-object ClearStarter : AbstractStarter() {
+class ClearStarter : AbstractStarter() {
 
     public override fun execStart() {
         Mode.reset()

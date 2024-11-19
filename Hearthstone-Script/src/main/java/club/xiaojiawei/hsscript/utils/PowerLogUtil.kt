@@ -8,18 +8,12 @@ import club.xiaojiawei.hsscript.bean.CommonCardAction
 import club.xiaojiawei.hsscript.bean.log.CommonEntity
 import club.xiaojiawei.hsscript.bean.log.ExtraEntity
 import club.xiaojiawei.hsscript.bean.log.TagChangeEntity
-import club.xiaojiawei.hsscript.bean.single.WarEx
 import club.xiaojiawei.hsscript.bean.single.CARD_AREA_MAP
-import club.xiaojiawei.hsscript.data.CHANGE_ENTITY
-import club.xiaojiawei.hsscript.data.FULL_ENTITY
-import club.xiaojiawei.hsscript.data.MAX_LOG_SIZE_KB
-import club.xiaojiawei.hsscript.data.SHOW_ENTITY
-import club.xiaojiawei.hsscript.data.TAG
-import club.xiaojiawei.hsscript.data.TAG_CHANGE
-import club.xiaojiawei.hsscript.data.VALUE
+import club.xiaojiawei.hsscript.bean.single.WarEx
+import club.xiaojiawei.hsscript.core.Core
 import club.xiaojiawei.hsscript.core.Core.restart
+import club.xiaojiawei.hsscript.data.*
 import club.xiaojiawei.hsscript.enums.TagEnum
-import club.xiaojiawei.hsscript.starter.ExceptionListenStarter
 import club.xiaojiawei.hsscript.utils.CardUtil.addAreaListener
 import club.xiaojiawei.hsscript.utils.CardUtil.exchangeAreaOfCard
 import club.xiaojiawei.hsscript.utils.CardUtil.setCardAction
@@ -247,7 +241,7 @@ object PowerLogUtil {
         } else {
             flag = l.contains("PowerTaskList")
         }
-        ExceptionListenStarter.lastActiveTime = System.currentTimeMillis()
+        Core.lastActiveTime = System.currentTimeMillis()
         return flag
     }
 }

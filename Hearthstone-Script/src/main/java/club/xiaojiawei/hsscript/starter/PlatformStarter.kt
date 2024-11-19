@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit
  * @author 肖嘉威
  * @date 2023/7/5 14:39
  */
-object PlatformStarter : AbstractStarter() {
+class PlatformStarter : AbstractStarter() {
 
     public override fun execStart() {
         if (GameUtil.isAliveOfGame()) {

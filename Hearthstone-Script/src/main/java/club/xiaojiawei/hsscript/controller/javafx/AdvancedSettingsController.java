@@ -7,7 +7,6 @@ import club.xiaojiawei.hsscript.data.ScriptDataKt;
 import club.xiaojiawei.hsscript.dll.SystemDll;
 import club.xiaojiawei.hsscript.enums.ConfigEnum;
 import club.xiaojiawei.hsscript.listener.GlobalHotkeyListener;
-import club.xiaojiawei.hsscript.starter.AbstractStarter;
 import club.xiaojiawei.hsscript.starter.InjectStarter;
 import club.xiaojiawei.hsscript.utils.ConfigExUtil;
 import club.xiaojiawei.hsscript.utils.ConfigUtil;
@@ -103,14 +102,10 @@ public class AdvancedSettingsController implements Initializable {
 //        监听控制开关
         controlMode.statusProperty().addListener((observable, oldValue, newValue) -> {
             ConfigUtil.INSTANCE.putBoolean(ConfigEnum.CONTROL_MODE, newValue, true);
-            if (newValue){
+            if (newValue) {
                 SystemDll.INSTANCE.uninstallDll(ScriptDataKt.getGAME_HWND());
-            }else {
-                InjectStarter instance = InjectStarter.INSTANCE;
-                AbstractStarter nextStarter = instance.getNextStarter();
-                instance.setNextStarter(null);
-                instance.start();
-                instance.setNextStarter(nextStarter);
+            } else {
+                new InjectStarter().start();
             }
         });
 //        监听发送通知开关
@@ -126,12 +121,12 @@ public class AdvancedSettingsController implements Initializable {
         pauseHotKey.setOnKeyPressed(event -> {
             HotKey hotKey = plusModifier(event);
             if (hotKey != null) {
-                if (hotKey.getKeyCode() == 0){
+                if (hotKey.getKeyCode() == 0) {
                     pauseHotKey.setText("");
                     ConfigExUtil.INSTANCE.storePauseHotKey(hotKey);
                     GlobalHotkeyListener.INSTANCE.reload();
                     notificationManager.showSuccess("开始/暂停热键热键已删除", 2);
-                }else {
+                } else {
                     pauseHotKey.setText(hotKey.toString());
                     ConfigExUtil.INSTANCE.storePauseHotKey(hotKey);
                     GlobalHotkeyListener.INSTANCE.reload();
@@ -149,12 +144,12 @@ public class AdvancedSettingsController implements Initializable {
         exitHotKey.setOnKeyPressed(event -> {
             HotKey hotKey = plusModifier(event);
             if (hotKey != null) {
-                if (hotKey.getKeyCode() == 0){
+                if (hotKey.getKeyCode() == 0) {
                     exitHotKey.setText("");
                     ConfigExUtil.INSTANCE.storeExitHotKey(hotKey);
                     GlobalHotkeyListener.INSTANCE.reload();
                     notificationManager.showSuccess("退出热键已删除", 2);
-                }else {
+                } else {
                     exitHotKey.setText(hotKey.toString());
                     ConfigExUtil.INSTANCE.storeExitHotKey(hotKey);
                     GlobalHotkeyListener.INSTANCE.reload();

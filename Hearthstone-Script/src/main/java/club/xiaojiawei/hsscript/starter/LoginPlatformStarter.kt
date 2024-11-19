@@ -20,7 +20,7 @@ import java.util.concurrent.atomic.AtomicInteger
  * @author 肖嘉威
  * @date 2023/10/13 22:24
  */
-object LoginPlatformStarter : AbstractStarter() {
+class LoginPlatformStarter : AbstractStarter() {
 
     override fun execStart() {
         if (GameUtil.isAliveOfGame()) {

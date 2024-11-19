@@ -28,6 +28,9 @@ import club.xiaojiawei.util.isTrue
  */
 object Core {
 
+    @Volatile
+    var lastActiveTime: Long = 0
+
     init {
         PauseStatus.addListener { _, _, newValue ->
             newValue.isTrue {

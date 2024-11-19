@@ -22,9 +22,9 @@ import java.util.*
  * @author 肖嘉威
  * @date 2023/7/5 14:38
  */
-object InjectStarter : AbstractStarter() {
+class InjectStarter : AbstractStarter() {
 
-    public override fun execStart() {
+    override fun execStart() {
         val controlMode = ConfigUtil.getBoolean(ConfigEnum.CONTROL_MODE)
         log.info { "控制模式：${controlMode}" }
         if (!(controlMode || GAME_HWND == null || injectCheck())) {

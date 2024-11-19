@@ -17,10 +17,7 @@ import java.util.concurrent.TimeUnit
  * @author 肖嘉威
  * @date 2024/9/28 21:58
  */
-object ExceptionListenStarter : AbstractStarter() {
-
-    @Volatile
-    var lastActiveTime: Long = 0
+class ExceptionListenStarter : AbstractStarter() {
 
     private var errorScheduledFuture: ScheduledFuture<*>? = null
 
@@ -40,16 +37,16 @@ object ExceptionListenStarter : AbstractStarter() {
     override fun execStart() {
         closeListener()
         log.info { "开始监听异常情况" }
-        lastActiveTime = System.currentTimeMillis()
+        Core.lastActiveTime = System.currentTimeMillis()
         errorScheduledFuture = LISTEN_LOG_THREAD_POOL.scheduleAtFixedRate(LRunnable {
             if (PauseStatus.isPause || !WorkListener.working) {
                 closeListener()
                 return@LRunnable
             }
             val idleTime = ConfigUtil.getLong(ConfigEnum.IDLE_MAXIMUM_TIME)
-            if (System.currentTimeMillis() - lastActiveTime > idleTime * 60_000L
+            if (System.currentTimeMillis() - Core.lastActiveTime > idleTime * 60_000L
             ) {
-                lastActiveTime = System.currentTimeMillis()
+                Core.lastActiveTime = System.currentTimeMillis()
                 log.info { "空闲时间超过${idleTime}分钟，准备重启游戏" }
                 Core.restart()
             }

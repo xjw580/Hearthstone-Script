@@ -24,7 +24,7 @@ import java.util.concurrent.atomic.AtomicInteger
  * @author 肖嘉威
  * @date 2023/7/5 14:38
  */
-object GameStarter : AbstractStarter() {
+class GameStarter : AbstractStarter() {
 
     private var latestLogDir: File? = null
 

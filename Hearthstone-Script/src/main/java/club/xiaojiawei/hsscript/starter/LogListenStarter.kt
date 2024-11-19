@@ -10,7 +10,7 @@ import club.xiaojiawei.hsscript.utils.GameUtil
  * @author 肖嘉威
  * @date 2023/9/20 17:22
  */
-object LogListenStarter : AbstractStarter() {
+class LogListenStarter : AbstractStarter() {
 
     override fun execStart() {
         val latestLogDir = GameUtil.getLatestLogDir()

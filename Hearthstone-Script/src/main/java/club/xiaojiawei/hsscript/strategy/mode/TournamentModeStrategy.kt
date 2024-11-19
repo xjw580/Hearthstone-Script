@@ -50,7 +50,9 @@ object TournamentModeStrategy : AbstractModeStrategy<Any?>() {
     /**
      * 顶栏有限时借用套牌时使用
      */
-    val FIRST_DECK_RECT_BACK: GameRect = GameRect(-0.4072, -0.2516, -0.0696, 0.0139)
+    val FIRST_DECK_RECT_LIMIT: GameRect = GameRect(-0.4072, -0.2516, -0.0696, 0.0139)
+
+    val PREV_DECK_PAGE: GameRect = GameRect(-0.4755, -0.4473, -0.0302, 0.0095)
 
     val BACK_RECT: GameRect = GameRect(0.4041, 0.4575, 0.4083, 0.4410)
 
@@ -131,13 +133,16 @@ object TournamentModeStrategy : AbstractModeStrategy<Any?>() {
         for (i in decks.indices.reversed()) {
             val d = decks[i]
             if (d.code == deckStrategy.deckCode() || d.name == deckStrategy.name()) {
-                log.info { "找到套牌:" + deckStrategy.name() }
+                log.debug { "找到套牌:" + deckStrategy.name() }
                 break
             }
         }
         log.info { "选择套牌" }
 
-        FIRST_DECK_RECT_BACK.lClick()
+        println("click prev deck")
+        PREV_DECK_PAGE.lClick()
+        SystemUtil.delayTiny()
+        FIRST_DECK_RECT_LIMIT.lClick()
         SystemUtil.delayTiny()
         FIRST_DECK_RECT.lClick()
         SystemUtil.delayTiny()

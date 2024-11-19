@@ -9,16 +9,13 @@ import club.xiaojiawei.hsscript.starter.*
  */
 object StarterConfig {
 
-    val starter: AbstractStarter = ClearStarter
-
-    init {
-        ClearStarter
-            .setNextStarter(PlatformStarter)
-            .setNextStarter(LoginPlatformStarter)
-            .setNextStarter(GameStarter)
-            .setNextStarter(InjectStarter)
-            .setNextStarter(LogListenStarter)
-            .setNextStarter(ExceptionListenStarter)
+    val starter: AbstractStarter = ClearStarter().also {
+        it.setNextStarter(PlatformStarter())
+            .setNextStarter(LoginPlatformStarter())
+            .setNextStarter(GameStarter())
+            .setNextStarter(InjectStarter())
+            .setNextStarter(LogListenStarter())
+            .setNextStarter(ExceptionListenStarter())
     }
 
 }
