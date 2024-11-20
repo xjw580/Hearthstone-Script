@@ -1,6 +1,7 @@
 package club.xiaojiawei.hsscript.starter
 
 import club.xiaojiawei.config.log
+import club.xiaojiawei.hsscript.interfaces.closer.ManuallyReleased
 import club.xiaojiawei.hsscript.interfaces.closer.ScheduledCloser
 import club.xiaojiawei.hsscript.status.PauseStatus
 import club.xiaojiawei.hsscript.status.TaskManager
@@ -11,7 +12,7 @@ import java.util.concurrent.ScheduledFuture
  * @author 肖嘉威
  * @date 2023/7/5 14:37
  */
-abstract class AbstractStarter : ScheduledCloser {
+abstract class AbstractStarter : ScheduledCloser, ManuallyReleased {
 
     constructor() {
         TaskManager.addTask(this)
@@ -62,5 +63,9 @@ abstract class AbstractStarter : ScheduledCloser {
 
     override fun close() {
         stop()
+    }
+
+    override fun release(){
+        TaskManager.removeTask(this)
     }
 }

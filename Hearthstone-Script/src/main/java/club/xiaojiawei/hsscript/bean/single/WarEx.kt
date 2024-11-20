@@ -114,6 +114,7 @@ object WarEx {
         }
         CARD_AREA_MAP.clear()
         resetCallbackList.forEach(Consumer { obj: Runnable -> obj.run() })
+        System.gc()
     }
 
     @Synchronized

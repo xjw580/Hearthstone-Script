@@ -105,7 +105,9 @@ public class AdvancedSettingsController implements Initializable {
             if (newValue) {
                 SystemDll.INSTANCE.uninstallDll(ScriptDataKt.getGAME_HWND());
             } else {
-                new InjectStarter().start();
+                InjectStarter injectStarter = new InjectStarter();
+                injectStarter.start();
+                injectStarter.release();
             }
         });
 //        监听发送通知开关

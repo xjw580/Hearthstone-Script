@@ -22,7 +22,7 @@ import java.util.concurrent.TimeUnit
 object PowerLogListener :
     AbstractLogListener("Power.log", 0, 1000L, TimeUnit.MILLISECONDS) {
 
-    private const val RESERVE_SIZE = 4 * 1024 * 1024
+    private const val RESERVE_SIZE_B = 4 * 1024 * 1024
 
     override fun dealOldLog() {
         innerLogFile?.let {
@@ -65,7 +65,7 @@ object PowerLogListener :
         val logFile = logFile
         logFile ?: return false
 
-        if (logFile.length() + RESERVE_SIZE >= MAX_LOG_SIZE_B) {
+        if (logFile.length() + RESERVE_SIZE_B >= MAX_LOG_SIZE_B) {
             log.info { "power.log即将达到" + (MAX_LOG_SIZE_KB) + "KB，准备重启游戏" }
             Core.restart()
             return false

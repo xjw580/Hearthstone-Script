@@ -5,6 +5,8 @@
     -fx-background-radius: 5;
     -fx-padding: 12;
     -fx-effect: default-effect;
+    -fx-max-width: 500;
+    -fx-min-width: 400;
 }
 #rootPane{
     -fx-background-color: rgb(242, 242, 242);
