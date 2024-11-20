@@ -11,3 +11,6 @@
 #rootPane{
     -fx-background-color: background-color;
 }
+.hyperlink{
+    -fx-border-width: 0;
+}

@@ -29,7 +29,16 @@ public class VersionMsgController implements Initializable {
         version.setText(VersionUtil.INSTANCE.getVERSION());
 //        TODO 版本更新时修改！！！
         versionDescription.setText("""
-                1. 优化基础策略、激进策略中出牌时对卡牌权重的参考
+                1. 修复突袭随从首次登场可能打脸的问题
+                2. 增加权重设置页
+                3. 提高设置页的打开速度
+                4. 基础策略、激进策略接入权重设置
+                5. 高级设置页增加控制模式
+                6. 适配所有皮肤的基础技能
+                7. 首页增加清空统计数据按钮
+                8. 适配练习模式（套牌插件中添加RunModeEnum.PRACTICE即可支持）
+                9. 优化鼠标移动
+                10. 优化开始匹配前的点击流程
                 """);
     }
 
