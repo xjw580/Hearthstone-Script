@@ -9,10 +9,11 @@ import javafx.beans.property.SimpleDoubleProperty
  */
 class WeightCard() {
 
-    constructor(cardId: String, name: String, weight: Double) : this() {
+    constructor(cardId: String, name: String, weight: Double, powerWeight: Double) : this() {
         this.cardId = cardId
         this.name = name
         this.weight = weight
+        this.powerWeight = powerWeight
     }
 
     var cardId: String = ""
@@ -21,10 +22,19 @@ class WeightCard() {
     @JsonIgnore
     val weightProperty = SimpleDoubleProperty(0.0)
 
+    @JsonIgnore
+    val powerWeightProperty = SimpleDoubleProperty(0.0)
+
     var weight: Double
         get() = weightProperty.get()
         set(value) {
             weightProperty.set(value)
+        }
+
+    var powerWeight: Double
+        get() = powerWeightProperty.get()
+        set(value) {
+            powerWeightProperty.set(value)
         }
 
     override fun equals(other: Any?): Boolean {

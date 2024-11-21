@@ -10,15 +10,17 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import java.lang.Double?>
+<?import club.xiaojiawei.controls.ico.HelpIco?>
 <StackPane xmlns="http://javafx.com/javafx"
            xmlns:fx="http://javafx.com/fxml"
            stylesheets="@css/weightSettings.css"
            fx:id="rootPane"
            fx:controller="club.xiaojiawei.hsscript.controller.javafx.WeightSettingsController">
     <fx:define>
-        <Double fx:id="colMinWeight" fx:value="30"/>
+        <Double fx:id="colMinWeight" fx:value="25"/>
+        <Double fx:id="icoScale" fx:value="0.8"/>
     </fx:define>
-    <SplitPane dividerPositions="0.65" styleClass="split-pane-line">
+    <SplitPane dividerPositions="0.6" styleClass="split-pane-line">
         <VBox minWidth="0">
             <TableView fx:id="cardTable" styleClass="table-view-idea, table-view-idea-tiny, table-view-idea-upright" VBox.vgrow="ALWAYS">
                 <columns>
@@ -89,9 +91,32 @@
                 <TableView fx:id="weightTable" styleClass="table-view-idea, table-view-idea-tiny, table-view-idea-upright" VBox.vgrow="ALWAYS">
                     <columns>
                         <TableColumn minWidth="${colMinWeight}" prefWidth="${colMinWeight}" fx:id="weightNoCol"/>
-                        <TableColumn minWidth="${colMinWeight}" fx:id="weightCardIdCol" text="ID"/>
-                        <TableColumn minWidth="${colMinWeight}" fx:id="weightNameCol" text="名字"/>
-                        <TableColumn minWidth="${colMinWeight}" fx:id="weightCol" text="权重"/>
+                        <TableColumn minWidth="${colMinWeight}" prefWidth="${colMinWeight}" fx:id="weightCardIdCol" text="ID"/>
+                        <TableColumn minWidth="${colMinWeight}" prefWidth="${colMinWeight}" fx:id="weightNameCol" text="名字"/>
+                        <TableColumn minWidth="${colMinWeight}" prefWidth="50" fx:id="weightCol">
+                            <graphic>
+                                <Label text="权重" contentDisplay="RIGHT">
+                                    <graphic>
+                                        <HelpIco scaleX="${icoScale}" scaleY="${icoScale}"/>
+                                    </graphic>
+                                    <tooltip>
+                                        <Tooltip text="衡量卡牌的价值，影响本回合要出哪些牌及优先解哪个怪"/>
+                                    </tooltip>
+                                </Label>
+                            </graphic>
+                        </TableColumn>
+                        <TableColumn minWidth="${colMinWeight}" prefWidth="55" fx:id="powerWeightCol">
+                            <graphic>
+                                <Label text="使用权重" contentDisplay="RIGHT">
+                                    <graphic>
+                                        <HelpIco scaleX="${icoScale}" scaleY="${icoScale}"/>
+                                    </graphic>
+                                    <tooltip>
+                                        <Tooltip text="衡量卡牌出牌顺序，比如本回合确定要出船载火炮和南海船工，如果船载火炮的使用权重大，将会先出船载火炮再出南海船工"/>
+                                    </tooltip>
+                                </Label>
+                            </graphic>
+                        </TableColumn>
                     </columns>
                     <placeholder>
                         <StackPane>

@@ -129,7 +129,7 @@ object DeckStrategyUtil {
         rivalAtcWeight: Double,
     ) {
         val myCardWeightCalc: Function<Card, Double> = Function {
-            var value = CARD_WEIGHT_TRIE[it.cardId] ?: 1.0
+            var value = CARD_WEIGHT_TRIE[it.cardId]?.weight ?: 1.0
             if (it.isDeathRattle) {
                 value -= 0.3
             }
@@ -577,7 +577,8 @@ object DeckStrategyUtil {
             for (j in target downTo card.card.cost) {
                 val newTotal = dp[j - card.card.cost] + card.card.cost + card.weight
                 if (newTotal > dp[j] ||
-                    (newTotal == dp[j] && chosenCards[j - card.card.cost].sumOf { it.card.cost } < chosenCards[j].sumOf { it.card.cost })) {
+                    (newTotal == dp[j] && chosenCards[j - card.card.cost].sumOf { it.card.cost } < chosenCards[j].sumOf { it.card.cost })
+                ) {
                     dp[j] = newTotal
                     chosenCards[j] = chosenCards[j - card.card.cost].toMutableList().apply { add(card) }
                 }
@@ -608,9 +609,16 @@ object DeckStrategyUtil {
     fun convertToSimulateWeightCard(cards: List<Card>): List<SimulateWeightCard> {
         val result = mutableListOf<SimulateWeightCard>()
         for (card in cards) {
-            result.add(SimulateWeightCard(card, CARD_WEIGHT_TRIE[card.cardId] ?: 1.0))
+            result.add(SimulateWeightCard(card, CARD_WEIGHT_TRIE[card.cardId]?.weight ?: 1.0))
         }
         return result
+    }
+
+    fun sortCard(cards: List<SimulateWeightCard>): List<SimulateWeightCard> {
+        cards.forEach { t ->
+            t.powerWeight = CARD_WEIGHT_TRIE[t.card.cardId]?.powerWeight ?: 1.0
+        }
+        return cards.sortedByDescending { it.powerWeight }
     }
 
 }

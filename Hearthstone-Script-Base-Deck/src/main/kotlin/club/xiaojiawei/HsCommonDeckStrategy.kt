@@ -2,11 +2,14 @@ package club.xiaojiawei
 
 import club.xiaojiawei.bean.Card
 import club.xiaojiawei.bean.Player
+import club.xiaojiawei.bean.SimulateWeightCard
 import club.xiaojiawei.config.log
 import club.xiaojiawei.enums.CardTypeEnum
 import club.xiaojiawei.enums.RunModeEnum
 import club.xiaojiawei.status.War
+import club.xiaojiawei.status.War.me
 import club.xiaojiawei.util.DeckStrategyUtil
+import club.xiaojiawei.util.DeckStrategyUtil.sortCard
 
 /**
  * @author 肖嘉威
@@ -71,22 +74,21 @@ class HsCommonDeckStrategy : DeckStrategy() {
             )
             if (num1 > me.usableResource) {
                 coinCard.action.power()
-                if (resultCards1.isNotEmpty()) {
-                    log.info { "待出牌：$resultCards" }
-                }
-                for (simulateWeightCard in resultCards1) {
-                    if (me.playArea.isFull) break
-                    simulateWeightCard.card.action.power()
-                }
+                outCard(resultCards1)
                 return
             }
         }
-        if (resultCards.isNotEmpty()) {
-            log.info { "待出牌：$resultCards" }
-        }
-        for (simulateWeightCard in resultCards) {
-            if (me.playArea.isFull) break
-            simulateWeightCard.card.action.power()
+        outCard(resultCards)
+    }
+
+    fun outCard(cards: List<SimulateWeightCard>) {
+        if (cards.isNotEmpty()) {
+            var sortCard = sortCard(cards)
+            log.info { "待出牌：$sortCard" }
+            for (simulateWeightCard in sortCard) {
+                if (me.playArea.isFull) break
+                simulateWeightCard.card.action.power()
+            }
         }
     }
 

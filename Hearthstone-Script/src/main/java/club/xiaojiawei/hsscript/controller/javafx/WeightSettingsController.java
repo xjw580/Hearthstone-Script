@@ -81,6 +81,8 @@ public class WeightSettingsController implements Initializable {
     @FXML
     protected TableColumn<WeightCard, Number> weightCol;
     @FXML
+    protected TableColumn<WeightCard, Number> powerWeightCol;
+    @FXML
     protected NotificationManager<String> notificationManager;
     @FXML
     protected FilterField searchCardField;
@@ -119,7 +121,7 @@ public class WeightSettingsController implements Initializable {
         }
     }
 
-    private void search(){
+    private void search() {
         String text = searchCardField.getText();
         if (text == null || text.isEmpty()) {
             cardTable.getItems().clear();
@@ -256,6 +258,15 @@ public class WeightSettingsController implements Initializable {
                 notificationManager.showSuccess("修改权重成功", 2);
             }
         });
+        powerWeightCol.setCellValueFactory(o -> o.getValue().getPowerWeightProperty());
+        powerWeightCol.setCellFactory(weightCardNumberTableColumn -> new NumberFieldTableCellUI<>(numberConverter) {
+            @Override
+            public void commitEdit(Number number) {
+                super.commitEdit(number);
+                saveWeightConfig();
+                notificationManager.showSuccess("修改权重成功", 2);
+            }
+        });
     }
 
     private void readWeightConfig(Path weigthPath) {
@@ -327,10 +338,10 @@ public class WeightSettingsController implements Initializable {
         HashSet<WeightCard> weightSet = new HashSet<>(weightTable.getItems());
         boolean hasUpdate = false;
         for (DBCard dbCard : list) {
-            WeightCard weightCard = new WeightCard(dbCard.getCardId(), dbCard.getName(), 1.0);
+            WeightCard weightCard = new WeightCard(dbCard.getCardId(), dbCard.getName(), 1.0, 1.0);
             if (weightSet.contains(weightCard)) {
                 hasUpdate = true;
-            }else {
+            } else {
                 weightTable.getItems().add(weightCard);
             }
         }

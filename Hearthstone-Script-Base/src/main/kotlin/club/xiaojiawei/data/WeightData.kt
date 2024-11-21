@@ -1,5 +1,6 @@
 package club.xiaojiawei.data
 
+import club.xiaojiawei.bean.CardWeight
 import club.xiaojiawei.bean.LikeTrie
 
 /**
@@ -8,4 +9,4 @@ import club.xiaojiawei.bean.LikeTrie
  */
 
 // 存储卡牌的权重
-val CARD_WEIGHT_TRIE = LikeTrie<Double>(1.0)
+val CARD_WEIGHT_TRIE = LikeTrie<CardWeight>(CardWeight(1.0, 1.0))

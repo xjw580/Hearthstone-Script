@@ -13,9 +13,9 @@
     <Tab fx:id="advancedTab" text="高级设置"/>
     <Tab fx:id="pluginTab" text="插件设置"/>
     <Tab fx:id="strategyTab" text="策略设置"/>
-    <Tab fx:id="weightTab" text="权重设置">
+    <Tab fx:id="weightTab" >
         <graphic>
-            <Label>
+            <Label text="权重设置" contentDisplay="RIGHT">
                 <graphic>
                     <HelpIco/>
                 </graphic>

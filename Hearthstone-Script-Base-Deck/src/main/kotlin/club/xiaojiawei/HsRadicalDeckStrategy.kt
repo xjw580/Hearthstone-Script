@@ -51,8 +51,9 @@ class HsRadicalDeckStrategy : DeckStrategy() {
             var hands = me.handArea.cards.toList()
             val (_, resultCards) = DeckStrategyUtil.calcPowerOrderConvert(hands, me.usableResource)
             if (resultCards.isNotEmpty()) {
-                log.info { "待出牌：$resultCards" }
-                for (simulateWeightCard in resultCards) {
+                val sortCard = DeckStrategyUtil.sortCard(resultCards)
+                log.info { "待出牌：$sortCard" }
+                for (simulateWeightCard in sortCard) {
                     val card = simulateWeightCard.card
                     if (me.usableResource >= card.cost){
                         if (card.cardType === CardTypeEnum.SPELL){

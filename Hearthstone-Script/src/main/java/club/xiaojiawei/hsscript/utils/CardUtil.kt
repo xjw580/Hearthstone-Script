@@ -2,6 +2,7 @@ package club.xiaojiawei.hsscript.utils
 
 import club.xiaojiawei.CardAction
 import club.xiaojiawei.bean.Card
+import club.xiaojiawei.bean.CardWeight
 import club.xiaojiawei.bean.area.Area
 import club.xiaojiawei.config.log
 import club.xiaojiawei.data.CARD_WEIGHT_TRIE
@@ -101,7 +102,7 @@ object CardUtil {
         val list = weightCard ?: readWeightConfig()
         CARD_WEIGHT_TRIE.clear()
         list.forEach {
-            CARD_WEIGHT_TRIE[it.cardId] = it.weight
+            CARD_WEIGHT_TRIE[it.cardId] = CardWeight(it.weight, it.powerWeight)
         }
         cardWeightRawData = list.toList()
     }
