@@ -139,7 +139,6 @@ object TournamentModeStrategy : AbstractModeStrategy<Any?>() {
         }
         log.info { "选择套牌" }
 
-        println("click prev deck")
         PREV_DECK_PAGE.lClick()
         SystemUtil.delayTiny()
         FIRST_DECK_RECT_LIMIT.lClick()

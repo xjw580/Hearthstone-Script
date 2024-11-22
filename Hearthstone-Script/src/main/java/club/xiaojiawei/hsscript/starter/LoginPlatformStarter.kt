@@ -39,7 +39,7 @@ class LoginPlatformStarter : AbstractStarter() {
                     startNextStarter()
                 } else {
                     if (loginCount.incrementAndGet() > 10) {
-                        log.warn { "登录战网失败次数过多，重新执行启动器链" }
+                        log.warn { "登录${PLATFORM_CN_NAME}失败次数过多，重新执行启动器链" }
                         stop()
                         EXTRA_THREAD_POOL.schedule({
                             GameUtil.killLoginPlatform()
@@ -58,7 +58,7 @@ class LoginPlatformStarter : AbstractStarter() {
     }
 
     private fun inputPassword(loginPlatformHWND: HWND) {
-        log.info { "输入战网密码中..." }
+        log.info { "输入${PLATFORM_CN_NAME}密码中..." }
         val password = ConfigUtil.getString(ConfigEnum.PLATFORM_PASSWORD)
         password.isNotBlank().isTrue {
             SystemDll.INSTANCE.sendText(loginPlatformHWND, password, false)
@@ -72,7 +72,7 @@ class LoginPlatformStarter : AbstractStarter() {
 
     @Deprecated("体验差")
     private fun inputPassword() {
-        log.info { "输入战网密码中..." }
+        log.info { "输入${PLATFORM_CN_NAME}密码中..." }
         val password = ConfigUtil.getString(ConfigEnum.PLATFORM_PASSWORD)
         password.isNotBlank().isTrue {
             SystemUtil.deleteAllContent()

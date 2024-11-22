@@ -6,15 +6,7 @@ import club.xiaojiawei.config.log
 import club.xiaojiawei.enums.ModeEnum
 import club.xiaojiawei.hsscript.bean.GameRect
 import club.xiaojiawei.hsscript.bean.single.WarEx
-import club.xiaojiawei.hsscript.data.GAME_CN_NAME
-import club.xiaojiawei.hsscript.data.GAME_HWND
-import club.xiaojiawei.hsscript.data.GAME_PROGRAM_NAME
-import club.xiaojiawei.hsscript.data.GAME_RECT
-import club.xiaojiawei.hsscript.data.GAME_US_NAME
-import club.xiaojiawei.hsscript.data.PLATFORM_CN_NAME
-import club.xiaojiawei.hsscript.data.PLATFORM_LOGIN_CN_NAME
-import club.xiaojiawei.hsscript.data.PLATFORM_PROGRAM_NAME
-import club.xiaojiawei.hsscript.data.PLATFORM_US_NAME
+import club.xiaojiawei.hsscript.data.*
 import club.xiaojiawei.hsscript.dll.SystemDll
 import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.status.Mode
@@ -30,8 +22,7 @@ import java.awt.Point
 import java.io.File
 import java.io.IOException
 import java.nio.file.Path
-import java.util.Arrays
-import java.util.Comparator
+import java.util.*
 import java.util.concurrent.ScheduledFuture
 import java.util.concurrent.TimeUnit
 import kotlin.math.max
@@ -363,7 +354,7 @@ object GameUtil {
      */
     fun addGameEndTask() {
         cancelGameEndTask()
-        log.info { "点掉游戏结束结算页面" }
+        log.info { "点掉${GAME_CN_NAME}结束结算页面" }
         if (Mode.currMode === ModeEnum.GAMEPLAY) {
             gameEndTasks.add(
                 EXTRA_THREAD_POOL.scheduleWithFixedDelay(
@@ -382,7 +373,7 @@ object GameUtil {
                 )
             )
         } else {
-            for (i in 0 until 3) {
+            (0 until 3).forEach {
                 END_TURN_RECT.lClick()
                 SystemUtil.delayShort()
             }
@@ -392,7 +383,7 @@ object GameUtil {
     fun hidePlatformWindow() {
         val platformHWND = findPlatformHWND()
         if (platformHWND != null && !User32.INSTANCE.ShowWindow(platformHWND, WinUser.SW_MINIMIZE)) {
-            log.warn { "最小化战网窗口异常，错误代码：" + Kernel32.INSTANCE.GetLastError() }
+            log.warn { "最小化${PLATFORM_CN_NAME}窗口异常，错误代码：" + Kernel32.INSTANCE.GetLastError() }
         }
     }
 
@@ -438,14 +429,14 @@ object GameUtil {
                 Runtime.getRuntime().exec("cmd /c taskkill /f /t /im $GAME_PROGRAM_NAME")
                     .waitFor()
                 delay(1000)
-                log.info { "炉石传说已关闭" }
+                log.info { "${GAME_CN_NAME}已关闭" }
             } catch (e: IOException) {
                 log.error(e) { "关闭${GAME_CN_NAME}异常" }
             } catch (e: InterruptedException) {
                 log.warn(e) { "关闭${GAME_CN_NAME}可能异常" }
             }
         } else {
-            log.info { "炉石传说不在运行" }
+            log.info { "${GAME_CN_NAME}不在运行" }
         }
     }
 
@@ -455,19 +446,19 @@ object GameUtil {
         if (platformHWND != null || loginPlatformHWND != null) {
             SystemDll.INSTANCE.closeProgram(platformHWND)
             SystemDll.INSTANCE.closeProgram(loginPlatformHWND)
-            log.info { "战网已关闭" }
+            log.info { "${PLATFORM_CN_NAME}已关闭" }
         } else {
-            log.info { "战网不在运行" }
+            log.info { "${PLATFORM_CN_NAME}不在运行" }
         }
     }
 
     fun killLoginPlatform() {
         val loginPlatformHWND: WinDef.HWND? = findLoginPlatformHWND()
         if (loginPlatformHWND == null) {
-            log.info { "登录战网不在运行" }
+            log.info { "${PLATFORM_LOGIN_CN_NAME}不在运行" }
         } else {
             SystemDll.INSTANCE.closeProgram(loginPlatformHWND)
-            log.info { "登录战网已关闭" }
+            log.info { "${PLATFORM_LOGIN_CN_NAME}已关闭" }
         }
     }
 

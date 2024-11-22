@@ -13,11 +13,7 @@ import club.xiaojiawei.hsscript.enums.WindowEnum
 import club.xiaojiawei.hsscript.listener.WorkListener
 import club.xiaojiawei.hsscript.status.Mode
 import club.xiaojiawei.hsscript.status.PauseStatus
-import club.xiaojiawei.hsscript.utils.ConfigUtil
-import club.xiaojiawei.hsscript.utils.GameUtil
-import club.xiaojiawei.hsscript.utils.SystemUtil
-import club.xiaojiawei.hsscript.utils.WindowUtil
-import club.xiaojiawei.hsscript.utils.platformRunLater
+import club.xiaojiawei.hsscript.utils.*
 import club.xiaojiawei.util.isFalse
 import club.xiaojiawei.util.isTrue
 
@@ -85,7 +81,7 @@ object Core {
         CORE_THREAD_POOL.execute {
             PauseStatus.isPause = true
             GameUtil.killGame()
-            log.info { "游戏重启中……" }
+            log.info { "${GAME_CN_NAME}重启中……" }
             PauseStatus.isPause = false
         }
     }
