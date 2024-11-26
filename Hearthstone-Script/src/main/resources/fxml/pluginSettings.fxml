@@ -11,7 +11,7 @@
             fx:controller="club.xiaojiawei.hsscript.controller.javafx.PluginSettingsController">
     <SplitPane dividerPositions="0.3" styleClass="split-pane-line"
                prefHeight="${rootPane.height}" prefWidth="${rootPane.width}">
-        <ListView fx:id="pluginListView" styleClass="list-view-ui"/>
+        <ListView fx:id="pluginListView" minWidth="150" maxWidth="300" styleClass="list-view-ui"/>
         <VBox fx:id="pluginInfo" style="-fx-background-color: white" visible="false">
             <VBox spacing="3" style="-fx-padding: 5">
                 <CopyLabel fx:id="pluginName" notificationManager="${notificationManager}"

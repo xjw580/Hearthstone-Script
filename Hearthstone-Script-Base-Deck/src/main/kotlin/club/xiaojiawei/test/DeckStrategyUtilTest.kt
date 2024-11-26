@@ -92,7 +92,7 @@ fun testPower(){
     card2.cardId = "3"
 
     val card3 = Card(MyCardAction())
-    card3.cost = 3
+    card3.cost = 5
     card3.cardId = "4"
 
     val card4 = Card(MyCardAction())
@@ -104,7 +104,7 @@ fun testPower(){
     card5.cardId = "6"
 
     val card6 = Card(MyCardAction())
-    card6.cost = 0
+    card6.cost = 1
     card6.cardId = "7"
 
     val card7 = Card(MyCardAction())
@@ -112,22 +112,25 @@ fun testPower(){
     card7.cardId = "8"
 
     val card8 = Card(MyCardAction())
-    card8.cost = 0
+    card8.cost = 1
     card8.cardId = "9"
 
     val card9 = Card(MyCardAction())
     card9.cost = 5
-    val mutableListOf = mutableListOf<Card>(card, card1, card2, card3, card4, card5, card6, card7)
+    card9.cardId = "10"
+
+    val mutableListOf = mutableListOf<Card>(card, card1, card2, card3, card4, card5, card6, card7, card8, card9)
     val mutableListOf1 = mutableListOf<SimulateWeightCard>()
     for (item in mutableListOf) {
         mutableListOf1.add(SimulateWeightCard(item, 1.0))
     }
-    mutableListOf1[0].weight = 1.0
-    mutableListOf1[1].weight = 1.9
-    mutableListOf1[2].weight = 1.5
-    mutableListOf1[3].weight = 2.0
-    mutableListOf1[7].weight = 2.0
-    val (first, second) = calcPowerOrder(mutableListOf1, 5)
+//    mutableListOf1[0].weight = 1.0
+//    mutableListOf1[1].weight = 1.9
+//    mutableListOf1[2].weight = 1.5
+//    mutableListOf1[3].weight = 2.0
+//    mutableListOf1[7].weight = 2.0
+    mutableListOf1[9].weight = 10.0
+    val (first, second) = calcPowerOrder(mutableListOf1, 6)
     println(first)
     for (weightCard in second) {
         println( "${weightCard.card},${weightCard.card.cost}")

@@ -58,7 +58,7 @@
                     <HelpIco/>
                 </graphic>
                 <tooltip>
-                    <Tooltip text="真实控制鼠标移动，或许可能大概能降低被检测概率，修改后最好重启软件"/>
+                    <Tooltip text="真实控制鼠标移动，或许可能大概能降低被检测概率，在虚拟机里使用时推荐打开"/>
                 </tooltip>
             </Label>
             <HBox HBox.hgrow="ALWAYS"/>
