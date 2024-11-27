@@ -1,14 +1,13 @@
 package club.xiaojiawei.hsscript.strategy.mode
 
+import club.xiaojiawei.config.EXTRA_THREAD_POOL
 import club.xiaojiawei.config.log
-import club.xiaojiawei.enums.ModeEnum
 import club.xiaojiawei.hsscript.bean.GameRect
 import club.xiaojiawei.hsscript.status.DeckStrategyManager
-import club.xiaojiawei.hsscript.status.Mode
-import club.xiaojiawei.hsscript.status.Mode.prevMode
 import club.xiaojiawei.hsscript.status.PauseStatus
 import club.xiaojiawei.hsscript.strategy.AbstractModeStrategy
 import club.xiaojiawei.hsscript.utils.SystemUtil
+import java.util.concurrent.TimeUnit
 
 /**
  * 主界面
@@ -20,24 +19,16 @@ object HubModeStrategy : AbstractModeStrategy<Any?>() {
     //    TODO ADD
     val CLOSE_AD1_RECT: GameRect = GameRect(-0.0296, 0.0431, 0.2502, 0.2552)
 
-    val CLOSE_AD2_RECT: GameRect = GameRect(-0.0296, 0.0431, 0.2502, 0.2552)
-
     override fun wantEnter() {
     }
 
     override fun afterEnter(t: Any?) {
-        if (prevMode != ModeEnum.COLLECTIONMANAGER) {
-            SystemUtil.delay(1000)
-            log.info { "点击弹窗（去除任务，活动等）" }
-            (0..3).forEach { i ->
-                if (PauseStatus.isPause || Mode.currMode !== ModeEnum.HUB) return
-                CLOSE_AD1_RECT.lClick()
-                SystemUtil.delay(500)
-            }
-            if (PauseStatus.isPause || Mode.currMode !== ModeEnum.HUB) return
-            CLOSE_AD2_RECT.lClick()
-            SystemUtil.delayTiny()
-        }
+        addEnteredTask(EXTRA_THREAD_POOL.scheduleAtFixedRate({
+            if (PauseStatus.isPause) return@scheduleAtFixedRate
+            log.info { "点击广告弹窗等" }
+            CLOSE_AD1_RECT.lClick()
+            SystemUtil.delayShortMedium()
+        }, 5, 2, TimeUnit.SECONDS))
 
         DeckStrategyManager.currentDeckStrategy?.let {
             if (it.runModes.isEmpty()) {
