@@ -1,4 +1,4 @@
-package club.xiaojiawei.hsscript.config
+package club.xiaojiawei.config
 
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.jdbc.datasource.DriverManagerDataSource
@@ -10,14 +10,14 @@ import java.nio.file.Path
  */
 object DBConfig {
 
-    val DB: JdbcTemplate
+    val CARD_DB: JdbcTemplate
 
     init {
         val dataSource = DriverManagerDataSource()
         dataSource.setDriverClassName("org.sqlite.JDBC")
         val dbPath = Path.of(System.getProperty("user.dir"), "hs_cards.db").toString()
         dataSource.url = "jdbc:sqlite:${dbPath}"
-        DB = JdbcTemplate(dataSource)
+        CARD_DB = JdbcTemplate(dataSource)
     }
 
 }

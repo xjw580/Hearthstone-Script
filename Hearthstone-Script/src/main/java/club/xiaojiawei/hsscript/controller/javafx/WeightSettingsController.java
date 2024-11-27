@@ -3,11 +3,11 @@ package club.xiaojiawei.hsscript.controller.javafx;
 import club.xiaojiawei.controls.FilterField;
 import club.xiaojiawei.controls.NotificationManager;
 import club.xiaojiawei.controls.NumberField;
-import club.xiaojiawei.hsscript.bean.DBCard;
+import club.xiaojiawei.bean.DBCard;
 import club.xiaojiawei.hsscript.bean.WeightCard;
 import club.xiaojiawei.hsscript.data.PathDataKt;
 import club.xiaojiawei.hsscript.utils.CardUtil;
-import club.xiaojiawei.hsscript.utils.DBUtil;
+import club.xiaojiawei.util.CardDBUtil;
 import club.xiaojiawei.tablecell.NumberFieldTableCellUI;
 import club.xiaojiawei.tablecell.TextFieldTableCellUI;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -140,7 +140,7 @@ public class WeightSettingsController implements Initializable {
             offset = Integer.parseInt(this.offset.getText());
         }
         currentOffset = offset;
-        cardTable.getItems().setAll(DBUtil.INSTANCE.queryCardByName(text, limit, offset));
+        cardTable.getItems().setAll(CardDBUtil.INSTANCE.queryCardByName(text, limit, offset, false));
     }
 
     private void addListener() {

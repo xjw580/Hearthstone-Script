@@ -8,8 +8,9 @@ class SimulateWeightCard(
     val card: Card,
     var weight: Double,
     var powerWeight: Double = 0.0,
+    var text: String = ""
 ) {
     override fun toString(): String {
-        return "【entityId:${card.entityId}，entityName:${card.entityName}，cardId:${card.cardId}，weight：${weight}】"
+        return "【entityId:${card.entityId}，entityName:${card.entityName}，cardId:${card.cardId}，weight：${weight}，text：${text}】"
     }
 }

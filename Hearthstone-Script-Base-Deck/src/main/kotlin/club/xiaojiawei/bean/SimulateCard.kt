@@ -1,6 +1,7 @@
 package club.xiaojiawei.bean
 
 import club.xiaojiawei.enums.CardTypeEnum
+import com.sun.tools.javac.code.TypeAnnotationPosition.field
 import kotlin.math.max
 
 /**
@@ -26,7 +27,9 @@ class SimulateCard(
         0,
         card.atc
     ) * inversionCardWeight + calcHeroWeight,
-) : Cloneable {
+
+    var text: String = ""
+): Cloneable {
 
     companion object {
         const val HERO_EXTRA_WEIGHT = 1_000_000

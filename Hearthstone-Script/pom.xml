@@ -30,10 +30,6 @@
     </properties>
 
     <dependencies>
-        <dependency>
-            <groupId>org.xerial</groupId>
-            <artifactId>sqlite-jdbc</artifactId>
-        </dependency>
         <!--INI配置文件读写-->
         <dependency>
             <groupId>org.ini4j</groupId>
@@ -129,11 +125,6 @@
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-        </dependency>
-        <!--连接数据库需要-->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-jdbc</artifactId>
         </dependency>
     </dependencies>
 
