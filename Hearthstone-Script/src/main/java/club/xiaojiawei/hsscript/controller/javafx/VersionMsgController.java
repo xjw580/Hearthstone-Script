@@ -29,8 +29,8 @@ public class VersionMsgController implements Initializable {
         version.setText(VersionUtil.INSTANCE.getVERSION());
 //        TODO 版本更新时修改！！！
         versionDescription.setText("""
-                1. 优化进入游戏主界面时的点击行为
-                2. 激进策略支持简单识别伤害法术
+                1. 策略设置页增加随机事件，随机表情，随机投降设置项
+                2. 增加对超级风怒的识别
                 """);
     }
 
