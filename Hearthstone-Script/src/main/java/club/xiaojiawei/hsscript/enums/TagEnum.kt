@@ -15,6 +15,7 @@ import club.xiaojiawei.hsscript.bean.single.WarEx
 import club.xiaojiawei.hsscript.data.CONCEDED
 import club.xiaojiawei.hsscript.data.LOST
 import club.xiaojiawei.hsscript.data.WON
+import club.xiaojiawei.hsscript.enums.TagEnum.valueOf
 import club.xiaojiawei.hsscript.interfaces.ExtraEntityHandler
 import club.xiaojiawei.hsscript.interfaces.TagChangeHandler
 import club.xiaojiawei.hsscript.utils.CardUtil
@@ -330,6 +331,14 @@ enum class TagEnum(
         },
         ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
             extraEntity.extraCard.card.isWindFury = isTrue(value)
+        }),
+    MEGA_WINDFURY("超级风怒",
+        TagChangeHandler { card: Card?, tagChangeEntity: TagChangeEntity, player: Player?, area: Area? ->
+            card?.isMegaWindfury = isTrue(tagChangeEntity.value)
+            log(player, card, "超级风怒", tagChangeEntity.value)
+        },
+        ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
+            extraEntity.extraCard.card.isMegaWindfury = isTrue(value)
         }),
     BATTLECRY("战吼",
         TagChangeHandler { card: Card?, tagChangeEntity: TagChangeEntity, player: Player?, area: Area? ->

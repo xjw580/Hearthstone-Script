@@ -5,10 +5,15 @@ import club.xiaojiawei.config.log
 import club.xiaojiawei.enums.StepEnum
 import club.xiaojiawei.hsscript.bean.DeckStrategyThread
 import club.xiaojiawei.hsscript.bean.log.TagChangeEntity
+import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.enums.TagEnum
 import club.xiaojiawei.hsscript.strategy.AbstractPhaseStrategy
 import club.xiaojiawei.hsscript.strategy.DeckStrategyActuator
+import club.xiaojiawei.hsscript.utils.ConfigUtil
+import club.xiaojiawei.hsscript.utils.GameUtil
+import club.xiaojiawei.hsscript.utils.SystemUtil
 import club.xiaojiawei.status.War
+import club.xiaojiawei.util.isTrue
 
 /**
  * 游戏回合阶段
@@ -26,17 +31,25 @@ object GameTurnPhaseStrategy : AbstractPhaseStrategy() {
                     cancelAllTask()
                     War.isMyTurn = true
                     // 异步执行出牌策略，以便监听出牌后的卡牌变动
-
                     (DeckStrategyThread({
+                        (ConfigUtil.getBoolean(ConfigEnum.RANDOM_EMOTION) && War.me.turn == 0).isTrue {
+                            GameUtil.sendGreetEmoji()
+                            SystemUtil.delayShortMedium()
+                        }
                         DeckStrategyActuator.outCard()
                     }, "OutCard Thread").also { addTask(it) }).start()
                 } else {
                     log.info { "对方回合" }
                     War.isMyTurn = false
                     cancelAllTask()
-                    (DeckStrategyThread({
-                        DeckStrategyActuator.randomDoSomething()
-                    }, "Random Do Something Thread").also { addTask(it) }).start()
+                    ConfigUtil.getBoolean(ConfigEnum.RANDOM_EMOTION).isTrue {
+                        DeckStrategyActuator.randEmoji()
+                    }
+                    if (ConfigUtil.getBoolean(ConfigEnum.RANDOM_EVENT)) {
+                        (DeckStrategyThread({
+                            DeckStrategyActuator.randomDoSomething()
+                        }, "Random Do Something Thread").also { addTask(it) }).start()
+                    }
                 }
             } else if (tagChangeEntity.value == StepEnum.MAIN_END.name) {
                 War.isMyTurn = false

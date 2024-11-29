@@ -113,6 +113,11 @@ open class BaseCard : Entity() {
     var isWindFury = false
 
     /**
+     * 超级风怒
+     */
+    var isMegaWindfury = false
+
+    /**
      * 战吼
      */
     @Volatile

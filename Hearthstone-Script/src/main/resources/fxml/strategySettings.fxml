@@ -9,7 +9,7 @@
 <?import javafx.scene.text.Text?>
 <?import java.lang.Double?>
 <?import club.xiaojiawei.controls.Switch?>
-<AnchorPane xmlns="http://javafx.com/javafx"
+<StackPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             stylesheets="@css/strategySettings.css"
             fx:id="rootPane"
@@ -17,112 +17,113 @@
     <fx:define>
         <Double fx:id="fieldWidth" fx:value="60"/>
     </fx:define>
-    <VBox fx:id="mainVBox">
-        <HBox styleClass="h-box">
-            <Text text="操作间隔/ms"/>
-            <Label>
-                <graphic>
-                    <HelpIco/>
-                </graphic>
-                <tooltip>
-                    <Tooltip text="对战时的攻击，出牌等视为一个操作，此值过小会因卡牌动画导致数据不同步问题"/>
-                </tooltip>
-            </Label>
-            <HBox HBox.hgrow="ALWAYS"/>
-            <NumberField fx:id="actionIntervalField" styleClass="text-field-ui, text-field-ui-small" hideIcon="true" prefWidth="${fieldWidth}"/>
-        </HBox>
-        <HBox styleClass="h-box">
-            <Text text="鼠标整体移动速度"/>
-            <HBox HBox.hgrow="ALWAYS"/>
-            <NumberField fx:id="moveSpeedField" styleClass="text-field-ui, text-field-ui-small" hideIcon="true" prefWidth="${fieldWidth}"/>
-        </HBox>
-        <HBox styleClass="h-box">
-            <Text text="单次匹配最长时间/s"/>
-            <Label>
-                <graphic>
-                    <HelpIco/>
-                </graphic>
-                <tooltip>
-                    <Tooltip text="超过此值将重新匹配"/>
-                </tooltip>
-            </Label>
-            <HBox HBox.hgrow="ALWAYS"/>
-            <NumberField fx:id="matchMaximumTimeField" styleClass="text-field-ui, text-field-ui-small" hideIcon="true" prefWidth="${fieldWidth}"/>
-        </HBox>
-        <HBox styleClass="h-box">
-            <Text text="最长空闲时间/min"/>
-            <Label>
-                <graphic>
-                    <HelpIco/>
-                </graphic>
-                <tooltip>
-                    <Tooltip text="软件工作时闲置时间超过此值将重启游戏"/>
-                </tooltip>
-            </Label>
-            <HBox HBox.hgrow="ALWAYS"/>
-            <NumberField fx:id="idleMaximumTimeField" styleClass="text-field-ui, text-field-ui-small" hideIcon="true" prefWidth="${fieldWidth}"/>
-        </HBox>
-        <HBox styleClass="h-box">
-            <Text text="游戏日志大小限制/KB"/>
-            <Label>
-                <graphic>
-                    <HelpIco/>
-                </graphic>
-                <tooltip>
-                    <Tooltip text="当游戏日志文件超过此值将重启游戏"/>
-                </tooltip>
-            </Label>
-            <HBox HBox.hgrow="ALWAYS"/>
-            <NumberField fx:id="logLimitField" styleClass="text-field-ui, text-field-ui-small" hideIcon="true" prefWidth="${fieldWidth}"/>
-        </HBox>
-        <HBox styleClass="h-box">
-            <Text text="随机事件"/>
-            <Label>
-                <graphic>
-                    <HelpIco/>
-                </graphic>
-                <tooltip>
-                    <Tooltip text="我方回合结束后，可能触发点击卡牌等事件"/>
-                </tooltip>
-            </Label>
-            <HBox HBox.hgrow="ALWAYS"/>
-            <Switch fx:id="randomEventSwitch"/>
-        </HBox>
-        <HBox styleClass="h-box">
-            <Text text="随机表情"/>
-            <Label>
-                <graphic>
-                    <HelpIco/>
-                </graphic>
-                <tooltip>
-                    <Tooltip text="我方回合结束后，可能发问候等表情"/>
-                </tooltip>
-            </Label>
-            <HBox HBox.hgrow="ALWAYS"/>
-            <Switch fx:id="randomEmotionSwitch"/>
-        </HBox>
-        <HBox styleClass="h-box">
-            <Text text="自动投降"/>
-            <Label>
-                <graphic>
-                    <HelpIco/>
-                </graphic>
-                <tooltip>
-                    <Tooltip text="指定我方回合数后自动投降"/>
-                </tooltip>
-            </Label>
-            <HBox HBox.hgrow="ALWAYS"/>
-            <NumberField fx:id="autoSurrenderField" styleClass="text-field-ui, text-field-ui-small" hideIcon="true" prefWidth="${fieldWidth}"/>
+    <VBox>
+        <ScrollPane VBox.vgrow="ALWAYS" hbarPolicy="NEVER" style="-fx-background-insets: 0">
+            <VBox fx:id="mainVBox">
+                <HBox styleClass="h-box">
+                    <Text text="操作间隔/ms"/>
+                    <Label>
+                        <graphic>
+                            <HelpIco/>
+                        </graphic>
+                        <tooltip>
+                            <Tooltip text="对战时的攻击，出牌等视为一个操作，此值过小会因卡牌动画导致数据不同步问题"/>
+                        </tooltip>
+                    </Label>
+                    <HBox HBox.hgrow="ALWAYS"/>
+                    <NumberField fx:id="actionIntervalField" styleClass="text-field-ui, text-field-ui-small" hideIcon="true" prefWidth="${fieldWidth}"/>
+                </HBox>
+                <HBox styleClass="h-box">
+                    <Text text="鼠标整体移动速度"/>
+                    <HBox HBox.hgrow="ALWAYS"/>
+                    <NumberField fx:id="moveSpeedField" styleClass="text-field-ui, text-field-ui-small" hideIcon="true" prefWidth="${fieldWidth}"/>
+                </HBox>
+                <HBox styleClass="h-box">
+                    <Text text="单次匹配最长时间/s"/>
+                    <Label>
+                        <graphic>
+                            <HelpIco/>
+                        </graphic>
+                        <tooltip>
+                            <Tooltip text="超过此值将重新匹配"/>
+                        </tooltip>
+                    </Label>
+                    <HBox HBox.hgrow="ALWAYS"/>
+                    <NumberField fx:id="matchMaximumTimeField" styleClass="text-field-ui, text-field-ui-small" hideIcon="true" prefWidth="${fieldWidth}"/>
+                </HBox>
+                <HBox styleClass="h-box">
+                    <Text text="最长空闲时间/min"/>
+                    <Label>
+                        <graphic>
+                            <HelpIco/>
+                        </graphic>
+                        <tooltip>
+                            <Tooltip text="软件工作时闲置时间超过此值将重启游戏"/>
+                        </tooltip>
+                    </Label>
+                    <HBox HBox.hgrow="ALWAYS"/>
+                    <NumberField fx:id="idleMaximumTimeField" styleClass="text-field-ui, text-field-ui-small" hideIcon="true" prefWidth="${fieldWidth}"/>
+                </HBox>
+                <HBox styleClass="h-box">
+                    <Text text="游戏日志大小限制/KB"/>
+                    <Label>
+                        <graphic>
+                            <HelpIco/>
+                        </graphic>
+                        <tooltip>
+                            <Tooltip text="当游戏日志文件超过此值将重启游戏"/>
+                        </tooltip>
+                    </Label>
+                    <HBox HBox.hgrow="ALWAYS"/>
+                    <NumberField fx:id="logLimitField" styleClass="text-field-ui, text-field-ui-small" hideIcon="true" prefWidth="${fieldWidth}"/>
+                </HBox>
+                <HBox styleClass="h-box">
+                    <Text text="随机事件"/>
+                    <Label>
+                        <graphic>
+                            <HelpIco/>
+                        </graphic>
+                        <tooltip>
+                            <Tooltip text="我方回合结束后，可能触发点击卡牌等事件"/>
+                        </tooltip>
+                    </Label>
+                    <HBox HBox.hgrow="ALWAYS"/>
+                    <Switch fx:id="randomEventSwitch"/>
+                </HBox>
+                <HBox styleClass="h-box">
+                    <Text text="随机表情"/>
+                    <Label>
+                        <graphic>
+                            <HelpIco/>
+                        </graphic>
+                        <tooltip>
+                            <Tooltip text="我方回合结束后，可能发问候等表情"/>
+                        </tooltip>
+                    </Label>
+                    <HBox HBox.hgrow="ALWAYS"/>
+                    <Switch fx:id="randomEmotionSwitch"/>
+                </HBox>
+                <HBox styleClass="h-box">
+                    <Text text="自动投降"/>
+                    <Label>
+                        <graphic>
+                            <HelpIco/>
+                        </graphic>
+                        <tooltip>
+                            <Tooltip text="指定我方回合数后自动投降"/>
+                        </tooltip>
+                    </Label>
+                    <HBox HBox.hgrow="ALWAYS"/>
+                    <NumberField fx:id="autoSurrenderField" styleClass="text-field-ui, text-field-ui-small" hideIcon="true" prefWidth="${fieldWidth}"/>
+                </HBox>
+            </VBox>
+        </ScrollPane>
+        <HBox styleClass="confirm-btn-group">
+            <Button text="应用" styleClass="btn-ui, btn-ui-normal" onAction="#apply"/>
+            <Button text="保存" styleClass="btn-ui, btn-ui-success" onAction="#save" />
         </HBox>
     </VBox>
-    <HBox AnchorPane.bottomAnchor="15" AnchorPane.rightAnchor="15" spacing="20" alignment="CENTER">
-        <HBox spacing="5" alignment="CENTER">
-            <Button text="应用" styleClass="btn-ui, btn-ui-normal" onAction="#apply"/>
-        </HBox>
-        <HBox HBox.hgrow="ALWAYS"/>
-        <Button text="保存" styleClass="btn-ui, btn-ui-success" onAction="#save" />
-    </HBox>
     <NotificationManager fx:id="notificationManager" notificationPos="BOTTOM_CENTER">
         <NotificationFactory showingCloseBtn="false" size="SMALL"/>
     </NotificationManager>
-</AnchorPane>
+</StackPane>

@@ -201,6 +201,27 @@ object GameUtil {
 
     private var gameEndTasks: MutableList<ScheduledFuture<*>> = mutableListOf()
 
+    /**
+     * 谢谢表情
+     */
+    fun sendThankEmoji() {
+        log.info { "发送谢谢表情" }
+        MY_HERO_RECT.rClick()
+        SystemUtil.delayMedium()
+        THANK_RECT.lClick()
+    }
+
+    /**
+     * 问候表情
+     */
+    fun sendGreetEmoji() {
+        log.info { "发送问候表情" }
+        MY_HERO_RECT.rClick()
+        SystemUtil.delayMedium()
+        GREET_RECT.lClick()
+    }
+
+
     fun getThreeDiscoverCardRect(index: Int): GameRect {
         if (index < 0 || index > THREE_DISCOVER_RECTS.size - 1) {
             return GameRect.INVALID

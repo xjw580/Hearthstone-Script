@@ -145,6 +145,9 @@ object DeckStrategyUtil {
             if (it.isWindFury) {
                 value += 0.15
             }
+            if (it.isMegaWindfury) {
+                value += 0.4
+            }
             if (it.isTitan) {
                 value += 0.5
             }
@@ -191,6 +194,7 @@ object DeckStrategyUtil {
 //        清理嘲讽
         val myAttackCountCalc: Function<Card, Int> = Function<Card, Int> {
             if (it.canAttack()) {
+                if (it.isMegaWindfury) 4
                 if (it.isWindFury) 2 else 1
             } else 0
         }
@@ -250,6 +254,7 @@ object DeckStrategyUtil {
         rivalAttackCountCalc = myInversionAttackCountCalc
         rivalInversionAttackCountCalc = Function<Card, Int> {
             if (it.canAttack(true)) {
+                if (it.isMegaWindfury) 4
                 if (it.isWindFury) 2 else 1
             } else 0
         }
@@ -621,9 +626,9 @@ object DeckStrategyUtil {
         return cards.sortedByDescending { it.powerWeight }
     }
 
-    fun addTextForCard(card: List<SimulateWeightCard>){
+    fun addTextForCard(card: List<SimulateWeightCard>) {
         for (weightCard in card) {
-            CardDBUtil.queryCardById(weightCard.card.cardId).let{
+            CardDBUtil.queryCardById(weightCard.card.cardId).let {
                 if (it.isNotEmpty()) {
                     weightCard.text = it[0].text
                 }

@@ -176,6 +176,7 @@ object WindowUtil {
             stage = createStage(windowEnum)
             STAGE_MAP[windowEnum] = stage
         }
+        stage.scene.stylesheets.add("/fxml/css/common.css")
         return stage
     }
 

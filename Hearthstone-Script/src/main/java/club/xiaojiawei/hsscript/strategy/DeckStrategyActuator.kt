@@ -15,7 +15,9 @@ import club.xiaojiawei.status.War
 import club.xiaojiawei.status.War.isMyTurn
 import club.xiaojiawei.status.War.player1
 import club.xiaojiawei.status.War.player2
-import kotlin.random.Random
+import club.xiaojiawei.util.RandomUtil
+import club.xiaojiawei.util.isFalse
+import club.xiaojiawei.util.isTrue
 
 /**
  * 卡牌策略抽象类
@@ -36,13 +38,27 @@ object DeckStrategyActuator {
         checkSurrender()
     }
 
+    fun randEmoji() {
+        if (!canExec()) return
+
+        var random = RandomUtil.RANDOM
+        (random.nextInt() and 1 == 1).isTrue {
+            (random.nextInt() and 1 == 1).isTrue {
+                GameUtil.sendThankEmoji()
+            }.isFalse {
+                GameUtil.sendGreetEmoji()
+            }
+        }
+    }
+
     /**
      * 非本人回合随机做点事情
      */
     fun randomDoSomething() {
-        if (!ConfigUtil.getBoolean(ConfigEnum.STRATEGY)) return
-        if (!validPlayer()) return
-        if (Random.nextInt() and 1 == 1) {
+        if (!canExec()) return
+
+        var random = RandomUtil.RANDOM
+        if (random.nextInt() and 1 == 1) {
             log.info { "随机做点事情" }
             Thread.sleep(2000)
             val minTime = 4000
@@ -50,26 +66,26 @@ object DeckStrategyActuator {
             while (!PauseStatus.isPause && !isMyTurn && !Thread.interrupted() && Mode.currMode === ModeEnum.GAMEPLAY) {
                 var toList = War.rival.playArea.cards.toList()
                 for (card in toList) {
-                    if (Random.nextInt() and 1 == 1) {
+                    if (random.nextInt() and 1 == 1) {
                         card.action.lClick()
                         log.info { "点击敌方战场卡牌：${card}" }
                     }
                     SystemUtil.delay(minTime, maxTime)
                 }
                 SystemUtil.delay(minTime, maxTime)
-                if (Random.nextInt() and 1 == 1) {
+                if (random.nextInt() and 1 == 1) {
                     War.rival.playArea.hero?.action?.lClick()
                     log.info { "点击敌方英雄" }
                 }
                 SystemUtil.delay(minTime, maxTime)
-                if (Random.nextInt() and 1 == 1) {
+                if (random.nextInt() and 1 == 1) {
                     War.rival.playArea.power?.action?.lClick()
                     log.info { "点击敌方英雄技能" }
                 }
                 SystemUtil.delay(minTime, maxTime)
                 toList = War.me.playArea.cards.toList()
                 for (card in toList) {
-                    if (Random.nextInt() and 1 == 1) {
+                    if (random.nextInt() and 1 == 1) {
                         card.action.lClick()
                         log.info { "点击我方战场卡牌：${card}" }
                     }
@@ -81,9 +97,8 @@ object DeckStrategyActuator {
     }
 
     fun changeCard() {
-        if (!ConfigUtil.getBoolean(ConfigEnum.STRATEGY)) return
-        if (!validPlayer()) return
-        if (checkSurrender()) return
+        if (!canExec()) return
+
 //        等待动画结束，畸变模式会导致开局动画增加
         SystemUtil.delay(20000 + (if (ConfigUtil.getBoolean(ConfigEnum.DISTORTION)) 4500 else 0))
         if (PauseStatus.isPause) return
@@ -115,9 +130,16 @@ object DeckStrategyActuator {
     }
 
     fun outCard() {
-        if (!ConfigUtil.getBoolean(ConfigEnum.STRATEGY)) return
-        if (!validPlayer()) return
-        if (checkSurrender()) return
+        if (!canExec()) return
+
+        var surrenderNumber = ConfigUtil.getInt(ConfigEnum.AUTO_SURRENDER)
+
+        if (surrenderNumber >= 0 && War.me.turn >= surrenderNumber) {
+            log.info { "到达投降回合" }
+            GameUtil.surrender()
+            return
+        }
+
         // 等待动画结束
         SystemUtil.delay(5000)
         if (!isMyTurn || PauseStatus.isPause) return
@@ -133,6 +155,10 @@ object DeckStrategyActuator {
             GameUtil.cancelAction()
             for (i in 0 until 20) {
                 if (!isMyTurn) break
+                if (i > 3) {
+                    GameUtil.getThreeDiscoverCardRect(0).lClick()
+                    SystemUtil.delayShortMedium()
+                }
                 GameUtil.END_TURN_RECT.lClick(false)
                 SystemUtil.delayShortMedium()
             }
@@ -142,9 +168,8 @@ object DeckStrategyActuator {
     }
 
     fun discoverChooseCard(vararg cards: Card) {
-        if (!ConfigUtil.getBoolean(ConfigEnum.STRATEGY)) return
-        if (!validPlayer()) return
-        if (checkSurrender()) return
+        if (!canExec()) return
+
         log.info { "执行发现选牌策略" }
 
         SystemUtil.delayShortMedium()
@@ -158,6 +183,10 @@ object DeckStrategyActuator {
         log.info { "执行发现选牌策略完毕" }
 
         checkSurrender()
+    }
+
+    private fun canExec(): Boolean {
+        return ConfigUtil.getBoolean(ConfigEnum.STRATEGY) && validPlayer() || !checkSurrender()
     }
 
     private fun validPlayer(): Boolean {

@@ -9,7 +9,7 @@ import java.util.*
  */
 object RandomUtil {
 
-    private val RANDOM = Random(System.currentTimeMillis())
+    val RANDOM = Random(System.currentTimeMillis())
 
     fun getRandom(min: Int, max: Int): Int {
         if (min == max) return min

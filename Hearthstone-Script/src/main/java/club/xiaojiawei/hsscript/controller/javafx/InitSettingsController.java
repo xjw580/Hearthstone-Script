@@ -12,7 +12,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.DirectoryChooser;
@@ -43,7 +43,7 @@ public class InitSettingsController implements Initializable {
     @FXML
     private PasswordTextField password;
     @FXML
-    private AnchorPane rootPane;
+    private StackPane rootPane;
     @FXML
     private Button apply;
     @FXML

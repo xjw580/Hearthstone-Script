@@ -1,0 +1,7 @@
+.confirm-btn-group {
+    -fx-spacing: 25;
+    -fx-padding: 10 15 10 10;
+    -fx-background-color: transparent;
+    -fx-border-width: 0;
+    -fx-alignment: CENTER_RIGHT;
+}

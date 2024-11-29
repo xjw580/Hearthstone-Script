@@ -4,48 +4,50 @@
 <?import club.xiaojiawei.controls.NotificationManager?>
 <?import club.xiaojiawei.controls.PasswordTextField?>
 <?import club.xiaojiawei.factory.NotificationFactory?>
-<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
-<AnchorPane xmlns="http://javafx.com/javafx"
+<StackPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             stylesheets="@css/initSettings.css"
             fx:id="rootPane"
             fx:controller="club.xiaojiawei.hsscript.controller.javafx.InitSettingsController">
-    <VBox fx:id="mainVBox">
-        <HBox styleClass="h-box">
-            <Text text="炉石传说安装路径"/>
-            <Text fx:id="gamePath" underline="true"/>
-            <HBox HBox.hgrow="ALWAYS"/>
-            <Button styleClass="btn-ui, btn-ui-small" onAction="#gameClicked" text="选择">
-                <graphic>
-                    <FileIco/>
-                </graphic>
-            </Button>
-        </HBox>
-        <HBox styleClass="h-box">
-            <Text text="战网程序路径"/>
-            <Text fx:id="platformPath" underline="true"/>
-            <HBox HBox.hgrow="ALWAYS"/>
-            <Button styleClass="btn-ui, btn-ui-small" onAction="#platformClicked" text="选择">
-                <graphic>
-                    <FileIco/>
-                </graphic>
-            </Button>
-        </HBox>
-        <HBox styleClass="h-box">
-            <Text text="战网账号密码"/>
-            <PasswordTextField styleClass="text-field-ui, text-field-ui-small" fx:id="password" promptText="非必填项，防止登录失败用" hideForever="true"/>
+    <VBox>
+        <ScrollPane VBox.vgrow="ALWAYS" hbarPolicy="NEVER" style="-fx-background-insets: 0">
+            <VBox fx:id="mainVBox">
+                <HBox styleClass="h-box">
+                    <Text text="炉石传说安装路径"/>
+                    <Text fx:id="gamePath" underline="true"/>
+                    <HBox HBox.hgrow="ALWAYS"/>
+                    <Button styleClass="btn-ui, btn-ui-small" onAction="#gameClicked" text="选择">
+                        <graphic>
+                            <FileIco/>
+                        </graphic>
+                    </Button>
+                </HBox>
+                <HBox styleClass="h-box">
+                    <Text text="战网程序路径"/>
+                    <Text fx:id="platformPath" underline="true"/>
+                    <HBox HBox.hgrow="ALWAYS"/>
+                    <Button styleClass="btn-ui, btn-ui-small" onAction="#platformClicked" text="选择">
+                        <graphic>
+                            <FileIco/>
+                        </graphic>
+                    </Button>
+                </HBox>
+                <HBox styleClass="h-box">
+                    <Text text="战网账号密码"/>
+                    <PasswordTextField styleClass="text-field-ui, text-field-ui-small" fx:id="password" promptText="非必填项，防止登录失败用" hideForever="true"/>
+                </HBox>
+            </VBox>
+        </ScrollPane>
+        <HBox styleClass="confirm-btn-group">
+            <Button text="应用" styleClass="btn-ui, btn-ui-normal" onAction="#apply"/>
+            <Button text="保存" styleClass="btn-ui, btn-ui-success" onAction="#save" />
         </HBox>
     </VBox>
-    <HBox AnchorPane.bottomAnchor="15" AnchorPane.rightAnchor="15" spacing="20" alignment="CENTER">
-        <HBox spacing="5" alignment="CENTER">
-            <Button text="应用" styleClass="btn-ui, btn-ui-normal" onAction="#apply"/>
-        </HBox>
-        <HBox HBox.hgrow="ALWAYS"/>
-        <Button text="保存" styleClass="btn-ui, btn-ui-success" onAction="#save" />
-    </HBox>
+
     <NotificationManager fx:id="notificationManager" notificationPos="BOTTOM_CENTER">
         <NotificationFactory showingCloseBtn="false" size="SMALL"/>
     </NotificationManager>
-</AnchorPane>
+</StackPane>
