@@ -8,7 +8,7 @@ import com.alibaba.fastjson.JSON
 import com.melloware.jintellitype.JIntellitype
 
 /**
- * 脚本配置信息，在[ConfigurationConfig]里写入
+ * 脚本配置信息
  * @author 肖嘉威
  * @date 2023/7/5 11:26
  */
@@ -137,6 +137,21 @@ enum class ConfigEnum(
     CURRENT_VERSION(group = "other", defaultValue = "0.0.0-GA"),
 
     /**
+     * 随机事件
+     */
+    RANDOM_EVENT(group = "other", defaultValue = "true"),
+
+    /**
+     * 随机表情
+     */
+    RANDOM_EMOTION(group = "other", defaultValue = "true"),
+
+    /**
+     * 自动投降
+     */
+    AUTO_SURRENDER(group = "other", defaultValue = "-1"),
+
+    /**
      * 允许发送windows通知
      */
     SEND_NOTICE(group = "system", defaultValue = "true"),
@@ -150,7 +165,6 @@ enum class ConfigEnum(
      * 暂停程序热键
      */
     PAUSE_HOT_KEY(group = "system", defaultValue = JSON.toJSONString(HotKey(JIntellitype.MOD_CONTROL, 'P'.code))),
-
 
     ;
 }

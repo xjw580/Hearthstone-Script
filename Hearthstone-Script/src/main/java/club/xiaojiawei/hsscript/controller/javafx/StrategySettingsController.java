@@ -2,6 +2,7 @@ package club.xiaojiawei.hsscript.controller.javafx;
 
 import club.xiaojiawei.controls.NotificationManager;
 import club.xiaojiawei.controls.NumberField;
+import club.xiaojiawei.controls.Switch;
 import club.xiaojiawei.hsscript.bean.CommonCardAction;
 import club.xiaojiawei.hsscript.data.ScriptDataKt;
 import club.xiaojiawei.hsscript.enums.ConfigEnum;
@@ -44,6 +45,12 @@ public class StrategySettingsController implements Initializable {
     private NotificationManager<Object> notificationManager;
     @FXML
     private VBox mainVBox;
+    @FXML
+    private Switch randomEventSwitch;
+    @FXML
+    private Switch randomEmotionSwitch;
+    @FXML
+    private NumberField autoSurrenderField;
 
     private ChangeListener<Scene> sceneListener;
 
@@ -75,6 +82,14 @@ public class StrategySettingsController implements Initializable {
         logLimitField.setMaxValue("102400");
         logLimitField.setPromptText("默认：" + ConfigEnum.GAME_LOG_LIMIT.getDefaultValue());
         logLimitField.setTooltip(new Tooltip("默认：" + ConfigEnum.GAME_LOG_LIMIT.getDefaultValue()));
+
+        randomEventSwitch.setStatus(ConfigUtil.INSTANCE.getBoolean(ConfigEnum.RANDOM_EVENT));
+        randomEmotionSwitch.setStatus(ConfigUtil.INSTANCE.getBoolean(ConfigEnum.RANDOM_EMOTION));
+
+        autoSurrenderField.setMinValue("-1");
+        String defaultText = "默认：" + ConfigEnum.AUTO_SURRENDER.getDefaultValue();
+        autoSurrenderField.setPromptText(defaultText);
+        autoSurrenderField.setTooltip(new Tooltip(defaultText));
     }
 
     private void initValue(){

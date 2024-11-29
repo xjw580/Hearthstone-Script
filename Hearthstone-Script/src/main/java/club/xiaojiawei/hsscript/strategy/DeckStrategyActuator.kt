@@ -30,7 +30,7 @@ object DeckStrategyActuator {
             field = value
         }
 
-    fun reset(){
+    fun reset() {
         deckStrategy?.reset()
 
         checkSurrender()
@@ -39,10 +39,10 @@ object DeckStrategyActuator {
     /**
      * 非本人回合随机做点事情
      */
-    fun randomDoSomething(){
+    fun randomDoSomething() {
         if (!ConfigUtil.getBoolean(ConfigEnum.STRATEGY)) return
         if (!validPlayer()) return
-        if (Random.nextInt() and 1 == 1){
+        if (Random.nextInt() and 1 == 1) {
             log.info { "随机做点事情" }
             Thread.sleep(2000)
             val minTime = 4000
@@ -148,7 +148,7 @@ object DeckStrategyActuator {
         log.info { "执行发现选牌策略" }
 
         SystemUtil.delayShortMedium()
-        val index = deckStrategy?.executeDiscoverChooseCard(*cards)?:0
+        val index = deckStrategy?.executeDiscoverChooseCard(*cards) ?: 0
         War.me.let {
             GameUtil.clickDiscover(index, it.handArea.cardSize())
             SystemUtil.delayShort()
@@ -160,17 +160,17 @@ object DeckStrategyActuator {
         checkSurrender()
     }
 
-    private fun validPlayer():Boolean{
-        if (!War.rival.isValid() && War.me.isValid()){
+    private fun validPlayer(): Boolean {
+        if (!War.rival.isValid() && War.me.isValid()) {
             log.warn { "玩家无效" }
             return false
         }
         return true
     }
 
-    private fun checkSurrender(): Boolean{
+    private fun checkSurrender(): Boolean {
         deckStrategy?.let {
-            if (it.needSurrender){
+            if (it.needSurrender) {
                 GameUtil.surrender()
                 it.needSurrender = false
                 return true

@@ -8,6 +8,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Text?>
 <?import java.lang.Double?>
+<?import club.xiaojiawei.controls.Switch?>
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             stylesheets="@css/strategySettings.css"
@@ -73,6 +74,45 @@
             </Label>
             <HBox HBox.hgrow="ALWAYS"/>
             <NumberField fx:id="logLimitField" styleClass="text-field-ui, text-field-ui-small" hideIcon="true" prefWidth="${fieldWidth}"/>
+        </HBox>
+        <HBox styleClass="h-box">
+            <Text text="随机事件"/>
+            <Label>
+                <graphic>
+                    <HelpIco/>
+                </graphic>
+                <tooltip>
+                    <Tooltip text="我方回合结束后，可能触发点击卡牌等事件"/>
+                </tooltip>
+            </Label>
+            <HBox HBox.hgrow="ALWAYS"/>
+            <Switch fx:id="randomEventSwitch"/>
+        </HBox>
+        <HBox styleClass="h-box">
+            <Text text="随机表情"/>
+            <Label>
+                <graphic>
+                    <HelpIco/>
+                </graphic>
+                <tooltip>
+                    <Tooltip text="我方回合结束后，可能发问候等表情"/>
+                </tooltip>
+            </Label>
+            <HBox HBox.hgrow="ALWAYS"/>
+            <Switch fx:id="randomEmotionSwitch"/>
+        </HBox>
+        <HBox styleClass="h-box">
+            <Text text="自动投降"/>
+            <Label>
+                <graphic>
+                    <HelpIco/>
+                </graphic>
+                <tooltip>
+                    <Tooltip text="指定我方回合数后自动投降"/>
+                </tooltip>
+            </Label>
+            <HBox HBox.hgrow="ALWAYS"/>
+            <NumberField fx:id="autoSurrenderField" styleClass="text-field-ui, text-field-ui-small" hideIcon="true" prefWidth="${fieldWidth}"/>
         </HBox>
     </VBox>
     <HBox AnchorPane.bottomAnchor="15" AnchorPane.rightAnchor="15" spacing="20" alignment="CENTER">
