@@ -92,7 +92,7 @@ object CardUtil {
 
     private val objectMapper = ObjectMapper();
 
-    private var cardWeightRawData:List<WeightCard>? = null
+    private var cardWeightRawData: List<WeightCard>? = null
 
     fun getCardWeightCache(): List<WeightCard>? {
         return cardWeightRawData

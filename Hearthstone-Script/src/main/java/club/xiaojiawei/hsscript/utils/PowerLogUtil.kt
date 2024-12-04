@@ -37,13 +37,13 @@ object PowerLogUtil {
      */
     fun dealShowEntity(line: String, accessFile: RandomAccessFile): ExtraEntity {
         val extraEntity: ExtraEntity = parseExtraEntity(line, accessFile, SHOW_ENTITY)
+        val card = CARD_AREA_MAP[extraEntity.entityId]?.findByEntityId(extraEntity.entityId)
 
         if (extraEntity.extraCard.zone === extraEntity.zone || extraEntity.extraCard.zone === null) {
-            val card = CARD_AREA_MAP[extraEntity.entityId]?.findByEntityId(extraEntity.entityId)
             updateCardByExtraEntity(extraEntity, card)
         } else {
-            val card = exchangeAreaOfCard(extraEntity)
             updateCardByExtraEntity(extraEntity, card)
+            exchangeAreaOfCard(extraEntity)
         }
 
         return extraEntity

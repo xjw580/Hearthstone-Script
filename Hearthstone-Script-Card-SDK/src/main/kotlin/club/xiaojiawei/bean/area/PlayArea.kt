@@ -2,9 +2,8 @@ package club.xiaojiawei.bean.area
 
 import club.xiaojiawei.bean.Card
 import club.xiaojiawei.bean.Player
-import club.xiaojiawei.enums.CardTypeEnum
-import club.xiaojiawei.enums.HeroTypeEnum
 import club.xiaojiawei.config.log
+import club.xiaojiawei.enums.CardTypeEnum
 
 /**
  * 战场
@@ -15,14 +14,23 @@ class PlayArea(player: Player) : Area(7, player) {
 
 //    @Volatile var heroType: HeroTypeEnum? = null
 
-    @Volatile var hero: Card? = null
-    @Volatile var heroHide: Card? = null
+    @Volatile
+    var hero: Card? = null
 
-    @Volatile var power: Card? = null
-    @Volatile var powerHide: Card? = null
+    @Volatile
+    var heroHide: Card? = null
 
-    @Volatile var weapon: Card? = null
-    @Volatile var weaponHide: Card? = null
+    @Volatile
+    var power: Card? = null
+
+    @Volatile
+    var powerHide: Card? = null
+
+    @Volatile
+    var weapon: Card? = null
+
+    @Volatile
+    var weaponHide: Card? = null
 
     private fun addZoneAndLog(name: String, card: Card) {
         addZone(card)
