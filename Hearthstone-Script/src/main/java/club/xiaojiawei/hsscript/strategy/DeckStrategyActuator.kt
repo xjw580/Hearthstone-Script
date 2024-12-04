@@ -186,7 +186,7 @@ object DeckStrategyActuator {
     }
 
     private fun canExec(): Boolean {
-        return ConfigUtil.getBoolean(ConfigEnum.STRATEGY) && validPlayer() || !checkSurrender()
+        return ConfigUtil.getBoolean(ConfigEnum.STRATEGY) && validPlayer() && !checkSurrender()
     }
 
     private fun validPlayer(): Boolean {
