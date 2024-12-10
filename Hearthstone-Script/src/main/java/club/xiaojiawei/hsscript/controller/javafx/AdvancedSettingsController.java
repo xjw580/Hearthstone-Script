@@ -181,7 +181,7 @@ public class AdvancedSettingsController implements Initializable {
             return new HotKey();
         } else {
             int code = event.getCode().getCode();
-            if (code >= 65 && code <= 90) {
+            if (code >= KeyCode.A.getCode() && code <= KeyCode.Z.getCode()) {
                 return new HotKey(modifier, code);
             }
         }

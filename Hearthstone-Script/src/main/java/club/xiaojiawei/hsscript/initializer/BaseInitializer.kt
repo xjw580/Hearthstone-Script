@@ -7,7 +7,6 @@ import club.xiaojiawei.interfaces.ModeStrategy
 import club.xiaojiawei.interfaces.PhaseStrategy
 
 /**
- * 开启游戏日志输出
  * @author 肖嘉威
  * @date 2023/7/4 11:33
  */

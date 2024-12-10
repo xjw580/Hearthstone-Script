@@ -7,10 +7,10 @@ import club.xiaojiawei.hsscript.bean.single.WarEx
 import club.xiaojiawei.hsscript.core.Core
 import club.xiaojiawei.hsscript.data.MAX_LOG_SIZE_B
 import club.xiaojiawei.hsscript.data.MAX_LOG_SIZE_KB
+import club.xiaojiawei.hsscript.initializer.BaseInitializer
 import club.xiaojiawei.hsscript.listener.WorkListener
 import club.xiaojiawei.hsscript.status.PauseStatus
 import club.xiaojiawei.hsscript.strategy.AbstractPhaseStrategy
-import club.xiaojiawei.hsscript.strategy.phase.GameTurnPhaseStrategy
 import club.xiaojiawei.hsscript.utils.PowerLogUtil
 import club.xiaojiawei.status.War
 import java.io.RandomAccessFile
@@ -78,12 +78,12 @@ object PowerLogListener :
     @JvmStatic
     fun main(args: Array<String>) {
 //        innerLogFile = RandomAccessFile("S:\\Hearthstone\\Logs\\Hearthstone_2024_12_04_19_06_41\\Power - 副本.log", "r")
-        innerLogFile = RandomAccessFile("C:\\Users\\28671\\Downloads\\Power.log", "r")
-//        innerLogFile = RandomAccessFile("S:\\Hearthstone\\Logs\\Hearthstone_2024_12_04_19_06_41\\Power.log", "r")
-        War.currentPhase = WarPhaseEnum.GAME_TURN
+        innerLogFile = RandomAccessFile("S:\\Hearthstone\\Logs\\Hearthstone_2024_11_27_17_38_36\\Power.log", "r")
         PauseStatus.isPause = false
-        innerLogFile?.let{
-            GameTurnPhaseStrategy.deal(it.readLine())
-        }
+        WorkListener.working = true
+        BaseInitializer.init()
+        WarEx.reset()
+//        innerLogFile = RandomAccessFile("S:\\Hearthstone\\Logs\\Hearthstone_2024_12_04_19_06_41\\Power.log", "r")
+        dealNewLog()
     }
 }

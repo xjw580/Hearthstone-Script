@@ -11,7 +11,7 @@ import java.nio.charset.StandardCharsets;
 public class PowerLogMain {
 
     public static void main(String[] args) {
-        decontamination("S:\\Hearthstone\\Logs\\Hearthstone_2024_11_04_23_33_25", true);
+        decontamination("S:\\Hearthstone\\Logs\\Hearthstone_2024_11_27_17_38_36", true);
     }
 
     @SuppressWarnings("all")
