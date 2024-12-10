@@ -54,4 +54,18 @@ enum class BlockTypeEnum {
      * 无效
      */
     INVALID,
+
+    UNKNOWN
+    ;
+
+    companion object {
+        fun fromString(blockTypeName: String?): BlockTypeEnum {
+            if (blockTypeName == null || blockTypeName.isBlank()) return BlockTypeEnum.UNKNOWN
+            return try {
+                BlockTypeEnum.valueOf(blockTypeName)
+            } catch (_: IllegalArgumentException) {
+                BlockTypeEnum.UNKNOWN
+            }
+        }
+    }
 }

@@ -5,6 +5,7 @@ import club.xiaojiawei.bean.Entity
 import club.xiaojiawei.config.log
 import club.xiaojiawei.enums.ZoneEnum
 import club.xiaojiawei.hsscript.bean.CommonCardAction
+import club.xiaojiawei.hsscript.bean.log.Block
 import club.xiaojiawei.hsscript.bean.log.CommonEntity
 import club.xiaojiawei.hsscript.bean.log.ExtraEntity
 import club.xiaojiawei.hsscript.bean.log.TagChangeEntity
@@ -13,6 +14,7 @@ import club.xiaojiawei.hsscript.bean.single.WarEx
 import club.xiaojiawei.hsscript.core.Core
 import club.xiaojiawei.hsscript.core.Core.restart
 import club.xiaojiawei.hsscript.data.*
+import club.xiaojiawei.hsscript.enums.BlockTypeEnum
 import club.xiaojiawei.hsscript.enums.TagEnum
 import club.xiaojiawei.hsscript.utils.CardUtil.addAreaListener
 import club.xiaojiawei.hsscript.utils.CardUtil.exchangeAreaOfCard
@@ -139,6 +141,28 @@ object PowerLogUtil {
         return tagChangeEntity
     }
 
+    fun dealBlock(line: String): Block {
+        return parseBlock(line)
+    }
+
+    private fun parseBlock(line: String): Block {
+        var block = Block()
+        var blockTypeIndex = line.indexOf(BLOCK_TYPE)
+        if (blockTypeIndex == -1) {
+            return block
+        }
+        val entityNameIndex = line.indexOf(ENTITY, blockTypeIndex, false)
+        if (entityNameIndex == -1) {
+            return block
+        }
+        val blockType = line.substring(blockTypeIndex + BLOCK_TYPE.length + 1, entityNameIndex - 1)
+        block.blockType = BlockTypeEnum.fromString(blockType)
+        var commonEntity = CommonEntity()
+        block.entity = CommonEntity()
+        parseCommonEntity(commonEntity, line)
+        return block
+    }
+
     private fun parseTagChange(line: String): TagChangeEntity {
         val tagIndex = line.lastIndexOf(TAG)
         var valueIndex = line.lastIndexOf(VALUE)
@@ -153,7 +177,7 @@ object PowerLogUtil {
         }
         tagChangeEntity.value = value
         if (index < 100) {
-            tagChangeEntity.entity = iso88591ToUtf8(line.substring(line.indexOf("Entity") + 7, tagIndex).trim())
+            tagChangeEntity.entity = iso88591ToUtf8(line.substring(line.indexOf(ENTITY) + 7, tagIndex).trim())
         } else {
             parseCommonEntity(tagChangeEntity, line)
         }

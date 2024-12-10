@@ -97,7 +97,7 @@ enum class TagEnum(
                         log.info { "人机游戏id：$gameId" }
                     }
 
-                    //                        是我
+//                        是我
                     if (War.me.gameId == gameId
                         || (!War.rival.gameId.isBlank() && War.rival.gameId != gameId)
                     ) {

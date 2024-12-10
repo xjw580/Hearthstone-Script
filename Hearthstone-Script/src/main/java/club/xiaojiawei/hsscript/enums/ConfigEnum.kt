@@ -152,6 +152,11 @@ enum class ConfigEnum(
     AUTO_SURRENDER(group = "other", defaultValue = "-1"),
 
     /**
+     * 只打人机
+     */
+    ONLY_ROBOT(group = "other", defaultValue = "false"),
+
+    /**
      * 允许发送windows通知
      */
     SEND_NOTICE(group = "system", defaultValue = "true"),

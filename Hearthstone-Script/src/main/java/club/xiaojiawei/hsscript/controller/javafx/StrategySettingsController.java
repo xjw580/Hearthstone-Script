@@ -50,6 +50,8 @@ public class StrategySettingsController implements Initializable {
     @FXML
     private Switch randomEmotionSwitch;
     @FXML
+    private Switch onlyRobotSwitch;
+    @FXML
     private NumberField autoSurrenderField;
 
     private ChangeListener<Scene> sceneListener;
@@ -63,6 +65,7 @@ public class StrategySettingsController implements Initializable {
         initLogLimit();
         initRandomEvent();
         initRandomEmotion();
+        initOnlyRobot();
         initAutoSurrender();
 
         listen();
@@ -122,6 +125,15 @@ public class StrategySettingsController implements Initializable {
         ConfigEnum key = ConfigEnum.RANDOM_EMOTION;
         randomEmotionSwitch.setStatus(ConfigUtil.INSTANCE.getBoolean(key));
         randomEmotionSwitch.statusProperty().addListener((observable, oldValue, newValue) -> {
+            ConfigUtil.INSTANCE.putBoolean(key, newValue, true);
+            notificationManager.showSuccess("修改成功", 1);
+        });
+    }
+
+    private void initOnlyRobot() {
+        ConfigEnum key = ConfigEnum.ONLY_ROBOT;
+        onlyRobotSwitch.setStatus(ConfigUtil.INSTANCE.getBoolean(key));
+        onlyRobotSwitch.statusProperty().addListener((observable, oldValue, newValue) -> {
             ConfigUtil.INSTANCE.putBoolean(key, newValue, true);
             notificationManager.showSuccess("修改成功", 1);
         });

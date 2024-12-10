@@ -104,6 +104,19 @@
                     <Switch fx:id="randomEmotionSwitch"/>
                 </HBox>
                 <HBox styleClass="h-box">
+                    <Text text="只打人机"/>
+                    <Label>
+                        <graphic>
+                            <HelpIco/>
+                        </graphic>
+                        <tooltip>
+                            <Tooltip text="若对方行为不像人机则考虑投降"/>
+                        </tooltip>
+                    </Label>
+                    <HBox HBox.hgrow="ALWAYS"/>
+                    <Switch fx:id="onlyRobotSwitch"/>
+                </HBox>
+                <HBox styleClass="h-box">
                     <Text text="自动投降"/>
                     <Label>
                         <graphic>
