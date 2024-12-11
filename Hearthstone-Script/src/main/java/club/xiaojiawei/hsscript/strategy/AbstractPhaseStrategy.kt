@@ -9,13 +9,7 @@ import club.xiaojiawei.hsscript.bean.DeckStrategyThread
 import club.xiaojiawei.hsscript.bean.log.Block
 import club.xiaojiawei.hsscript.bean.log.ExtraEntity
 import club.xiaojiawei.hsscript.bean.log.TagChangeEntity
-import club.xiaojiawei.hsscript.bean.single.WarEx
-import club.xiaojiawei.hsscript.data.BLOCK_TYPE
-import club.xiaojiawei.hsscript.data.CHANGE_ENTITY
-import club.xiaojiawei.hsscript.data.FULL_ENTITY
-import club.xiaojiawei.hsscript.data.SHOW_ENTITY
-import club.xiaojiawei.hsscript.data.TAG_CHANGE
-import club.xiaojiawei.hsscript.enums.BlockTypeEnum
+import club.xiaojiawei.hsscript.data.*
 import club.xiaojiawei.hsscript.interfaces.closer.ThreadCloser
 import club.xiaojiawei.hsscript.listener.log.PowerLogListener
 import club.xiaojiawei.hsscript.status.PauseStatus
@@ -29,7 +23,6 @@ import club.xiaojiawei.hsscript.utils.PowerLogUtil.dealTagChange
 import club.xiaojiawei.hsscript.utils.PowerLogUtil.isRelevance
 import club.xiaojiawei.hsscript.utils.SystemUtil
 import club.xiaojiawei.interfaces.PhaseStrategy
-import club.xiaojiawei.status.War
 import club.xiaojiawei.status.War.currentPhase
 import club.xiaojiawei.status.War.currentTurnStep
 import club.xiaojiawei.status.War.me
@@ -154,9 +147,6 @@ abstract class AbstractPhaseStrategy : PhaseStrategy {
     }
 
     protected open fun dealBlockIsOver(line: String, block: Block): Boolean {
-        if (block.blockType == BlockTypeEnum.ATTACK) {
-            War.currentPlayer
-        }
         return false
     }
 

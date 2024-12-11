@@ -1,5 +1,6 @@
 package club.xiaojiawei.hsscript.strategy.phase
 
+import club.xiaojiawei.hsscript.bean.log.Block
 import club.xiaojiawei.hsscript.bean.log.ExtraEntity
 import club.xiaojiawei.hsscript.bean.log.TagChangeEntity
 import club.xiaojiawei.hsscript.bean.single.WarEx
@@ -32,6 +33,11 @@ object GameOverPhaseStrategy : AbstractPhaseStrategy() {
     }
 
     override fun dealChangeEntityThenIsOver(line: String, extraEntity: ExtraEntity): Boolean {
+        over()
+        return true
+    }
+
+    override fun dealBlockIsOver(line: String, block: Block): Boolean {
         over()
         return true
     }
