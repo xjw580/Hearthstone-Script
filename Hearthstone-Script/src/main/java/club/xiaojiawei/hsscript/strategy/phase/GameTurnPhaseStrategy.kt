@@ -15,7 +15,6 @@ import club.xiaojiawei.hsscript.strategy.AbstractPhaseStrategy
 import club.xiaojiawei.hsscript.strategy.DeckStrategyActuator
 import club.xiaojiawei.hsscript.utils.ConfigUtil
 import club.xiaojiawei.hsscript.utils.GameUtil
-import club.xiaojiawei.hsscript.utils.RobotPlayerUtil
 import club.xiaojiawei.hsscript.utils.SystemUtil
 import club.xiaojiawei.status.War
 import club.xiaojiawei.util.isTrue
@@ -88,10 +87,10 @@ object GameTurnPhaseStrategy : AbstractPhaseStrategy() {
             if (block.blockType == BlockTypeEnum.ATTACK || block.blockType == BlockTypeEnum.PLAY) {
                 addBehavior(Behavior(block.blockType))
                 rivalBehavior?.let {
-                    val robotPlayerProbability = RobotPlayerUtil.calcRobotPlayerProbability(it)
-                    if (robotPlayerProbability < 0.5) {
-                        log.info { "发现对面这个b疑似真人，准备投降，gameId:${War.rival.gameId}" }
-                    }
+//                    val robotPlayerProbability = RobotPlayerUtil.calcRobotPlayerProbability(it)
+//                    if (robotPlayerProbability < 0.5) {
+//                        log.info { "发现对面这个b疑似真人，准备投降，gameId:${War.rival.gameId}" }
+//                    }
                 }
             }
         }
