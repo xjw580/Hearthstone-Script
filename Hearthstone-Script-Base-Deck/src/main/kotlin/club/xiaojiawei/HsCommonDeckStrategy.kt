@@ -63,7 +63,7 @@ class HsCommonDeckStrategy : DeckStrategy() {
         val myHandCardsCopy = myHandCards.toMutableList()
         myHandCardsCopy.removeAll { card -> card.cardType != CardTypeEnum.MINION || card.isBattlecry }
 
-        val (_, resultCards) = DeckStrategyUtil.calcPowerOrderConvert(
+        val (num, resultCards) = DeckStrategyUtil.calcPowerOrderConvert(
             myHandCardsCopy, me.usableResource
         )
 
@@ -72,8 +72,9 @@ class HsCommonDeckStrategy : DeckStrategy() {
             val (num1, resultCards1) = DeckStrategyUtil.calcPowerOrderConvert(
                 myHandCardsCopy, me.usableResource + 1
             )
-            if (num1 > me.usableResource) {
+            if (num1 > num) {
                 coinCard.action.power()
+                Thread.sleep(1000)
                 outCard(resultCards1)
                 return
             }

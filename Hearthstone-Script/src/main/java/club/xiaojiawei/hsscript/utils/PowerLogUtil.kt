@@ -159,7 +159,7 @@ object PowerLogUtil {
         block.blockType = BlockTypeEnum.fromString(blockType)
         var commonEntity = CommonEntity()
         block.entity = CommonEntity()
-        parseCommonEntity(commonEntity, line)
+//        parseCommonEntity(commonEntity, line)
         return block
     }
 

@@ -27,6 +27,22 @@ import club.xiaojiawei.util.isTrue
  */
 object GameTurnPhaseStrategy : AbstractPhaseStrategy() {
 
+    private fun checkRivalRobot() {
+        log.info { "计算对面" }
+        if (rivalBehavior.renewCalcRobotProbability() < 0.2) {
+            log.info { "发现对面这个b疑似真人，准备投降，gameId:${War.rival.gameId}" }
+        }
+        log.info { "对面是脚本概率:" + rivalBehavior.robotProbability }
+    }
+
+    private fun checkMeRobot() {
+        log.info { "计算我方" }
+        if (meBehavior.renewCalcRobotProbability() < 0.2) {
+            log.info { "发现自己这个b疑似真人，准备投降，gameId:${War.me.gameId}" }
+        }
+        log.info { "我是脚本概率:" + meBehavior.robotProbability }
+    }
+
     override fun dealTagChangeThenIsOver(line: String, tagChangeEntity: TagChangeEntity): Boolean {
         if (tagChangeEntity.tag == TagEnum.STEP) {
             if (tagChangeEntity.value == StepEnum.MAIN_ACTION.name) {
@@ -34,6 +50,10 @@ object GameTurnPhaseStrategy : AbstractPhaseStrategy() {
                     log.info { "我方回合" }
                     cancelAllTask()
                     War.isMyTurn = true
+                    if (ConfigUtil.getBoolean(ConfigEnum.ONLY_ROBOT)) {
+                        checkRivalRobot()
+                        meBehavior.behaviors.clear()
+                    }
                     // 异步执行出牌策略，以便监听出牌后的卡牌变动
                     (DeckStrategyThread({
                         (ConfigUtil.getBoolean(ConfigEnum.RANDOM_EMOTION) && War.me.turn == 0).isTrue {
@@ -41,11 +61,17 @@ object GameTurnPhaseStrategy : AbstractPhaseStrategy() {
                             SystemUtil.delayShortMedium()
                         }
                         DeckStrategyActuator.outCard()
+                        if (ConfigUtil.getBoolean(ConfigEnum.ONLY_ROBOT)) {
+                            checkMeRobot()
+                        }
                     }, "OutCard Thread").also { addTask(it) }).start()
                 } else {
                     log.info { "对方回合" }
                     War.isMyTurn = false
                     cancelAllTask()
+                    if (ConfigUtil.getBoolean(ConfigEnum.ONLY_ROBOT)) {
+                        rivalBehavior.behaviors.clear()
+                    }
                     ConfigUtil.getBoolean(ConfigEnum.RANDOM_EMOTION).isTrue {
                         DeckStrategyActuator.randEmoji()
                     }
@@ -64,33 +90,22 @@ object GameTurnPhaseStrategy : AbstractPhaseStrategy() {
     }
 
 
-    private var rivalBehavior: PlayerBehavior? = null
+    private val rivalBehavior by lazy {
+        PlayerBehavior(War.rival)
+    }
 
-    private fun addBehavior(behavior: Behavior) {
-        val currentPlayer = War.currentPlayer
-        if (rivalBehavior == null && War.rival == currentPlayer) {
-            rivalBehavior = PlayerBehavior(currentPlayer)
-        }
-        if (currentPlayer == War.rival) {
-            rivalBehavior?.let {
-                val behaviors = it.behaviors
-                behaviors.add(behavior)
-                if (behaviors.size > 100) {
-                    behaviors.removeFirst()
-                }
-            }
-        }
+    private val meBehavior by lazy {
+        PlayerBehavior(War.me)
     }
 
     override fun dealBlockIsOver(line: String, block: Block): Boolean {
         if (ConfigUtil.getBoolean(ConfigEnum.ONLY_ROBOT)) {
             if (block.blockType == BlockTypeEnum.ATTACK || block.blockType == BlockTypeEnum.PLAY) {
-                addBehavior(Behavior(block.blockType))
-                rivalBehavior?.let {
-//                    val robotPlayerProbability = RobotPlayerUtil.calcRobotPlayerProbability(it)
-//                    if (robotPlayerProbability < 0.5) {
-//                        log.info { "发现对面这个b疑似真人，准备投降，gameId:${War.rival.gameId}" }
-//                    }
+                val behavior = Behavior(block.blockType)
+                if (War.currentPlayer == War.me) {
+                    meBehavior.behaviors.add(behavior)
+                } else if (War.currentPlayer == War.rival) {
+                    rivalBehavior.behaviors.add(behavior)
                 }
             }
         }
