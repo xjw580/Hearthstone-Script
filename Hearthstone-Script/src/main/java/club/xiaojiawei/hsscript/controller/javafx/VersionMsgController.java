@@ -29,8 +29,9 @@ public class VersionMsgController implements Initializable {
         version.setText(VersionUtil.INSTANCE.getVERSION());
 //        TODO 版本更新时修改！！！
         versionDescription.setText("""
-                1. 策略设置页增加随机事件，随机表情，随机投降设置项
-                2. 增加对超级风怒的识别
+                1. 修复敌方变身时无法正确识别的问题
+                2. 修复关闭执行策略开关不生效的问题
+                3. 策略设置页中添加增加只打人机选项
                 """);
     }
 
