@@ -29,7 +29,7 @@ object GameTurnPhaseStrategy : AbstractPhaseStrategy() {
 
     private fun checkRivalRobot() {
         log.info { "计算对面" }
-        if (rivalBehavior.renewCalcRobotProbability() < 0.2) {
+        if (rivalBehavior.renewCalcRobotProbability() < 0.1) {
             log.info { "发现对面这个b疑似真人，准备投降，gameId:${War.rival.gameId}" }
         }
         log.info { "对面是脚本概率:" + rivalBehavior.robotProbability }
@@ -37,7 +37,7 @@ object GameTurnPhaseStrategy : AbstractPhaseStrategy() {
 
     private fun checkMeRobot() {
         log.info { "计算我方" }
-        if (meBehavior.renewCalcRobotProbability() < 0.2) {
+        if (meBehavior.renewCalcRobotProbability() < 0.1) {
             log.info { "发现自己这个b疑似真人，准备投降，gameId:${War.me.gameId}" }
         }
         log.info { "我是脚本概率:" + meBehavior.robotProbability }

@@ -607,7 +607,7 @@ object DeckStrategyUtil {
             }
         }
 
-        return Pair(dp[target], chosenCards[target])
+        return Pair(dp[target], chosenCards[target].toSet().toList())
     }
 
 

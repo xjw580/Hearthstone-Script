@@ -5,7 +5,6 @@ import club.xiaojiawei.bean.Card
 import club.xiaojiawei.bean.SimulateWeightCard
 import club.xiaojiawei.enums.CardTypeEnum
 import club.xiaojiawei.status.War
-import club.xiaojiawei.util.DeckStrategyUtil
 import club.xiaojiawei.util.DeckStrategyUtil.calcPowerOrder
 
 /**
@@ -39,6 +38,10 @@ class MyCardAction : CardAction() {
     }
 
     override fun execPointTo(card: Card): Boolean {
+        TODO("Not yet implemented")
+    }
+
+    override fun execPointTo(index: Int): Boolean {
         TODO("Not yet implemented")
     }
 

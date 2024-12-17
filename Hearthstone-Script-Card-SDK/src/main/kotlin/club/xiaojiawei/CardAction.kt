@@ -10,6 +10,10 @@ import java.util.function.Supplier
  */
 abstract class CardAction(createDefaultAction: Boolean = true) {
 
+    protected var depth = 0
+
+    var executedPower = false
+
     var commonAction: CardAction? = null
 
     var belongCard: Card? = null
@@ -25,10 +29,14 @@ abstract class CardAction(createDefaultAction: Boolean = true) {
         }
     }
 
+    /**
+     * 使用卡牌
+     */
     fun power(isPause: Boolean = true): CardAction? {
         if (isStop()) return null
         val result = execPower()
         if (result) {
+            executedPower = true
             if (isPause) {
                 this.delay()
             } else {
@@ -39,11 +47,15 @@ abstract class CardAction(createDefaultAction: Boolean = true) {
         return null
     }
 
+    /**
+     * 使用卡牌至指定card
+     */
     fun power(card: Card?, isPause: Boolean = true): CardAction? {
         if (isStop()) return null
         return card?.let {
             val result = execPower(it)
             if (result) {
+                executedPower = true
                 if (isPause) {
                     this.delay()
                 } else {
@@ -56,10 +68,14 @@ abstract class CardAction(createDefaultAction: Boolean = true) {
         }
     }
 
+    /**
+     * 使用卡牌至指定下标
+     */
     fun power(index: Int, isPause: Boolean = true): CardAction? {
         if (isStop()) return null
         val result = execPower(index)
         if (result) {
+            executedPower = true
             if (isPause) {
                 this.delay()
             } else {
@@ -70,15 +86,18 @@ abstract class CardAction(createDefaultAction: Boolean = true) {
         return null
     }
 
+    /**
+     * 攻击指定card
+     */
     fun attack(card: Card?, isPause: Boolean = true): CardAction? {
         if (isStop()) return null
         return card?.let {
             val result = execAttack(it)
             if (result) {
                 if (isPause) {
-                    if (card.cardType === CardTypeEnum.HERO){
+                    if (card.cardType === CardTypeEnum.HERO) {
                         this.delay(SHORT_PAUSE_TIME)
-                    }else{
+                    } else {
                         this.delay()
                     }
                 } else {
@@ -90,6 +109,9 @@ abstract class CardAction(createDefaultAction: Boolean = true) {
         }
     }
 
+    /**
+     * 攻击敌方英雄
+     */
     fun attackHero(isPause: Boolean = true): CardAction? {
         if (isStop()) return null
         val result = execAttackHero()
@@ -104,6 +126,9 @@ abstract class CardAction(createDefaultAction: Boolean = true) {
         return null
     }
 
+    /**
+     * 将鼠标移向指定card然后点击
+     */
     fun pointTo(card: Card?, isPause: Boolean = true): CardAction? {
         if (isStop()) return null
         return card?.let {
@@ -120,8 +145,30 @@ abstract class CardAction(createDefaultAction: Boolean = true) {
         }
     }
 
+    /**
+     * 将鼠标移向我方战场指定下标然后点击（优先使用此方法代替pointTo(card: Card?, isPause: Boolean = true)）
+     */
+    fun pointTo(index: Int, isPause: Boolean = true): CardAction? {
+        if (isStop() || index == -1) return null
+        val result = execPointTo(index)
+        if (result) {
+            if (isPause) {
+                this.delay()
+            } else {
+                delay(SHORT_PAUSE_TIME)
+            }
+            return this
+        }
+        return null
+    }
+
     fun delay(time: Int = mouseActionInterval) {
         if (isStop()) return
+        if (time == mouseActionInterval) {
+            depth = 0
+        } else {
+            depth++
+        }
         Thread.sleep(time.toLong())
     }
 
@@ -144,8 +191,16 @@ abstract class CardAction(createDefaultAction: Boolean = true) {
      */
     protected abstract fun execPointTo(card: Card): Boolean
 
+    /**
+     * 移向我方战场指定下标处，然后左击（优先使用此方法代替execPointTo(card: Card)）
+     */
+    protected abstract fun execPointTo(index: Int): Boolean
+
     abstract fun createNewInstance(): CardAction
 
+    /**
+     * 左键点击
+     */
     abstract fun lClick(): Boolean
 
     /**
@@ -164,31 +219,35 @@ abstract class CardAction(createDefaultAction: Boolean = true) {
     abstract class DefaultCardAction : CardAction() {
 
         override fun execPower(): Boolean {
-            return commonAction?.execPower() ?: false
+            return commonAction?.execPower() == true
         }
 
         override fun execPower(card: Card): Boolean {
-            return commonAction?.execPower(card) ?: false
+            return commonAction?.execPower(card) == true
         }
 
         override fun execPower(index: Int): Boolean {
-            return commonAction?.execPower(index) ?: false
+            return commonAction?.execPower(index) == true
         }
 
         override fun execAttack(card: Card): Boolean {
-            return commonAction?.execAttack(card) ?: false
+            return commonAction?.execAttack(card) == true
         }
 
         override fun execAttackHero(): Boolean {
-            return commonAction?.execAttackHero() ?: false
+            return commonAction?.execAttackHero() == true
         }
 
         override fun execPointTo(card: Card): Boolean {
-            return commonAction?.execPointTo(card) ?: false
+            return commonAction?.execPointTo(card) == true
+        }
+
+        override fun execPointTo(index: Int): Boolean {
+            return commonAction?.execPointTo(index) == true
         }
 
         override fun lClick(): Boolean {
-            return commonAction?.lClick() ?: false
+            return commonAction?.lClick() == true
         }
     }
 

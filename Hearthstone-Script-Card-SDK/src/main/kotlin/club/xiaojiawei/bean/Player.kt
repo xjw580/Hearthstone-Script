@@ -98,6 +98,9 @@ class Player(val playerId: String) : Entity() {
         }
     }
 
+    /**
+     * 当前可用水晶数
+     */
     val usableResource: Int
         get() = resources - resourcesUsed + tempResources
 
@@ -124,6 +127,9 @@ class Player(val playerId: String) : Entity() {
     }
 }
 
+/**
+ * 当为有效玩家时才执行block语句
+ */
 fun Player.safeRun(block: () -> Unit): Player {
     if (this === INVALID_PLAYER) {
         return this
@@ -133,6 +139,9 @@ fun Player.safeRun(block: () -> Unit): Player {
     }
 }
 
+/**
+ * 判断玩家是否有效
+ */
 fun Player.isValid(): Boolean {
     return this != INVALID_PLAYER && this.gameId != "INVALID"
 }

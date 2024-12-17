@@ -83,28 +83,31 @@ class PlayerBehavior(val player: Player) {
         val (atcInterval, playInterval, avgInterval) = calcInterval()
         log.info { "atcInterval:$atcInterval" }
         log.info { "playInterval:$playInterval" }
-        log.info { "avgInterval:$avgInterval" }
+//        log.info { "avgInterval:$avgInterval" }
         var atcProbability = 0.0
         var playProbability = 0.0
         var avgProbability = 0.0
-        val countThreshold = 7.0
+        val countThreshold = 5.0
         if (atcInterval.size > 1) {
             val variance = calcVariance(atcInterval)
             log.info { "atcInterval variance:$variance" }
             atcProbability = calcProbabilityByVariance(variance, 1000.0) * min((atcInterval.size) / countThreshold, 1.0)
+            log.info { "atcProbability:$atcProbability" }
         }
         if (playInterval.size > 1) {
             val variance = calcVariance(playInterval)
             log.info { "playInterval variance:$variance" }
             playProbability =
-                calcProbabilityByVariance(variance, 1000.0) * min((playInterval.size) / countThreshold, 1.0)
+                calcProbabilityByVariance(variance, 1100.0) * min((playInterval.size) / countThreshold, 1.0)
+            log.info { "playProbability:$playProbability" }
         }
-        if (avgInterval.size > 1) {
-            val variance = calcVariance(avgInterval)
-            log.info { "avgInterval variance:$variance" }
-            avgProbability = calcProbabilityByVariance(variance, 1200.0) * min((avgInterval.size) / countThreshold, 1.0)
-        }
-        newProbability += atcProbability * (3 / 7.0) + playProbability * (3 / 7.0) + avgProbability * (1 / 7.0)
+//        if (avgInterval.size > 5) {
+//            val variance = calcVariance(avgInterval)
+//            log.info { "avgInterval variance:$variance" }
+//            avgProbability = calcProbabilityByVariance(variance, 1000.0) * min((avgInterval.size) / countThreshold, 1.0)
+//        }
+//        newProbability += atcProbability * (3 / 7.0) + playProbability * (3 / 7.0) + avgProbability * (1 / 7.0)
+        newProbability += max(min(0.2 * (atcProbability * (4 / 7.0) + playProbability * (3 / 7.0)), 0.2), -0.2)
         return setProbability(newProbability)
     }
 

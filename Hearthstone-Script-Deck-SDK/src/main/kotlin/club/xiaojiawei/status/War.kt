@@ -57,21 +57,39 @@ object War {
     @Volatile
     var player2: Player = Player("2")
 
+    /**
+     * 总回合数
+     */
     @Volatile
     var warTurn = 0
 
+    /**
+     * 胜者
+     */
     @Volatile
     var won: String = ""
 
+    /**
+     * 败者
+     */
     @Volatile
     var lost: String = ""
 
+    /**
+     * 投降者
+     */
     @Volatile
     var conceded: String = ""
 
+    /**
+     * 本局开始时间
+     */
     @Volatile
     var startTime: Long = 0
 
+    /**
+     * 本局结束时间
+     */
     @Volatile
     var endTime: Long = 0
 

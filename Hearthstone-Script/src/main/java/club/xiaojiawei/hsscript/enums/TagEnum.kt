@@ -173,7 +173,7 @@ enum class TagEnum(
 
     //    回合结束后值改变
     TURN(
-        "自己的回合数",
+        "回合数",
         TagChangeHandler { card: Card?, tagChangeEntity: TagChangeEntity, player: Player?, area: Area? ->
             if (tagChangeEntity.entity == "GameEntity") {
                 War.warTurn = tagChangeEntity.value.toInt()

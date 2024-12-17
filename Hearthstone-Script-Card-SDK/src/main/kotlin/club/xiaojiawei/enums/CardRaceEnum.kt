@@ -1,5 +1,8 @@
 package club.xiaojiawei.enums
 
+import club.xiaojiawei.enums.CardRaceEnum.valueOf
+
+
 /**
  * 卡牌种族
  * @author 肖嘉威
@@ -60,6 +63,11 @@ enum class CardRaceEnum {
      * 娜迦
      */
     NAGA,
+
+    /**
+     * 德莱尼人
+     */
+    DRAENEI,
 
     /**
      * 未知

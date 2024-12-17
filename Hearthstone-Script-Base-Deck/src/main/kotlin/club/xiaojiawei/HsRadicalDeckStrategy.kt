@@ -80,8 +80,12 @@ class HsRadicalDeckStrategy : DeckStrategy() {
                         } else {
                             if (me.playArea.isFull) break
                             card.isBattlecry.isTrue {
-                                me.playArea.cards.find { card -> card.canAttack() }?.let {
-                                    card.action.power(it)
+                                me.playArea.cards.find { card -> card.cardType === CardTypeEnum.MINION }?.let {
+                                    if (card.action.executedPower) {
+                                        card.action.power(it, false)?.pointTo(it)
+                                    } else {
+                                        card.action.power(it)
+                                    }
                                 } ?: let {
                                     card.action.power()
                                 }

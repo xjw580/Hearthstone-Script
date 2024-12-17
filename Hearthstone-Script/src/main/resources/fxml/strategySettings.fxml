@@ -104,7 +104,7 @@
                     <Switch fx:id="randomEmotionSwitch"/>
                 </HBox>
                 <HBox styleClass="h-box">
-                    <Text text="只打人机"/>
+                    <Text text="只打人机（Beta）"/>
                     <Label>
                         <graphic>
                             <HelpIco/>

@@ -3,6 +3,7 @@ package club.xiaojiawei.hsscript.bean
 import club.xiaojiawei.CardAction
 import club.xiaojiawei.bean.Card
 import club.xiaojiawei.bean.area.PlayArea
+import club.xiaojiawei.enums.CardTypeEnum
 import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.utils.ConfigUtil
 import club.xiaojiawei.hsscript.utils.GameUtil
@@ -81,7 +82,10 @@ class CommonCardAction : CardAction(false) {
         if ((GameUtil.getMyHandCardRect(me.handArea.indexOfCard(belongCard), belongCard!!.area!!.cardSize())
                 .also { startRect = it }).isValid()
         ) {
-            val endRect = GameUtil.getMyPlayCardRect(index, me.playArea.cardSize())
+            val endRect = GameUtil.getMyPlayCardRect(
+                index,
+                me.playArea.cardSize()
+            )
             if (endRect.isValid()) {
                 startRect.lClickMoveLClick(endRect)
                 lastRect = endRect
@@ -139,7 +143,48 @@ class CommonCardAction : CardAction(false) {
         }
         startRect.let {
             if (it.isValid()) {
-                val cardRect = getCardRect(card)
+                var cardRect = belongCard?.area?.let { area ->
+                    if (area === me.handArea && belongCard?.cardType === CardTypeEnum.MINION) {
+                        var index = -1
+                        if ((area.indexOfCard(card).also { i -> index = i }) >= 0) {
+                            GameUtil.getMyHandCardRect(index, area.cardSize() + if (depth > 0) 1 else 0)
+                        }
+                    }
+                    GameRect.INVALID
+                } ?: GameRect.INVALID
+                if (!cardRect.isValid()) {
+                    cardRect = getCardRect(card)
+                }
+                if (cardRect.isValid()) {
+                    endRect = cardRect
+                    it.move(endRect)
+                    cardRect.lClick(false)
+                }
+            }
+        }
+        lastRect = endRect
+        return endRect != null && endRect.isValid()
+    }
+
+    override fun execPointTo(index: Int): Boolean {
+        var startRect: GameRect? = null
+        var endRect: GameRect? = null
+        lastRect?.let {
+            if (it.isValid()) {
+                startRect = it
+            }
+        }
+        if (startRect == null) {
+            startRect = getCardRect(belongCard)
+        }
+        startRect.let {
+            if (it.isValid()) {
+                var cardRect = belongCard?.area?.let { area ->
+                    if (area === me.handArea && belongCard?.cardType === CardTypeEnum.MINION) {
+                        GameUtil.getMyHandCardRect(index, area.cardSize() + if (depth > 0) 1 else 0)
+                    }
+                    GameRect.INVALID
+                } ?: GameRect.INVALID
                 if (cardRect.isValid()) {
                     endRect = cardRect
                     it.move(endRect)
