@@ -123,6 +123,7 @@ public class InitSettingsController implements Initializable {
         deckPosComboBox.valueProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue == null || newValue.isBlank()) return;
             ConfigUtil.INSTANCE.putInt(ConfigEnum.CHOOSE_DECK_POS, Integer.parseInt(newValue), true);
+            notificationManager.showSuccess("修改成功", 2);
         });
     }
 

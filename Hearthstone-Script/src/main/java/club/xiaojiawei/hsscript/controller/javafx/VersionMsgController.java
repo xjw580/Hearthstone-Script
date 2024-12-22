@@ -29,9 +29,14 @@ public class VersionMsgController implements Initializable {
         version.setText(VersionUtil.INSTANCE.getVERSION());
 //        TODO 版本更新时修改！！！
         versionDescription.setText("""
-                1. 修复敌方变身时无法正确识别的问题
-                2. 修复关闭执行策略开关不生效的问题
-                3. 策略设置页中添加增加只打人机选项
+                1. 权重设置页新增出牌权重
+                2. 优化进入游戏主界面时的点击行为
+                3. 激进策略支持简单识别伤害法术
+                4. 策略设置页增加随机事件，随机表情，随机投降设置项
+                5. 增加对超级风怒的识别
+                6. 修复敌方变身时无法正确识别的问题
+                7. 策略设置页中添加增加只打人机选项
+                8. 初始设置页中添加选择卡组位选项
                 """);
     }
 
