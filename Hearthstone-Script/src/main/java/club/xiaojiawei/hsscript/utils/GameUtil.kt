@@ -199,6 +199,18 @@ object GameUtil {
         ),
     )
 
+    private val DECK_POS_RECTS = arrayOf<GameRect>(
+        GameRect(-0.4108, -0.2487, -0.2782, -0.2019),
+        GameRect(-0.2368, -0.0833, -0.2782, -0.2019),
+        GameRect(-0.0672, 0.0863, -0.2782, -0.2019),
+        GameRect(-0.4034, -0.2498, -0.0699, 0.0065),
+        GameRect(-0.2368, -0.0833, -0.0699, 0.0065),
+        GameRect(-0.0672, 0.0863, -0.0699, 0.0065),
+        GameRect(-0.4003, -0.2468, 0.1384, 0.2148),
+        GameRect(-0.2337, -0.0802, 0.1384, 0.2148),
+        GameRect(-0.0672, 0.0863, 0.1384, 0.2148),
+    )
+
     private var gameEndTasks: MutableList<ScheduledFuture<*>> = mutableListOf()
 
     /**
@@ -234,6 +246,11 @@ object GameUtil {
             return GameRect.INVALID
         }
         return FOUR_DISCOVER_RECTS[index]
+    }
+
+    fun lClickDeckPos() {
+        var deckPos = ConfigUtil.getInt(ConfigEnum.CHOOSE_DECK_POS)
+        DECK_POS_RECTS[deckPos - 1].lClick()
     }
 
     fun getMyHandCardRect(index: Int, size: Int): GameRect {

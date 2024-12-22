@@ -1,17 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import club.xiaojiawei.controls.ico.FileIco?>
+<?import club.xiaojiawei.controls.ico.HelpIco?>
 <?import club.xiaojiawei.controls.NotificationManager?>
 <?import club.xiaojiawei.controls.PasswordTextField?>
 <?import club.xiaojiawei.factory.NotificationFactory?>
+<?import javafx.collections.FXCollections?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
+<?import java.lang.String?>
 <StackPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            stylesheets="@css/initSettings.css"
-            fx:id="rootPane"
-            fx:controller="club.xiaojiawei.hsscript.controller.javafx.InitSettingsController">
+           xmlns:fx="http://javafx.com/fxml"
+           stylesheets="@css/initSettings.css"
+           fx:id="rootPane"
+           fx:controller="club.xiaojiawei.hsscript.controller.javafx.InitSettingsController">
     <VBox>
         <ScrollPane VBox.vgrow="ALWAYS" hbarPolicy="NEVER" style="-fx-background-insets: 0">
             <VBox fx:id="mainVBox">
@@ -38,6 +41,32 @@
                 <HBox styleClass="h-box">
                     <Text text="战网账号密码"/>
                     <PasswordTextField styleClass="text-field-ui, text-field-ui-small" fx:id="password" promptText="非必填项，防止登录失败用" hideForever="true"/>
+                </HBox>
+                <HBox styleClass="h-box">
+                    <Text text="选择卡组位"/>
+                    <Label>
+                        <graphic>
+                            <HelpIco/>
+                        </graphic>
+                        <tooltip>
+                            <Tooltip text="每次选择的卡组在当前页的第几号位"/>
+                        </tooltip>
+                    </Label>
+                    <ComboBox fx:id="deckPosComboBox" styleClass="combo-box-ui, combo-box-ui-normal, combo-box-ui-small">
+                        <items>
+                            <FXCollections fx:factory="observableArrayList">
+                                <String fx:value="1"/>
+                                <String fx:value="2"/>
+                                <String fx:value="3"/>
+                                <String fx:value="4"/>
+                                <String fx:value="5"/>
+                                <String fx:value="6"/>
+                                <String fx:value="7"/>
+                                <String fx:value="8"/>
+                                <String fx:value="9"/>
+                            </FXCollections>
+                        </items>
+                    </ComboBox>
                 </HBox>
             </VBox>
         </ScrollPane>

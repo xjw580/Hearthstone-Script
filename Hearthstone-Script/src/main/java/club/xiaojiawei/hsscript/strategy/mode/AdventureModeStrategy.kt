@@ -13,6 +13,7 @@ import club.xiaojiawei.hsscript.status.Mode
 import club.xiaojiawei.hsscript.status.PauseStatus
 import club.xiaojiawei.hsscript.strategy.AbstractModeStrategy
 import club.xiaojiawei.hsscript.strategy.mode.TournamentModeStrategy.BACK_RECT
+import club.xiaojiawei.hsscript.utils.GameUtil
 import club.xiaojiawei.hsscript.utils.SystemUtil
 import java.util.concurrent.TimeUnit
 
@@ -65,7 +66,8 @@ object AdventureModeStrategy : AbstractModeStrategy<Any?>() {
                 SystemUtil.delayMedium()
                 PREV_DECK_PAGE.lClick()
                 SystemUtil.delayShort()
-                TournamentModeStrategy.FIRST_DECK_RECT.lClick()
+                GameUtil.lClickDeckPos()
+                GameUtil.lClickDeckPos()
                 SystemUtil.delayShort()
                 START_RECT.lClick()
                 SystemUtil.delayShort()

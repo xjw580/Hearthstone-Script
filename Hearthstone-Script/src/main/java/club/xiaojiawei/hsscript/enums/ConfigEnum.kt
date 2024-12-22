@@ -87,6 +87,11 @@ enum class ConfigEnum(
     CONTROL_MODE(group = "action", defaultValue = "false"),
 
     /**
+     * 选择卡组位
+     */
+    CHOOSE_DECK_POS(group = "action", defaultValue = "1"),
+
+    /**
      * 套牌插件禁用列表
      */
     DECK_PLUGIN_DISABLED(group = "plugin", defaultValue = JSON.toJSONString(emptyList<String>())),

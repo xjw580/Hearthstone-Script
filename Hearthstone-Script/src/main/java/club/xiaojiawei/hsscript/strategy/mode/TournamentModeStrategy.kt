@@ -17,6 +17,7 @@ import club.xiaojiawei.hsscript.status.Mode
 import club.xiaojiawei.hsscript.status.PauseStatus
 import club.xiaojiawei.hsscript.strategy.AbstractModeStrategy
 import club.xiaojiawei.hsscript.utils.ConfigUtil
+import club.xiaojiawei.hsscript.utils.GameUtil
 import club.xiaojiawei.hsscript.utils.GameUtil.reconnect
 import club.xiaojiawei.hsscript.utils.SystemUtil
 import java.util.concurrent.TimeUnit
@@ -42,8 +43,6 @@ object TournamentModeStrategy : AbstractModeStrategy<Any?>() {
     val CASUAL_MODE_RECT: GameRect = GameRect(0.2557, 0.4278, -0.1769, 0.0014)
 
     val CLASSIC_MODE_RECT: GameRect = GameRect(-0.4278, -0.2557, -0.1769, 0.0014)
-
-    val FIRST_DECK_RECT: GameRect = GameRect(-0.4108, -0.2487, -0.2811, -0.1894)
 
     val TOURNAMENT_MODE_RECT: GameRect = GameRect(-0.0790, 0.0811, -0.2090, -0.1737)
 
@@ -141,11 +140,11 @@ object TournamentModeStrategy : AbstractModeStrategy<Any?>() {
 
         PREV_DECK_PAGE.lClick()
         SystemUtil.delayTiny()
-        FIRST_DECK_RECT_LIMIT.lClick()
+        GameUtil.lClickDeckPos()
         SystemUtil.delayTiny()
-        FIRST_DECK_RECT.lClick()
+        GameUtil.lClickDeckPos()
         SystemUtil.delayTiny()
-        FIRST_DECK_RECT.lClick()
+        GameUtil.lClickDeckPos()
     }
 
     private fun changeModeToClassic() {
