@@ -146,3 +146,9 @@ fun Player.isValid(): Boolean {
     return this != INVALID_PLAYER && this.gameId != "INVALID"
 }
 
+fun Player.isInValid(): Boolean {
+    return this == INVALID_PLAYER || this.gameId == "INVALID"
+}
+
+
+

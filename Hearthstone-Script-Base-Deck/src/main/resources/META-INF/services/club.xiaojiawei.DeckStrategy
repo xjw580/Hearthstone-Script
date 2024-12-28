@@ -1,3 +1,4 @@
-club.xiaojiawei.HsCommonDeckStrategy
-club.xiaojiawei.HsSurrenderDeckStrategy
-club.xiaojiawei.HsRadicalDeckStrategy
+club.xiaojiawei.deck.HsCommonDeckStrategy
+club.xiaojiawei.deck.HsSurrenderDeckStrategy
+club.xiaojiawei.deck.HsRadicalDeckStrategy
+club.xiaojiawei.deck.spetial.HsSandbagWarriorDeckStrategy

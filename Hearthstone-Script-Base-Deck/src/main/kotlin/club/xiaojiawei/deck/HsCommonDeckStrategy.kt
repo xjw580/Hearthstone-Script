@@ -1,15 +1,15 @@
-package club.xiaojiawei
+package club.xiaojiawei.deck
 
+import club.xiaojiawei.DeckStrategy
 import club.xiaojiawei.bean.Card
 import club.xiaojiawei.bean.Player
-import club.xiaojiawei.bean.SimulateWeightCard
-import club.xiaojiawei.config.log
 import club.xiaojiawei.enums.CardTypeEnum
 import club.xiaojiawei.enums.RunModeEnum
 import club.xiaojiawei.status.War
 import club.xiaojiawei.status.War.me
 import club.xiaojiawei.util.DeckStrategyUtil
-import club.xiaojiawei.util.DeckStrategyUtil.sortCard
+import club.xiaojiawei.util.DeckStrategyUtil.findCoin
+import club.xiaojiawei.util.DeckStrategyUtil.outCard
 
 /**
  * @author 肖嘉威
@@ -38,7 +38,7 @@ class HsCommonDeckStrategy : DeckStrategy() {
     }
 
     override fun executeOutCard() {
-        val me = War.me
+        val me = me
         val rival = War.rival
 
         powerCard(me, rival)
@@ -80,21 +80,6 @@ class HsCommonDeckStrategy : DeckStrategy() {
             }
         }
         outCard(resultCards)
-    }
-
-    fun outCard(cards: List<SimulateWeightCard>) {
-        if (cards.isNotEmpty()) {
-            var sortCard = sortCard(cards)
-            log.info { "待出牌：$sortCard" }
-            for (simulateWeightCard in sortCard) {
-                if (me.playArea.isFull) break
-                simulateWeightCard.card.action.power()
-            }
-        }
-    }
-
-    private fun findCoin(cards: List<Card>): Card? {
-        return cards.find { it.isCoinCard }
     }
 
     override fun executeDiscoverChooseCard(vararg cards: Card): Int {

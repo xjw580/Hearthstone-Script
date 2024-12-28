@@ -1,5 +1,6 @@
-package club.xiaojiawei
+package club.xiaojiawei.deck
 
+import club.xiaojiawei.DeckStrategy
 import club.xiaojiawei.bean.Card
 import club.xiaojiawei.bean.isValid
 import club.xiaojiawei.config.log
@@ -8,6 +9,8 @@ import club.xiaojiawei.enums.RunModeEnum
 import club.xiaojiawei.status.War
 import club.xiaojiawei.status.War.rival
 import club.xiaojiawei.util.DeckStrategyUtil
+import club.xiaojiawei.util.DeckStrategyUtil.activeLocation
+import club.xiaojiawei.util.DeckStrategyUtil.isDamageSpell
 import club.xiaojiawei.util.isFalse
 import club.xiaojiawei.util.isTrue
 
@@ -43,31 +46,19 @@ class HsRadicalDeckStrategy : DeckStrategy() {
         if (War.me.isValid()) {
             val me = War.me
             var plays = me.playArea.cards.toList()
-//            使用地标
-            plays.forEach { card ->
-                if (card.cardType === CardTypeEnum.LOCATION && !card.isLocationActionCooldown) {
-                    card.action.lClick()
-                }
-            }
+            activeLocation(plays)
             var hands = me.handArea.cards.toList()
             val (_, resultCards) = DeckStrategyUtil.calcPowerOrderConvert(hands, me.usableResource)
             if (resultCards.isNotEmpty()) {
-                DeckStrategyUtil.addTextForCard(resultCards)
-                val sortCard = DeckStrategyUtil.sortCard(resultCards)
+                DeckStrategyUtil.updateTextForCard(resultCards)
+                val sortCard = DeckStrategyUtil.sortCardByPowerWeight(resultCards)
                 log.info { "待出牌：$sortCard" }
-                val regex = Regex("造成\\$(\\d+)点伤害")
                 for (simulateWeightCard in sortCard) {
                     val card = simulateWeightCard.card
                     var cardText = simulateWeightCard.text
                     if (me.usableResource >= card.cost) {
                         if (card.cardType === CardTypeEnum.SPELL) {
-                            if (regex.find(cardText) == null) {
-                                me.playArea.cards.find { card -> card.canBeTargetedByMe() }?.let {
-                                    card.action.power(it)
-                                } ?: let {
-                                    card.action.power()
-                                }
-                            } else {
+                            if (isDamageSpell(cardText)) {
                                 log.info { "[${card.cardId}]判断为伤害法术" }
                                 rival.playArea.cards.find { card -> card.canBeTargetedByMe() }?.let {
                                     card.action.power(it)
@@ -75,6 +66,12 @@ class HsRadicalDeckStrategy : DeckStrategy() {
                                     if (rival.playArea.hero?.canBeTargetedByMe() == true) {
                                         card.action.power(rival.playArea.hero)
                                     }
+                                }
+                            } else {
+                                me.playArea.cards.find { card -> card.canBeTargetedByMe() }?.let {
+                                    card.action.power(it)
+                                } ?: let {
+                                    card.action.power()
                                 }
                             }
                         } else {
@@ -97,12 +94,7 @@ class HsRadicalDeckStrategy : DeckStrategy() {
                 }
             }
             plays = me.playArea.cards.toList()
-//            使用地标
-            plays.forEach { card ->
-                if (card.cardType === CardTypeEnum.LOCATION && !card.isLocationActionCooldown) {
-                    card.action.lClick()
-                }
-            }
+            activeLocation(plays)
             commonDeckStrategy.executeOutCard()
         }
     }

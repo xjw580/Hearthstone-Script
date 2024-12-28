@@ -1,14 +1,14 @@
-package club.xiaojiawei
+package club.xiaojiawei.deck
 
+import club.xiaojiawei.DeckStrategy
 import club.xiaojiawei.bean.Card
 import club.xiaojiawei.enums.RunModeEnum
-import java.util.HashSet
 
 /**
  * @author 肖嘉威
  * @date 2024/10/14 16:31
  */
-class HsSurrenderDeckStrategy:DeckStrategy() {
+class HsSurrenderDeckStrategy: DeckStrategy() {
     override fun name(): String {
         return "秒投策略"
     }

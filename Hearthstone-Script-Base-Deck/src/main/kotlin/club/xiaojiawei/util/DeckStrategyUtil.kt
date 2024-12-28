@@ -127,6 +127,8 @@ object DeckStrategyUtil {
     private fun clean(
         myAtcWeight: Double,
         rivalAtcWeight: Double,
+        myPlayCards: MutableList<Card>,
+        rivalPlayCards: MutableList<Card>,
     ) {
         val myCardWeightCalc: Function<Card, Double> = Function {
             var value = CARD_WEIGHT_TRIE[it.cardId]?.weight ?: 1.0
@@ -183,11 +185,6 @@ object DeckStrategyUtil {
             value
         }
 
-        var myPlayCards = this.myPlayCards.toMutableList()
-        var rivalPlayCards = this.rivalPlayCards.toMutableList()
-        this.myPlayArea.hero?.let { myPlayCards.add(it) }
-        this.rivalPlayArea.hero?.let { rivalPlayCards.add(it) }
-
         var firstMyCards: MutableList<SimulateCard>? = null
         var text: String
 
@@ -237,8 +234,6 @@ object DeckStrategyUtil {
                 if (findTauntCardCount(this.rivalPlayCards) > 0) {
                     return
                 }
-                myPlayCards = this.myPlayCards.toMutableList()
-                rivalPlayCards = this.rivalPlayCards.toMutableList()
                 this.myPlayArea.hero?.let { myPlayCards.add(it) }
                 this.rivalPlayArea.hero?.let { rivalPlayCards.add(it) }
             } else {
@@ -564,9 +559,21 @@ object DeckStrategyUtil {
     fun cleanPlay(
         myAtcWeight: Double = 1.2,
         rivalAtcWeight: Double = 1.2,
+        myPlayCards: MutableList<Card>? = null,
+        rivalPlayCards: MutableList<Card>? = null,
     ) {
         assign()
-        clean(myAtcWeight, rivalAtcWeight)
+        val newMyPlayCards = myPlayCards ?: let {
+            val toMutableList = War.me.playArea.cards.toMutableList()
+            this.myPlayArea.hero?.let { toMutableList.add(it) }
+            toMutableList
+        }
+        val newRivalPlayCards = rivalPlayCards ?: let {
+            val toMutableList = War.rival.playArea.cards.toMutableList()
+            this.rivalPlayArea.hero?.let { toMutableList.add(it) }
+            toMutableList
+        }
+        clean(myAtcWeight, rivalAtcWeight, newMyPlayCards, newRivalPlayCards)
     }
 
     fun calcPowerOrderConvert(cards: List<Card>, target: Int): Pair<Double, List<SimulateWeightCard>> {
@@ -619,14 +626,14 @@ object DeckStrategyUtil {
         return result
     }
 
-    fun sortCard(cards: List<SimulateWeightCard>): List<SimulateWeightCard> {
+    fun sortCardByPowerWeight(cards: List<SimulateWeightCard>): List<SimulateWeightCard> {
         cards.forEach { t ->
             t.powerWeight = CARD_WEIGHT_TRIE[t.card.cardId]?.powerWeight ?: 1.0
         }
         return cards.sortedByDescending { it.powerWeight }
     }
 
-    fun addTextForCard(card: List<SimulateWeightCard>) {
+    fun updateTextForCard(card: List<SimulateWeightCard>) {
         for (weightCard in card) {
             CardDBUtil.queryCardById(weightCard.card.cardId).let {
                 if (it.isNotEmpty()) {
@@ -636,5 +643,42 @@ object DeckStrategyUtil {
         }
     }
 
+    /**
+     * 使用手牌
+     */
+    fun outCard(cards: List<SimulateWeightCard>) {
+        if (cards.isNotEmpty()) {
+            var sortCard = sortCardByPowerWeight(cards)
+            log.info { "待出牌：$sortCard" }
+            for (simulateWeightCard in sortCard) {
+                if (War.me.playArea.isFull) break
+                simulateWeightCard.card.action.power()
+            }
+        }
+    }
+
+    fun findCoin(cards: List<Card>): Card? {
+        return cards.find { it.isCoinCard }
+    }
+
+    /**
+     * 使用地标
+     */
+    fun activeLocation(cards: List<Card>) {
+        cards.forEach { card ->
+            if (card.cardType === CardTypeEnum.LOCATION && !card.isLocationActionCooldown) {
+                card.action.lClick()
+            }
+        }
+    }
+
+    val regex = Regex("造成\\$(\\d+)点伤害")
+
+    /**
+     * 是否为伤害型法术
+     */
+    fun isDamageSpell(cardText: String): Boolean {
+        return regex.find(cardText) != null;
+    }
 
 }

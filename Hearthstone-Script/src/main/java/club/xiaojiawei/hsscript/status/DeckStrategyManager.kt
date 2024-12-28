@@ -45,7 +45,7 @@ object DeckStrategyManager {
                 val text = "挂机策略改为: ${newStrategy.name()}，模式: ${newStrategy.runModes[0].comment}"
                 SystemUtil.notice(text)
                 log.info { text }
-                if (newStrategy.deckCode().isNotBlank() && newStrategy.deckCode().isNotBlank()) {
+                if (newStrategy.deckCode().isNotBlank()) {
                     log.info { "$" + newStrategy.deckCode() }
                 }
             }
