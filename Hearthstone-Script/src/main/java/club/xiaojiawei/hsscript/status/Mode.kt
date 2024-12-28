@@ -18,7 +18,6 @@ object Mode {
             field = value
             AbstractModeStrategy.cancelAllTask()
             value?.modeStrategy?.entering()
-
         }
 
     var prevMode: ModeEnum? = null

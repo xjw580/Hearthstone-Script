@@ -12,6 +12,8 @@
     <artifactId>hs-script-base-deck</artifactId>
     <version>1.0.0</version>
 
+    <name>Hearthstone-Script-Base-Deck</name>
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 

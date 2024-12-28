@@ -11,6 +11,8 @@
     <artifactId>hs-script-base-card</artifactId>
     <version>1.0.0</version>
 
+    <name>Hearthstone-Script-Base-Card</name>
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 

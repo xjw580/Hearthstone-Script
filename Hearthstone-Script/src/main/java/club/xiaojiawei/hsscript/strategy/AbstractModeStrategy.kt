@@ -22,7 +22,7 @@ abstract class AbstractModeStrategy<T> : ModeStrategy<T> {
 
     override fun entering(t: T?) {
         beforeEnter()
-        log.info { "切換到【${Mode.currMode?.comment}】" }
+        log.info { "切换到【${Mode.currMode?.comment}】" }
         afterEnter(t)
     }
 

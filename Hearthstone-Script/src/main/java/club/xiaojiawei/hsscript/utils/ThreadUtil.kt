@@ -1,10 +1,9 @@
 package club.xiaojiawei.hsscript.utils
 
+import club.xiaojiawei.bean.LogRunnable
 import club.xiaojiawei.bean.ReadableThread
 import club.xiaojiawei.bean.WritableThread
 import club.xiaojiawei.config.log
-import club.xiaojiawei.util.isFalse
-import club.xiaojiawei.util.isTrue
 import javafx.application.Platform
 
 /**
@@ -26,4 +25,12 @@ fun onlyReadRun(block: () -> Unit) {
     } else {
         log.error { "Only allowed to execute within the read thread" }
     }
+}
+
+fun go(name: String? = null, block: () -> Unit) {
+    val ofVirtual = Thread.ofVirtual()
+    name?.let {
+        ofVirtual.name(name)
+    }
+    ofVirtual.start(LogRunnable { block })
 }
