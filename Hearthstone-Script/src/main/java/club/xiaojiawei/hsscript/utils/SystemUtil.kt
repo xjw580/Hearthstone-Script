@@ -2,18 +2,14 @@ package club.xiaojiawei.hsscript.utils
 
 import club.xiaojiawei.bean.LRunnable
 import club.xiaojiawei.config.log
-import club.xiaojiawei.hsscript.data.FXML_IMAGE_PATH
-import club.xiaojiawei.hsscript.data.GAME_HWND
-import club.xiaojiawei.hsscript.data.MAIN_IMG_NAME
-import club.xiaojiawei.hsscript.data.RESOURCE_PATH
-import club.xiaojiawei.hsscript.data.ROBOT
-import club.xiaojiawei.hsscript.data.SCRIPT_NAME
 import club.xiaojiawei.hsscript.custom.MouseClickListener
+import club.xiaojiawei.hsscript.data.*
 import club.xiaojiawei.hsscript.dll.NoticeDll
 import club.xiaojiawei.hsscript.dll.SystemDll
 import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.enums.RegCommonNameEnum
 import club.xiaojiawei.hsscript.status.PauseStatus
+import club.xiaojiawei.hsscript.utils.SystemUtil.delay
 import club.xiaojiawei.util.RandomUtil
 import club.xiaojiawei.util.isTrue
 import com.sun.jna.platform.win32.*
@@ -22,8 +18,10 @@ import java.awt.*
 import java.awt.datatransfer.StringSelection
 import java.awt.event.KeyEvent
 import java.awt.event.MouseEvent
+import java.io.File
 import java.net.URI
 import java.nio.charset.StandardCharsets
+import java.nio.file.Files
 import java.nio.file.Path
 import java.util.function.Consumer
 import kotlin.system.exitProcess
@@ -41,6 +39,10 @@ object SystemUtil {
      */
     private var trayIcon: TrayIcon? = null
 
+    fun getProgramIconFile(): File {
+        return Path.of(IMG_PATH, MAIN_IMG_NAME).toFile()
+    }
+
     /**
      * 调用系统通知
      * @param content
@@ -54,11 +56,15 @@ object SystemUtil {
                 val titleBytes = title.toByteArray(StandardCharsets.UTF_8)
                 val msgBytes = content.toByteArray(StandardCharsets.UTF_8)
 
+                val jarPath = File(
+                    SystemUtil.javaClass.getProtectionDomain()
+                        .codeSource
+                        .location
+                        .toURI()
+                )
+
                 val icoPathBytes: ByteArray =
-                    Path.of(RESOURCE_PATH, MAIN_IMG_NAME).toAbsolutePath()
-                        .normalize().toString().toByteArray(
-                            StandardCharsets.UTF_8
-                        )
+                    getProgramIconFile().toPath().normalize().toString().toByteArray(StandardCharsets.UTF_8)
                 val btnTextBytes = btnText.toByteArray(StandardCharsets.UTF_8)
                 val btnURLBytes = btnURL.toByteArray(StandardCharsets.UTF_8)
                 NoticeDll.INSTANCE.notice(
@@ -229,13 +235,9 @@ object SystemUtil {
 
     /**
      * 添加托盘
-     * @param trayIconName
-     * @param trayName
      * @param menuItems
      */
     fun addTray(
-        trayIconName: String,
-        trayName: String,
         mouseClickListener: Consumer<MouseEvent?>?,
         vararg menuItems: MenuItem?
     ) {
@@ -246,15 +248,15 @@ object SystemUtil {
             log.warn { "当前系统不支持系统托盘" }
             return
         }
-        val image = Toolkit.getDefaultToolkit()
-            .getImage(SystemUtil::class.java.getResource(FXML_IMAGE_PATH + trayIconName))
+
+        val image = Toolkit.getDefaultToolkit().getImage(getProgramIconFile().toURI().toURL())
         //        托盘右键弹出菜单
         val popupMenu = PopupMenu()
         for (menuItem in menuItems) {
             popupMenu.add(menuItem)
         }
         //        托盘图标
-        trayIcon = TrayIcon(image, trayName, popupMenu)
+        trayIcon = TrayIcon(image, SCRIPT_NAME, popupMenu)
         trayIcon?.let { tray ->
             tray.setImageAutoSize(true)
             tray.setToolTip(SCRIPT_NAME)

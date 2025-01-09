@@ -462,7 +462,7 @@ object GameUtil {
      * 通过此方式停止的游戏，screen.log监听器可能无法监测到游戏被关闭
      */
     fun killGame() {
-        if (findGameHWND() != null) {
+        if (isAliveOfGame()) {
             try {
                 Runtime.getRuntime().exec("cmd /c taskkill /f /t /im $GAME_PROGRAM_NAME")
                     .waitFor()

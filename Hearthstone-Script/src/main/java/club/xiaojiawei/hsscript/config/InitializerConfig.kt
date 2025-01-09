@@ -13,7 +13,6 @@ object InitializerConfig {
 
     init {
         BaseInitializer
-            .setNextInitializer(ResourceInitializer)
             .setNextInitializer(GamePathInitializer)
             .setNextInitializer(GameLogInitializer)
             .setNextInitializer(PluginInitializer)

@@ -8,12 +8,12 @@ import club.xiaojiawei.config.log
 import club.xiaojiawei.hsscript.bean.CommonCardAction.Companion.DEFAULT
 import club.xiaojiawei.hsscript.bean.Release
 import club.xiaojiawei.hsscript.config.InitializerConfig
-import club.xiaojiawei.hsscript.data.GAME_CN_NAME
-import club.xiaojiawei.hsscript.data.MAIN_IMG_NAME
-import club.xiaojiawei.hsscript.data.SCRIPT_NAME
-import club.xiaojiawei.hsscript.controller.javafx.StartupController
 import club.xiaojiawei.hsscript.core.Core
+import club.xiaojiawei.hsscript.data.GAME_CN_NAME
+import club.xiaojiawei.hsscript.data.IMG_PATH
+import club.xiaojiawei.hsscript.data.SCRIPT_NAME
 import club.xiaojiawei.hsscript.dll.SystemDll
+import club.xiaojiawei.hsscript.dll.ZLaunchDll
 import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.enums.WindowEnum
 import club.xiaojiawei.hsscript.listener.GlobalHotkeyListener
@@ -21,19 +21,15 @@ import club.xiaojiawei.hsscript.listener.VersionListener
 import club.xiaojiawei.hsscript.listener.WorkListener
 import club.xiaojiawei.hsscript.status.PauseStatus
 import club.xiaojiawei.hsscript.status.TaskManager
-import club.xiaojiawei.hsscript.utils.CardUtil
-import club.xiaojiawei.hsscript.utils.ConfigUtil
-import club.xiaojiawei.hsscript.utils.GameUtil
-import club.xiaojiawei.hsscript.utils.SystemUtil
+import club.xiaojiawei.hsscript.utils.*
 import club.xiaojiawei.hsscript.utils.SystemUtil.addTray
 import club.xiaojiawei.hsscript.utils.SystemUtil.shutdown
-import club.xiaojiawei.hsscript.utils.VersionUtil
 import club.xiaojiawei.hsscript.utils.WindowUtil.buildStage
 import club.xiaojiawei.hsscript.utils.WindowUtil.getStage
 import club.xiaojiawei.hsscript.utils.WindowUtil.hideStage
 import club.xiaojiawei.hsscript.utils.WindowUtil.showStage
-import club.xiaojiawei.hsscript.utils.platformRunLater
 import club.xiaojiawei.util.isFalse
+import com.sun.jna.WString
 import javafx.application.Application
 import javafx.application.Platform
 import javafx.beans.value.ChangeListener
@@ -43,9 +39,11 @@ import javafx.stage.Stage
 import java.awt.MenuItem
 import java.awt.event.ActionEvent
 import java.awt.event.MouseEvent
+import java.nio.file.Path
 import java.util.function.Consumer
 import java.util.function.Supplier
 import javax.swing.AbstractAction
+import kotlin.math.min
 
 /**
  * javaFX启动器
@@ -56,19 +54,38 @@ class MainApplication : Application() {
 
     private var mainShowingListener: ChangeListener<Boolean?>? = null
 
+    var startUpVThread: Thread? = null
+
     override fun start(stage: Stage?) {
+        showStartupPage()
+        startUpVThread = Thread.ofVirtual().start {
+            var progressValue = 0.0
+            while (!Thread.interrupted()) {
+                try {
+                    Thread.sleep(8)
+                } catch (e: InterruptedException) {
+                    break
+                }
+                progressValue += 0.005
+                ZLaunchDll.INSTANCE.SetProgress(min(progressValue, 0.99))
+            }
+        }
         commonActionFactory = Supplier { DEFAULT.createNewInstance() }
         Platform.setImplicitExit(false)
-        Thread.ofVirtual().name("Launch VThread").start(LRunnable(Runnable {
-            InitializerConfig.initializer.init()
-            setSystemTray()
-            Platform.runLater(Runnable { this.showMainPage() })
-        }))
-        showStartupPage()
+        InitializerConfig.initializer.init()
+        setSystemTray()
+        showMainPage()
     }
 
     private fun showStartupPage() {
-        showStage(WindowEnum.STARTUP)
+        val scale = Screen.getPrimary().outputScaleX
+        ZLaunchDll.INSTANCE.ShowPage(
+            WString(Path.of(IMG_PATH, "startup.jpg").toString()),
+            WString(SystemUtil.getProgramIconFile().absolutePath),
+            WString(SCRIPT_NAME),
+            (558 * scale).toInt(),
+            (400 * scale).toInt()
+        )
     }
 
     private fun showMainPage() {
@@ -92,10 +109,10 @@ class MainApplication : Application() {
                 PauseStatus.asyncSetPause(!PauseStatus.isPause)
             }
         })
-        PauseStatus.addListener( { observableValue: ObservableValue<out Boolean?>?, aBoolean: Boolean?, isPause: Boolean ->
-            if (isPause){
+        PauseStatus.addListener({ observableValue: ObservableValue<out Boolean?>?, aBoolean: Boolean?, isPause: Boolean ->
+            if (isPause) {
                 isPauseItem.label = "开始"
-            }else{
+            } else {
                 isPauseItem.label = "暂停"
             }
         })
@@ -104,8 +121,8 @@ class MainApplication : Application() {
         settingsItem.addActionListener(object : AbstractAction() {
             override fun actionPerformed(e: ActionEvent?) {
                 platformRunLater {
-                    val stage = getStage(WindowEnum.SETTINGS)?: buildStage(WindowEnum.SETTINGS)
-                    if (stage.owner == null){
+                    val stage = getStage(WindowEnum.SETTINGS) ?: buildStage(WindowEnum.SETTINGS)
+                    if (stage.owner == null) {
                         getStage(WindowEnum.MAIN)?.let {
                             stage.initOwner(it)
                         }
@@ -122,7 +139,7 @@ class MainApplication : Application() {
             }
         })
 
-        addTray(MAIN_IMG_NAME, SCRIPT_NAME, Consumer { e: MouseEvent? ->
+        addTray(Consumer { e: MouseEvent? ->
 //            左键点击
             if (e!!.getButton() == 1) {
                 Platform.runLater(Runnable {
@@ -150,11 +167,15 @@ class MainApplication : Application() {
                 VersionListener.launch()
                 WorkListener.launch()
                 CardUtil.reloadCardWeight()
-
-                platformRunLater { StartupController.complete() }
-
+                startUpVThread?.interrupt()
+                ZLaunchDll.INSTANCE.HidePage()
                 Runtime.getRuntime()
-                    .addShutdownHook(LThread({SystemDll.INSTANCE.uninstallDll(GameUtil.findGameHWND())}, "ShutdownHook Thread"))
+                    .addShutdownHook(
+                        LThread(
+                            { SystemDll.INSTANCE.uninstallDll(GameUtil.findGameHWND()) },
+                            "ShutdownHook Thread"
+                        )
+                    )
 
                 SystemDll.INSTANCE.IsRunAsAdministrator().isFalse {
                     log.warn { "当前进程不是以管理员启动，功能受限" }
@@ -162,7 +183,7 @@ class MainApplication : Application() {
                 }
 
                 Screen.getScreens()?.let {
-                    if (it.size > 1){
+                    if (it.size > 1) {
                         log.info { "检测到多台显示器，开始运行后${GAME_CN_NAME}不要移动到其他显示器" }
                     }
                 }
@@ -181,9 +202,9 @@ class MainApplication : Application() {
                     log.info { "接收到开始参数，开始脚本" }
                     Thread.sleep(1000)
                     PauseStatus.isPause = false
-                }else {
+                } else {
                     val version = ConfigUtil.getString(ConfigEnum.CURRENT_VERSION)
-                    if (Release.compareVersion(VersionUtil.VERSION, version) > 0){
+                    if (Release.compareVersion(VersionUtil.VERSION, version) > 0) {
                         platformRunLater {
                             showStage(WindowEnum.VERSION_MSG, getStage(WindowEnum.MAIN))
                             ConfigUtil.putString(ConfigEnum.CURRENT_VERSION, VersionUtil.VERSION)

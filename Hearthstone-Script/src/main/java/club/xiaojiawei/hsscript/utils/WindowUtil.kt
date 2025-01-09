@@ -2,7 +2,6 @@ package club.xiaojiawei.hsscript.utils
 
 import club.xiaojiawei.JavaFXUI
 import club.xiaojiawei.hsscript.data.FXML_PATH
-import club.xiaojiawei.hsscript.data.SCRIPT_ICON_PATH
 import club.xiaojiawei.hsscript.enums.WindowEnum
 import club.xiaojiawei.hsscript.utils.SystemUtil.findHWND
 import club.xiaojiawei.hsscript.utils.SystemUtil.showWindow
@@ -22,7 +21,6 @@ import javafx.scene.layout.VBox
 import javafx.scene.paint.Paint
 import javafx.stage.*
 import java.io.IOException
-import java.util.*
 
 /**
  * 窗口工具类
@@ -34,6 +32,10 @@ object WindowUtil {
     private const val CONTROLLER_KEY = "controller"
 
     private val STAGE_MAP: MutableMap<WindowEnum, Stage> = mutableMapOf()
+
+    private fun addIcon(stage: Stage) {
+        stage.icons.add(Image(SystemUtil.getProgramIconFile().toURI().toURL().toExternalForm()))
+    }
 
     fun createMenuPopup(vararg labels: Label?): Popup {
         val popup = Popup()
@@ -107,12 +109,8 @@ object WindowUtil {
         stage.isResizable = false
         stage.initStyle(StageStyle.TRANSPARENT)
         stage.scene = scene
-        stage.icons.add(
-            Image(
-                Objects.requireNonNull(WindowUtil::class.java.getResource(SCRIPT_ICON_PATH))
-                    .toExternalForm()
-            )
-        )
+        addIcon(stage)
+
         stage.showingProperty()
             .addListener { _: ObservableValue<out Boolean?>?, _: Boolean?, t1: Boolean? ->
                 if (!t1!! && cancelHandler != null) {
@@ -200,12 +198,8 @@ object WindowUtil {
             scene.stylesheets.add(JavaFXUI.javafxUIStylesheet())
             stage.scene = scene
             stage.title = windowEnum.title
-            stage.icons.add(
-                Image(
-                    Objects.requireNonNull(WindowUtil::class.java.getResource(SCRIPT_ICON_PATH))
-                        .toExternalForm()
-                )
-            )
+            addIcon(stage)
+
             (windowEnum.width > 0).isTrue {
                 stage.width = windowEnum.width
                 stage.minWidth = windowEnum.width

@@ -30,14 +30,21 @@
         </dependencySet>
     </dependencySets>
 
-<!--    <files>-->
-<!--        <file>-->
-<!--            <source>${project.build.directory}/${project.build.finalName}.jar</source>-->
-<!--            <outputDirectory>lib</outputDirectory> &lt;!&ndash; 将生成的 JAR 移到 lib 目录 &ndash;&gt;-->
-<!--        </file>-->
-<!--    </files>-->
+    <!--    <files>-->
+    <!--        <file>-->
+    <!--            <source>${project.build.directory}/${project.build.finalName}.jar</source>-->
+    <!--            <outputDirectory>lib</outputDirectory> &lt;!&ndash; 将生成的 JAR 移到 lib 目录 &ndash;&gt;-->
+    <!--        </file>-->
+    <!--    </files>-->
     <!--设置需要分离的文件-->
     <fileSets>
+        <fileSet>
+            <directory>${project.basedir}/src/main/resources/resources/img</directory>
+            <includes>
+                <include>*.*</include>
+            </includes>
+            <outputDirectory>resources/img/</outputDirectory>
+        </fileSet>
         <fileSet>
             <directory>${project.parent.basedir}</directory>
             <outputDirectory/>
