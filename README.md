@@ -3,6 +3,15 @@
 # 炉石传说脚本（雷火服封禁力度大）
 <img src="Hearthstone-Script/src/main/resources/fxml/img/favicon.png" alt="Image description" width="100" height="100">
 
+
+
+### 更新预告
+
+1. 增加沙包战，单纯解场挨打混时长（不建议挂攻击性高的卡组，是我我也举报）
+2. 出牌策略采用新的算法
+
+
+
 ### 免责申明
 
 本项目仅供学习交流 `Java`，`Kotlin` 和 `炉石传说` 玩法，不得用于任何违反法律法规及游戏协议的地方😡！！！。
