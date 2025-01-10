@@ -35,7 +35,8 @@ import javafx.collections.ObservableList;
 import javafx.collections.SetChangeListener;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
-import javafx.scene.control.*;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.Label;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -128,18 +129,24 @@ public class MainController extends MainView {
                 .stream()
                 .filter(deckStrategy ->
                         Objects.equals(defaultDeckId, deckStrategy.id())
-                                &&
-                                deckStrategy.getRunModes().length > 0
-                                &&
-                                (defaultRunModeEnum == null
-                                        ||
-                                        Arrays.stream(deckStrategy.getRunModes()).anyMatch(runModeEnum -> runModeEnum == defaultRunModeEnum))
+                        &&
+                        deckStrategy.getRunModes().length > 0
+                        &&
+                        (defaultRunModeEnum == null
+                         ||
+                         Arrays.stream(deckStrategy.getRunModes()).anyMatch(runModeEnum -> runModeEnum == defaultRunModeEnum))
                 )
                 .findFirst();
         if (defaultDeck.isPresent()) {
-            defaultDeck.get().getRunModes();
-            runModeBox.setValue(Objects.requireNonNullElseGet(defaultRunModeEnum, () -> defaultDeck.get().getRunModes()[0]));
-            deckBox.setValue(defaultDeck.get());
+            DeckStrategy deckStrategy = defaultDeck.get();
+            deckStrategy.getRunModes();
+            runModeBox.setValue(Objects.requireNonNullElseGet(defaultRunModeEnum, () -> deckStrategy.getRunModes()[0]));
+            deckBox.setValue(deckStrategy);
+            String deckCode = deckStrategy.deckCode();
+            if (!deckCode.isEmpty()) {
+                log.info("当前卡组代码↓");
+                log.info("${}", deckCode);
+            }
         }
 
         DeckStrategyManager.INSTANCE.getCurrentDeckStrategyProperty().addListener((observableValue, deck, t1) -> {
@@ -199,7 +206,7 @@ public class MainController extends MainView {
             label.prefWidthProperty().bind(accordion.widthProperty().subtract(15));
 
             int levelInt = event.getLevel().levelInt;
-            String message = event.getMessage();
+            String message = event.getFormattedMessage();
 //                处理需要复制的文本
             if (message != null && message.startsWith("$")) {
                 message = message.substring(1);
@@ -398,9 +405,9 @@ public class MainController extends MainView {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         versionText.setText("当前版本：" + VersionListener.INSTANCE.getCurrentRelease().getTagName());
+        addListener();
         initModeAndDeck();
         initWorkDate();
-        addListener();
     }
 
     @FXML
@@ -504,7 +511,8 @@ public class MainController extends MainView {
             exp.setText("0");
 
             notificationManger.showSuccess("统计数据已重置", 2);
-        }), ()->{});
+        }), () -> {
+        });
         modal.setMaskClosable(true);
         modal.show();
     }

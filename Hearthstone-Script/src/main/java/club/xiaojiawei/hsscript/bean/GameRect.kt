@@ -73,33 +73,33 @@ data class GameRect(val left: Double, val right: Double, val top: Double, val bo
         }
     }
 
-    fun buildAction(): Action {
-        return Action(this)
+    fun buildAction(): GameRectAction {
+        return GameRectAction(this)
     }
 
-    class Action constructor(private val rect: GameRect) {
+    class GameRectAction(private val rect: GameRect) {
 
         private val runnableList: MutableList<Runnable?> = ArrayList<Runnable?>()
 
         private var lastRect: GameRect? = null
 
-        fun clear(): Action {
+        fun clear(): GameRectAction {
             runnableList.clear()
             lastRect = null
             return this
         }
 
-        fun exec(): Action {
+        fun exec(): GameRectAction {
             runnableList.forEach(Consumer { obj: Runnable? -> obj!!.run() })
             return this
         }
 
-        fun lClick(): Action {
+        fun lClick(): GameRectAction {
             runnableList.add(Runnable { rect.lClick() })
             return this
         }
 
-        fun lClick(rect: GameRect?): Action {
+        fun lClick(rect: GameRect?): GameRectAction {
             runnableList.add(Runnable {
                 if (rect == null) {
                     if (lastRect != null) {
@@ -113,12 +113,12 @@ data class GameRect(val left: Double, val right: Double, val top: Double, val bo
             return this
         }
 
-        fun rClick(): Action {
+        fun rClick(): GameRectAction {
             runnableList.add(Runnable { rect.rClick() })
             return this
         }
 
-        fun rClick(rect: GameRect?): Action {
+        fun rClick(rect: GameRect?): GameRectAction {
             runnableList.add(Runnable {
                 if (rect == null) {
                     if (lastRect != null) {
@@ -132,12 +132,12 @@ data class GameRect(val left: Double, val right: Double, val top: Double, val bo
             return this
         }
 
-        fun move(): Action {
+        fun move(): GameRectAction {
             runnableList.add(Runnable { rect.move() })
             return this
         }
 
-        fun move(endRect: GameRect?): Action {
+        fun move(endRect: GameRect?): GameRectAction {
             runnableList.add(Runnable { rect.move(endRect) })
             return this
         }

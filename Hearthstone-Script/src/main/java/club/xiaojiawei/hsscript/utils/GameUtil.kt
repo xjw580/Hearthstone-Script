@@ -65,46 +65,46 @@ object GameUtil {
     val RIVAL_POWER_RECT: GameRect = GameRect(0.0840, 0.1554, -0.3260, -0.2338)
     val MY_POWER_RECT: GameRect = GameRect(0.0855, 0.1569, 0.2254, 0.3176)
 
-    private val FOUR_DISCOVER_RECTS = arrayOf<GameRect>(
+    private val FOUR_DISCOVER_RECTS = arrayOf(
         GameRect(-0.3332, -0.1911, -0.1702, 0.1160),
         GameRect(-0.1570, -0.0149, -0.1702, 0.1160),
         GameRect(0.0182, 0.1603, -0.1702, 0.1160),
         GameRect(0.1934, 0.3355, -0.1702, 0.1160),
     )
 
-    private val THREE_DISCOVER_RECTS = arrayOf<GameRect>(
+    private val THREE_DISCOVER_RECTS = arrayOf(
         GameRect(-0.3037, -0.1595, -0.1702, 0.1160),
         GameRect(-0.0666, 0.0741, -0.1702, 0.1160),
         GameRect(0.1656, 0.3106, -0.1702, 0.1160),
     )
 
-    private val MY_HAND_DECK_RECTS = arrayOf<Array<GameRect>>(
-        arrayOf<GameRect>(
+    private val MY_HAND_DECK_RECTS = arrayOf(
+        arrayOf(
             GameRect(-0.0693, 0.0136, 0.3675, 0.5000),
         ),
-        arrayOf<GameRect>(
+        arrayOf(
             GameRect(-0.1149, -0.0316, 0.3675, 0.5000),
             GameRect(-0.0242, 0.0590, 0.3675, 0.5000),
         ),
-        arrayOf<GameRect>(
+        arrayOf(
             GameRect(-0.1599, -0.0767, 0.3675, 0.5000),
             GameRect(-0.0693, 0.0140, 0.3675, 0.5000),
             GameRect(0.0214, 0.1047, 0.3675, 0.5000),
         ),
-        arrayOf<GameRect>(
+        arrayOf(
             GameRect(-0.1930, -0.1307, 0.3855, 0.5000),
             GameRect(-0.1092, -0.0347, 0.3742, 0.5000),
             GameRect(-0.0208, 0.0507, 0.3814, 0.4995),
             GameRect(0.0744, 0.1425, 0.4158, 0.5000),
         ),
-        arrayOf<GameRect>(
+        arrayOf(
             GameRect(-0.2034, -0.1471, 0.4116, 0.5000),
             GameRect(-0.1338, -0.0704, 0.3888, 0.5000),
             GameRect(-0.0704, -0.0071, 0.3698, 0.5000),
             GameRect(0.0077, 0.0604, 0.3935, 0.5000),
             GameRect(0.0858, 0.1456, 0.4144, 0.5000),
         ),
-        arrayOf<GameRect>(
+        arrayOf(
             GameRect(-0.2115, -0.1672, 0.4144, 0.5000),
             GameRect(-0.1514, -0.1028, 0.3964, 0.5000),
             GameRect(-0.0975, -0.0448, 0.3755, 0.5000),
@@ -112,7 +112,7 @@ object GameUtil {
             GameRect(0.0270, 0.0671, 0.3812, 0.4990),
             GameRect(0.0903, 0.1579, 0.4240, 0.5000),
         ),
-        arrayOf<GameRect>(
+        arrayOf(
             GameRect(-0.2179, -0.1799, 0.4192, 0.5000),
             GameRect(-0.1640, -0.1232, 0.4040, 0.5000),
             GameRect(-0.1155, -0.0690, 0.3869, 0.5000),
@@ -121,7 +121,7 @@ object GameUtil {
             GameRect(0.0418, 0.0727, 0.3821, 0.5000),
             GameRect(0.0956, 0.1617, 0.4211, 0.5000),
         ),
-        arrayOf<GameRect>(
+        arrayOf(
             GameRect(-0.2210, -0.1901, 0.4259, 0.5000),
             GameRect(-0.1746, -0.1394, 0.4125, 0.5000),
             GameRect(-0.1324, -0.0916, 0.3973, 0.5000),
@@ -131,7 +131,7 @@ object GameUtil {
             GameRect(0.0534, 0.0759, 0.4040, 0.5000),
             GameRect(0.1030, 0.1536, 0.4163, 0.4990),
         ),
-        arrayOf<GameRect>(
+        arrayOf(
             GameRect(-0.2274, -0.1964, 0.4335, 0.5000),
             GameRect(-0.1820, -0.1496, 0.4335, 0.5000),
             GameRect(-0.1429, -0.1099, 0.4059, 0.5000),
@@ -142,7 +142,7 @@ object GameUtil {
             GameRect(0.0639, 0.0942, 0.3878, 0.4610),
             GameRect(0.1083, 0.1653, 0.4125, 0.5000),
         ),
-        arrayOf<GameRect>(
+        arrayOf(
             GameRect(-0.2305, -0.2024, 0.4401, 0.5000),
             GameRect(-0.1894, -0.1598, 0.4401, 0.5000),
             GameRect(-0.1524, -0.1250, 0.4097, 0.5000),
@@ -158,7 +158,7 @@ object GameUtil {
 
     private val MY_PLAY_DECK_RECTS = arrayOf<Array<GameRect>>(
         //            偶数
-        arrayOf<GameRect>(
+        arrayOf(
             GameRect(-0.2689, -0.2111, -0.0033, 0.1050),
             GameRect(-0.1731, -0.1153, -0.0033, 0.1050),
             GameRect(-0.0773, -0.0195, -0.0033, 0.1050),
@@ -166,7 +166,7 @@ object GameUtil {
             GameRect(0.1153, 0.1731, -0.0033, 0.1050),
             GameRect(0.2111, 0.2689, -0.0033, 0.1050),
         ),  //            奇数
-        arrayOf<GameRect>(
+        arrayOf(
             GameRect(-0.3156, -0.2578, -0.0041, 0.1043),
             GameRect(-0.2204, -0.1626, -0.0041, 0.1043),
             GameRect(-0.1257, -0.0691, -0.0041, 0.1043),
@@ -179,7 +179,7 @@ object GameUtil {
 
     private val RIVAL_PLAY_DECK_RECTS = arrayOf<Array<GameRect>>(
         //            偶数
-        arrayOf<GameRect>(
+        arrayOf(
             GameRect(-0.2689, -0.2111, -0.1730, -0.0716),
             GameRect(-0.1731, -0.1153, -0.1730, -0.0716),
             GameRect(-0.0773, -0.0195, -0.1730, -0.0716),
@@ -188,7 +188,7 @@ object GameUtil {
             GameRect(0.2111, 0.2689, -0.1730, -0.0716),
         ),
         //            奇数
-        arrayOf<GameRect>(
+        arrayOf(
             GameRect(-0.3156, -0.2578, -0.1730, -0.0716),
             GameRect(-0.2204, -0.1626, -0.1730, -0.0716),
             GameRect(-0.1257, -0.0691, -0.1730, -0.0716),
@@ -199,7 +199,7 @@ object GameUtil {
         ),
     )
 
-    private val DECK_POS_RECTS = arrayOf<GameRect>(
+    private val DECK_POS_RECTS = arrayOf(
         GameRect(-0.4108, -0.2487, -0.2782, -0.2019),
         GameRect(-0.2368, -0.0833, -0.2782, -0.2019),
         GameRect(-0.0672, 0.0863, -0.2782, -0.2019),
@@ -356,6 +356,13 @@ object GameUtil {
                 TimeUnit.MILLISECONDS
             )
         )
+    }
+
+    /**
+     * 点击回合结束按钮
+     */
+    fun lClickTurnOver(isCancel: Boolean = true) {
+        END_TURN_RECT.lClick(isCancel)
     }
 
     /**

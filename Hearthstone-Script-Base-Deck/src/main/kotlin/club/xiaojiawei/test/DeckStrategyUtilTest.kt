@@ -37,11 +37,11 @@ class MyCardAction : CardAction() {
         TODO("Not yet implemented")
     }
 
-    override fun execPointTo(card: Card): Boolean {
+    override fun execPointTo(card: Card, click:Boolean): Boolean {
         TODO("Not yet implemented")
     }
 
-    override fun execPointTo(index: Int): Boolean {
+    override fun execPointTo(index: Int, click:Boolean): Boolean {
         TODO("Not yet implemented")
     }
 

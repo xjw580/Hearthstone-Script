@@ -1,6 +1,7 @@
 package club.xiaojiawei
 
 import club.xiaojiawei.bean.Card
+import club.xiaojiawei.bean.Player
 import club.xiaojiawei.enums.CardTypeEnum
 import java.util.function.Supplier
 
@@ -12,9 +13,12 @@ abstract class CardAction(createDefaultAction: Boolean = true) {
 
     protected var depth = 0
 
+    /**
+     * 是否尝试打出过
+     */
     var executedPower = false
 
-    var commonAction: CardAction? = null
+    protected var commonAction: CardAction? = null
 
     var belongCard: Card? = null
         set(value) {
@@ -27,6 +31,14 @@ abstract class CardAction(createDefaultAction: Boolean = true) {
             this.commonAction = commonActionFactory?.get()
             this.commonAction?.belongCard = belongCard
         }
+    }
+
+    fun createPlayActions(my: Player, rival: Player): List<Action> {
+        return emptyList()
+    }
+
+    fun createAttackActions(my: Player, rival: Player): List<Action> {
+        return emptyList()
     }
 
     /**
@@ -127,12 +139,12 @@ abstract class CardAction(createDefaultAction: Boolean = true) {
     }
 
     /**
-     * 将鼠标移向指定card然后点击
+     * 将鼠标移向指定card
      */
-    fun pointTo(card: Card?, isPause: Boolean = true): CardAction? {
+    fun pointTo(card: Card?, click: Boolean = true, isPause: Boolean = true): CardAction? {
         if (isStop()) return null
         return card?.let {
-            val result = execPointTo(card)
+            val result = execPointTo(card, click)
             if (result) {
                 if (isPause) {
                     this.delay()
@@ -146,11 +158,11 @@ abstract class CardAction(createDefaultAction: Boolean = true) {
     }
 
     /**
-     * 将鼠标移向我方战场指定下标然后点击（优先使用此方法代替pointTo(card: Card?, isPause: Boolean = true)）
+     * 将鼠标移向我方战场指定下标（优先使用此方法代替pointTo(card: Card?, isPause: Boolean = true)）
      */
-    fun pointTo(index: Int, isPause: Boolean = true): CardAction? {
+    fun pointTo(index: Int, click: Boolean = true, isPause: Boolean = true): CardAction? {
         if (isStop() || index == -1) return null
-        val result = execPointTo(index)
+        val result = execPointTo(index, click)
         if (result) {
             if (isPause) {
                 this.delay()
@@ -189,12 +201,12 @@ abstract class CardAction(createDefaultAction: Boolean = true) {
     /**
      * 移向card，然后左击
      */
-    protected abstract fun execPointTo(card: Card): Boolean
+    protected abstract fun execPointTo(card: Card, click: Boolean): Boolean
 
     /**
      * 移向我方战场指定下标处，然后左击（优先使用此方法代替execPointTo(card: Card)）
      */
-    protected abstract fun execPointTo(index: Int): Boolean
+    protected abstract fun execPointTo(index: Int, click: Boolean): Boolean
 
     abstract fun createNewInstance(): CardAction
 
@@ -238,12 +250,12 @@ abstract class CardAction(createDefaultAction: Boolean = true) {
             return commonAction?.execAttackHero() == true
         }
 
-        override fun execPointTo(card: Card): Boolean {
-            return commonAction?.execPointTo(card) == true
+        override fun execPointTo(card: Card, click: Boolean): Boolean {
+            return commonAction?.execPointTo(card, click) == true
         }
 
-        override fun execPointTo(index: Int): Boolean {
-            return commonAction?.execPointTo(index) == true
+        override fun execPointTo(index: Int, click: Boolean): Boolean {
+            return commonAction?.execPointTo(index, click) == true
         }
 
         override fun lClick(): Boolean {

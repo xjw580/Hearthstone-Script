@@ -2,6 +2,7 @@ package club.xiaojiawei.deck.spetial
 
 import club.xiaojiawei.DeckStrategy
 import club.xiaojiawei.bean.Card
+import club.xiaojiawei.bean.Player
 import club.xiaojiawei.bean.isInValid
 import club.xiaojiawei.deck.HsCommonDeckStrategy
 import club.xiaojiawei.enums.RunModeEnum
@@ -37,15 +38,80 @@ class HsSandbagWarriorDeckStrategy : DeckStrategy() {
         commonDeckStrategy.executeChangeCard(cards)
     }
 
-    override fun executeOutCard() {
-        val me = War.me
-        val rival = War.rival
-        if (me.isInValid() || rival.isInValid()) return
-        var myPlayCards = me.playArea.cards.toMutableList()
-        var rivalPlayCards = rival.playArea.cards.toMutableList()
-        DeckStrategyUtil.cleanPlay(myPlayCards = myPlayCards, rivalPlayCards = rivalPlayCards)
+    private var me: Player = Player.INVALID_PLAYER
+    private var rival: Player = Player.INVALID_PLAYER
+    private lateinit var myPlayCards: MutableList<Card>
+    private lateinit var rivalPlayCards: MutableList<Card>
 
+    override fun executeOutCard() {
+        me = War.me
+        rival = War.rival
+        if (me.isInValid() || rival.isInValid()) return
+        myPlayCards = me.playArea.cards.toMutableList()
         rivalPlayCards = rival.playArea.cards.toMutableList()
+        DeckStrategyUtil.cleanPlay(myPlayCards = myPlayCards, rivalPlayCards = rivalPlayCards)
+        rivalPlayCards = rival.playArea.cards.toMutableList()
+        dealResource()
+    }
+
+    private fun dealResource() {
+        when (me.usableResource) {
+            0 -> dealZeroResource()
+            1 -> dealOneResource()
+            2 -> dealTwoResource()
+            3 -> dealThreeResource()
+            4 -> dealFourResource()
+            5 -> dealFiveResource()
+            6 -> dealSixResource()
+            7 -> dealSevenResource()
+            8 -> dealEightResource()
+            9 -> dealNineResource()
+            10 -> dealTenResource()
+        }
+    }
+
+    private fun dealZeroResource() {
+
+    }
+
+    private fun dealOneResource() {
+
+    }
+
+    private fun dealTwoResource() {
+
+    }
+
+    private fun dealThreeResource() {
+
+    }
+
+    private fun dealFourResource() {
+
+    }
+
+    private fun dealFiveResource() {
+
+    }
+
+    private fun dealSixResource() {
+
+    }
+
+    private fun dealSevenResource() {
+
+    }
+
+    private fun dealEightResource() {
+
+    }
+
+    private fun dealNineResource() {
+
+    }
+
+    private fun dealTenResource() {
+
     }
 
     override fun executeDiscoverChooseCard(vararg cards: Card): Int {

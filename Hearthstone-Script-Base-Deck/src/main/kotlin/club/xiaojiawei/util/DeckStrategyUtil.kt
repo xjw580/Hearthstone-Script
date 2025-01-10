@@ -536,6 +536,9 @@ object DeckStrategyUtil {
         return 0.6 * weight - 0.4 * inversionWeight
     }
 
+    /**
+     * 评估函数
+     */
     private fun calcStateWeight(
         myCards: List<SimulateCard>, rivalCards: List<SimulateCard>, inversion: Boolean
     ): Double {

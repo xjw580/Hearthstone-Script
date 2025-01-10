@@ -9,6 +9,7 @@ import club.xiaojiawei.hsscript.utils.ConfigUtil
 import club.xiaojiawei.hsscript.utils.GameUtil
 import club.xiaojiawei.status.War.me
 import club.xiaojiawei.status.War.rival
+import club.xiaojiawei.util.isTrue
 import kotlin.math.min
 
 /**
@@ -130,7 +131,7 @@ class CommonCardAction : CardAction(false) {
         return false
     }
 
-    public override fun execPointTo(card: Card): Boolean {
+    public override fun execPointTo(card: Card, click: Boolean): Boolean {
         var startRect: GameRect? = null
         var endRect: GameRect? = null
         lastRect?.let {
@@ -158,7 +159,9 @@ class CommonCardAction : CardAction(false) {
                 if (cardRect.isValid()) {
                     endRect = cardRect
                     it.move(endRect)
-                    cardRect.lClick(false)
+                    click.isTrue {
+                        cardRect.lClick(false)
+                    }
                 }
             }
         }
@@ -166,7 +169,7 @@ class CommonCardAction : CardAction(false) {
         return endRect != null && endRect.isValid()
     }
 
-    override fun execPointTo(index: Int): Boolean {
+    override fun execPointTo(index: Int, click: Boolean): Boolean {
         var startRect: GameRect? = null
         var endRect: GameRect? = null
         lastRect?.let {
@@ -188,7 +191,9 @@ class CommonCardAction : CardAction(false) {
                 if (cardRect.isValid()) {
                     endRect = cardRect
                     it.move(endRect)
-                    cardRect.lClick(false)
+                    click.isTrue {
+                        cardRect.lClick(false)
+                    }
                 }
             }
         }
