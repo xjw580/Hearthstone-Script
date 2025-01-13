@@ -1,6 +1,8 @@
 package club.xiaojiawei.test.mcts
 
 import club.xiaojiawei.Action
+import club.xiaojiawei.InitAction
+import club.xiaojiawei.TurnOverAction
 import club.xiaojiawei.WarState
 import club.xiaojiawei.bean.Card
 import club.xiaojiawei.bean.Player
@@ -76,7 +78,7 @@ class MonteCarloTreeSearch(val maxDepth: Int = 20) {
     ): MutableList<Action> {
         val endTime = System.currentTimeMillis() + thinkingTime
 
-        val rootNode = MonteCarloTreeNode(WarState(me.clone(), rival.clone()))
+        val rootNode = MonteCarloTreeNode(WarState(me.clone(), rival.clone()), InitAction)
         var node: MonteCarloTreeNode
 
         var totalCount = 0
@@ -92,21 +94,29 @@ class MonteCarloTreeSearch(val maxDepth: Int = 20) {
             backPropagation(node, score)
             totalCount++
         }
-        val result = mutableListOf<Action>()
 
+        val result = mutableListOf<Action>()
         node = rootNode
         while (!node.isEnd()) {
             val children = node.children
             var maxVisitCount = Int.MIN_VALUE
+            var maxUCB = Int.MIN_VALUE.toDouble()
             var maxNode: MonteCarloTreeNode? = null
             for (child in children) {
-                if (child.state.visitCount > maxVisitCount) {
-                    maxVisitCount = child.state.visitCount
-                    maxNode = child
+//                if (child.state.visitCount > maxVisitCount) {
+//                    maxVisitCount = child.state.visitCount
+//                    maxNode = child
+//                }
+                val ucb = child.state.calcUCB(totalCount)
+                if (ucb > maxUCB){
+                    maxUCB = ucb
+                    maxNode= child
                 }
             }
             maxNode?.let {
-                result.add(maxNode.applyAction)
+                if (maxNode.applyAction !== TurnOverAction) {
+                    result.add(maxNode.applyAction)
+                }
                 node = maxNode
             } ?: break
         }
@@ -118,7 +128,7 @@ class MonteCarloTreeSearch(val maxDepth: Int = 20) {
             }
         }
         val myHero = node.state.warState.me.playArea.hero
-        myHero?.let { card->
+        myHero?.let { card ->
             if (card.isSurvival()) {
                 println("myHero: entityId:${card.entityId}, atc:${card.atc}, blood:${card.blood()}")
             } else {
@@ -134,7 +144,7 @@ class MonteCarloTreeSearch(val maxDepth: Int = 20) {
             }
         }
         val rivalHero = node.state.warState.rival.playArea.hero
-        rivalHero?.let { card->
+        rivalHero?.let { card ->
             if (card.isSurvival()) {
                 println("rivalHero: entityId:${card.entityId}, atc:${card.atc}, blood:${card.blood()}")
             } else {
@@ -175,7 +185,7 @@ fun main() {
         card = Card(TestCardAction())
         card.entityId = "4"
         card.health = 2
-        card.atc = 1
+        card.atc = 5
         card.cardType = CardTypeEnum.MINION
         player.playArea.add(card)
         player.clone()
@@ -200,14 +210,19 @@ fun main() {
         card.atc = 2
         card.cardType = CardTypeEnum.MINION
         player.playArea.add(card)
-        card = Card(TestCardAction())
-        card.entityId = "3"
-        card.health = 5
-        card.atc = 6
-        card.cardType = CardTypeEnum.MINION
-        player.playArea.add(card)
+//        card = Card(TestCardAction())
+//        card.entityId = "3"
+//        card.health = 5
+//        card.atc = 6
+//        card.cardType = CardTypeEnum.MINION
+//        player.playArea.add(card)
         player.clone()
     }
-    val bestActions = monteCarloTreeSearch.getBestActions(me, rival)
-    println("actions size:" + bestActions.size)
+    println("==================================================================================")
+    val bestActions = monteCarloTreeSearch.getBestActions(me.clone(), rival.clone(), 3 * 1000)
+    println("==================================================================================")
+    val warState = WarState(me, rival)
+    for (bestAction in bestActions) {
+        bestAction.exec.accept(warState)
+    }
 }

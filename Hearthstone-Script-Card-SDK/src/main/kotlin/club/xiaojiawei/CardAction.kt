@@ -1,7 +1,6 @@
 package club.xiaojiawei
 
 import club.xiaojiawei.bean.Card
-import club.xiaojiawei.bean.Player
 import club.xiaojiawei.enums.CardTypeEnum
 import java.util.function.Supplier
 
@@ -38,7 +37,7 @@ abstract class CardAction(createDefaultAction: Boolean = true) {
      * 例如：belongCard为老红龙，那么此时可以返回两个action，一个action为指定敌方英雄，一个action为指定己方英雄
      * 例如：belongCard为萨满基础技能时，那么此时至多可以返回一个action，即在战场未满的情况下生成图腾至战场这个action
      */
-    fun createPlayActions(me: Player, rival: Player): List<Action>? {
+    fun createPlayActions(): List<Action>? {
         return null
     }
 
@@ -46,7 +45,7 @@ abstract class CardAction(createDefaultAction: Boolean = true) {
      * belongCard攻击的所有可能动作
      * 例如：敌方战场有2个可被攻击的非嘲讽随从，此时可以返回三个action，即攻击两个随从的action和攻击敌方英雄的action
      */
-    fun createAttackActions(me: Player, rival: Player): List<Action>? {
+    fun createAttackActions(): List<Action>? {
         return null
     }
 

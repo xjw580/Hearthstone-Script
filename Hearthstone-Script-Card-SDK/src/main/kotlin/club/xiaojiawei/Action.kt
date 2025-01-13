@@ -5,12 +5,13 @@ import club.xiaojiawei.bean.Player
 import club.xiaojiawei.data.CARD_WEIGHT_TRIE
 import club.xiaojiawei.enums.CardTypeEnum
 import java.util.function.Consumer
+import kotlin.math.max
 
 /**
  * @author 肖嘉威
  * @date 2025/1/10 15:28
  */
-open class Action(
+abstract class Action(
     /**
      * 真正执行
      */
@@ -20,6 +21,16 @@ open class Action(
      */
     val simulate: Consumer<WarState>
 )
+
+open class AttackAction(
+    exec: Consumer<WarState>,
+    simulate: Consumer<WarState>
+) : Action(exec, simulate)
+
+open class PlayAction(
+    exec: Consumer<WarState>,
+    simulate: Consumer<WarState>
+) : Action(exec, simulate)
 
 private val empty: Consumer<WarState> = Consumer {}
 
@@ -33,7 +44,13 @@ class WarState(var me: Player, var rival: Player) : Cloneable {
     }
 
     fun isEnd(): Boolean {
-        return rival.playArea.hero?.blood() == 0 || me.playArea.hero?.blood() == 0
+        rival.playArea.hero?.let { rivalHero ->
+            if (rivalHero.blood() <= 0) return true
+            me.playArea.hero?.let { myHero ->
+                return myHero.blood() <= 0
+            }
+        }
+        return true
     }
 
     fun calcScore(): Double {
@@ -57,9 +74,9 @@ class WarState(var me: Player, var rival: Player) : Cloneable {
     fun calcCardScore(card: Card): Double {
         if (card.isSurvival()) {
             val basicRatio = CARD_WEIGHT_TRIE[card.cardId]?.weight ?: 1.0
-            val atc = card.atc.toDouble()
-            val blood = card.blood().toDouble()
-            val basicScore = atc + card.blood()
+            val atc = max(card.atc, 0).toDouble()
+            val blood = max(card.blood(), 0).toDouble()
+            val basicScore = atc * 1.5 + blood
             var score: Double = basicScore + if (card.cardType === CardTypeEnum.HERO) Int.MAX_VALUE.toDouble() else 0.0
             if (card.isDeathRattle) {
                 score -= 0.3

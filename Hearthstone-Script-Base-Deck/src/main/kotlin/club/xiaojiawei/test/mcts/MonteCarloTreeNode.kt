@@ -1,12 +1,11 @@
 package club.xiaojiawei.test.mcts
 
-import club.xiaojiawei.Action
-import club.xiaojiawei.InitAction
-import club.xiaojiawei.TurnOverAction
-import club.xiaojiawei.WarState
+import club.xiaojiawei.*
 import club.xiaojiawei.bean.Card
-import club.xiaojiawei.bean.Player
+import club.xiaojiawei.config.log
 import club.xiaojiawei.enums.CardTypeEnum
+import club.xiaojiawei.util.isFalse
+import club.xiaojiawei.util.isTrue
 import kotlin.math.ln
 import kotlin.math.sqrt
 
@@ -14,11 +13,9 @@ import kotlin.math.sqrt
  * @author 肖嘉威
  * @date 2025/1/10 16:27
  */
-class MonteCarloTreeNode {
+class MonteCarloTreeNode(warState: WarState, action: Action, var parent: MonteCarloTreeNode? = null) {
 
-    var parent: MonteCarloTreeNode?
-
-    val applyAction: Action
+    val applyAction: Action = action
 
     val children = mutableListOf<MonteCarloTreeNode>()
 
@@ -28,101 +25,130 @@ class MonteCarloTreeNode {
 
     val state: State
 
-    constructor(warState: WarState, parent: MonteCarloTreeNode? = null, action: Action) {
-        this.parent = parent
-        this.applyAction = action
+    init {
         this.state = State(warState)
-        actions = generateActions(warState).toList()
+        actions = generateActions(warState)
     }
 
-    constructor(warState: WarState) : this(warState, null, InitAction)
-
     private fun generateActions(warState: WarState): MutableList<Action> {
-        val me = warState.me
-        val rival = warState.rival
-        val handArea = me.handArea
-        val playArea = me.playArea
         val result = mutableListOf<Action>()
         if (this.applyAction !== TurnOverAction) {
+            val me = warState.me
+            val rival = warState.rival
+            val handArea = me.handArea
+            val playArea = me.playArea
             result.add(TurnOverAction)
             handArea.cards.forEach { card ->
                 if (me.usableResource >= card.cost && (!playArea.isFull || card.cardType === CardTypeEnum.HERO || card.cardType === CardTypeEnum.SPELL || card.cardType === CardTypeEnum.WEAPON)) {
                     result.addAll(
-                        card.action.createPlayActions(me, rival) ?: this.generateDefaultPlayActions(
-                            card,
-                            me,
-                            rival
+                        card.action.createPlayActions() ?: this.generateDefaultPlayActions(
+                            card.entityId
                         )
                     )
                 }
             }
             playArea.cards.forEach { card ->
-                if (card.canAttack()) {
+                if (card.canAttack() && card.isSurvival()) {
                     result.addAll(
-                        card.action.createAttackActions(me, rival) ?: this.generateDefaultAttackActions(
-                            card,
-                            me,
-                            rival
+                        card.action.createAttackActions() ?: this.generateDefaultAttackActions(
+                            card.entityId
                         )
                     )
                 }
             }
             playArea.hero?.let { myHero ->
-                if (myHero.canAttack()) {
+                if (myHero.canAttack() && myHero.isSurvival()) {
                     result.addAll(
-                        myHero.action.createAttackActions(me, rival) ?: this.generateDefaultAttackActions(
-                            myHero,
-                            me,
-                            rival
+                        myHero.action.createAttackActions() ?: this.generateDefaultAttackActions(
+                            myHero.entityId
                         )
                     )
                 }
             }
             playArea.power?.let { myPower ->
-                if (me.usableResource >= myPower.cost) {
-                    myPower.action.createPlayActions(me, rival)
+                if (me.usableResource >= myPower.cost && !myPower.isExhausted) {
+                    myPower.action.createPlayActions()
                 }
             }
         }
         return result
     }
 
-    private fun generateDefaultPlayActions(card: Card, me: Player, rival: Player): List<Action> {
+    private fun generateDefaultPlayActions(entityId: String): List<Action> {
         return listOf(
-            Action({
-                card.action.power()
-            }, {
-                me.handArea.removeByEntityId(card.entityId)?.let {
-                    rival.handArea.add(card)
+            PlayAction({ warState ->
+                warState.me.handArea.findByEntityId(entityId)?.let { card ->
+                    log.info { "打出$card" }
+                    card.action.power()
+                } ?: let {
+                    log.warn { "查询手中卡牌失败" }
+                }
+            }, { warState ->
+                val me = warState.me
+                val rival = warState.rival
+                me.handArea.removeByEntityId(entityId)?.let { card ->
+                    rival.handArea.add(card).isFalse {
+                        log.warn { "添加卡牌失败" }
+                    }
                     me.resourcesUsed += card.cost
+                } ?: let {
+                    log.warn { "移除卡牌失败" }
                 }
             })
         )
     }
 
-    private fun generateDefaultAttackActions(card: Card, me: Player, rival: Player): List<Action> {
+    private fun generateDefaultAttackActions(entityId: String): List<Action> {
         val result = mutableListOf<Action>()
-        for (rivalPlayCard in rival.playArea.cards) {
+        for (rivalPlayCard in state.warState.rival.playArea.cards) {
 //            todo 嘲讽
             if (rivalPlayCard.isSurvival() && rivalPlayCard.canBeAttacked()) {
                 result.add(
-                    Action({
-                        card.action.attack(rivalPlayCard)
-                    }, {
-                        handleAttack(card, rivalPlayCard)
+                    AttackAction({ warState ->
+                        warState.me.playArea.findByEntityId(entityId)?.let { myCard ->
+                            warState.rival.playArea.findByEntityId(rivalPlayCard.entityId)?.let { rivalCard ->
+                                log.info { "${myCard}攻击${rivalCard}" }
+                                myCard.action.attack(rivalCard)
+                            } ?: let {
+                                log.warn { "查找敌方战场卡牌失败" }
+                            }
+                        } ?: let {
+                            log.warn { "查找我方战场卡牌失败" }
+                        }
+                    }, { warState ->
+                        warState.me.playArea.findByEntityId(entityId)?.let { myCard ->
+                            warState.rival.playArea.findByEntityId(rivalPlayCard.entityId)?.let { rivalCard ->
+                                handleAttack(myCard, rivalCard)
+                            }
+                        } ?: let {
+                            log.warn { "查找战场卡牌失败" }
+                        }
                     })
                 )
             }
         }
-        result.add(
-            Action({
-                card.action.attack(rival.playArea.hero)
-            }, {
-                rival.playArea.hero?.let { rivalHero ->
-                    handleAttack(card, rivalHero)
-                }
-            })
-        )
+        state.warState.rival.playArea.hero?.let { rivalHero ->
+            rivalHero.canBeAttacked().isTrue {
+                result.add(
+                    AttackAction({ warState ->
+                        warState.me.playArea.findByEntityId(entityId)?.let { myCard ->
+                            log.info { "${myCard}攻击${warState.rival.playArea.hero}" }
+                            myCard.action.attack(warState.rival.playArea.hero)
+                        } ?: let {
+                            log.warn { "查找战场卡牌失败" }
+                        }
+                    }, { warState ->
+                        warState.rival.playArea.hero?.let { rivalHero ->
+                            warState.me.playArea.findByEntityId(entityId)?.let { myCard ->
+                                handleAttack(myCard, rivalHero)
+                            } ?: let {
+                                log.warn { "查找战场卡牌失败" }
+                            }
+                        }
+                    })
+                )
+            }
+        }
         return result
     }
 
@@ -135,15 +161,17 @@ class MonteCarloTreeNode {
         } else if (rivalCard.isPoisonous) {
             myCard.damage = myCard.health + myCard.armor
         } else {
-            myCard.health -= rivalCard.atc
+            myCard.damage += rivalCard.atc
         }
 
         if (rivalCard.isDivineShield) {
-            rivalCard.isDivineShield = false
+            if (myCard.atc > 0) {
+                rivalCard.isDivineShield = false
+            }
         } else if (myCard.isPoisonous) {
             rivalCard.damage = rivalCard.health + rivalCard.armor
         } else {
-            rivalCard.health -= myCard.atc
+            rivalCard.damage += myCard.atc
         }
 
         myCard.attackCount++
@@ -185,13 +213,13 @@ class MonteCarloTreeNode {
     fun buildNextNode(action: Action): MonteCarloTreeNode {
         val newWarState = state.warState.clone()
         action.simulate.accept(newWarState)
-        val nextNode = MonteCarloTreeNode(newWarState, this, action)
+        val nextNode = MonteCarloTreeNode(newWarState, action, this)
         return nextNode
     }
 
     fun isExpanded(index: Int): Boolean {
         if (index >= 0 && index < actions.size) {
-            return actionsExpanded shr index == 1
+            return ((actionsExpanded shr index) and 1) == 1
         }
         return true
     }

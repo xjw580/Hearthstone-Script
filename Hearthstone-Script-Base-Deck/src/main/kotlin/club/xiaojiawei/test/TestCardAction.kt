@@ -10,42 +10,42 @@ import club.xiaojiawei.bean.Card
 class TestCardAction : CardAction() {
 
     override fun getCardId(): Array<String> {
-        TODO("Not yet implemented")
+        return emptyArray()
     }
 
     override fun execPower(): Boolean {
-        TODO("Not yet implemented")
+        return true
     }
 
     override fun execPower(card: Card): Boolean {
-        TODO("Not yet implemented")
+        return true
     }
 
     override fun execPower(index: Int): Boolean {
-        TODO("Not yet implemented")
+        return true
     }
 
     override fun execAttack(card: Card): Boolean {
-        TODO("Not yet implemented")
+        return true
     }
 
     override fun execAttackHero(): Boolean {
-        TODO("Not yet implemented")
+        return true
     }
 
     override fun execPointTo(card: Card, click: Boolean): Boolean {
-        TODO("Not yet implemented")
+        return true
     }
 
     override fun execPointTo(index: Int, click: Boolean): Boolean {
-        TODO("Not yet implemented")
+        return true
     }
 
     override fun createNewInstance(): CardAction {
-        TODO("Not yet implemented")
+        return this
     }
 
     override fun lClick(): Boolean {
-        TODO("Not yet implemented")
+        return true
     }
 }
