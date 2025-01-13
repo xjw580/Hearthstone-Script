@@ -4,15 +4,25 @@ import club.xiaojiawei.bean.Card
 import club.xiaojiawei.bean.Player
 import club.xiaojiawei.config.log
 import club.xiaojiawei.enums.CardTypeEnum
+import club.xiaojiawei.util.isTrue
 
 /**
  * 战场
  * @author 肖嘉威
  * @date 2022/11/27 15:02
  */
-class PlayArea(player: Player) : Area(7, player) {
+class PlayArea : Area {
 
-//    @Volatile var heroType: HeroTypeEnum? = null
+    constructor(player: Player) : super(7, player)
+
+    private constructor(
+        maxSize: Int,
+        defaultMaxSize: Int,
+        oldMaxSize: Int,
+        player: Player,
+        cards: MutableList<Card>,
+        zeroCards: MutableMap<String, Card>,
+    ) : super(maxSize, defaultMaxSize, oldMaxSize, player, cards, zeroCards, false)
 
     @Volatile
     var hero: Card? = null
@@ -34,7 +44,10 @@ class PlayArea(player: Player) : Area(7, player) {
 
     private fun addZoneAndLog(name: String, card: Card) {
         addZone(card)
-        log.info { getLogText(card, name) }
+
+        allowLog.isTrue {
+            log.info { getLogText(card, name) }
+        }
     }
 
     override fun add(card: Card?, pos: Int): Boolean {
@@ -104,5 +117,20 @@ class PlayArea(player: Player) : Area(7, player) {
             }
         }
         return card
+    }
+
+    fun deepClone(player: Player = this.player, containZeroCards: Boolean = false): PlayArea {
+        val playArea = PlayArea(
+            maxSize,
+            defaultMaxSize,
+            oldMaxSize,
+            player,
+            deepCloneCards(),
+            if (containZeroCards) deepZeroCards() else zeroCards
+        )
+        playArea.hero = hero?.clone()
+        playArea.weapon = weapon?.clone()
+        playArea.power = power?.clone()
+        return playArea
     }
 }

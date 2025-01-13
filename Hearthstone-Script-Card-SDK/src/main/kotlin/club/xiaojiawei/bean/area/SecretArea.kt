@@ -9,8 +9,31 @@ import club.xiaojiawei.bean.Player
  * @author 肖嘉威
  * @date 2022/11/28 20:02
  */
-class SecretArea(player: Player) : Area(5, player) {
+class SecretArea : Area {
+
+    constructor(player: Player) : super(5, player)
+
+    private constructor(
+        maxSize: Int,
+        defaultMaxSize: Int,
+        oldMaxSize: Int,
+        player: Player,
+        cards: MutableList<Card>,
+        zeroCards: MutableMap<String, Card>,
+    ) : super(maxSize, defaultMaxSize, oldMaxSize, player, cards, zeroCards, false)
+
     override fun addZeroCard(card: Card?) {
         add(card)
+    }
+
+    fun deepClone(player: Player = this.player, containZeroCards: Boolean = false): SecretArea {
+        return SecretArea(
+            maxSize,
+            defaultMaxSize,
+            oldMaxSize,
+            player,
+            deepCloneCards(),
+            if (containZeroCards) deepZeroCards() else zeroCards
+        )
     }
 }

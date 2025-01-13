@@ -12,49 +12,6 @@ import club.xiaojiawei.util.DeckStrategyUtil.calcPowerOrder
  * @date 2024/9/18 17:44
  */
 
-class MyCardAction : CardAction() {
-    override fun getCardId(): Array<String> {
-        TODO("Not yet implemented")
-    }
-
-    override fun execPower(): Boolean {
-        TODO("Not yet implemented")
-    }
-
-    override fun execPower(card: Card): Boolean {
-        TODO("Not yet implemented")
-    }
-
-    override fun execPower(index: Int): Boolean {
-        TODO("Not yet implemented")
-    }
-
-    override fun execAttack(card: Card): Boolean {
-        TODO("Not yet implemented")
-    }
-
-    override fun execAttackHero(): Boolean {
-        TODO("Not yet implemented")
-    }
-
-    override fun execPointTo(card: Card, click:Boolean): Boolean {
-        TODO("Not yet implemented")
-    }
-
-    override fun execPointTo(index: Int, click:Boolean): Boolean {
-        TODO("Not yet implemented")
-    }
-
-    override fun createNewInstance(): CardAction {
-        TODO("Not yet implemented")
-    }
-
-    override fun lClick(): Boolean {
-        TODO("Not yet implemented")
-    }
-
-}
-
 fun main() {
 //    War.me = War.player1
 //    War.rival = War.player2
@@ -82,43 +39,43 @@ fun main() {
 }
 
 fun testPower(){
-    val card = Card(MyCardAction())
+    val card = Card(TestCardAction())
     card.cost = 2
     card.cardId = "1"
 
-    val card1 = Card(MyCardAction())
+    val card1 = Card(TestCardAction())
     card1.cost = 1
     card1.cardId = "2"
 
-    val card2 = Card(MyCardAction())
+    val card2 = Card(TestCardAction())
     card2.cost = 1
     card2.cardId = "3"
 
-    val card3 = Card(MyCardAction())
+    val card3 = Card(TestCardAction())
     card3.cost = 5
     card3.cardId = "4"
 
-    val card4 = Card(MyCardAction())
+    val card4 = Card(TestCardAction())
     card4.cost = 3
     card4.cardId = "5"
 
-    val card5 = Card(MyCardAction())
+    val card5 = Card(TestCardAction())
     card5.cost = 3
     card5.cardId = "6"
 
-    val card6 = Card(MyCardAction())
+    val card6 = Card(TestCardAction())
     card6.cost = 1
     card6.cardId = "7"
 
-    val card7 = Card(MyCardAction())
+    val card7 = Card(TestCardAction())
     card7.cost = 3
     card7.cardId = "8"
 
-    val card8 = Card(MyCardAction())
+    val card8 = Card(TestCardAction())
     card8.cost = 1
     card8.cardId = "9"
 
-    val card9 = Card(MyCardAction())
+    val card9 = Card(TestCardAction())
     card9.cost = 5
     card9.cardId = "10"
 
@@ -166,7 +123,7 @@ fun findClosestSum(numbers: List<Card>, target: Int): Pair<Int, List<Card>> {
 
 fun test1() {
     War.me?.let {
-        var card = Card(MyCardAction())
+        var card = Card(TestCardAction())
         card.apply {
             entityName = "m1"
             entityId = "m1"
@@ -176,7 +133,7 @@ fun test1() {
         }
         it.playArea.add(card)
 
-        val card1 = Card(MyCardAction())
+        val card1 = Card(TestCardAction())
         card1.apply {
             entityName = "m2"
             entityId = "m2"
@@ -186,7 +143,7 @@ fun test1() {
         }
         it.playArea.add(card1)
 
-        val card2 = Card(MyCardAction())
+        val card2 = Card(TestCardAction())
         card2.apply {
             entityName = "m3"
             entityId = "m3"
@@ -197,7 +154,7 @@ fun test1() {
         }
         it.playArea.add(card2)
 
-        card = Card(MyCardAction())
+        card = Card(TestCardAction())
         card.apply {
             entityName = "m4"
             entityId = "m4"
@@ -207,7 +164,7 @@ fun test1() {
         }
         it.playArea.add(card)
 
-        card = Card(MyCardAction())
+        card = Card(TestCardAction())
         card.apply {
             entityName = "m5"
             entityId = "m5"
@@ -217,7 +174,7 @@ fun test1() {
         }
         it.playArea.add(card)
 
-        card = Card(MyCardAction())
+        card = Card(TestCardAction())
         card.apply {
             entityName = "m6"
             entityId = "m6"
@@ -227,7 +184,7 @@ fun test1() {
         }
         it.playArea.add(card)
 
-        card = Card(MyCardAction())
+        card = Card(TestCardAction())
         card.apply {
             entityName = "m7"
             entityId = "m7"
@@ -237,7 +194,7 @@ fun test1() {
         }
         it.playArea.add(card)
 
-        card = Card(MyCardAction())
+        card = Card(TestCardAction())
         card.apply {
             entityName = "mHero"
             entityId = "mHero"
@@ -249,7 +206,7 @@ fun test1() {
     }
 
     War.rival?.let {
-        var card = Card(MyCardAction())
+        var card = Card(TestCardAction())
         card.apply {
             entityName = "r1"
             entityId = "r1"
@@ -259,7 +216,7 @@ fun test1() {
         }
         it.playArea.add(card)
 
-        card = Card(MyCardAction())
+        card = Card(TestCardAction())
         card.apply {
             entityName = "r2"
             entityId = "r2"
@@ -269,7 +226,7 @@ fun test1() {
         }
         it.playArea.add(card)
 
-        card = Card(MyCardAction())
+        card = Card(TestCardAction())
         card.apply {
             entityName = "r3"
             entityId = "r3"
@@ -279,7 +236,7 @@ fun test1() {
         }
         it.playArea.add(card)
 
-        card = Card(MyCardAction())
+        card = Card(TestCardAction())
         card.apply {
             entityName = "r4"
             entityId = "r4"
@@ -290,7 +247,7 @@ fun test1() {
         }
         it.playArea.add(card)
 
-        card = Card(MyCardAction())
+        card = Card(TestCardAction())
         card.apply {
             entityName = "r5"
             entityId = "r5"
@@ -300,7 +257,7 @@ fun test1() {
         }
 //        it.playArea.add(card)
 
-        card = Card(MyCardAction())
+        card = Card(TestCardAction())
         card.apply {
             entityName = "r6"
             entityId = "r6"
@@ -310,7 +267,7 @@ fun test1() {
         }
 //        it.playArea.add(card)
 
-        card = Card(MyCardAction())
+        card = Card(TestCardAction())
         card.apply {
             entityName = "r7"
             entityId = "r7"
@@ -320,7 +277,7 @@ fun test1() {
         }
 //        it.playArea.add(card)
 
-        card = Card(MyCardAction())
+        card = Card(TestCardAction())
         card.apply {
             entityName = "rHero"
             entityId = "rHero"
@@ -334,7 +291,7 @@ fun test1() {
 
 fun test2() {
     War.me?.let {
-        var card = Card(MyCardAction())
+        var card = Card(TestCardAction())
         card.apply {
             entityName = "m1"
             entityId = "m1"
@@ -344,7 +301,7 @@ fun test2() {
             isAttackableByRush = true
         }
         it.playArea.add(card)
-        card = Card(MyCardAction())
+        card = Card(TestCardAction())
         card.apply {
             entityName = "m2"
             entityId = "m2"
@@ -356,7 +313,7 @@ fun test2() {
     }
 
     War.rival?.let {
-        var card = Card(MyCardAction())
+        var card = Card(TestCardAction())
         card.apply {
             entityName = "r1"
             entityId = "r1"
@@ -370,7 +327,7 @@ fun test2() {
 
 fun test3() {
     War.me?.let {
-        var card = Card(MyCardAction())
+        var card = Card(TestCardAction())
         card.apply {
             entityName = "m1"
             entityId = "m1"
@@ -380,7 +337,7 @@ fun test3() {
         }
         it.playArea.add(card)
 
-        card = Card(MyCardAction())
+        card = Card(TestCardAction())
         card.apply {
             entityName = "m2"
             entityId = "m2"
@@ -392,7 +349,7 @@ fun test3() {
     }
 
     War.rival?.let {
-        var card = Card(MyCardAction())
+        var card = Card(TestCardAction())
         card.apply {
             entityName = "r1"
             entityId = "r1"
@@ -402,7 +359,7 @@ fun test3() {
         }
         it.playArea.add(card)
 
-        card = Card(MyCardAction())
+        card = Card(TestCardAction())
         card.apply {
             entityName = "r2"
             entityId = "r2"
@@ -412,7 +369,7 @@ fun test3() {
         }
         it.playArea.add(card)
 
-        card = Card(MyCardAction())
+        card = Card(TestCardAction())
         card.apply {
             entityName = "r4"
             entityId = "r4"
@@ -427,7 +384,7 @@ fun test3() {
 
 fun test4() {
     War.me?.let {
-        var card = Card(MyCardAction())
+        var card = Card(TestCardAction())
         card.apply {
             entityName = "m1"
             entityId = "m1"
@@ -452,7 +409,7 @@ fun test4() {
     }
 
     War.rival?.let {
-        var card = Card(MyCardAction())
+        var card = Card(TestCardAction())
         card.apply {
             entityName = "r1"
             entityId = "r1"
@@ -464,7 +421,7 @@ fun test4() {
         }
         it.playArea.add(card)
 
-        card = Card(MyCardAction())
+        card = Card(TestCardAction())
         card.apply {
             entityName = "r2"
             entityId = "r2"
@@ -474,7 +431,7 @@ fun test4() {
         }
 //        it.playArea.add(card)
 
-        card = Card(MyCardAction())
+        card = Card(TestCardAction())
         card.apply {
             entityName = "r3"
             entityId = "r3"
@@ -495,7 +452,7 @@ fun test4() {
 //        }
 //        it.playArea.add(card)
 //
-        card = Card(MyCardAction())
+        card = Card(TestCardAction())
         card.apply {
             entityName = "rHero"
             entityId = "rHero"
@@ -509,7 +466,7 @@ fun test4() {
 
 fun testTaunt() {
     War.me?.let {
-        var card = Card(MyCardAction())
+        var card = Card(TestCardAction())
         card.apply {
             entityName = "m1"
             entityId = "m1"
@@ -519,7 +476,7 @@ fun testTaunt() {
         }
         it.playArea.add(card)
 
-        card = Card(MyCardAction())
+        card = Card(TestCardAction())
         card.apply {
             entityName = "m2"
             entityId = "m2"
@@ -529,7 +486,7 @@ fun testTaunt() {
         }
         it.playArea.add(card)
 
-        card = Card(MyCardAction())
+        card = Card(TestCardAction())
         card.apply {
             entityName = "m3"
             entityId = "m3"
@@ -539,7 +496,7 @@ fun testTaunt() {
         }
         it.playArea.add(card)
 
-        card = Card(MyCardAction())
+        card = Card(TestCardAction())
         card.apply {
             entityName = "m4"
             entityId = "m3"
@@ -549,7 +506,7 @@ fun testTaunt() {
         }
         it.playArea.add(card)
 
-        card = Card(MyCardAction())
+        card = Card(TestCardAction())
         card.apply {
             entityName = "m2"
             entityId = "m2"
@@ -559,7 +516,7 @@ fun testTaunt() {
         }
         it.playArea.add(card)
 
-        card = Card(MyCardAction())
+        card = Card(TestCardAction())
         card.apply {
             entityName = "m3"
             entityId = "m3"
@@ -570,7 +527,7 @@ fun testTaunt() {
         }
         it.handArea.add(card)
 
-        card = Card(MyCardAction())
+        card = Card(TestCardAction())
         card.apply {
             entityName = "m4"
             entityId = "m3"
@@ -581,7 +538,7 @@ fun testTaunt() {
         }
         it.handArea.add(card)
 
-        card = Card(MyCardAction())
+        card = Card(TestCardAction())
         card.apply {
             entityName = "mHero"
             entityId = "mHero"
@@ -593,7 +550,7 @@ fun testTaunt() {
     }
 
     War.rival?.let {
-        var card = Card(MyCardAction())
+        var card = Card(TestCardAction())
         card.apply {
             entityName = "r1"
             entityId = "r1"
@@ -603,7 +560,7 @@ fun testTaunt() {
         }
         it.handArea.add(card)
 
-        card = Card(MyCardAction())
+        card = Card(TestCardAction())
         card.apply {
             entityName = "r2"
             entityId = "r1"
@@ -613,7 +570,7 @@ fun testTaunt() {
         }
         it.handArea.add(card)
 
-        card = Card(MyCardAction())
+        card = Card(TestCardAction())
         card.apply {
             entityName = "r3"
             entityId = "r1"
@@ -623,7 +580,7 @@ fun testTaunt() {
         }
         it.handArea.add(card)
 
-        card = Card(MyCardAction())
+        card = Card(TestCardAction())
         card.apply {
             entityName = "r4"
             entityId = "r1"
@@ -633,7 +590,7 @@ fun testTaunt() {
         }
         it.handArea.add(card)
 
-        card = Card(MyCardAction())
+        card = Card(TestCardAction())
         card.apply {
             entityName = "r5"
             entityId = "r1"
@@ -643,7 +600,7 @@ fun testTaunt() {
         }
         it.handArea.add(card)
 
-        card = Card(MyCardAction())
+        card = Card(TestCardAction())
         card.apply {
             entityName = "r6"
             entityId = "r1"
@@ -653,7 +610,7 @@ fun testTaunt() {
         }
         it.handArea.add(card)
 
-        card = Card(MyCardAction())
+        card = Card(TestCardAction())
         card.apply {
             entityName = "r7"
             entityId = "r1"
@@ -663,7 +620,7 @@ fun testTaunt() {
         }
         it.handArea.add(card)
 
-        card = Card(MyCardAction())
+        card = Card(TestCardAction())
         card.apply {
             entityName = "rHero"
             entityId = "rHero"

@@ -10,34 +10,42 @@ import club.xiaojiawei.util.isTrue
  * @author 肖嘉威
  * @date 2022/11/27 15:03
  */
-class Player(val playerId: String) : Entity() {
-
-    constructor(playerId: String, gameId: String) : this(playerId) {
-        this.gameId = gameId
-    }
+class Player(
+    val playerId: String,
+    gameId: String? = null,
+    handArea: HandArea? = null,
+    playArea: PlayArea? = null,
+    secretArea: SecretArea? = null,
+    graveyardArea: GraveyardArea? = null,
+    deckArea: DeckArea? = null,
+    setasideArea: SetasideArea? = null,
+    removedfromgameArea: RemovedfromgameArea? = null,
+    allowLog: Boolean = true
+) : Entity(), Cloneable {
 
     @Volatile
     var gameId: String = ""
         set(value) {
             field = value
-            this.isValid().isTrue {
+            (allowLog && this.isValid()).isTrue {
                 log.info { "playerId:$playerId,gameId:$gameId" }
             }
         }
+    var allowLog: Boolean
 
-    val handArea = HandArea(this)
+    val handArea: HandArea
 
-    val playArea = PlayArea(this)
+    val playArea: PlayArea
 
-    val secretArea = SecretArea(this)
+    val secretArea: SecretArea
 
-    val graveyardArea = GraveyardArea(this)
+    val graveyardArea: GraveyardArea
 
-    val deckArea = DeckArea(this)
+    val deckArea: DeckArea
 
-    val setasideArea = SetasideArea(this)
+    val setasideArea: SetasideArea
 
-    val removedfromgameArea = RemovedfromgameArea(this)
+    val removedfromgameArea: RemovedfromgameArea
 
     @Volatile
     var maxResources = 10
@@ -48,7 +56,7 @@ class Player(val playerId: String) : Entity() {
     @Volatile
     var resourcesUsed = 0
         set(value) {
-            if (value > 0){
+            (allowLog && value > 0).isTrue {
                 log.info { "玩家${playerId}【${gameId}】已使用${value}法力水晶" }
             }
             field = value
@@ -60,12 +68,16 @@ class Player(val playerId: String) : Entity() {
     @Volatile
     var overloadLocked = 0
         set(value) {
-            if (overloadLocked > 0){
-                if (resourcesUsed == 0){
-                    log.warn { "游戏过载日志打印不规范" }
+            if (overloadLocked > 0) {
+                if (resourcesUsed == 0) {
+                    allowLog.isTrue {
+                        log.warn { "游戏过载日志打印不规范" }
+                    }
                     resources -= value
                 }
-                log.info { "玩家${playerId}【${gameId}】回合开始过载${value}法力水晶" }
+                allowLog.isTrue {
+                    log.info { "玩家${playerId}【${gameId}】回合开始过载${value}法力水晶" }
+                }
             }
             field = value
         }
@@ -125,6 +137,35 @@ class Player(val playerId: String) : Entity() {
         result = 31 * result + gameId.hashCode()
         return result
     }
+
+
+    public override fun clone(): Player {
+        return Player(
+            playerId,
+            handArea = handArea.deepClone(),
+            playArea = playArea.deepClone(),
+            secretArea = secretArea.deepClone(),
+            graveyardArea = graveyardArea.deepClone(),
+            deckArea = deckArea.deepClone(),
+            setasideArea = setasideArea.deepClone(),
+            removedfromgameArea = removedfromgameArea.deepClone(),
+            allowLog = false
+        )
+    }
+
+    init {
+        this.allowLog = allowLog
+        gameId?.let {
+            this.gameId = gameId
+        }
+        this.handArea = handArea ?: HandArea(this)
+        this.playArea = playArea ?: PlayArea(this)
+        this.secretArea = secretArea ?: SecretArea(this)
+        this.graveyardArea = graveyardArea ?: GraveyardArea(this)
+        this.deckArea = deckArea ?: DeckArea(this)
+        this.setasideArea = setasideArea ?: SetasideArea(this)
+        this.removedfromgameArea = removedfromgameArea ?: RemovedfromgameArea(this)
+    }
 }
 
 /**
@@ -149,6 +190,3 @@ fun Player.isValid(): Boolean {
 fun Player.isInValid(): Boolean {
     return this == INVALID_PLAYER || this.gameId == "INVALID"
 }
-
-
-

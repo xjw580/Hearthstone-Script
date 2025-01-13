@@ -15,6 +15,11 @@ class Card(var action: CardAction) : BaseCard(), Cloneable {
     val areaProperty: ObjectProperty<Area?> = SimpleObjectProperty()
 
     /**
+     * 模拟用
+     */
+    var attackCount: Int = 0
+
+    /**
      * 卡牌所在区域：手牌区、战场区等
      */
     var area: Area?

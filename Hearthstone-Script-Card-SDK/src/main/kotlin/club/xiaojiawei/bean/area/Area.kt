@@ -5,6 +5,7 @@ import club.xiaojiawei.bean.Entity
 import club.xiaojiawei.bean.Player
 import club.xiaojiawei.config.log
 import club.xiaojiawei.enums.ZoneEnum
+import club.xiaojiawei.util.isTrue
 import java.util.*
 
 /**
@@ -15,25 +16,25 @@ import java.util.*
 abstract class Area @JvmOverloads constructor(
     maxSize: Int,
     val defaultMaxSize: Int = maxSize,
-    @Volatile var player: Player = Player.UNKNOWN_PLAYER
+    @Volatile var oldMaxSize: Int = 0,
+    @Volatile var player: Player = Player.UNKNOWN_PLAYER,
+    val cards: MutableList<Card> = mutableListOf(),
+    protected val zeroCards: MutableMap<String, Card> = mutableMapOf(),
+    var allowLog: Boolean = true,
 ) {
 
     @Volatile
     var maxSize = maxSize
         set(value) {
             val zoneComment = getChineseName()
-            log.info { "玩家${player.playerId}【${player.gameId}】的【${zoneComment}】的【maxSize】更改为【${value}】"}
+            allowLog.isTrue {
+                log.info { "玩家${player.playerId}【${player.gameId}】的【${zoneComment}】的【maxSize】更改为【${value}】" }
+            }
             field = value
         }
 
-    val cards: MutableList<Card> = mutableListOf()
 
-    private val zeroCards: MutableMap<String, Card> = mutableMapOf()
-
-    @Volatile
-    var oldMaxSize = 0
-
-    constructor(maxSize: Int, player: Player) : this(maxSize, maxSize, player)
+    constructor(maxSize: Int, player: Player) : this(maxSize = maxSize, defaultMaxSize = maxSize, player = player)
 
     protected fun addZone(card: Card?) {
         card ?: return
@@ -50,7 +51,7 @@ abstract class Area @JvmOverloads constructor(
         if (card.entityId.isNotEmpty()) {
             zeroCards[card.entityId] = card
             addZone(card)
-            if (log.isDebugEnabled()) {
+            if (log.isDebugEnabled() && allowLog) {
                 log.debug { getLogText(card, "zeroArea") }
             }
         }
@@ -64,7 +65,9 @@ abstract class Area @JvmOverloads constructor(
             cards.add(pos, card)
         }
         addZone(card)
-        log.info { getLogText(card, "") }
+        allowLog.isTrue {
+            log.info { getLogText(card, "") }
+        }
     }
 
     protected fun removeCard(card: Card?): Boolean {
@@ -105,9 +108,9 @@ abstract class Area @JvmOverloads constructor(
         )
     }
 
-    private fun getChineseName(): String{
+    private fun getChineseName(): String {
         val className = this.javaClass.simpleName
-        return  ZoneEnum.valueOf(
+        return ZoneEnum.valueOf(
             className.substring(0, className.lastIndexOf(Area::class.java.simpleName)).uppercase(Locale.getDefault())
         ).comment
 
@@ -207,4 +210,21 @@ abstract class Area @JvmOverloads constructor(
                 ", maxSize=" + maxSize +
                 '}'
     }
+
+    protected fun deepCloneCards(): MutableList<Card> {
+        val cloneCards = mutableListOf<Card>()
+        cards.forEach {
+            cloneCards.add(it.clone())
+        }
+        return cloneCards
+    }
+
+    protected fun deepZeroCards(): MutableMap<String, Card> {
+        val cloneZeroCards = mutableMapOf<String, Card>()
+        zeroCards.forEach {
+            cloneZeroCards[it.key] = it.value
+        }
+        return cloneZeroCards
+    }
+
 }

@@ -1,55 +1,94 @@
 package club.xiaojiawei
 
 import club.xiaojiawei.bean.Card
+import club.xiaojiawei.bean.Player
+import club.xiaojiawei.data.CARD_WEIGHT_TRIE
+import club.xiaojiawei.enums.CardTypeEnum
+import java.util.function.Consumer
 
 /**
  * @author 肖嘉威
  * @date 2025/1/10 15:28
  */
-abstract class Action {
-    abstract fun exec()
-    abstract fun simulate()
-}
+open class Action(
+    /**
+     * 真正执行
+     */
+    val exec: Consumer<WarState>,
+    /**
+     * 模拟执行
+     */
+    val simulate: Consumer<WarState>
+)
 
-class AttackAction(val source: Card, val target: Card) : Action() {
-    override fun exec() {
-        source.action.attack(target)
+private val empty: Consumer<WarState> = Consumer {}
+
+object TurnOverAction : Action(empty, empty)
+
+object InitAction : Action(empty, empty)
+
+class WarState(var me: Player, var rival: Player) : Cloneable {
+    public override fun clone(): WarState {
+        return WarState(me.clone(), rival.clone())
     }
 
-    override fun simulate() {
-//        todo 剧毒等
-        source.health -= target.atc
-        target.health -= source.atc
+    fun isEnd(): Boolean {
+        return rival.playArea.hero?.blood() == 0 || me.playArea.hero?.blood() == 0
     }
-}
 
-abstract class PlayAction : Action()
+    fun calcScore(): Double {
+        return calcPlayerScore(me) - calcPlayerScore(rival)
+    }
 
-abstract class PointPlayAction(val source: Card, val targets: List<Card>) : PlayAction() {
-    override fun exec() {
-        source.action.lClick()
-        for (target in targets) {
-            source.action.pointTo(target, true, isPause = false)
+    fun calcPlayerScore(player: Player): Double {
+        var score = 0.0
+        player.playArea.cards.forEach { card ->
+            score += calcCardScore(card)
         }
+        player.playArea.hero?.let { hero ->
+            score += calcCardScore(hero)
+        }
+        player.playArea.weapon?.let { weapon ->
+            score += calcCardScore(weapon) * 0.8
+        }
+        return score
     }
-}
 
-abstract class NonPointPlayAction(val source: Card) : PlayAction() {
-    override fun exec() {
-        source.action.power()
+    fun calcCardScore(card: Card): Double {
+        if (card.isSurvival()) {
+            val basicRatio = CARD_WEIGHT_TRIE[card.cardId]?.weight ?: 1.0
+            val atc = card.atc.toDouble()
+            val blood = card.blood().toDouble()
+            val basicScore = atc + card.blood()
+            var score: Double = basicScore + if (card.cardType === CardTypeEnum.HERO) Int.MAX_VALUE.toDouble() else 0.0
+            if (card.isDeathRattle) {
+                score -= 0.3
+            }
+            if (card.isTaunt) {
+                score += 1
+            }
+            if (card.isAdjacentBuff) {
+                score += 2
+            }
+            if (card.isAura) {
+                score += 2
+            }
+            if (card.isWindFury) {
+                score += 0.5 * atc
+            }
+            if (card.isMegaWindfury) {
+                score += 0.9 * atc
+            }
+            if (card.isTitan) {
+                score += 8
+            }
+            if (card.isTriggerVisual) {
+                score += 0.8
+            }
+            score += card.spellPower * 1
+            return score * basicRatio
+        }
+        return 0.0
     }
-}
-
-object TurnOverAction : Action() {
-    override fun exec() {}
-    override fun simulate() {}
-}
-
-fun main() {
-    test(TurnOverAction)
-}
-
-fun test(action: Action) {
-
 }
 

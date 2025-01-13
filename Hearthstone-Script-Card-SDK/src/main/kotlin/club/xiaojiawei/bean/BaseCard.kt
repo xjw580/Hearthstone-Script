@@ -396,6 +396,10 @@ open class BaseCard : Entity() {
         return health + armor - damage
     }
 
+    fun isSurvival(): Boolean {
+        return blood() > 0
+    }
+
 //    override fun toString(): String {
 //        return generateToString(this, true)
 //    }
