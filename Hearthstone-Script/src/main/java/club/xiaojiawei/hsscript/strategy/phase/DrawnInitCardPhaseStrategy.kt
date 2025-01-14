@@ -10,13 +10,6 @@ import club.xiaojiawei.hsscript.bean.log.TagChangeEntity
 import club.xiaojiawei.hsscript.bean.single.CARD_AREA_MAP
 import club.xiaojiawei.hsscript.enums.TagEnum
 import club.xiaojiawei.hsscript.strategy.AbstractPhaseStrategy
-import club.xiaojiawei.status.War.currentPhase
-import club.xiaojiawei.status.War.currentPlayer
-import club.xiaojiawei.status.War.firstPlayerGameId
-import club.xiaojiawei.status.War.me
-import club.xiaojiawei.status.War.player1
-import club.xiaojiawei.status.War.player2
-import club.xiaojiawei.status.War.rival
 
 /**
  * 抽起始牌阶段
@@ -36,21 +29,24 @@ object DrawnInitCardPhaseStrategy : AbstractPhaseStrategy() {
         if (reverse) {
             newPlayerId = if (newPlayerId == "1") "2" else "1"
         }
-        if (!me.isValid() && newPlayerId.isNotBlank()) {
-            when (newPlayerId) {
-                "1" -> {
-                    me = player1
-                    rival = player2
-                    log.info { "确定双方玩家号，我方1号，对方2号" }
-                }
 
-                "2" -> {
-                    me = player2
-                    rival = player1
-                    log.info { "确定双方玩家号，我方2号，对方1号" }
-                }
+        war.run {
+            if (!me.isValid() && newPlayerId.isNotBlank()) {
+                when (newPlayerId) {
+                    "1" -> {
+                        me = player1
+                        rival = player2
+                        log.info { "确定双方玩家号，我方1号，对方2号" }
+                    }
 
-                else -> log.warn { "不支持的playId" }
+                    "2" -> {
+                        me = player2
+                        rival = player1
+                        log.info { "确定双方玩家号，我方2号，对方1号" }
+                    }
+
+                    else -> log.warn { "不支持的playId" }
+                }
             }
         }
     }
@@ -59,7 +55,7 @@ object DrawnInitCardPhaseStrategy : AbstractPhaseStrategy() {
         if (tagChangeEntity.tag == TagEnum.ZONE) {
             verifyPlayer(tagChangeEntity.playerId, true)
         } else if (tagChangeEntity.tag == TagEnum.NEXT_STEP && tagChangeEntity.value == StepEnum.BEGIN_MULLIGAN.name) {
-            currentPhase = WarPhaseEnum.REPLACE_CARD
+            war.currentPhase = WarPhaseEnum.REPLACE_CARD
             return true
         }
         return false
@@ -84,21 +80,23 @@ object DrawnInitCardPhaseStrategy : AbstractPhaseStrategy() {
             log.warn { "card【entityId:${extraEntity.entityId}】不应为null" }
             return false
         }
-        if (card.entityName == Entity.UNKNOWN_ENTITY_NAME || card.entityName == "幸运币") {
-            card.entityName = "幸运币"
-            if (card.cardId.isNotBlank()) {
-                rival.gameId = firstPlayerGameId
-                log.info { "对方游戏id：$firstPlayerGameId" }
-            } else {
-                me.gameId = firstPlayerGameId
-                log.info { "我方游戏id：$firstPlayerGameId" }
-            }
-            if (me.gameId == firstPlayerGameId
-                || (rival.gameId.isNotBlank() && rival.gameId != firstPlayerGameId)
-            ) {
-                currentPlayer = me
-            } else {
-                currentPlayer = rival
+        war.run {
+            if (card.entityName == Entity.UNKNOWN_ENTITY_NAME || card.entityName == "幸运币") {
+                card.entityName = "幸运币"
+                if (card.cardId.isNotBlank()) {
+                    rival.gameId = firstPlayerGameId
+                    log.info { "对方游戏id：$firstPlayerGameId" }
+                } else {
+                    me.gameId = firstPlayerGameId
+                    log.info { "我方游戏id：$firstPlayerGameId" }
+                }
+                if (me.gameId == firstPlayerGameId
+                    || (rival.gameId.isNotBlank() && rival.gameId != firstPlayerGameId)
+                ) {
+                    currentPlayer = me
+                } else {
+                    currentPlayer = rival
+                }
             }
         }
         return false

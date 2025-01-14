@@ -2,7 +2,7 @@ package club.xiaojiawei.bean
 
 import club.xiaojiawei.CardAction
 import club.xiaojiawei.bean.abs.ClickPower
-import club.xiaojiawei.status.War.me
+import club.xiaojiawei.status.WAR
 
 /**
  * 萨满技能
@@ -12,7 +12,7 @@ import club.xiaojiawei.status.War.me
 class ShamanPower : ClickPower() {
 
     companion object {
-        val cardIds = arrayOf<String>(
+        val cardIds = arrayOf(
             "HERO_02%bp",
             "HERO_02%hp",
             "CS2_049_H%",
@@ -26,7 +26,7 @@ class ShamanPower : ClickPower() {
     }
 
     override fun execPower(): Boolean {
-        if (me.playArea.isFull) return false
+        if (WAR.me.playArea.isFull) return false
         return super.execPower()
     }
 

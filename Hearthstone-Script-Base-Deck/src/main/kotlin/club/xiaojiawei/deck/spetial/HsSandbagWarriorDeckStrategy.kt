@@ -6,7 +6,7 @@ import club.xiaojiawei.bean.Player
 import club.xiaojiawei.bean.isInValid
 import club.xiaojiawei.deck.HsCommonDeckStrategy
 import club.xiaojiawei.enums.RunModeEnum
-import club.xiaojiawei.status.War
+import club.xiaojiawei.status.WAR
 import club.xiaojiawei.util.DeckStrategyUtil
 
 /**
@@ -44,8 +44,8 @@ class HsSandbagWarriorDeckStrategy : DeckStrategy() {
     private lateinit var rivalPlayCards: MutableList<Card>
 
     override fun executeOutCard() {
-        me = War.me
-        rival = War.rival
+        me = WAR.me
+        rival = WAR.rival
         if (me.isInValid() || rival.isInValid()) return
         myPlayCards = me.playArea.cards.toMutableList()
         rivalPlayCards = rival.playArea.cards.toMutableList()

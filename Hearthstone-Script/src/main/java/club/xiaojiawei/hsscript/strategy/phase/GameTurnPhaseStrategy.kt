@@ -16,7 +16,6 @@ import club.xiaojiawei.hsscript.strategy.DeckStrategyActuator
 import club.xiaojiawei.hsscript.utils.ConfigUtil
 import club.xiaojiawei.hsscript.utils.GameUtil
 import club.xiaojiawei.hsscript.utils.SystemUtil
-import club.xiaojiawei.status.War
 import club.xiaojiawei.util.isTrue
 
 /**
@@ -30,7 +29,7 @@ object GameTurnPhaseStrategy : AbstractPhaseStrategy() {
     private fun checkRivalRobot() {
         log.info { "计算对面" }
         if (rivalBehavior.renewCalcRobotProbability() < 0.1) {
-            log.info { "发现对面这个b疑似真人，准备投降，gameId:${War.rival.gameId}" }
+            log.info { "发现对面这个b疑似真人，准备投降，gameId:${war.rival.gameId}" }
         }
         log.info { "对面是脚本概率:" + rivalBehavior.robotProbability }
     }
@@ -38,7 +37,7 @@ object GameTurnPhaseStrategy : AbstractPhaseStrategy() {
     private fun checkMeRobot() {
         log.info { "计算我方" }
         if (meBehavior.renewCalcRobotProbability() < 0.1) {
-            log.info { "发现自己这个b疑似真人，准备投降，gameId:${War.me.gameId}" }
+            log.info { "发现自己这个b疑似真人，准备投降，gameId:${war.me.gameId}" }
         }
         log.info { "我是脚本概率:" + meBehavior.robotProbability }
     }
@@ -46,17 +45,17 @@ object GameTurnPhaseStrategy : AbstractPhaseStrategy() {
     override fun dealTagChangeThenIsOver(line: String, tagChangeEntity: TagChangeEntity): Boolean {
         if (tagChangeEntity.tag == TagEnum.STEP) {
             if (tagChangeEntity.value == StepEnum.MAIN_ACTION.name) {
-                if (War.me === War.currentPlayer && War.me.isValid()) {
+                if (war.me === war.currentPlayer && war.me.isValid()) {
                     log.info { "我方回合" }
                     cancelAllTask()
-                    War.isMyTurn = true
+                    war.isMyTurn = true
                     if (ConfigUtil.getBoolean(ConfigEnum.ONLY_ROBOT)) {
                         checkRivalRobot()
                         meBehavior.behaviors.clear()
                     }
                     // 异步执行出牌策略，以便监听出牌后的卡牌变动
                     (DeckStrategyThread({
-                        (ConfigUtil.getBoolean(ConfigEnum.RANDOM_EMOTION) && War.me.turn == 0).isTrue {
+                        (ConfigUtil.getBoolean(ConfigEnum.RANDOM_EMOTION) && war.me.turn == 0).isTrue {
                             GameUtil.sendGreetEmoji()
                             SystemUtil.delayShortMedium()
                         }
@@ -67,7 +66,7 @@ object GameTurnPhaseStrategy : AbstractPhaseStrategy() {
                     }, "OutCard Thread").also { addTask(it) }).start()
                 } else {
                     log.info { "对方回合" }
-                    War.isMyTurn = false
+                    war.isMyTurn = false
                     cancelAllTask()
                     if (ConfigUtil.getBoolean(ConfigEnum.ONLY_ROBOT)) {
                         rivalBehavior.behaviors.clear()
@@ -82,7 +81,7 @@ object GameTurnPhaseStrategy : AbstractPhaseStrategy() {
                     }
                 }
             } else if (tagChangeEntity.value == StepEnum.MAIN_END.name) {
-                War.isMyTurn = false
+                war.isMyTurn = false
                 cancelAllTask()
             }
         }
@@ -91,20 +90,20 @@ object GameTurnPhaseStrategy : AbstractPhaseStrategy() {
 
 
     private val rivalBehavior by lazy {
-        PlayerBehavior(War.rival)
+        PlayerBehavior(war.rival)
     }
 
     private val meBehavior by lazy {
-        PlayerBehavior(War.me)
+        PlayerBehavior(war.me)
     }
 
     override fun dealBlockIsOver(line: String, block: Block): Boolean {
         if (ConfigUtil.getBoolean(ConfigEnum.ONLY_ROBOT)) {
             if (block.blockType == BlockTypeEnum.ATTACK || block.blockType == BlockTypeEnum.PLAY) {
                 val behavior = Behavior(block.blockType)
-                if (War.currentPlayer == War.me) {
+                if (war.currentPlayer == war.me) {
                     meBehavior.behaviors.add(behavior)
-                } else if (War.currentPlayer == War.rival) {
+                } else if (war.currentPlayer == war.rival) {
                     rivalBehavior.behaviors.add(behavior)
                 }
             }

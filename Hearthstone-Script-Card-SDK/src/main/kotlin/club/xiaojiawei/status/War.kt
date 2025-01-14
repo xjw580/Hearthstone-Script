@@ -6,6 +6,7 @@ import club.xiaojiawei.config.log
 import club.xiaojiawei.enums.RunModeEnum
 import club.xiaojiawei.enums.StepEnum
 import club.xiaojiawei.enums.WarPhaseEnum
+import club.xiaojiawei.mapper.WarMapper
 import club.xiaojiawei.util.isTrue
 
 /**
@@ -13,14 +14,22 @@ import club.xiaojiawei.util.isTrue
  * @author 肖嘉威
  * @date 2022/11/25 20:57
  */
-object War {
+
+/**
+ * 全局war
+ */
+val WAR: War = War(true)
+
+class War(var allowLog: Boolean = false) : Cloneable {
 
     @Volatile
     var currentPlayer: Player = Player.INVALID_PLAYER
         @Synchronized set(value) {
             field = value
             value.safeRun {
-                log.info { "${value.gameId} 的回合" }
+                allowLog.isTrue {
+                    log.info { "${value.gameId} 的回合" }
+                }
             }
         }
 
@@ -28,7 +37,7 @@ object War {
     var firstPlayerGameId: String = ""
         @Synchronized set(value) {
             field = value
-            value.isNotEmpty().isTrue {
+            (value.isNotEmpty() && allowLog).isTrue {
                 log.info { "先手玩家：$value" }
             }
         }
@@ -41,7 +50,9 @@ object War {
         @Synchronized set(value) {
             field = value
             field?.let {
-                log.info { it.comment }
+                allowLog.isTrue {
+                    log.info { it.comment }
+                }
             }
         }
 
@@ -99,4 +110,18 @@ object War {
     @Volatile
     var currentRunMode: RunModeEnum? = null
 
+    public override fun clone(): War {
+        val clone = WarMapper.INSTANCE.clone(this)
+        val oldMe = clone.me
+        clone.me = clone.me.clone()
+        clone.rival = clone.rival.clone()
+        if (oldMe == clone.player1) {
+            clone.player1 = clone.me
+            clone.player2 = clone.rival
+        } else {
+            clone.player1 = clone.rival
+            clone.player2 = clone.me
+        }
+        return clone
+    }
 }

@@ -10,6 +10,7 @@ import club.xiaojiawei.config.CALC_THREAD_POOL
 import club.xiaojiawei.config.log
 import club.xiaojiawei.data.CARD_WEIGHT_TRIE
 import club.xiaojiawei.enums.CardTypeEnum
+import club.xiaojiawei.status.WAR
 import club.xiaojiawei.status.War
 import java.util.concurrent.CompletableFuture
 import java.util.function.Function
@@ -37,13 +38,13 @@ object DeckStrategyUtil {
     private lateinit var rivalPlayCards: List<Card>
 
     private fun assign() {
-        me = War.me
+        me = WAR.me
         me?.let {
             myPlayArea = it.playArea
             myPlayCards = myPlayArea.cards
             myHandCards = it.handArea.cards
         }
-        rival = War.rival
+        rival = WAR.rival
         rival?.let {
             rivalPlayArea = it.playArea
             rivalPlayCards = rivalPlayArea.cards
@@ -567,12 +568,12 @@ object DeckStrategyUtil {
     ) {
         assign()
         val newMyPlayCards = myPlayCards ?: let {
-            val toMutableList = War.me.playArea.cards.toMutableList()
+            val toMutableList = WAR.me.playArea.cards.toMutableList()
             this.myPlayArea.hero?.let { toMutableList.add(it) }
             toMutableList
         }
         val newRivalPlayCards = rivalPlayCards ?: let {
-            val toMutableList = War.rival.playArea.cards.toMutableList()
+            val toMutableList = WAR.rival.playArea.cards.toMutableList()
             this.rivalPlayArea.hero?.let { toMutableList.add(it) }
             toMutableList
         }
@@ -651,10 +652,10 @@ object DeckStrategyUtil {
      */
     fun outCard(cards: List<SimulateWeightCard>) {
         if (cards.isNotEmpty()) {
-            var sortCard = sortCardByPowerWeight(cards)
+            val sortCard = sortCardByPowerWeight(cards)
             log.info { "待出牌：$sortCard" }
             for (simulateWeightCard in sortCard) {
-                if (War.me.playArea.isFull) break
+                if (WAR.me.playArea.isFull) break
                 simulateWeightCard.card.action.power()
             }
         }

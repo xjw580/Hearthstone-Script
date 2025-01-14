@@ -20,6 +20,7 @@ import club.xiaojiawei.hsscript.utils.CardUtil.addAreaListener
 import club.xiaojiawei.hsscript.utils.CardUtil.exchangeAreaOfCard
 import club.xiaojiawei.hsscript.utils.CardUtil.setCardAction
 import club.xiaojiawei.hsscript.utils.CardUtil.updateCardByExtraEntity
+import club.xiaojiawei.status.WAR
 import javafx.beans.value.ObservableValue
 import java.io.RandomAccessFile
 import java.nio.charset.StandardCharsets
@@ -30,6 +31,8 @@ import java.nio.charset.StandardCharsets
  * @date 2022/11/28 23:12
  */
 object PowerLogUtil {
+
+    private val war = WAR
 
     /**
      * 更新entity
@@ -128,7 +131,7 @@ object PowerLogUtil {
 
                 val player = WarEx.getPlayer(tagChangeEntity.playerId)
                 //            只列出可能被修改的属性
-                tagChangeEntity.tag?.tagChangeHandler?.handle(card, tagChangeEntity, player, area)
+                tagChangeEntity.tag?.tagChangeHandler?.handle(card, tagChangeEntity, war, player, area)
 
                 if (tagChangeEntity.entityName.isNotBlank() && tagChangeEntity.entityName != Entity.UNKNOWN_ENTITY_NAME) {
                     card.entityName = tagChangeEntity.entityName

@@ -12,7 +12,7 @@ import club.xiaojiawei.hsscript.listener.WorkListener
 import club.xiaojiawei.hsscript.status.PauseStatus
 import club.xiaojiawei.hsscript.strategy.AbstractPhaseStrategy
 import club.xiaojiawei.hsscript.utils.PowerLogUtil
-import club.xiaojiawei.status.War
+import club.xiaojiawei.status.WAR
 import java.io.RandomAccessFile
 import java.util.concurrent.TimeUnit
 
@@ -23,6 +23,8 @@ import java.util.concurrent.TimeUnit
  */
 object PowerLogListener :
     AbstractLogListener("Power.log", 0, 1000L, TimeUnit.MILLISECONDS) {
+
+    private val war = WAR
 
     private const val RESERVE_SIZE_B = 4 * 1024 * 1024
 
@@ -47,7 +49,7 @@ object PowerLogListener :
     }
 
     private fun resolveLog(line: String) {
-        when (War.currentPhase) {
+        when (war.currentPhase) {
             WarPhaseEnum.FILL_DECK -> {
                 WarPhaseEnum.FILL_DECK.phaseStrategy?.deal(line)
             }
@@ -56,10 +58,10 @@ object PowerLogListener :
                 WarPhaseEnum.GAME_OVER.phaseStrategy?.deal(line)
             }
 
-            else -> War.currentPhase.phaseStrategy?.deal(line)
+            else -> war.currentPhase.phaseStrategy?.deal(line)
         }
-        if (War.currentTurnStep == StepEnum.FINAL_GAMEOVER) {
-            War.currentPhase = WarPhaseEnum.GAME_OVER
+        if (war.currentTurnStep == StepEnum.FINAL_GAMEOVER) {
+            war.currentPhase = WarPhaseEnum.GAME_OVER
         }
     }
 

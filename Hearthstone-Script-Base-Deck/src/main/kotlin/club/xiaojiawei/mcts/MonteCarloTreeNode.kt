@@ -1,40 +1,34 @@
-package club.xiaojiawei.test.mcts
+package club.xiaojiawei.mcts
 
-import club.xiaojiawei.*
-import club.xiaojiawei.bean.Card
+import club.xiaojiawei.bean.*
 import club.xiaojiawei.config.log
 import club.xiaojiawei.enums.CardTypeEnum
+import club.xiaojiawei.status.War
+import club.xiaojiawei.util.WarUtil
 import club.xiaojiawei.util.isFalse
 import club.xiaojiawei.util.isTrue
-import kotlin.math.ln
-import kotlin.math.sqrt
+import java.util.*
 
 /**
  * @author 肖嘉威
  * @date 2025/1/10 16:27
  */
-class MonteCarloTreeNode(warState: WarState, action: Action, var parent: MonteCarloTreeNode? = null) {
+class MonteCarloTreeNode(war: War, action: Action, var parent: MonteCarloTreeNode? = null) {
 
     val applyAction: Action = action
 
-    val children = mutableListOf<MonteCarloTreeNode>()
+    val children: MutableList<MonteCarloTreeNode> = mutableListOf()
 
-    val actions: List<Action>
+    val state: State = State(war)
 
-    var actionsExpanded: Int = 0
+    val actions: List<Action> = generateActions(war)
 
-    val state: State
+    private var actionsExpandedFlag: BitSet = BitSet(actions.size)
 
-    init {
-        this.state = State(warState)
-        actions = generateActions(warState)
-    }
-
-    private fun generateActions(warState: WarState): MutableList<Action> {
+    private fun generateActions(war: War): MutableList<Action> {
         val result = mutableListOf<Action>()
         if (this.applyAction !== TurnOverAction) {
-            val me = warState.me
-            val rival = warState.rival
+            val me = war.me
             val handArea = me.handArea
             val playArea = me.playArea
             result.add(TurnOverAction)
@@ -88,11 +82,11 @@ class MonteCarloTreeNode(warState: WarState, action: Action, var parent: MonteCa
                 val rival = warState.rival
                 me.handArea.removeByEntityId(entityId)?.let { card ->
                     rival.handArea.add(card).isFalse {
-                        log.warn { "添加卡牌失败" }
+                        log.warn { "添加手中卡牌失败" }
                     }
                     me.resourcesUsed += card.cost
                 } ?: let {
-                    log.warn { "移除卡牌失败" }
+                    log.warn { "移除手中卡牌失败" }
                 }
             })
         )
@@ -100,7 +94,7 @@ class MonteCarloTreeNode(warState: WarState, action: Action, var parent: MonteCa
 
     private fun generateDefaultAttackActions(entityId: String): List<Action> {
         val result = mutableListOf<Action>()
-        for (rivalPlayCard in state.warState.rival.playArea.cards) {
+        for (rivalPlayCard in state.war.rival.playArea.cards) {
 //            todo 嘲讽
             if (rivalPlayCard.isSurvival() && rivalPlayCard.canBeAttacked()) {
                 result.add(
@@ -127,7 +121,7 @@ class MonteCarloTreeNode(warState: WarState, action: Action, var parent: MonteCa
                 )
             }
         }
-        state.warState.rival.playArea.hero?.let { rivalHero ->
+        state.war.rival.playArea.hero?.let { rivalHero ->
             rivalHero.canBeAttacked().isTrue {
                 result.add(
                     AttackAction({ warState ->
@@ -188,46 +182,51 @@ class MonteCarloTreeNode(warState: WarState, action: Action, var parent: MonteCa
         }
     }
 
-    fun expand(index: Int): MonteCarloTreeNode? {
-        if (index >= 0 && index < actions.size) {
-            val action = actions[index]
-            val nextNode = buildNextNode(action)
-            this.actionsExpanded = this.actionsExpanded xor (1 shl index)
-            this.children.add(nextNode)
-            return nextNode
-        }
-        return null
-    }
-
-    fun expand(action: Action): MonteCarloTreeNode? {
-        val index = actions.indexOf(action)
-        if (index >= 0) {
-            val nextNode = buildNextNode(action)
-            this.actionsExpanded = this.actionsExpanded xor (1 shl index)
-            this.children.add(nextNode)
-            return nextNode
-        }
-        return null
-    }
-
+    /**
+     * 在当前节点状态下构建下一个节点
+     */
     fun buildNextNode(action: Action): MonteCarloTreeNode {
-        val newWarState = state.warState.clone()
+        val newWarState = state.war.clone()
         action.simulate.accept(newWarState)
         val nextNode = MonteCarloTreeNode(newWarState, action, this)
         return nextNode
     }
 
+    /**
+     * 扩展动作至树中
+     * @return 扩展后的新节点，为null表示扩展失败
+     */
+    fun expand(action: Action): MonteCarloTreeNode? {
+        val index = actions.indexOf(action)
+        if (index >= 0) {
+            val nextNode = buildNextNode(action)
+            this.actionsExpandedFlag[index] = true
+            this.children.add(nextNode)
+            return nextNode
+        }
+        return null
+    }
+
+    /**
+     * 是否已扩展
+     */
     fun isExpanded(index: Int): Boolean {
         if (index >= 0 && index < actions.size) {
-            return ((actionsExpanded shr index) and 1) == 1
+            return actionsExpandedFlag[index]
         }
         return true
     }
 
-    fun isFullExpand(): Boolean {
-        return actionsExpanded >= (1 shl (actions.size)) - 1
+    /**
+     * 是否已完全扩展
+     */
+    fun isFullExpanded(): Boolean {
+        return actions.size == children.size
     }
 
+    /**
+     * 获取未扩展的动作
+     */
     fun getUnExpanded(): MutableList<Action> {
         val result = mutableListOf<Action>()
         for ((index, action) in actions.withIndex()) {
@@ -238,35 +237,18 @@ class MonteCarloTreeNode(warState: WarState, action: Action, var parent: MonteCa
         return result
     }
 
-
+    /**
+     * 是否为叶子节点，即没有任何动作
+     */
     fun isLeaf(): Boolean {
         return actions.isEmpty()
     }
 
+    /**
+     * 是否为结束节点
+     */
     fun isEnd(): Boolean {
-        return isLeaf() || state.warState.isEnd()
+        return isLeaf() || WarUtil.isEnd(state.war)
     }
 
-}
-
-class State(val warState: WarState) {
-
-    var score: Double = 0.0
-
-    var visitCount: Int = 0
-
-    fun addScore(score: Double) {
-        this.score += score
-    }
-
-    fun increaseVisit() {
-        visitCount++
-    }
-
-    fun calcUCB(totalCount: Int, c: Double = 2.0): Double {
-        return if (visitCount == 0)
-            Int.MAX_VALUE.toDouble()
-        else
-            score / visitCount + sqrt(c * ln(totalCount.toDouble()) / visitCount.toDouble())
-    }
 }

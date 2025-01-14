@@ -1,5 +1,6 @@
 package club.xiaojiawei
 
+import club.xiaojiawei.bean.Action
 import club.xiaojiawei.bean.Card
 import club.xiaojiawei.enums.CardTypeEnum
 import java.util.function.Supplier

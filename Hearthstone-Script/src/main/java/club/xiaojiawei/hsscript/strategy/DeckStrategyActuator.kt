@@ -11,10 +11,7 @@ import club.xiaojiawei.hsscript.status.PauseStatus
 import club.xiaojiawei.hsscript.utils.ConfigUtil
 import club.xiaojiawei.hsscript.utils.GameUtil
 import club.xiaojiawei.hsscript.utils.SystemUtil
-import club.xiaojiawei.status.War
-import club.xiaojiawei.status.War.isMyTurn
-import club.xiaojiawei.status.War.player1
-import club.xiaojiawei.status.War.player2
+import club.xiaojiawei.status.WAR
 import club.xiaojiawei.util.RandomUtil
 import club.xiaojiawei.util.isFalse
 import club.xiaojiawei.util.isTrue
@@ -25,6 +22,8 @@ import club.xiaojiawei.util.isTrue
  * @date 2022/11/29 17:29
  */
 object DeckStrategyActuator {
+
+    private val war = WAR
 
     var deckStrategy: DeckStrategy? = null
         set(value) {
@@ -63,8 +62,8 @@ object DeckStrategyActuator {
             Thread.sleep(2000)
             val minTime = 4000
             val maxTime = 12000
-            while (!PauseStatus.isPause && !isMyTurn && !Thread.interrupted() && Mode.currMode === ModeEnum.GAMEPLAY) {
-                var toList = War.rival.playArea.cards.toList()
+            while (!PauseStatus.isPause && !war.isMyTurn && !Thread.interrupted() && Mode.currMode === ModeEnum.GAMEPLAY) {
+                var toList = war.rival.playArea.cards.toList()
                 for (card in toList) {
                     if (random.nextInt() and 1 == 1) {
                         card.action.lClick()
@@ -74,16 +73,16 @@ object DeckStrategyActuator {
                 }
                 SystemUtil.delay(minTime, maxTime)
                 if (random.nextInt() and 1 == 1) {
-                    War.rival.playArea.hero?.action?.lClick()
+                    war.rival.playArea.hero?.action?.lClick()
                     log.info { "点击敌方英雄" }
                 }
                 SystemUtil.delay(minTime, maxTime)
                 if (random.nextInt() and 1 == 1) {
-                    War.rival.playArea.power?.action?.lClick()
+                    war.rival.playArea.power?.action?.lClick()
                     log.info { "点击敌方英雄技能" }
                 }
                 SystemUtil.delay(minTime, maxTime)
-                toList = War.me.playArea.cards.toList()
+                toList = war.me.playArea.cards.toList()
                 for (card in toList) {
                     if (random.nextInt() and 1 == 1) {
                         card.action.lClick()
@@ -103,10 +102,12 @@ object DeckStrategyActuator {
         SystemUtil.delay(20000 + (if (ConfigUtil.getBoolean(ConfigEnum.DISTORTION)) 4500 else 0))
         if (PauseStatus.isPause) return
         log.info { "执行换牌策略" }
-        log.info { "1号玩家牌库数量：" + player1.deckArea.cards.size }
-        log.info { "2号玩家牌库数量：" + player2.deckArea.cards.size }
+        war.run {
+            log.info { "1号玩家牌库数量：" + player1.deckArea.cards.size }
+            log.info { "2号玩家牌库数量：" + player2.deckArea.cards.size }
+        }
 
-        val me = War.me
+        val me = war.me
         try {
             val copyHandCards = HashSet(me.handArea.cards)
             deckStrategy?.executeChangeCard(copyHandCards)
@@ -134,7 +135,7 @@ object DeckStrategyActuator {
 
         var surrenderNumber = ConfigUtil.getInt(ConfigEnum.AUTO_SURRENDER)
 
-        if (surrenderNumber >= 0 && War.me.turn >= surrenderNumber) {
+        if (surrenderNumber >= 0 && war.me.turn >= surrenderNumber) {
             log.info { "到达投降回合" }
             GameUtil.surrender()
             return
@@ -142,11 +143,11 @@ object DeckStrategyActuator {
 
         // 等待动画结束
         SystemUtil.delay(5000)
-        if (!isMyTurn || PauseStatus.isPause) return
+        if (!war.isMyTurn || PauseStatus.isPause) return
         log.info { "执行出牌策略" }
 
         try {
-            War.me.let {
+            war.me.let {
                 log.info { "回合开始可用水晶数：" + it.usableResource }
             }
             deckStrategy?.executeOutCard()
@@ -154,7 +155,7 @@ object DeckStrategyActuator {
         } finally {
             GameUtil.cancelAction()
             for (i in 0 until 20) {
-                if (!isMyTurn) break
+                if (!war.isMyTurn) break
                 if (i > 3) {
                     GameUtil.getThreeDiscoverCardRect(0).lClick()
                     SystemUtil.delayShortMedium()
@@ -174,7 +175,7 @@ object DeckStrategyActuator {
 
         SystemUtil.delayShortMedium()
         val index = deckStrategy?.executeDiscoverChooseCard(*cards) ?: 0
-        War.me.let {
+        war.me.let {
             GameUtil.clickDiscover(index, it.handArea.cardSize())
             SystemUtil.delayShort()
             val card = cards[index]
@@ -190,7 +191,7 @@ object DeckStrategyActuator {
     }
 
     private fun validPlayer(): Boolean {
-        if (!War.rival.isValid() && War.me.isValid()) {
+        if (!war.rival.isValid() && war.me.isValid()) {
             log.warn { "玩家无效" }
             return false
         }

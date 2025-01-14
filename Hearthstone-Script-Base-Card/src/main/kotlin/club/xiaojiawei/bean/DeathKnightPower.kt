@@ -2,7 +2,7 @@ package club.xiaojiawei.bean
 
 import club.xiaojiawei.CardAction
 import club.xiaojiawei.bean.abs.ClickPower
-import club.xiaojiawei.status.War.me
+import club.xiaojiawei.status.WAR
 
 /**
  * 巫妖王技能
@@ -26,7 +26,7 @@ open class DeathKnightPower : ClickPower() {
     }
 
     override fun execPower(): Boolean {
-        if (me.playArea.isFull) return false
+        if (WAR.me.playArea.isFull) return false
         return super.execPower()
     }
 

@@ -7,8 +7,7 @@ import club.xiaojiawei.enums.CardTypeEnum
 import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.utils.ConfigUtil
 import club.xiaojiawei.hsscript.utils.GameUtil
-import club.xiaojiawei.status.War.me
-import club.xiaojiawei.status.War.rival
+import club.xiaojiawei.status.WAR
 import club.xiaojiawei.util.isTrue
 import kotlin.math.min
 
@@ -25,6 +24,8 @@ class CommonCardAction : CardAction(false) {
         if (card == null) {
             return GameRect.INVALID
         }
+        val me = WAR.me
+        val rival = WAR.rival
         val area = card.area
         var index: Int
         if (card === me.playArea.hero) {
@@ -56,14 +57,14 @@ class CommonCardAction : CardAction(false) {
     }
 
     public override fun execPower(): Boolean {
-        return me.let {
+        return WAR.me.let {
             execPower(min((it.playArea.cardSize()), it.playArea.maxSize - 1))
         }
     }
 
     public override fun execPower(card: Card): Boolean {
         var startRect: GameRect
-        if ((GameUtil.getMyHandCardRect(me.handArea.indexOfCard(belongCard), belongCard!!.area!!.cardSize())
+        if ((GameUtil.getMyHandCardRect(WAR.me.handArea.indexOfCard(belongCard), belongCard!!.area!!.cardSize())
                 .also { startRect = it }).isValid()
         ) {
             if (card.area is PlayArea) {
@@ -80,6 +81,7 @@ class CommonCardAction : CardAction(false) {
 
     public override fun execPower(index: Int): Boolean {
         var startRect: GameRect
+        val me = WAR.me
         if ((GameUtil.getMyHandCardRect(me.handArea.indexOfCard(belongCard), belongCard!!.area!!.cardSize())
                 .also { startRect = it }).isValid()
         ) {
@@ -97,6 +99,8 @@ class CommonCardAction : CardAction(false) {
     }
 
     public override fun execAttack(card: Card): Boolean {
+        val me = WAR.me
+        val rival = WAR.rival
         val startRect = if (belongCard === me.playArea.hero) {
             GameUtil.MY_HERO_RECT
         } else {
@@ -116,6 +120,7 @@ class CommonCardAction : CardAction(false) {
     }
 
     public override fun execAttackHero(): Boolean {
+        val me = WAR.me
         val startRect = if (belongCard === me.playArea.hero) {
             GameUtil.MY_HERO_RECT
         } else {
@@ -145,7 +150,7 @@ class CommonCardAction : CardAction(false) {
         startRect.let {
             if (it.isValid()) {
                 var cardRect = belongCard?.area?.let { area ->
-                    if (area === me.handArea && belongCard?.cardType === CardTypeEnum.MINION) {
+                    if (area === WAR.me.handArea && belongCard?.cardType === CardTypeEnum.MINION) {
                         var index = -1
                         if ((area.indexOfCard(card).also { i -> index = i }) >= 0) {
                             GameUtil.getMyHandCardRect(index, area.cardSize() + if (depth > 0) 1 else 0)
@@ -183,7 +188,7 @@ class CommonCardAction : CardAction(false) {
         startRect.let {
             if (it.isValid()) {
                 var cardRect = belongCard?.area?.let { area ->
-                    if (area === me.handArea && belongCard?.cardType === CardTypeEnum.MINION) {
+                    if (area === WAR.me.handArea && belongCard?.cardType === CardTypeEnum.MINION) {
                         GameUtil.getMyHandCardRect(index, area.cardSize() + if (depth > 0) 1 else 0)
                     }
                     GameRect.INVALID

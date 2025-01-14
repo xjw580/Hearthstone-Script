@@ -2,8 +2,7 @@ package club.xiaojiawei.bean
 
 import club.xiaojiawei.CardAction
 import club.xiaojiawei.bean.abs.PointPower
-import club.xiaojiawei.bean.area.PlayArea
-import club.xiaojiawei.status.War.me
+import club.xiaojiawei.status.WAR
 
 /**
  * 牧师技能
@@ -28,7 +27,7 @@ class PriestPower : PointPower() {
 
     override fun execPower(): Boolean {
         if (!lClick()) return false
-        return pointTo(me.playArea.hero) != null
+        return pointTo(WAR.me.playArea.hero) != null
     }
 
     override fun createNewInstance(): CardAction {

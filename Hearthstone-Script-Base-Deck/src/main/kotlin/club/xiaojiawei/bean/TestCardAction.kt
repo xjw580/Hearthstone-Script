@@ -1,7 +1,6 @@
-package club.xiaojiawei.test
+package club.xiaojiawei.bean
 
 import club.xiaojiawei.CardAction
-import club.xiaojiawei.bean.Card
 
 /**
  * @author 肖嘉威

@@ -2,8 +2,7 @@ package club.xiaojiawei.bean
 
 import club.xiaojiawei.CardAction
 import club.xiaojiawei.bean.abs.ClickPower
-import club.xiaojiawei.bean.area.Area
-import club.xiaojiawei.status.War.me
+import club.xiaojiawei.status.WAR
 
 /**
  * 圣骑士技能
@@ -26,7 +25,7 @@ class PaladinPower : ClickPower(){
     }
 
     override fun execPower(): Boolean {
-        if (me.playArea.isFull) return false
+        if (WAR.me.playArea.isFull) return false
         return super.execPower()
     }
 

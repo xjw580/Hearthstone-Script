@@ -23,9 +23,7 @@ import club.xiaojiawei.hsscript.utils.PowerLogUtil.dealTagChange
 import club.xiaojiawei.hsscript.utils.PowerLogUtil.isRelevance
 import club.xiaojiawei.hsscript.utils.SystemUtil
 import club.xiaojiawei.interfaces.PhaseStrategy
-import club.xiaojiawei.status.War.currentPhase
-import club.xiaojiawei.status.War.currentTurnStep
-import club.xiaojiawei.status.War.me
+import club.xiaojiawei.status.WAR
 import club.xiaojiawei.util.isTrue
 import java.io.IOException
 
@@ -37,6 +35,8 @@ import java.io.IOException
 abstract class AbstractPhaseStrategy : PhaseStrategy {
 
     private var lastDiscoverEntityId: String? = null
+
+    protected val war = WAR
 
     override fun deal(line: String) {
         dealing = true
@@ -59,14 +59,14 @@ abstract class AbstractPhaseStrategy : PhaseStrategy {
                 if (l == null) {
                     mark = accessFile.filePointer
                     SystemUtil.delay(1000)
-                    if (accessFile.length() <= mark && me.isValid()) {
-                        val cards: List<Card> = me.setasideArea.cards
+                    if (accessFile.length() <= mark && war.me.isValid()) {
+                        val cards: List<Card> = war.me.setasideArea.cards
                         val size = cards.size
                         if (size >= 3 && lastDiscoverEntityId != cards.last().entityId && cards[size - 1].creator == cards[size - 2].creator
                             && cards[size - 1].creator == cards[size - 3].creator
                         ) {
                             lastDiscoverEntityId = cards.last().entityId
-                            if (currentPhase != WarPhaseEnum.REPLACE_CARD) {
+                            if (war.currentPhase != WarPhaseEnum.REPLACE_CARD) {
                                 log.info { "触发发现动作" }
                                 (DeckStrategyThread({
                                     discoverChooseCard(
@@ -85,7 +85,7 @@ abstract class AbstractPhaseStrategy : PhaseStrategy {
                         if (dealTagChangeThenIsOver(
                                 l,
                                 dealTagChange(l)
-                            ) || currentTurnStep == StepEnum.FINAL_GAMEOVER
+                            ) || war.currentTurnStep == StepEnum.FINAL_GAMEOVER
                         ) {
                             break
                         }
@@ -101,7 +101,7 @@ abstract class AbstractPhaseStrategy : PhaseStrategy {
                         if (dealChangeEntityThenIsOver(l, dealChangeEntity(l, accessFile))) {
                             break
                         }
-                    }  else if (l.contains(BLOCK_TYPE)) {
+                    } else if (l.contains(BLOCK_TYPE)) {
                         if (dealBlockIsOver(l, PowerLogUtil.dealBlock(l))) {
                             break
                         }

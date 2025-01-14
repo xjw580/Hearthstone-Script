@@ -28,6 +28,11 @@ class Card(var action: CardAction) : BaseCard(), Cloneable {
             areaProperty.set(value)
         }
 
+    fun resetExhausted() {
+        isExhausted = false
+        attackCount = 0
+    }
+
     @Override
     public override fun clone(): Card {
         try {

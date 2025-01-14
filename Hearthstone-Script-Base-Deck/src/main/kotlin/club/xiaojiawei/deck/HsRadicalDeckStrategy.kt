@@ -6,8 +6,7 @@ import club.xiaojiawei.bean.isValid
 import club.xiaojiawei.config.log
 import club.xiaojiawei.enums.CardTypeEnum
 import club.xiaojiawei.enums.RunModeEnum
-import club.xiaojiawei.status.War
-import club.xiaojiawei.status.War.rival
+import club.xiaojiawei.status.WAR
 import club.xiaojiawei.util.DeckStrategyUtil
 import club.xiaojiawei.util.DeckStrategyUtil.activeLocation
 import club.xiaojiawei.util.DeckStrategyUtil.isDamageSpell
@@ -43,11 +42,12 @@ class HsRadicalDeckStrategy : DeckStrategy() {
     }
 
     override fun executeOutCard() {
-        if (War.me.isValid()) {
-            val me = War.me
+        val me = WAR.me
+        if (me.isValid()) {
+            val rival = WAR.rival
             var plays = me.playArea.cards.toList()
             activeLocation(plays)
-            var hands = me.handArea.cards.toList()
+            val hands = me.handArea.cards.toList()
             val (_, resultCards) = DeckStrategyUtil.calcPowerOrderConvert(hands, me.usableResource)
             if (resultCards.isNotEmpty()) {
                 DeckStrategyUtil.updateTextForCard(resultCards)
@@ -55,7 +55,7 @@ class HsRadicalDeckStrategy : DeckStrategy() {
                 log.info { "待出牌：$sortCard" }
                 for (simulateWeightCard in sortCard) {
                     val card = simulateWeightCard.card
-                    var cardText = simulateWeightCard.text
+                    val cardText = simulateWeightCard.text
                     if (me.usableResource >= card.cost) {
                         if (card.cardType === CardTypeEnum.SPELL) {
                             if (isDamageSpell(cardText)) {
@@ -102,4 +102,5 @@ class HsRadicalDeckStrategy : DeckStrategy() {
     override fun executeDiscoverChooseCard(vararg cards: Card): Int {
         return commonDeckStrategy.executeDiscoverChooseCard(*cards)
     }
+
 }

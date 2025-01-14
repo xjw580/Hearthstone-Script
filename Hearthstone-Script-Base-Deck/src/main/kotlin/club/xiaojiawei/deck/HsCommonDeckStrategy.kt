@@ -5,8 +5,7 @@ import club.xiaojiawei.bean.Card
 import club.xiaojiawei.bean.Player
 import club.xiaojiawei.enums.CardTypeEnum
 import club.xiaojiawei.enums.RunModeEnum
-import club.xiaojiawei.status.War
-import club.xiaojiawei.status.War.me
+import club.xiaojiawei.status.WAR
 import club.xiaojiawei.util.DeckStrategyUtil
 import club.xiaojiawei.util.DeckStrategyUtil.findCoin
 import club.xiaojiawei.util.DeckStrategyUtil.outCard
@@ -38,8 +37,8 @@ class HsCommonDeckStrategy : DeckStrategy() {
     }
 
     override fun executeOutCard() {
-        val me = me
-        val rival = War.rival
+        val me = WAR.me
+        val rival = WAR.rival
 
         powerCard(me, rival)
 

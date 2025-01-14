@@ -1,10 +1,10 @@
 package club.xiaojiawei.test
 
-import club.xiaojiawei.CardAction
 import club.xiaojiawei.bean.Card
 import club.xiaojiawei.bean.SimulateWeightCard
+import club.xiaojiawei.bean.TestCardAction
 import club.xiaojiawei.enums.CardTypeEnum
-import club.xiaojiawei.status.War
+import club.xiaojiawei.status.WAR
 import club.xiaojiawei.util.DeckStrategyUtil.calcPowerOrder
 
 /**
@@ -13,8 +13,8 @@ import club.xiaojiawei.util.DeckStrategyUtil.calcPowerOrder
  */
 
 fun main() {
-//    War.me = War.player1
-//    War.rival = War.player2
+//    WAR.me = War.player1
+//    WAR.rival = War.player2
 //
 ////    test1()
 //    test2()
@@ -38,7 +38,7 @@ fun main() {
     testPower()
 }
 
-fun testPower(){
+fun testPower() {
     val card = Card(TestCardAction())
     card.cost = 2
     card.cardId = "1"
@@ -93,7 +93,7 @@ fun testPower(){
     val (first, second) = calcPowerOrder(mutableListOf1, 6)
     println(first)
     for (weightCard in second) {
-        println( "${weightCard.card},${weightCard.card.cost}")
+        println("${weightCard.card},${weightCard.card.cost}")
     }
 }
 
@@ -122,7 +122,7 @@ fun findClosestSum(numbers: List<Card>, target: Int): Pair<Int, List<Card>> {
 }
 
 fun test1() {
-    War.me?.let {
+    WAR.me?.let {
         var card = Card(TestCardAction())
         card.apply {
             entityName = "m1"
@@ -205,7 +205,7 @@ fun test1() {
         it.playArea.add(card)
     }
 
-    War.rival?.let {
+    WAR.rival?.let {
         var card = Card(TestCardAction())
         card.apply {
             entityName = "r1"
@@ -290,7 +290,7 @@ fun test1() {
 }
 
 fun test2() {
-    War.me?.let {
+    WAR.me?.let {
         var card = Card(TestCardAction())
         card.apply {
             entityName = "m1"
@@ -312,7 +312,7 @@ fun test2() {
         it.playArea.add(card)
     }
 
-    War.rival?.let {
+    WAR.rival?.let {
         var card = Card(TestCardAction())
         card.apply {
             entityName = "r1"
@@ -326,7 +326,7 @@ fun test2() {
 }
 
 fun test3() {
-    War.me?.let {
+    WAR.me?.let {
         var card = Card(TestCardAction())
         card.apply {
             entityName = "m1"
@@ -348,7 +348,7 @@ fun test3() {
         it.playArea.add(card)
     }
 
-    War.rival?.let {
+    WAR.rival?.let {
         var card = Card(TestCardAction())
         card.apply {
             entityName = "r1"
@@ -383,7 +383,7 @@ fun test3() {
 }
 
 fun test4() {
-    War.me?.let {
+    WAR.me?.let {
         var card = Card(TestCardAction())
         card.apply {
             entityName = "m1"
@@ -408,7 +408,7 @@ fun test4() {
 //        it.playArea.add(card)
     }
 
-    War.rival?.let {
+    WAR.rival?.let {
         var card = Card(TestCardAction())
         card.apply {
             entityName = "r1"
@@ -465,7 +465,7 @@ fun test4() {
 }
 
 fun testTaunt() {
-    War.me?.let {
+    WAR.me?.let {
         var card = Card(TestCardAction())
         card.apply {
             entityName = "m1"
@@ -549,7 +549,7 @@ fun testTaunt() {
         it.handArea.add(card)
     }
 
-    War.rival?.let {
+    WAR.rival?.let {
         var card = Card(TestCardAction())
         card.apply {
             entityName = "r1"

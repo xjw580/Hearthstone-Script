@@ -2,7 +2,7 @@ package club.xiaojiawei.bean
 
 import club.xiaojiawei.CardAction
 import club.xiaojiawei.bean.abs.PointPower
-import club.xiaojiawei.status.War.rival
+import club.xiaojiawei.status.WAR
 
 /**
  * 法师技能
@@ -28,7 +28,7 @@ class MagePower : PointPower() {
 
     override fun execPower(): Boolean {
         if (!lClick()) return false
-        return pointTo(rival.playArea.hero) != null
+        return pointTo(WAR.rival.playArea.hero) != null
     }
 
     override fun createNewInstance(): CardAction {
