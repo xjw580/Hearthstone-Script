@@ -27,42 +27,41 @@ class MonteCarloTreeNode(war: War, action: Action, var parent: MonteCarloTreeNod
 
     private fun generateActions(war: War): MutableList<Action> {
         val result = mutableListOf<Action>()
-        if (this.applyAction !== TurnOverAction) {
-            val me = war.me
-            val handArea = me.handArea
-            val playArea = me.playArea
-            result.add(TurnOverAction)
-            handArea.cards.forEach { card ->
-                if (me.usableResource >= card.cost && (!playArea.isFull || card.cardType === CardTypeEnum.HERO || card.cardType === CardTypeEnum.SPELL || card.cardType === CardTypeEnum.WEAPON)) {
-                    result.addAll(
-                        card.action.createPlayActions() ?: this.generateDefaultPlayActions(
-                            card.entityId
-                        )
+        val me = war.me
+        val handArea = me.handArea
+        val playArea = me.playArea
+        if (applyAction === TurnOverAction) return result
+//        result.add(TurnOverAction)
+        handArea.cards.forEach { card ->
+            if (me.usableResource >= card.cost && (!playArea.isFull || card.cardType === CardTypeEnum.HERO || card.cardType === CardTypeEnum.SPELL || card.cardType === CardTypeEnum.WEAPON)) {
+                result.addAll(
+                    card.action.createPlayActions() ?: this.generateDefaultPlayActions(
+                        card.entityId
                     )
-                }
+                )
             }
-            playArea.cards.forEach { card ->
-                if (card.canAttack() && card.isSurvival()) {
-                    result.addAll(
-                        card.action.createAttackActions() ?: this.generateDefaultAttackActions(
-                            card.entityId
-                        )
+        }
+        playArea.cards.forEach { card ->
+            if (card.canAttack() && card.isSurvival()) {
+                result.addAll(
+                    card.action.createAttackActions() ?: this.generateDefaultAttackActions(
+                        card.entityId
                     )
-                }
+                )
             }
-            playArea.hero?.let { myHero ->
-                if (myHero.canAttack() && myHero.isSurvival()) {
-                    result.addAll(
-                        myHero.action.createAttackActions() ?: this.generateDefaultAttackActions(
-                            myHero.entityId
-                        )
+        }
+        playArea.hero?.let { myHero ->
+            if (myHero.canAttack() && myHero.isSurvival()) {
+                result.addAll(
+                    myHero.action.createAttackActions() ?: this.generateDefaultAttackActions(
+                        myHero.entityId
                     )
-                }
+                )
             }
-            playArea.power?.let { myPower ->
-                if (me.usableResource >= myPower.cost && !myPower.isExhausted) {
-                    myPower.action.createPlayActions()
-                }
+        }
+        playArea.power?.let { myPower ->
+            if (me.usableResource >= myPower.cost && !myPower.isExhausted) {
+                myPower.action.createPlayActions()
             }
         }
         return result
@@ -198,7 +197,7 @@ class MonteCarloTreeNode(war: War, action: Action, var parent: MonteCarloTreeNod
      */
     fun expand(action: Action): MonteCarloTreeNode? {
         val index = actions.indexOf(action)
-        if (index >= 0) {
+        if (index >= 0 && !isExpanded(index)) {
             val nextNode = buildNextNode(action)
             this.actionsExpandedFlag[index] = true
             this.children.add(nextNode)

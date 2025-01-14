@@ -22,7 +22,7 @@ fun printAll(tempNode: MonteCarloTreeNode?, level: Int, scores: MutableList<Muta
         }
         val list = scores[level]
         for (child in children) {
-            list.add(Result(WarUtil.calcScore(child.state.war), child.state.visitCount))
+            list.add(Result(child.state.score, child.state.visitCount))
         }
         for (child in children) {
             printAll(child, level + 1, scores)
@@ -37,13 +37,14 @@ fun main() {
 
     val start = System.currentTimeMillis()
     val monteCarloTreeNodes = monteCarloTreeSearch
-        .getBestActions(mctsWar, MonteCarloTreeSearch.Arg(10 * 1000, 1, 0.8, 10000))
-    var tempNode: MonteCarloTreeNode? = monteCarloTreeNodes.first()
+        .getBestActions(mctsWar, MonteCarloTreeSearch.Arg(1 * 1000, 1, 0.5, 20000))
+//        .getBestActions(mctsWar, MonteCarloTreeSearch.Arg(3000 * 1000, 1, 0.5, 20000))
+    val tempNode: MonteCarloTreeNode? = monteCarloTreeNodes.first()
     tempNode?.let {
         val scores = mutableListOf<MutableList<Result>>(
             mutableListOf(
                 Result(
-                    WarUtil.calcScore(tempNode.state.war),
+                    tempNode.state.score,
                     tempNode.state.visitCount
                 )
             )

@@ -1,6 +1,7 @@
 package club.xiaojiawei.bean
 
 import club.xiaojiawei.status.War
+import club.xiaojiawei.util.WarUtil
 import kotlin.math.ln
 import kotlin.math.sqrt
 
@@ -10,23 +11,25 @@ import kotlin.math.sqrt
  */
 class State(val war: War) {
 
-    var score: Double = 0.0
+    var winCount: Int = 0
+
+    var score: Double = WarUtil.calcScore(war)
 
     var visitCount: Int = 0
 
-    fun addScore(score: Double) {
-        this.score += score
+    fun increaseWin() {
+        this.winCount++
     }
 
     fun increaseVisit() {
         visitCount++
     }
 
-    fun calcUCB(totalCount: Int, c: Double = 1.0): Double {
+    fun calcUCB(totalCount: Int, c: Double = 2.0): Double {
         return if (visitCount == 0)
             Int.MAX_VALUE.toDouble()
         else
-            score / visitCount + sqrt(c * ln(totalCount.toDouble()) / visitCount.toDouble())
+            winCount / visitCount + sqrt(c * ln(totalCount.toDouble()) / visitCount.toDouble())
     }
 
 }

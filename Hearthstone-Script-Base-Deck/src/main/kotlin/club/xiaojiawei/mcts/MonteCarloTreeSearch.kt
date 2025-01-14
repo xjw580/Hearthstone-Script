@@ -21,10 +21,11 @@ class MonteCarloTreeSearch(val maxDepth: Int = 10) {
         var node: MonteCarloTreeNode = rootNode
         var maxUCB = Int.MIN_VALUE.toDouble()
         var level = 0
-        while (node.isFullExpanded()) {
+        while (node.isFullExpanded() && !node.isLeaf()) {
+            val parentNode = node
             val children = node.children
             for (child in children) {
-                val ucb = child.state.calcUCB(totalCount)
+                val ucb = child.state.calcUCB(parentNode.state.visitCount)
                 if (ucb > maxUCB) {
                     maxUCB = ucb
                     node = child
@@ -44,11 +45,12 @@ class MonteCarloTreeSearch(val maxDepth: Int = 10) {
             val unExpanded = node.getUnExpanded()
             val action = randomSelect(unExpanded)
             nextNode = node.expand(action)
+            println("expand:" + nextNode?.state?.score)
         }
         return nextNode
     }
 
-    private fun simulate(node: MonteCarloTreeNode, arg: Arg): Double {
+    private fun simulate(node: MonteCarloTreeNode, rootNode: MonteCarloTreeNode, arg: Arg): Boolean {
         var tempNode = node
         while (!tempNode.isEnd()) {
             val actions = tempNode.actions
@@ -80,57 +82,75 @@ class MonteCarloTreeSearch(val maxDepth: Int = 10) {
                 )
             if (nodes.isNotEmpty()) {
                 val lastNode = nodes.last()
-                inverseScore = WarUtil.calcScore(lastNode.state.war) * arg.turnAttenuationFactor
+                inverseScore = lastNode.state.score * arg.turnAttenuationFactor
 //                println("inverseScore:" + inverseScore)
             }
         }
-        return score - inverseScore
+        return score - inverseScore > rootNode.state.score
     }
 
-    private fun backPropagation(node: MonteCarloTreeNode, score: Double) {
+    private fun backPropagation(node: MonteCarloTreeNode, win: Boolean) {
         var tempNode: MonteCarloTreeNode? = node
         while (tempNode != null) {
             tempNode.state.increaseVisit()
-            tempNode.state.addScore(score)
+            if (win) {
+                tempNode.state.increaseWin()
+            }
             tempNode = tempNode.parent
         }
     }
 
     private fun buildBestActions(rootNode: MonteCarloTreeNode, totalCount: Int): MutableList<MonteCarloTreeNode> {
         val result = mutableListOf<MonteCarloTreeNode>()
-        var maxNode: MonteCarloTreeNode? = rootNode
-        var maxScore = WarUtil.calcScore(rootNode.state.war)
-        var maxUCB = rootNode.state.calcUCB(totalCount)
-        var maxVisit = 1
-        val children = rootNode.children.toMutableList()
-        while (children.isNotEmpty()) {
-            val list = mutableListOf<MonteCarloTreeNode>()
-            for (child in children) {
-                if (child.isEnd()) {
-//                    val score = WarUtil.calcScore(child.state.war)
-//                    if (score > maxScore) {
+
+//        var maxNode: MonteCarloTreeNode? = rootNode
+//        var maxScore = Int.MIN_VALUE.toDouble()
+//        var maxUCB = rootNode.state.calcUCB(totalCount)
+//        var maxVisit = Int.MIN_VALUE
+//        val children = rootNode.children.toMutableList()
+//        while (children.isNotEmpty()) {
+//            val list = mutableListOf<MonteCarloTreeNode>()
+//            for (child in children) {
+//                if (child.isEnd()) {
+////                    val score = WarUtil.calcScore(child.state.war)
+////                    if (score > maxScore) {
+////                        maxNode = child
+////                        maxScore = score
+////                    }
+//                    if (child.state.visitCount > maxVisit) {
 //                        maxNode = child
-//                        maxScore = score
+//                        maxVisit = child.state.visitCount
 //                    }
-                    if (child.state.visitCount > maxVisit) {
-                        maxNode = child
-                        maxVisit = child.state.visitCount
-                    }
-//                    val ucb = child.state.calcUCB(totalCount)
-//                    if (ucb > maxUCB) {
-//                        maxUCB = ucb
-//                        maxNode = child
-//                    }
+////                    val ucb = child.state.calcUCB(totalCount)
+////                    if (ucb > maxUCB) {
+////                        maxUCB = ucb
+////                        maxNode = child
+////                    }
+//                }
+//                list.addAll(child.children)
+//            }
+//            children.clear()
+//            children.addAll(list)
+//        }
+//
+//        var tempNode: MonteCarloTreeNode? = maxNode
+//        while (tempNode != null) {
+//            result.addFirst(tempNode)
+//            tempNode = tempNode.parent
+//        }
+
+        var node: MonteCarloTreeNode? = rootNode
+        while (node != null) {
+            result.add(node)
+            var maxVisit = Int.MIN_VALUE
+            var maxNode: MonteCarloTreeNode? = null
+            for (child in node.children) {
+                if (child.state.visitCount > maxVisit) {
+                    maxNode = child
+                    maxVisit = child.state.visitCount
                 }
-                list.addAll(child.children)
             }
-            children.clear()
-            children.addAll(list)
-        }
-        var tempNode: MonteCarloTreeNode? = maxNode
-        while (tempNode != null) {
-            result.addFirst(tempNode)
-            tempNode = tempNode.parent
+            node = maxNode
         }
 
         return result
@@ -141,34 +161,28 @@ class MonteCarloTreeSearch(val maxDepth: Int = 10) {
     ): MutableList<MonteCarloTreeNode> {
         val rootNode = MonteCarloTreeNode(war.clone(), InitAction)
         var node: MonteCarloTreeNode
-
         var totalCount = 0
+        var win = false
+
+        val runnable = Runnable {
+            node = select(rootNode, totalCount)
+            if (!node.isEnd()) {
+                expand(node)?.let {
+                    node = it
+                }
+            }
+            win = simulate(node, rootNode, arg)
+            backPropagation(node, win)
+            totalCount++
+        }
         if (arg.thinkingTime > 0) {
             val endTime = System.currentTimeMillis() + arg.thinkingTime
             while (System.currentTimeMillis() < endTime) {
-                var score = 0.0
-                node = select(rootNode, totalCount)
-                if (!node.isEnd()) {
-                    expand(node)?.let {
-                        node = it
-                        score = simulate(node, arg)
-                    }
-                }
-                backPropagation(node, score)
-                totalCount++
+                runnable.run()
             }
         } else {
             while (totalCount < arg.countPerTurn) {
-                var score = 0.0
-                node = select(rootNode, totalCount)
-                if (!node.isEnd()) {
-                    expand(node)?.let {
-                        node = it
-                        score = simulate(node, arg)
-                    }
-                }
-                backPropagation(node, score)
-                totalCount++
+                runnable.run()
             }
         }
 
