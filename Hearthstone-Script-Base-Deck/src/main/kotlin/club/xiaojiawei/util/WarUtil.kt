@@ -33,29 +33,29 @@ object WarUtil {
                 card.cardType = CardTypeEnum.MINION
                 player.playArea.add(card)
 
-//                card = Card(TestCardAction())
-//                card.entityId = "2"
-//                card.entityName = "我方随从2"
-//                card.health = 3
-//                card.atc = 5
-//                card.cardType = CardTypeEnum.MINION
-//                player.playArea.add(card)
-//
-//                card = Card(TestCardAction())
-//                card.entityId = "3"
-//                card.entityName = "我方随从3"
-//                card.health = 7
-//                card.atc = 3
-//                card.cardType = CardTypeEnum.MINION
-//                player.playArea.add(card)
-//
-//                card = Card(TestCardAction())
-//                card.entityId = "4"
-//                card.entityName = "我方随从4"
-//                card.health = 2
-//                card.atc = 5
-//                card.cardType = CardTypeEnum.MINION
-//                player.playArea.add(card)
+                card = Card(TestCardAction())
+                card.entityId = "2"
+                card.entityName = "我方随从2"
+                card.health = 3
+                card.atc = 5
+                card.cardType = CardTypeEnum.MINION
+                player.playArea.add(card)
+
+                card = Card(TestCardAction())
+                card.entityId = "3"
+                card.entityName = "我方随从3"
+                card.health = 7
+                card.atc = 3
+                card.cardType = CardTypeEnum.MINION
+                player.playArea.add(card)
+
+                card = Card(TestCardAction())
+                card.entityId = "4"
+                card.entityName = "我方随从4"
+                card.health = 2
+                card.atc = 5
+                card.cardType = CardTypeEnum.MINION
+                player.playArea.add(card)
 
                 player
             }
@@ -67,17 +67,18 @@ object WarUtil {
                 var card = Card(TestCardAction())
                 card.entityId = "0"
                 card.entityName = "敌方英雄"
-                card.health = 10
+                card.health = 20
+                card.atc = 5
                 card.cardType = CardTypeEnum.HERO
                 player.playArea.add(card)
 
-//                card = Card(TestCardAction())
-//                card.entityId = "1"
-//                card.entityName = "敌方随从1"
-//                card.health = 2
-//                card.atc = 4
-//                card.cardType = CardTypeEnum.MINION
-//                player.playArea.add(card)
+                card = Card(TestCardAction())
+                card.entityId = "1"
+                card.entityName = "敌方随从1"
+                card.health = 2
+                card.atc = 4
+                card.cardType = CardTypeEnum.MINION
+                player.playArea.add(card)
 
                 card = Card(TestCardAction())
                 card.entityId = "2"
@@ -135,7 +136,7 @@ object WarUtil {
             val ratio = CARD_WEIGHT_TRIE[card.cardId]?.weight ?: 1.0
             val atc = max(card.atc, 0).toDouble()
             val blood = max(card.blood(), 0)
-            val basicScore = atc * blood + (card.blood() shr 1)
+            val basicScore = (atc + blood) * 1.2
             val heroScore = if (card.cardType === CardTypeEnum.HERO) Int.MAX_VALUE.toDouble() else 0.0
             var totalScore: Double = basicScore + heroScore
             if (card.isDeathRattle) {

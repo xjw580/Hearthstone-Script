@@ -37,7 +37,7 @@ fun main() {
 
     val start = System.currentTimeMillis()
     val monteCarloTreeNodes = monteCarloTreeSearch
-        .getBestActions(mctsWar, MonteCarloTreeSearch.Arg(1 * 1000, 1, 0.5, 20000))
+        .getBestActions(mctsWar, MonteCarloTreeSearch.Arg(3 * 1000, 1, 0.5, 10000))
 //        .getBestActions(mctsWar, MonteCarloTreeSearch.Arg(3000 * 1000, 1, 0.5, 20000))
     val tempNode: MonteCarloTreeNode? = monteCarloTreeNodes.first()
     tempNode?.let {
