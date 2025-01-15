@@ -26,14 +26,18 @@ class DeckArea : Area {
     }
 
     fun deepClone(player: Player = this.player, containZeroCards: Boolean = false): DeckArea {
-        return DeckArea(
+        val area = DeckArea(
             maxSize,
             defaultMaxSize,
             oldMaxSize,
             player,
             deepCloneCards(),
-            if (containZeroCards) deepZeroCards() else zeroCards,
+            if (containZeroCards) deepZeroCards() else zeroCards
         )
+        for (card in area.cards) {
+            card.area = area
+        }
+        return area
     }
 
 }

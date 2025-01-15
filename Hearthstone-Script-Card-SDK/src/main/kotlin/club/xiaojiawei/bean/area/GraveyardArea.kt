@@ -26,7 +26,7 @@ class GraveyardArea : Area {
     }
 
     fun deepClone(player: Player = this.player, containZeroCards: Boolean = false): GraveyardArea {
-        return GraveyardArea(
+        val area = GraveyardArea(
             maxSize,
             defaultMaxSize,
             oldMaxSize,
@@ -34,5 +34,9 @@ class GraveyardArea : Area {
             deepCloneCards(),
             if (containZeroCards) deepZeroCards() else zeroCards
         )
+        for (card in area.cards) {
+            card.area = area
+        }
+        return area
     }
 }

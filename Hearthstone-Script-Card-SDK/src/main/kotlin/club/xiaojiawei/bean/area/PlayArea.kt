@@ -120,7 +120,7 @@ class PlayArea : Area {
     }
 
     fun deepClone(player: Player = this.player, containZeroCards: Boolean = false): PlayArea {
-        val playArea = PlayArea(
+        val area = PlayArea(
             maxSize,
             defaultMaxSize,
             oldMaxSize,
@@ -128,9 +128,15 @@ class PlayArea : Area {
             deepCloneCards(),
             if (containZeroCards) deepZeroCards() else zeroCards
         )
-        playArea.hero = hero?.clone()
-        playArea.weapon = weapon?.clone()
-        playArea.power = power?.clone()
-        return playArea
+        area.hero = hero?.clone()
+        area.hero?.area = area
+        area.weapon = weapon?.clone()
+        area.weapon?.area = area
+        area.power = power?.clone()
+        area.power?.area = area
+        for (card in area.cards) {
+            card.area = area
+        }
+        return area
     }
 }

@@ -11,7 +11,6 @@ import club.xiaojiawei.config.log
 import club.xiaojiawei.data.CARD_WEIGHT_TRIE
 import club.xiaojiawei.enums.CardTypeEnum
 import club.xiaojiawei.status.WAR
-import club.xiaojiawei.status.War
 import java.util.concurrent.CompletableFuture
 import java.util.function.Function
 import kotlin.math.max
@@ -558,6 +557,16 @@ object DeckStrategyUtil {
             }
         }
         return Pair(weight, tauntCount)
+    }
+
+    fun getTauntCard(cards: List<Card>, canBeAttacked: Boolean = true): MutableList<Card> {
+        val result = mutableListOf<Card>()
+        for (card in cards) {
+            if (card.isTaunt && (!canBeAttacked || card.canBeAttacked())) {
+                result.add(card)
+            }
+        }
+        return result
     }
 
     fun cleanPlay(

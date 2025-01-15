@@ -4,6 +4,7 @@ import club.xiaojiawei.bean.Player.Companion.INVALID_PLAYER
 import club.xiaojiawei.bean.area.*
 import club.xiaojiawei.config.log
 import club.xiaojiawei.enums.ZoneEnum
+import club.xiaojiawei.mapper.PlayerMapper
 import club.xiaojiawei.util.isTrue
 
 /**
@@ -140,7 +141,7 @@ class Player(
 
 
     public override fun clone(): Player {
-        return Player(
+        val player = Player(
             playerId,
             handArea = handArea.deepClone(),
             playArea = playArea.deepClone(),
@@ -151,6 +152,17 @@ class Player(
             removedfromgameArea = removedfromgameArea.deepClone(),
             allowLog = false
         )
+
+        PlayerMapper.INSTANCE.update(this, player)
+
+        player.handArea.player = player
+        player.playArea.player = player
+        player.secretArea.player = player
+        player.graveyardArea.player = player
+        player.deckArea.player = player
+        player.setasideArea.player = player
+        player.removedfromgameArea.player = player
+        return player
     }
 
     init {
@@ -172,7 +184,7 @@ class Player(
  * 当为有效玩家时才执行block语句
  */
 fun Player.safeRun(block: () -> Unit): Player {
-    if (this === INVALID_PLAYER) {
+    if (isInValid()) {
         return this
     } else {
         block()
@@ -184,9 +196,9 @@ fun Player.safeRun(block: () -> Unit): Player {
  * 判断玩家是否有效
  */
 fun Player.isValid(): Boolean {
-    return this != INVALID_PLAYER && this.gameId != "INVALID"
+    return this !== INVALID_PLAYER && this.gameId != "INVALID"
 }
 
 fun Player.isInValid(): Boolean {
-    return this == INVALID_PLAYER || this.gameId == "INVALID"
+    return this === INVALID_PLAYER || this.gameId == "INVALID"
 }

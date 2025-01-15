@@ -26,7 +26,7 @@ class SetasideArea : Area {
     }
 
     fun deepClone(player: Player = this.player, containZeroCards: Boolean = false): SetasideArea {
-        return SetasideArea(
+        val area = SetasideArea(
             maxSize,
             defaultMaxSize,
             oldMaxSize,
@@ -34,5 +34,9 @@ class SetasideArea : Area {
             deepCloneCards(),
             if (containZeroCards) deepZeroCards() else zeroCards
         )
+        for (card in area.cards) {
+            card.area = area
+        }
+        return area
     }
 }

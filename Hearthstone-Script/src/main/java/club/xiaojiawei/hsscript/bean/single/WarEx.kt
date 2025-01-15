@@ -83,8 +83,8 @@ object WarEx {
             rival = Player.INVALID_PLAYER
             me = Player.INVALID_PLAYER
             currentPlayer = Player.INVALID_PLAYER
-            player1 = Player("1")
-            player2 = Player("2")
+            player1 = Player("1", allowLog = true)
+            player2 = Player("2", allowLog = true)
             warTurn = 0
             conceded = ""
             lost = conceded

@@ -27,7 +27,7 @@ class SecretArea : Area {
     }
 
     fun deepClone(player: Player = this.player, containZeroCards: Boolean = false): SecretArea {
-        return SecretArea(
+        val area = SecretArea(
             maxSize,
             defaultMaxSize,
             oldMaxSize,
@@ -35,5 +35,9 @@ class SecretArea : Area {
             deepCloneCards(),
             if (containZeroCards) deepZeroCards() else zeroCards
         )
+        for (card in area.cards) {
+            card.area = area
+        }
+        return area
     }
 }

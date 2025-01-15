@@ -1,8 +1,8 @@
 package club.xiaojiawei.mcts
 
 import club.xiaojiawei.bean.InitAction
+import club.xiaojiawei.bean.MCTSArg
 import club.xiaojiawei.status.War
-import club.xiaojiawei.util.WarUtil
 import kotlin.random.Random
 
 /**
@@ -49,7 +49,7 @@ class MonteCarloTreeSearch(val maxDepth: Int = 10) {
         return nextNode
     }
 
-    private fun simulate(node: MonteCarloTreeNode, rootNode: MonteCarloTreeNode, arg: Arg): Boolean {
+    private fun simulate(node: MonteCarloTreeNode, rootNode: MonteCarloTreeNode, arg: MCTSArg): Boolean {
         var tempNode = node
         while (!tempNode.isEnd()) {
             val actions = tempNode.actions
@@ -58,43 +58,40 @@ class MonteCarloTreeSearch(val maxDepth: Int = 10) {
             tempNode = nextTempNode
         }
         val score = tempNode.state.score
-        var inverseScore = 0.0
-        val surplusTurn = arg.turnCount - 1
-        if (surplusTurn > 0 && !WarUtil.isEnd(tempNode.state.war)) {
-            val war = tempNode.state.war.clone().apply {
-                for (card in rival.playArea.cards) {
-                    card.resetExhausted()
-                }
-                rival.playArea.hero?.resetExhausted()
-                rival.playArea.power?.resetExhausted()
-            }
-            val tempMe = war.me
-            val tempPlayer1 = war.player1
-            war.me = war.rival
-            war.rival = tempMe
-            war.player1 = war.player2
-            war.player2 = tempPlayer1
-            val nodes =
-                MonteCarloTreeSearch(maxDepth).getBestActions(
-                    tempNode.state.war,
-                    Arg(0, surplusTurn, arg.turnAttenuationFactor * arg.turnAttenuationFactor, arg.countPerTurn)
-                )
-            if (nodes.isNotEmpty()) {
-                val lastNode = nodes.last()
-                inverseScore = lastNode.state.score * arg.turnAttenuationFactor
-//                println("inverseScore:" + inverseScore)
-            }
-        }
-        return score - inverseScore > rootNode.state.score
+//        var inverseScore = 0.0
+//        val surplusTurn = arg.turnCount - 1
+//        if (surplusTurn > 0 && !MCTSUtil.isEnd(tempNode.state.war)) {
+//            val war = tempNode.state.war.clone().apply {
+//                for (card in rival.playArea.cards) {
+//                    card.resetExhausted()
+//                }
+//                rival.playArea.hero?.resetExhausted()
+//                rival.playArea.power?.resetExhausted()
+//            }
+//            war.exchangePlayer()
+//            val nodes =
+//                MonteCarloTreeSearch(maxDepth).getBestActions(
+//                    tempNode.state.war,
+//                    MCTSArg(
+//                        0,
+//                        surplusTurn,
+//                        arg.turnFactor * arg.turnFactor,
+//                        arg.countPerTurn,
+//                        arg.scoreCalculator
+//                    )
+//                )
+//            if (nodes.isNotEmpty()) {
+//                val lastNode = nodes.last()
+//                inverseScore = lastNode.state.score * arg.turnFactor
+//            }
+//        }
+        return score > rootNode.state.score
     }
 
-    private fun backPropagation(node: MonteCarloTreeNode, win: Boolean) {
+    private fun backPropagation(node: MonteCarloTreeNode, win: Boolean?) {
         var tempNode: MonteCarloTreeNode? = node
         while (tempNode != null) {
-            tempNode.state.increaseVisit()
-            if (win) {
-                tempNode.state.increaseWin()
-            }
+            tempNode.state.update(win)
             tempNode = tempNode.parent
         }
     }
@@ -156,21 +153,21 @@ class MonteCarloTreeSearch(val maxDepth: Int = 10) {
     }
 
     fun getBestActions(
-        war: War, arg: Arg
+        war: War, arg: MCTSArg
     ): MutableList<MonteCarloTreeNode> {
-        val rootNode = MonteCarloTreeNode(war.clone(), InitAction)
+        val rootNode = MonteCarloTreeNode(war.clone(), InitAction, arg)
         var node: MonteCarloTreeNode
         var totalCount = 0
-        var win = false
 
         val runnable = Runnable {
             node = select(rootNode, totalCount)
+            var win: Boolean? = null
             if (!node.isEnd()) {
                 expand(node)?.let {
                     node = it
+                    win = simulate(node, rootNode, arg)
                 }
             }
-            win = simulate(node, rootNode, arg)
             backPropagation(node, win)
             totalCount++
         }
@@ -188,10 +185,5 @@ class MonteCarloTreeSearch(val maxDepth: Int = 10) {
         return buildBestActions(rootNode, totalCount)
     }
 
-    data class Arg(
-        val thinkingTime: Int,
-        val turnCount: Int,
-        val turnAttenuationFactor: Double,
-        val countPerTurn: Int,
-    )
 }
+

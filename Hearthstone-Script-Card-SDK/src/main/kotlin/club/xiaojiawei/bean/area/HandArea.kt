@@ -22,7 +22,7 @@ class HandArea : Area {
     ) : super(maxSize, defaultMaxSize, oldMaxSize, player, cards, zeroCards, false)
 
     fun deepClone(player: Player = this.player, containZeroCards: Boolean = false): HandArea {
-        return HandArea(
+        val area = HandArea(
             maxSize,
             defaultMaxSize,
             oldMaxSize,
@@ -30,5 +30,9 @@ class HandArea : Area {
             deepCloneCards(),
             if (containZeroCards) deepZeroCards() else zeroCards
         )
+        for (card in area.cards) {
+            card.area = area
+        }
+        return area
     }
 }

@@ -27,7 +27,7 @@ class RemovedfromgameArea : Area {
     }
 
     fun deepClone(player: Player = this.player, containZeroCards: Boolean = false): RemovedfromgameArea {
-        return RemovedfromgameArea(
+        val area = RemovedfromgameArea(
             maxSize,
             defaultMaxSize,
             oldMaxSize,
@@ -35,6 +35,10 @@ class RemovedfromgameArea : Area {
             deepCloneCards(),
             if (containZeroCards) deepZeroCards() else zeroCards
         )
+        for (card in area.cards) {
+            card.area = area
+        }
+        return area
     }
 
 }

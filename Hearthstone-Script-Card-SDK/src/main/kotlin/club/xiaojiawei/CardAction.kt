@@ -1,8 +1,15 @@
 package club.xiaojiawei
 
 import club.xiaojiawei.bean.Action
+import club.xiaojiawei.bean.AttackAction
 import club.xiaojiawei.bean.Card
+import club.xiaojiawei.bean.PlayAction
+import club.xiaojiawei.config.log
 import club.xiaojiawei.enums.CardTypeEnum
+import club.xiaojiawei.status.War
+import club.xiaojiawei.util.CardUtil
+import club.xiaojiawei.util.isFalse
+import club.xiaojiawei.util.isTrue
 import java.util.function.Supplier
 
 /**
@@ -37,17 +44,98 @@ abstract class CardAction(createDefaultAction: Boolean = true) {
      * belongCard被打出或使用的所有可能动作
      * 例如：belongCard为老红龙，那么此时可以返回两个action，一个action为指定敌方英雄，一个action为指定己方英雄
      * 例如：belongCard为萨满基础技能时，那么此时至多可以返回一个action，即在战场未满的情况下生成图腾至战场这个action
+     * @return 返回null表示
      */
-    fun createPlayActions(): List<Action>? {
-        return null
+    open fun generatePlayActions(war: War): List<Action> {
+        return belongCard?.let {
+            val entityId = it.entityId
+            listOf(
+                PlayAction({ war ->
+                    war.me.handArea.findByEntityId(entityId)?.let { card ->
+                        log.info { "打出$card" }
+                        card.action.power()
+                    } ?: let {
+                        log.warn { "查询手中卡牌失败" }
+                    }
+                }, { war ->
+                    val me = war.me
+                    val rival = war.rival
+                    me.handArea.removeByEntityId(entityId)?.let { card ->
+                        if (card.cardType === CardTypeEnum.MINION || card.cardType === CardTypeEnum.LOCATION) {
+                            me.playArea.add(card).isFalse {
+                                log.warn { "添加战场卡牌失败" }
+                            }
+                        }
+                        me.resourcesUsed += card.cost
+                    } ?: let {
+                        log.warn { "移除手中卡牌失败" }
+                    }
+                })
+            )
+        } ?: emptyList()
     }
 
     /**
      * belongCard攻击的所有可能动作
      * 例如：敌方战场有2个可被攻击的非嘲讽随从，此时可以返回三个action，即攻击两个随从的action和攻击敌方英雄的action
      */
-    fun createAttackActions(): List<Action>? {
-        return null
+    open fun generateAttackActions(war: War): List<Action> {
+        return belongCard?.let {
+            val entityId = it.entityId
+            val result = mutableListOf<Action>()
+            val tauntCard = CardUtil.getTauntCards(war.rival.playArea.cards, true)
+            val rivalPlayCards = if (tauntCard.isEmpty()) war.rival.playArea.cards else tauntCard
+            for (rivalPlayCard in rivalPlayCards) {
+                if (rivalPlayCard.canBeAttacked()) {
+                    result.add(
+                        AttackAction({ war ->
+                            war.me.playArea.findByEntityId(entityId)?.let { myCard ->
+                                war.rival.playArea.findByEntityId(rivalPlayCard.entityId)?.let { rivalCard ->
+                                    log.info { "${myCard}攻击${rivalCard}" }
+                                    myCard.action.attack(rivalCard)
+                                } ?: let {
+                                    log.warn { "查找敌方战场卡牌失败" }
+                                }
+                            } ?: let {
+                                log.warn { "查找我方战场卡牌失败" }
+                            }
+                        }, { war ->
+                            war.me.playArea.findByEntityId(entityId)?.let { myCard ->
+                                war.rival.playArea.findByEntityId(rivalPlayCard.entityId)?.let { rivalCard ->
+                                    CardUtil.simulateAttack(myCard, rivalCard, true)
+                                }
+                            } ?: let {
+                                log.warn { "查找战场卡牌失败" }
+                            }
+                        })
+                    )
+                }
+            }
+            if (tauntCard.isEmpty()) {
+                war.rival.playArea.hero?.let { rivalHero ->
+                    rivalHero.canBeAttacked().isTrue {
+                        result.add(
+                            AttackAction({ war ->
+                                war.me.playArea.findByEntityId(entityId)?.let { myCard ->
+                                    log.info { "${myCard}攻击${war.rival.playArea.hero}" }
+                                    myCard.action.attack(war.rival.playArea.hero)
+                                } ?: let {
+                                }
+                            }, { war ->
+                                war.rival.playArea.hero?.let { rivalHero ->
+                                    war.me.playArea.findByEntityId(entityId)?.let { myCard ->
+                                        CardUtil.simulateAttack(myCard, rivalHero, true)
+                                    } ?: let {
+                                        log.warn { "查找战场卡牌失败" }
+                                    }
+                                }
+                            })
+                        )
+                    }
+                }
+            }
+            result
+        } ?: emptyList()
     }
 
     /**

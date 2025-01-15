@@ -63,10 +63,10 @@ class War(var allowLog: Boolean = false) : Cloneable {
     var rival: Player = Player.INVALID_PLAYER
 
     @Volatile
-    var player1: Player = Player("1")
+    var player1: Player = Player("1", allowLog = true)
 
     @Volatile
-    var player2: Player = Player("2")
+    var player2: Player = Player("2", allowLog = true)
 
     /**
      * 总回合数
@@ -110,18 +110,27 @@ class War(var allowLog: Boolean = false) : Cloneable {
     @Volatile
     var currentRunMode: RunModeEnum? = null
 
+    fun exchangePlayer() {
+        val tempMe = me
+        me = rival
+        rival = tempMe
+        val tempPlayer1 = player1
+        player1 = player2
+        player2 = tempPlayer1
+    }
+
     public override fun clone(): War {
-        val clone = WarMapper.INSTANCE.clone(this)
-        val oldMe = clone.me
-        clone.me = clone.me.clone()
-        clone.rival = clone.rival.clone()
-        if (oldMe == clone.player1) {
-            clone.player1 = clone.me
-            clone.player2 = clone.rival
+        val newWar = WarMapper.INSTANCE.clone(this)
+        val oldMe = newWar.me
+        newWar.me = newWar.me.clone()
+        newWar.rival = newWar.rival.clone()
+        if (oldMe == newWar.player1) {
+            newWar.player1 = newWar.me
+            newWar.player2 = newWar.rival
         } else {
-            clone.player1 = clone.rival
-            clone.player2 = clone.me
+            newWar.player1 = newWar.rival
+            newWar.player2 = newWar.me
         }
-        return clone
+        return newWar
     }
 }
