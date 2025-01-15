@@ -22,7 +22,8 @@
     </fx:define>
     <SplitPane dividerPositions="0.6" styleClass="split-pane-line">
         <VBox minWidth="0">
-            <TableView fx:id="cardTable" styleClass="table-view-idea, table-view-idea-tiny, table-view-idea-upright" VBox.vgrow="ALWAYS">
+            <TableView fx:id="cardTable" styleClass="table-view-idea, table-view-idea-tiny, table-view-idea-upright"
+                       VBox.vgrow="ALWAYS">
                 <columns>
                     <TableColumn minWidth="${colMinWeight}" prefWidth="${colMinWeight}" fx:id="noCol"/>
                     <TableColumn minWidth="${colMinWeight}" fx:id="cardIdCol" text="ID"/>
@@ -88,11 +89,15 @@
                 </Button>
             </VBox>
             <VBox HBox.hgrow="ALWAYS">
-                <TableView fx:id="weightTable" styleClass="table-view-idea, table-view-idea-tiny, table-view-idea-upright" VBox.vgrow="ALWAYS">
+                <TableView fx:id="weightTable"
+                           styleClass="table-view-idea, table-view-idea-tiny, table-view-idea-upright"
+                           VBox.vgrow="ALWAYS">
                     <columns>
                         <TableColumn minWidth="${colMinWeight}" prefWidth="${colMinWeight}" fx:id="weightNoCol"/>
-                        <TableColumn minWidth="${colMinWeight}" prefWidth="${colMinWeight}" fx:id="weightCardIdCol" text="ID"/>
-                        <TableColumn minWidth="${colMinWeight}" prefWidth="${colMinWeight}" fx:id="weightNameCol" text="名字"/>
+                        <TableColumn minWidth="${colMinWeight}" prefWidth="${colMinWeight}" fx:id="weightCardIdCol"
+                                     text="ID"/>
+                        <TableColumn minWidth="${colMinWeight}" prefWidth="${colMinWeight}" fx:id="weightNameCol"
+                                     text="名字"/>
                         <TableColumn minWidth="${colMinWeight}" prefWidth="50" fx:id="weightCol">
                             <graphic>
                                 <Label text="权重" contentDisplay="RIGHT">
@@ -112,7 +117,8 @@
                                         <HelpIco scaleX="${icoScale}" scaleY="${icoScale}"/>
                                     </graphic>
                                     <tooltip>
-                                        <Tooltip text="衡量卡牌出牌顺序，比如本回合确定要出船载火炮和南海船工，如果船载火炮的使用权重大，将会先出船载火炮再出南海船工"/>
+                                        <Tooltip
+                                                text="衡量卡牌出牌顺序，比如本回合确定要出船载火炮和南海船工，如果船载火炮的使用权重大，将会先出船载火炮再出南海船工"/>
                                     </tooltip>
                                 </Label>
                             </graphic>
@@ -149,6 +155,6 @@
         </HBox>
     </SplitPane>
     <NotificationManager fx:id="notificationManager" notificationPos="BOTTOM_CENTER">
-        <NotificationFactory showingCloseBtn="false" size="SMALL"/>
+        <NotificationFactory showingCloseBtn="true" size="SMALL"/>
     </NotificationManager>
 </StackPane>

@@ -172,19 +172,12 @@ class MonteCarloTreeSearch(val maxDepth: Int = 10) {
                 }
             }
             backPropagation(node, win)
+        }
+        val endTime = System.currentTimeMillis() + arg.thinkingTime
+        while (totalCount < arg.countPerTurn || System.currentTimeMillis() < endTime) {
+            runnable.run()
             totalCount++
         }
-        if (arg.thinkingTime > 0) {
-            val endTime = System.currentTimeMillis() + arg.thinkingTime
-            while (System.currentTimeMillis() < endTime) {
-                runnable.run()
-            }
-        } else {
-            while (totalCount < arg.countPerTurn) {
-                runnable.run()
-            }
-        }
-
         return buildBestActions(rootNode, totalCount)
     }
 

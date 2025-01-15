@@ -52,7 +52,7 @@
                             <Tooltip text="每次选择的卡组在当前页的第几号位"/>
                         </tooltip>
                     </Label>
-                    <ComboBox fx:id="deckPosComboBox" styleClass="combo-box-ui, combo-box-ui-normal, combo-box-ui-small">
+                    <ComboBox fx:id="deckPosComboBox" styleClass="combo-box-ui, combo-box-ui-small">
                         <items>
                             <FXCollections fx:factory="observableArrayList">
                                 <String fx:value="1"/>
