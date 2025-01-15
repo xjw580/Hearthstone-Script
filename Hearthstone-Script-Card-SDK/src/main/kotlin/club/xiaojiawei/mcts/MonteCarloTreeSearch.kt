@@ -155,7 +155,10 @@ class MonteCarloTreeSearch(val maxDepth: Int = 10) {
     fun getBestActions(
         war: War, arg: MCTSArg
     ): MutableList<MonteCarloTreeNode> {
-        val rootNode = MonteCarloTreeNode(war.clone(), InitAction, arg)
+        val newWar = war.clone()
+//        因为对手手牌不可知，所以去除模拟
+        newWar.rival.handArea.cards.clear()
+        val rootNode = MonteCarloTreeNode(newWar, InitAction, arg)
         var node: MonteCarloTreeNode
         var totalCount = 0
 

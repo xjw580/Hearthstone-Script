@@ -59,13 +59,21 @@ class MonteCarloTreeNode(
             )
             val newWar = war.clone()
             newWar.exchangePlayer()
-//            todo 移除对手手牌，重置战场疲劳
+            val me = newWar.me
+//            重置战场疲劳
+            me.playArea.cards.forEach { card ->
+                card.resetExhausted()
+            }
+            me.playArea.hero?.resetExhausted()
+            me.playArea.power?.resetExhausted()
+            me.playArea.weapon?.resetExhausted()
+
             val monteCarloTreeSearch = MonteCarloTreeSearch(maxDepth = 10)
             val bestActions = monteCarloTreeSearch.getBestActions(newWar, arg)
-            if (bestActions.isEmpty()) {
-                return currentScore
+            return if (bestActions.isEmpty()) {
+                currentScore
             } else {
-                return currentScore - bestActions.last().state.score * arg.turnFactor
+                currentScore - bestActions.last().state.score * arg.turnFactor
             }
         } else {
             return currentScore
