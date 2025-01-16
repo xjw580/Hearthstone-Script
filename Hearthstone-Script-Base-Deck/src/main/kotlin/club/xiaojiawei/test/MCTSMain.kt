@@ -157,6 +157,61 @@ fun createMCTSWar(): War {
 }
 
 fun main() {
+//    val map = mutableMapOf<File, MutableList<File>>()
+//    val file = File("D:\\音乐")
+//    val listFiles = file.listFiles()
+//    val regex = "\\(\\d+\\)\$".toRegex()
+//    listFiles?.forEach { file ->
+//        file?.let { it ->
+//            if (it.isDirectory) return@let
+//            val name = it.name
+//            val dotIndex = name.lastIndexOf(".")
+//            if (dotIndex < 0) return@let
+//            val suffix = name.substring(dotIndex)
+//            val prefix = name.substring(0, dotIndex)
+//
+//            val key = if (prefix.contains(regex)) {
+//                it.parentFile.resolve(prefix.replace(regex, "").trim())
+//            } else {
+//                it.parentFile.resolve(prefix.replace(regex, "").trim())
+//            }
+//            var files = map[key]
+//            if (files == null) {
+//                files = mutableListOf()
+//                map[key] = files
+//            }
+//            files.add(it)
+//        }
+//    }
+//    map.forEach { (key, files) ->
+//        var maxSize = -1L
+//        var maxFile: File? = null
+//        files.forEach { file ->
+//            if (file.length() > maxSize) {
+//                maxSize = file.length()
+//                maxFile = file
+//            }
+//        }
+//        maxFile?.let { file ->
+//            files.forEach { f ->
+//                if (f != file) {
+//                    println("delete ${f}")
+//                    f.delete()
+//                }
+//            }
+//            val name = file.name
+//            val dotIndex = name.lastIndexOf(".")
+//            if (dotIndex < 0) return@let
+//            val suffix = name.substring(dotIndex)
+//            val targetFile = File(key.absolutePath + suffix)
+//            if (file.renameTo(targetFile)) {
+//                println("rename: ${file.name} to ${targetFile.name}")
+//            } else {
+//                println("failed rename: ${file.name} to ${targetFile.name}")
+//            }
+//        }
+//    }
+//    if (true) return
     val mctsWar = createMCTSWar()
 
     val monteCarloTreeSearch = MonteCarloTreeSearch()

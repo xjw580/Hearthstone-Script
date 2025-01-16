@@ -10,8 +10,6 @@ import club.xiaojiawei.hsscript.bean.Release
 import club.xiaojiawei.hsscript.config.InitializerConfig
 import club.xiaojiawei.hsscript.core.Core
 import club.xiaojiawei.hsscript.data.GAME_CN_NAME
-import club.xiaojiawei.hsscript.data.IMG_PATH
-import club.xiaojiawei.hsscript.data.SCRIPT_NAME
 import club.xiaojiawei.hsscript.dll.SystemDll
 import club.xiaojiawei.hsscript.dll.ZLaunchDll
 import club.xiaojiawei.hsscript.enums.ConfigEnum
@@ -29,7 +27,6 @@ import club.xiaojiawei.hsscript.utils.WindowUtil.getStage
 import club.xiaojiawei.hsscript.utils.WindowUtil.hideStage
 import club.xiaojiawei.hsscript.utils.WindowUtil.showStage
 import club.xiaojiawei.util.isFalse
-import com.sun.jna.WString
 import javafx.application.Application
 import javafx.application.Platform
 import javafx.beans.value.ChangeListener
@@ -39,7 +36,6 @@ import javafx.stage.Stage
 import java.awt.MenuItem
 import java.awt.event.ActionEvent
 import java.awt.event.MouseEvent
-import java.nio.file.Path
 import java.util.function.Consumer
 import java.util.function.Supplier
 import javax.swing.AbstractAction
@@ -57,7 +53,6 @@ class MainApplication : Application() {
     var startUpVThread: Thread? = null
 
     override fun start(stage: Stage?) {
-        showStartupPage()
         startUpVThread = Thread.ofVirtual().start {
             var progressValue = 0.0
             while (!Thread.interrupted()) {
@@ -77,22 +72,11 @@ class MainApplication : Application() {
         showMainPage()
     }
 
-    private fun showStartupPage() {
-        val scale = Screen.getPrimary().outputScaleX
-        ZLaunchDll.INSTANCE.ShowPage(
-            WString(Path.of(IMG_PATH, "startup.jpg").toString()),
-            WString(SystemUtil.getProgramIconFile().absolutePath),
-            WString(SCRIPT_NAME),
-            (558 * scale).toInt(),
-            (400 * scale).toInt()
-        )
-    }
-
     private fun showMainPage() {
         val stage = buildStage(WindowEnum.MAIN)
         mainShowingListener =
-            ChangeListener { observableValue: ObservableValue<out Boolean?>?, aBoolean: Boolean?, t1: Boolean ->
-                if (t1) {
+            ChangeListener { observableValue: ObservableValue<out Boolean?>, aBoolean: Boolean?, t1: Boolean? ->
+                if (t1 != null && t1) {
                     stage.showingProperty().removeListener(mainShowingListener)
                     mainShowingListener = null
                     afterShowing()
