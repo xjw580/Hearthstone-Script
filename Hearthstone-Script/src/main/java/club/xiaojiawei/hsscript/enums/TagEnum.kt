@@ -229,6 +229,15 @@ enum class TagEnum(
         ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
             extraEntity.extraCard.card.health = value.toInt()
         }),
+    DURABILITY(
+        "耐久",
+        TagChangeHandler { card: Card?, tagChangeEntity: TagChangeEntity, war: War, player: Player?, area: Area? ->
+            card?.durability = tagChangeEntity.value.toInt()
+            log(player, card, "耐久", tagChangeEntity.value)
+        },
+        ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
+            extraEntity.extraCard.card.durability = value.toInt()
+        }),
     ATK(
         "攻击力",
         TagChangeHandler { card: Card?, tagChangeEntity: TagChangeEntity, war: War, player: Player?, area: Area? ->

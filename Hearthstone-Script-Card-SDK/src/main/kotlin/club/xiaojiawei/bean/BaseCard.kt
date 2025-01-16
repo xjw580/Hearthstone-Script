@@ -35,6 +35,12 @@ open class BaseCard : Entity() {
     var health = 0
 
     /**
+     * 耐久（针对武器取代health）
+     */
+    @Volatile
+    var durability = 0
+
+    /**
      * 护甲
      */
     @Volatile
@@ -393,7 +399,7 @@ open class BaseCard : Entity() {
      * 获取血量
      */
     fun blood(): Int {
-        return health + armor - damage
+        return (if (cardType === CardTypeEnum.WEAPON) durability else health) + armor - damage
     }
 
     fun isSurvival(): Boolean {
