@@ -47,28 +47,30 @@ abstract class CardAction(createDefaultAction: Boolean = true) {
      * @return 返回null表示
      */
     open fun generatePlayActions(war: War): List<Action> {
-        return belongCard?.let {
-            val entityId = it.entityId
+        return belongCard?.let { card ->
+            val entityId = card.entityId
+//            由于不知道技能和法术的效果，所有不生成action
+            if (war.me.playArea.power == card || card.cardType === CardTypeEnum.SPELL) {
+                return emptyList()
+            }
             listOf(
                 PlayAction({ war ->
                     war.me.handArea.findByEntityId(entityId)?.let { card ->
                         log.info { "打出$card" }
                         card.action.power()
                     } ?: let {
-                        log.warn { "查询手中卡牌失败" }
+                        log.warn { "查询手中卡牌失败,entityId:${entityId}" }
                     }
                 }, { war ->
                     val me = war.me
-                    val rival = war.rival
                     me.handArea.removeByEntityId(entityId)?.let { card ->
-                        if (card.cardType === CardTypeEnum.MINION || card.cardType === CardTypeEnum.LOCATION) {
-                            me.playArea.add(card).isFalse {
-                                log.warn { "添加战场卡牌失败" }
-                            }
+                        card.isExhausted = true
+                        me.playArea.add(card).isFalse {
+                            log.warn { "添加战场卡牌失败" }
                         }
                         me.resourcesUsed += card.cost
                     } ?: let {
-                        log.warn { "移除手中卡牌失败" }
+                        log.warn { "移除手中卡牌失败,entityId:${entityId}" }
                     }
                 })
             )
@@ -80,8 +82,8 @@ abstract class CardAction(createDefaultAction: Boolean = true) {
      * 例如：敌方战场有2个可被攻击的非嘲讽随从，此时可以返回三个action，即攻击两个随从的action和攻击敌方英雄的action
      */
     open fun generateAttackActions(war: War): List<Action> {
-        return belongCard?.let {
-            val entityId = it.entityId
+        return belongCard?.let { card ->
+            val entityId = card.entityId
             val result = mutableListOf<Action>()
             val tauntCard = CardUtil.getTauntCards(war.rival.playArea.cards, true)
             val rivalPlayCards = if (tauntCard.isEmpty()) war.rival.playArea.cards else tauntCard
@@ -97,7 +99,7 @@ abstract class CardAction(createDefaultAction: Boolean = true) {
                                     log.warn { "查找敌方战场卡牌失败" }
                                 }
                             } ?: let {
-                                log.warn { "查找我方战场卡牌失败" }
+                                log.warn { "查找战场卡牌失败,entityId:${entityId}" }
                             }
                         }, { war ->
                             war.me.playArea.findByEntityId(entityId)?.let { myCard ->
@@ -105,7 +107,7 @@ abstract class CardAction(createDefaultAction: Boolean = true) {
                                     CardUtil.simulateAttack(myCard, rivalCard, true)
                                 }
                             } ?: let {
-                                log.warn { "查找战场卡牌失败" }
+                                log.warn { "查找战场卡牌失败,entityId:${entityId}" }
                             }
                         })
                     )

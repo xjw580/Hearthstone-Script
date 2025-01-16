@@ -174,7 +174,8 @@ class MonteCarloTreeSearch(val maxDepth: Int = 10) {
             backPropagation(node, win)
         }
         val endTime = System.currentTimeMillis() + arg.thinkingTime
-        while (totalCount < arg.countPerTurn || System.currentTimeMillis() < endTime) {
+        while (totalCount < arg.countPerTurn && System.currentTimeMillis() < endTime) {
+            totalCount < arg.countPerTurn
             runnable.run()
             totalCount++
         }

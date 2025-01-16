@@ -34,6 +34,7 @@ object Core {
                 SystemDll.INSTANCE.changeWindow(GAME_HWND, false)
                 WorkListener.working = false
                 Mode.reset()
+                platformRunLater { WindowUtil.getStage(WindowEnum.MAIN)?.show() }
                 log.info { "当前处于【停止】状态" }
             }.isFalse {
                 if (WorkListener.isDuringWorkDate()) {
@@ -63,7 +64,7 @@ object Core {
                     PauseStatus.isPause = true
                 } else if (!PauseStatus.isPause) {
                     WorkListener.working = true
-                    if (ConfigUtil.getBoolean(ConfigEnum.RUNNING_MINIMIZE)){
+                    if (ConfigUtil.getBoolean(ConfigEnum.RUNNING_MINIMIZE)) {
                         platformRunLater {
                             WindowUtil.hideStage(WindowEnum.MAIN)
                         }

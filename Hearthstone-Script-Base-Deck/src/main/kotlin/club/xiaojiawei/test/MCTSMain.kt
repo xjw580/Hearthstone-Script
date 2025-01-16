@@ -47,39 +47,39 @@ fun createMCTSWar(): War {
             card.cardType = CardTypeEnum.HERO
             player.playArea.add(card)
 
-            card = Card(TestCardAction())
-            card.entityId = "1"
-            card.entityName = "myMinion1"
-            card.health = 4
-            card.atc = 3
-            card.cardType = CardTypeEnum.MINION
-            player.playArea.add(card)
-
-            card = Card(TestCardAction())
-            card.entityId = "2"
-            card.entityName = "myMinion2"
-            card.health = 3
-            card.atc = 5
-            card.cardType = CardTypeEnum.MINION
-            player.playArea.add(card)
-
-            card = Card(TestCardAction())
-            card.entityId = "3"
-            card.entityName = "myMinion3"
-            card.health = 5
-            card.atc = 4
-//                card.isWindFury = true
-//                card.isMegaWindfury = true
-            card.cardType = CardTypeEnum.MINION
-            player.playArea.add(card)
-
-            card = Card(TestCardAction())
-            card.entityId = "4"
-            card.entityName = "myMinion4"
-            card.health = 2
-            card.atc = 3
-            card.cardType = CardTypeEnum.MINION
-            player.playArea.add(card)
+//            card = Card(TestCardAction())
+//            card.entityId = "1"
+//            card.entityName = "myMinion1"
+//            card.health = 4
+//            card.atc = 3
+//            card.cardType = CardTypeEnum.MINION
+//            player.playArea.add(card)
+//
+//            card = Card(TestCardAction())
+//            card.entityId = "2"
+//            card.entityName = "myMinion2"
+//            card.health = 3
+//            card.atc = 5
+//            card.cardType = CardTypeEnum.MINION
+//            player.playArea.add(card)
+//
+//            card = Card(TestCardAction())
+//            card.entityId = "3"
+//            card.entityName = "myMinion3"
+//            card.health = 5
+//            card.atc = 4
+////                card.isWindFury = true
+////                card.isMegaWindfury = true
+//            card.cardType = CardTypeEnum.MINION
+//            player.playArea.add(card)
+//
+//            card = Card(TestCardAction())
+//            card.entityId = "4"
+//            card.entityName = "myMinion4"
+//            card.health = 2
+//            card.atc = 3
+//            card.cardType = CardTypeEnum.MINION
+//            player.playArea.add(card)
 
             card = Card(TestCardAction())
             card.entityId = "11"
@@ -87,11 +87,27 @@ fun createMCTSWar(): War {
             card.health = 2
             card.atc = 3
             card.cost = 2
-            card.isExhausted = true
             card.cardType = CardTypeEnum.MINION
             player.handArea.add(card)
 
-            player.resources = 5
+            card = Card(TestCardAction())
+            card.entityId = "12"
+            card.entityName = "myHand2"
+            card.health = 2
+            card.atc = 3
+            card.cost = 3
+            card.cardType = CardTypeEnum.MINION
+            player.handArea.add(card)
+
+            card = Card(TestCardAction())
+            card.entityId = "13"
+            card.entityName = "myHand3"
+            card.cost = 1
+            card.cardType = CardTypeEnum.SPELL
+            player.handArea.add(card)
+
+
+            player.resources = 6
 
             player
         }

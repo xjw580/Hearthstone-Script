@@ -9,7 +9,7 @@ import java.util.function.Function
  */
 data class MCTSArg(
     /**
-     * 模拟时间
+     * 每回合模拟的时间
      */
     val thinkingTime: Int,
     /**
@@ -21,7 +21,7 @@ data class MCTSArg(
      */
     val turnFactor: Double,
     /**
-     * 每回合模拟的次数，仅对第二回合开始生效
+     * 每回合模拟的次数
      */
     val countPerTurn: Int,
     /**

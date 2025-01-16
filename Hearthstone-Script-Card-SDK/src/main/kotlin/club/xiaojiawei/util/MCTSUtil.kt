@@ -2,10 +2,12 @@ package club.xiaojiawei.util
 
 import club.xiaojiawei.bean.Card
 import club.xiaojiawei.bean.Player
-import club.xiaojiawei.bean.TestCardAction
+import club.xiaojiawei.config.log
 import club.xiaojiawei.data.CARD_WEIGHT_TRIE
 import club.xiaojiawei.enums.CardTypeEnum
 import club.xiaojiawei.status.War
+import jdk.internal.org.jline.utils.Colors
+import jdk.internal.org.jline.utils.Colors.s
 import java.util.function.Function
 import kotlin.math.max
 
@@ -54,6 +56,8 @@ object MCTSUtil {
     private const val MEGAWINDFURY_VALUE = 0.9 * BASIC_RATIO
     private const val TITAN_VALUE = 8 * BASIC_RATIO
     private const val TRIGGERVISUAL_VALUE = 0.8 * BASIC_RATIO
+    private const val LIFESTEAL_VALUE = 0.5 * BASIC_RATIO
+    private const val REBORN_VALUE = DEATH_RATTLE_VALUE
 
     private fun calcCardScore(card: Card): Double {
         if (card.isSurvival()) {
@@ -95,6 +99,12 @@ object MCTSUtil {
             }
             if (card.isTriggerVisual) {
                 totalScore += TRIGGERVISUAL_VALUE
+            }
+            if (card.isLifesteal) {
+                totalScore += LIFESTEAL_VALUE * atc
+            }
+            if (card.isReborn) {
+                totalScore += REBORN_VALUE
             }
             totalScore += card.spellPower * 1
             return totalScore * cardRatio

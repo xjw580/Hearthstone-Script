@@ -51,9 +51,9 @@ class MonteCarloTreeNode(
         val surplusTurn = arg.turnCount - 1
         if (surplusTurn > 0) {
             arg = MCTSArg(
-                0,
+                (arg.thinkingTime * arg.turnFactor).toInt(),
                 surplusTurn,
-                arg.turnFactor * arg.turnFactor,
+                arg.turnFactor,
                 (arg.countPerTurn * arg.turnFactor).toInt(),
                 arg.scoreCalculator
             )
