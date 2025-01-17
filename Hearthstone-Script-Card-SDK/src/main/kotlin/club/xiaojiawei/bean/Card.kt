@@ -37,9 +37,9 @@ class Card(var action: CardAction) : BaseCard(), Cloneable {
     public override fun clone(): Card {
         try {
             val card = Card(this.action.createNewInstance())
+            BaseCardMapper.INSTANCE.update(this, card)
             card.attackCount = attackCount
             card.action.belongCard = card
-            BaseCardMapper.INSTANCE.update(this, card)
             return card
         } catch (e: CloneNotSupportedException) {
             throw RuntimeException(e)

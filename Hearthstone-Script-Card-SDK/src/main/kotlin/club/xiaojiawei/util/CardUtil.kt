@@ -1,7 +1,9 @@
 package club.xiaojiawei.util
 
 import club.xiaojiawei.bean.Card
+import club.xiaojiawei.bean.area.PlayArea
 import club.xiaojiawei.enums.CardTypeEnum
+import club.xiaojiawei.status.War
 
 /**
  * @author 肖嘉威
@@ -19,7 +21,10 @@ object CardUtil {
         return result
     }
 
-    fun simulateAttack(myCard: Card, rivalCard: Card, deathRemove: Boolean = false) {
+    fun simulateAttack(war: War, myCard: Card, rivalCard: Card, deathRemove: Boolean = false) {
+        val myPlayArea = myCard.area
+        var myWeapon: Card? = null
+
 //        处理我方情况
         if (myCard.isImmuneWhileAttacking || myCard.isImmune) {
         } else if (myCard.isDivineShield) {
@@ -30,6 +35,16 @@ object CardUtil {
             myCard.damage = myCard.health + myCard.armor
         } else {
             myCard.damage += rivalCard.atc
+        }
+
+//        处理我方武器情况
+        if (myCard.cardType === CardTypeEnum.HERO) {
+            if (myPlayArea is PlayArea) {
+                myPlayArea.weapon?.let {
+                    it.damage++
+                    myWeapon = it
+                }
+            }
         }
 
 //        处理敌方情况
@@ -45,11 +60,12 @@ object CardUtil {
 
 //        处理我方可攻击次数
         myCard.attackCount++
-        if (myCard.isMegaWindfury) {
+
+        if (myCard.isMegaWindfury || (myCard.cardType === CardTypeEnum.HERO && myPlayArea is PlayArea && myPlayArea.weapon?.isMegaWindfury == true)) {
             if (myCard.attackCount >= 4) {
                 myCard.isExhausted = true
             }
-        } else if (myCard.isWindFury) {
+        } else if (myCard.isWindFury || (myCard.cardType === CardTypeEnum.HERO && myPlayArea is PlayArea && myPlayArea.weapon?.isWindFury == true)) {
             if (myCard.attackCount >= 2) {
                 myCard.isExhausted = true
             }
@@ -59,11 +75,19 @@ object CardUtil {
 
 //        死亡判断
         if (deathRemove) {
+            myWeapon?.let {
+                if (!it.isSurvival()) {
+                    myPlayArea?.removeByEntityId(myCard.entityId)
+                    it.action.deathRattleSettlement(war, war.me)
+                }
+            }
             if (!myCard.isSurvival()) {
-                myCard.area?.removeByEntityId(myCard.entityId)
+                myPlayArea?.removeByEntityId(myCard.entityId)
+                myCard.action.deathRattleSettlement(war, war.me)
             }
             if (!rivalCard.isSurvival()) {
                 rivalCard.area?.removeByEntityId(rivalCard.entityId)
+                rivalCard.action.deathRattleSettlement(war, war.rival)
             }
         }
     }

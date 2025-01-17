@@ -46,10 +46,12 @@ val CORE_THREAD_POOL: ThreadPoolExecutor by lazy {
 }
 
 val CALC_THREAD_POOL: ThreadPoolExecutor by lazy {
-    ThreadPoolExecutor(8, 16, 60, TimeUnit.SECONDS, ArrayBlockingQueue(8), object : ThreadFactory {
+    ThreadPoolExecutor(8, 24, 60, TimeUnit.SECONDS, ArrayBlockingQueue(8), object : ThreadFactory {
         private val num = AtomicInteger(0)
         override fun newThread(r: Runnable): Thread {
             return ReadableThread(r, "CalcPool Thread-" + num.getAndIncrement())
         }
     }, ThreadPoolExecutor.AbortPolicy())
 }
+
+val VIRTUAL_THREAD_POOL = Executors.newThreadPerTaskExecutor(Thread.ofVirtual().name("VPool Thread-", 0).factory());

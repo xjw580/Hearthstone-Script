@@ -51,11 +51,12 @@ class MonteCarloTreeNode(
         val surplusTurn = arg.turnCount - 1
         if (surplusTurn > 0) {
             arg = MCTSArg(
-                (arg.thinkingTime * arg.turnFactor).toInt(),
+                (arg.thinkingSecTime * arg.turnFactor).toInt(),
                 surplusTurn,
-                arg.turnFactor,
+                arg.turnFactor * arg.turnFactor,
                 (arg.countPerTurn * arg.turnFactor).toInt(),
-                arg.scoreCalculator
+                arg.scoreCalculator,
+                arg.enableMultiThread
             )
             val newWar = war.clone()
             newWar.exchangePlayer()
@@ -67,6 +68,8 @@ class MonteCarloTreeNode(
             me.playArea.hero?.resetExhausted()
             me.playArea.power?.resetExhausted()
             me.playArea.weapon?.resetExhausted()
+
+            newWar.rival.playArea.hero?.atc = 0
 
             val monteCarloTreeSearch = MonteCarloTreeSearch(maxDepth = 10)
             val bestActions = monteCarloTreeSearch.getBestActions(newWar, arg)
@@ -92,22 +95,27 @@ class MonteCarloTreeNode(
             result.add(TurnOverAction)
             handArea.cards.forEach { card ->
                 if (me.usableResource >= card.cost && (!playArea.isFull || card.cardType === CardTypeEnum.HERO || card.cardType === CardTypeEnum.SPELL || card.cardType === CardTypeEnum.WEAPON)) {
-                    result.addAll(card.action.generatePlayActions(war))
+                    result.addAll(card.action.generatePlayActions(war, me))
                 }
             }
             playArea.cards.forEach { card ->
                 if (card.canAttack()) {
-                    result.addAll(card.action.generateAttackActions(war))
+                    result.addAll(card.action.generateAttackActions(war, me))
+                } else if (card.canPower()) {
+                    result.addAll(card.action.generatePowerActions(war, me))
                 }
             }
             playArea.hero?.let { myHero ->
-                if (myHero.canAttack()) {
-                    result.addAll(myHero.action.generateAttackActions(war))
+                if (myHero.canAttack() || (myHero.canAttack(ignoreAtc = true) && playArea.weapon?.canAttack(
+                        ignoreExhausted = true
+                    ) == true)
+                ) {
+                    result.addAll(myHero.action.generateAttackActions(war, me))
                 }
             }
             playArea.power?.let { myPower ->
-                if (me.usableResource >= myPower.cost && !myPower.isExhausted) {
-                    result.addAll(myPower.action.generatePlayActions(war))
+                if (me.usableResource >= myPower.cost && myPower.canPower()) {
+                    result.addAll(myPower.action.generatePowerActions(war, me))
                 }
             }
         }
@@ -131,10 +139,10 @@ class MonteCarloTreeNode(
      * 扩展动作至树中
      * @return 扩展后的新节点，为null表示扩展失败
      */
-    fun expand(action: Action): MonteCarloTreeNode? {
+    fun expand(action: Action, arg: MCTSArg = this.arg): MonteCarloTreeNode? {
         val index = actions.indexOf(action)
         if (index >= 0 && !isExpanded(index)) {
-            val nextNode = buildNextNode(action)
+            val nextNode = buildNextNode(action, arg)
             this.actionsExpandedFlag[index] = true
             this.children.add(nextNode)
             return nextNode

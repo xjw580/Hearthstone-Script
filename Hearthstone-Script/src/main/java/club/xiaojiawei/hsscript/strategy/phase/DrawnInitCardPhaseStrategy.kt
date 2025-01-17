@@ -3,6 +3,7 @@ package club.xiaojiawei.hsscript.strategy.phase
 import club.xiaojiawei.bean.Entity
 import club.xiaojiawei.bean.isValid
 import club.xiaojiawei.config.log
+import club.xiaojiawei.data.COIN_CARD_ID
 import club.xiaojiawei.enums.StepEnum
 import club.xiaojiawei.enums.WarPhaseEnum
 import club.xiaojiawei.hsscript.bean.log.ExtraEntity
@@ -90,6 +91,7 @@ object DrawnInitCardPhaseStrategy : AbstractPhaseStrategy() {
                     me.gameId = firstPlayerGameId
                     log.info { "我方游戏id：$firstPlayerGameId" }
                 }
+                card.cardId = COIN_CARD_ID
                 if (me.gameId == firstPlayerGameId
                     || (rival.gameId.isNotBlank() && rival.gameId != firstPlayerGameId)
                 ) {

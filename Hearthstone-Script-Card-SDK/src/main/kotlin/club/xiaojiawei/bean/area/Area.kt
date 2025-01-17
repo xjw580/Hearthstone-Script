@@ -23,6 +23,12 @@ abstract class Area @JvmOverloads constructor(
     var allowLog: Boolean = true,
 ) {
 
+    init {
+        cards.forEach { card ->
+            addZone(card)
+        }
+    }
+
     @Volatile
     var maxSize = maxSize
         set(value) {

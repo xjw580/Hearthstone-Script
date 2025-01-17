@@ -9,9 +9,9 @@ import java.util.function.Function
  */
 data class MCTSArg(
     /**
-     * 每回合模拟的时间
+     * 总模拟的时间
      */
-    val thinkingTime: Int,
+    val thinkingSecTime: Int,
     /**
      * 模拟的回合数
      */
@@ -25,7 +25,12 @@ data class MCTSArg(
      */
     val countPerTurn: Int,
     /**
-     * 评分计算器
+     * 评分计算器，(输入游戏状态，返回游戏状态的评分，一个好的评分系统应该至少考虑战场和手牌)
      */
-    val scoreCalculator: Function<War, Double>
-)
+    val scoreCalculator: Function<War, Double>,
+    /**
+     * 开启多线程计算
+     */
+    val enableMultiThread: Boolean,
+
+    )

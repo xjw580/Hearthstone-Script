@@ -51,9 +51,22 @@ class Player(
     @Volatile
     var maxResources = 10
 
+    /**
+     * 回合开始的水晶数
+     */
     @Volatile
     var resources = 0
 
+    /**
+     * 临时水晶
+     * 幸运币就是加的这个
+     */
+    @Volatile
+    var tempResources = 0
+
+    /**
+     * 已使用的水晶
+     */
     @Volatile
     var resourcesUsed = 0
         set(value) {
@@ -62,6 +75,12 @@ class Player(
             }
             field = value
         }
+
+    /**
+     * 当前可用水晶数
+     */
+    val usableResource: Int
+        get() = resources - resourcesUsed + tempResources
 
     /**
      * 回合开始过载水晶数（回合开始时才能获取到）
@@ -82,9 +101,6 @@ class Player(
             }
             field = value
         }
-
-    @Volatile
-    var tempResources = 0
 
     @Volatile
     var timeOut = 0
@@ -110,12 +126,6 @@ class Player(
             }
         }
     }
-
-    /**
-     * 当前可用水晶数
-     */
-    val usableResource: Int
-        get() = resources - resourcesUsed + tempResources
 
     companion object {
         val UNKNOWN_PLAYER: Player = Player("UNKNOWN")

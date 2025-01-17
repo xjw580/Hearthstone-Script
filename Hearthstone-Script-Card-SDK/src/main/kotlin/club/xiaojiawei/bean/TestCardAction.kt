@@ -6,6 +6,9 @@ import club.xiaojiawei.CardAction
  * @author 肖嘉威
  * @date 2025/1/13 18:21
  */
+
+val TEST_CARD_ACTION = TestCardAction()
+
 class TestCardAction : CardAction() {
 
     override fun getCardId(): Array<String> {
@@ -44,7 +47,7 @@ class TestCardAction : CardAction() {
         return this
     }
 
-    override fun lClick(): Boolean {
+    override fun execLClick(): Boolean {
         return true
     }
 }

@@ -34,6 +34,14 @@ open class PlayAction(
     simulate: Consumer<War>
 ) : Action(exec, simulate)
 
+/**
+ * 使用动作
+ */
+open class PowerAction(
+    exec: Consumer<War>,
+    simulate: Consumer<War>
+) : Action(exec, simulate)
+
 private val empty: Consumer<War> = Consumer {}
 
 /**

@@ -110,6 +110,12 @@ class War(var allowLog: Boolean = false) : Cloneable {
     @Volatile
     var currentRunMode: RunModeEnum? = null
 
+    /**
+     * 所生成最大的entityId，entityId越大表明entity生成的时间越晚
+     */
+    @Volatile
+    var maxEntityId: String? = null
+
     fun exchangePlayer() {
         val tempMe = me
         me = rival

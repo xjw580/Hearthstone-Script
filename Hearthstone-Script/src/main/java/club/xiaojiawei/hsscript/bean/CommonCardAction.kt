@@ -210,7 +210,7 @@ class CommonCardAction : CardAction(false) {
         return CommonCardAction()
     }
 
-    override fun lClick(): Boolean {
+    override fun execLClick(): Boolean {
         val cardRect = getCardRect(belongCard)
         if (cardRect.isValid()) {
             cardRect.lClick()

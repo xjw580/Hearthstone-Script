@@ -69,7 +69,7 @@ object PowerLogUtil {
             card.cardIdProperty.addListener { _: ObservableValue<out String?>?, _: String?, _: String? ->
                 setCardAction(card)
             }
-
+            war.maxEntityId = card.entityId
             WarEx.getPlayer(extraEntity.playerId).getArea(extraEntity.extraCard.zone)
                 ?.add(card, extraEntity.extraCard.zonePos)
                 ?: let {

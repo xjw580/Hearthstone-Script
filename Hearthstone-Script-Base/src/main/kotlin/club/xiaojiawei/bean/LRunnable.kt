@@ -15,7 +15,7 @@ class LRunnable(private var task: Runnable?) : Runnable {
             if (e is InterruptedException) {
                 log.warn(e) { "操作中断" }
             } else {
-                log.error(e) { "Runnable发生错误" }
+                log.error(e) { "发生错误" }
             }
         }
     }

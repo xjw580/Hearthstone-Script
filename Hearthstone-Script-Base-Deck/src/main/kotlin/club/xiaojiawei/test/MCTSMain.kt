@@ -47,64 +47,64 @@ fun createMCTSWar(): War {
             card.cardType = CardTypeEnum.HERO
             player.playArea.add(card)
 
+            card = Card(TestCardAction())
+            card.entityId = "1"
+            card.entityName = "myMinion1"
+            card.health = 4
+            card.atc = 3
+            card.cardType = CardTypeEnum.MINION
+            player.playArea.add(card)
+
+            card = Card(TestCardAction())
+            card.entityId = "2"
+            card.entityName = "myMinion2"
+            card.health = 3
+            card.atc = 5
+            card.cardType = CardTypeEnum.MINION
+            player.playArea.add(card)
+
+            card = Card(TestCardAction())
+            card.entityId = "3"
+            card.entityName = "myMinion3"
+            card.health = 5
+            card.atc = 4
+//                card.isWindFury = true
+//                card.isMegaWindfury = true
+            card.cardType = CardTypeEnum.MINION
+            player.playArea.add(card)
+
+            card = Card(TestCardAction())
+            card.entityId = "4"
+            card.entityName = "myMinion4"
+            card.health = 2
+            card.atc = 3
+            card.cardType = CardTypeEnum.MINION
+            player.playArea.add(card)
+
 //            card = Card(TestCardAction())
-//            card.entityId = "1"
-//            card.entityName = "myMinion1"
-//            card.health = 4
-//            card.atc = 3
-//            card.cardType = CardTypeEnum.MINION
-//            player.playArea.add(card)
-//
-//            card = Card(TestCardAction())
-//            card.entityId = "2"
-//            card.entityName = "myMinion2"
-//            card.health = 3
-//            card.atc = 5
-//            card.cardType = CardTypeEnum.MINION
-//            player.playArea.add(card)
-//
-//            card = Card(TestCardAction())
-//            card.entityId = "3"
-//            card.entityName = "myMinion3"
-//            card.health = 5
-//            card.atc = 4
-////                card.isWindFury = true
-////                card.isMegaWindfury = true
-//            card.cardType = CardTypeEnum.MINION
-//            player.playArea.add(card)
-//
-//            card = Card(TestCardAction())
-//            card.entityId = "4"
-//            card.entityName = "myMinion4"
+//            card.entityId = "11"
+//            card.entityName = "myHand1"
 //            card.health = 2
 //            card.atc = 3
+//            card.cost = 2
 //            card.cardType = CardTypeEnum.MINION
-//            player.playArea.add(card)
-
-            card = Card(TestCardAction())
-            card.entityId = "11"
-            card.entityName = "myHand1"
-            card.health = 2
-            card.atc = 3
-            card.cost = 2
-            card.cardType = CardTypeEnum.MINION
-            player.handArea.add(card)
-
-            card = Card(TestCardAction())
-            card.entityId = "12"
-            card.entityName = "myHand2"
-            card.health = 2
-            card.atc = 3
-            card.cost = 3
-            card.cardType = CardTypeEnum.MINION
-            player.handArea.add(card)
-
-            card = Card(TestCardAction())
-            card.entityId = "13"
-            card.entityName = "myHand3"
-            card.cost = 1
-            card.cardType = CardTypeEnum.SPELL
-            player.handArea.add(card)
+//            player.handArea.add(card)
+//
+//            card = Card(TestCardAction())
+//            card.entityId = "12"
+//            card.entityName = "myHand2"
+//            card.health = 2
+//            card.atc = 3
+//            card.cost = 3
+//            card.cardType = CardTypeEnum.MINION
+//            player.handArea.add(card)
+//
+//            card = Card(TestCardAction())
+//            card.entityId = "13"
+//            card.entityName = "myHand3"
+//            card.cost = 1
+//            card.cardType = CardTypeEnum.SPELL
+//            player.handArea.add(card)
 
 
             player.resources = 6
@@ -218,28 +218,28 @@ fun main() {
 
     val start = System.currentTimeMillis()
 
-    val arg = MCTSArg(2 * 1000, 1, 0.5, 50000, MCTSUtil.buildScoreCalculator())
-//    val arg = MCTSArg(10 * 1000, 3, 0.9, 200_000, MCTSUtil.buildScoreCalculator())
+//    val arg = MCTSArg(2 * 1000, 1, 0.5, 50_000, MCTSUtil.buildScoreCalculator())
+    val arg = MCTSArg(15 * 1000, 5, 0.8, 200_000, MCTSUtil.buildScoreCalculator(), true)
     val monteCarloTreeNodes = monteCarloTreeSearch
         .getBestActions(mctsWar, arg)
-    val tempNode: MonteCarloTreeNode? = monteCarloTreeNodes.first()
-    tempNode?.let {
-        val scores = mutableListOf<MutableList<Result>>(
-            mutableListOf(
-                Result(
-                    tempNode.state.score,
-                    tempNode.state.visitCount
-                )
-            )
-        )
-        addNode(tempNode, 1, scores)
-        for ((index, doubles) in scores.withIndex()) {
-            doubles.sortBy { it.visitCount }
-            print("no:$index")
-            print(doubles)
-            println("\n")
-        }
-    }
+//    val tempNode: MonteCarloTreeNode? = monteCarloTreeNodes.first()
+//    tempNode?.let {
+//        val scores = mutableListOf<MutableList<Result>>(
+//            mutableListOf(
+//                Result(
+//                    tempNode.state.score,
+//                    tempNode.state.visitCount
+//                )
+//            )
+//        )
+//        addNode(tempNode, 1, scores)
+//        for ((index, doubles) in scores.withIndex()) {
+//            doubles.sortBy { it.visitCount }
+//            print("no:$index")
+//            print(doubles)
+//            println("\n")
+//        }
+//    }
     println("==================================================================================")
     println("time: ${System.currentTimeMillis() - start}ms")
     println("size:" + monteCarloTreeNodes.size)

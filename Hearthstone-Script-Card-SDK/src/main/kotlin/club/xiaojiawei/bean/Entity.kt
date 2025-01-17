@@ -10,8 +10,10 @@ import java.util.*
  */
 abstract class Entity {
 
+    @Volatile
     var entityId: String = ""
 
+    @Volatile
     var entityName: String = ""
 
     val cardIdProperty: StringProperty = SimpleStringProperty("")

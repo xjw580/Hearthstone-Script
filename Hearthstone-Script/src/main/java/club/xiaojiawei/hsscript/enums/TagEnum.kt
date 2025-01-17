@@ -16,6 +16,7 @@ import club.xiaojiawei.hsscript.data.LOST
 import club.xiaojiawei.hsscript.data.WON
 import club.xiaojiawei.hsscript.interfaces.ExtraEntityHandler
 import club.xiaojiawei.hsscript.interfaces.TagChangeHandler
+import club.xiaojiawei.hsscript.utils.CardUtil
 import club.xiaojiawei.status.War
 import club.xiaojiawei.util.isTrue
 

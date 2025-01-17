@@ -79,7 +79,6 @@ const val CHANGE_ENTITY: String = "CHANGE_ENTITY"
 const val LOST: String = "LOST"
 const val WON: String = "WON"
 const val CONCEDED: String = "CONCEDED"
-const val COIN: String = "COIN"
 
 fun reload() {
     MAX_LOG_SIZE_KB = ConfigUtil.getInt(ConfigEnum.GAME_LOG_LIMIT)

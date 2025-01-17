@@ -1,8 +1,18 @@
 package club.xiaojiawei.mcts
 
 import club.xiaojiawei.bean.InitAction
+import club.xiaojiawei.bean.LRunnable
 import club.xiaojiawei.bean.MCTSArg
+import club.xiaojiawei.config.CALC_THREAD_POOL
 import club.xiaojiawei.status.War
+import club.xiaojiawei.util.randomSelect
+import java.util.*
+import java.util.concurrent.CompletableFuture
+import java.util.concurrent.TimeUnit
+import java.util.function.Function
+import kotlin.math.ceil
+import kotlin.math.floor
+import kotlin.math.min
 import kotlin.random.Random
 
 /**
@@ -10,12 +20,6 @@ import kotlin.random.Random
  * @date 2025/1/10 10:04
  */
 class MonteCarloTreeSearch(val maxDepth: Int = 10) {
-
-    private val random: Random = Random(System.currentTimeMillis())
-
-    private fun <T> randomSelect(list: List<T>): T {
-        return list[random.nextInt(list.size)]
-    }
 
     private fun select(rootNode: MonteCarloTreeNode, totalCount: Int): MonteCarloTreeNode {
         var node: MonteCarloTreeNode = rootNode
@@ -43,7 +47,7 @@ class MonteCarloTreeSearch(val maxDepth: Int = 10) {
         var nextNode: MonteCarloTreeNode? = null
         if (!node.isFullExpanded()) {
             val unExpanded = node.getUnExpanded()
-            val action = randomSelect(unExpanded)
+            val action = unExpanded.randomSelect()
             nextNode = node.expand(action)
         }
         return nextNode
@@ -53,7 +57,7 @@ class MonteCarloTreeSearch(val maxDepth: Int = 10) {
         var tempNode = node
         while (!tempNode.isEnd()) {
             val actions = tempNode.actions
-            val action = randomSelect(actions)
+            val action = actions.randomSelect()
             val nextTempNode = tempNode.buildNextNode(action)
             tempNode = nextTempNode
         }
@@ -101,9 +105,7 @@ class MonteCarloTreeSearch(val maxDepth: Int = 10) {
 
         var maxNode: MonteCarloTreeNode? = rootNode
         var maxScore = Int.MIN_VALUE.toDouble()
-        var maxUCB = rootNode.state.calcUCB(totalCount)
-        var maxVisit = Int.MIN_VALUE
-        val children = rootNode.children.toMutableList()
+        var children = rootNode.children
         while (children.isNotEmpty()) {
             val list = mutableListOf<MonteCarloTreeNode>()
             for (child in children) {
@@ -125,8 +127,7 @@ class MonteCarloTreeSearch(val maxDepth: Int = 10) {
                 }
                 list.addAll(child.children)
             }
-            children.clear()
-            children.addAll(list)
+            children = list
         }
 
         var tempNode: MonteCarloTreeNode? = maxNode
@@ -158,28 +159,91 @@ class MonteCarloTreeSearch(val maxDepth: Int = 10) {
         val newWar = war.clone()
 //        因为对手手牌不可知，所以去除模拟
         newWar.rival.handArea.cards.clear()
-        val rootNode = MonteCarloTreeNode(newWar, InitAction, arg)
-        var node: MonteCarloTreeNode
-        var totalCount = 0
+        val newArg = MCTSArg(
+            arg.thinkingSecTime,
+            arg.turnCount,
+            arg.turnFactor,
+            arg.countPerTurn,
+            arg.scoreCalculator,
+            false
+        )
+        val endTime = System.currentTimeMillis() + newArg.thinkingSecTime
+        val rootNode = MonteCarloTreeNode(newWar, InitAction, newArg)
+        val results = Collections.synchronizedList(mutableListOf<MutableList<MonteCarloTreeNode>>())
+        val tasks = mutableListOf<CompletableFuture<Void>>()
+        val tasker = Function<MonteCarloTreeNode, MutableList<MonteCarloTreeNode>> { newRootNode ->
+            var totalCount = 0
+            var node: MonteCarloTreeNode
 
-        val runnable = Runnable {
-            node = select(rootNode, totalCount)
-            var win: Boolean? = null
-            if (!node.isEnd()) {
-                expand(node)?.let {
-                    node = it
-                    win = simulate(node, rootNode, arg)
+            while (totalCount < newArg.countPerTurn && System.currentTimeMillis() < endTime) {
+                node = select(newRootNode, totalCount)
+                var win: Boolean? = null
+                if (!node.isEnd()) {
+                    expand(node)?.let {
+                        node = it
+                        win = simulate(node, newRootNode, newArg)
+                    }
+                }
+                backPropagation(node, win)
+                totalCount++
+            }
+
+            buildBestActions(newRootNode, totalCount)
+        }
+
+        if (arg.enableMultiThread) {
+            val maxTaskSize = Runtime.getRuntime().availableProcessors()
+            val size = rootNode.actions.size
+            val countPerTask = ceil(size / maxTaskSize.toDouble()).toInt()
+            var index = 0
+            while (index < size) {
+                val endIndex = min(index + countPerTask, size)
+                val rootNodesList = mutableListOf<MonteCarloTreeNode>()
+                val counts = endIndex - index
+                val childArg = MCTSArg(
+                    floor(arg.thinkingSecTime / counts.toDouble()).toInt(),
+                    arg.turnCount,
+                    arg.turnFactor,
+                    floor(arg.countPerTurn / counts.toDouble()).toInt(),
+                    arg.scoreCalculator,
+                    false
+                )
+                for (i in index until endIndex) {
+                    rootNode.expand(rootNode.actions[i], childArg)?.let { newRootNode ->
+                        rootNodesList.add(newRootNode)
+                    }
+                }
+                tasks.add(
+                    CompletableFuture.runAsync(
+                        LRunnable {
+                            rootNodesList.forEach { newRootNode ->
+                                results.add(tasker.apply(newRootNode))
+                            }
+                        }, CALC_THREAD_POOL
+                    )
+                )
+                index = endIndex
+            }
+        } else {
+            results.add(tasker.apply(rootNode))
+        }
+
+        if (tasks.isNotEmpty()) {
+            CompletableFuture.allOf(*tasks.toTypedArray()).get(arg.thinkingSecTime + 5L, TimeUnit.SECONDS)
+        }
+
+        var maxScore = Int.MIN_VALUE.toDouble()
+        var bestResult: MutableList<MonteCarloTreeNode>? = null
+        results.forEach { result ->
+            if (result.isNotEmpty()) {
+                val score = result.last().state.score
+                if (score > maxScore) {
+                    maxScore = score
+                    bestResult = result
                 }
             }
-            backPropagation(node, win)
         }
-        val endTime = System.currentTimeMillis() + arg.thinkingTime
-        while (totalCount < arg.countPerTurn && System.currentTimeMillis() < endTime) {
-            totalCount < arg.countPerTurn
-            runnable.run()
-            totalCount++
-        }
-        return buildBestActions(rootNode, totalCount)
+        return bestResult ?: mutableListOf()
     }
 
 }

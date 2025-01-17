@@ -34,9 +34,6 @@ class GraveyardArea : Area {
             deepCloneCards(),
             if (containZeroCards) deepZeroCards() else zeroCards
         )
-        for (card in area.cards) {
-            card.area = area
-        }
         return area
     }
 }

@@ -9,7 +9,7 @@ import club.xiaojiawei.CardAction
 abstract class ClickPower : CardAction.DefaultCardAction() {
 
     override fun execPower(): Boolean {
-        return lClick()
+        return execLClick()
     }
 
 }

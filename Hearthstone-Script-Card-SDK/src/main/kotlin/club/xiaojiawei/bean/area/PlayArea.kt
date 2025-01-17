@@ -75,17 +75,17 @@ class PlayArea : Area {
     override fun findByEntityId(entityId: String): Card? {
         var card = super.findByEntityId(entityId)
         if (card == null) {
-            if (hero != null && hero!!.entityId == entityId) {
+            if (hero?.entityId == entityId) {
                 card = hero
-            } else if (power != null && power!!.entityId == entityId) {
+            } else if (power?.entityId == entityId) {
                 card = power
-            } else if (weapon != null && weapon!!.entityId == entityId) {
+            } else if (weapon?.entityId == entityId) {
                 card = weapon
-            } else if (heroHide != null && heroHide!!.entityId == entityId) {
+            } else if (heroHide?.entityId == entityId) {
                 card = heroHide
-            } else if (powerHide != null && powerHide!!.entityId == entityId) {
+            } else if (powerHide?.entityId == entityId) {
                 card = powerHide
-            } else if (weaponHide != null && weaponHide!!.entityId == entityId) {
+            } else if (weaponHide?.entityId == entityId) {
                 card = weaponHide
             }
         }
@@ -96,22 +96,22 @@ class PlayArea : Area {
     override fun removeByEntityId(entityId: String): Card? {
         var card = super.removeByEntityId(entityId)
         if (card == null) {
-            if (hero != null && hero!!.entityId == entityId) {
+            if (hero?.entityId == entityId) {
                 card = hero
                 hero = null
-            } else if (power != null && power!!.entityId == entityId) {
+            } else if (power?.entityId == entityId) {
                 card = power
                 power = null
-            } else if (weapon != null && weapon!!.entityId == entityId) {
+            } else if (weapon?.entityId == entityId) {
                 card = weapon
                 weapon = null
-            } else if (heroHide != null && heroHide!!.entityId == entityId) {
+            } else if (heroHide?.entityId == entityId) {
                 card = heroHide
                 heroHide = null
-            } else if (powerHide != null && powerHide!!.entityId == entityId) {
+            } else if (powerHide?.entityId == entityId) {
                 card = powerHide
                 powerHide = null
-            } else if (weaponHide != null && weaponHide!!.entityId == entityId) {
+            } else if (weaponHide?.entityId == entityId) {
                 card = weaponHide
                 weaponHide = null
             }
@@ -134,9 +134,6 @@ class PlayArea : Area {
         area.weapon?.area = area
         area.power = power?.clone()
         area.power?.area = area
-        for (card in area.cards) {
-            card.area = area
-        }
         return area
     }
 }
