@@ -81,9 +81,9 @@ abstract class AbstractLogListener(
                 try {
                     dealNewLog()
                 } catch (e: InterruptedException) {
-                    log.warn(e) { logFileName + "监听器sleep中断" }
+                    log.warn(e) { logFileName + "监听中断" }
                 } catch (e: Exception) {
-                    log.error(e) { logFileName + "监听器发生错误" }
+                    log.error(e) { logFileName + "监听发生错误" }
                 }
             }
         }, listenInitialDelay, listenPeriod, listenTimeUnit)

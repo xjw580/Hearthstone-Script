@@ -84,10 +84,28 @@ object CardUtil {
             if (!myCard.isSurvival()) {
                 myPlayArea?.removeByEntityId(myCard.entityId)
                 myCard.action.deathRattleSettlement(war, war.me)
+                if (myCard.isReborn) {
+                    myCard.apply {
+                        damage = health - 1
+                        armor = 0
+                        isExhausted = true
+                        isReborn = false
+                    }
+                    myPlayArea?.add(myCard)
+                }
             }
             if (!rivalCard.isSurvival()) {
                 rivalCard.area?.removeByEntityId(rivalCard.entityId)
                 rivalCard.action.deathRattleSettlement(war, war.rival)
+                if (rivalCard.isReborn) {
+                    rivalCard.apply {
+                        damage = health - 1
+                        armor = 0
+                        isExhausted = true
+                        isReborn = false
+                    }
+                    war.rival.playArea.add(rivalCard)
+                }
             }
         }
     }

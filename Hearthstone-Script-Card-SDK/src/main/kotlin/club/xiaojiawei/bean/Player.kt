@@ -156,8 +156,8 @@ class Player(
             handArea = handArea.deepClone(),
             playArea = playArea.deepClone(),
             secretArea = secretArea.deepClone(),
-            graveyardArea = graveyardArea.deepClone(),
             deckArea = deckArea.deepClone(),
+            graveyardArea = graveyardArea.deepClone(),
             setasideArea = setasideArea.deepClone(),
             removedfromgameArea = removedfromgameArea.deepClone(),
             allowLog = false

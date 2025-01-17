@@ -38,7 +38,7 @@ class HsAIStrategy : DeckStrategy() {
     override fun executeOutCard() {
         log.info { "开始思考如何打牌" }
         val monteCarloTreeSearch = MonteCarloTreeSearch()
-        var arg = MCTSArg(30 * 1000, 2, 0.6, 200_000, MCTSUtil.buildScoreCalculator(), true)
+        var arg = MCTSArg(30 * 1000, 2, 0.5, 200_000, MCTSUtil.buildScoreCalculator(), true)
         WAR.me.playArea.cards.forEach { card: Card ->
             log.info { "play card: entityId:${card.entityId},${card.isExhausted}" }
         }
@@ -51,11 +51,13 @@ class HsAIStrategy : DeckStrategy() {
         bestActions.forEach { action ->
             action.applyAction.exec.accept(WAR)
         }
-        arg = MCTSArg(10 * 1000, 1, 0.6, 500_000, MCTSUtil.buildScoreCalculator(), false)
+        System.gc()
+        arg = MCTSArg(10 * 1000, 1, 0.5, 200_000, MCTSUtil.buildScoreCalculator(), false)
         bestActions = monteCarloTreeSearch.getBestActions(WAR, arg)
         bestActions.forEach { action ->
             action.applyAction.exec.accept(WAR)
         }
+        System.gc()
     }
 
     override fun executeDiscoverChooseCard(vararg cards: Card): Int {
