@@ -3,6 +3,7 @@ package club.xiaojiawei.bean.area
 import club.xiaojiawei.bean.Card
 import club.xiaojiawei.bean.Entity
 import club.xiaojiawei.bean.Player
+import club.xiaojiawei.bean.area.Area.Companion.UNKNOWN_AREA
 import club.xiaojiawei.config.log
 import club.xiaojiawei.enums.ZoneEnum
 import club.xiaojiawei.util.isTrue
@@ -13,15 +14,18 @@ import java.util.*
  * @author 肖嘉威
  * @date 2022/11/28 19:48
  */
-abstract class Area @JvmOverloads constructor(
+
+abstract class Area(
     maxSize: Int,
     val defaultMaxSize: Int = maxSize,
     @Volatile var oldMaxSize: Int = 0,
-    @Volatile var player: Player = Player.UNKNOWN_PLAYER,
+    player: Player? = null,
     val cards: MutableList<Card> = mutableListOf(),
     protected val zeroCards: MutableMap<String, Card> = mutableMapOf(),
     var allowLog: Boolean = true,
 ) {
+
+    val player: Player by lazy { player ?: Player.UNKNOWN_PLAYER }
 
     init {
         cards.forEach { card ->
@@ -49,7 +53,7 @@ abstract class Area @JvmOverloads constructor(
 
     protected fun removeZone(card: Card?) {
         card ?: return
-        card.area = null
+        card.area = UNKNOWN_AREA
     }
 
     protected open fun addZeroCard(card: Card?) {
@@ -81,7 +85,8 @@ abstract class Area @JvmOverloads constructor(
         return cards.remove(card)
     }
 
-    protected fun removeCard(index: Int): Card {
+    protected fun removeCard(index: Int): Card? {
+        if (index >= cards.size || index < 0) return null
         val remove = cards.removeAt(index)
         removeZone(remove)
         return remove
@@ -123,7 +128,8 @@ abstract class Area @JvmOverloads constructor(
     }
 
     /**
-     * 向末尾添加
+     * 向末尾添加卡牌
+     * 不会进行full检查
      * @param card
      * @return
      */
@@ -132,6 +138,19 @@ abstract class Area @JvmOverloads constructor(
     }
 
     /**
+     * 向末尾添加卡牌
+     * 会进行full检查
+     * @param card
+     * @return
+     */
+    fun safeAdd(card: Card?): Boolean {
+        if (isFull) return false
+        return add(card)
+    }
+
+    /**
+     * 向指定位置添加卡牌
+     * 不会进行full检查
      * @param card
      * @param pos
      * @return
@@ -170,6 +189,10 @@ abstract class Area @JvmOverloads constructor(
             }
         }
         return -2
+    }
+
+    fun remove(cardIndex: Int): Card? {
+        return removeCard(cardIndex)
     }
 
     open fun findByEntityId(entityId: String): Card? {
@@ -233,4 +256,24 @@ abstract class Area @JvmOverloads constructor(
         return cloneZeroCards
     }
 
+    companion object {
+        val UNKNOWN_AREA: Area = object : Area(0, allowLog = false) {}
+    }
+}
+
+fun Area.safeRun(block: (Area) -> Unit): Area {
+    if (isInValid()) {
+        return this
+    } else {
+        block(this)
+        return this
+    }
+}
+
+fun Area.isValid(): Boolean {
+    return this !== UNKNOWN_AREA
+}
+
+fun Area.isInValid(): Boolean {
+    return this === UNKNOWN_AREA
 }

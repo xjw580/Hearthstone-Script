@@ -27,7 +27,7 @@ class HsSandbagWarriorDeckStrategy : DeckStrategy() {
     }
 
     override fun deckCode(): String {
-        return "AAECAQcCo9QE5eYGDp6fBJ+fBLSfBIagBIigBImgBI7UBJDUBJzUBJ/UBLT4BbX4Bb+iBt3zBgAA"
+        return "AAECAQcC4+YG5eYGDp6fBJ+fBLSfBIagBIigBImgBI7UBJDUBJzUBJ/UBKPUBLT4BbX4Bd3zBgAA"
     }
 
     override fun id(): String {
@@ -38,8 +38,8 @@ class HsSandbagWarriorDeckStrategy : DeckStrategy() {
         commonDeckStrategy.executeChangeCard(cards)
     }
 
-    private var me: Player = Player.INVALID_PLAYER
-    private var rival: Player = Player.INVALID_PLAYER
+    private var me: Player = Player.UNKNOWN_PLAYER
+    private var rival: Player = Player.UNKNOWN_PLAYER
     private lateinit var myPlayCards: MutableList<Card>
     private lateinit var rivalPlayCards: MutableList<Card>
 

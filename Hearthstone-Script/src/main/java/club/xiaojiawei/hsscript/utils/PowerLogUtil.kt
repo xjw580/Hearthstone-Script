@@ -9,21 +9,19 @@ import club.xiaojiawei.hsscript.bean.log.Block
 import club.xiaojiawei.hsscript.bean.log.CommonEntity
 import club.xiaojiawei.hsscript.bean.log.ExtraEntity
 import club.xiaojiawei.hsscript.bean.log.TagChangeEntity
-import club.xiaojiawei.hsscript.bean.single.CARD_AREA_MAP
 import club.xiaojiawei.hsscript.bean.single.WarEx
 import club.xiaojiawei.hsscript.core.Core
 import club.xiaojiawei.hsscript.core.Core.restart
 import club.xiaojiawei.hsscript.data.*
 import club.xiaojiawei.hsscript.enums.BlockTypeEnum
 import club.xiaojiawei.hsscript.enums.TagEnum
-import club.xiaojiawei.hsscript.utils.CardUtil.addAreaListener
 import club.xiaojiawei.hsscript.utils.CardUtil.exchangeAreaOfCard
 import club.xiaojiawei.hsscript.utils.CardUtil.setCardAction
 import club.xiaojiawei.hsscript.utils.CardUtil.updateCardByExtraEntity
 import club.xiaojiawei.status.WAR
-import javafx.beans.value.ObservableValue
 import java.io.RandomAccessFile
 import java.nio.charset.StandardCharsets
+import java.util.function.Consumer
 
 /**
  * 解析power.log日志的工具，非常非常非常重要
@@ -42,13 +40,13 @@ object PowerLogUtil {
      */
     fun dealShowEntity(line: String, accessFile: RandomAccessFile): ExtraEntity {
         val extraEntity: ExtraEntity = parseExtraEntity(line, accessFile, SHOW_ENTITY)
-        val card = CARD_AREA_MAP[extraEntity.entityId]?.findByEntityId(extraEntity.entityId)
+        val card = war.cardAreaMap[extraEntity.entityId]
 
         if (extraEntity.extraCard.zone === extraEntity.zone || extraEntity.extraCard.zone === null) {
             updateCardByExtraEntity(extraEntity, card)
         } else {
             updateCardByExtraEntity(extraEntity, card)
-            exchangeAreaOfCard(extraEntity)
+            exchangeAreaOfCard(extraEntity, war)
         }
 
         return extraEntity
@@ -61,12 +59,12 @@ object PowerLogUtil {
      */
     fun dealFullEntity(line: String, accessFile: RandomAccessFile): ExtraEntity {
         val extraEntity: ExtraEntity = parseExtraEntity(line, accessFile, FULL_ENTITY)
-        if (CARD_AREA_MAP[extraEntity.entityId] == null) {
+        if (war.cardAreaMap[extraEntity.entityId] == null) {
             val card = Card(CommonCardAction.DEFAULT)
-            addAreaListener(card)
             updateCardByExtraEntity(extraEntity, card)
+            war.cardAreaMap[extraEntity.entityId] = card
             setCardAction(card)
-            card.cardIdProperty.addListener { _: ObservableValue<out String?>?, _: String?, _: String? ->
+            card.cardIdChangeListener = Consumer {
                 setCardAction(card)
             }
             war.maxEntityId = card.entityId
@@ -90,7 +88,7 @@ object PowerLogUtil {
      */
     fun dealChangeEntity(line: String, accessFile: RandomAccessFile): ExtraEntity {
         val extraEntity: ExtraEntity = parseExtraEntity(line, accessFile, CHANGE_ENTITY)
-        val card = CARD_AREA_MAP[extraEntity.entityId]?.findByEntityId(extraEntity.entityId)
+        val card = war.cardAreaMap[extraEntity.entityId]
         log.info {
             String.format(
                 "玩家%s【%s】 的 【entityId:%s】 由 【entityName:%s，cardId:%s】 变形成了 【entityName:，cardId:%s】",
@@ -119,19 +117,13 @@ object PowerLogUtil {
         if (tagChangeEntity.tag !== TagEnum.UNKNOWN) {
 //        处理复杂，例：TAG_CHANGE Entity=[entityName=UNKNOWN ENTITY [cardType=INVALID] id=89 zone=HAND zonePos=4 cardId= player=2] tag=ZONE_POSITION value=0
             if (tagChangeEntity.entity.isBlank()) {
-                val area = CARD_AREA_MAP[tagChangeEntity.entityId] ?: let {
-                    log.debug { "不应找不到area,【entityId:${tagChangeEntity.entityId}】" }
+                val card = war.cardAreaMap[tagChangeEntity.entityId] ?: let {
+                    log.debug { "不应找不到card,【entityId:${tagChangeEntity.entityId}】" }
                     return tagChangeEntity
                 }
 
-                val card = area.findByEntityId(tagChangeEntity.entityId) ?: let {
-                    log.debug { "area不应找不到card【entityId:${tagChangeEntity.entityId}】" }
-                    return tagChangeEntity
-                }
-
-                val player = WarEx.getPlayer(tagChangeEntity.playerId)
                 //            只列出可能被修改的属性
-                tagChangeEntity.tag?.tagChangeHandler?.handle(card, tagChangeEntity, war, player, area)
+                tagChangeEntity.tag?.tagChangeHandler?.handle(card, tagChangeEntity, war, card.area.player, card.area)
 
                 if (tagChangeEntity.entityName.isNotBlank() && tagChangeEntity.entityName != Entity.UNKNOWN_ENTITY_NAME) {
                     card.entityName = tagChangeEntity.entityName
@@ -149,8 +141,8 @@ object PowerLogUtil {
     }
 
     private fun parseBlock(line: String): Block {
-        var block = Block()
-        var blockTypeIndex = line.indexOf(BLOCK_TYPE)
+        val block = Block()
+        val blockTypeIndex = line.indexOf(BLOCK_TYPE)
         if (blockTypeIndex == -1) {
             return block
         }

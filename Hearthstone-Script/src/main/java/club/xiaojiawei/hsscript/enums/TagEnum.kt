@@ -16,7 +16,6 @@ import club.xiaojiawei.hsscript.data.LOST
 import club.xiaojiawei.hsscript.data.WON
 import club.xiaojiawei.hsscript.interfaces.ExtraEntityHandler
 import club.xiaojiawei.hsscript.interfaces.TagChangeHandler
-import club.xiaojiawei.hsscript.utils.CardUtil
 import club.xiaojiawei.status.War
 import club.xiaojiawei.util.isTrue
 
@@ -145,7 +144,7 @@ enum class TagEnum(
     ZONE(
         "区域",
         TagChangeHandler { card: Card?, tagChangeEntity: TagChangeEntity, war: War, player: Player?, area: Area? ->
-            club.xiaojiawei.hsscript.utils.CardUtil.exchangeAreaOfCard(tagChangeEntity)
+            club.xiaojiawei.hsscript.utils.CardUtil.exchangeAreaOfCard(tagChangeEntity, war)
         },
         ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
             extraEntity.extraCard.zone = ZoneEnum.valueOf(value)
@@ -588,6 +587,12 @@ enum class TagEnum(
         null,
         ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
             extraEntity.extraCard.card.isRush = isTrue(value)
+        }),
+    CHARGE(
+        "冲锋",
+        null,
+        ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
+            extraEntity.extraCard.card.isCharge = isTrue(value)
         }),
     CANT_ATTACK(
         "无法攻击",

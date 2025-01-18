@@ -5,7 +5,6 @@ import club.xiaojiawei.bean.Card
 import club.xiaojiawei.bean.Player
 import club.xiaojiawei.bean.PowerAction
 import club.xiaojiawei.bean.abs.PointPower
-import club.xiaojiawei.config.log
 import club.xiaojiawei.status.WAR
 import club.xiaojiawei.status.War
 import kotlin.math.max
@@ -26,7 +25,6 @@ private val cardIds = arrayOf<String>(
 class PriestPower : PointPower() {
 
     override fun generatePowerActions(war: War, player: Player): List<PowerAction> {
-        val entityId = belongCard?.entityId ?: return emptyList()
         val myTarget = mutableListOf<Card>()
         val rivalTarget = mutableListOf<Card>()
         war.me.playArea.cards.forEach { card ->
@@ -51,36 +49,32 @@ class PriestPower : PointPower() {
         }
         val result = mutableListOf<PowerAction>()
         for (card in myTarget) {
-            val targetEntityId = card.entityId
-            result += PowerAction({ newWar ->
-                newWar.me.playArea.power?.let { myPower ->
-                    myPower.action.lClick()?.pointTo(card)
-                }
-            }, { newWar ->
-                newWar.me.playArea.findByEntityId(targetEntityId)?.let {
-                    it.damage = max(it.damage - 2, 0)
-                } ?: let {
-                    log.warn { "PowerAction查询战场卡牌失败,entityId:${entityId}" }
-                }
-                newWar.me.resourcesUsed += 2
-                newWar.me.playArea.findByEntityId(entityId)?.isExhausted = true
-            })
+            result.add(
+                PowerAction({ newWar ->
+                    newWar.me.playArea.power?.let { myPower ->
+                        myPower.action.lClick()?.pointTo(card)
+                    }
+                }, { newWar ->
+                    spendSelfCost(newWar)
+                    card.action.findSelf(newWar)?.let {
+                        it.damage = max(it.damage - 2, 0)
+                    }
+                    findSelf(newWar)?.isExhausted = true
+                })
+            )
         }
         for (card in rivalTarget) {
-            val targetEntityId = card.entityId
-            result += PowerAction({ newWar ->
+            result.add(PowerAction({ newWar ->
                 newWar.me.playArea.power?.let { myPower ->
                     myPower.action.lClick()?.pointTo(card)
                 }
             }, { newWar ->
-                newWar.rival.playArea.findByEntityId(targetEntityId)?.let {
+                spendSelfCost(newWar)
+                card.action.findSelf(newWar)?.let {
                     it.damage = max(it.damage - 2, 0)
-                } ?: let {
-                    log.warn { "PowerAction查询战场卡牌失败,entityId:${entityId}" }
                 }
-                newWar.me.resourcesUsed += 2
-                newWar.me.playArea.findByEntityId(entityId)?.isExhausted = true
-            })
+                findSelf(newWar)?.isExhausted = true
+            }))
         }
         return result
     }

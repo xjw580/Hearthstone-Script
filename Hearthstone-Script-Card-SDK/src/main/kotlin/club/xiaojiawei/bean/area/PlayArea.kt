@@ -50,6 +50,14 @@ class PlayArea : Area {
         }
     }
 
+    /**
+     * 获取当前法强
+     */
+    fun getSpellPower(): Int {
+        return cards.sumOf { card -> card.spellPower } +
+                (hero?.spellPower ?: 0) + (power?.spellPower ?: 0) + (weapon?.spellPower ?: 0)
+    }
+
     override fun add(card: Card?, pos: Int): Boolean {
         var result = true
         if (card == null) {

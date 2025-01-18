@@ -2,6 +2,7 @@ package club.xiaojiawei.hsscript.bean.single
 
 import club.xiaojiawei.bean.Player
 import club.xiaojiawei.bean.area.*
+import club.xiaojiawei.bean.safeRun
 import club.xiaojiawei.config.log
 import club.xiaojiawei.enums.RunModeEnum
 import club.xiaojiawei.enums.WarPhaseEnum
@@ -16,11 +17,6 @@ import kotlin.math.min
  * @author 肖嘉威
  * @date 2024/10/11 14:41
  */
-/**
- * 存放所有卡牌所在哪一区域
- */
-val CARD_AREA_MAP: MutableMap<String?, Area?> = HashMap<String?, Area?>()
-
 object WarEx {
 
     private val resetCallbackList: MutableList<Runnable> = ArrayList()
@@ -80,9 +76,9 @@ object WarEx {
             firstPlayerGameId = ""
             currentPhase = WarPhaseEnum.FILL_DECK
             currentTurnStep = null
-            rival = Player.INVALID_PLAYER
-            me = Player.INVALID_PLAYER
-            currentPlayer = Player.INVALID_PLAYER
+            rival = Player.UNKNOWN_PLAYER
+            me = Player.UNKNOWN_PLAYER
+            currentPlayer = Player.UNKNOWN_PLAYER
             player1 = Player("1", allowLog = true)
             player2 = Player("2", allowLog = true)
             warTurn = 0
@@ -95,7 +91,7 @@ object WarEx {
         print.isTrue {
             log.info { "已重置游戏状态" }
         }
-        CARD_AREA_MAP.clear()
+        war.cardAreaMap.clear()
         resetCallbackList.forEach(Consumer { obj: Runnable -> obj.run() })
         System.gc()
     }
@@ -123,7 +119,7 @@ object WarEx {
     fun endWar() {
         war.run {
             var flag = false
-            if (me !== Player.INVALID_PLAYER) {
+            me.safeRun {
                 flag = printResult()
             }
             endTime = if (startTime == 0L) 0 else System.currentTimeMillis()
@@ -178,7 +174,7 @@ object WarEx {
             when (playerId) {
                 player1.playerId -> player1
                 player2.playerId -> player2
-                else -> Player.INVALID_PLAYER
+                else -> Player.UNKNOWN_PLAYER
             }
         }
     }

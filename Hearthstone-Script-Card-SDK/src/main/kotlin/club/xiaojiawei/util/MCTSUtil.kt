@@ -26,7 +26,7 @@ object MCTSUtil {
         val rivalHero = war.rival.playArea.hero
         val myHero = war.me.playArea.hero
         if (rivalHero == null || myHero == null) return true
-        return !myHero.isSurvival() || !rivalHero.isSurvival()
+        return !myHero.isAlive() || !rivalHero.isAlive()
     }
 
     /**
@@ -58,7 +58,7 @@ object MCTSUtil {
 
     private fun calcHandScore(area: HandArea): Double {
         return area.cards.sumOf { card ->
-            if (card.cardType == CardTypeEnum.SPELL) {
+            if (card.cardType === CardTypeEnum.SPELL) {
                 card.cost.toDouble() * 0.5
             } else {
                 calcPlayCardScore(card) * 0.2
@@ -96,7 +96,7 @@ object MCTSUtil {
     private const val ISDIVINESHIELD_VALUE = 0.5 * BASIC_RATIO
 
     private fun calcPlayCardScore(card: Card): Double {
-        if (card.isSurvival()) {
+        if (card.isAlive()) {
             val cardRatio = CARD_WEIGHT_TRIE[card.cardId]?.weight ?: 1.0
             val atc = max(card.atc, 0).toDouble()
             val blood = max(card.blood(), 0)

@@ -21,9 +21,9 @@ object CardUtil {
         return result
     }
 
-    fun simulateAttack(war: War, myCard: Card, rivalCard: Card, deathRemove: Boolean = false) {
+    fun simulateAttack(war: War, myCard: Card, rivalCard: Card) {
         val myPlayArea = myCard.area
-        var myWeapon: Card? = null
+        if (myPlayArea !is PlayArea || rivalCard.area !is PlayArea) return
 
 //        处理我方情况
         if (myCard.isImmuneWhileAttacking || myCard.isImmune) {
@@ -32,18 +32,15 @@ object CardUtil {
                 myCard.isDivineShield = false
             }
         } else if (rivalCard.isPoisonous && myCard.cardType === CardTypeEnum.MINION) {
-            myCard.damage = myCard.health + myCard.armor
+            myCard.damage = myCard.bloodLimit()
         } else {
             myCard.damage += rivalCard.atc
         }
 
 //        处理我方武器情况
         if (myCard.cardType === CardTypeEnum.HERO) {
-            if (myPlayArea is PlayArea) {
-                myPlayArea.weapon?.let {
-                    it.damage++
-                    myWeapon = it
-                }
+            myPlayArea.weapon?.let {
+                it.damage++
             }
         }
 
@@ -53,7 +50,7 @@ object CardUtil {
                 rivalCard.isDivineShield = false
             }
         } else if (myCard.isPoisonous && rivalCard.cardType === CardTypeEnum.MINION) {
-            rivalCard.damage = rivalCard.health + rivalCard.armor
+            rivalCard.damage = rivalCard.bloodLimit()
         } else {
             rivalCard.damage += myCard.atc
         }
@@ -61,52 +58,16 @@ object CardUtil {
 //        处理我方可攻击次数
         myCard.attackCount++
 
-        if (myCard.isMegaWindfury || (myCard.cardType === CardTypeEnum.HERO && myPlayArea is PlayArea && myPlayArea.weapon?.isMegaWindfury == true)) {
+        if (myCard.isMegaWindfury || (myCard.cardType === CardTypeEnum.HERO && myPlayArea.weapon?.isMegaWindfury == true)) {
             if (myCard.attackCount >= 4) {
                 myCard.isExhausted = true
             }
-        } else if (myCard.isWindFury || (myCard.cardType === CardTypeEnum.HERO && myPlayArea is PlayArea && myPlayArea.weapon?.isWindFury == true)) {
+        } else if (myCard.isWindFury || (myCard.cardType === CardTypeEnum.HERO && myPlayArea.weapon?.isWindFury == true)) {
             if (myCard.attackCount >= 2) {
                 myCard.isExhausted = true
             }
         } else {
             myCard.isExhausted = true
-        }
-
-//        死亡判断
-        if (deathRemove) {
-            myWeapon?.let {
-                if (!it.isSurvival()) {
-                    myPlayArea?.removeByEntityId(myCard.entityId)
-                    it.action.deathRattleSettlement(war, war.me)
-                }
-            }
-            if (!myCard.isSurvival()) {
-                myPlayArea?.removeByEntityId(myCard.entityId)
-                myCard.action.deathRattleSettlement(war, war.me)
-                if (myCard.isReborn) {
-                    myCard.apply {
-                        damage = health - 1
-                        armor = 0
-                        isExhausted = true
-                        isReborn = false
-                    }
-                    myPlayArea?.add(myCard)
-                }
-            }
-            if (!rivalCard.isSurvival()) {
-                rivalCard.area?.removeByEntityId(rivalCard.entityId)
-                rivalCard.action.deathRattleSettlement(war, war.rival)
-                if (rivalCard.isReborn) {
-                    rivalCard.apply {
-                        damage = health - 1
-                        armor = 0
-                        isExhausted = true
-                        isReborn = false
-                    }
-                    war.rival.playArea.add(rivalCard)
-                }
-            }
         }
     }
 

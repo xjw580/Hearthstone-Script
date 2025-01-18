@@ -1,5 +1,6 @@
 package club.xiaojiawei.status
 
+import club.xiaojiawei.bean.Card
 import club.xiaojiawei.bean.Player
 import club.xiaojiawei.bean.safeRun
 import club.xiaojiawei.config.log
@@ -7,6 +8,7 @@ import club.xiaojiawei.enums.RunModeEnum
 import club.xiaojiawei.enums.StepEnum
 import club.xiaojiawei.enums.WarPhaseEnum
 import club.xiaojiawei.mapper.WarMapper
+import club.xiaojiawei.status.War.Companion.UNKNOWN_WAR
 import club.xiaojiawei.util.isTrue
 
 /**
@@ -22,8 +24,14 @@ val WAR: War = War(true)
 
 class War(var allowLog: Boolean = false) : Cloneable {
 
+    /**
+     * 存放所有卡牌所在哪一区域
+     * k:[club.xiaojiawei.bean.Entity.entityId]
+     */
+    val cardAreaMap: MutableMap<String?, Card?> = HashMap()
+
     @Volatile
-    var currentPlayer: Player = Player.INVALID_PLAYER
+    var currentPlayer: Player = Player.UNKNOWN_PLAYER
         @Synchronized set(value) {
             field = value
             value.safeRun {
@@ -57,16 +65,16 @@ class War(var allowLog: Boolean = false) : Cloneable {
         }
 
     @Volatile
-    var me: Player = Player.INVALID_PLAYER
+    var me: Player = Player.UNKNOWN_PLAYER
 
     @Volatile
-    var rival: Player = Player.INVALID_PLAYER
+    var rival: Player = Player.UNKNOWN_PLAYER
 
     @Volatile
-    var player1: Player = Player("1", allowLog = true)
+    var player1: Player = Player("1", allowLog = true, war = this)
 
     @Volatile
-    var player2: Player = Player("2", allowLog = true)
+    var player2: Player = Player("2", allowLog = true, war = this)
 
     /**
      * 总回合数
@@ -116,6 +124,15 @@ class War(var allowLog: Boolean = false) : Cloneable {
     @Volatile
     var maxEntityId: String? = null
 
+    /**
+     * 最大entityId自增1
+     */
+    fun incrementMaxEntityId(): String {
+        val nextMaxEntityId = ((maxEntityId?.toInt() ?: 0) + 1).toString()
+        this.maxEntityId = nextMaxEntityId
+        return nextMaxEntityId
+    }
+
     fun exchangePlayer() {
         val tempMe = me
         me = rival
@@ -128,8 +145,8 @@ class War(var allowLog: Boolean = false) : Cloneable {
     public override fun clone(): War {
         val newWar = WarMapper.INSTANCE.clone(this)
         val oldMe = newWar.me
-        newWar.me = newWar.me.clone()
-        newWar.rival = newWar.rival.clone()
+        newWar.me = newWar.me.deepClone(newWar)
+        newWar.rival = newWar.rival.deepClone(newWar)
         if (oldMe == newWar.player1) {
             newWar.player1 = newWar.me
             newWar.player2 = newWar.rival
@@ -139,4 +156,26 @@ class War(var allowLog: Boolean = false) : Cloneable {
         }
         return newWar
     }
+
+    companion object {
+        val UNKNOWN_WAR: War = War(false)
+    }
 }
+
+fun War.safeRun(block: (War) -> Unit): War {
+    if (isInValid()) {
+        return this
+    } else {
+        block(this)
+        return this
+    }
+}
+
+fun War.isValid(): Boolean {
+    return this !== UNKNOWN_WAR
+}
+
+fun War.isInValid(): Boolean {
+    return this === UNKNOWN_WAR
+}
+

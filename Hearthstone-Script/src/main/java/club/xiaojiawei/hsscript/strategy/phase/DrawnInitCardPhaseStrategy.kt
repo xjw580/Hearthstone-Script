@@ -8,7 +8,6 @@ import club.xiaojiawei.enums.StepEnum
 import club.xiaojiawei.enums.WarPhaseEnum
 import club.xiaojiawei.hsscript.bean.log.ExtraEntity
 import club.xiaojiawei.hsscript.bean.log.TagChangeEntity
-import club.xiaojiawei.hsscript.bean.single.CARD_AREA_MAP
 import club.xiaojiawei.hsscript.enums.TagEnum
 import club.xiaojiawei.hsscript.strategy.AbstractPhaseStrategy
 
@@ -76,7 +75,7 @@ object DrawnInitCardPhaseStrategy : AbstractPhaseStrategy() {
      * @return
      */
     override fun dealFullEntityThenIsOver(line: String, extraEntity: ExtraEntity): Boolean {
-        val card = CARD_AREA_MAP[extraEntity.entityId]?.findByEntityId(extraEntity.entityId)
+        val card = war.cardAreaMap[extraEntity.entityId]
         card ?: let {
             log.warn { "card【entityId:${extraEntity.entityId}】不应为null" }
             return false

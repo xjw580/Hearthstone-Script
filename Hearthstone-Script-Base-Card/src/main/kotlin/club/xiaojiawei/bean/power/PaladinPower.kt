@@ -1,7 +1,10 @@
 package club.xiaojiawei.bean.power
 
 import club.xiaojiawei.CardAction
-import club.xiaojiawei.bean.*
+import club.xiaojiawei.bean.Card
+import club.xiaojiawei.bean.Player
+import club.xiaojiawei.bean.PowerAction
+import club.xiaojiawei.bean.TEST_CARD_ACTION
 import club.xiaojiawei.bean.abs.ClickPower
 import club.xiaojiawei.enums.CardTypeEnum
 import club.xiaojiawei.status.WAR
@@ -22,27 +25,24 @@ private val cardIds = arrayOf<String>(
 class PaladinPower : ClickPower() {
 
     override fun generatePowerActions(war: War, player: Player): List<PowerAction> {
-        val entityId = belongCard?.entityId ?: return emptyList()
         if (war.me.playArea.isFull) return emptyList()
         return listOf(
             PowerAction(
                 { newWar ->
                     newWar.me.playArea.power?.action?.power()
                 }, { newWar ->
+                    spendSelfCost(newWar)
                     val card = Card(TEST_CARD_ACTION).apply {
                         health = 1
                         atc = 1
                         cost = 1
                         cardType = CardTypeEnum.MINION
                         isExhausted = true
+                        this.entityId = newWar.incrementMaxEntityId()
                     }
-                    newWar.maxEntityId?.let { maxEntityId ->
-                        card.entityId = (maxEntityId.toInt() + 1).toString()
-                        newWar.maxEntityId = card.entityId
-                    }
+                    newWar.cardAreaMap[card.entityId] = card
                     newWar.me.playArea.add(card)
-                    newWar.me.resourcesUsed += 2
-                    newWar.me.playArea.findByEntityId(entityId)?.isExhausted = true
+                    findSelf(newWar)?.isExhausted = true
                 })
         )
     }

@@ -23,17 +23,16 @@ private val cardIds = arrayOf<String>(
 class WarriorPower : ClickPower() {
 
     override fun generatePowerActions(war: War, player: Player): List<PowerAction> {
-        val entityId = belongCard?.entityId ?: return emptyList()
         return listOf(
             PowerAction(
                 { newWar ->
                     newWar.me.playArea.power?.action?.power()
                 }, { newWar ->
+                    spendSelfCost(newWar)
                     newWar.me.playArea.hero?.let {
                         it.armor += 2
                     }
-                    newWar.me.resourcesUsed += 2
-                    newWar.me.playArea.findByEntityId(entityId)?.isExhausted = true
+                    findSelf(newWar)?.isExhausted = true
                 })
         )
     }

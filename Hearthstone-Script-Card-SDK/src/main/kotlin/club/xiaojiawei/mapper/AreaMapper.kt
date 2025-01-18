@@ -1,6 +1,6 @@
 package club.xiaojiawei.mapper
 
-import club.xiaojiawei.bean.Player
+import club.xiaojiawei.bean.area.Area
 import org.mapstruct.Mapper
 import org.mapstruct.Mapping
 import org.mapstruct.MappingTarget
@@ -11,14 +11,14 @@ import org.mapstruct.factory.Mappers
  * @date 2024/9/8 19:17
  */
 @Mapper
-interface PlayerMapper {
+interface AreaMapper {
 
     companion object {
-        val INSTANCE: PlayerMapper = Mappers.getMapper(PlayerMapper::class.java)
+        val INSTANCE: AreaMapper = Mappers.getMapper(AreaMapper::class.java)
     }
 
     @Mapping(target = "allowLog", constant = "false")
-    @Mapping(target = "war", ignore = true)
-    fun update(sourcePlayer: Player, @MappingTarget targetPlayer: Player)
+    @Mapping(target = "player", ignore = true)
+    fun update(sourceArea: Area, @MappingTarget targetPlayer: Area)
 
 }

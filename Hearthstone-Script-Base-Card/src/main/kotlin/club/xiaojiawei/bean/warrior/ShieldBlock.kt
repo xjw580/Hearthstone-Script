@@ -1,19 +1,20 @@
-package club.xiaojiawei.bean
+package club.xiaojiawei.bean.warrior
 
 import club.xiaojiawei.CardAction
-import club.xiaojiawei.data.COIN_CARD_ID
+import club.xiaojiawei.bean.PlayAction
+import club.xiaojiawei.bean.Player
 import club.xiaojiawei.status.War
 
 /**
- * 幸运币
+ * [盾牌格挡](https://hearthstone.huijiwiki.com/wiki/Card/68479)
  * @author 肖嘉威
- * @date 2025/1/17 15:22
+ * @date 2025/1/18 18:14
  */
 private val cardIds = arrayOf<String>(
-    COIN_CARD_ID
+    "%EX1_606",
 )
 
-class Coin : CardAction.DefaultCardAction() {
+class ShieldBlock : CardAction.DefaultCardAction() {
 
     override fun generatePlayActions(war: War, player: Player): List<PlayAction> {
         return listOf(
@@ -21,18 +22,22 @@ class Coin : CardAction.DefaultCardAction() {
                 findSelf(newWar)?.action?.power()
             }, { newWar ->
                 spendSelfCost(newWar)
-                removeSelf(newWar)?.let {
-                    newWar.me.tempResources++
+                removeSelf(newWar)?.let { card ->
+                    newWar.me.playArea.hero?.let { hero ->
+                        hero.armor += 5
+                        newWar.me.handArea.drawCard()
+                    }
                 }
             })
         )
     }
 
     override fun createNewInstance(): CardAction {
-        return Coin()
+        return ShieldBlock()
     }
 
     override fun getCardId(): Array<String> {
         return cardIds
     }
+
 }

@@ -59,20 +59,30 @@ class MonteCarloTreeNode(
                 arg.scoreCalculator,
                 arg.enableMultiThread
             )
-            val inverseWar = war.clone().apply {
-                exchangePlayer()
+            val inverseWar = war.clone()
+            inverseWar.me.apply {
+                playArea.hero?.atc = 0
+                playArea.cards.forEach { card ->
+                    card.action.triggerTurnEnd(war)
+                }
             }
+            inverseWar.exchangePlayer()
+            inverseWar.currentPlayer = inverseWar.me
             inverseWar.me.apply {
                 //            重置战场疲劳
                 playArea.cards.forEach { card ->
                     card.resetExhausted()
+                    card.numTurnsInPlay++
+                }
+                handArea.cards.forEach { card ->
+                    card.numTurnsInHand++
                 }
                 playArea.hero?.resetExhausted()
                 playArea.power?.resetExhausted()
                 playArea.weapon?.resetExhausted()
-            }
-            inverseWar.rival.apply {
-                playArea.hero?.atc = 0
+                playArea.cards.forEach { card ->
+                    card.action.triggerTurnStart(war)
+                }
             }
 
 //            反演时尽量调大maxDepth值，可以减少资源消耗
@@ -133,9 +143,10 @@ class MonteCarloTreeNode(
         action: Action,
         arg: MCTSArg = this.arg
     ): MonteCarloTreeNode {
-        val newWarState = state.war.clone()
-        action.simulate.accept(newWarState)
-        val nextNode = MonteCarloTreeNode(newWarState, action, arg, this)
+        val newWar = state.war.clone()
+//        新战局应用旧动作
+        action.simulate.accept(newWar)
+        val nextNode = MonteCarloTreeNode(newWar, action, arg, this)
         return nextNode
     }
 

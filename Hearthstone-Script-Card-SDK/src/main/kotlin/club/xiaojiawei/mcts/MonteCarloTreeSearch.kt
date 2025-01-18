@@ -158,7 +158,7 @@ class MonteCarloTreeSearch(val maxDepth: Int = MCTS_DEFAULT_DEPTH) {
         war: War, arg: MCTSArg
     ): MutableList<MonteCarloTreeNode> {
         val newWar = war.clone()
-//        因为对手手牌不可知，所以去除模拟
+//        因为对手手牌不可知，所以去除模拟，todo 非正确处理方式
         newWar.rival.handArea.cards.clear()
         val newArg = MCTSArg(
             arg.thinkingSecTime,

@@ -9,3 +9,17 @@ club.xiaojiawei.bean.power.ShamanPower
 club.xiaojiawei.bean.power.WarlockPower
 club.xiaojiawei.bean.power.WarriorPower
 club.xiaojiawei.bean.Coin
+club.xiaojiawei.bean.warrior.AcolyteOfPain
+club.xiaojiawei.bean.warrior.Bash
+club.xiaojiawei.bean.warrior.Bladestorm
+club.xiaojiawei.bean.warrior.Brawl
+club.xiaojiawei.bean.warrior.CargoGuard
+club.xiaojiawei.bean.warrior.Execute
+club.xiaojiawei.bean.warrior.FieryWarAxe
+club.xiaojiawei.bean.warrior.HeavyPlate
+club.xiaojiawei.bean.warrior.PlatedBeetle
+club.xiaojiawei.bean.warrior.ShieldBlock
+club.xiaojiawei.bean.warrior.ShieldSlam
+club.xiaojiawei.bean.warrior.Slam
+club.xiaojiawei.bean.warrior.TarCreeper
+club.xiaojiawei.bean.warrior.Whirlwind

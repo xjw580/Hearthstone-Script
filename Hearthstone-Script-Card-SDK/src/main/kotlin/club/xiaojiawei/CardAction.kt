@@ -1,11 +1,11 @@
 package club.xiaojiawei
 
 import club.xiaojiawei.bean.*
+import club.xiaojiawei.bean.area.safeRun
 import club.xiaojiawei.config.log
 import club.xiaojiawei.enums.CardTypeEnum
 import club.xiaojiawei.status.War
 import club.xiaojiawei.util.CardUtil
-import club.xiaojiawei.util.isFalse
 import club.xiaojiawei.util.isTrue
 import java.util.function.Supplier
 
@@ -24,6 +24,9 @@ abstract class CardAction(createDefaultAction: Boolean = true) {
 
     protected var commonAction: CardAction? = null
 
+    /**
+     * 所属卡牌
+     */
     var belongCard: Card? = null
         set(value) {
             field = value
@@ -38,10 +41,10 @@ abstract class CardAction(createDefaultAction: Boolean = true) {
     }
 
     /**
-     * belongCard被使用的所有可能动作
-     * 例如：belongCard为萨满基础技能时，那么此时至多可以返回一个action，即在战场未满的情况下生成图腾至战场这个action
+     * [belongCard]被使用的所有可能动作
+     * 例如：[belongCard]为萨满基础技能时，那么此时至多可以返回一个[Action]，即在战场未满的情况下生成图腾至战场这个[Action]
      * 对于战场上的技能，地标使用都是调用此方法生成动作
-     * @param war 此卡牌所处的战局
+     * @param war 此卡牌所处的战局，注意：生成的[Action]中应使用[Action]内部传递的war，而不是此处的war
      * @param player 此卡牌所处的玩家
      */
     open fun generatePowerActions(war: War, player: Player): List<PowerAction> {
@@ -49,9 +52,9 @@ abstract class CardAction(createDefaultAction: Boolean = true) {
     }
 
     /**
-     * belongCard从手牌中打出的所有可能动作（包含战吼效果）
-     * 例如：belongCard为老红龙：血变成15，那么此时可以返回两个action，一个action作用于敌方英雄，一个action作用于己方英雄
-     * @param war 此卡牌所处的战局
+     * [belongCard]从手牌中打出的所有可能动作（包含战吼效果）
+     * 例如：[belongCard]为老红龙：血变成15，那么此时可以返回两个[Action]，一个[Action]作用于敌方英雄，一个[Action]作用于己方英雄
+     * @param war 此卡牌所处的战局，注意：生成的[Action]中应使用[Action]内部传递的war，而不是此处的war
      * @param player 此卡牌所处的玩家
      */
     open fun generatePlayActions(war: War, player: Player): List<PlayAction> {
@@ -61,28 +64,26 @@ abstract class CardAction(createDefaultAction: Boolean = true) {
                 log.warn { "entityId为空，belongCard：${belongCard}" }
                 return emptyList()
             }
-//            由于不知道法术的效果，所有不生成action
+//            由于不知道法术的效果，所以不生成action
             if (card.cardType === CardTypeEnum.SPELL) {
                 return emptyList()
             }
             listOf(
-                PlayAction({ war ->
-                    war.me.handArea.findByEntityId(entityId)?.let { card ->
-                        log.info { "打出$card" }
-                        card.action.power()
-                    } ?: let {
-                        log.warn { "PlayAction查询手中卡牌失败,entityId:${entityId}" }
-                    }
-                }, { war ->
-                    val me = war.me
-                    me.handArea.removeByEntityId(entityId)?.let { card ->
-                        card.isExhausted = true
-                        me.playArea.add(card).isFalse {
-                            log.warn { "PlayAction添加战场卡牌失败,entityId:${entityId}" }
+                PlayAction({ newWar ->
+                    findSelf(newWar)?.action?.power()
+                }, { newWar ->
+                    spendSelfCost(newWar)
+                    val me = newWar.me
+                    removeSelf(newWar)?.let { card ->
+                        if (card.isCharge) {
+                            card.isExhausted = false
+                        } else if (card.isRush) {
+                            card.isAttackableByRush = true
+                            card.isExhausted = false
+                        } else {
+                            card.isExhausted = true
                         }
-                        me.resourcesUsed += card.cost
-                    } ?: let {
-                        log.warn { "PlayAction移除手中卡牌失败,entityId:${entityId}" }
+                        me.playArea.safeAdd(card)
                     }
                 })
             )
@@ -92,7 +93,7 @@ abstract class CardAction(createDefaultAction: Boolean = true) {
     /**
      * belongCard攻击的所有可能动作
      * 例如：敌方战场有2个可被攻击的非嘲讽随从，此时可以返回三个action，即攻击两个随从的action和攻击敌方英雄的action
-     * @param war 此卡牌所处的战局
+     * @param war 此卡牌所处的战局，注意：生成的[Action]中应使用[Action]内部传递的war，而不是此处的war
      * @param player 此卡牌所处的玩家
      */
     open fun generateAttackActions(war: War, player: Player): List<AttackAction> {
@@ -103,50 +104,38 @@ abstract class CardAction(createDefaultAction: Boolean = true) {
                 return emptyList()
             }
             val result = mutableListOf<AttackAction>()
-            val tauntCard = CardUtil.getTauntCards(war.rival.playArea.cards, true)
-            val rivalPlayCards = if (tauntCard.isEmpty()) war.rival.playArea.cards else tauntCard
+            val rivalTauntCards = CardUtil.getTauntCards(war.rival.playArea.cards, true)
+            val rivalPlayCards = if (rivalTauntCards.isEmpty()) war.rival.playArea.cards else rivalTauntCards
             for (rivalPlayCard in rivalPlayCards) {
                 if (rivalPlayCard.canBeAttacked()) {
                     result.add(
-                        AttackAction({ war ->
-                            war.me.playArea.findByEntityId(entityId)?.let { myCard ->
-                                war.rival.playArea.findByEntityId(rivalPlayCard.entityId)?.let { rivalCard ->
-                                    log.info { "${myCard}攻击${rivalCard}" }
+                        AttackAction({ newWar ->
+                            findSelf(newWar)?.let { myCard ->
+                                rivalPlayCard.action.findSelf(newWar)?.let { rivalCard ->
                                     myCard.action.attack(rivalCard)
-                                } ?: let {
-                                    log.warn { "AttackAction查找敌方战场卡牌失败,entityId:${entityId}" }
                                 }
-                            } ?: let {
-                                log.warn { "AttackAction查找战场卡牌失败,entityId:${entityId}" }
                             }
-                        }, { war ->
-                            war.me.playArea.findByEntityId(entityId)?.let { myCard ->
-                                war.rival.playArea.findByEntityId(rivalPlayCard.entityId)?.let { rivalCard ->
-                                    CardUtil.simulateAttack(war, myCard, rivalCard, true)
+                        }, { newWar ->
+                            findSelf(newWar)?.let { myCard ->
+                                rivalPlayCard.action.findSelf(newWar)?.let { rivalCard ->
+                                    CardUtil.simulateAttack(newWar, myCard, rivalCard)
                                 }
-                            } ?: let {
-                                log.warn { "AttackAction查找战场卡牌失败,entityId:${entityId}" }
                             }
                         })
                     )
                 }
             }
-            if (tauntCard.isEmpty()) {
+//            无嘲讽且不是刚下场的突袭随从才可以打脸
+            if (rivalTauntCards.isEmpty() && !card.isAttackableByRush) {
                 war.rival.playArea.hero?.let { rivalHero ->
                     rivalHero.canBeAttacked().isTrue {
                         result.add(
-                            AttackAction({ war ->
-                                war.me.playArea.findByEntityId(entityId)?.let { myCard ->
-                                    log.info { "${myCard}攻击${war.rival.playArea.hero}" }
-                                    myCard.action.attack(war.rival.playArea.hero)
-                                } ?: let {
-                                }
-                            }, { war ->
-                                war.rival.playArea.hero?.let { rivalHero ->
-                                    war.me.playArea.findByEntityId(entityId)?.let { myCard ->
-                                        CardUtil.simulateAttack(war, myCard, rivalHero, true)
-                                    } ?: let {
-                                        log.warn { "AttackAction查找战场卡牌失败,entityId:${entityId}" }
+                            AttackAction({ newWar ->
+                                findSelf(newWar)?.action?.attack(newWar.rival.playArea.hero)
+                            }, { newWar ->
+                                newWar.rival.playArea.hero?.let { rivalHero ->
+                                    findSelf(newWar)?.let { myCard ->
+                                        CardUtil.simulateAttack(newWar, myCard, rivalHero)
                                     }
                                 }
                             })
@@ -159,11 +148,68 @@ abstract class CardAction(createDefaultAction: Boolean = true) {
     }
 
     /**
-     * 亡语结算
+     * 触发受到伤害
      * @param war 此卡牌所处的战局
      * @param player 此卡牌所处的玩家
      */
-    open fun deathRattleSettlement(war: War, player: Player) {}
+    open fun triggerDamage(war: War) {}
+
+    /**
+     * 触发亡语
+     * @param war 此卡牌所处的战局
+     * @param player 此卡牌所处的玩家
+     */
+    open fun triggerDeathRattle(war: War) {}
+
+    /**
+     * 触发回合结束
+     * @param war 此卡牌所处的战局
+     */
+    open fun triggerTurnEnd(war: War) {}
+
+    /**
+     * 触发回合开始
+     * @param war 此卡牌所处的战局
+     */
+    open fun triggerTurnStart(war: War) {}
+
+    /**
+     * 触发死亡
+     * @param war 此卡牌所处的战局
+     * @param player 此卡牌所处的玩家
+     */
+    fun triggerDeath(war: War, player: Player) {
+//        亡语大于复生，所以先触发亡语再触发复生
+        triggerDeathRattle(war)
+        triggerReborn(player)
+        removeSelf(war)
+    }
+
+    /**
+     * 触发复生
+     */
+    fun triggerReborn(player: Player) {
+        belongCard?.let { card ->
+            card.area.safeRun { area ->
+                val index = area.indexOfCard(card)
+                val newCard = card.clone().apply {
+                    damage = health - 1
+                    armor = 0
+                    isExhausted = true
+                    isReborn = false
+                }
+                if (index == -1) {
+                    if (area.isFull) return@safeRun
+                    player.playArea.add(newCard)
+                } else {//说明原卡牌还未从area中移除
+                    if (area.cardSize() > area.maxSize) return@safeRun
+//                添加至原卡牌位置的右侧
+                    player.playArea.add(newCard, index + 2)
+                }
+            }
+        }
+    }
+
 
     /**
      * 使用卡牌
@@ -338,6 +384,39 @@ abstract class CardAction(createDefaultAction: Boolean = true) {
         return Thread.currentThread().isInterrupted
     }
 
+    /**
+     * 移除与[belongCard]的卡牌
+     */
+    fun removeSelf(war: War): Card? {
+        val entityId = belongCard?.entityId ?: return null
+        return war.cardAreaMap[entityId]?.area?.removeByEntityId(entityId)?.let {
+            log.warn { "移除卡牌失败,entityId:${entityId}" }
+            it
+        }
+    }
+
+    /**
+     * 查找与[belongCard]的卡牌
+     */
+    fun findSelf(war: War): Card? {
+        val entityId = belongCard?.entityId ?: return null
+        return war.cardAreaMap[entityId]?.area?.findByEntityId(entityId)?.let {
+            log.warn { "查找手牌失败,entityId:${entityId}" }
+            it
+        }
+    }
+
+    /**
+     * 使用掉[belongCard]的费用
+     */
+    fun spendSelfCost(war: War): Card? {
+        val entityId = belongCard?.entityId ?: return null
+        return war.cardAreaMap[entityId]?.let { card ->
+            card.area.player.resourcesUsed += card.cost
+            card
+        }
+    }
+
     protected abstract fun execPower(): Boolean
 
     protected abstract fun execPower(card: Card): Boolean
@@ -381,6 +460,7 @@ abstract class CardAction(createDefaultAction: Boolean = true) {
 
     abstract class DefaultCardAction : CardAction() {
 
+
         override fun execPower(): Boolean {
             return commonAction?.execPower() == true
         }
@@ -412,6 +492,7 @@ abstract class CardAction(createDefaultAction: Boolean = true) {
         override fun execLClick(): Boolean {
             return commonAction?.execLClick() == true
         }
+
     }
 
 }

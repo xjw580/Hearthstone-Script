@@ -1,10 +1,12 @@
 package club.xiaojiawei.bean
 
-import club.xiaojiawei.bean.Player.Companion.INVALID_PLAYER
+import club.xiaojiawei.bean.Player.Companion.UNKNOWN_PLAYER
 import club.xiaojiawei.bean.area.*
 import club.xiaojiawei.config.log
 import club.xiaojiawei.enums.ZoneEnum
+import club.xiaojiawei.mapper.AreaMapper
 import club.xiaojiawei.mapper.PlayerMapper
+import club.xiaojiawei.status.War
 import club.xiaojiawei.util.isTrue
 
 /**
@@ -21,8 +23,11 @@ class Player(
     deckArea: DeckArea? = null,
     setasideArea: SetasideArea? = null,
     removedfromgameArea: RemovedfromgameArea? = null,
+    war: War? = null,
     allowLog: Boolean = true
-) : Entity(), Cloneable {
+) : Entity() {
+
+    val war: War by lazy { war ?: War.UNKNOWN_WAR }
 
     @Volatile
     var gameId: String = ""
@@ -83,6 +88,15 @@ class Player(
         get() = resources - resourcesUsed + tempResources
 
     /**
+     * 疲劳 todo适配
+     */
+    var fatigue: Int = 0
+
+    fun incrementFatigue(): Int {
+        return fatigue++
+    }
+
+    /**
      * 回合开始过载水晶数（回合开始时才能获取到）
      */
     @Volatile
@@ -127,10 +141,11 @@ class Player(
         }
     }
 
-    companion object {
-        val UNKNOWN_PLAYER: Player = Player("UNKNOWN")
-
-        val INVALID_PLAYER: Player = Player("INVALID", "INVALID")
+    /**
+     * 获取当前法强
+     */
+    fun getSpellPower(): Int {
+        return playArea.getSpellPower()
     }
 
     override fun equals(other: Any?): Boolean {
@@ -150,28 +165,79 @@ class Player(
     }
 
 
-    public override fun clone(): Player {
+    fun deepClone(war: War): Player {
         val player = Player(
             playerId,
-            handArea = handArea.deepClone(),
-            playArea = playArea.deepClone(),
-            secretArea = secretArea.deepClone(),
-            deckArea = deckArea.deepClone(),
-            graveyardArea = graveyardArea.deepClone(),
-            setasideArea = setasideArea.deepClone(),
-            removedfromgameArea = removedfromgameArea.deepClone(),
+            war = war,
             allowLog = false
         )
-
         PlayerMapper.INSTANCE.update(this, player)
 
-        player.handArea.player = player
-        player.playArea.player = player
-        player.secretArea.player = player
-        player.graveyardArea.player = player
-        player.deckArea.player = player
-        player.setasideArea.player = player
-        player.removedfromgameArea.player = player
+        AreaMapper.INSTANCE.update(this.handArea, player.handArea)
+        this.handArea.cards.forEach { card ->
+            val newCard = card.clone()
+            war.cardAreaMap[newCard.entityId] = newCard
+            player.handArea.add(newCard)
+        }
+
+        AreaMapper.INSTANCE.update(this.playArea, player.playArea)
+        var newPlayCard = this.playArea.heroHide?.clone()
+        war.cardAreaMap[newPlayCard?.entityId] = newPlayCard
+        player.playArea.add(newPlayCard)
+        newPlayCard = this.playArea.hero?.clone()
+        war.cardAreaMap[newPlayCard?.entityId] = newPlayCard
+        player.playArea.add(newPlayCard)
+        newPlayCard = this.playArea.powerHide?.clone()
+        war.cardAreaMap[newPlayCard?.entityId] = newPlayCard
+        player.playArea.add(newPlayCard)
+        newPlayCard = this.playArea.powerHide?.clone()
+        war.cardAreaMap[newPlayCard?.entityId] = newPlayCard
+        player.playArea.add(newPlayCard)
+        newPlayCard = this.playArea.weaponHide?.clone()
+        war.cardAreaMap[newPlayCard?.entityId] = newPlayCard
+        player.playArea.add(newPlayCard)
+        newPlayCard = this.playArea.weapon?.clone()
+        war.cardAreaMap[newPlayCard?.entityId] = newPlayCard
+        player.playArea.add(newPlayCard)
+        this.playArea.cards.forEach { card ->
+            player.playArea.add(card.clone())
+        }
+
+        AreaMapper.INSTANCE.update(this.secretArea, player.secretArea)
+        this.secretArea.cards.forEach { card ->
+            val newCard = card.clone()
+            war.cardAreaMap[newCard.entityId] = newCard
+            player.secretArea.add(newCard)
+        }
+
+        AreaMapper.INSTANCE.update(this.graveyardArea, player.graveyardArea)
+        this.graveyardArea.cards.forEach { card ->
+            val newCard = card.clone()
+            war.cardAreaMap[newCard.entityId] = newCard
+            player.graveyardArea.add(newCard)
+        }
+
+        AreaMapper.INSTANCE.update(this.deckArea, player.deckArea)
+        this.deckArea.cards.forEach { card ->
+            val newCard = card.clone()
+            war.cardAreaMap[newCard.entityId] = newCard
+            player.deckArea.add(newCard)
+        }
+
+        AreaMapper.INSTANCE.update(this.setasideArea, player.setasideArea)
+        this.setasideArea.cards.forEach { card ->
+            val newCard = card.clone()
+            war.cardAreaMap[newCard.entityId] = newCard
+            player.setasideArea.add(newCard)
+        }
+
+        AreaMapper.INSTANCE.update(this.removedfromgameArea, player.removedfromgameArea)
+        this.removedfromgameArea.cards.forEach { card ->
+            val newCard = card.clone()
+            war.cardAreaMap[newCard.entityId] = newCard
+            player.removedfromgameArea.add(newCard)
+        }
+
         return player
     }
 
@@ -188,16 +254,20 @@ class Player(
         this.setasideArea = setasideArea ?: SetasideArea(this)
         this.removedfromgameArea = removedfromgameArea ?: RemovedfromgameArea(this)
     }
+
+    companion object {
+        val UNKNOWN_PLAYER: Player = Player("UNKNOWN", "UNKNOWN")
+    }
 }
 
 /**
  * 当为有效玩家时才执行block语句
  */
-fun Player.safeRun(block: () -> Unit): Player {
+fun Player.safeRun(block: (Player) -> Unit): Player {
     if (isInValid()) {
         return this
     } else {
-        block()
+        block(this)
         return this
     }
 }
@@ -206,9 +276,9 @@ fun Player.safeRun(block: () -> Unit): Player {
  * 判断玩家是否有效
  */
 fun Player.isValid(): Boolean {
-    return this !== INVALID_PLAYER && this.gameId != "INVALID"
+    return this !== UNKNOWN_PLAYER
 }
 
 fun Player.isInValid(): Boolean {
-    return this === INVALID_PLAYER || this.gameId == "INVALID"
+    return this === UNKNOWN_PLAYER
 }

@@ -61,23 +61,20 @@ private val totems = listOf(
 class ShamanPower : ClickPower() {
 
     override fun generatePowerActions(war: War, player: Player): List<PowerAction> {
-        val entityId = belongCard?.entityId ?: return emptyList()
         if (war.me.playArea.isFull) return emptyList()
         return listOf(
             PowerAction(
                 { newWar ->
                     newWar.me.playArea.power?.action?.power()
                 }, { newWar ->
+                    spendSelfCost(newWar)
                     val card = totems.randomSelect().clone().apply {
                         isExhausted = true
+                        this.entityId = newWar.incrementMaxEntityId()
                     }
-                    newWar.maxEntityId?.let { maxEntityId ->
-                        card.entityId = (maxEntityId.toInt() + 1).toString()
-                        newWar.maxEntityId = card.entityId
-                    }
+                    newWar.cardAreaMap[card.entityId] = card
                     newWar.me.playArea.add(card)
-                    newWar.me.resourcesUsed += 2
-                    newWar.me.playArea.findByEntityId(entityId)?.isExhausted = true
+                    findSelf(newWar)?.isExhausted = true
                 })
         )
     }

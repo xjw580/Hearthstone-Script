@@ -3,7 +3,6 @@ package club.xiaojiawei.hsscript.utils
 import club.xiaojiawei.CardAction
 import club.xiaojiawei.bean.Card
 import club.xiaojiawei.bean.CardWeight
-import club.xiaojiawei.bean.area.Area
 import club.xiaojiawei.config.log
 import club.xiaojiawei.data.CARD_WEIGHT_TRIE
 import club.xiaojiawei.enums.ZoneEnum
@@ -12,16 +11,15 @@ import club.xiaojiawei.hsscript.bean.CommonCardAction.Companion.DEFAULT
 import club.xiaojiawei.hsscript.bean.WeightCard
 import club.xiaojiawei.hsscript.bean.log.ExtraEntity
 import club.xiaojiawei.hsscript.bean.log.TagChangeEntity
-import club.xiaojiawei.hsscript.bean.single.CARD_AREA_MAP
 import club.xiaojiawei.hsscript.bean.single.WarEx
 import club.xiaojiawei.hsscript.data.WEIGHT_CONFIG_PATH
 import club.xiaojiawei.hsscript.status.CardActionManager.CARD_ACTION_MAP
 import club.xiaojiawei.hsscript.strategy.DeckStrategyActuator
 import club.xiaojiawei.mapper.BaseCardMapper
 import club.xiaojiawei.mapper.EntityMapper
+import club.xiaojiawei.status.War
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
-import javafx.beans.value.ObservableValue
 import java.io.IOException
 import java.nio.ByteBuffer
 import java.nio.channels.FileChannel
@@ -35,15 +33,6 @@ import java.util.function.Supplier
  */
 object CardUtil {
 
-    fun addAreaListener(card: Card?) {
-        card?.let {
-            card.areaProperty.addListener { _: ObservableValue<out Area?>?, _: Area?, newArea: Area? ->
-                CARD_AREA_MAP.remove(card.entityId)
-                CARD_AREA_MAP[card.entityId] = newArea
-            }
-        }
-    }
-
     fun updateCardByExtraEntity(extraEntity: ExtraEntity, card: Card?) {
         card?.let {
             BaseCardMapper.INSTANCE.update(extraEntity.extraCard.card, card)
@@ -51,27 +40,25 @@ object CardUtil {
         }
     }
 
-    fun exchangeAreaOfCard(extraEntity: ExtraEntity): Card? {
-        val sourceArea = CARD_AREA_MAP[extraEntity.entityId] ?: let {
-            WarEx.getPlayer(extraEntity.playerId).getArea(extraEntity.zone)
-        } ?: return null
+    fun exchangeAreaOfCard(extraEntity: ExtraEntity, war: War): Card? {
+        val sourceArea = war.cardAreaMap[extraEntity.entityId]?.area ?: return null
         val targetArea = WarEx.getPlayer(extraEntity.playerId).getArea(extraEntity.extraCard.zone) ?: return null
 
-        val card = sourceArea.removeByEntityId(extraEntity.entityId)
+        val card = sourceArea.removeByEntityId(extraEntity.entityId) ?: return null
         targetArea.add(card, extraEntity.extraCard.zonePos)
 
         return card
     }
 
-    fun exchangeAreaOfCard(tagChangeEntity: TagChangeEntity): Card? {
-        val sourceArea = CARD_AREA_MAP[tagChangeEntity.entityId] ?: return null
+    fun exchangeAreaOfCard(tagChangeEntity: TagChangeEntity, war: War): Card? {
+        val sourceCard = war.cardAreaMap[tagChangeEntity.entityId] ?: return null
         val targetArea =
             WarEx.getPlayer(tagChangeEntity.playerId).getArea(ZoneEnum.valueOf(tagChangeEntity.value)) ?: return null
 
-        val card = sourceArea.removeByEntityId(tagChangeEntity.entityId)
-        targetArea.add(card, 0)
+        sourceCard.area.removeByEntityId(tagChangeEntity.entityId) ?: return null
+        targetArea.add(sourceCard, 0)
 
-        return card
+        return sourceCard
     }
 
     fun setCardAction(card: Card?) {
