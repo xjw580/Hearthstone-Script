@@ -36,31 +36,45 @@ class HsAIStrategy : DeckStrategy() {
     }
 
     override fun executeOutCard() {
+        val war = WAR
         log.info { "开始思考如何打牌" }
         val monteCarloTreeSearch = MonteCarloTreeSearch()
-        var arg = MCTSArg(30 * 1000, 2, 0.5, 200_000, MCTSUtil.buildScoreCalculator(), true)
-        WAR.me.playArea.cards.forEach { card: Card ->
-            log.info { "play card: entityId:${card.entityId},${card.isExhausted}" }
+        var arg: MCTSArg = if (war.me.playArea.cardSize() + war.rival.playArea.cardSize() > 6) {
+            MCTSArg(30 * 1000, 1, 0.5, 500_000, MCTSUtil.buildScoreCalculator(), false)
+        } else {
+            MCTSArg(30 * 1000, 2, 0.5, 100_000, MCTSUtil.buildScoreCalculator(), true)
         }
-//        WAR.me.handArea.cards.forEach { card: Card ->
-//            log.info { "hand card: $card" }
-//        }
+
+        val stringBuilder = StringBuilder("战场可行动卡牌: ")
+        war.me.playArea.cards.filter { card -> card.canAttack() || card.canPower() }.forEach { card: Card ->
+            stringBuilder.append(card).append(",")
+        }
+        stringBuilder.deleteCharAt(stringBuilder.length - 1)
+        log.info { stringBuilder }
+
         val start = System.currentTimeMillis()
-        var bestActions = monteCarloTreeSearch.getBestActions(WAR, arg)
+        var bestActions = monteCarloTreeSearch.getBestActions(war, arg)
         log.info { "思考耗时：${(System.currentTimeMillis() - start)}ms，执行动作数：${bestActions.size}" }
         bestActions.forEach { action ->
-            action.applyAction.exec.accept(WAR)
+            action.applyAction.exec.accept(war)
         }
+
         System.gc()
+        Thread.sleep(3000)
+
+        log.info { "再次思考如何打牌" }
         arg = MCTSArg(10 * 1000, 1, 0.5, 200_000, MCTSUtil.buildScoreCalculator(), false)
-        bestActions = monteCarloTreeSearch.getBestActions(WAR, arg)
+        bestActions = monteCarloTreeSearch.getBestActions(war, arg)
         bestActions.forEach { action ->
-            action.applyAction.exec.accept(WAR)
+            action.applyAction.exec.accept(war)
         }
+
+        log.info { "出牌结束" }
         System.gc()
     }
 
     override fun executeDiscoverChooseCard(vararg cards: Card): Int {
         return 1
     }
+
 }

@@ -49,8 +49,9 @@ class MonteCarloTreeNode(
     private fun calcScore(war: War): Double {
         val currentScore = arg.scoreCalculator.apply(war)
         val surplusTurn = arg.turnCount - 1
+//        判断是否需要进行反演
         if (surplusTurn > 0) {
-            arg = MCTSArg(
+            val inverseArg = MCTSArg(
                 (arg.thinkingSecTime * arg.turnFactor).toInt(),
                 surplusTurn,
                 arg.turnFactor * arg.turnFactor,
@@ -58,21 +59,24 @@ class MonteCarloTreeNode(
                 arg.scoreCalculator,
                 arg.enableMultiThread
             )
-            val newWar = war.clone()
-            newWar.exchangePlayer()
-            val me = newWar.me
-//            重置战场疲劳
-            me.playArea.cards.forEach { card ->
-                card.resetExhausted()
+            val inverseWar = war.clone().apply {
+                exchangePlayer()
             }
-            me.playArea.hero?.resetExhausted()
-            me.playArea.power?.resetExhausted()
-            me.playArea.weapon?.resetExhausted()
+            inverseWar.me.apply {
+                //            重置战场疲劳
+                playArea.cards.forEach { card ->
+                    card.resetExhausted()
+                }
+                playArea.hero?.resetExhausted()
+                playArea.power?.resetExhausted()
+                playArea.weapon?.resetExhausted()
+            }
+            inverseWar.rival.apply {
+                playArea.hero?.atc = 0
+            }
 
-            newWar.rival.playArea.hero?.atc = 0
-
-            val monteCarloTreeSearch = MonteCarloTreeSearch(maxDepth = 10)
-            val bestActions = monteCarloTreeSearch.getBestActions(newWar, arg)
+//            反演时尽量调大maxDepth值，可以减少资源消耗
+            val bestActions = MonteCarloTreeSearch(maxDepth = 15).getBestActions(inverseWar, inverseArg)
             return if (bestActions.isEmpty()) {
                 currentScore
             } else {
@@ -191,7 +195,7 @@ class MonteCarloTreeNode(
      * 是否为结束节点
      */
     fun isEnd(): Boolean {
-        return isLeaf() || MCTSUtil.isEnd(state.war)
+        return state.isEnd || isLeaf()
     }
 
     class State(val war: War, val score: Double) {
@@ -201,6 +205,8 @@ class MonteCarloTreeNode(
         var visitCount: Int = 0
 
         var lastWin: Boolean = false
+
+        val isEnd = MCTSUtil.isEnd(war)
 
         fun update(win: Boolean?) {
             visitCount++
@@ -221,5 +227,6 @@ class MonteCarloTreeNode(
         }
 
     }
+
 }
 

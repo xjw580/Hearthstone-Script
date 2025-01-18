@@ -471,8 +471,12 @@ object GameUtil {
     fun killGame() {
         if (isAliveOfGame()) {
             try {
+                SystemDll.INSTANCE.closeProgram(GAME_HWND)
+                delay(1000)
                 Runtime.getRuntime().exec("cmd /c taskkill /f /t /im $GAME_PROGRAM_NAME")
                     .waitFor()
+                delay(1000)
+                SystemDll.INSTANCE.closeProgram(GAME_HWND)
                 delay(1000)
                 log.info { "${GAME_CN_NAME}已关闭" }
             } catch (e: IOException) {

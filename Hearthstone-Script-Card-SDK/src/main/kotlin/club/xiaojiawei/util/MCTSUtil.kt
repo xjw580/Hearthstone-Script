@@ -23,13 +23,10 @@ object MCTSUtil {
      * 判断战局是否结束
      */
     fun isEnd(war: War): Boolean {
-        war.rival.playArea.hero?.let { rivalHero ->
-            if (rivalHero.blood() <= 0) return true
-            war.me.playArea.hero?.let { myHero ->
-                return myHero.blood() <= 0
-            }
-        }
-        return true
+        val rivalHero = war.rival.playArea.hero
+        val myHero = war.me.playArea.hero
+        if (rivalHero == null || myHero == null) return true
+        return !myHero.isSurvival() || !rivalHero.isSurvival()
     }
 
     /**

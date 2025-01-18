@@ -13,13 +13,14 @@ import java.util.function.Function
 import kotlin.math.ceil
 import kotlin.math.floor
 import kotlin.math.min
-import kotlin.random.Random
 
 /**
  * @author 肖嘉威
  * @date 2025/1/10 10:04
  */
-class MonteCarloTreeSearch(val maxDepth: Int = 10) {
+private const val MCTS_DEFAULT_DEPTH = 10
+
+class MonteCarloTreeSearch(val maxDepth: Int = MCTS_DEFAULT_DEPTH) {
 
     private fun select(rootNode: MonteCarloTreeNode, totalCount: Int): MonteCarloTreeNode {
         var node: MonteCarloTreeNode = rootNode
