@@ -16,14 +16,22 @@ import java.util.*
  */
 
 abstract class Area(
+    /**
+     * 允许打印日志
+     */
+    val allowLog: Boolean = false,
     maxSize: Int,
     val defaultMaxSize: Int = maxSize,
     @Volatile var oldMaxSize: Int = 0,
     player: Player? = null,
-    val cards: MutableList<Card> = mutableListOf(),
-    protected val zeroCards: MutableMap<String, Card> = mutableMapOf(),
-    var allowLog: Boolean = true,
 ) {
+
+    val cards: MutableList<Card> = mutableListOf()
+
+    /**
+     * 零区，即等待区，日志中下标为0表示进入零区
+     */
+    private val zeroCards: MutableMap<String, Card> = mutableMapOf()
 
     val player: Player by lazy { player ?: Player.UNKNOWN_PLAYER }
 
@@ -240,24 +248,8 @@ abstract class Area(
                 '}'
     }
 
-    protected fun deepCloneCards(): MutableList<Card> {
-        val cloneCards = mutableListOf<Card>()
-        cards.forEach {
-            cloneCards.add(it.clone())
-        }
-        return cloneCards
-    }
-
-    protected fun deepZeroCards(): MutableMap<String, Card> {
-        val cloneZeroCards = mutableMapOf<String, Card>()
-        zeroCards.forEach {
-            cloneZeroCards[it.key] = it.value
-        }
-        return cloneZeroCards
-    }
-
     companion object {
-        val UNKNOWN_AREA: Area = object : Area(0, allowLog = false) {}
+        val UNKNOWN_AREA: Area = object : Area(allowLog = false, maxSize = 0) {}
     }
 }
 

@@ -27,7 +27,9 @@ class Execute : CardAction.DefaultCardAction() {
                 }, { newWar ->
                     spendSelfCost(newWar)
                     removeSelf(newWar)?.let {
-                        rivalCard.damage = rivalCard.bloodLimit()
+                        rivalCard.action.findSelf(newWar)?.let { rivalCard->
+                            rivalCard.damage = rivalCard.bloodLimit()
+                        }
                     }
                 }))
             }

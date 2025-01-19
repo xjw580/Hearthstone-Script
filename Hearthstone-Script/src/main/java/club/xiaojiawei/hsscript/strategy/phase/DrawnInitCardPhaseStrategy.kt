@@ -75,7 +75,7 @@ object DrawnInitCardPhaseStrategy : AbstractPhaseStrategy() {
      * @return
      */
     override fun dealFullEntityThenIsOver(line: String, extraEntity: ExtraEntity): Boolean {
-        val card = war.cardAreaMap[extraEntity.entityId]
+        val card = war.cardMap[extraEntity.entityId]
         card ?: let {
             log.warn { "card【entityId:${extraEntity.entityId}】不应为null" }
             return false

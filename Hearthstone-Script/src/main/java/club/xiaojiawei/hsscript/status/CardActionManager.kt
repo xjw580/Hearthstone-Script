@@ -1,8 +1,8 @@
 package club.xiaojiawei.hsscript.status
 
 import club.xiaojiawei.CardAction
-import club.xiaojiawei.config.log
 import club.xiaojiawei.bean.LikeTrie
+import club.xiaojiawei.config.log
 import club.xiaojiawei.hsscript.status.PluginManager.CARD_ACTION_PLUGINS
 import club.xiaojiawei.hsscript.status.PluginManager.loadCardProperty
 import javafx.beans.value.ObservableValue
@@ -55,5 +55,14 @@ object CardActionManager {
         log.info { "重新加载卡牌库" }
         CARD_ACTION_MAP.clear()
         CARD_ACTION_MAP.putAll(load())
+
+
+        val supplier: Supplier<CardAction>? = (CARD_ACTION_MAP["xjw-base-plugin"] ?: let {
+            CARD_ACTION_MAP[""]
+        })?.let {
+            val supplier = it["CORE_SW_030"]
+            supplier
+        }
+        println("supplier:${supplier?.get()}")
     }
 }

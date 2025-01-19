@@ -11,18 +11,7 @@ import club.xiaojiawei.util.isTrue
  * @author 肖嘉威
  * @date 2022/11/27 15:02
  */
-class PlayArea : Area {
-
-    constructor(player: Player) : super(7, player)
-
-    private constructor(
-        maxSize: Int,
-        defaultMaxSize: Int,
-        oldMaxSize: Int,
-        player: Player,
-        cards: MutableList<Card>,
-        zeroCards: MutableMap<String, Card>,
-    ) : super(maxSize, defaultMaxSize, oldMaxSize, player, cards, zeroCards, false)
+class PlayArea(allowLog: Boolean = false, player: Player) : Area(allowLog = allowLog, maxSize = 7, player = player) {
 
     @Volatile
     var hero: Card? = null
@@ -127,21 +116,4 @@ class PlayArea : Area {
         return card
     }
 
-    fun deepClone(player: Player = this.player, containZeroCards: Boolean = false): PlayArea {
-        val area = PlayArea(
-            maxSize,
-            defaultMaxSize,
-            oldMaxSize,
-            player,
-            deepCloneCards(),
-            if (containZeroCards) deepZeroCards() else zeroCards
-        )
-        area.hero = hero?.clone()
-        area.hero?.area = area
-        area.weapon = weapon?.clone()
-        area.weapon?.area = area
-        area.power = power?.clone()
-        area.power?.area = area
-        return area
-    }
 }

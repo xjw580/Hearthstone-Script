@@ -25,22 +25,26 @@ class Brawl : CardAction.DefaultCardAction() {
             }, { newWar ->
                 spendSelfCost(newWar)
                 removeSelf(newWar)
+//                todo 排除地标
                 val size = newWar.me.playArea.cardSize() + newWar.rival.playArea.cardSize()
+                if (size < 2) return@PlayAction
                 val index = Random.nextInt(size)
                 val aliveCard: Card
                 if (index >= newWar.me.playArea.cardSize()) {
-                    aliveCard = newWar.rival.playArea.cards[index - newWar.rival.playArea.cardSize()]
+                    aliveCard = newWar.rival.playArea.cards[index - newWar.me.playArea.cardSize()]
                 } else {
                     aliveCard = newWar.me.playArea.cards[index]
                 }
 //                按照先下场的顺序依次死亡
-                (newWar.me.playArea.cards.toList() + newWar.rival.playArea.cards.toList()).sortedBy { card: Card ->
+                (newWar.me.playArea.cards + newWar.rival.playArea.cards).sortedBy { card: Card ->
                     card.numTurnsInPlay
-                }.reversed().forEach {card: Card ->
-                    if (card != aliveCard) {
+                }.reversed().forEach { card: Card ->
+                    if (card.isAlive() && card != aliveCard) {
                         card.damage = card.bloodLimit()
                     }
                 }
+//                乱斗动画长
+                Thread.sleep(3000L + size * 500L)
             })
         )
     }

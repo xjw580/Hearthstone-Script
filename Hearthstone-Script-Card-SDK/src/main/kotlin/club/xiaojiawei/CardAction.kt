@@ -1,7 +1,7 @@
 package club.xiaojiawei
 
 import club.xiaojiawei.bean.*
-import club.xiaojiawei.bean.area.safeRun
+import club.xiaojiawei.bean.area.isValid
 import club.xiaojiawei.config.log
 import club.xiaojiawei.enums.CardTypeEnum
 import club.xiaojiawei.status.War
@@ -178,19 +178,26 @@ abstract class CardAction(createDefaultAction: Boolean = true) {
      * @param war 此卡牌所处的战局
      * @param player 此卡牌所处的玩家
      */
-    fun triggerDeath(war: War, player: Player) {
+    fun triggerDeath(war: War) {
 //        亡语大于复生，所以先触发亡语再触发复生
-        triggerDeathRattle(war)
-        triggerReborn(player)
+        findSelf(war)?.let { card: Card ->
+            if (card.isDeathRattle) {
+                triggerDeathRattle(war)
+            }
+            if (card.isReborn) {
+                triggerReborn(war)
+            }
+        }
         removeSelf(war)
     }
 
     /**
      * 触发复生
      */
-    fun triggerReborn(player: Player) {
-        belongCard?.let { card ->
-            card.area.safeRun { area ->
+    fun triggerReborn(war: War) {
+        findSelf(war)?.let { card ->
+            val area = card.area
+            if (area.isValid()) {
                 val index = area.indexOfCard(card)
                 val newCard = card.clone().apply {
                     damage = health - 1
@@ -198,13 +205,13 @@ abstract class CardAction(createDefaultAction: Boolean = true) {
                     isExhausted = true
                     isReborn = false
                 }
-                if (index == -1) {
-                    if (area.isFull) return@safeRun
-                    player.playArea.add(newCard)
+                if (index < 0) {
+                    if (area.isFull) return
+                    war.addCard(newCard, card.area.player.playArea)
                 } else {//说明原卡牌还未从area中移除
-                    if (area.cardSize() > area.maxSize) return@safeRun
+                    if (area.cardSize() > area.maxSize) return
 //                添加至原卡牌位置的右侧
-                    player.playArea.add(newCard, index + 2)
+                    war.addCard(newCard, card.area.player.playArea, index + 2)
                 }
             }
         }
@@ -370,7 +377,7 @@ abstract class CardAction(createDefaultAction: Boolean = true) {
         return null
     }
 
-    fun delay(time: Int = mouseActionInterval) {
+    private fun delay(time: Int = mouseActionInterval) {
         if (isStop() || time < 0) return
         if (time == mouseActionInterval) {
             depth = 0
@@ -389,9 +396,9 @@ abstract class CardAction(createDefaultAction: Boolean = true) {
      */
     fun removeSelf(war: War): Card? {
         val entityId = belongCard?.entityId ?: return null
-        return war.cardAreaMap[entityId]?.area?.removeByEntityId(entityId)?.let {
-            log.warn { "移除卡牌失败,entityId:${entityId}" }
-            it
+        return war.cardMap[entityId]?.area?.removeByEntityId(entityId) ?: let {
+            log.warn { "移除卡牌失败,entityId:${entityId},className:${this::class.qualifiedName}" }
+            null
         }
     }
 
@@ -400,9 +407,9 @@ abstract class CardAction(createDefaultAction: Boolean = true) {
      */
     fun findSelf(war: War): Card? {
         val entityId = belongCard?.entityId ?: return null
-        return war.cardAreaMap[entityId]?.area?.findByEntityId(entityId)?.let {
-            log.warn { "查找手牌失败,entityId:${entityId}" }
-            it
+        return war.cardMap[entityId] ?: let {
+            log.warn { "查找卡牌失败,entityId:${entityId},className:${this::class.qualifiedName}" }
+            null
         }
     }
 
@@ -411,9 +418,12 @@ abstract class CardAction(createDefaultAction: Boolean = true) {
      */
     fun spendSelfCost(war: War): Card? {
         val entityId = belongCard?.entityId ?: return null
-        return war.cardAreaMap[entityId]?.let { card ->
+        return war.cardMap[entityId]?.let { card ->
             card.area.player.resourcesUsed += card.cost
             card
+        } ?: let {
+            log.warn { "查找卡牌失败,entityId:${entityId}" }
+            null
         }
     }
 

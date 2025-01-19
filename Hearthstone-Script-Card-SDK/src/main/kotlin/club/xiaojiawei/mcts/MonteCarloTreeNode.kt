@@ -62,8 +62,11 @@ class MonteCarloTreeNode(
             val inverseWar = war.clone()
             inverseWar.me.apply {
                 playArea.hero?.atc = 0
-                playArea.cards.forEach { card ->
-                    card.action.triggerTurnEnd(war)
+//                triggerTurnEnd内部可能修改cards，使用副本遍历
+                playArea.cards.toTypedArray().forEach { card ->
+                    if (card.isAlive()) {
+                        card.action.triggerTurnEnd(war)
+                    }
                 }
             }
             inverseWar.exchangePlayer()
@@ -80,13 +83,16 @@ class MonteCarloTreeNode(
                 playArea.hero?.resetExhausted()
                 playArea.power?.resetExhausted()
                 playArea.weapon?.resetExhausted()
-                playArea.cards.forEach { card ->
-                    card.action.triggerTurnStart(war)
+//                triggerTurnStart内部可能修改cards，使用副本遍历
+                playArea.cards.toTypedArray().forEach { card ->
+                    if (card.isAlive()) {
+                        card.action.triggerTurnStart(war)
+                    }
                 }
             }
 
 //            反演时尽量调大maxDepth值，可以减少资源消耗
-            val bestActions = MonteCarloTreeSearch(maxDepth = 15).getBestActions(inverseWar, inverseArg)
+            val bestActions = MonteCarloTreeSearch(maxDepth = 20).getBestActions(inverseWar, inverseArg)
             return if (bestActions.isEmpty()) {
                 currentScore
             } else {

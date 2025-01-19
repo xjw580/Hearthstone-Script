@@ -48,6 +48,6 @@
     <logger name="org.springframework" level="info"/>
     <root level="${logLevel}">
         <appender-ref ref="console"/>
-        <appender-ref ref="file_async"/>
+<!--        <appender-ref ref="file_async"/>-->
     </root>
 </configuration>

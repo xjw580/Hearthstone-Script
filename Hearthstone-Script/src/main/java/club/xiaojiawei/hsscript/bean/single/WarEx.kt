@@ -79,8 +79,8 @@ object WarEx {
             rival = Player.UNKNOWN_PLAYER
             me = Player.UNKNOWN_PLAYER
             currentPlayer = Player.UNKNOWN_PLAYER
-            player1 = Player("1", allowLog = true)
-            player2 = Player("2", allowLog = true)
+            player1 = Player(allowLog = true, playerId = "1", war = war)
+            player2 = Player(allowLog = true, playerId = "2", war = war)
             warTurn = 0
             conceded = ""
             lost = conceded
@@ -91,7 +91,7 @@ object WarEx {
         print.isTrue {
             log.info { "已重置游戏状态" }
         }
-        war.cardAreaMap.clear()
+        war.cardMap.clear()
         resetCallbackList.forEach(Consumer { obj: Runnable -> obj.run() })
         System.gc()
     }

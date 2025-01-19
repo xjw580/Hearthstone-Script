@@ -72,8 +72,7 @@ class ShamanPower : ClickPower() {
                         isExhausted = true
                         this.entityId = newWar.incrementMaxEntityId()
                     }
-                    newWar.cardAreaMap[card.entityId] = card
-                    newWar.me.playArea.add(card)
+                    newWar.addCard(card, newWar.me.playArea)
                     findSelf(newWar)?.isExhausted = true
                 })
         )

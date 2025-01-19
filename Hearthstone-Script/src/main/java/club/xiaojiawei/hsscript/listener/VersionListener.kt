@@ -236,7 +236,7 @@ object VersionListener {
     }
 
     private fun downloadRelease(release: Release, url: String, progress: DoubleProperty): String? {
-        var rootPath: Path?
+        var rootPath: Path
         try {
             URI(url)
                 .toURL()
@@ -246,7 +246,7 @@ object VersionListener {
                         val startContent = "开始下载<" + release.tagName + ">"
                         log.info { startContent }
                         progress.set(0.0)
-                        var nextEntry: ZipEntry?
+                        var nextEntry: ZipEntry
                         val count = 59.0
                         val step = 0.95 / count
                         rootPath = Path.of(TEMP_VERSION_PATH, release.tagName)

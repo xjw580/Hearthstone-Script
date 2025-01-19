@@ -27,15 +27,15 @@ class Whirlwind : CardAction.DefaultCardAction() {
                 spendSelfCost(newWar)
                 removeSelf(newWar)
                 val exec = BiConsumer<Player, Card> { player, card ->
-                    if (card.cardType === CardTypeEnum.MINION) {
+                    if (card.isAlive() && card.cardType === CardTypeEnum.MINION) {
                         card.damage += 1 + newWar.me.getSpellPower()
                     }
                 }
 //                todo 应该要按随从下场顺序依次受伤
-                newWar.me.playArea.cards.forEach { card ->
+                newWar.me.playArea.cards.toList().forEach { card ->
                     exec.accept(newWar.me, card)
                 }
-                newWar.rival.playArea.cards.forEach { card ->
+                newWar.rival.playArea.cards.toList().forEach { card ->
                     exec.accept(newWar.rival, card)
                 }
             })

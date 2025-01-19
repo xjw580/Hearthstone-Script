@@ -51,6 +51,9 @@ class HsAIStrategy : DeckStrategy() {
         }
         stringBuilder.deleteCharAt(stringBuilder.length - 1)
         log.info { stringBuilder }
+        war.me.handArea.cards.forEach { card: Card ->
+            println("cardId:${card.cardId}, entityId:${card.entityId}, cost:${card.cost}, action:${card.action::class.qualifiedName}")
+        }
 
         val start = System.currentTimeMillis()
         var bestActions = monteCarloTreeSearch.getBestActions(war, arg)
@@ -63,7 +66,7 @@ class HsAIStrategy : DeckStrategy() {
         Thread.sleep(3000)
 
         log.info { "再次思考如何打牌" }
-        arg = MCTSArg(10 * 1000, 1, 0.5, 200_000, MCTSUtil.buildScoreCalculator(), false)
+        arg = MCTSArg(5 * 1000, 1, 0.5, 100_000, MCTSUtil.buildScoreCalculator(), false)
         bestActions = monteCarloTreeSearch.getBestActions(war, arg)
         bestActions.forEach { action ->
             action.applyAction.exec.accept(war)

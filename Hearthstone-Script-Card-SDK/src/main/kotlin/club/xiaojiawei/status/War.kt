@@ -2,6 +2,7 @@ package club.xiaojiawei.status
 
 import club.xiaojiawei.bean.Card
 import club.xiaojiawei.bean.Player
+import club.xiaojiawei.bean.area.Area
 import club.xiaojiawei.bean.safeRun
 import club.xiaojiawei.config.log
 import club.xiaojiawei.enums.RunModeEnum
@@ -22,13 +23,18 @@ import club.xiaojiawei.util.isTrue
  */
 val WAR: War = War(true)
 
-class War(var allowLog: Boolean = false) : Cloneable {
+class War(
+    /**
+     * 允许打印日志
+     */
+    val allowLog: Boolean = false
+) : Cloneable {
 
     /**
-     * 存放所有卡牌所在哪一区域
+     * 存储当前war中所有的[Card]
      * k:[club.xiaojiawei.bean.Entity.entityId]
      */
-    val cardAreaMap: MutableMap<String?, Card?> = HashMap()
+    val cardMap: MutableMap<String?, Card?> = HashMap()
 
     @Volatile
     var currentPlayer: Player = Player.UNKNOWN_PLAYER
@@ -71,10 +77,10 @@ class War(var allowLog: Boolean = false) : Cloneable {
     var rival: Player = Player.UNKNOWN_PLAYER
 
     @Volatile
-    var player1: Player = Player("1", allowLog = true, war = this)
+    var player1: Player = Player.UNKNOWN_PLAYER
 
     @Volatile
-    var player2: Player = Player("2", allowLog = true, war = this)
+    var player2: Player = Player.UNKNOWN_PLAYER
 
     /**
      * 总回合数
@@ -142,17 +148,40 @@ class War(var allowLog: Boolean = false) : Cloneable {
         player2 = tempPlayer1
     }
 
-    public override fun clone(): War {
-        val newWar = WarMapper.INSTANCE.clone(this)
-        val oldMe = newWar.me
-        newWar.me = newWar.me.deepClone(newWar)
-        newWar.rival = newWar.rival.deepClone(newWar)
-        if (oldMe == newWar.player1) {
-            newWar.player1 = newWar.me
-            newWar.player2 = newWar.rival
+    /**
+     * 添加卡牌，当新生成的[Card]需要添加至[Area]时推荐用此方法代替[Area.add]，这会缓存此[Card]
+     */
+    fun addCard(card: Card, area: Area, pos: Int? = null) {
+        cardMap[card.entityId] = card
+        if (pos == null) {
+            area.add(card)
         } else {
-            newWar.player1 = newWar.rival
-            newWar.player2 = newWar.me
+            area.add(card, pos)
+        }
+    }
+
+    public override fun clone(): War {
+        return deepClone(false)
+    }
+
+    fun deepClone(allowLog: Boolean): War {
+        val newWar = War(allowLog = allowLog)
+        WarMapper.INSTANCE.update(this, newWar)
+        val newMe = this.me.deepClone(newWar)
+        val newRival = this.rival.deepClone(newWar)
+        newWar.me = newMe
+        newWar.rival = newRival
+        if (this.me == this.player1) {
+            newWar.player1 = newMe
+            newWar.player2 = newRival
+        } else {
+            newWar.player1 = newRival
+            newWar.player2 = newMe
+        }
+        if (this.me == this.currentPlayer) {
+            newWar.currentPlayer = newMe
+        } else {
+            newWar.currentPlayer = newRival
         }
         return newWar
     }

@@ -21,7 +21,7 @@ import club.xiaojiawei.hsscript.utils.CardUtil.updateCardByExtraEntity
 import club.xiaojiawei.status.WAR
 import java.io.RandomAccessFile
 import java.nio.charset.StandardCharsets
-import java.util.function.Consumer
+import java.util.function.BiConsumer
 
 /**
  * 解析power.log日志的工具，非常非常非常重要
@@ -40,7 +40,7 @@ object PowerLogUtil {
      */
     fun dealShowEntity(line: String, accessFile: RandomAccessFile): ExtraEntity {
         val extraEntity: ExtraEntity = parseExtraEntity(line, accessFile, SHOW_ENTITY)
-        val card = war.cardAreaMap[extraEntity.entityId]
+        val card = war.cardMap[extraEntity.entityId]
 
         if (extraEntity.extraCard.zone === extraEntity.zone || extraEntity.extraCard.zone === null) {
             updateCardByExtraEntity(extraEntity, card)
@@ -59,12 +59,12 @@ object PowerLogUtil {
      */
     fun dealFullEntity(line: String, accessFile: RandomAccessFile): ExtraEntity {
         val extraEntity: ExtraEntity = parseExtraEntity(line, accessFile, FULL_ENTITY)
-        if (war.cardAreaMap[extraEntity.entityId] == null) {
+        if (war.cardMap[extraEntity.entityId] == null) {
             val card = Card(CommonCardAction.DEFAULT)
             updateCardByExtraEntity(extraEntity, card)
-            war.cardAreaMap[extraEntity.entityId] = card
+            war.cardMap[extraEntity.entityId] = card
             setCardAction(card)
-            card.cardIdChangeListener = Consumer {
+            card.cardIdChangeListener = BiConsumer { oldCardId, newCardId ->
                 setCardAction(card)
             }
             war.maxEntityId = card.entityId
@@ -74,7 +74,7 @@ object PowerLogUtil {
                     log.debug { "生成的card【entityId:${card.entityId}】不应没有area" }
                 }
         } else {
-            //        不退出客户端的情况下断线重连会导致牌库的牌重新在日志中输出
+//        不退出客户端的情况下断线重连会导致牌库的牌重新在日志中输出
             log.debug { "生成的card重复，将不会生成新Card，疑似掉线重连" }
         }
         return extraEntity
@@ -88,7 +88,7 @@ object PowerLogUtil {
      */
     fun dealChangeEntity(line: String, accessFile: RandomAccessFile): ExtraEntity {
         val extraEntity: ExtraEntity = parseExtraEntity(line, accessFile, CHANGE_ENTITY)
-        val card = war.cardAreaMap[extraEntity.entityId]
+        val card = war.cardMap[extraEntity.entityId]
         log.info {
             String.format(
                 "玩家%s【%s】 的 【entityId:%s】 由 【entityName:%s，cardId:%s】 变形成了 【entityName:，cardId:%s】",
@@ -117,7 +117,7 @@ object PowerLogUtil {
         if (tagChangeEntity.tag !== TagEnum.UNKNOWN) {
 //        处理复杂，例：TAG_CHANGE Entity=[entityName=UNKNOWN ENTITY [cardType=INVALID] id=89 zone=HAND zonePos=4 cardId= player=2] tag=ZONE_POSITION value=0
             if (tagChangeEntity.entity.isBlank()) {
-                val card = war.cardAreaMap[tagChangeEntity.entityId] ?: let {
+                val card = war.cardMap[tagChangeEntity.entityId] ?: let {
                     log.debug { "不应找不到card,【entityId:${tagChangeEntity.entityId}】" }
                     return tagChangeEntity
                 }

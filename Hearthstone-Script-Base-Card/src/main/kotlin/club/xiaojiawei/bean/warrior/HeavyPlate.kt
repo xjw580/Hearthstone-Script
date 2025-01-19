@@ -11,7 +11,7 @@ import club.xiaojiawei.status.War
  * @date 2025/1/18 18:22
  */
 private val cardIds = arrayOf<String>(
-    "%LOOT_413",
+    "%SW_094",
 )
 
 class HeavyPlate : CardAction.DefaultCardAction() {

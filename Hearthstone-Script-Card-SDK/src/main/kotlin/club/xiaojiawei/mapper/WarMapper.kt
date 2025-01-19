@@ -3,6 +3,7 @@ package club.xiaojiawei.mapper
 import club.xiaojiawei.status.War
 import org.mapstruct.Mapper
 import org.mapstruct.Mapping
+import org.mapstruct.MappingTarget
 import org.mapstruct.factory.Mappers
 
 /**
@@ -16,7 +17,7 @@ interface WarMapper {
         val INSTANCE: WarMapper = Mappers.getMapper(WarMapper::class.java)
     }
 
-    @Mapping(target = "allowLog", constant = "false")
-    fun clone(sourceWar: War): War
+    @Mapping(target = "cardMap", ignore = true)
+    fun update(sourceWar: War, @MappingTarget targetWar: War)
 
 }

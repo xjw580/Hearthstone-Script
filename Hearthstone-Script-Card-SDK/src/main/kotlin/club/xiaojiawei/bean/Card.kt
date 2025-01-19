@@ -5,6 +5,7 @@ import club.xiaojiawei.bean.area.Area
 import club.xiaojiawei.enums.CardTypeEnum
 import club.xiaojiawei.enums.TargetEnum
 import club.xiaojiawei.mapper.BaseCardMapper
+import java.util.function.BiConsumer
 
 /**
  * @author 肖嘉威
@@ -32,12 +33,37 @@ class Card(var action: CardAction) : BaseCard(), Cloneable {
         this.health -= health
     }
 
+    /**
+     * [cardId]改变监听器
+     */
+    var cardIdChangeListener: BiConsumer<String, String>? = null
+
+    /**
+     * [damage]改变监听器
+     */
+    var damageChangeListener: BiConsumer<Int, Int>? = null
+
     override var damage
         get() = super.damage
         set(value) {
-            super.damage = value
-            if (!isAlive()) {
-                action.triggerDeath(area.player.war, area.player)
+            val oldDamage = super.damage
+            if (oldDamage != value) {
+                super.damage = value
+                damageChangeListener?.accept(oldDamage, value)
+            } else {
+                super.damage = value
+            }
+        }
+
+    override var cardId
+        get() = super.cardId
+        set(value) {
+            val oldCardId = super.cardId
+            if (value != oldCardId) {
+                super.cardId = value
+                cardIdChangeListener?.accept(oldCardId, value)
+            } else {
+                super.cardId = value
             }
         }
 

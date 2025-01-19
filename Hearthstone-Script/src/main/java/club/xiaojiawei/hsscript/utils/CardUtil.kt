@@ -41,7 +41,7 @@ object CardUtil {
     }
 
     fun exchangeAreaOfCard(extraEntity: ExtraEntity, war: War): Card? {
-        val sourceArea = war.cardAreaMap[extraEntity.entityId]?.area ?: return null
+        val sourceArea = war.cardMap[extraEntity.entityId]?.area ?: return null
         val targetArea = WarEx.getPlayer(extraEntity.playerId).getArea(extraEntity.extraCard.zone) ?: return null
 
         val card = sourceArea.removeByEntityId(extraEntity.entityId) ?: return null
@@ -51,7 +51,7 @@ object CardUtil {
     }
 
     fun exchangeAreaOfCard(tagChangeEntity: TagChangeEntity, war: War): Card? {
-        val sourceCard = war.cardAreaMap[tagChangeEntity.entityId] ?: return null
+        val sourceCard = war.cardMap[tagChangeEntity.entityId] ?: return null
         val targetArea =
             WarEx.getPlayer(tagChangeEntity.playerId).getArea(ZoneEnum.valueOf(tagChangeEntity.value)) ?: return null
 
@@ -69,7 +69,8 @@ object CardUtil {
         val supplier: Supplier<CardAction>? = (CARD_ACTION_MAP[deckStrategy.pluginId] ?: let {
             CARD_ACTION_MAP[""]
         })?.let {
-            it[card.cardId]
+            val supplier = it[card.cardId]
+            supplier
         }
 
         val cardAction = supplier?.get() ?: if (card.action === DEFAULT) CommonCardAction() else card.action

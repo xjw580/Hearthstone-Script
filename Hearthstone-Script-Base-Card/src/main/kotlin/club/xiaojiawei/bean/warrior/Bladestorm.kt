@@ -30,19 +30,22 @@ class Bladestorm : CardAction.DefaultCardAction() {
                 cardMap[newWar.rival] = newWar.rival.playArea.cards
                 var noDead = true
 //                todo 应该要按随从下场顺序依次受伤
+                var count = 0
                 while (noDead) {
                     if (newWar.me.playArea.isEmpty && newWar.rival.playArea.isEmpty) break
                     cardMap.forEach { (p, cards) ->
-                        val iterator = cards.iterator()
-                        while (iterator.hasNext()) {
-                            val card = iterator.next()
-                            card.damage += damage
-                            if (!card.isAlive()) {
-                                noDead = false
+                        cards.toList().forEach { card ->
+                            if (card.isAlive()) {
+                                card.damage += damage
+                                count++
+                                if (!card.isAlive()) {
+                                    noDead = false
+                                }
                             }
                         }
                     }
                 }
+                Thread.sleep(count * 250L)
             })
         )
     }

@@ -11,29 +11,7 @@ import kotlin.random.Random
  * @author 肖嘉威
  * @date 2022/11/27 15:02
  */
-class HandArea : Area {
-    constructor(player: Player) : super(10, player)
-
-    private constructor(
-        maxSize: Int,
-        defaultMaxSize: Int,
-        oldMaxSize: Int,
-        player: Player,
-        cards: MutableList<Card>,
-        zeroCards: MutableMap<String, Card>,
-    ) : super(maxSize, defaultMaxSize, oldMaxSize, player, cards, zeroCards, false)
-
-    fun deepClone(player: Player = this.player, containZeroCards: Boolean = false): HandArea {
-        val area = HandArea(
-            maxSize,
-            defaultMaxSize,
-            oldMaxSize,
-            player,
-            deepCloneCards(),
-            if (containZeroCards) deepZeroCards() else zeroCards
-        )
-        return area
-    }
+class HandArea(allowLog: Boolean = false, player: Player) : Area(allowLog = allowLog, maxSize = 10, player = player) {
 
     fun drawCard(): Card? {
         val deckArea = player.deckArea

@@ -8,12 +8,17 @@ import club.xiaojiawei.mapper.AreaMapper
 import club.xiaojiawei.mapper.PlayerMapper
 import club.xiaojiawei.status.War
 import club.xiaojiawei.util.isTrue
+import java.util.function.BiConsumer
 
 /**
  * @author 肖嘉威
  * @date 2022/11/27 15:03
  */
 class Player(
+    /**
+     * 允许打印日志
+     */
+    val allowLog: Boolean = false,
     val playerId: String,
     gameId: String? = null,
     handArea: HandArea? = null,
@@ -24,7 +29,6 @@ class Player(
     setasideArea: SetasideArea? = null,
     removedfromgameArea: RemovedfromgameArea? = null,
     war: War? = null,
-    allowLog: Boolean = true
 ) : Entity() {
 
     val war: War by lazy { war ?: War.UNKNOWN_WAR }
@@ -37,7 +41,6 @@ class Player(
                 log.info { "playerId:$playerId,gameId:$gameId" }
             }
         }
-    var allowLog: Boolean
 
     val handArea: HandArea
 
@@ -164,99 +167,94 @@ class Player(
         return result
     }
 
-
-    fun deepClone(war: War): Player {
-        val player = Player(
-            playerId,
-            war = war,
-            allowLog = false
+    fun deepClone(newWar: War): Player {
+        val newPlayer = Player(
+            allowLog = newWar.allowLog,
+            playerId = playerId,
+            war = newWar,
         )
-        PlayerMapper.INSTANCE.update(this, player)
+        PlayerMapper.INSTANCE.update(this, newPlayer)
+        clonePlayArea(newPlayer, newWar)
+        cloneArea(this.handArea, newPlayer.handArea, newWar)
+        cloneArea(this.secretArea, newPlayer.secretArea, newWar)
+        cloneArea(this.graveyardArea, newPlayer.graveyardArea, newWar)
+        cloneArea(this.deckArea, newPlayer.deckArea, newWar)
+        cloneArea(this.setasideArea, newPlayer.setasideArea, newWar)
+        cloneArea(this.removedfromgameArea, newPlayer.removedfromgameArea, newWar)
 
-        AreaMapper.INSTANCE.update(this.handArea, player.handArea)
-        this.handArea.cards.forEach { card ->
+        return newPlayer
+    }
+
+    private fun clonePlayArea(newPlayer: Player, newWar: War) {
+        val newPlayArea = newPlayer.playArea
+        this.playArea.heroHide?.clone()?.let {
+            initCloneCard(it, newPlayArea, newWar)
+//            newPlayArea.heroHide = it
+        }
+        this.playArea.hero?.clone()?.let {
+            initCloneCard(it, newPlayArea, newWar)
+//            newPlayArea.hero = it
+        }
+        this.playArea.powerHide?.clone()?.let {
+            initCloneCard(it, newPlayArea, newWar)
+//            newPlayArea.powerHide = it
+        }
+        this.playArea.power?.clone()?.let {
+            initCloneCard(it, newPlayArea, newWar)
+//            newPlayArea.power = it
+        }
+        this.playArea.weaponHide?.clone()?.let {
+            initCloneCard(it, newPlayArea, newWar)
+//            newPlayArea.weaponHide = it
+        }
+        this.playArea.weapon?.clone()?.let {
+            initCloneCard(it, newPlayArea, newWar)
+//            newPlayArea.weapon = it
+        }
+        cloneArea(this.playArea, newPlayer.playArea, newWar)
+    }
+
+    private fun initCloneCard(card: Card, newArea: Area, newWar: War) {
+        val action = card.action
+        newWar.addCard(card, newArea)
+//        card.area = newArea
+//        newWar.cardMap[card.entityId] = card
+        card.damageChangeListener = BiConsumer { oldDamage, newDamage ->
+            val isAlive = card.isAlive()
+            if (!isAlive) {
+                card.damageChangeListener = null
+            }
+            action.triggerDamage(newWar)
+            if (!isAlive) {
+                action.triggerDeath(newWar)
+            }
+        }
+    }
+
+    private fun cloneArea(sourceArea: Area, targetArea: Area, newWar: War) {
+        AreaMapper.INSTANCE.update(sourceArea, targetArea)
+        sourceArea.cards.forEach { card ->
             val newCard = card.clone()
-            war.cardAreaMap[newCard.entityId] = newCard
-            player.handArea.add(newCard)
+            initCloneCard(newCard, targetArea, newWar)
+//            targetArea.add(newCard)
         }
-
-        AreaMapper.INSTANCE.update(this.playArea, player.playArea)
-        var newPlayCard = this.playArea.heroHide?.clone()
-        war.cardAreaMap[newPlayCard?.entityId] = newPlayCard
-        player.playArea.add(newPlayCard)
-        newPlayCard = this.playArea.hero?.clone()
-        war.cardAreaMap[newPlayCard?.entityId] = newPlayCard
-        player.playArea.add(newPlayCard)
-        newPlayCard = this.playArea.powerHide?.clone()
-        war.cardAreaMap[newPlayCard?.entityId] = newPlayCard
-        player.playArea.add(newPlayCard)
-        newPlayCard = this.playArea.powerHide?.clone()
-        war.cardAreaMap[newPlayCard?.entityId] = newPlayCard
-        player.playArea.add(newPlayCard)
-        newPlayCard = this.playArea.weaponHide?.clone()
-        war.cardAreaMap[newPlayCard?.entityId] = newPlayCard
-        player.playArea.add(newPlayCard)
-        newPlayCard = this.playArea.weapon?.clone()
-        war.cardAreaMap[newPlayCard?.entityId] = newPlayCard
-        player.playArea.add(newPlayCard)
-        this.playArea.cards.forEach { card ->
-            player.playArea.add(card.clone())
-        }
-
-        AreaMapper.INSTANCE.update(this.secretArea, player.secretArea)
-        this.secretArea.cards.forEach { card ->
-            val newCard = card.clone()
-            war.cardAreaMap[newCard.entityId] = newCard
-            player.secretArea.add(newCard)
-        }
-
-        AreaMapper.INSTANCE.update(this.graveyardArea, player.graveyardArea)
-        this.graveyardArea.cards.forEach { card ->
-            val newCard = card.clone()
-            war.cardAreaMap[newCard.entityId] = newCard
-            player.graveyardArea.add(newCard)
-        }
-
-        AreaMapper.INSTANCE.update(this.deckArea, player.deckArea)
-        this.deckArea.cards.forEach { card ->
-            val newCard = card.clone()
-            war.cardAreaMap[newCard.entityId] = newCard
-            player.deckArea.add(newCard)
-        }
-
-        AreaMapper.INSTANCE.update(this.setasideArea, player.setasideArea)
-        this.setasideArea.cards.forEach { card ->
-            val newCard = card.clone()
-            war.cardAreaMap[newCard.entityId] = newCard
-            player.setasideArea.add(newCard)
-        }
-
-        AreaMapper.INSTANCE.update(this.removedfromgameArea, player.removedfromgameArea)
-        this.removedfromgameArea.cards.forEach { card ->
-            val newCard = card.clone()
-            war.cardAreaMap[newCard.entityId] = newCard
-            player.removedfromgameArea.add(newCard)
-        }
-
-        return player
     }
 
     init {
-        this.allowLog = allowLog
         gameId?.let {
             this.gameId = gameId
         }
-        this.handArea = handArea ?: HandArea(this)
-        this.playArea = playArea ?: PlayArea(this)
-        this.secretArea = secretArea ?: SecretArea(this)
-        this.graveyardArea = graveyardArea ?: GraveyardArea(this)
-        this.deckArea = deckArea ?: DeckArea(this)
-        this.setasideArea = setasideArea ?: SetasideArea(this)
-        this.removedfromgameArea = removedfromgameArea ?: RemovedfromgameArea(this)
+        this.handArea = handArea ?: HandArea(allowLog = allowLog, player = this)
+        this.playArea = playArea ?: PlayArea(allowLog = allowLog, player = this)
+        this.secretArea = secretArea ?: SecretArea(allowLog = allowLog, player = this)
+        this.graveyardArea = graveyardArea ?: GraveyardArea(allowLog = allowLog, player = this)
+        this.deckArea = deckArea ?: DeckArea(allowLog = allowLog, player = this)
+        this.setasideArea = setasideArea ?: SetasideArea(allowLog = allowLog, player = this)
+        this.removedfromgameArea = removedfromgameArea ?: RemovedfromgameArea(allowLog = allowLog, player = this)
     }
 
     companion object {
-        val UNKNOWN_PLAYER: Player = Player("UNKNOWN", "UNKNOWN")
+        val UNKNOWN_PLAYER: Player = Player(allowLog = false, playerId = "UNKNOWN", gameId = "UNKNOWN")
     }
 }
 

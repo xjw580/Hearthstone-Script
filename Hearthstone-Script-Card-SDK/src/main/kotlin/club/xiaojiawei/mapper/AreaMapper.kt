@@ -17,8 +17,7 @@ interface AreaMapper {
         val INSTANCE: AreaMapper = Mappers.getMapper(AreaMapper::class.java)
     }
 
-    @Mapping(target = "allowLog", constant = "false")
-    @Mapping(target = "player", ignore = true)
+    @Mapping(target = "cards", ignore = true)
     fun update(sourceArea: Area, @MappingTarget targetPlayer: Area)
 
 }

@@ -44,7 +44,7 @@ object MCTSUtil {
     }
 
     private fun calcResourcesScore(player: Player): Double {
-        return (player.tempResources + player.resources) * RESOURCES_VALUE + player.resourcesUsed
+        return (player.tempResources + player.resources) * RESOURCES_VALUE
     }
 
     private fun calcSecretScore(area: SecretArea): Double {
@@ -75,7 +75,7 @@ object MCTSUtil {
             score += calcPlayCardScore(hero)
         }
         area.weapon?.let { weapon ->
-            score += calcPlayCardScore(weapon) * 0.8
+            score += calcPlayCardScore(weapon) * 0.5
         }
         return score
     }

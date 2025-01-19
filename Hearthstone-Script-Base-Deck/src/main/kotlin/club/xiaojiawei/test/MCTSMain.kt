@@ -39,7 +39,7 @@ fun addNode(tempNode: MonteCarloTreeNode?, level: Int, nodes: MutableList<Mutabl
 fun createMCTSWar(): War {
     return War().apply {
         me = run {
-            val player = Player("1", "myRobot")
+            val player = Player(playerId = "1", gameId = "myRobot")
             var card = Card(TestCardAction())
             card.entityId = "0"
             card.entityName = "myHero"
@@ -115,9 +115,9 @@ fun createMCTSWar(): War {
         player1 = me
 
         rival = run {
-            val player = Player("2", "rivalRobot")
+            val player = Player(playerId = "2", gameId = "rivalRobot")
             var card = Card(TestCardAction())
-            card.entityId = "0"
+            card.entityId = "20"
             card.entityName = "rivalHero"
             card.health = 30
 //                card.atc = 5
@@ -125,7 +125,7 @@ fun createMCTSWar(): War {
             player.playArea.add(card)
 
             card = Card(TestCardAction())
-            card.entityId = "1"
+            card.entityId = "21"
             card.entityName = "rivalMinion1"
             card.health = 4
             card.atc = 5
@@ -134,7 +134,7 @@ fun createMCTSWar(): War {
             player.playArea.add(card)
 
             card = Card(TestCardAction())
-            card.entityId = "2"
+            card.entityId = "22"
             card.entityName = "rivalMinion2"
             card.health = 4
             card.atc = 3
@@ -142,7 +142,7 @@ fun createMCTSWar(): War {
             player.playArea.add(card)
 
             card = Card(TestCardAction())
-            card.entityId = "3"
+            card.entityId = "23"
             card.entityName = "rivalMinion3"
             card.health = 2
             card.atc = 3
@@ -153,7 +153,7 @@ fun createMCTSWar(): War {
 
             player
         }
-    }
+    }.clone()
 }
 
 fun main() {
@@ -163,8 +163,8 @@ fun main() {
 
     val start = System.currentTimeMillis()
 
-//    val arg = MCTSArg(2 * 1000, 1, 0.5, 50_000, MCTSUtil.buildScoreCalculator())
-    val arg = MCTSArg(15 * 1000, 2, 0.8, 2_000_000, MCTSUtil.buildScoreCalculator(), true)
+//    val arg = MCTSArg(3 * 1000, 1, 0.5, 500_000, MCTSUtil.buildScoreCalculator(), false)
+    val arg = MCTSArg(15 * 1000, 2, 0.5, 200_000, MCTSUtil.buildScoreCalculator(), true)
     val monteCarloTreeNodes = monteCarloTreeSearch
         .getBestActions(mctsWar, arg)
 //    val tempNode: MonteCarloTreeNode? = monteCarloTreeNodes.first()
@@ -187,7 +187,7 @@ fun main() {
 //    }
     println("==================================================================================")
     println("time: ${System.currentTimeMillis() - start}ms")
-    println("size:" + monteCarloTreeNodes.size)
+    println("action size:" + monteCarloTreeNodes.size)
     for (node in monteCarloTreeNodes) {
         println("visitCount: ${node.state.visitCount}")
         node.applyAction.exec.accept(mctsWar)

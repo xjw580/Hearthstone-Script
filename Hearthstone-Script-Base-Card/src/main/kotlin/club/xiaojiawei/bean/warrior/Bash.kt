@@ -1,10 +1,12 @@
 package club.xiaojiawei.bean.warrior
 
 import club.xiaojiawei.CardAction
+import club.xiaojiawei.bean.Card
 import club.xiaojiawei.bean.PlayAction
 import club.xiaojiawei.bean.Player
 import club.xiaojiawei.enums.CardTypeEnum
 import club.xiaojiawei.status.War
+import java.util.function.Consumer
 
 /**
  * [怒袭](https://hearthstone.huijiwiki.com/wiki/Card/2729)
@@ -19,24 +21,30 @@ class Bash : CardAction.DefaultCardAction() {
 
     override fun generatePlayActions(war: War, player: Player): List<PlayAction> {
         val result = mutableListOf<PlayAction>()
+        val exec = Consumer<Card> { rivalCard ->
+            result.add(
+                PlayAction({ newWar ->
+                    findSelf(newWar)?.action?.power(rivalCard)
+                }, { newWar ->
+                    spendSelfCost(newWar)
+                    removeSelf(newWar)?.let {
+                        rivalCard.action.findSelf(newWar)?.let { newRivalCard ->
+                            newWar.me.playArea.hero?.let { hero ->
+                                hero.armor += 3
+                            }
+                            newRivalCard.damage += 3 + newWar.me.getSpellPower()
+                        }
+                    }
+                })
+            )
+        }
         war.rival.playArea.cards.forEach { rivalCard ->
             if (rivalCard.cardType === CardTypeEnum.MINION && rivalCard.canBeTargetedByRivalSpells()) {
-                result.add(
-                    PlayAction({ newWar ->
-                        findSelf(newWar)?.action?.power(rivalCard)
-                    }, { newWar ->
-                        removeSelf(newWar)?.let {
-                            spendSelfCost(newWar)
-                            rivalCard.action.findSelf(newWar)?.let { newRivalCard ->
-                                newWar.me.playArea.hero?.let { hero ->
-                                    hero.armor += 3
-                                }
-                                newRivalCard.damage += 3 + newWar.me.getSpellPower()
-                            }
-                        }
-                    })
-                )
+                exec.accept(rivalCard)
             }
+        }
+        war.rival.playArea.hero?.let { rivalHero ->
+            exec.accept(rivalHero)
         }
         return result
     }

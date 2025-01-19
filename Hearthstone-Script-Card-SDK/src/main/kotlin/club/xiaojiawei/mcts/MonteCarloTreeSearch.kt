@@ -18,7 +18,7 @@ import kotlin.math.min
  * @author 肖嘉威
  * @date 2025/1/10 10:04
  */
-private const val MCTS_DEFAULT_DEPTH = 10
+private const val MCTS_DEFAULT_DEPTH = 15
 
 class MonteCarloTreeSearch(val maxDepth: Int = MCTS_DEFAULT_DEPTH) {
 
