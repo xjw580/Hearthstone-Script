@@ -75,7 +75,7 @@ object MCTSUtil {
             score += calcPlayCardScore(hero)
         }
         area.weapon?.let { weapon ->
-            score += calcPlayCardScore(weapon) * 0.5
+            score += calcPlayCardScore(weapon) * 0.6
         }
         return score
     }
@@ -110,7 +110,7 @@ object MCTSUtil {
                 BASIC_RATIO
             }
             val basicScore =
-                atc * ration + blood + if (card.cardType === CardTypeEnum.LOCATION) card.cost else 0
+                atc * ration + blood * (if (card.cardType === CardTypeEnum.HERO) 0.5 else 1.0) + if (card.cardType === CardTypeEnum.LOCATION) card.cost else 0
             val heroScore = if (card.cardType === CardTypeEnum.HERO) Int.MAX_VALUE.toDouble() else 0.0
             var totalScore: Double = basicScore + heroScore
             if (card.isDeathRattle) {

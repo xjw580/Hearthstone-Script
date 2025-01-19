@@ -24,7 +24,7 @@ class ShieldSlam : CardAction.DefaultCardAction() {
             if (rivalCard.cardType === CardTypeEnum.MINION && rivalCard.canBeTargetedByRivalSpells()) {
                 result.add(
                     PlayAction({ newWar ->
-                        findSelf(newWar)?.action?.power(rivalCard)
+                        findSelf(newWar)?.action?.power(rivalCard.action.findSelf(newWar))
                     }, { newWar ->
                         spendSelfCost(newWar)
                         removeSelf(newWar)?.let {

@@ -23,7 +23,7 @@ class Execute : CardAction.DefaultCardAction() {
         war.rival.playArea.cards.forEach { rivalCard ->
             if (rivalCard.cardType === CardTypeEnum.MINION && rivalCard.canBeTargetedByRivalSpells() && rivalCard.isInjured()) {
                 result.add(PlayAction({ newWar ->
-                    findSelf(newWar)?.action?.power(rivalCard)
+                    findSelf(newWar)?.action?.power(rivalCard.action.findSelf(newWar))
                 }, { newWar ->
                     spendSelfCost(newWar)
                     removeSelf(newWar)?.let {

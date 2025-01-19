@@ -37,12 +37,13 @@ class HsAIStrategy : DeckStrategy() {
 
     override fun executeOutCard() {
         val war = WAR
-        log.info { "开始思考如何打牌" }
         val monteCarloTreeSearch = MonteCarloTreeSearch()
-        var arg: MCTSArg = if (war.me.playArea.cardSize() + war.rival.playArea.cardSize() > 6) {
-            MCTSArg(30 * 1000, 1, 0.5, 500_000, MCTSUtil.buildScoreCalculator(), false)
+        var arg: MCTSArg = if (war.me.playArea.cardSize() < 4 && war.rival.playArea.cardSize() < 4) {
+            log.info { "开始思考如何打牌，反演1轮" }
+            MCTSArg(60 * 1000, 2, 0.5, 100_000, MCTSUtil.buildScoreCalculator(), true)
         } else {
-            MCTSArg(30 * 1000, 2, 0.5, 100_000, MCTSUtil.buildScoreCalculator(), true)
+            log.info { "开始思考如何打牌，反演0轮" }
+            MCTSArg(60 * 1000, 1, 0.5, 300_000, MCTSUtil.buildScoreCalculator(), true)
         }
 
         val stringBuilder = StringBuilder("战场可行动卡牌: ")
@@ -66,7 +67,7 @@ class HsAIStrategy : DeckStrategy() {
         Thread.sleep(3000)
 
         log.info { "再次思考如何打牌" }
-        arg = MCTSArg(5 * 1000, 1, 0.5, 100_000, MCTSUtil.buildScoreCalculator(), false)
+        arg = MCTSArg(10 * 1000, 1, 0.5, 100_000, MCTSUtil.buildScoreCalculator(), true)
         bestActions = monteCarloTreeSearch.getBestActions(war, arg)
         bestActions.forEach { action ->
             action.applyAction.exec.accept(war)

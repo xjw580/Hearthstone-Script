@@ -19,6 +19,7 @@ private val cardIds = arrayOf<String>(
 class Brawl : CardAction.DefaultCardAction() {
 
     override fun generatePlayActions(war: War, player: Player): List<PlayAction> {
+        if (war.me.playArea.cardSize() + war.rival.playArea.cardSize() < 2) return emptyList()
         return listOf(
             PlayAction({ newWar ->
                 findSelf(newWar)?.action?.power()
