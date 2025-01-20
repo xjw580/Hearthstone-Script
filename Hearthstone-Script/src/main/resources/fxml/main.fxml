@@ -2,12 +2,12 @@
 
 <?import club.xiaojiawei.controls.ico.*?>
 <?import club.xiaojiawei.controls.*?>
+<?import club.xiaojiawei.factory.NotificationFactory?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.Group?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 <?import javafx.util.Duration?>
-<?import club.xiaojiawei.factory.NotificationFactory?>
-<?import javafx.scene.Group?>
 <?import java.lang.Double?>
 <StackPane xmlns:fx="http://javafx.com/fxml"
            stylesheets="@css/main.css"

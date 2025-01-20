@@ -468,16 +468,23 @@ object GameUtil {
     /**
      * 通过此方式停止的游戏，screen.log监听器可能无法监测到游戏被关闭
      */
+    @Suppress("DEPRECATION")
     fun killGame() {
         if (isAliveOfGame()) {
             try {
                 SystemDll.INSTANCE.closeProgram(GAME_HWND)
-                delay(1000)
-                Runtime.getRuntime().exec("cmd /c taskkill /f /t /im $GAME_PROGRAM_NAME")
-                    .waitFor()
-                delay(1000)
-                SystemDll.INSTANCE.closeProgram(GAME_HWND)
-                delay(1000)
+                delay(2000)
+                if (isAliveOfGame()) {
+                    Runtime.getRuntime().exec("cmd /c taskkill /f /t /im $GAME_PROGRAM_NAME")
+                        .waitFor()
+                    delay(2000)
+                    if (isAliveOfGame()) {
+                        val pid = SystemDll.INSTANCE.FindProcessId_(GAME_PROGRAM_NAME)
+                        Runtime.getRuntime().exec("cmd /c taskkill -f -pid $pid")
+                            .waitFor()
+                        delay(2000)
+                    }
+                }
                 log.info { "${GAME_CN_NAME}已关闭" }
             } catch (e: IOException) {
                 log.error(e) { "关闭${GAME_CN_NAME}异常" }
