@@ -71,6 +71,8 @@ public interface SystemDll extends Library {
 
     WinDef.HWND FindWindowsByProcessName(String processName);
 
+    long FindProcessId_(String processName);
+
     int MB_ICONERROR = 0x00000010;
 
     int MB_OK = 0x00000000;
