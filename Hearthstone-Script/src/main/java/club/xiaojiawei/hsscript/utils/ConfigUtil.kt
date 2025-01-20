@@ -26,7 +26,7 @@ object ConfigUtil {
             configFile.createNewFile()
             log.info { "已创建配置文件【${configFile.absolutePath}】" }
         }
-        CONFIG =Ini(configFile)
+        CONFIG = Ini(configFile)
         val cfg = Config()
         CONFIG.config = cfg
         checkConfig()
@@ -39,7 +39,6 @@ object ConfigUtil {
             }
         }
         store()
-        log.info { "配置文件读取完毕：${configFile.absolutePath}" }
     }
 
 

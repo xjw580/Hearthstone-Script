@@ -16,7 +16,7 @@
            fx:id="rootPane"
            fx:controller="club.xiaojiawei.hsscript.controller.javafx.InitSettingsController">
     <VBox>
-        <ScrollPane VBox.vgrow="ALWAYS" hbarPolicy="NEVER" style="-fx-background-insets: 0">
+        <ScrollPane VBox.vgrow="ALWAYS" styleClass="scroll-pane-item">
             <VBox fx:id="mainVBox">
                 <HBox styleClass="h-box">
                     <Text text="炉石传说安装路径"/>
@@ -40,7 +40,8 @@
                 </HBox>
                 <HBox styleClass="h-box">
                     <Text text="战网账号密码"/>
-                    <PasswordTextField styleClass="text-field-ui, text-field-ui-small" fx:id="password" promptText="非必填项，防止登录失败用" hideForever="true"/>
+                    <PasswordTextField styleClass="text-field-ui, text-field-ui-small" fx:id="password"
+                                       promptText="非必填项，防止登录失败用" hideForever="true"/>
                 </HBox>
                 <HBox styleClass="h-box">
                     <Text text="选择卡组位"/>
@@ -52,7 +53,8 @@
                             <Tooltip text="每次选择的卡组在当前页的第几号位"/>
                         </tooltip>
                     </Label>
-                    <ComboBox fx:id="deckPosComboBox" styleClass="combo-box-ui, combo-box-ui-small">
+                    <ComboBox fx:id="deckPosComboBox"
+                              styleClass="combo-box-ui, combo-box-ui-small, combo-box-ui-normal">
                         <items>
                             <FXCollections fx:factory="observableArrayList">
                                 <String fx:value="1"/>
@@ -72,7 +74,7 @@
         </ScrollPane>
         <HBox styleClass="confirm-btn-group">
             <Button text="应用" styleClass="btn-ui, btn-ui-normal" onAction="#apply"/>
-            <Button text="保存" styleClass="btn-ui, btn-ui-success" onAction="#save" />
+            <Button text="保存" styleClass="btn-ui, btn-ui-success" onAction="#save"/>
         </HBox>
     </VBox>
 

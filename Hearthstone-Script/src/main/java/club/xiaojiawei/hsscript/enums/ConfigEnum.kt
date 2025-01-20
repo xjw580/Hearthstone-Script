@@ -1,5 +1,6 @@
 package club.xiaojiawei.hsscript.enums
 
+import ch.qos.logback.classic.Level
 import club.xiaojiawei.enums.RunModeEnum
 import club.xiaojiawei.hsscript.bean.HotKey
 import club.xiaojiawei.hsscript.bean.WorkDay
@@ -175,6 +176,11 @@ enum class ConfigEnum(
      * 暂停程序热键
      */
     PAUSE_HOT_KEY(group = "system", defaultValue = JSON.toJSONString(HotKey(JIntellitype.MOD_CONTROL, 'P'.code))),
+
+    /**
+     * 文件日志级别
+     */
+    FILE_LOG_LEVEL(group = "system", defaultValue = Level.INFO.levelStr),
 
     ;
 }

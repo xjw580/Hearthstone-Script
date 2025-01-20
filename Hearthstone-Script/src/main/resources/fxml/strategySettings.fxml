@@ -10,15 +10,15 @@
 <?import java.lang.Double?>
 <?import club.xiaojiawei.controls.Switch?>
 <StackPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            stylesheets="@css/strategySettings.css"
-            fx:id="rootPane"
-            fx:controller="club.xiaojiawei.hsscript.controller.javafx.StrategySettingsController">
+           xmlns:fx="http://javafx.com/fxml"
+           stylesheets="@css/strategySettings.css"
+           fx:id="rootPane"
+           fx:controller="club.xiaojiawei.hsscript.controller.javafx.StrategySettingsController">
     <fx:define>
         <Double fx:id="fieldWidth" fx:value="60"/>
     </fx:define>
     <VBox>
-        <ScrollPane VBox.vgrow="ALWAYS" hbarPolicy="NEVER" style="-fx-background-insets: 0">
+        <ScrollPane VBox.vgrow="ALWAYS" styleClass="scroll-pane-item">
             <VBox fx:id="mainVBox">
                 <HBox styleClass="h-box">
                     <Text text="操作间隔/ms"/>
@@ -31,12 +31,14 @@
                         </tooltip>
                     </Label>
                     <HBox HBox.hgrow="ALWAYS"/>
-                    <NumberField fx:id="actionIntervalField" styleClass="text-field-ui, text-field-ui-small" hideIcon="true" prefWidth="${fieldWidth}"/>
+                    <NumberField fx:id="actionIntervalField" styleClass="text-field-ui, text-field-ui-small"
+                                 hideIcon="true" prefWidth="${fieldWidth}"/>
                 </HBox>
                 <HBox styleClass="h-box">
                     <Text text="鼠标整体移动速度"/>
                     <HBox HBox.hgrow="ALWAYS"/>
-                    <NumberField fx:id="moveSpeedField" styleClass="text-field-ui, text-field-ui-small" hideIcon="true" prefWidth="${fieldWidth}"/>
+                    <NumberField fx:id="moveSpeedField" styleClass="text-field-ui, text-field-ui-small" hideIcon="true"
+                                 prefWidth="${fieldWidth}"/>
                 </HBox>
                 <HBox styleClass="h-box">
                     <Text text="单次匹配最长时间/s"/>
@@ -49,7 +51,8 @@
                         </tooltip>
                     </Label>
                     <HBox HBox.hgrow="ALWAYS"/>
-                    <NumberField fx:id="matchMaximumTimeField" styleClass="text-field-ui, text-field-ui-small" hideIcon="true" prefWidth="${fieldWidth}"/>
+                    <NumberField fx:id="matchMaximumTimeField" styleClass="text-field-ui, text-field-ui-small"
+                                 hideIcon="true" prefWidth="${fieldWidth}"/>
                 </HBox>
                 <HBox styleClass="h-box">
                     <Text text="最长空闲时间/min"/>
@@ -62,7 +65,8 @@
                         </tooltip>
                     </Label>
                     <HBox HBox.hgrow="ALWAYS"/>
-                    <NumberField fx:id="idleMaximumTimeField" styleClass="text-field-ui, text-field-ui-small" hideIcon="true" prefWidth="${fieldWidth}"/>
+                    <NumberField fx:id="idleMaximumTimeField" styleClass="text-field-ui, text-field-ui-small"
+                                 hideIcon="true" prefWidth="${fieldWidth}"/>
                 </HBox>
                 <HBox styleClass="h-box">
                     <Text text="游戏日志大小限制/KB"/>
@@ -75,7 +79,8 @@
                         </tooltip>
                     </Label>
                     <HBox HBox.hgrow="ALWAYS"/>
-                    <NumberField fx:id="logLimitField" styleClass="text-field-ui, text-field-ui-small" hideIcon="true" prefWidth="${fieldWidth}"/>
+                    <NumberField fx:id="logLimitField" styleClass="text-field-ui, text-field-ui-small" hideIcon="true"
+                                 prefWidth="${fieldWidth}"/>
                 </HBox>
                 <HBox styleClass="h-box">
                     <Text text="随机事件"/>
@@ -127,13 +132,14 @@
                         </tooltip>
                     </Label>
                     <HBox HBox.hgrow="ALWAYS"/>
-                    <NumberField fx:id="autoSurrenderField" styleClass="text-field-ui, text-field-ui-small" hideIcon="true" prefWidth="${fieldWidth}"/>
+                    <NumberField fx:id="autoSurrenderField" styleClass="text-field-ui, text-field-ui-small"
+                                 hideIcon="true" prefWidth="${fieldWidth}"/>
                 </HBox>
             </VBox>
         </ScrollPane>
         <HBox styleClass="confirm-btn-group">
             <Button text="应用" styleClass="btn-ui, btn-ui-normal" onAction="#apply"/>
-            <Button text="保存" styleClass="btn-ui, btn-ui-success" onAction="#save" />
+            <Button text="保存" styleClass="btn-ui, btn-ui-success" onAction="#save"/>
         </HBox>
     </VBox>
     <NotificationManager fx:id="notificationManager" notificationPos="BOTTOM_CENTER">

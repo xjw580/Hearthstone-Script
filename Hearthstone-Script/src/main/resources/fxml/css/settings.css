@@ -1,4 +1,4 @@
-.h-box{
+.h-box {
     -fx-spacing: 10;
     -fx-alignment: CENTER_LEFT;
     -fx-background-color: white;
@@ -8,10 +8,12 @@
     -fx-max-width: 500;
     -fx-min-width: 400;
 }
-#rootPane{
+
+#rootPane {
     -fx-background-color: rgb(242, 242, 242);
 }
-#mainVBox{
+
+#mainVBox {
     -fx-alignment: CENTER;
     -fx-padding: 8 50 8 50;
     -fx-spacing: 8;
@@ -19,14 +21,23 @@
     /*-fx-font-size: 12;*/
     /*-fx-alignment: CENTER_LEFT;*/
 }
+
 .split-pane-line *.split-pane-divider {
     -fx-background-color: white;
     -fx-border-color: #d3d3d3;
     -fx-border-width: 0 0 0 1;
 }
+
 .split-pane-line {
     -fx-background: white
 }
-.control-btn{
+
+.control-btn {
     -fx-background-color: rgba(128, 128, 128, 0.5)
+}
+
+.scroll-pane-item {
+    -fx-fit-to-width: true;
+    -fx-hbar-policy: NEVER;
+    -fx-background-insets: 0
 }

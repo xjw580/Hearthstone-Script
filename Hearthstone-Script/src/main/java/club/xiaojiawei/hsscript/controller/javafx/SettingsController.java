@@ -4,8 +4,6 @@ import club.xiaojiawei.hsscript.enums.WindowEnum;
 import club.xiaojiawei.hsscript.utils.WindowUtil;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 
@@ -30,6 +28,8 @@ public class SettingsController implements Initializable {
     @FXML
     protected Tab weightTab;
     @FXML
+    protected Tab developerTab;
+    @FXML
     protected TabPane rootPane;
 
     @Override
@@ -46,10 +46,10 @@ public class SettingsController implements Initializable {
     private void loadTab(Tab tab) {
         if (Objects.equals(advancedTab, tab)) {
             if (advancedTab.getContent() == null) {
-                Node node = WindowUtil.INSTANCE.loadRoot(WindowEnum.ADVANCED_SETTINGS);
-                ScrollPane scrollPane = new ScrollPane(node);
-                scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-                advancedTab.setContent(scrollPane);
+//                Node node = WindowUtil.INSTANCE.loadRoot(WindowEnum.ADVANCED_SETTINGS);
+//                ScrollPane scrollPane = new ScrollPane(node);
+//                scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+                advancedTab.setContent(WindowUtil.INSTANCE.loadRoot(WindowEnum.ADVANCED_SETTINGS));
             }
         } else if (Objects.equals(initTab, tab)) {
             if (initTab.getContent() == null) {
@@ -66,6 +66,10 @@ public class SettingsController implements Initializable {
         } else if (Objects.equals(weightTab, tab)) {
             if (weightTab.getContent() == null) {
                 weightTab.setContent(WindowUtil.INSTANCE.loadRoot(WindowEnum.WEIGHT_SETTINGS));
+            }
+        } else if (Objects.equals(developerTab, tab)) {
+            if (developerTab.getContent() == null) {
+                developerTab.setContent(WindowUtil.INSTANCE.loadRoot(WindowEnum.DEVELOPER_SETTINGS));
             }
         }
     }

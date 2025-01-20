@@ -10,19 +10,16 @@ import club.xiaojiawei.hsscript.listener.GlobalHotkeyListener;
 import club.xiaojiawei.hsscript.starter.InjectStarter;
 import club.xiaojiawei.hsscript.utils.ConfigExUtil;
 import club.xiaojiawei.hsscript.utils.ConfigUtil;
-import club.xiaojiawei.hsscript.utils.main.MeasureApplication;
 import com.melloware.jintellitype.JIntellitypeConstants;
 import javafx.beans.value.ChangeListener;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -54,7 +51,7 @@ public class AdvancedSettingsController implements Initializable {
     @FXML
     private Switch sendNotice;
     @FXML
-    private AnchorPane rootPane;
+    private StackPane rootPane;
 
     private ChangeListener<Scene> sceneListener;
 
@@ -201,11 +198,5 @@ public class AdvancedSettingsController implements Initializable {
     }
 
     private int modifier;
-
-
-    @FXML
-    protected void openMeasureUtil(ActionEvent actionEvent) {
-        MeasureApplication.startStage(new Stage());
-    }
 
 }

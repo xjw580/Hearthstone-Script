@@ -25,6 +25,7 @@
             </Label>
         </graphic>
     </Tab>
+    <Tab fx:id="developerTab" text="开发者选项"/>
 <!--    <Tab text="关于">-->
 <!--    </Tab>-->
 </TabPane>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import club.xiaojiawei.controls.NotificationManager?>
+<?import club.xiaojiawei.factory.NotificationFactory?>
+<?import javafx.collections.FXCollections?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Text?>
+<?import java.lang.*?>
+<?import javafx.scene.control.Hyperlink?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Button?>
+<StackPane xmlns="http://javafx.com/javafx"
+           xmlns:fx="http://javafx.com/fxml"
+           stylesheets="@css/developerSettings.css"
+           fx:id="rootPane"
+           fx:controller="club.xiaojiawei.hsscript.controller.javafx.DeveloperSettingsController">
+    <VBox>
+        <ScrollPane VBox.vgrow="ALWAYS" styleClass="scroll-pane-item">
+            <VBox fx:id="mainVBox">
+                <HBox styleClass="h-box">
+                    <HBox alignment="CENTER_LEFT">
+                        <Hyperlink text="日志文件" onAction="#openLogFile"/>
+                        <Label text="级别"/>
+                    </HBox>
+                    <HBox HBox.hgrow="ALWAYS"/>
+                    <ComboBox fx:id="fileLogLevelComboBox"
+                              styleClass="combo-box-ui, combo-box-ui-small, combo-box-ui-normal">
+                        <items>
+                            <FXCollections fx:factory="observableArrayList">
+                                <String fx:value="OFF"/>
+                                <String fx:value="ERROR"/>
+                                <String fx:value="WARN"/>
+                                <String fx:value="INFO"/>
+                                <String fx:value="DEBUG"/>
+                            </FXCollections>
+                        </items>
+                    </ComboBox>
+                </HBox>
+                <HBox styleClass="h-box">
+                    <Button text="测量游戏控件坐标" styleClass="btn-ui, btn-ui-normal, btn-ui-small"
+                            onAction="#openMeasureUtil"/>
+                </HBox>
+                <HBox styleClass="h-box">
+                    <Button text="分析游戏数据" styleClass="btn-ui, btn-ui-normal, btn-ui-small" disable="true"/>
+                </HBox>
+            </VBox>
+        </ScrollPane>
+    </VBox>
+
+    <NotificationManager fx:id="notificationManager" notificationPos="BOTTOM_CENTER">
+        <NotificationFactory showingCloseBtn="false" size="SMALL"/>
+    </NotificationManager>
+</StackPane>

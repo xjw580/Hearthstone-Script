@@ -48,6 +48,11 @@ enum class WindowEnum(
         -1.0, -1.0, -1.0, -1.0,
         false, StageStyle.DECORATED
     ),
+    DEVELOPER_SETTINGS(
+        "developerSettings.fxml", "",
+        -1.0, -1.0, -1.0, -1.0,
+        false, StageStyle.DECORATED
+    ),
     MAIN(
         "main.fxml",
         SCRIPT_NAME,

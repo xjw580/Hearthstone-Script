@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration debug="false">
-    <property name="logLevel" value="info"/>
-    <property name="logPath" value="log"/>
+    <property  name="logLevel" value="info"/>
+    <property  name="logPath" value="log"/>
     <!--控制台日志格式-->
     <property name="log_pattern_console"
               value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%boldYellow(%thread)] \(%file:%line\) %highlight(%-5level) %msg%n"/>
@@ -18,9 +18,6 @@
     </appender>
     <!--ALL FILE-->
     <appender name="file" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
-            <level>${logLevel}</level>
-        </filter>
         <File>${logPath}/hs_script.log</File>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <FileNamePattern>${logPath}/hs_script-%d{yyyy-MM-dd}.%i.log</FileNamePattern>
@@ -42,18 +39,10 @@
     </appender>
 
     <appender name="other" class="club.xiaojiawei.hsscript.appender.ExtraLogAppender"/>
-
-    <logger name="club.xiaojiawei" level="DEBUG">
-        <appender-ref ref="file_async"/>
-    </logger>
-
-    <logger name="org.springframework" level="info"/>
+    <logger name="org.springframework" level="${logLevel}"/>
     <root level="${logLevel}">
-        <appender-ref ref="other"/>
         <appender-ref ref="console"/>
-        <!--        <appender-ref ref="file_async"/>-->
+        <appender-ref ref="file_async"/>
+        <appender-ref ref="other"/>
     </root>
-    <!--    <logger name="club.xiaojiawei" level="DEBUG">-->
-    <!--        <appender-ref ref="other"/>-->
-    <!--    </logger>-->
 </configuration>

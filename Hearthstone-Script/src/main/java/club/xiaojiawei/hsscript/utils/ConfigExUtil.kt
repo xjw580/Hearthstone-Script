@@ -1,11 +1,13 @@
 package club.xiaojiawei.hsscript.utils
 
+import ch.qos.logback.classic.Level
 import club.xiaojiawei.hsscript.bean.HotKey
 import club.xiaojiawei.hsscript.bean.WorkDay
 import club.xiaojiawei.hsscript.bean.WorkTime
 import club.xiaojiawei.hsscript.data.GAME_PROGRAM_NAME
 import club.xiaojiawei.hsscript.data.PLATFORM_PROGRAM_NAME
 import club.xiaojiawei.hsscript.enums.ConfigEnum
+import club.xiaojiawei.hsscript.fileLogLevel
 import club.xiaojiawei.hsscript.listener.WorkListener
 import java.io.File
 import java.nio.file.Path
@@ -56,20 +58,20 @@ object ConfigExUtil {
         ConfigUtil.putObject(ConfigEnum.PAUSE_HOT_KEY, hotKey)
     }
 
-    fun getWorkDay(): MutableList<WorkDay>{
-        return ConfigUtil.getArray(ConfigEnum.WORK_DAY, WorkDay::class.java)?:mutableListOf()
+    fun getWorkDay(): MutableList<WorkDay> {
+        return ConfigUtil.getArray(ConfigEnum.WORK_DAY, WorkDay::class.java) ?: mutableListOf()
     }
 
-    fun storeWorkDay(workDays: List<WorkDay>){
+    fun storeWorkDay(workDays: List<WorkDay>) {
         ConfigUtil.putArray(ConfigEnum.WORK_DAY, workDays)
         WorkListener.checkWork()
     }
 
-    fun getWorkTime(): MutableList<WorkTime>{
-        return ConfigUtil.getArray(ConfigEnum.WORK_TIME, WorkTime::class.java)?:mutableListOf()
+    fun getWorkTime(): MutableList<WorkTime> {
+        return ConfigUtil.getArray(ConfigEnum.WORK_TIME, WorkTime::class.java) ?: mutableListOf()
     }
 
-    fun storeWorkTime(workTime: List<WorkTime>){
+    fun storeWorkTime(workTime: List<WorkTime>) {
         workTime.forEach {
             val parseStartTime = it.parseStartTime()
             val parseEndTime = it.parseEndTime()
@@ -83,20 +85,29 @@ object ConfigExUtil {
         WorkListener.checkWork()
     }
 
-    fun getDeckPluginDisabled(): MutableList<String>{
-        return ConfigUtil.getArray(ConfigEnum.DECK_PLUGIN_DISABLED, String::class.java)?:mutableListOf()
+    fun getDeckPluginDisabled(): MutableList<String> {
+        return ConfigUtil.getArray(ConfigEnum.DECK_PLUGIN_DISABLED, String::class.java) ?: mutableListOf()
     }
 
-    fun storeDeckPluginDisabled(disabledList: List<String>){
+    fun storeDeckPluginDisabled(disabledList: List<String>) {
         ConfigUtil.putArray(ConfigEnum.DECK_PLUGIN_DISABLED, disabledList)
     }
 
-    fun getCardPluginDisabled(): MutableList<String>{
-        return ConfigUtil.getArray(ConfigEnum.CARD_PLUGIN_DISABLED, String::class.java)?:mutableListOf()
+    fun getCardPluginDisabled(): MutableList<String> {
+        return ConfigUtil.getArray(ConfigEnum.CARD_PLUGIN_DISABLED, String::class.java) ?: mutableListOf()
     }
 
-    fun storeCardPluginDisabled(disabledList: List<String>){
+    fun storeCardPluginDisabled(disabledList: List<String>) {
         ConfigUtil.putArray(ConfigEnum.CARD_PLUGIN_DISABLED, disabledList)
+    }
+
+    fun getFileLogLevel(): Level {
+        return Level.toLevel(ConfigUtil.getString(ConfigEnum.FILE_LOG_LEVEL))
+    }
+
+    fun storeFileLogLevel(level: String) {
+        ConfigUtil.putString(ConfigEnum.FILE_LOG_LEVEL, level)
+        fileLogLevel = getFileLogLevel().toInt()
     }
 
 }

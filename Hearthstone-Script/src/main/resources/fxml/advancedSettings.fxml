@@ -9,82 +9,83 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Text?>
 <?import javafx.scene.control.TextField?>
-<AnchorPane xmlns="http://javafx.com/javafx"
+<?import javafx.scene.control.ScrollPane?>
+<StackPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             stylesheets="@css/advancedSettings.css"
             fx:id="rootPane"
             fx:controller="club.xiaojiawei.hsscript.controller.javafx.AdvancedSettingsController">
-    <VBox fx:id="mainVBox">
-        <HBox styleClass="h-box">
-            <Text text="执行策略"/>
-            <Label>
-                <graphic>
-                    <HelpIco/>
-                </graphic>
-                <tooltip>
-                    <Tooltip text="是否执行卡组策略"/>
-                </tooltip>
-            </Label>
-            <HBox HBox.hgrow="ALWAYS"/>
-            <Switch fx:id="strategySwitch"/>
-        </HBox>
-        <HBox styleClass="h-box">
-            <Text text="更新开发版"/>
-            <HBox HBox.hgrow="ALWAYS"/>
-            <Switch fx:id="updateDev"/>
-        </HBox>
-        <HBox styleClass="h-box">
-            <Text text="自动更新"/>
-            <HBox HBox.hgrow="ALWAYS"/>
-            <Switch fx:id="autoUpdate"/>
-        </HBox>
-        <HBox styleClass="h-box">
-            <Text text="挂机时最小化"/>
-            <Label>
-                <graphic>
-                    <HelpIco/>
-                </graphic>
-                <tooltip>
-                    <Tooltip text="挂机时将关闭软件窗口仅保留托盘，此时只能检测到Java进程"/>
-                </tooltip>
-            </Label>
-            <HBox HBox.hgrow="ALWAYS"/>
-            <Switch fx:id="runningMinimize"/>
-        </HBox>
-        <HBox styleClass="h-box">
-            <Text text="控制模式"/>
-            <Label>
-                <graphic>
-                    <HelpIco/>
-                </graphic>
-                <tooltip>
-                    <Tooltip text="真实控制鼠标移动，或许可能大概能降低被检测概率，在虚拟机里使用时推荐打开"/>
-                </tooltip>
-            </Label>
-            <HBox HBox.hgrow="ALWAYS"/>
-            <Switch fx:id="controlMode"/>
-        </HBox>
-        <HBox styleClass="h-box">
-            <Text text="发送Windows通知"/>
-            <HBox HBox.hgrow="ALWAYS"/>
-            <Switch fx:id="sendNotice"/>
-        </HBox>
-        <HBox styleClass="h-box">
-            <Text text="开始/暂停快捷键"/>
-            <HBox HBox.hgrow="ALWAYS"/>
-            <TextField fx:id="pauseHotKey" styleClass="text-field-ui, text-field-ui-small" editable="false"/>
-        </HBox>
-        <HBox styleClass="h-box">
-            <Text text="退出快捷键"/>
-            <HBox HBox.hgrow="ALWAYS"/>
-            <TextField fx:id="exitHotKey" styleClass="text-field-ui, text-field-ui-small" editable="false"/>
-        </HBox>
-        <HBox styleClass="h-box">
-            <Button text="打开测量工具" styleClass="btn-ui, btn-ui-normal, btn-ui-small" onAction="#openMeasureUtil"/>
-            <HBox HBox.hgrow="ALWAYS"/>
-        </HBox>
+    <VBox>
+        <ScrollPane VBox.vgrow="ALWAYS" styleClass="scroll-pane-item">
+            <VBox fx:id="mainVBox">
+                <HBox styleClass="h-box">
+                    <Text text="执行策略"/>
+                    <Label>
+                        <graphic>
+                            <HelpIco/>
+                        </graphic>
+                        <tooltip>
+                            <Tooltip text="是否执行卡组策略"/>
+                        </tooltip>
+                    </Label>
+                    <HBox HBox.hgrow="ALWAYS"/>
+                    <Switch fx:id="strategySwitch"/>
+                </HBox>
+                <HBox styleClass="h-box">
+                    <Text text="更新开发版"/>
+                    <HBox HBox.hgrow="ALWAYS"/>
+                    <Switch fx:id="updateDev"/>
+                </HBox>
+                <HBox styleClass="h-box">
+                    <Text text="自动更新"/>
+                    <HBox HBox.hgrow="ALWAYS"/>
+                    <Switch fx:id="autoUpdate"/>
+                </HBox>
+                <HBox styleClass="h-box">
+                    <Text text="挂机时最小化"/>
+                    <Label>
+                        <graphic>
+                            <HelpIco/>
+                        </graphic>
+                        <tooltip>
+                            <Tooltip text="挂机时将关闭软件窗口仅保留托盘，此时只能检测到Java进程"/>
+                        </tooltip>
+                    </Label>
+                    <HBox HBox.hgrow="ALWAYS"/>
+                    <Switch fx:id="runningMinimize"/>
+                </HBox>
+                <HBox styleClass="h-box">
+                    <Text text="控制模式"/>
+                    <Label>
+                        <graphic>
+                            <HelpIco/>
+                        </graphic>
+                        <tooltip>
+                            <Tooltip text="真实控制鼠标移动，或许可能大概能降低被检测概率，在虚拟机里使用时推荐打开"/>
+                        </tooltip>
+                    </Label>
+                    <HBox HBox.hgrow="ALWAYS"/>
+                    <Switch fx:id="controlMode"/>
+                </HBox>
+                <HBox styleClass="h-box">
+                    <Text text="发送Windows通知"/>
+                    <HBox HBox.hgrow="ALWAYS"/>
+                    <Switch fx:id="sendNotice"/>
+                </HBox>
+                <HBox styleClass="h-box">
+                    <Text text="开始/暂停快捷键"/>
+                    <HBox HBox.hgrow="ALWAYS"/>
+                    <TextField fx:id="pauseHotKey" styleClass="text-field-ui, text-field-ui-small" editable="false"/>
+                </HBox>
+                <HBox styleClass="h-box">
+                    <Text text="退出快捷键"/>
+                    <HBox HBox.hgrow="ALWAYS"/>
+                    <TextField fx:id="exitHotKey" styleClass="text-field-ui, text-field-ui-small" editable="false"/>
+                </HBox>
+            </VBox>
+        </ScrollPane>
     </VBox>
     <NotificationManager fx:id="notificationManager" notificationPos="BOTTOM_CENTER">
         <NotificationFactory showingCloseBtn="false" size="SMALL"/>
     </NotificationManager>
-</AnchorPane>
+</StackPane>
