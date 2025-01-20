@@ -20,14 +20,14 @@ class Slam : CardAction.DefaultCardAction() {
     override fun generatePlayActions(war: War, player: Player): List<PlayAction> {
         val result = mutableListOf<PlayAction>()
         war.rival.playArea.cards.forEach { rivalCard ->
-            if (rivalCard.cardType === CardTypeEnum.MINION && rivalCard.canBeTargetedByRivalSpells()) {
+            if (rivalCard.canHurt() && rivalCard.canBeTargetedByRivalSpells()) {
                 result.add(PlayAction({ newWar ->
                     findSelf(newWar)?.action?.power(rivalCard.action.findSelf(newWar))
                 }, { newWar ->
                     spendSelfCost(newWar)
                     removeSelf(newWar)?.let {
                         rivalCard.action.findSelf(newWar)?.let { rCard->
-                            rCard.damage += 2 + newWar.me.getSpellPower()
+                            rCard.injured(2 + newWar.me.getSpellPower())
                             if (rCard.isAlive()) {
                                 newWar.me.handArea.drawCard()
                             }

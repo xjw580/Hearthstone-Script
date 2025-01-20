@@ -26,9 +26,7 @@ class WarlockPower : ClickPower() {
                 { newWar ->
                     newWar.me.playArea.power?.action?.power()
                 }, { newWar ->
-                    newWar.me.playArea.hero?.let {
-                        it.damage += 2
-                    }
+                    newWar.me.playArea.hero?.injured(2)
                     newWar.me.handArea.drawCard()
                     newWar.me.resourcesUsed += 2
                     findSelf(newWar)?.isExhausted = true

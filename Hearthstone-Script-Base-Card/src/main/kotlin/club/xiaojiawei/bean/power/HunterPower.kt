@@ -27,9 +27,7 @@ class HunterPower : ClickPower() {
                     newWar.me.playArea.power?.action?.power()
                 }, { newWar ->
                     spendSelfCost(newWar)
-                    newWar.rival.playArea.hero?.let {
-                        it.damage += 2
-                    }
+                    newWar.rival.playArea.hero?.injured(2)
                     findSelf(newWar)?.isExhausted = true
                 })
         )

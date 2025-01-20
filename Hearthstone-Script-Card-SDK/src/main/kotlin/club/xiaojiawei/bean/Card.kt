@@ -68,6 +68,25 @@ class Card(var action: CardAction) : BaseCard(), Cloneable {
         }
 
     /**
+     * 受到伤害
+     */
+    fun injured(damage: Int) {
+        if (!canHurt()) return
+        if (isDivineShield) {
+            isDivineShield = false
+            return
+        }
+        this.damage += damage
+    }
+
+    /**
+     * 能受到伤害
+     */
+    fun canHurt(): Boolean {
+        return !(isDead() || cardType !== CardTypeEnum.MINION || cardType !== CardTypeEnum.HERO || isImmune || isDormantAwakenConditionEnchant)
+    }
+
+    /**
      * 是否包含cardId
      */
     fun cardContains(baseCard: BaseCard): Boolean {

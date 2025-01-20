@@ -4,6 +4,7 @@ import club.xiaojiawei.CardAction
 import club.xiaojiawei.bean.Card
 import club.xiaojiawei.bean.PlayAction
 import club.xiaojiawei.bean.Player
+import club.xiaojiawei.enums.CardTypeEnum
 import club.xiaojiawei.status.War
 import kotlin.random.Random
 
@@ -19,25 +20,30 @@ private val cardIds = arrayOf<String>(
 class Brawl : CardAction.DefaultCardAction() {
 
     override fun generatePlayActions(war: War, player: Player): List<PlayAction> {
-        if (war.me.playArea.cardSize() + war.rival.playArea.cardSize() < 2) return emptyList()
+        if (war.me.playArea.cards.count { card: Card -> card.cardType === CardTypeEnum.MINION && !card.isDormantAwakenConditionEnchant }
+            + war.rival.playArea.cards.count { card: Card -> card.cardType === CardTypeEnum.MINION && !card.isDormantAwakenConditionEnchant } < 2) return emptyList()
         return listOf(
             PlayAction({ newWar ->
                 findSelf(newWar)?.action?.power()
             }, { newWar ->
+                val newMyCards =
+                    newWar.me.playArea.cards.filter { card: Card -> card.cardType === CardTypeEnum.MINION && !card.isDormantAwakenConditionEnchant }
+                val newRivalCards =
+                    newWar.rival.playArea.cards.filter { card: Card -> card.cardType === CardTypeEnum.MINION && !card.isDormantAwakenConditionEnchant }
+                val size = newMyCards.size + newRivalCards.size
+                if (size < 2) return@PlayAction
                 spendSelfCost(newWar)
                 removeSelf(newWar)
-//                todo 排除地标
-                val size = newWar.me.playArea.cardSize() + newWar.rival.playArea.cardSize()
-                if (size < 2) return@PlayAction
+
                 val index = Random.nextInt(size)
                 val aliveCard: Card
-                if (index >= newWar.me.playArea.cardSize()) {
-                    aliveCard = newWar.rival.playArea.cards[index - newWar.me.playArea.cardSize()]
+                if (index >= newMyCards.size) {
+                    aliveCard = newRivalCards[index - newMyCards.size]
                 } else {
-                    aliveCard = newWar.me.playArea.cards[index]
+                    aliveCard = newMyCards[index]
                 }
 //                按照先下场的顺序依次死亡
-                (newWar.me.playArea.cards + newWar.rival.playArea.cards).sortedBy { card: Card ->
+                (newMyCards + newRivalCards).sortedBy { card: Card ->
                     card.numTurnsInPlay
                 }.reversed().forEach { card: Card ->
                     if (card.isAlive() && card != aliveCard) {

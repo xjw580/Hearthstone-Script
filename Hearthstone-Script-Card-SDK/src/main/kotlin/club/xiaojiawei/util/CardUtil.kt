@@ -40,7 +40,9 @@ object CardUtil {
 //        处理我方武器情况
         if (myCard.cardType === CardTypeEnum.HERO) {
             myPlayArea.weapon?.let {
-                it.damage++
+                if (!it.isImmune){
+                    it.damage++
+                }
             }
         }
 

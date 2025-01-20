@@ -2,6 +2,7 @@ package club.xiaojiawei.bean.area
 
 import club.xiaojiawei.bean.Card
 import club.xiaojiawei.bean.Entity
+import club.xiaojiawei.bean.MutableCardList
 import club.xiaojiawei.bean.Player
 import club.xiaojiawei.bean.area.Area.Companion.UNKNOWN_AREA
 import club.xiaojiawei.config.log
@@ -26,7 +27,7 @@ abstract class Area(
     player: Player? = null,
 ) {
 
-    val cards: MutableList<Card> = mutableListOf()
+    val cards: MutableCardList = MutableCardList()
 
     /**
      * 零区，即等待区，日志中下标为0表示进入零区

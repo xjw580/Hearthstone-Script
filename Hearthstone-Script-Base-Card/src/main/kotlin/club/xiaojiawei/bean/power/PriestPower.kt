@@ -38,7 +38,7 @@ class PriestPower : PointPower() {
             }
         }
         war.rival.playArea.cards.forEach { card ->
-            if (card.canBeTargetedByMyHeroPowers()) {
+            if (card.canBeTargetedByRivalHeroPowers()) {
                 rivalTarget.add(card)
             }
         }

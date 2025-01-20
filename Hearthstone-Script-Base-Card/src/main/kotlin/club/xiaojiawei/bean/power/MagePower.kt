@@ -28,51 +28,43 @@ class MagePower : PointPower() {
         val myTarget = mutableListOf<Card>()
         val rivalTarget = mutableListOf<Card>()
         war.me.playArea.cards.forEach { card ->
-            if (card.canBeTargetedByMyHeroPowers()) {
-                myTarget.add(card)
-            }
+            myTarget.add(card)
         }
         war.me.playArea.hero?.let { hero ->
-            if (hero.canBeTargetedByMyHeroPowers()) {
-                myTarget.add(hero)
-            }
+            myTarget.add(hero)
         }
         war.rival.playArea.cards.forEach { card ->
-            if (card.canBeTargetedByMyHeroPowers()) {
-                rivalTarget.add(card)
-            }
+            rivalTarget.add(card)
         }
         war.rival.playArea.hero?.let { hero ->
-            if (hero.canBeTargetedByRivalHeroPowers()) {
-                rivalTarget.add(hero)
-            }
+            rivalTarget.add(hero)
         }
         val result = mutableListOf<PowerAction>()
         for (card in myTarget) {
-            result.add(PowerAction({ newWar ->
-                newWar.me.playArea.power?.let { myPower ->
-                    myPower.action.lClick()?.pointTo(card)
-                }
-            }, { newWar ->
-                spendSelfCost(newWar)
-                card.action.findSelf(newWar)?.let {
-                    it.damage++
-                }
-                findSelf(newWar)?.isExhausted = true
-            }))
+            if (card.canHurt() && card.canBeTargetedByMyHeroPowers()) {
+                result.add(PowerAction({ newWar ->
+                    newWar.me.playArea.power?.let { myPower ->
+                        myPower.action.lClick()?.pointTo(card)
+                    }
+                }, { newWar ->
+                    spendSelfCost(newWar)
+                    card.action.findSelf(newWar)?.injured(1)
+                    findSelf(newWar)?.isExhausted = true
+                }))
+            }
         }
         for (card in rivalTarget) {
-            result.add(PowerAction({ newWar ->
-                newWar.me.playArea.power?.let { myPower ->
-                    myPower.action.lClick()?.pointTo(card)
-                }
-            }, { newWar ->
-                spendSelfCost(newWar)
-                card.action.findSelf(newWar)?.let {
-                    it.damage++
-                }
-                findSelf(newWar)?.isExhausted = true
-            }))
+            if (card.canHurt() && card.canBeTargetedByRivalHeroPowers()) {
+                result.add(PowerAction({ newWar ->
+                    newWar.me.playArea.power?.let { myPower ->
+                        myPower.action.lClick()?.pointTo(card)
+                    }
+                }, { newWar ->
+                    spendSelfCost(newWar)
+                    card.action.findSelf(newWar)?.injured(1)
+                    findSelf(newWar)?.isExhausted = true
+                }))
+            }
         }
         return result
     }

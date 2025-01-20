@@ -35,8 +35,8 @@ class Bladestorm : CardAction.DefaultCardAction() {
                     if (newWar.me.playArea.isEmpty && newWar.rival.playArea.isEmpty) break
                     cardMap.forEach { (p, cards) ->
                         cards.toList().forEach { card ->
-                            if (card.isAlive()) {
-                                card.damage += damage
+                            if (card.canHurt()) {
+                                card.injured(damage)
                                 count++
                                 if (!card.isAlive()) {
                                     noDead = false

@@ -32,19 +32,21 @@ class Bash : CardAction.DefaultCardAction() {
                             newWar.me.playArea.hero?.let { hero ->
                                 hero.armor += 3
                             }
-                            newRivalCard.damage += 3 + newWar.me.getSpellPower()
+                            newRivalCard.injured(3 + newWar.me.getSpellPower())
                         }
                     }
                 })
             )
         }
         war.rival.playArea.cards.forEach { rivalCard ->
-            if (rivalCard.cardType === CardTypeEnum.MINION && rivalCard.canBeTargetedByRivalSpells()) {
+            if (rivalCard.canHurt() && rivalCard.canBeTargetedByRivalSpells()) {
                 exec.accept(rivalCard)
             }
         }
         war.rival.playArea.hero?.let { rivalHero ->
-            exec.accept(rivalHero)
+            if (rivalHero.canHurt() && rivalHero.canBeTargetedByRivalSpells()) {
+                exec.accept(rivalHero)
+            }
         }
         return result
     }

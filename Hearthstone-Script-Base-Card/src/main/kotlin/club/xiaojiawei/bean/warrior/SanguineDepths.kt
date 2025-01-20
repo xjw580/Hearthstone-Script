@@ -29,7 +29,7 @@ class SanguineDepths : CardAction.DefaultCardAction() {
                     findSelf(newWar)?.let { newMyCard ->
                         newMyCard.isLocationActionCooldown = true
                         card.action.findSelf(newWar)?.let { newCard ->
-                            newMyCard.damage++
+                            newMyCard.injured(1)
                             newCard.atc += 2
                             newCard.damage += 1
                         }
@@ -38,12 +38,12 @@ class SanguineDepths : CardAction.DefaultCardAction() {
             )
         }
         war.rival.playArea.cards.forEach { rivalCard ->
-            if (rivalCard.cardType === CardTypeEnum.MINION) {
+            if (rivalCard.canHurt()) {
                 exec.accept(rivalCard)
             }
         }
         war.me.playArea.cards.forEach { myCard ->
-            if (myCard.cardType === CardTypeEnum.MINION) {
+            if (myCard.canHurt()) {
                 exec.accept(myCard)
             }
         }

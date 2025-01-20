@@ -21,7 +21,7 @@ class ShieldSlam : CardAction.DefaultCardAction() {
     override fun generatePlayActions(war: War, player: Player): List<PlayAction> {
         val result = mutableListOf<PlayAction>()
         war.rival.playArea.cards.forEach { rivalCard ->
-            if (rivalCard.cardType === CardTypeEnum.MINION && rivalCard.canBeTargetedByRivalSpells()) {
+            if (rivalCard.canHurt()&& rivalCard.canBeTargetedByRivalSpells()) {
                 result.add(
                     PlayAction({ newWar ->
                         findSelf(newWar)?.action?.power(rivalCard.action.findSelf(newWar))
@@ -30,7 +30,7 @@ class ShieldSlam : CardAction.DefaultCardAction() {
                         removeSelf(newWar)?.let {
                             rivalCard.action.findSelf(newWar)?.let { rCard->
                                 newWar.me.playArea.hero?.let { hero ->
-                                    rCard.damage += hero.armor + newWar.me.getSpellPower()
+                                    rCard.injured(hero.armor + newWar.me.getSpellPower())
                                 }
                             }
                         }
