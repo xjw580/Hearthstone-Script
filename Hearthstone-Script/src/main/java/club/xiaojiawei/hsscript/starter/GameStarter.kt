@@ -44,7 +44,7 @@ class GameStarter : AbstractStarter() {
                     GameUtil.launchPlatformAndGame()
                 } else if (launchCount.incrementAndGet() > 20) {
                     log.warn { "打开${GAME_CN_NAME}失败次数过多，重新执行启动器链" }
-                    stop()
+                    stopTask()
                     EXTRA_THREAD_POOL.schedule({
                         GameUtil.killLoginPlatform()
                         GameUtil.killPlatform()

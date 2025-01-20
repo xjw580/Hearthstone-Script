@@ -1,5 +1,7 @@
 package club.xiaojiawei.hsscript.status
 
+import club.xiaojiawei.hsscript.data.GAME_HWND
+import club.xiaojiawei.hsscript.dll.SystemDll
 import club.xiaojiawei.hsscript.interfaces.closer.Closable
 import club.xiaojiawei.hsscript.listener.WorkListener
 
@@ -37,7 +39,7 @@ object TaskManager {
     @Synchronized
     fun closeAllTasks() {
         taskList.toList().forEach {
-            it.close()
+            it.stopAll()
         }
     }
 

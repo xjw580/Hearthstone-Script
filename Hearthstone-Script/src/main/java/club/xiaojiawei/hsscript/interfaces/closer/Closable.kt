@@ -8,5 +8,5 @@ interface Closable {
     /**
      * 关闭运行，并不代表释放资源
      */
-    fun close()
+    fun stopAll()
 }

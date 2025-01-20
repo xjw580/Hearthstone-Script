@@ -177,7 +177,7 @@ abstract class AbstractPhaseStrategy : PhaseStrategy {
             }
         }
 
-        override fun close() {
+        override fun stopAll() {
             cancelAllTask()
         }
     }

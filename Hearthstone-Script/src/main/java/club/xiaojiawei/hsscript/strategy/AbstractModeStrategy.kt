@@ -98,7 +98,7 @@ abstract class AbstractModeStrategy<T> : ModeStrategy<T> {
             cancelAllWantEnterTasks()
         }
 
-        override fun close() {
+        override fun stopAll() {
             cancelAllTask()
         }
 

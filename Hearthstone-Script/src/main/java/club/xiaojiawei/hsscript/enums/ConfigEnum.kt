@@ -83,9 +83,14 @@ enum class ConfigEnum(
     PAUSE_STEP(group = "action", defaultValue = "7"),
 
     /**
-     * 真实控制鼠标
+     * 控制模式/真实控制鼠标
      */
     CONTROL_MODE(group = "action", defaultValue = "false"),
+
+    /**
+     * 置顶游戏窗口
+     */
+    TOP_GAME_WINDOW(group = "action", defaultValue = CONTROL_MODE.defaultValue),
 
     /**
      * 选择卡组位

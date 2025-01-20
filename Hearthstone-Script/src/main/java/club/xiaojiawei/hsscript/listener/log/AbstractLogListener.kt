@@ -76,7 +76,7 @@ abstract class AbstractLogListener(
         }
         logScheduledFuture = LISTEN_LOG_THREAD_POOL.scheduleAtFixedRate({
             if (PauseStatus.isPause || !WorkListener.working) {
-                close()
+                stopAll()
             } else {
                 try {
                     dealNewLog()
@@ -117,7 +117,7 @@ abstract class AbstractLogListener(
         }
     }
 
-    override fun close() {
+    override fun stopAll() {
         closeLogListener()
     }
 

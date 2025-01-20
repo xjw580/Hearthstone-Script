@@ -35,12 +35,16 @@ object Core {
                 WorkListener.working = false
                 Mode.reset()
                 platformRunLater { WindowUtil.getStage(WindowEnum.MAIN)?.show() }
+                SystemDll.INSTANCE.topWindow(GAME_HWND, false)
                 log.info { "当前处于【停止】状态" }
             }.isFalse {
                 if (WorkListener.isDuringWorkDate()) {
                     start()
                 } else {
                     WorkListener.cannotWorkLog()
+                }
+                if (ConfigUtil.getBoolean(ConfigEnum.TOP_GAME_WINDOW)) {
+                    SystemDll.INSTANCE.topWindow(GAME_HWND, true)
                 }
                 log.info { "当前处于【运行】状态" }
             }

@@ -68,6 +68,11 @@
                     <Switch fx:id="controlMode"/>
                 </HBox>
                 <HBox styleClass="h-box">
+                    <Text text="置顶游戏窗口"/>
+                    <HBox HBox.hgrow="ALWAYS"/>
+                    <Switch fx:id="topGameWindow"/>
+                </HBox>
+                <HBox styleClass="h-box">
                     <Text text="发送Windows通知"/>
                     <HBox HBox.hgrow="ALWAYS"/>
                     <Switch fx:id="sendNotice"/>

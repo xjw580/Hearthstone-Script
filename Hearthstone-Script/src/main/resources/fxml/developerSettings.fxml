@@ -21,7 +21,7 @@
             <VBox fx:id="mainVBox">
                 <HBox styleClass="h-box">
                     <HBox alignment="CENTER_LEFT">
-                        <Hyperlink text="日志文件" onAction="#openLogFile"/>
+                        <Hyperlink text="日志" onAction="#openLogFile"/>
                         <Label text="级别"/>
                     </HBox>
                     <HBox HBox.hgrow="ALWAYS"/>

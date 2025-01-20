@@ -4,11 +4,15 @@ import ch.qos.logback.classic.Level
 import club.xiaojiawei.hsscript.bean.HotKey
 import club.xiaojiawei.hsscript.bean.WorkDay
 import club.xiaojiawei.hsscript.bean.WorkTime
+import club.xiaojiawei.hsscript.data.GAME_HWND
 import club.xiaojiawei.hsscript.data.GAME_PROGRAM_NAME
 import club.xiaojiawei.hsscript.data.PLATFORM_PROGRAM_NAME
+import club.xiaojiawei.hsscript.dll.SystemDll
 import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.fileLogLevel
 import club.xiaojiawei.hsscript.listener.WorkListener
+import club.xiaojiawei.hsscript.starter.InjectStarter
+import club.xiaojiawei.hsscript.status.PauseStatus
 import java.io.File
 import java.nio.file.Path
 
@@ -108,6 +112,28 @@ object ConfigExUtil {
     fun storeFileLogLevel(level: String) {
         ConfigUtil.putString(ConfigEnum.FILE_LOG_LEVEL, level)
         fileLogLevel = getFileLogLevel().toInt()
+    }
+
+    fun storeControlMode(enabled: Boolean) {
+        ConfigUtil.putBoolean(ConfigEnum.CONTROL_MODE, enabled)
+        if (enabled) {
+            SystemDll.INSTANCE.uninstallDll(GAME_HWND)
+        } else {
+            InjectStarter().use {
+                it.start()
+            }
+        }
+    }
+
+    fun storeTopGameWindow(enabled: Boolean) {
+        ConfigUtil.putBoolean(ConfigEnum.TOP_GAME_WINDOW, enabled)
+        if (enabled) {
+            if (!PauseStatus.isPause) {
+                SystemDll.INSTANCE.topWindow(GAME_HWND, true)
+            }
+        } else {
+            SystemDll.INSTANCE.topWindow(GAME_HWND, false)
+        }
     }
 
 }

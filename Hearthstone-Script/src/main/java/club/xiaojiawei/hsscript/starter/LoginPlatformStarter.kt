@@ -40,7 +40,7 @@ class LoginPlatformStarter : AbstractStarter() {
                 } else {
                     if (loginCount.incrementAndGet() > 10) {
                         log.warn { "登录${PLATFORM_CN_NAME}失败次数过多，重新执行启动器链" }
-                        stop()
+                        stopTask()
                         EXTRA_THREAD_POOL.schedule({
                             GameUtil.killLoginPlatform()
                             GameUtil.killPlatform()

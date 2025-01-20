@@ -53,8 +53,8 @@ class ExceptionListenStarter : AbstractStarter() {
         }, 0, 1, TimeUnit.MINUTES)
     }
 
-    override fun close() {
-        super.close()
+    override fun stopAll() {
+        super.stopAll()
         closeListener()
     }
 

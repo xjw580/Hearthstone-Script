@@ -49,6 +49,8 @@ public class AdvancedSettingsController implements Initializable {
     @FXML
     private Switch controlMode;
     @FXML
+    private Switch topGameWindow;
+    @FXML
     private Switch sendNotice;
     @FXML
     private StackPane rootPane;
@@ -67,6 +69,7 @@ public class AdvancedSettingsController implements Initializable {
         autoUpdate.setStatus(ConfigUtil.INSTANCE.getBoolean(ConfigEnum.AUTO_UPDATE));
         runningMinimize.setStatus(ConfigUtil.INSTANCE.getBoolean(ConfigEnum.RUNNING_MINIMIZE));
         controlMode.setStatus(ConfigUtil.INSTANCE.getBoolean(ConfigEnum.CONTROL_MODE));
+        topGameWindow.setStatus(ConfigUtil.INSTANCE.getBoolean(ConfigEnum.TOP_GAME_WINDOW));
         sendNotice.setStatus(ConfigUtil.INSTANCE.getBoolean(ConfigEnum.SEND_NOTICE));
 
         HotKey pauseKey = ConfigExUtil.INSTANCE.getPauseHotKey();
@@ -98,14 +101,12 @@ public class AdvancedSettingsController implements Initializable {
         });
 //        监听控制开关
         controlMode.statusProperty().addListener((observable, oldValue, newValue) -> {
-            ConfigUtil.INSTANCE.putBoolean(ConfigEnum.CONTROL_MODE, newValue, true);
-            if (newValue) {
-                SystemDll.INSTANCE.uninstallDll(ScriptDataKt.getGAME_HWND());
-            } else {
-                InjectStarter injectStarter = new InjectStarter();
-                injectStarter.start();
-                injectStarter.release();
-            }
+            ConfigExUtil.INSTANCE.storeControlMode(newValue);
+            topGameWindow.setStatus(newValue);
+        });
+//        监听置顶游戏窗口开关
+        topGameWindow.statusProperty().addListener((observable, oldValue, newValue) -> {
+            ConfigExUtil.INSTANCE.storeTopGameWindow(newValue);
         });
 //        监听发送通知开关
         sendNotice.statusProperty().addListener((observable, oldValue, newValue) -> {

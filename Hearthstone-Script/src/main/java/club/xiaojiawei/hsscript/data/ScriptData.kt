@@ -1,6 +1,8 @@
 package club.xiaojiawei.hsscript.data
 
+import club.xiaojiawei.hsscript.dll.SystemDll
 import club.xiaojiawei.hsscript.enums.ConfigEnum
+import club.xiaojiawei.hsscript.status.PauseStatus
 import club.xiaojiawei.hsscript.utils.ConfigUtil
 import com.sun.jna.platform.win32.WinDef
 import com.sun.jna.platform.win32.WinDef.HWND
@@ -21,6 +23,14 @@ var haveProgramPath = true
  * 游戏窗口句柄
  */
 var GAME_HWND: HWND? = null
+    set(value) {
+        value?.let {
+            if (!PauseStatus.isPause && ConfigUtil.getBoolean(ConfigEnum.TOP_GAME_WINDOW)) {
+                SystemDll.INSTANCE.topWindow(value, true)
+            }
+        }
+        field = value
+    }
 const val GAME_CN_NAME: String = "炉石传说"
 const val PLATFORM_CN_NAME: String = "战网"
 const val PLATFORM_LOGIN_CN_NAME: String = "战网登录"
