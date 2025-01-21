@@ -629,6 +629,14 @@ enum class TagEnum(
         ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
             extraEntity.extraCard.card.numTurnsInHand = value.toInt()
         }),
+    FATIGUE(
+        "疲劳",
+        TagChangeHandler { card: Card?, tagChangeEntity: TagChangeEntity, war: War, player: Player?, area: Area? ->
+            player?.fatigue = tagChangeEntity.value.toInt()
+            log(player, card, "疲劳", tagChangeEntity.value)
+        },
+        null
+    ),
 
     /*+++++++++++++++++++++++++++++++++++++++++++++++*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
     UNKNOWN(
