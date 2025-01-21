@@ -43,7 +43,7 @@
                             onAction="#openMeasureUtil"/>
                 </HBox>
                 <HBox styleClass="h-box">
-                    <Button text="分析游戏数据" styleClass="btn-ui, btn-ui-normal, btn-ui-small" disable="true"/>
+                    <Button text="分析游戏数据" styleClass="btn-ui, btn-ui-normal, btn-ui-small" onAction="#openGameDataAnalysis"/>
                 </HBox>
             </VBox>
         </ScrollPane>

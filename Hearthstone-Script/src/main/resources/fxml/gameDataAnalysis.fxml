@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import club.xiaojiawei.controls.Switch?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.canvas.Canvas?>
+<StackPane xmlns="http://javafx.com/javafx"
+           xmlns:fx="http://javafx.com/fxml"
+           prefWidth="1000" prefHeight="800"
+           fx:id="rootPane"
+           style="-fx-padding: 10"
+           fx:controller="club.xiaojiawei.hsscript.controller.javafx.GameDataAnalysisController">
+    <VBox spacing="20">
+        <Label text="分析" contentDisplay="RIGHT">
+            <graphic>
+                <Switch fx:id="analysisSwitch" status="false"/>
+            </graphic>
+        </Label>
+        <StackPane>
+            <Canvas fx:id="canvas"/>
+        </StackPane>
+    </VBox>
+</StackPane>

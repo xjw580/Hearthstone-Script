@@ -3,7 +3,9 @@ package club.xiaojiawei.hsscript.controller.javafx;
 import ch.qos.logback.classic.Level;
 import club.xiaojiawei.controls.NotificationManager;
 import club.xiaojiawei.hsscript.data.PathDataKt;
+import club.xiaojiawei.hsscript.enums.WindowEnum;
 import club.xiaojiawei.hsscript.utils.ConfigExUtil;
+import club.xiaojiawei.hsscript.utils.WindowUtil;
 import club.xiaojiawei.hsscript.utils.main.MeasureApplication;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -102,5 +104,10 @@ public class DeveloperSettingsController implements Initializable {
     @FXML
     protected void openMeasureUtil(ActionEvent actionEvent) {
         MeasureApplication.startStage(new Stage());
+    }
+
+    @FXML
+    protected void openGameDataAnalysis(ActionEvent actionEvent) {
+        WindowUtil.INSTANCE.showStage(WindowEnum.GAME_DATA_ANALYSIS, null);
     }
 }

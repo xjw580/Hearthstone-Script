@@ -7,6 +7,7 @@ import ch.qos.logback.classic.joran.JoranConfigurator
 import ch.qos.logback.classic.spi.ILoggingEvent
 import ch.qos.logback.core.spi.FilterReply
 import club.xiaojiawei.hsscript.data.IMG_PATH
+import club.xiaojiawei.hsscript.data.SCREEN_SCALE
 import club.xiaojiawei.hsscript.data.SCRIPT_NAME
 import club.xiaojiawei.hsscript.dll.ZLaunchDll
 import club.xiaojiawei.hsscript.utils.ConfigExUtil
@@ -61,13 +62,13 @@ private fun setLogPath() {
 fun main(args: Array<String>) {
     System.setProperty("jna.library.path", "lib")
 
-    val scale = Toolkit.getDefaultToolkit().screenResolution / 96.0
+
     ZLaunchDll.INSTANCE.ShowPage(
         WString(Path.of(IMG_PATH, "startup.jpg").toString()),
         WString(SystemUtil.getProgramIconFile().absolutePath),
         WString(SCRIPT_NAME),
-        (558 * scale).toInt(),
-        (400 * scale).toInt()
+        (558 * SCREEN_SCALE).toInt(),
+        (400 * SCREEN_SCALE).toInt()
     )
 
     setLogPath()

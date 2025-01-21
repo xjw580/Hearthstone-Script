@@ -7,12 +7,15 @@ import club.xiaojiawei.hsscript.utils.ConfigUtil
 import com.sun.jna.platform.win32.WinDef
 import com.sun.jna.platform.win32.WinDef.HWND
 import java.awt.Robot
+import java.awt.Toolkit
 
 /**
  * 存储脚本常量
  * @author 肖嘉威
  * @date 2023/7/3 21:12
  */
+
+val SCREEN_SCALE = Toolkit.getDefaultToolkit().screenResolution / 96.0
 
 /**
  * 是否设置了炉石和战网的路径

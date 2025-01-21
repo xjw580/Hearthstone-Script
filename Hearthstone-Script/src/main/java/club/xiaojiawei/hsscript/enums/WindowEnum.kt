@@ -1,5 +1,6 @@
 package club.xiaojiawei.hsscript.enums
 
+import club.xiaojiawei.hsscript.data.GameRationConst
 import club.xiaojiawei.hsscript.data.SCRIPT_NAME
 import javafx.stage.Screen
 import javafx.stage.StageStyle
@@ -10,48 +11,35 @@ import javafx.stage.StageStyle
  */
 enum class WindowEnum(
     val fxmlName: String,
-    val title: String,
-    val width: Double,
-    val height: Double,
-    val x: Double,
-    val y: Double,
-    val alwaysOnTop: Boolean,
-    val initStyle: StageStyle
+    val title: String = "",
+    val width: Double = -1.0,
+    val height: Double = -1.0,
+    val x: Double = -1.0,
+    val y: Double = -1.0,
+    val alwaysOnTop: Boolean = false,
+    val initStyle: StageStyle = StageStyle.DECORATED,
 ) {
     SETTINGS(
         "settings.fxml", "$SCRIPT_NAME-设置",
-        650.0, 450.0, -1.0, -1.0,
-        true, StageStyle.DECORATED
+        alwaysOnTop = true
     ),
     INIT_SETTINGS(
-        "initSettings.fxml", "",
-        -1.0, -1.0, -1.0, -1.0,
-        false, StageStyle.DECORATED
+        "initSettings.fxml"
     ),
     ADVANCED_SETTINGS(
-        "advancedSettings.fxml", "",
-        -1.0, -1.0, -1.0, -1.0,
-        false, StageStyle.DECORATED
+        "advancedSettings.fxml"
     ),
     PLUGIN_SETTINGS(
-        "pluginSettings.fxml", "",
-        -1.0, -1.0, -1.0, -1.0,
-        false, StageStyle.DECORATED
+        "pluginSettings.fxml"
     ),
     STRATEGY_SETTINGS(
-        "strategySettings.fxml", "",
-        -1.0, -1.0, -1.0, -1.0,
-        false, StageStyle.DECORATED
+        "strategySettings.fxml"
     ),
     WEIGHT_SETTINGS(
-        "weightSettings.fxml", "",
-        -1.0, -1.0, -1.0, -1.0,
-        false, StageStyle.DECORATED
+        "weightSettings.fxml"
     ),
     DEVELOPER_SETTINGS(
-        "developerSettings.fxml", "",
-        -1.0, -1.0, -1.0, -1.0,
-        false, StageStyle.DECORATED
+        "developerSettings.fxml"
     ),
     MAIN(
         "main.fxml",
@@ -61,18 +49,19 @@ enum class WindowEnum(
         Screen.getPrimary().bounds.width - 215.0,
         (Screen.getPrimary().bounds.height - 670.0) / 2,
         true,
-        StageStyle.DECORATED
     ),
     STARTUP(
         "startup.fxml", "$SCRIPT_NAME-启动页",
-        558.0, 400.0, -1.0, -1.0,
-        false, StageStyle.UNDECORATED
+        558.0, 400.0
     ),
     VERSION_MSG(
         "versionMsg.fxml", "版本说明",
-        550.0, -1.0, -1.0, -1.0,
-        true, StageStyle.DECORATED
+        width = 550.0,
+        alwaysOnTop = true
+    ),
+    GAME_DATA_ANALYSIS(
+        "gameDataAnalysis.fxml", "游戏数据分析",
+        alwaysOnTop = true
     ),
     ;
-
 }
