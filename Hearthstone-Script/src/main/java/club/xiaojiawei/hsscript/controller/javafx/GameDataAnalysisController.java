@@ -3,30 +3,20 @@ package club.xiaojiawei.hsscript.controller.javafx;
 import club.xiaojiawei.config.ThreadPoolConfigKt;
 import club.xiaojiawei.controls.Switch;
 import club.xiaojiawei.hsscript.data.GameRationConst;
-import club.xiaojiawei.hsscript.data.ScriptDataKt;
+import club.xiaojiawei.hsscript.utils.GameDataAnalysisUtil;
 import club.xiaojiawei.status.War;
 import club.xiaojiawei.status.WarKt;
-import javafx.scene.Scene;
-import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.image.Image;
+import club.xiaojiawei.util.DeckStrategyUtil;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.image.ImageView;
-import javafx.scene.image.PixelBuffer;
-import javafx.scene.image.PixelFormat;
-import javafx.scene.image.WritableImage;
+import javafx.scene.Scene;
+import javafx.scene.canvas.Canvas;
 import javafx.scene.layout.StackPane;
-import javafx.scene.paint.Color;
 import javafx.stage.Window;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.awt.image.BufferedImage;
-import java.awt.image.DataBufferInt;
 import java.net.URL;
-import java.nio.IntBuffer;
-import java.util.Random;
 import java.util.ResourceBundle;
 
 /**
@@ -36,6 +26,9 @@ import java.util.ResourceBundle;
 public class GameDataAnalysisController implements Initializable {
 
     private static final Logger log = LoggerFactory.getLogger(GameDataAnalysisController.class);
+
+    @FXML
+    private StackPane canvasPane;
     @FXML
     private StackPane rootPane;
     @FXML
@@ -43,30 +36,35 @@ public class GameDataAnalysisController implements Initializable {
     @FXML
     private Switch analysisSwitch;
 
-    private final int frame = 60;
+    private final int frame = 30;
 
-    private final int flushInterval = (int) (1000D / frame);
-
-    private War war;
+    private final int flushInterval = Math.max((int) (1000D / frame), 0);
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        double width = 800;
-        double height = width / GameRationConst.GAME_WINDOW_ASPECT_TO_HEIGHT_RATIO;
-        canvas.setWidth(width);
-        canvas.setHeight(height);
-        war = WarKt.getWAR();
-        GraphicsContext context = canvas.getGraphicsContext2D();
+        canvas.setWidth(rootPane.getPrefWidth() - 100);
+        canvas.setHeight((canvas.getWidth() / GameRationConst.GAME_WINDOW_ASPECT_TO_HEIGHT_RATIO));
+        canvasPane.widthProperty().addListener((observable, oldValue, newValue) -> {
+            canvas.setWidth(newValue.intValue());
+        });
+        canvasPane.heightProperty().addListener((observable, oldValue, newValue) -> {
+            canvas.setHeight(newValue.intValue());
+        });
+        GameDataAnalysisUtil analysisUtil = GameDataAnalysisUtil.INSTANCE;
+        analysisUtil.init(canvas);
+        War war = DeckStrategyUtil.INSTANCE.createMCTSWar();
+//        War war = WarKt.getWAR();
         ThreadPoolConfigKt.getEXTRA_THREAD_POOL().submit(() -> {
-            while (isRunning()) {
-                context.setFill(Color.WHITE);
-                context.fillRect(0, 0, width, height);
-//                war.getMe()
+            while (true) {
+                if (analysisSwitch.getStatus()) {
+                    analysisUtil.draw(war, canvas);
+                } else {
+                    System.out.println("no draw");
+                }
                 try {
                     Thread.sleep(flushInterval);
                 } catch (InterruptedException e) {
                     log.error("操作中断", e);
-                    break;
                 }
             }
         });

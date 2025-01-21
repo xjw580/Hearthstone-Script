@@ -185,7 +185,12 @@ enum class ConfigEnum(
     /**
      * 文件日志级别
      */
-    FILE_LOG_LEVEL(group = "system", defaultValue = Level.INFO.levelStr),
+    FILE_LOG_LEVEL(group = "dev", defaultValue = Level.INFO.levelStr),
+
+    /**
+     * 自动打开游戏数据分析页
+     */
+    AUTO_OPEN_GAME_ANALYSIS(group = "dev", defaultValue = "false"),
 
     ;
 }

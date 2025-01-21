@@ -62,7 +62,6 @@ private fun setLogPath() {
 fun main(args: Array<String>) {
     System.setProperty("jna.library.path", "lib")
 
-
     ZLaunchDll.INSTANCE.ShowPage(
         WString(Path.of(IMG_PATH, "startup.jpg").toString()),
         WString(SystemUtil.getProgramIconFile().absolutePath),

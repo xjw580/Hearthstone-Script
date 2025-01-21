@@ -2,9 +2,12 @@ package club.xiaojiawei.hsscript.controller.javafx;
 
 import ch.qos.logback.classic.Level;
 import club.xiaojiawei.controls.NotificationManager;
+import club.xiaojiawei.controls.Switch;
 import club.xiaojiawei.hsscript.data.PathDataKt;
+import club.xiaojiawei.hsscript.enums.ConfigEnum;
 import club.xiaojiawei.hsscript.enums.WindowEnum;
 import club.xiaojiawei.hsscript.utils.ConfigExUtil;
+import club.xiaojiawei.hsscript.utils.ConfigUtil;
 import club.xiaojiawei.hsscript.utils.WindowUtil;
 import club.xiaojiawei.hsscript.utils.main.MeasureApplication;
 import javafx.event.ActionEvent;
@@ -29,18 +32,26 @@ import java.util.ResourceBundle;
 public class DeveloperSettingsController implements Initializable {
 
     @FXML
+    private Switch autoOpenAnalysis;
+    @FXML
     private NotificationManager<String> notificationManager;
     @FXML
     private ComboBox<String> fileLogLevelComboBox;
 
 
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
+    private void initValue() {
         fileLogLevelComboBox.setValue(ConfigExUtil.INSTANCE.getFileLogLevel().levelStr.toUpperCase(Locale.ROOT));
+        autoOpenAnalysis.setStatus(ConfigUtil.INSTANCE.getBoolean(ConfigEnum.AUTO_OPEN_GAME_ANALYSIS));
+    }
+
+    private void addListener() {
+        autoOpenAnalysis.statusProperty().addListener((observable, oldValue, newValue) -> {
+            ConfigUtil.INSTANCE.putBoolean(ConfigEnum.AUTO_OPEN_GAME_ANALYSIS, newValue, true);
+        });
         fileLogLevelComboBox.valueProperty().addListener((observable, oldValue, newValue) -> {
             ConfigExUtil.INSTANCE.storeFileLogLevel(newValue);
         });
-        fileLogLevelComboBox.setCellFactory(new Callback<ListView<String>, ListCell<String>>() {
+        fileLogLevelComboBox.setCellFactory(new Callback<>() {
             @Override
             public ListCell<String> call(ListView<String> param) {
                 return new ListCell<>() {
@@ -51,7 +62,6 @@ public class DeveloperSettingsController implements Initializable {
                         if (s == null || b) return;
                         Level level = Level.valueOf(s);
                         if (level == Level.OFF) {
-//                            setGraphic(new Label(level.levelStr){{setStyle("-fx-text-fill: ;");}});
                             setText(level.levelStr);
                         } else if (level == Level.ERROR) {
                             if (isSelected()) {
@@ -93,6 +103,12 @@ public class DeveloperSettingsController implements Initializable {
                 };
             }
         });
+    }
+
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        initValue();
+        addListener();
     }
 
     @FXML

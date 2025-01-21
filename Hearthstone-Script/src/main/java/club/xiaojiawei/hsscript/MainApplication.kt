@@ -104,7 +104,7 @@ class MainApplication : Application() {
         val settingsItem = MenuItem("设置")
         settingsItem.addActionListener(object : AbstractAction() {
             override fun actionPerformed(e: ActionEvent?) {
-                platformRunLater {
+                runUI {
                     val stage = getStage(WindowEnum.SETTINGS) ?: buildStage(WindowEnum.SETTINGS)
                     if (stage.owner == null) {
                         getStage(WindowEnum.MAIN)?.let {
@@ -189,7 +189,7 @@ class MainApplication : Application() {
                 } else {
                     val version = ConfigUtil.getString(ConfigEnum.CURRENT_VERSION)
                     if (Release.compareVersion(VersionUtil.VERSION, version) > 0) {
-                        platformRunLater {
+                        runUI {
                             showStage(WindowEnum.VERSION_MSG, getStage(WindowEnum.MAIN))
                             ConfigUtil.putString(ConfigEnum.CURRENT_VERSION, VersionUtil.VERSION)
                         }

@@ -1,16 +1,14 @@
 package club.xiaojiawei.util
 
-import club.xiaojiawei.bean.Card
-import club.xiaojiawei.bean.Player
-import club.xiaojiawei.bean.SimulateCard
+import club.xiaojiawei.bean.*
 import club.xiaojiawei.bean.SimulateCard.Companion.TAUNT_EXTRA_WEIGHT
-import club.xiaojiawei.bean.SimulateWeightCard
 import club.xiaojiawei.bean.area.PlayArea
 import club.xiaojiawei.config.CALC_THREAD_POOL
 import club.xiaojiawei.config.log
 import club.xiaojiawei.data.CARD_WEIGHT_TRIE
 import club.xiaojiawei.enums.CardTypeEnum
 import club.xiaojiawei.status.WAR
+import club.xiaojiawei.status.War
 import java.util.concurrent.CompletableFuture
 import java.util.function.Function
 import kotlin.math.max
@@ -694,4 +692,130 @@ object DeckStrategyUtil {
         return regex.find(cardText) != null;
     }
 
+    fun createMCTSWar(): War {
+        return War().apply {
+            me = run {
+                val player = Player(playerId = "1", gameId = "myRobot")
+                var card = Card(TestCardAction())
+                card.entityId = "0"
+                card.entityName = "myHero"
+                card.health = 30
+                card.cardType = CardTypeEnum.HERO
+                player.playArea.add(card)
+
+                card = Card(TestCardAction())
+                card.entityId = "1"
+                card.entityName = "myMinion1"
+                card.health = 4
+                card.atc = 3
+                card.cardType = CardTypeEnum.MINION
+                player.playArea.add(card)
+
+                card = Card(TestCardAction())
+                card.entityId = "2"
+                card.entityName = "myMinion2"
+                card.health = 3
+                card.atc = 5
+                card.cardType = CardTypeEnum.MINION
+                player.playArea.add(card)
+
+                card = Card(TestCardAction())
+                card.entityId = "3"
+                card.entityName = "myMinion3"
+                card.health = 5
+                card.atc = 4
+//                card.isWindFury = true
+//                card.isMegaWindfury = true
+                card.cardType = CardTypeEnum.MINION
+                player.playArea.add(card)
+
+                card = Card(TestCardAction())
+                card.entityId = "4"
+                card.entityName = "myMinion4"
+                card.health = 2
+                card.atc = 3
+                card.cardType = CardTypeEnum.MINION
+                player.playArea.add(card)
+
+                card = Card(TestCardAction())
+                card.entityId = "11"
+                card.entityName = "myHand1"
+                card.health = 2
+                card.atc = 3
+                card.cost = 2
+                card.cardType = CardTypeEnum.MINION
+                player.handArea.add(card)
+
+                card = Card(TestCardAction())
+                card.entityId = "12"
+                card.entityName = "myHand2"
+                card.health = 2
+                card.atc = 3
+                card.cost = 3
+                card.cardType = CardTypeEnum.MINION
+                player.handArea.add(card)
+
+                card = Card(TestCardAction())
+                card.entityId = "13"
+                card.entityName = "myHand3"
+                card.cost = 1
+                card.cardType = CardTypeEnum.SPELL
+                player.handArea.add(card)
+
+
+                player.resources = 6
+
+                player
+            }
+
+            player1 = me
+
+            rival = run {
+                val player = Player(playerId = "2", gameId = "rivalRobot")
+                var card = Card(TestCardAction())
+                card.entityId = "20"
+                card.entityName = "rivalHero"
+                card.health = 30
+//                card.atc = 5
+                card.cardType = CardTypeEnum.HERO
+                player.playArea.add(card)
+
+                card = Card(TestCardAction())
+                card.entityId = "21"
+                card.entityName = "rivalMinion1"
+                card.health = 4
+                card.atc = 5
+//                card.isTaunt = true
+                card.cardType = CardTypeEnum.MINION
+                player.playArea.add(card)
+
+                card = Card(TestCardAction())
+                card.entityId = "22"
+                card.entityName = "rivalMinion2"
+                card.health = 4
+                card.atc = 3
+                card.cardType = CardTypeEnum.MINION
+                player.playArea.add(card)
+
+                card = Card(TestCardAction())
+                card.entityId = "23"
+                card.entityName = "rivalMinion3"
+                card.health = 2
+                card.atc = 3
+                card.cardType = CardTypeEnum.MINION
+                player.playArea.add(card)
+
+                card = Card(TestCardAction())
+                card.entityId = "31"
+                card.entityName = "rivalHand1"
+                card.cost = 1
+                card.cardType = CardTypeEnum.SPELL
+                player.handArea.add(card)
+
+                player2 = rival
+
+                player
+            }
+        }.clone()
+    }
 }

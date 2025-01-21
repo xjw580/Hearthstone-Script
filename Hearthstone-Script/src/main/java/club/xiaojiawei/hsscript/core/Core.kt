@@ -34,7 +34,7 @@ object Core {
                 SystemDll.INSTANCE.changeWindow(GAME_HWND, false)
                 WorkListener.working = false
                 Mode.reset()
-                platformRunLater { WindowUtil.getStage(WindowEnum.MAIN)?.show() }
+                runUI { WindowUtil.getStage(WindowEnum.MAIN)?.show() }
                 SystemDll.INSTANCE.topWindow(GAME_HWND, false)
                 log.info { "当前处于【停止】状态" }
             }.isFalse {
@@ -45,6 +45,11 @@ object Core {
                 }
                 if (ConfigUtil.getBoolean(ConfigEnum.TOP_GAME_WINDOW)) {
                     SystemDll.INSTANCE.topWindow(GAME_HWND, true)
+                }
+                if (ConfigUtil.getBoolean(ConfigEnum.AUTO_OPEN_GAME_ANALYSIS)) {
+                    runUI {
+                        WindowUtil.showStage(WindowEnum.GAME_DATA_ANALYSIS)
+                    }
                 }
                 log.info { "当前处于【运行】状态" }
             }
@@ -64,12 +69,12 @@ object Core {
                 if (WorkListener.working) return@execute
                 if (!haveProgramPath) {
                     SystemUtil.notice("需要配置" + GAME_CN_NAME + "和" + PLATFORM_CN_NAME + "的路径")
-                    platformRunLater { WindowUtil.showStage(WindowEnum.SETTINGS) }
+                    runUI { WindowUtil.showStage(WindowEnum.SETTINGS) }
                     PauseStatus.isPause = true
                 } else if (!PauseStatus.isPause) {
                     WorkListener.working = true
                     if (ConfigUtil.getBoolean(ConfigEnum.RUNNING_MINIMIZE)) {
-                        platformRunLater {
+                        runUI {
                             WindowUtil.hideStage(WindowEnum.MAIN)
                         }
                     }

@@ -3,14 +3,10 @@
 <?import club.xiaojiawei.controls.NotificationManager?>
 <?import club.xiaojiawei.factory.NotificationFactory?>
 <?import javafx.collections.FXCollections?>
-<?import javafx.scene.control.ComboBox?>
-<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.text.Text?>
 <?import java.lang.*?>
-<?import javafx.scene.control.Hyperlink?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.Button?>
+<?import club.xiaojiawei.controls.Switch?>
 <StackPane xmlns="http://javafx.com/javafx"
            xmlns:fx="http://javafx.com/fxml"
            stylesheets="@css/developerSettings.css"
@@ -44,6 +40,12 @@
                 </HBox>
                 <HBox styleClass="h-box">
                     <Button text="分析游戏数据" styleClass="btn-ui, btn-ui-normal, btn-ui-small" onAction="#openGameDataAnalysis"/>
+                    <HBox HBox.hgrow="ALWAYS"/>
+                    <Label text="对局开始自动打开" contentDisplay="RIGHT">
+                        <graphic>
+                            <Switch fx:id="autoOpenAnalysis" status="false"/>
+                        </graphic>
+                    </Label>
                 </HBox>
             </VBox>
         </ScrollPane>

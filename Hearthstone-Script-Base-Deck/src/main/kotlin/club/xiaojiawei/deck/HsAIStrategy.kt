@@ -43,7 +43,7 @@ class HsAIStrategy : DeckStrategy() {
             MCTSArg(60 * 1000, 2, 0.5, 100_000, MCTSUtil.buildScoreCalculator(), true)
         } else {
             log.info { "开始思考如何打牌，反演0轮" }
-            MCTSArg(60 * 1000, 1, 0.5, 300_000, MCTSUtil.buildScoreCalculator(), true)
+            MCTSArg(60 * 1000, 1, 0.5, 100_000, MCTSUtil.buildScoreCalculator(), true)
         }
 
         val stringBuilder = StringBuilder("战场可行动卡牌: ")
@@ -67,7 +67,7 @@ class HsAIStrategy : DeckStrategy() {
         Thread.sleep(3000)
 
         log.info { "再次思考如何打牌" }
-        arg = MCTSArg(10 * 1000, 1, 0.5, 100_000, MCTSUtil.buildScoreCalculator(), true)
+        arg = MCTSArg(10 * 1000, 1, 0.5, 50_000, MCTSUtil.buildScoreCalculator(), true)
         bestActions = monteCarloTreeSearch.getBestActions(war, arg)
         bestActions.forEach { action ->
             action.applyAction.exec.accept(war)

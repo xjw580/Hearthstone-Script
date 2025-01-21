@@ -1,14 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-
 <?import club.xiaojiawei.controls.Switch?>
-<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
 <StackPane xmlns="http://javafx.com/javafx"
            xmlns:fx="http://javafx.com/fxml"
            prefWidth="1000" prefHeight="800"
@@ -18,10 +14,10 @@
     <VBox spacing="20">
         <Label text="分析" contentDisplay="RIGHT">
             <graphic>
-                <Switch fx:id="analysisSwitch" status="false"/>
+                <Switch fx:id="analysisSwitch" status="true"/>
             </graphic>
         </Label>
-        <StackPane>
+        <StackPane fx:id="canvasPane" VBox.vgrow="ALWAYS">
             <Canvas fx:id="canvas"/>
         </StackPane>
     </VBox>
