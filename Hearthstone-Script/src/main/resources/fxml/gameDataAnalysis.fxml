@@ -5,14 +5,17 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.geometry.Insets?>
 <StackPane xmlns="http://javafx.com/javafx"
            xmlns:fx="http://javafx.com/fxml"
            prefWidth="1000" prefHeight="800"
            fx:id="rootPane"
-           style="-fx-padding: 10"
            fx:controller="club.xiaojiawei.hsscript.controller.javafx.GameDataAnalysisController">
+    <padding>
+        <Insets top="10" left="10" right="10" bottom="10"/>
+    </padding>
     <VBox spacing="20">
-        <Label text="分析" contentDisplay="RIGHT">
+        <Label fx:id="switchLabel" text="分析" contentDisplay="RIGHT">
             <graphic>
                 <Switch fx:id="analysisSwitch" status="true"/>
             </graphic>
@@ -20,5 +23,9 @@
         <StackPane fx:id="canvasPane" VBox.vgrow="ALWAYS">
             <Canvas fx:id="canvas"/>
         </StackPane>
+<!--        <HBox spacing="10">-->
+<!--            <TextField styleClass="text-field-ui"/>-->
+<!--            <Button text="获取"/>-->
+<!--        </HBox>-->
     </VBox>
 </StackPane>

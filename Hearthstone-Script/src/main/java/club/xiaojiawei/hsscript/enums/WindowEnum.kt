@@ -1,6 +1,5 @@
 package club.xiaojiawei.hsscript.enums
 
-import club.xiaojiawei.hsscript.data.GameRationConst
 import club.xiaojiawei.hsscript.data.SCRIPT_NAME
 import javafx.stage.Screen
 import javafx.stage.StageStyle
@@ -16,6 +15,7 @@ enum class WindowEnum(
     val height: Double = -1.0,
     val x: Double = -1.0,
     val y: Double = -1.0,
+    val cache: Boolean = true,
     val alwaysOnTop: Boolean = false,
     val initStyle: StageStyle = StageStyle.DECORATED,
 ) {
@@ -48,7 +48,7 @@ enum class WindowEnum(
         670.0,
         Screen.getPrimary().bounds.width - 215.0,
         (Screen.getPrimary().bounds.height - 670.0) / 2,
-        true,
+        alwaysOnTop = true,
     ),
     STARTUP(
         "startup.fxml", "$SCRIPT_NAME-启动页",
@@ -61,6 +61,8 @@ enum class WindowEnum(
     ),
     GAME_DATA_ANALYSIS(
         "gameDataAnalysis.fxml", "游戏数据分析",
+        x = 0.0, y = 0.0,
+        cache = false,
         alwaysOnTop = true
     ),
     ;

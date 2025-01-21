@@ -52,7 +52,7 @@ class MonteCarloTreeNode(
 //        判断是否需要进行反演
         if (surplusTurn > 0) {
             val inverseArg = MCTSArg(
-                (arg.thinkingSecTime * arg.turnFactor).toInt(),
+                arg.endMillisTime,
                 surplusTurn,
                 arg.turnFactor * arg.turnFactor,
                 (arg.countPerTurn * arg.turnFactor).toInt(),
@@ -92,7 +92,8 @@ class MonteCarloTreeNode(
             }
 
 //            反演时尽量调大maxDepth值，可以减少资源消耗
-            val bestActions = MonteCarloTreeSearch(maxDepth = 20).getBestActions(inverseWar, inverseArg)
+            val bestActions =
+                MonteCarloTreeSearch(maxDepth = MCTS_DEFAULT_DEPTH + 5).getBestActions(inverseWar, inverseArg)
             return if (bestActions.isEmpty()) {
                 currentScore
             } else {

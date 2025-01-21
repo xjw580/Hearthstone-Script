@@ -18,15 +18,15 @@ import kotlin.math.min
  * @author 肖嘉威
  * @date 2025/1/10 10:04
  */
-private const val MCTS_DEFAULT_DEPTH = 15
+const val MCTS_DEFAULT_DEPTH = 20
 
 class MonteCarloTreeSearch(val maxDepth: Int = MCTS_DEFAULT_DEPTH) {
 
-    private fun select(rootNode: MonteCarloTreeNode, totalCount: Int): MonteCarloTreeNode {
+    private fun select(rootNode: MonteCarloTreeNode, endTime: Long): MonteCarloTreeNode {
         var node: MonteCarloTreeNode = rootNode
         var maxUCB = Int.MIN_VALUE.toDouble()
         var level = 0
-        while (node.isFullExpanded() && !node.isLeaf()) {
+        while (node.isFullExpanded() && !node.isLeaf() && System.currentTimeMillis() < endTime) {
             val parentNode = node
             val children = node.children
             for (child in children) {
@@ -54,9 +54,9 @@ class MonteCarloTreeSearch(val maxDepth: Int = MCTS_DEFAULT_DEPTH) {
         return nextNode
     }
 
-    private fun simulate(node: MonteCarloTreeNode, rootNode: MonteCarloTreeNode, arg: MCTSArg): Boolean {
+    private fun simulate(node: MonteCarloTreeNode, rootNode: MonteCarloTreeNode, endTime: Long): Boolean {
         var tempNode = node
-        while (!tempNode.isEnd()) {
+        while (!tempNode.isEnd() && System.currentTimeMillis() < endTime) {
             val actions = tempNode.actions
             val action = actions.randomSelect()
             val nextTempNode = tempNode.buildNextNode(action)
@@ -157,18 +157,19 @@ class MonteCarloTreeSearch(val maxDepth: Int = MCTS_DEFAULT_DEPTH) {
     fun getBestActions(
         war: War, arg: MCTSArg
     ): MutableList<MonteCarloTreeNode> {
+        val totalMillisTime = arg.endMillisTime - System.currentTimeMillis()
         val newWar = war.clone()
 //        因为对手手牌不可知，所以去除模拟，todo 非正确处理方式
         newWar.rival.handArea.cards.clear()
         val newArg = MCTSArg(
-            arg.thinkingSecTime,
+            arg.endMillisTime,
             arg.turnCount,
             arg.turnFactor,
             arg.countPerTurn,
             arg.scoreCalculator,
             false
         )
-        val endTime = System.currentTimeMillis() + newArg.thinkingSecTime
+        val endTime = arg.endMillisTime
         val rootNode = MonteCarloTreeNode(newWar, InitAction, newArg)
         val results = Collections.synchronizedList(mutableListOf<MutableList<MonteCarloTreeNode>>())
         val tasks = mutableListOf<CompletableFuture<Void>>()
@@ -177,12 +178,12 @@ class MonteCarloTreeSearch(val maxDepth: Int = MCTS_DEFAULT_DEPTH) {
             var node: MonteCarloTreeNode
 
             while (totalCount < newArg.countPerTurn && System.currentTimeMillis() < endTime) {
-                node = select(newRootNode, totalCount)
+                node = select(newRootNode, endTime)
                 var win: Boolean? = null
                 if (!node.isEnd()) {
                     expand(node)?.let {
                         node = it
-                        win = simulate(node, newRootNode, newArg)
+                        win = simulate(node, newRootNode, endTime)
                     }
                 }
                 backPropagation(node, win)
@@ -202,7 +203,7 @@ class MonteCarloTreeSearch(val maxDepth: Int = MCTS_DEFAULT_DEPTH) {
                 val rootNodesList = mutableListOf<MonteCarloTreeNode>()
                 val counts = endIndex - index
                 val childArg = MCTSArg(
-                    floor(arg.thinkingSecTime / counts.toDouble()).toInt(),
+                    arg.endMillisTime,
                     arg.turnCount,
                     arg.turnFactor,
                     floor(arg.countPerTurn / counts.toDouble()).toInt(),
@@ -230,7 +231,7 @@ class MonteCarloTreeSearch(val maxDepth: Int = MCTS_DEFAULT_DEPTH) {
         }
 
         if (tasks.isNotEmpty()) {
-            CompletableFuture.allOf(*tasks.toTypedArray()).get(arg.thinkingSecTime + 5L, TimeUnit.SECONDS)
+            CompletableFuture.allOf(*tasks.toTypedArray()).get(totalMillisTime, TimeUnit.MILLISECONDS)
         }
 
         var maxScore = Int.MIN_VALUE.toDouble()

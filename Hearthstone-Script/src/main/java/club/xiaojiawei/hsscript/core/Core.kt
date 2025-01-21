@@ -46,11 +46,6 @@ object Core {
                 if (ConfigUtil.getBoolean(ConfigEnum.TOP_GAME_WINDOW)) {
                     SystemDll.INSTANCE.topWindow(GAME_HWND, true)
                 }
-                if (ConfigUtil.getBoolean(ConfigEnum.AUTO_OPEN_GAME_ANALYSIS)) {
-                    runUI {
-                        WindowUtil.showStage(WindowEnum.GAME_DATA_ANALYSIS)
-                    }
-                }
                 log.info { "当前处于【运行】状态" }
             }
         }

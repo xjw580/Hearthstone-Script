@@ -3,6 +3,7 @@ package club.xiaojiawei.hsscript.utils
 import club.xiaojiawei.JavaFXUI
 import club.xiaojiawei.hsscript.data.FXML_PATH
 import club.xiaojiawei.hsscript.enums.WindowEnum
+import club.xiaojiawei.hsscript.interfaces.StageHook
 import club.xiaojiawei.hsscript.utils.SystemUtil.findHWND
 import club.xiaojiawei.hsscript.utils.SystemUtil.showWindow
 import club.xiaojiawei.util.isTrue
@@ -158,9 +159,8 @@ object WindowUtil {
     }
 
     fun getController(windowEnum: WindowEnum): Any? {
-        val stage = STAGE_MAP[windowEnum]
-        return stage?.let {
-            stage.properties[CONTROLLER_KEY]
+        return getStage(windowEnum)?.let {
+            it.properties[CONTROLLER_KEY]
         }
     }
 
@@ -173,6 +173,32 @@ object WindowUtil {
         if (stage == null || createStage) {
             stage = createStage(windowEnum)
             STAGE_MAP[windowEnum] = stage
+            val controller = getController(windowEnum)
+            if (controller is StageHook) {
+                stage.setOnShown {
+                    controller.onShown()
+                }
+                stage.setOnShowing {
+                    controller.onShowing()
+                }
+                stage.setOnHidden {
+                    controller.onHidden()
+                }
+                stage.setOnHiding {
+                    controller.onHiding()
+                }
+                stage.setOnCloseRequest { event ->
+                    controller.onCloseRequest(event)
+                }
+            }
+
+            if (!windowEnum.cache) {
+                stage.showingProperty().addListener { o, oldV, newV ->
+                    if (!newV) {
+                        STAGE_MAP.remove(windowEnum)
+                    }
+                }
+            }
         }
         stage.scene.stylesheets.add("/fxml/css/common.css")
         return stage
@@ -193,8 +219,8 @@ object WindowUtil {
         try {
             val fxmlLoader =
                 FXMLLoader(WindowUtil::class.java.getResource(FXML_PATH + windowEnum.fxmlName))
-            stage.properties[CONTROLLER_KEY] = fxmlLoader.getController()
             val scene = Scene(fxmlLoader.load())
+            stage.properties[CONTROLLER_KEY] = fxmlLoader.getController()
             scene.stylesheets.add(JavaFXUI.javafxUIStylesheet())
             stage.scene = scene
             stage.title = windowEnum.title

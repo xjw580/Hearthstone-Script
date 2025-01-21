@@ -4,7 +4,6 @@ import club.xiaojiawei.CardAction
 import club.xiaojiawei.bean.Card
 import club.xiaojiawei.bean.Player
 import club.xiaojiawei.bean.PowerAction
-import club.xiaojiawei.enums.CardTypeEnum
 import club.xiaojiawei.status.War
 import java.util.function.Consumer
 

@@ -9,9 +9,9 @@ import java.util.function.Function
  */
 data class MCTSArg(
     /**
-     * 总模拟的时间
+     * 结束时间
      */
-    val thinkingSecTime: Int,
+    val endMillisTime: Long,
     /**
      * 模拟的回合数
      */

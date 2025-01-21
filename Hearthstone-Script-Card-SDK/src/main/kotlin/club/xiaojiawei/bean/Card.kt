@@ -83,7 +83,7 @@ class Card(var action: CardAction) : BaseCard(), Cloneable {
      * 能受到伤害
      */
     fun canHurt(): Boolean {
-        return !(isDead() || cardType !== CardTypeEnum.MINION || cardType !== CardTypeEnum.HERO || isImmune || isDormantAwakenConditionEnchant)
+        return (cardType === CardTypeEnum.MINION || cardType === CardTypeEnum.HERO) && !(isDead() || isImmune || isDormantAwakenConditionEnchant)
     }
 
     /**

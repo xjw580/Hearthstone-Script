@@ -14,14 +14,15 @@ import javafx.scene.text.Font
  * @date 2025/1/21 14:56
  */
 object GameDataAnalysisUtil {
-
+    private const val offset = 15
     private val cardColor = Paint.valueOf("#f1f1f1")
     private val areaColor = Paint.valueOf("#80B1FB")
     private val cardEnabledColor = Paint.valueOf("#00d600")
     private val areaFont = Font("Arial", 30.0)
     private val cardFont = Font("Arial", 20.0)
     private val cardNameFont = Font("Arial", 14.0)
-    private const val ITEM_RATION = 0.16666
+    private val cardTypeFont = Font("Arial", 10.0)
+    private const val ITEM_RATION = 0.166
     private const val CARD_WIDTH_RATION = 0.075
     private const val PADDING_RATION = 0.02
 
@@ -46,13 +47,17 @@ object GameDataAnalysisUtil {
 
     fun draw(war: War, canvas: Canvas) {
         val gc = canvas.graphicsContext2D
+
         drawBackground(gc)
-        drawMyHero(war, gc)
-        drawMyPlay(war, gc)
-        drawMyHand(war, gc)
+        drawRivalHand(war, gc)
         drawRivalHero(war, gc)
         drawRivalPlay(war, gc)
-        drawRivalHand(war, gc)
+
+        drawMyPlay(war, gc)
+        drawMyHero(war, gc)
+        drawMyHand(war, gc)
+
+        drawWhoTurn(war, gc)
     }
 
     private fun drawBackground(graphicsContext: GraphicsContext) {
@@ -74,6 +79,15 @@ object GameDataAnalysisUtil {
             val y = (RIVAL_HERO_AREA_VERTICAL_RATION[0] + PADDING_RATION) * height
             val h = (RIVAL_HERO_AREA_VERTICAL_RATION[1] - RIVAL_HERO_AREA_VERTICAL_RATION[0] - PADDING_RATION) * height
             strokeArea(this, y, width, h, "对方英雄区")
+            font = cardFont
+            fill = Color.GRAY
+            fillText("牌库剩余${war.rival.deckArea.cardSize()}张", width - 125, y)
+            fillText(
+                "水晶: ${war.rival.usableResource}/${war.rival.resources + war.me.tempResources}",
+                width - 125,
+                y + h / 2
+            )
+            fillText("疲劳: ${war.rival.fatigue}", width - 125, y + h)
 
             val cards = listOf(war.rival.playArea.weapon, war.rival.playArea.hero, war.rival.playArea.power)
             val size = cards.count { it != null }
@@ -141,6 +155,15 @@ object GameDataAnalysisUtil {
             val y = (MY_HERO_AREA_VERTICAL_RATION[0] + PADDING_RATION) * height
             val h = (MY_HERO_AREA_VERTICAL_RATION[1] - MY_HERO_AREA_VERTICAL_RATION[0] - PADDING_RATION) * height
             strokeArea(this, y, width, h, "我方英雄区")
+            font = cardFont
+            fill = Color.GRAY
+            fillText("牌库剩余${war.me.deckArea.cardSize()}张", width - 125, y)
+            fillText(
+                "水晶: ${war.me.usableResource}/${war.me.resources + war.me.tempResources}",
+                width - 125,
+                y + h / 2
+            )
+            fillText("疲劳: ${war.me.fatigue}", width - 125, y + h)
 
             val cards = listOf(war.me.playArea.weapon, war.me.playArea.hero, war.me.playArea.power)
             val size = cards.count { it != null }
@@ -202,14 +225,36 @@ object GameDataAnalysisUtil {
             stroke = areaColor
             strokeRect(1.0, y, w - 1.0, h)
 
-            fill = Color.BLACK
+            fill = Color.GRAY
             font = areaFont
-            fillText(text, 10.0, y + 10.0)
+            fillText(text, 2.0, y + 10.0)
         }
     }
 
     private fun drawWhoTurn(war: War, graphicsContext: GraphicsContext) {
-
+        graphicsContext.apply {
+            val height = canvas.height
+            val width = canvas.width
+            val w = 57.0
+            val x = width - w
+            val h = 20.0
+            val y = height * 0.5 - h / 2
+            if (war.isMyTurn) {
+                fill = cardEnabledColor
+            } else {
+                fill = Color.YELLOW
+            }
+            fillRect(x, y, w, h)
+            stroke = Color.GRAY
+            strokeRect(x, y, w, h)
+            fill = Color.BLACK
+            font = cardNameFont
+            if (war.isMyTurn) {
+                fillText("我方回合", x, y + offset)
+            } else {
+                fillText("对方回合", x, y + offset)
+            }
+        }
     }
 
 
@@ -240,18 +285,26 @@ object GameDataAnalysisUtil {
 
             font = cardFont
             fill = Color.BLACK
-            val offset = 15
+
             val bottomY = y + h
             val topY = y + offset
             val rightX = x + w
             val leftX = x + 1
-            fillText(card.cost.toString(), rightX - offset, topY)
-            fillText(card.entityId, leftX, topY)
+            fill = Color.BLUE
+            fillText(card.cost.toString(), leftX, topY)
+            fill = Color.BLACK
+            fillText(card.entityId, rightX - offset, topY)
 
-            if (card.cardType !== CardTypeEnum.SPELL && card.cardType === CardTypeEnum.HERO_POWER) {
+            if (card.cardType !== CardTypeEnum.SPELL && card.cardType !== CardTypeEnum.HERO_POWER) {
+                fill = Color.ORANGE
                 fillText(card.atc.toString(), leftX, bottomY)
+                fill = Color.RED
                 fillText(card.blood().toString(), rightX - offset, bottomY)
             }
+            fill = Color.BLACK
+
+            font = cardTypeFont
+            fillText(card.cardType.name, leftX + 20, bottomY - 2)
 
             font = cardNameFont
             fillText(card.entityName, leftX, (bottomY + topY) / 2 - offset)

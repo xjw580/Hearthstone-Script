@@ -38,20 +38,21 @@ class HsAIStrategy : DeckStrategy() {
     override fun executeOutCard() {
         val war = WAR
         val monteCarloTreeSearch = MonteCarloTreeSearch()
-        var arg: MCTSArg = if (war.me.playArea.cardSize() < 4 && war.rival.playArea.cardSize() < 4) {
-            log.info { "开始思考如何打牌，反演1轮" }
-            MCTSArg(60 * 1000, 2, 0.5, 100_000, MCTSUtil.buildScoreCalculator(), true)
-        } else {
-            log.info { "开始思考如何打牌，反演0轮" }
-            MCTSArg(60 * 1000, 1, 0.5, 100_000, MCTSUtil.buildScoreCalculator(), true)
-        }
+//        var arg: MCTSArg = if (war.me.playArea.cardSize() < 4 && war.rival.playArea.cardSize() < 4) {
+//            log.info { "开始思考如何打牌，反演1轮" }
+//            MCTSArg(System.currentTimeMillis() + 60 * 1000, 2, 0.5, 15_000, MCTSUtil.buildScoreCalculator(), true)
+//        } else {
+//            log.info { "开始思考如何打牌，反演0轮" }
+//            MCTSArg(System.currentTimeMillis() + 60 * 1000, 1, 0.5, 15_000, MCTSUtil.buildScoreCalculator(), true)
+//        }
+        var arg = MCTSArg(System.currentTimeMillis() + 60 * 1000, 1, 0.5, 15_000, MCTSUtil.buildScoreCalculator(), true)
 
-        val stringBuilder = StringBuilder("战场可行动卡牌: ")
-        war.me.playArea.cards.filter { card -> card.canAttack() || card.canPower() }.forEach { card: Card ->
-            stringBuilder.append(card).append(",")
-        }
-        stringBuilder.deleteCharAt(stringBuilder.length - 1)
-        log.info { stringBuilder }
+//        val stringBuilder = StringBuilder("战场可行动卡牌: ")
+//        war.me.playArea.cards.filter { card -> card.canAttack() || card.canPower() }.forEach { card: Card ->
+//            stringBuilder.append(card).append(",")
+//        }
+//        stringBuilder.deleteCharAt(stringBuilder.length - 1)
+//        log.info { stringBuilder }
         war.me.handArea.cards.forEach { card: Card ->
             println("cardId:${card.cardId}, entityId:${card.entityId}, cost:${card.cost}, action:${card.action::class.qualifiedName}")
         }
@@ -67,7 +68,7 @@ class HsAIStrategy : DeckStrategy() {
         Thread.sleep(3000)
 
         log.info { "再次思考如何打牌" }
-        arg = MCTSArg(10 * 1000, 1, 0.5, 50_000, MCTSUtil.buildScoreCalculator(), true)
+        arg = MCTSArg(System.currentTimeMillis() + 10 * 1000, 1, 0.5, 10_000, MCTSUtil.buildScoreCalculator(), true)
         bestActions = monteCarloTreeSearch.getBestActions(war, arg)
         bestActions.forEach { action ->
             action.applyAction.exec.accept(war)

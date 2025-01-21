@@ -392,7 +392,7 @@ abstract class CardAction(createDefaultAction: Boolean = true) {
     }
 
     /**
-     * 移除与[belongCard]的卡牌
+     * 移除与[belongCard]相同的卡牌
      */
     fun removeSelf(war: War): Card? {
         val entityId = belongCard?.entityId ?: return null
@@ -403,7 +403,7 @@ abstract class CardAction(createDefaultAction: Boolean = true) {
     }
 
     /**
-     * 查找与[belongCard]的卡牌
+     * 查找与[belongCard]相同的卡牌
      */
     fun findSelf(war: War): Card? {
         val entityId = belongCard?.entityId ?: return null

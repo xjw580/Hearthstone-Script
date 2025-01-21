@@ -10,7 +10,7 @@ import java.util.concurrent.atomic.AtomicInteger
  * @date 2024/9/18 16:47
  */
 val LAUNCH_PROGRAM_THREAD_POOL: ScheduledThreadPoolExecutor by lazy {
-    ScheduledThreadPoolExecutor(6, object : ThreadFactory {
+    ScheduledThreadPoolExecutor(3, object : ThreadFactory {
         private val num = AtomicInteger(0)
         override fun newThread(r: Runnable): Thread {
             return WritableThread(r, "LaunchProgramPool Thread-" + num.getAndIncrement())
@@ -46,12 +46,20 @@ val CORE_THREAD_POOL: ThreadPoolExecutor by lazy {
 }
 
 val CALC_THREAD_POOL: ThreadPoolExecutor by lazy {
-    ThreadPoolExecutor(8, 24, 60, TimeUnit.SECONDS, ArrayBlockingQueue(8), object : ThreadFactory {
-        private val num = AtomicInteger(0)
-        override fun newThread(r: Runnable): Thread {
-            return ReadableThread(r, "CalcPool Thread-" + num.getAndIncrement())
-        }
-    }, ThreadPoolExecutor.AbortPolicy())
+    ThreadPoolExecutor(
+        Runtime.getRuntime().availableProcessors(),
+        Runtime.getRuntime().availableProcessors() * 2,
+        120,
+        TimeUnit.SECONDS,
+        ArrayBlockingQueue(8),
+        object : ThreadFactory {
+            private val num = AtomicInteger(0)
+            override fun newThread(r: Runnable): Thread {
+                return ReadableThread(r, "CalcPool Thread-" + num.getAndIncrement())
+            }
+        },
+        ThreadPoolExecutor.AbortPolicy()
+    )
 }
 
 val VIRTUAL_THREAD_POOL = Executors.newThreadPerTaskExecutor(Thread.ofVirtual().name("VPool Thread-", 0).factory());

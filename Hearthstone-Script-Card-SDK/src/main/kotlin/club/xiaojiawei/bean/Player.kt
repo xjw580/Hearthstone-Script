@@ -91,7 +91,7 @@ class Player(
         get() = resources - resourcesUsed + tempResources
 
     /**
-     * 疲劳 todo适配
+     * 疲劳
      */
     var fatigue: Int = 0
 
