@@ -17,6 +17,7 @@ object GameDataAnalysisUtil {
     private const val offset = 15
     private val cardColor = Paint.valueOf("#f1f1f1")
     private val areaColor = Paint.valueOf("#80B1FB")
+    private val bgColor = Paint.valueOf("#E8E8FF")
     private val cardEnabledColor = Paint.valueOf("#00d600")
     private val areaFont = Font("Arial", 30.0)
     private val cardFont = Font("Arial", 20.0)
@@ -64,8 +65,9 @@ object GameDataAnalysisUtil {
         graphicsContext.apply {
             val height = canvas.height
             val width = canvas.width
+            clearRect(0.0, 0.0, width, height)
 
-            fill = Color.WHITE
+            fill = bgColor
             fillRect(0.0, 0.0, width, height)
         }
     }
@@ -295,6 +297,9 @@ object GameDataAnalysisUtil {
             fill = Color.BLACK
             fillText(card.entityId, rightX - offset, topY)
 
+            font = cardTypeFont
+            fillText(card.cardType.name, leftX + 20, bottomY - 2)
+
             if (card.cardType !== CardTypeEnum.SPELL && card.cardType !== CardTypeEnum.HERO_POWER) {
                 fill = Color.ORANGE
                 fillText(card.atc.toString(), leftX, bottomY)
@@ -302,9 +307,6 @@ object GameDataAnalysisUtil {
                 fillText(card.blood().toString(), rightX - offset, bottomY)
             }
             fill = Color.BLACK
-
-            font = cardTypeFont
-            fillText(card.cardType.name, leftX + 20, bottomY - 2)
 
             font = cardNameFont
             fillText(card.entityName, leftX, (bottomY + topY) / 2 - offset)

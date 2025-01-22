@@ -1,22 +1,17 @@
 package club.xiaojiawei.hsscript.controller.javafx;
 
-import club.xiaojiawei.config.ThreadPoolConfigKt;
 import club.xiaojiawei.controls.Switch;
 import club.xiaojiawei.hsscript.data.GameRationConst;
 import club.xiaojiawei.hsscript.interfaces.StageHook;
 import club.xiaojiawei.hsscript.utils.GameDataAnalysisUtil;
-import club.xiaojiawei.hsscript.utils.GameUtil;
-import club.xiaojiawei.hsscript.utils.SystemUtil;
 import club.xiaojiawei.status.War;
 import club.xiaojiawei.status.WarKt;
-import club.xiaojiawei.util.RandomUtil;
+import javafx.animation.AnimationTimer;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
-import javafx.stage.Window;
 import javafx.stage.WindowEvent;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
@@ -24,7 +19,6 @@ import org.slf4j.LoggerFactory;
 
 import java.net.URL;
 import java.util.ResourceBundle;
-import java.util.concurrent.Future;
 
 /**
  * @author 肖嘉威
@@ -45,19 +39,13 @@ public class GameDataAnalysisController implements Initializable, StageHook {
     @FXML
     private Switch analysisSwitch;
 
-    private final int frame = 20;
-
-    private final int flushInterval = Math.max((int) (1000D / frame), 0);
-
-    private Future<?> drawTask;
-
-    private volatile boolean isRunning = true;
-
     private double canvasWidth, canvasHeight;
 
     private double calcHeight(double width) {
         return width / GameRationConst.GAME_WINDOW_ASPECT_TO_HEIGHT_RATIO;
     }
+
+    private AnimationTimer animationTimer;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -73,26 +61,15 @@ public class GameDataAnalysisController implements Initializable, StageHook {
         analysisUtil.init(canvas);
 //        War war = DeckStrategyUtil.INSTANCE.createMCTSWar();
         War war = WarKt.getWAR();
-        drawTask = ThreadPoolConfigKt.getEXTRA_THREAD_POOL().submit(() -> {
-            while (isRunning) {
-                try {
-                    if (analysisSwitch.getStatus()) {
-                        if (canvasWidth > 0 && canvasHeight > 0) {
-                            canvas.setWidth(canvasWidth);
-                            canvas.setHeight(canvasHeight);
-                            analysisUtil.draw(war, canvas);
-                        }
-                    }
-                    Thread.sleep(flushInterval);
-                } catch (InterruptedException e) {
-                    log.warn("绘制中断", e);
-                } catch (Exception e) {
-                    log.error("绘制异常", e);
-                    break;
-                }
+        animationTimer = new AnimationTimer() {
+            @Override
+            public void handle(long now) {
+                canvas.setWidth(canvasWidth);
+                canvas.setHeight(canvasHeight);
+                analysisUtil.draw(war, canvas);
             }
-            log.info("绘制结束");
-        });
+        };
+        animationTimer.start();
     }
 
 
@@ -110,9 +87,8 @@ public class GameDataAnalysisController implements Initializable, StageHook {
 
     @Override
     public void onHiding() {
-        if (drawTask != null) {
-            drawTask.cancel(true);
-            isRunning = false;
+        if (animationTimer != null) {
+            animationTimer.stop();
         }
     }
 

@@ -21,6 +21,7 @@ enum class WindowEnum(
 ) {
     SETTINGS(
         "settings.fxml", "$SCRIPT_NAME-设置",
+        width = 650.0, height = 450.0,
         alwaysOnTop = true
     ),
     INIT_SETTINGS(
