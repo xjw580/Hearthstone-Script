@@ -17,7 +17,7 @@ import club.xiaojiawei.hsscript.status.CardActionManager.CARD_ACTION_MAP
 import club.xiaojiawei.hsscript.strategy.DeckStrategyActuator
 import club.xiaojiawei.mapper.BaseCardMapper
 import club.xiaojiawei.mapper.EntityMapper
-import club.xiaojiawei.status.War
+import club.xiaojiawei.bean.War
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
 import java.io.IOException

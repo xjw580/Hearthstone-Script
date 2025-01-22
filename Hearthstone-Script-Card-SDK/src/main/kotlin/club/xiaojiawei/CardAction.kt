@@ -4,7 +4,7 @@ import club.xiaojiawei.bean.*
 import club.xiaojiawei.bean.area.isValid
 import club.xiaojiawei.config.log
 import club.xiaojiawei.enums.CardTypeEnum
-import club.xiaojiawei.status.War
+import club.xiaojiawei.bean.War
 import club.xiaojiawei.util.CardUtil
 import club.xiaojiawei.util.isTrue
 import java.util.function.Supplier

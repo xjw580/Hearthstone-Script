@@ -3,7 +3,7 @@ package club.xiaojiawei.bean.warrior
 import club.xiaojiawei.CardAction
 import club.xiaojiawei.bean.PlayAction
 import club.xiaojiawei.bean.Player
-import club.xiaojiawei.status.War
+import club.xiaojiawei.bean.War
 
 /**
  * [炽炎战斧](https://hearthstone.huijiwiki.com/wiki/Card/69534)

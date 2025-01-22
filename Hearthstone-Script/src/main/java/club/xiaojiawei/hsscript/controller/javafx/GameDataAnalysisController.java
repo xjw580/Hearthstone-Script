@@ -4,8 +4,8 @@ import club.xiaojiawei.controls.Switch;
 import club.xiaojiawei.hsscript.data.GameRationConst;
 import club.xiaojiawei.hsscript.interfaces.StageHook;
 import club.xiaojiawei.hsscript.utils.GameDataAnalysisUtil;
-import club.xiaojiawei.status.War;
-import club.xiaojiawei.status.WarKt;
+import club.xiaojiawei.bean.War;
+import club.xiaojiawei.status.WarStatusKt;
 import javafx.animation.AnimationTimer;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -60,7 +60,7 @@ public class GameDataAnalysisController implements Initializable, StageHook {
         GameDataAnalysisUtil analysisUtil = GameDataAnalysisUtil.INSTANCE;
         analysisUtil.init(canvas);
 //        War war = DeckStrategyUtil.INSTANCE.createMCTSWar();
-        War war = WarKt.getWAR();
+        War war = WarStatusKt.getWAR();
         animationTimer = new AnimationTimer() {
             @Override
             public void handle(long now) {

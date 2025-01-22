@@ -1,34 +1,22 @@
-package club.xiaojiawei.status
+package club.xiaojiawei.bean
 
-import club.xiaojiawei.bean.Card
-import club.xiaojiawei.bean.Player
+import club.xiaojiawei.bean.War.Companion.UNKNOWN_WAR
 import club.xiaojiawei.bean.area.Area
-import club.xiaojiawei.bean.safeRun
 import club.xiaojiawei.config.log
-import club.xiaojiawei.enums.RunModeEnum
 import club.xiaojiawei.enums.StepEnum
-import club.xiaojiawei.enums.WarPhaseEnum
 import club.xiaojiawei.mapper.WarMapper
-import club.xiaojiawei.status.War.Companion.UNKNOWN_WAR
 import club.xiaojiawei.util.isTrue
 
 /**
- * 游戏对局状态
  * @author 肖嘉威
- * @date 2022/11/25 20:57
+ * @date 2025/1/22 16:53
  */
-
-/**
- * 全局war
- */
-val WAR: War = War(true)
-
 class War(
     /**
      * 允许打印日志
      */
     val allowLog: Boolean = false
-) : Cloneable {
+) : BaseWar(), Cloneable {
 
     /**
      * 存储当前war中所有的[Card]
@@ -36,10 +24,12 @@ class War(
      */
     val cardMap: MutableMap<String?, Card?> = HashMap()
 
-    @Volatile
-    var currentPlayer: Player = Player.UNKNOWN_PLAYER
+    override var currentPlayer: Player
+        get():Player {
+            return super.currentPlayer
+        }
         @Synchronized set(value) {
-            field = value
+            super.currentPlayer = value
             value.safeRun {
                 allowLog.isTrue {
                     log.info { "${value.gameId} 的回合" }
@@ -47,88 +37,28 @@ class War(
             }
         }
 
-    @Volatile
-    var firstPlayerGameId: String = ""
+    override var firstPlayerGameId: String
+        get():String {
+            return super.firstPlayerGameId
+        }
         @Synchronized set(value) {
-            field = value
+            super.firstPlayerGameId = value
             (value.isNotEmpty() && allowLog).isTrue {
                 log.info { "先手玩家：$value" }
             }
         }
 
-    @Volatile
-    var currentPhase = WarPhaseEnum.FILL_DECK
-
-    @Volatile
-    var currentTurnStep: StepEnum? = null
+    override var currentTurnStep: StepEnum?
+        get():StepEnum? {
+            return super.currentTurnStep
+        }
         @Synchronized set(value) {
-            field = value
-            field?.let {
+            super.currentTurnStep = value?.also {
                 allowLog.isTrue {
                     log.info { it.comment }
                 }
             }
         }
-
-    @Volatile
-    var me: Player = Player.UNKNOWN_PLAYER
-
-    @Volatile
-    var rival: Player = Player.UNKNOWN_PLAYER
-
-    @Volatile
-    var player1: Player = Player.UNKNOWN_PLAYER
-
-    @Volatile
-    var player2: Player = Player.UNKNOWN_PLAYER
-
-    /**
-     * 总回合数
-     */
-    @Volatile
-    var warTurn = 0
-
-    /**
-     * 胜者
-     */
-    @Volatile
-    var won: String = ""
-
-    /**
-     * 败者
-     */
-    @Volatile
-    var lost: String = ""
-
-    /**
-     * 投降者
-     */
-    @Volatile
-    var conceded: String = ""
-
-    /**
-     * 本局开始时间
-     */
-    @Volatile
-    var startTime: Long = 0
-
-    /**
-     * 本局结束时间
-     */
-    @Volatile
-    var endTime: Long = 0
-
-    @Volatile
-    var isMyTurn = false
-
-    @Volatile
-    var currentRunMode: RunModeEnum? = null
-
-    /**
-     * 所生成最大的entityId，entityId越大表明entity生成的时间越晚
-     */
-    @Volatile
-    var maxEntityId: String? = null
 
     /**
      * 最大entityId自增1
@@ -158,6 +88,16 @@ class War(
         } else {
             area.add(card, pos)
         }
+    }
+
+    /**
+     * 判断战局是否结束
+     */
+    fun isEnd(): Boolean {
+        val rivalHero = rival.playArea.hero
+        val myHero = me.playArea.hero
+        if (rivalHero == null || myHero == null) return true
+        return !myHero.isAlive() || !rivalHero.isAlive()
     }
 
     public override fun clone(): War {
@@ -207,4 +147,3 @@ fun War.isValid(): Boolean {
 fun War.isInValid(): Boolean {
     return this === UNKNOWN_WAR
 }
-

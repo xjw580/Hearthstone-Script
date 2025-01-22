@@ -3,7 +3,7 @@ package club.xiaojiawei.util
 import club.xiaojiawei.bean.Card
 import club.xiaojiawei.bean.area.PlayArea
 import club.xiaojiawei.enums.CardTypeEnum
-import club.xiaojiawei.status.War
+import club.xiaojiawei.bean.War
 
 /**
  * @author 肖嘉威

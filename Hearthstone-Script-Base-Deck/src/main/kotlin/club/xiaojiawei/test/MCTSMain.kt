@@ -1,10 +1,10 @@
 package club.xiaojiawei.test
 
+import club.xiaojiawei.bean.DEFAULT_WAR_SCORE_CALCULATOR
 import club.xiaojiawei.bean.MCTSArg
 import club.xiaojiawei.mcts.MonteCarloTreeNode
 import club.xiaojiawei.mcts.MonteCarloTreeSearch
 import club.xiaojiawei.util.DeckStrategyUtil.createMCTSWar
-import club.xiaojiawei.util.MCTSUtil
 
 /**
  * @author 肖嘉威
@@ -40,8 +40,8 @@ fun main() {
 
     val start = System.currentTimeMillis()
 
-//    val arg = MCTSArg(3 * 1000, 1, 0.5, 500_000, MCTSUtil.buildScoreCalculator(), false)
-    val arg = MCTSArg(15 * 1000, 2, 0.5, 200_000, MCTSUtil.buildScoreCalculator(), true)
+//    val arg = MCTSArg(3 * 1000, 1, 0.5, 500_000, DEFAULT_WAR_SCORE_CALCULATOR.build(), false)
+    val arg = MCTSArg(15 * 1000, 2, 0.5, 200_000, DEFAULT_WAR_SCORE_CALCULATOR.build(), true)
     val monteCarloTreeNodes = monteCarloTreeSearch
         .searchBestNode(mctsWar, arg)
 //    val tempNode: MonteCarloTreeNode? = monteCarloTreeNodes.first()

@@ -1,6 +1,6 @@
 package club.xiaojiawei.bean
 
-import club.xiaojiawei.status.War
+import club.xiaojiawei.bean.War
 import java.util.function.Function
 
 /**
@@ -17,7 +17,7 @@ data class MCTSArg(
      */
     val turnCount: Int,
     /**
-     * 回合因子：小于1时表示越后面的回合的影响越小，反之越大
+     * 回合因子：小于1时表示越后面的回合的影响越小，反之越大，[turnCount]大于1时生效
      */
     val turnFactor: Double,
     /**

@@ -8,7 +8,7 @@ import club.xiaojiawei.config.log
 import club.xiaojiawei.data.CARD_WEIGHT_TRIE
 import club.xiaojiawei.enums.CardTypeEnum
 import club.xiaojiawei.status.WAR
-import club.xiaojiawei.status.War
+import club.xiaojiawei.bean.War
 import java.util.concurrent.CompletableFuture
 import java.util.function.Function
 import kotlin.math.max

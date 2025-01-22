@@ -10,6 +10,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 
 import java.net.URL;
@@ -23,6 +24,8 @@ import java.util.stream.Stream;
  */
 public class PluginSettingsController implements Initializable {
 
+    @FXML
+    private Pane pluginGraphicDescription;
     @FXML
     private CopyLabel pluginDescription;
     @FXML
@@ -58,14 +61,19 @@ public class PluginSettingsController implements Initializable {
 
     private void listen() {
         pluginListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-           pluginInfo.setVisible(newValue != null);
-           if (newValue != null) {
-               pluginName.setText(newValue.getPluginWrapper().getPlugin().name());
-               pluginAuthor.setText(newValue.getPluginWrapper().getPlugin().author());
-               pluginId.setText(newValue.getPluginWrapper().getPlugin().id());
-               pluginVersion.setText(newValue.getPluginWrapper().getPlugin().version());
-               pluginDescription.setText(newValue.getPluginWrapper().getPlugin().description());
-           }
+            pluginInfo.setVisible(newValue != null);
+            if (newValue != null) {
+                pluginName.setText(newValue.getPluginWrapper().getPlugin().name());
+                pluginAuthor.setText(newValue.getPluginWrapper().getPlugin().author());
+                pluginId.setText(newValue.getPluginWrapper().getPlugin().id());
+                pluginVersion.setText(newValue.getPluginWrapper().getPlugin().version());
+                pluginDescription.setText(newValue.getPluginWrapper().getPlugin().description());
+                Pane pane = newValue.getPluginWrapper().getPlugin().graphicDescription();
+                pluginGraphicDescription.getChildren().clear();
+                if (pane != null) {
+                    pluginGraphicDescription.getChildren().add(pane);
+                }
+            }
         });
     }
 

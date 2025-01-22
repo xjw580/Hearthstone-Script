@@ -2,7 +2,7 @@ package club.xiaojiawei.bean.warrior
 
 import club.xiaojiawei.CardAction
 import club.xiaojiawei.bean.Card
-import club.xiaojiawei.status.War
+import club.xiaojiawei.bean.War
 
 /**
  * [苦痛侍僧](https://hearthstone.huijiwiki.com/wiki/Card/69809)

@@ -1,5 +1,7 @@
 package club.xiaojiawei
 
+import javafx.scene.layout.Pane
+
 /**
  * @author 肖嘉威
  * @date 2024/9/8 16:37
@@ -7,9 +9,18 @@ package club.xiaojiawei
 sealed interface Plugin {
 
     /**
+     * 图形化插件描述
+     */
+    fun graphicDescription(): Pane? {
+        return null
+    }
+
+    /**
      * 插件描述
      */
-    fun description(): String
+    fun description(): String {
+        return ""
+    }
 
     /**
      * 插件作者
@@ -39,11 +50,11 @@ sealed interface Plugin {
     /**
      * 插件更新链接
      */
-    fun updateUrl(): String{
+    fun updateUrl(): String {
         return ""
     }
 
-    fun getInfoString(): String{
+    fun getInfoString(): String {
         return "name: ${name()}, version: ${version()}, author: ${author()}, id: ${id()}, description: ${description()}"
     }
 

@@ -4,7 +4,7 @@ import club.xiaojiawei.CardAction
 import club.xiaojiawei.bean.PlayAction
 import club.xiaojiawei.bean.Player
 import club.xiaojiawei.enums.CardTypeEnum
-import club.xiaojiawei.status.War
+import club.xiaojiawei.bean.War
 
 /**
  * [斩杀](https://hearthstone.huijiwiki.com/wiki/Card/69535)

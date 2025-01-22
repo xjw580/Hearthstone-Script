@@ -8,7 +8,7 @@ import club.xiaojiawei.bean.TEST_CARD_ACTION
 import club.xiaojiawei.bean.abs.ClickPower
 import club.xiaojiawei.enums.CardTypeEnum
 import club.xiaojiawei.status.WAR
-import club.xiaojiawei.status.War
+import club.xiaojiawei.bean.War
 
 /**
  * 圣骑士技能

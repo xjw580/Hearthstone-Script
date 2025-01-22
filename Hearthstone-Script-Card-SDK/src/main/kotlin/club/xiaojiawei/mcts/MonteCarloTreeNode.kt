@@ -4,13 +4,13 @@ import club.xiaojiawei.bean.Action
 import club.xiaojiawei.bean.MCTSArg
 import club.xiaojiawei.bean.TurnOverAction
 import club.xiaojiawei.enums.CardTypeEnum
-import club.xiaojiawei.status.War
-import club.xiaojiawei.util.MCTSUtil
+import club.xiaojiawei.bean.War
 import java.util.*
 import kotlin.math.ln
 import kotlin.math.sqrt
 
 /**
+ * 蒙特卡洛树节点
  * @author 肖嘉威
  * @date 2025/1/10 16:27
  */
@@ -224,7 +224,7 @@ class MonteCarloTreeNode(
 
         var lastWin: Boolean = false
 
-        val isEnd = MCTSUtil.isEnd(war)
+        val isEnd = war.isEnd()
 
         fun update(win: Boolean?) {
             visitCount++

@@ -5,7 +5,7 @@ import club.xiaojiawei.bean.LRunnable
 import club.xiaojiawei.bean.MCTSArg
 import club.xiaojiawei.config.CALC_THREAD_POOL
 import club.xiaojiawei.config.log
-import club.xiaojiawei.status.War
+import club.xiaojiawei.bean.War
 import club.xiaojiawei.util.randomSelect
 import java.util.*
 import java.util.concurrent.CompletableFuture
@@ -17,6 +17,7 @@ import kotlin.math.floor
 import kotlin.math.min
 
 /**
+ * 蒙特卡洛树搜索
  * @author 肖嘉威
  * @date 2025/1/10 10:04
  */
@@ -103,7 +104,7 @@ class MonteCarloTreeSearch(val maxDepth: Int = MCTS_DEFAULT_DEPTH) {
         }
     }
 
-    private fun buildBestActions(rootNode: MonteCarloTreeNode): MutableList<MonteCarloTreeNode> {
+    private fun buildBest(rootNode: MonteCarloTreeNode): MutableList<MonteCarloTreeNode> {
         val result = mutableListOf<MonteCarloTreeNode>()
 
         var maxNode: MonteCarloTreeNode? = rootNode
@@ -192,7 +193,7 @@ class MonteCarloTreeSearch(val maxDepth: Int = MCTS_DEFAULT_DEPTH) {
                 totalCount++
             }
 
-            buildBestActions(newRootNode)
+            buildBest(newRootNode)
         }
 
         if (arg.enableMultiThread) {
@@ -245,7 +246,7 @@ class MonteCarloTreeSearch(val maxDepth: Int = MCTS_DEFAULT_DEPTH) {
         var maxScore = Int.MIN_VALUE.toDouble()
         var bestResult: MutableList<MonteCarloTreeNode>? = null
         if (results.isEmpty()) {
-            bestResult = buildBestActions(rootNode)
+            bestResult = buildBest(rootNode)
         } else {
             results.forEach { result ->
                 if (result.isNotEmpty()) {

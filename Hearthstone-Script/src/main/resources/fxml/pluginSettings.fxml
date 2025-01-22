@@ -25,8 +25,10 @@
             </VBox>
             <TabPane styleClass="tab-pane-ui, tab-pane-ui-small" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
                 <Tab text="描述" fx:id="desRoot">
-                    <VBox fx:id="desRootPane" style="-fx-padding: 5;">
+                    <VBox fx:id="desRootPane" style="-fx-padding: 5;-fx-spacing: 5">
                         <CopyLabel fx:id="pluginDescription" notificationManager="${notificationManager}" wrapText="true"/>
+                        <Separator/>
+                        <AnchorPane fx:id="pluginGraphicDescription"/>
                     </VBox>
                 </Tab>
             </TabPane>

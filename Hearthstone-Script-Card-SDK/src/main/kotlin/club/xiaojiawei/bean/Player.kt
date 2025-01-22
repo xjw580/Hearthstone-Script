@@ -6,7 +6,6 @@ import club.xiaojiawei.config.log
 import club.xiaojiawei.enums.ZoneEnum
 import club.xiaojiawei.mapper.AreaMapper
 import club.xiaojiawei.mapper.PlayerMapper
-import club.xiaojiawei.status.War
 import club.xiaojiawei.util.isTrue
 import java.util.function.BiConsumer
 

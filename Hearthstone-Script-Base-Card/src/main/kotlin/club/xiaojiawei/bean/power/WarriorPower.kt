@@ -4,7 +4,7 @@ import club.xiaojiawei.CardAction
 import club.xiaojiawei.bean.Player
 import club.xiaojiawei.bean.PowerAction
 import club.xiaojiawei.bean.abs.ClickPower
-import club.xiaojiawei.status.War
+import club.xiaojiawei.bean.War
 
 /**
  * 战士技能

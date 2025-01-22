@@ -2,7 +2,7 @@ package club.xiaojiawei.hsscript.utils
 
 import club.xiaojiawei.bean.Card
 import club.xiaojiawei.enums.CardTypeEnum
-import club.xiaojiawei.status.War
+import club.xiaojiawei.bean.War
 import javafx.scene.canvas.Canvas
 import javafx.scene.canvas.GraphicsContext
 import javafx.scene.paint.Color

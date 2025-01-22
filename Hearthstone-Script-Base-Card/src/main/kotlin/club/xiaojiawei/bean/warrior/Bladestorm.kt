@@ -4,7 +4,7 @@ import club.xiaojiawei.CardAction
 import club.xiaojiawei.bean.Card
 import club.xiaojiawei.bean.PlayAction
 import club.xiaojiawei.bean.Player
-import club.xiaojiawei.status.War
+import club.xiaojiawei.bean.War
 
 /**
  * [剑刃风暴](https://hearthstone.huijiwiki.com/wiki/Card/56504)

@@ -1,6 +1,6 @@
 package club.xiaojiawei.bean
 
-import club.xiaojiawei.status.War
+import club.xiaojiawei.bean.War
 import java.util.function.Consumer
 
 /**

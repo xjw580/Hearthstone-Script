@@ -6,7 +6,7 @@ import club.xiaojiawei.bean.Player
 import club.xiaojiawei.bean.PowerAction
 import club.xiaojiawei.bean.abs.PointPower
 import club.xiaojiawei.status.WAR
-import club.xiaojiawei.status.War
+import club.xiaojiawei.bean.War
 
 /**
  * 法师技能

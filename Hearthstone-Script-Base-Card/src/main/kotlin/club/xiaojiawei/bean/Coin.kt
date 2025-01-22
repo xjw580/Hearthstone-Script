@@ -2,7 +2,7 @@ package club.xiaojiawei.bean
 
 import club.xiaojiawei.CardAction
 import club.xiaojiawei.data.COIN_CARD_ID
-import club.xiaojiawei.status.War
+import club.xiaojiawei.bean.War
 
 /**
  * 幸运币

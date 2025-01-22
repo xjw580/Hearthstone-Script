@@ -1,6 +1,6 @@
 package club.xiaojiawei.mapper
 
-import club.xiaojiawei.status.War
+import club.xiaojiawei.bean.War
 import org.mapstruct.Mapper
 import org.mapstruct.Mapping
 import org.mapstruct.MappingTarget

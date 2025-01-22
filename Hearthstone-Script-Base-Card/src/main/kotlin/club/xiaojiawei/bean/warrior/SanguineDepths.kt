@@ -4,7 +4,7 @@ import club.xiaojiawei.CardAction
 import club.xiaojiawei.bean.Card
 import club.xiaojiawei.bean.Player
 import club.xiaojiawei.bean.PowerAction
-import club.xiaojiawei.status.War
+import club.xiaojiawei.bean.War
 import java.util.function.Consumer
 
 /**

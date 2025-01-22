@@ -7,7 +7,7 @@ import club.xiaojiawei.CardAction
  * @date 2025/1/13 18:21
  */
 
-val TEST_CARD_ACTION = TestCardAction()
+val TEST_CARD_ACTION by lazy { TestCardAction() }
 
 class TestCardAction : CardAction() {
 
