@@ -55,16 +55,19 @@ public class GameDataAnalysisController implements Initializable, StageHook {
 
     private double canvasWidth, canvasHeight;
 
+    private double calcHeight(double width) {
+        return width / GameRationConst.GAME_WINDOW_ASPECT_TO_HEIGHT_RATIO;
+    }
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-//        canvas.setWidth(rootPane.getPrefWidth() - 100);
-//        canvas.setHeight((canvas.getWidth() / GameRationConst.GAME_WINDOW_ASPECT_TO_HEIGHT_RATIO));
         double padding = rootPane.getPadding().getLeft() + rootPane.getPadding().getRight();
-        System.out.println("padding = " + padding);
+        canvasWidth = 800;
+        canvasHeight = calcHeight(canvasWidth);
         rootPane.widthProperty().addListener((observable, oldValue, newValue) -> {
             double newWidth = newValue.intValue() - padding;
             canvasWidth = newWidth;
-            canvasHeight = newWidth / GameRationConst.GAME_WINDOW_ASPECT_TO_HEIGHT_RATIO;
+            canvasHeight = calcHeight(newWidth);
         });
         GameDataAnalysisUtil analysisUtil = GameDataAnalysisUtil.INSTANCE;
         analysisUtil.init(canvas);
@@ -72,16 +75,19 @@ public class GameDataAnalysisController implements Initializable, StageHook {
         War war = WarKt.getWAR();
         drawTask = ThreadPoolConfigKt.getEXTRA_THREAD_POOL().submit(() -> {
             while (isRunning) {
-                if (analysisSwitch.getStatus()) {
-                    if (canvasWidth > 0 && canvasHeight > 0) {
-                        canvas.setWidth(canvasWidth);
-                        canvas.setHeight(canvasHeight);
-                        analysisUtil.draw(war, canvas);
-                    }
-                }
                 try {
+                    if (analysisSwitch.getStatus()) {
+                        if (canvasWidth > 0 && canvasHeight > 0) {
+                            canvas.setWidth(canvasWidth);
+                            canvas.setHeight(canvasHeight);
+                            analysisUtil.draw(war, canvas);
+                        }
+                    }
                     Thread.sleep(flushInterval);
                 } catch (InterruptedException e) {
+                    log.warn("绘制中断", e);
+                } catch (Exception e) {
+                    log.error("绘制异常", e);
                     break;
                 }
             }
