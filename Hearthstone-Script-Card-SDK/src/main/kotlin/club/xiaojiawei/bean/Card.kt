@@ -201,7 +201,7 @@ class Card(var action: CardAction) : BaseCard(), Cloneable {
      * 适用的卡牌类型：[club.xiaojiawei.enums.CardTypeEnum.LOCATION],[club.xiaojiawei.enums.CardTypeEnum.HERO_POWER]
      */
     fun canPower(): Boolean {
-        return (cardType === CardTypeEnum.LOCATION && !isLocationActionCooldown && isAlive()) || (cardType === CardTypeEnum.HERO_POWER && !isExhausted)
+        return (cardType === CardTypeEnum.LOCATION && !isLocationActionCooldown && !isExhausted && isAlive()) || (cardType === CardTypeEnum.HERO_POWER && !isExhausted)
     }
 
     /**

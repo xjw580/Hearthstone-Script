@@ -4,11 +4,13 @@ import club.xiaojiawei.bean.InitAction
 import club.xiaojiawei.bean.LRunnable
 import club.xiaojiawei.bean.MCTSArg
 import club.xiaojiawei.config.CALC_THREAD_POOL
+import club.xiaojiawei.config.log
 import club.xiaojiawei.status.War
 import club.xiaojiawei.util.randomSelect
 import java.util.*
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.TimeUnit
+import java.util.concurrent.TimeoutException
 import java.util.function.Function
 import kotlin.math.ceil
 import kotlin.math.floor
@@ -101,12 +103,12 @@ class MonteCarloTreeSearch(val maxDepth: Int = MCTS_DEFAULT_DEPTH) {
         }
     }
 
-    private fun buildBestActions(rootNode: MonteCarloTreeNode, totalCount: Int): MutableList<MonteCarloTreeNode> {
+    private fun buildBestActions(rootNode: MonteCarloTreeNode): MutableList<MonteCarloTreeNode> {
         val result = mutableListOf<MonteCarloTreeNode>()
 
         var maxNode: MonteCarloTreeNode? = rootNode
         var maxScore = Int.MIN_VALUE.toDouble()
-        var children = rootNode.children
+        var children = rootNode.children.toList()
         while (children.isNotEmpty()) {
             val list = mutableListOf<MonteCarloTreeNode>()
             for (child in children) {
@@ -154,7 +156,7 @@ class MonteCarloTreeSearch(val maxDepth: Int = MCTS_DEFAULT_DEPTH) {
         return result
     }
 
-    fun getBestActions(
+    fun searchBestNode(
         war: War, arg: MCTSArg
     ): MutableList<MonteCarloTreeNode> {
         val totalMillisTime = arg.endMillisTime - System.currentTimeMillis()
@@ -190,7 +192,7 @@ class MonteCarloTreeSearch(val maxDepth: Int = MCTS_DEFAULT_DEPTH) {
                 totalCount++
             }
 
-            buildBestActions(newRootNode, totalCount)
+            buildBestActions(newRootNode)
         }
 
         if (arg.enableMultiThread) {
@@ -198,7 +200,7 @@ class MonteCarloTreeSearch(val maxDepth: Int = MCTS_DEFAULT_DEPTH) {
             val size = rootNode.actions.size
             val countPerTask = ceil(size / maxTaskSize.toDouble()).toInt()
             var index = 0
-            while (index < size) {
+            while (index < size && System.currentTimeMillis() < endTime) {
                 val endIndex = min(index + countPerTask, size)
                 val rootNodesList = mutableListOf<MonteCarloTreeNode>()
                 val counts = endIndex - index
@@ -231,22 +233,32 @@ class MonteCarloTreeSearch(val maxDepth: Int = MCTS_DEFAULT_DEPTH) {
         }
 
         if (tasks.isNotEmpty()) {
-            CompletableFuture.allOf(*tasks.toTypedArray()).get(totalMillisTime, TimeUnit.MILLISECONDS)
+            try {
+                CompletableFuture.allOf(*tasks.toTypedArray()).get(totalMillisTime, TimeUnit.MILLISECONDS)
+            } catch (e: TimeoutException) {
+                log.warn(e) { "计算超时" }
+            } catch (e: Exception) {
+                log.error(e) { "计算异常" }
+            }
         }
 
         var maxScore = Int.MIN_VALUE.toDouble()
         var bestResult: MutableList<MonteCarloTreeNode>? = null
-        results.forEach { result ->
-            if (result.isNotEmpty()) {
-                val score = result.last().state.score
-                if (score > maxScore) {
-                    maxScore = score
-                    bestResult = result
+        if (results.isEmpty()) {
+            bestResult = buildBestActions(rootNode)
+        } else {
+            results.forEach { result ->
+                if (result.isNotEmpty()) {
+                    val score = result.last().state.score
+                    if (score > maxScore) {
+                        maxScore = score
+                        bestResult = result
+                    }
                 }
             }
         }
+
         return bestResult ?: mutableListOf()
     }
 
 }
-

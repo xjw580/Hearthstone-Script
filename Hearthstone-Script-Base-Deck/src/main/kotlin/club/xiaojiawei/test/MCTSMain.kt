@@ -1,13 +1,8 @@
 package club.xiaojiawei.test
 
-import club.xiaojiawei.bean.Card
 import club.xiaojiawei.bean.MCTSArg
-import club.xiaojiawei.bean.Player
-import club.xiaojiawei.bean.TestCardAction
-import club.xiaojiawei.enums.CardTypeEnum
 import club.xiaojiawei.mcts.MonteCarloTreeNode
 import club.xiaojiawei.mcts.MonteCarloTreeSearch
-import club.xiaojiawei.status.War
 import club.xiaojiawei.util.DeckStrategyUtil.createMCTSWar
 import club.xiaojiawei.util.MCTSUtil
 
@@ -48,7 +43,7 @@ fun main() {
 //    val arg = MCTSArg(3 * 1000, 1, 0.5, 500_000, MCTSUtil.buildScoreCalculator(), false)
     val arg = MCTSArg(15 * 1000, 2, 0.5, 200_000, MCTSUtil.buildScoreCalculator(), true)
     val monteCarloTreeNodes = monteCarloTreeSearch
-        .getBestActions(mctsWar, arg)
+        .searchBestNode(mctsWar, arg)
 //    val tempNode: MonteCarloTreeNode? = monteCarloTreeNodes.first()
 //    tempNode?.let {
 //        val scores = mutableListOf<MutableList<Result>>(

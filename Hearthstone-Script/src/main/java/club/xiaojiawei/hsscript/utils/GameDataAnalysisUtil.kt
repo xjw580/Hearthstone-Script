@@ -301,13 +301,13 @@ object GameDataAnalysisUtil {
             fillText(card.cardType.name, leftX + 20, bottomY - 2)
 
             if (card.cardType !== CardTypeEnum.SPELL && card.cardType !== CardTypeEnum.HERO_POWER) {
+                font = cardFont
                 fill = Color.ORANGE
                 fillText(card.atc.toString(), leftX, bottomY)
                 fill = Color.RED
                 fillText(card.blood().toString(), rightX - offset, bottomY)
             }
             fill = Color.BLACK
-
             font = cardNameFont
             fillText(card.entityName, leftX, (bottomY + topY) / 2 - offset)
             fillText(card.cardId, leftX, (bottomY + topY) / 2)

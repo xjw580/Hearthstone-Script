@@ -35,7 +35,7 @@ open class PlayAction(
 ) : Action(exec, simulate)
 
 /**
- * 使用动作
+ * 使用动作，如地标和技能的使用
  */
 open class PowerAction(
     exec: Consumer<War>,
@@ -44,15 +44,20 @@ open class PowerAction(
 
 private val empty: Consumer<War> = Consumer {}
 
+open class EmptyAction(
+    exec: Consumer<War>,
+    simulate: Consumer<War>
+) : Action(exec, simulate)
+
 /**
  * 回合结束动作
  */
-object TurnOverAction : Action(empty, empty)
+object TurnOverAction : EmptyAction(empty, empty)
 
 /**
  * 初始动作
  */
-object InitAction : Action(empty, empty)
+object InitAction : EmptyAction(empty, empty)
 
 
 

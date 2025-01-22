@@ -93,7 +93,7 @@ class MonteCarloTreeNode(
 
 //            反演时尽量调大maxDepth值，可以减少资源消耗
             val bestActions =
-                MonteCarloTreeSearch(maxDepth = MCTS_DEFAULT_DEPTH + 5).getBestActions(inverseWar, inverseArg)
+                MonteCarloTreeSearch(maxDepth = MCTS_DEFAULT_DEPTH + 5).searchBestNode(inverseWar, inverseArg)
             return if (bestActions.isEmpty()) {
                 currentScore
             } else {
