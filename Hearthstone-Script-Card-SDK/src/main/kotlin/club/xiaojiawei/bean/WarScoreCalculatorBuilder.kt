@@ -17,6 +17,7 @@ import kotlin.math.max
  */
 private const val BASIC_RATIO = 1.2
 private const val RESOURCES_VALUE = 3.0 * BASIC_RATIO
+private const val USABLE_RESOURCES_VALUE = 0.1 * BASIC_RATIO
 private const val DEATH_RATTLE_VALUE = -0.3 * BASIC_RATIO
 private const val TAUNT_VALUE = 1 * BASIC_RATIO
 private const val ADJACENTBUFF_VALUE = 2 * BASIC_RATIO
@@ -45,7 +46,7 @@ open class WarScoreCalculatorBuilder {
     }
 
     protected open fun calcResourcesScore(player: Player): Double {
-        return (player.tempResources + player.resources) * RESOURCES_VALUE + player.usableResource
+        return (player.tempResources + player.resources) * RESOURCES_VALUE + player.usableResource * USABLE_RESOURCES_VALUE
     }
 
     protected open fun calcSecretScore(area: SecretArea): Double {

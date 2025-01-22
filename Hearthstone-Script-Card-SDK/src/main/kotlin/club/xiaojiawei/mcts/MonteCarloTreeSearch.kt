@@ -238,6 +238,8 @@ class MonteCarloTreeSearch(val maxDepth: Int = MCTS_DEFAULT_DEPTH) {
                 CompletableFuture.allOf(*tasks.toTypedArray()).get(totalMillisTime, TimeUnit.MILLISECONDS)
             } catch (e: TimeoutException) {
                 log.warn(e) { "计算超时" }
+            } catch (e: InterruptedException) {
+                log.warn(e) { "计算中断" }
             } catch (e: Exception) {
                 log.error(e) { "计算异常" }
             }
