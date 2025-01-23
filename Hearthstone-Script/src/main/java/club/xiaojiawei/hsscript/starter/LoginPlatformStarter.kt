@@ -71,6 +71,7 @@ class LoginPlatformStarter : AbstractStarter() {
     }
 
     @Deprecated("体验差")
+    @Suppress("DEPRECATION")
     private fun inputPassword() {
         log.info { "输入${PLATFORM_CN_NAME}密码中..." }
         val password = ConfigUtil.getString(ConfigEnum.PLATFORM_PASSWORD)
@@ -82,6 +83,7 @@ class LoginPlatformStarter : AbstractStarter() {
     }
 
     @Deprecated("体验差")
+    @Suppress("DEPRECATION")
     private fun clickLoginButton() {
         log.info { "点击登入按钮" }
         SystemUtil.sendKey(KeyEvent.VK_TAB)

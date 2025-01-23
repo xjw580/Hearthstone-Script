@@ -319,6 +319,7 @@ object GameUtil {
     /**
      * 如果战网不在运行则相当于启动战网，如果战网已经运行则为启动炉石
      */
+    @Suppress("DEPRECATION")
     fun launchPlatformAndGame() {
         try {
             Runtime.getRuntime().exec("\"${ConfigUtil.getString(ConfigEnum.PLATFORM_PATH)}\" --exec=\"launch WTCG\"")
@@ -327,6 +328,7 @@ object GameUtil {
         }
     }
 
+    @Suppress("DEPRECATION")
     fun launchPlatform() {
         try {
             Runtime.getRuntime().exec("\"${ConfigUtil.getString(ConfigEnum.PLATFORM_PATH)}\"")

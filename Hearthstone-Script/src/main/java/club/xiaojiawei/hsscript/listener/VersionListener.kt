@@ -116,6 +116,7 @@ object VersionListener {
     /**
      * 更新版本
      */
+    @Suppress("DEPRECATION")
     fun execUpdate(versionPath: String) {
         if (updatingProperty.get()) return
 

@@ -9,7 +9,6 @@ import club.xiaojiawei.hsscript.dll.SystemDll
 import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.enums.RegCommonNameEnum
 import club.xiaojiawei.hsscript.status.PauseStatus
-import club.xiaojiawei.hsscript.utils.SystemUtil.delay
 import club.xiaojiawei.util.RandomUtil
 import club.xiaojiawei.util.isTrue
 import com.sun.jna.platform.win32.*
@@ -21,7 +20,6 @@ import java.awt.event.MouseEvent
 import java.io.File
 import java.net.URI
 import java.nio.charset.StandardCharsets
-import java.nio.file.Files
 import java.nio.file.Path
 import java.util.function.Consumer
 import kotlin.system.exitProcess
@@ -105,6 +103,7 @@ object SystemUtil {
     }
 
     @Deprecated("")
+    @Suppress("DEPRECATION")
     fun deleteAllContent() {
         ROBOT.keyPress(KeyEvent.VK_CONTROL)
         sendKey(KeyEvent.VK_A)
@@ -114,6 +113,7 @@ object SystemUtil {
     }
 
     @Deprecated("")
+    @Suppress("DEPRECATION")
     fun pasteFromClipboard() {
         ROBOT.keyPress(KeyEvent.VK_CONTROL)
         sendKey(KeyEvent.VK_V)
@@ -227,6 +227,7 @@ object SystemUtil {
         log.info { "已关闭程序" }
     }
 
+    @Suppress("DEPRECATION")
     fun isAliveOfProgram(programName: String): Boolean {
         return String(
             Runtime.getRuntime().exec("cmd /c tasklist | find \"$programName\"").inputStream.readAllBytes()

@@ -35,11 +35,11 @@ object GameTurnPhaseStrategy : AbstractPhaseStrategy() {
     }
 
     private fun checkMeRobot() {
-        log.info { "计算我方" }
-        if (meBehavior.renewCalcRobotProbability() < 0.1) {
-            log.info { "发现自己这个b疑似真人，准备投降，gameId:${war.me.gameId}" }
-        }
-        log.info { "我是脚本概率:" + meBehavior.robotProbability }
+//        log.info { "计算我方" }
+//        if (meBehavior.renewCalcRobotProbability() < 0.1) {
+//            log.info { "发现自己这个b疑似真人，准备投降，gameId:${war.me.gameId}" }
+//        }
+//        log.info { "我是脚本概率:" + meBehavior.robotProbability }
     }
 
     override fun dealTagChangeThenIsOver(line: String, tagChangeEntity: TagChangeEntity): Boolean {

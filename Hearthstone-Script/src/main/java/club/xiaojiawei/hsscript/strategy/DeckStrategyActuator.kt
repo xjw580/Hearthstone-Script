@@ -40,7 +40,7 @@ object DeckStrategyActuator {
     fun randEmoji() {
         if (!canExec()) return
 
-        var random = RandomUtil.RANDOM
+        val random = RandomUtil.RANDOM
         (random.nextInt() and 1 == 1).isTrue {
             (random.nextInt() and 1 == 1).isTrue {
                 GameUtil.sendThankEmoji()
@@ -56,7 +56,7 @@ object DeckStrategyActuator {
     fun randomDoSomething() {
         if (!canExec()) return
 
-        var random = RandomUtil.RANDOM
+        val random = RandomUtil.RANDOM
         if (random.nextInt() and 1 == 1) {
             log.info { "随机做点事情" }
             Thread.sleep(2000)
@@ -133,7 +133,7 @@ object DeckStrategyActuator {
     fun outCard() {
         if (!canExec()) return
 
-        var surrenderNumber = ConfigUtil.getInt(ConfigEnum.AUTO_SURRENDER)
+        val surrenderNumber = ConfigUtil.getInt(ConfigEnum.AUTO_SURRENDER)
 
         if (surrenderNumber >= 0 && war.me.turn >= surrenderNumber) {
             log.info { "到达投降回合" }
