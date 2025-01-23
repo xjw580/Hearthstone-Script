@@ -190,7 +190,7 @@ open class BaseCard : Entity() {
     var isModular = false
 
     /**
-     * 创建者的entityId
+     * 创建者的[entityId]
      */
     @Volatile
     var creator: String = ""
@@ -202,7 +202,7 @@ open class BaseCard : Entity() {
     var isPremium = false
 
     /**
-     * 所有者的entityId
+     * 所有者的[entityId]
      */
     @Volatile
     var controller: String = ""
@@ -262,14 +262,14 @@ open class BaseCard : Entity() {
     var isCoinCard = false
 
     /**
-     * 不可触摸（例：萨格拉斯召唤的传送门）
+     * 不可触摸（例：萨格拉斯召唤的传送门，星舰等）
      */
     @Volatile
     var isUntouchable = false
 
     /**
      * 地标冷却期
-     * 当cardType为LOCATION时有效，为true表明地标无法使用
+     * 当[cardType]为[CardTypeEnum.LOCATION]时有效，为true表明地标无法使用
      */
     @Volatile
     var isLocationActionCooldown = false
@@ -299,16 +299,42 @@ open class BaseCard : Entity() {
     var overload = 0
 
     /**
-     * 在场上的回合数，双方MAIN_READY阶段更新，首次进入战场该值为0
+     * 在场上的回合数，双方[club.xiaojiawei.enums.StepEnum.MAIN_READY]阶段更新，首次进入战场该值为0
      */
     @Volatile
     var numTurnsInPlay = 0
 
     /**
-     * 在手上的回合数，我方MAIN_START和MAIN_NEXT阶段更新，首次进入手中该值为0
+     * 在手上的回合数，我方[club.xiaojiawei.enums.StepEnum.MAIN_START]和[club.xiaojiawei.enums.StepEnum.MAIN_NEXT]阶段更新，首次进入手中该值为0
      */
     @Volatile
     var numTurnsInHand = 0
+
+    /**
+     * 星舰组件
+     */
+    @Volatile
+    var isStarshipPiece = false
+
+    /**
+     * 星舰
+     */
+    @Volatile
+    var isStarship = false
+
+    /**
+     * 发射台
+     * true表示可以发射
+     */
+    @Volatile
+    var isLaunchpad = false
+
+    /**
+     * 隐藏信息
+     * 未发射的星舰此值为true
+     */
+    @Volatile
+    var isHideStats = false
 
 //    override fun toString(): String {
 //        return generateToString(this, true)

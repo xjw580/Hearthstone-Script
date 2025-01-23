@@ -2,6 +2,7 @@ package club.xiaojiawei.hsscript.enums
 
 import club.xiaojiawei.bean.Card
 import club.xiaojiawei.bean.Player
+import club.xiaojiawei.bean.War
 import club.xiaojiawei.bean.area.Area
 import club.xiaojiawei.bean.isValid
 import club.xiaojiawei.config.log
@@ -16,7 +17,6 @@ import club.xiaojiawei.hsscript.data.LOST
 import club.xiaojiawei.hsscript.data.WON
 import club.xiaojiawei.hsscript.interfaces.ExtraEntityHandler
 import club.xiaojiawei.hsscript.interfaces.TagChangeHandler
-import club.xiaojiawei.bean.War
 import club.xiaojiawei.util.isTrue
 
 /**
@@ -637,6 +637,33 @@ enum class TagEnum(
         },
         null
     ),
+    STARSHIP_PIECE(
+        "星舰组件",
+        null,
+        ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
+            extraEntity.extraCard.card.isStarshipPiece = isTrue(value)
+        }),
+    STARSHIP(
+        "星舰",
+        null,
+        ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
+            extraEntity.extraCard.card.isStarship = isTrue(value)
+        }),
+    LAUNCHPAD(
+        "发射台",
+        null,
+        ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
+            extraEntity.extraCard.card.isLaunchpad = isTrue(value)
+        }),
+    HIDE_STATS(
+        "隐藏信息",
+        TagChangeHandler { card: Card?, tagChangeEntity: TagChangeEntity, war: War, player: Player?, area: Area? ->
+            card?.isHideStats = isTrue(tagChangeEntity.value)
+            log(player, card, "隐藏信息", tagChangeEntity.value)
+        },
+        ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
+            extraEntity.extraCard.card.isLaunchpad = isTrue(value)
+        }),
 
     /*+++++++++++++++++++++++++++++++++++++++++++++++*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
     UNKNOWN(
@@ -659,23 +686,19 @@ enum class TagEnum(
 
 }
 
-private fun log(player: Player?, card: Card?, tagComment: String, value: Any, isDebug: Boolean = true) {
-    val text = String.format(
-        "【玩家%s:%s，entityId:%s，entityName:%s，cardId:%s】的【%s】发生变化:%s",
-        player?.playerId,
-        player?.gameId,
-        card?.entityId,
-        card?.entityName,
-        card?.cardId,
-        tagComment,
-        value.toString()
-    )
-    if (isDebug) {
-        if (log.isDebugEnabled()) {
-            log.debug { text }
-        }
-    } else {
-        log.info { text }
+private fun log(player: Player?, card: Card?, tagComment: String, value: Any) {
+    if (log.isDebugEnabled()) {
+        val text = String.format(
+            "【玩家%s:%s，entityId:%s，entityName:%s，cardId:%s】的【%s】发生变化:%s",
+            player?.playerId,
+            player?.gameId,
+            card?.entityId,
+            card?.entityName,
+            card?.cardId,
+            tagComment,
+            value.toString()
+        )
+        log.debug { text }
     }
 }
 
