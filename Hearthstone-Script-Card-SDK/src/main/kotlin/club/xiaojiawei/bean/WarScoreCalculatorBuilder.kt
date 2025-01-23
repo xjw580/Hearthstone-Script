@@ -17,7 +17,7 @@ import kotlin.math.max
  */
 private const val BASIC_RATIO = 1.2
 private const val RESOURCES_VALUE = 3.0 * BASIC_RATIO
-private const val USABLE_RESOURCES_VALUE = 0.1 * BASIC_RATIO
+private const val USABLE_RESOURCES_VALUE = 0.5 * BASIC_RATIO
 private const val DEATH_RATTLE_VALUE = -0.3 * BASIC_RATIO
 private const val TAUNT_VALUE = 1 * BASIC_RATIO
 private const val ADJACENTBUFF_VALUE = 2 * BASIC_RATIO
@@ -97,7 +97,11 @@ open class WarScoreCalculatorBuilder {
                 BASIC_RATIO
             }
             val basicScore =
-                atc * ration + blood * (if (card.cardType === CardTypeEnum.HERO) 0.5 else 1.0) + if (card.cardType === CardTypeEnum.LOCATION) card.cost else 0
+                atc * ration + blood * (if (card.cardType === CardTypeEnum.HERO) {
+                    0.5
+                } else if (card.cardType == CardTypeEnum.LOCATION) {
+                    card.cost / card.bloodLimit().toDouble()
+                } else 1.0)
             val heroScore = if (card.cardType === CardTypeEnum.HERO) Int.MAX_VALUE.toDouble() else 0.0
             var totalScore: Double = basicScore + heroScore
             if (card.isDeathRattle) {

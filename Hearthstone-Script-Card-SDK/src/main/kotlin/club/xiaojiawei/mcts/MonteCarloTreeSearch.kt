@@ -3,9 +3,9 @@ package club.xiaojiawei.mcts
 import club.xiaojiawei.bean.InitAction
 import club.xiaojiawei.bean.LRunnable
 import club.xiaojiawei.bean.MCTSArg
+import club.xiaojiawei.bean.War
 import club.xiaojiawei.config.CALC_THREAD_POOL
 import club.xiaojiawei.config.log
-import club.xiaojiawei.bean.War
 import club.xiaojiawei.util.randomSelect
 import java.util.*
 import java.util.concurrent.CompletableFuture
@@ -59,40 +59,19 @@ class MonteCarloTreeSearch(val maxDepth: Int = MCTS_DEFAULT_DEPTH) {
 
     private fun simulate(node: MonteCarloTreeNode, rootNode: MonteCarloTreeNode, endTime: Long): Boolean {
         var tempNode = node
+        var isFirstTempNode = true
         while (!tempNode.isEnd() && System.currentTimeMillis() < endTime) {
             val actions = tempNode.actions
             val action = actions.randomSelect()
-            val nextTempNode = tempNode.buildNextNode(action)
+
+            val nextTempNode = if (isFirstTempNode) {
+                isFirstTempNode = false
+                tempNode.buildNextNode(action, cloneWar = true)
+            } else tempNode.buildNextNode(action, cloneWar = false)
+
             tempNode = nextTempNode
         }
         val score = tempNode.state.score
-//        var inverseScore = 0.0
-//        val surplusTurn = arg.turnCount - 1
-//        if (surplusTurn > 0 && !MCTSUtil.isEnd(tempNode.state.war)) {
-//            val war = tempNode.state.war.clone().apply {
-//                for (card in rival.playArea.cards) {
-//                    card.resetExhausted()
-//                }
-//                rival.playArea.hero?.resetExhausted()
-//                rival.playArea.power?.resetExhausted()
-//            }
-//            war.exchangePlayer()
-//            val nodes =
-//                MonteCarloTreeSearch(maxDepth).getBestActions(
-//                    tempNode.state.war,
-//                    MCTSArg(
-//                        0,
-//                        surplusTurn,
-//                        arg.turnFactor * arg.turnFactor,
-//                        arg.countPerTurn,
-//                        arg.scoreCalculator
-//                    )
-//                )
-//            if (nodes.isNotEmpty()) {
-//                val lastNode = nodes.last()
-//                inverseScore = lastNode.state.score * arg.turnFactor
-//            }
-//        }
         return score > rootNode.state.score
     }
 

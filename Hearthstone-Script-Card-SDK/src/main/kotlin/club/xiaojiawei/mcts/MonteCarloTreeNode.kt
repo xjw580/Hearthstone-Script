@@ -3,8 +3,8 @@ package club.xiaojiawei.mcts
 import club.xiaojiawei.bean.Action
 import club.xiaojiawei.bean.MCTSArg
 import club.xiaojiawei.bean.TurnOverAction
-import club.xiaojiawei.enums.CardTypeEnum
 import club.xiaojiawei.bean.War
+import club.xiaojiawei.enums.CardTypeEnum
 import java.util.*
 import kotlin.math.ln
 import kotlin.math.sqrt
@@ -18,7 +18,7 @@ class MonteCarloTreeNode(
     war: War,
     action: Action,
     var arg: MCTSArg,
-    var parent: MonteCarloTreeNode? = null
+    var parent: MonteCarloTreeNode? = null,
 ) {
 
     /**
@@ -29,12 +29,12 @@ class MonteCarloTreeNode(
     /**
      * 所有子节点
      */
-    val children: MutableList<MonteCarloTreeNode> = mutableListOf()
+    val children: MutableList<MonteCarloTreeNode> by lazy { mutableListOf() }
 
     /**
      * 当前状态
      */
-    val state: State = State(war, calcScore(war))
+    val state: State by lazy { State(war, arg) }
 
     /**
      * 当前所有可执行的动作
@@ -45,64 +45,6 @@ class MonteCarloTreeNode(
      * 存储action是否添加至子节点
      */
     private var actionsExpandedFlag: BitSet = BitSet(actions.size)
-
-    private fun calcScore(war: War): Double {
-        val currentScore = arg.scoreCalculator.apply(war)
-        val surplusTurn = arg.turnCount - 1
-//        判断是否需要进行反演
-        if (surplusTurn > 0) {
-            val inverseArg = MCTSArg(
-                arg.endMillisTime,
-                surplusTurn,
-                arg.turnFactor * arg.turnFactor,
-                (arg.countPerTurn * arg.turnFactor).toInt(),
-                arg.scoreCalculator,
-                arg.enableMultiThread
-            )
-            val inverseWar = war.clone()
-            inverseWar.me.apply {
-                playArea.hero?.atc = 0
-//                triggerTurnEnd内部可能修改cards，使用副本遍历
-                playArea.cards.toTypedArray().forEach { card ->
-                    if (card.isAlive()) {
-                        card.action.triggerTurnEnd(war)
-                    }
-                }
-            }
-            inverseWar.exchangePlayer()
-            inverseWar.currentPlayer = inverseWar.me
-            inverseWar.me.apply {
-                //            重置战场疲劳
-                playArea.cards.forEach { card ->
-                    card.resetExhausted()
-                    card.numTurnsInPlay++
-                }
-                handArea.cards.forEach { card ->
-                    card.numTurnsInHand++
-                }
-                playArea.hero?.resetExhausted()
-                playArea.power?.resetExhausted()
-                playArea.weapon?.resetExhausted()
-//                triggerTurnStart内部可能修改cards，使用副本遍历
-                playArea.cards.toTypedArray().forEach { card ->
-                    if (card.isAlive()) {
-                        card.action.triggerTurnStart(war)
-                    }
-                }
-            }
-
-//            反演时尽量调大maxDepth值，可以减少资源消耗
-            val bestActions =
-                MonteCarloTreeSearch(maxDepth = MCTS_DEFAULT_DEPTH + 5).searchBestNode(inverseWar, inverseArg)
-            return if (bestActions.isEmpty()) {
-                currentScore
-            } else {
-                currentScore - bestActions.last().state.score * arg.turnFactor
-            }
-        } else {
-            return currentScore
-        }
-    }
 
     /**
      * 根据指定状态生成所有可能的动作
@@ -148,9 +90,10 @@ class MonteCarloTreeNode(
      */
     fun buildNextNode(
         action: Action,
-        arg: MCTSArg = this.arg
+        arg: MCTSArg = this.arg,
+        cloneWar: Boolean = true
     ): MonteCarloTreeNode {
-        val newWar = state.war.clone()
+        val newWar = if (cloneWar) state.war.clone() else state.war
 //        新战局应用旧动作
         action.simulate.accept(newWar)
         val nextNode = MonteCarloTreeNode(newWar, action, arg, this)
@@ -216,7 +159,9 @@ class MonteCarloTreeNode(
         return state.isEnd || isLeaf()
     }
 
-    class State(val war: War, val score: Double) {
+    class State(val war: War, arg: MCTSArg) {
+
+        val score: Double by lazy { calcScore(war, arg) }
 
         var winCount: Int = 0
 
@@ -242,6 +187,64 @@ class MonteCarloTreeNode(
                 Int.MAX_VALUE.toDouble()
             else
                 winCount / visitCount + sqrt(c * ln(totalCount.toDouble()) / visitCount.toDouble())
+        }
+
+        private fun calcScore(war: War, arg: MCTSArg): Double {
+            val currentScore = arg.scoreCalculator.apply(war)
+            val surplusTurn = arg.turnCount - 1
+//        判断是否需要进行反演
+            if (surplusTurn > 0) {
+                val inverseArg = MCTSArg(
+                    arg.endMillisTime,
+                    surplusTurn,
+                    arg.turnFactor * arg.turnFactor,
+                    (arg.countPerTurn * arg.turnFactor).toInt(),
+                    arg.scoreCalculator,
+                    arg.enableMultiThread
+                )
+                val inverseWar = war.clone()
+                inverseWar.me.apply {
+                    playArea.hero?.atc = 0
+//                triggerTurnEnd内部可能修改cards，使用副本遍历
+                    playArea.cards.toTypedArray().forEach { card ->
+                        if (card.isAlive()) {
+                            card.action.triggerTurnEnd(war)
+                        }
+                    }
+                }
+                inverseWar.exchangePlayer()
+                inverseWar.currentPlayer = inverseWar.me
+                inverseWar.me.apply {
+                    //            重置战场疲劳
+                    playArea.cards.forEach { card ->
+                        card.resetExhausted()
+                        card.numTurnsInPlay++
+                    }
+                    handArea.cards.forEach { card ->
+                        card.numTurnsInHand++
+                    }
+                    playArea.hero?.resetExhausted()
+                    playArea.power?.resetExhausted()
+                    playArea.weapon?.resetExhausted()
+//                triggerTurnStart内部可能修改cards，使用副本遍历
+                    playArea.cards.toTypedArray().forEach { card ->
+                        if (card.isAlive()) {
+                            card.action.triggerTurnStart(war)
+                        }
+                    }
+                }
+
+//            反演时尽量调大maxDepth值，可以减少资源消耗
+                val bestActions =
+                    MonteCarloTreeSearch(maxDepth = MCTS_DEFAULT_DEPTH + 5).searchBestNode(inverseWar, inverseArg)
+                return if (bestActions.isEmpty()) {
+                    currentScore
+                } else {
+                    currentScore - bestActions.last().state.score * arg.turnFactor
+                }
+            } else {
+                return currentScore
+            }
         }
 
     }

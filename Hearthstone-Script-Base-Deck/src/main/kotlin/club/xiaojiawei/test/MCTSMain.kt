@@ -40,8 +40,8 @@ fun main() {
 
     val start = System.currentTimeMillis()
 
-//    val arg = MCTSArg(3 * 1000, 1, 0.5, 500_000, DEFAULT_WAR_SCORE_CALCULATOR.build(), false)
-    val arg = MCTSArg(15 * 1000, 2, 0.5, 200_000, DEFAULT_WAR_SCORE_CALCULATOR.build(), true)
+    val arg = MCTSArg(start + 3000 * 1000, 1, 0.5, 500_000, DEFAULT_WAR_SCORE_CALCULATOR.build(), false)
+//    val arg = MCTSArg(start + 15 * 1000, 2, 0.5, 200_000, DEFAULT_WAR_SCORE_CALCULATOR.build(), true)
     val monteCarloTreeNodes = monteCarloTreeSearch
         .searchBestNode(mctsWar, arg)
 //    val tempNode: MonteCarloTreeNode? = monteCarloTreeNodes.first()

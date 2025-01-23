@@ -1,7 +1,6 @@
 package club.xiaojiawei.bean.warrior
 
 import club.xiaojiawei.CardAction
-import club.xiaojiawei.bean.Card
 import club.xiaojiawei.bean.PlayAction
 import club.xiaojiawei.bean.Player
 import club.xiaojiawei.bean.War
@@ -25,25 +24,24 @@ class Bladestorm : CardAction.DefaultCardAction() {
                 spendSelfCost(newWar)
                 removeSelf(newWar)
                 val damage = 1 + newWar.me.getSpellPower()
-                val cardMap = mutableMapOf<Player, MutableList<Card>>()
-                cardMap[newWar.me] = newWar.me.playArea.cards
-                cardMap[newWar.rival] = newWar.rival.playArea.cards
                 var noDead = true
-//                todo 应该要按随从下场顺序依次受伤
                 var count = 0
-                while (noDead) {
-                    if (newWar.me.playArea.isEmpty && newWar.rival.playArea.isEmpty) break
-                    cardMap.forEach { (p, cards) ->
-                        cards.toList().forEach { card ->
-                            if (card.canHurt()) {
-                                card.injured(damage)
-                                count++
-                                if (!card.isAlive()) {
-                                    noDead = false
-                                }
+                val cards = (newWar.me.playArea.cards + newWar.rival.playArea.cards).filter { it.canHurt() }
+                    .sortedBy { it.numTurnsInPlay }.reversed()
+                var isWork: Boolean
+                while (noDead || Thread.interrupted()) {
+                    isWork = false
+                    for (card in cards) {
+                        if (card.canHurt()) {
+                            isWork = true
+                            card.injured(damage)
+                            count++
+                            if (!card.isAlive()) {
+                                noDead = false
                             }
                         }
                     }
+                    if (!isWork) break
                 }
                 Thread.sleep(count * 250L)
             })

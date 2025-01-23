@@ -12,6 +12,7 @@ import club.xiaojiawei.hsscript.data.SCRIPT_NAME
 import club.xiaojiawei.hsscript.dll.ZLaunchDll
 import club.xiaojiawei.hsscript.utils.ConfigExUtil
 import club.xiaojiawei.hsscript.utils.SystemUtil
+import club.xiaojiawei.hsscript.utils.VersionUtil
 import com.sun.jna.WString
 import javafx.application.Application
 import org.slf4j.LoggerFactory
@@ -66,6 +67,7 @@ fun main(args: Array<String>) {
         WString(Path.of(IMG_PATH, "startup.jpg").toString()),
         WString(SystemUtil.getProgramIconFile().absolutePath),
         WString(SCRIPT_NAME),
+        WString(VersionUtil.VERSION),
         (640 * SCREEN_SCALE).toInt(),
         (360 * SCREEN_SCALE).toInt()
     )
