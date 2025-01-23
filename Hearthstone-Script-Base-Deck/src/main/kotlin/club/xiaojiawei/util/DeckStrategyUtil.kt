@@ -286,19 +286,21 @@ object DeckStrategyUtil {
         val myCards = mutableListOf<SimulateCard>()
         val rivalCards = mutableListOf<SimulateCard>()
         for (myPlayCard in myPlayCards) {
-            val simulateCard = SimulateCard(
-                card = myPlayCard,
-                attackCount = myAttackCountCalc.apply(myPlayCard),
-                inversionAttackCount = myInversionAttackCountCalc.apply(myPlayCard),
-                atcWeight = myAtcWeightCalc.apply(myPlayCard),
-                inversionAtcWeight = rivalAtcWeightCalc.apply(myPlayCard),
-                blood = calcBlood(myPlayCard),
+            if (!myPlayCard.isLaunchpad){
+                val simulateCard = SimulateCard(
+                    card = myPlayCard,
+                    attackCount = myAttackCountCalc.apply(myPlayCard),
+                    inversionAttackCount = myInversionAttackCountCalc.apply(myPlayCard),
+                    atcWeight = myAtcWeightCalc.apply(myPlayCard),
+                    inversionAtcWeight = rivalAtcWeightCalc.apply(myPlayCard),
+                    blood = calcBlood(myPlayCard),
 //                对末日预言者特殊处理
-                cardWeight = if (myPlayCard.cardId.contains("NEW1_021")) 15.0 else myCardWeightCalc.apply(myPlayCard),
-                inversionCardWeight = rivalCardWeightCalc.apply(myPlayCard),
-                isDivineShield = myPlayCard.isDivineShield,
-            )
-            myCards.add(simulateCard)
+                    cardWeight = if (myPlayCard.cardId.contains("NEW1_021")) 15.0 else myCardWeightCalc.apply(myPlayCard),
+                    inversionCardWeight = rivalCardWeightCalc.apply(myPlayCard),
+                    isDivineShield = myPlayCard.isDivineShield,
+                )
+                myCards.add(simulateCard)
+            }
         }
         for (rivalCard in rivalPlayCards) {
             val simulateCard = SimulateCard(

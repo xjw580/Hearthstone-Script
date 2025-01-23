@@ -53,6 +53,12 @@ class HsCommonDeckStrategy : DeckStrategy() {
             }
         }
         DeckStrategyUtil.cleanPlay()
+
+        me.playArea.cards.toTypedArray().forEach { card: Card ->
+            if (card.isLaunchpad && me.usableResource >= card.launchCost()) {
+                card.action.launch()
+            }
+        }
     }
 
     private fun powerCard(me: Player, rival: Player) {
