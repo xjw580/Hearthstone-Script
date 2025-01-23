@@ -66,8 +66,8 @@ fun main(args: Array<String>) {
         WString(Path.of(IMG_PATH, "startup.jpg").toString()),
         WString(SystemUtil.getProgramIconFile().absolutePath),
         WString(SCRIPT_NAME),
-        (382 * SCREEN_SCALE).toInt(),
-        (590 * SCREEN_SCALE).toInt()
+        (640 * SCREEN_SCALE).toInt(),
+        (360 * SCREEN_SCALE).toInt()
     )
 
     setLogPath()
