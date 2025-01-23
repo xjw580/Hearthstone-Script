@@ -50,4 +50,8 @@ class TestCardAction : CardAction() {
     override fun execLClick(): Boolean {
         return true
     }
+
+    override fun execLaunch(): Boolean {
+        return true
+    }
 }

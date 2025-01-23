@@ -11,8 +11,12 @@ import java.util.function.BiConsumer
  * @author 肖嘉威
  * @date 2022/11/27 14:56
  */
+
+private const val LAUNCH_CARD_ID = "GDB_905"
+
 class Card(var action: CardAction) : BaseCard(), Cloneable {
 
+    val child: MutableList<Card> by lazy { mutableListOf() }
 
     /**
      * 模拟用
@@ -87,18 +91,18 @@ class Card(var action: CardAction) : BaseCard(), Cloneable {
     }
 
     /**
-     * 是否包含cardId
+     * 判断卡牌是否类似，同一张牌所属扩展包不同，[cardId]也不相同
      */
-    fun cardContains(baseCard: BaseCard): Boolean {
-        return cardContains(baseCard.cardId)
+    fun cardSame(baseCard: BaseCard): Boolean {
+        return cardSame(baseCard.cardId)
     }
 
-    fun cardContains(cardId: String): Boolean {
+    fun cardSame(cardId: String): Boolean {
         return this.cardId.contains(cardId)
     }
 
     /**
-     * 判断卡牌是否相同，指的是cardId相同
+     * 判断卡牌是否相同，指的是[cardId]相同
      */
     fun cardEquals(baseCard: BaseCard): Boolean {
         return cardEquals(baseCard.cardId)
@@ -189,7 +193,7 @@ class Card(var action: CardAction) : BaseCard(), Cloneable {
     fun getAttackTarget(ignoreExhausted: Boolean = false, ignoreAtc: Boolean = false): TargetEnum {
         if (!(cardType === CardTypeEnum.MINION || cardType === CardTypeEnum.HERO || cardType === CardTypeEnum.WEAPON) && isAlive()) return TargetEnum.NONE
 
-        if (((isExhausted && !ignoreExhausted) || isCantAttack || isFrozen || isDormantAwakenConditionEnchant || (!ignoreAtc && atc <= 0))) return TargetEnum.NONE
+        if ((isExhausted && !ignoreExhausted) || isUntouchable || isCantAttack || isFrozen || isDormantAwakenConditionEnchant || (!ignoreAtc && atc <= 0)) return TargetEnum.NONE
 
         if (isAttackableByRush) return TargetEnum.MINION
 
@@ -198,10 +202,12 @@ class Card(var action: CardAction) : BaseCard(), Cloneable {
 
     /**
      * 能使用/激活
-     * 适用的卡牌类型：[club.xiaojiawei.enums.CardTypeEnum.LOCATION],[club.xiaojiawei.enums.CardTypeEnum.HERO_POWER]
+     * 适用的卡牌类型：[club.xiaojiawei.enums.CardTypeEnum.LOCATION],[club.xiaojiawei.enums.CardTypeEnum.HERO_POWER],[club.xiaojiawei.enums.CardTypeEnum.MINION]中的星舰
      */
     fun canPower(): Boolean {
-        return (cardType === CardTypeEnum.LOCATION && !isLocationActionCooldown && !isExhausted && isAlive()) || (cardType === CardTypeEnum.HERO_POWER && !isExhausted)
+        return (cardType === CardTypeEnum.LOCATION && !isLocationActionCooldown && !isExhausted && isAlive()) ||
+                (cardType === CardTypeEnum.HERO_POWER && !isExhausted) ||
+                (cardType === CardTypeEnum.MINION && isLaunchpad)
     }
 
     /**
@@ -241,6 +247,32 @@ class Card(var action: CardAction) : BaseCard(), Cloneable {
      */
     fun isDead(): Boolean {
         return blood() <= 0
+    }
+
+    /**
+     * 获取发射星舰所需费用
+     */
+    fun launchCost(): Int {
+        if (isLaunchpad) {
+            for (card in child) {
+                if (card.cardSame(LAUNCH_CARD_ID)) {
+                    return card.cost
+                }
+            }
+        }
+        return 5
+    }
+
+    /**
+     * 获取发射星舰卡牌
+     */
+    fun getLaunchCard(): Card? {
+        for (card in child) {
+            if (card.cardSame(LAUNCH_CARD_ID)) {
+                return card
+            }
+        }
+        return null
     }
 
     @Override

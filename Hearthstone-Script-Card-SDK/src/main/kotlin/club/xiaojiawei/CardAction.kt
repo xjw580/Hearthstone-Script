@@ -4,7 +4,6 @@ import club.xiaojiawei.bean.*
 import club.xiaojiawei.bean.area.isValid
 import club.xiaojiawei.config.log
 import club.xiaojiawei.enums.CardTypeEnum
-import club.xiaojiawei.bean.War
 import club.xiaojiawei.util.CardUtil
 import club.xiaojiawei.util.isTrue
 import java.util.function.Supplier
@@ -48,7 +47,28 @@ abstract class CardAction(createDefaultAction: Boolean = true) {
      * @param player 此卡牌所处的玩家
      */
     open fun generatePowerActions(war: War, player: Player): List<PowerAction> {
-        return emptyList()
+        return belongCard?.let { card: Card ->
+            if (card.isLaunchpad && player.usableResource >= card.launchCost()) {
+                listOf(
+                    PowerAction({ newWar ->
+                        findSelf(newWar)?.action?.launch()
+                    }, { newWar ->
+//                        模拟发射
+                        findSelf(newWar)?.let { card ->
+                            card.area.player.resourcesUsed += card.launchCost()
+                            card.isLaunchpad = false
+                            card.isHideStats = false
+                            CardUtil.handleCardExhaustedWhenIntoPlayArea(card)
+                            card.atc = card.area.player.starshipAtc
+                            card.health = card.area.player.starshipHealth
+                            card.area.player.starshipAtc = 0
+                            card.area.player.starshipHealth = 0
+                        }
+                    })
+                )
+            }
+            emptyList()
+        } ?: emptyList()
     }
 
     /**
@@ -75,14 +95,7 @@ abstract class CardAction(createDefaultAction: Boolean = true) {
                     spendSelfCost(newWar)
                     val me = newWar.me
                     removeSelf(newWar)?.let { card ->
-                        if (card.isCharge) {
-                            card.isExhausted = false
-                        } else if (card.isRush) {
-                            card.isAttackableByRush = true
-                            card.isExhausted = false
-                        } else {
-                            card.isExhausted = true
-                        }
+                        CardUtil.handleCardExhaustedWhenIntoPlayArea(card)
                         me.playArea.safeAdd(card)
                     }
                 })
@@ -377,8 +390,29 @@ abstract class CardAction(createDefaultAction: Boolean = true) {
         return null
     }
 
+    /**
+     * 发射
+     * @return 为null表示执行失败
+     */
+    fun launch(isPause: Boolean = false): CardAction? {
+        if (isStop()) return null
+        if (execLaunch()) {
+            belongCard?.let {
+                it.area.player.starshipAtc = 0
+                it.area.player.starshipHealth = 0
+            }
+            if (isPause) {
+                this.delay()
+            } else {
+                delay(SHORT_PAUSE_TIME)
+            }
+            return this
+        }
+        return null
+    }
+
     private fun delay(time: Int = mouseActionInterval) {
-        if (isStop() || time < 0) return
+        if (isStop() || time <= 0) return
         if (time == mouseActionInterval) {
             depth = 0
         } else {
@@ -453,6 +487,8 @@ abstract class CardAction(createDefaultAction: Boolean = true) {
      */
     protected abstract fun execLClick(): Boolean
 
+    protected abstract fun execLaunch(): Boolean
+
     abstract fun createNewInstance(): CardAction
 
     /**
@@ -500,6 +536,10 @@ abstract class CardAction(createDefaultAction: Boolean = true) {
         }
 
         override fun execLClick(): Boolean {
+            return commonAction?.execLClick() == true
+        }
+
+        override fun execLaunch(): Boolean {
             return commonAction?.execLClick() == true
         }
 

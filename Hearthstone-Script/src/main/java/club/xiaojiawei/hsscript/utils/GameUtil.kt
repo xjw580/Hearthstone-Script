@@ -28,6 +28,7 @@ import java.util.concurrent.TimeUnit
 import kotlin.math.max
 import kotlin.math.min
 
+
 /**
  * 游戏工具类
  * @author 肖嘉威
@@ -64,6 +65,17 @@ object GameUtil {
 
     val RIVAL_POWER_RECT: GameRect = GameRect(0.0840, 0.1554, -0.3260, -0.2338)
     val MY_POWER_RECT: GameRect = GameRect(0.0855, 0.1569, 0.2254, 0.3176)
+
+    /**
+     * 星舰发射
+     */
+    val STARSHIP_LAUNCH_RECT: GameRect = GameRect(0.0180, 0.1268, 0.2723, 0.4089)
+
+    /**
+     * 星舰取消发射
+     */
+    val STARSHIP_CANCEL_LAUNCH_RECT: GameRect = GameRect(-0.1107, -0.0295, 0.3106, 0.4120)
+
 
     private val FOUR_DISCOVER_RECTS = arrayOf(
         GameRect(-0.3332, -0.1911, -0.1702, 0.1160),

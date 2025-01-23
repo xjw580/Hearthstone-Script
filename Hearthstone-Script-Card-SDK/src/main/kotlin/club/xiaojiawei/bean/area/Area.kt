@@ -94,7 +94,7 @@ abstract class Area(
         return cards.remove(card)
     }
 
-    protected fun removeCard(index: Int): Card? {
+    open protected fun removeCard(index: Int): Card? {
         if (index >= cards.size || index < 0) return null
         val remove = cards.removeAt(index)
         removeZone(remove)

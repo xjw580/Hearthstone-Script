@@ -147,7 +147,15 @@ class MeasureApplication : Application() {
                     (AnchorPane.getTopAnchor(rectangle) - middleH) / usableH,
                     (AnchorPane.getTopAnchor(rectangle) + rectangle.height - middleH) / usableH
                 )
+                val msg1 = String.format(
+                    "val GameRect RECT = GameRect(%.4f, %.4f, %.4f, %.4f);\n",
+                    (AnchorPane.getLeftAnchor(rectangle) - middleW) / usableW,
+                    (AnchorPane.getLeftAnchor(rectangle) + rectangle.width - middleW) / usableW,
+                    (AnchorPane.getTopAnchor(rectangle) - middleH) / usableH,
+                    (AnchorPane.getTopAnchor(rectangle) + rectangle.height - middleH) / usableH
+                )
                 println(msg)
+                println(msg1)
                 textArea.appendText(msg)
             }
             popup.addEventFilter<KeyEvent>(

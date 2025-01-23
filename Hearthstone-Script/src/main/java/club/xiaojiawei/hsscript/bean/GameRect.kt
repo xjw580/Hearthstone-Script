@@ -36,6 +36,9 @@ data class GameRect(val left: Double, val right: Double, val top: Double, val bo
         return this != INVALID
     }
 
+    /**
+     * @param isCancel 执行前先右键取消
+     */
     @JvmOverloads
     fun lClick(isCancel: Boolean = true) {
         if (isCancel) cancel()

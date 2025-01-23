@@ -495,6 +495,7 @@ enum class TagEnum(
         null,
         ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
             extraEntity.extraCard.card.creator = value
+            extraEntity.extraCard.card
         }),
     TITAN(
         "泰坦",

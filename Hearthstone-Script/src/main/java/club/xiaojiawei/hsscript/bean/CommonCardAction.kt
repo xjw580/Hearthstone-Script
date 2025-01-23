@@ -238,6 +238,17 @@ class CommonCardAction : CardAction(false) {
         return false
     }
 
+    override fun execLaunch(): Boolean {
+        val cardRect = getCardRect(belongCard)
+        if (cardRect.isValid()) {
+            cardRect.lClick()
+            Thread.sleep(1000)
+            GameUtil.STARSHIP_LAUNCH_RECT.lClick(false)
+            return true
+        }
+        return false
+    }
+
     companion object {
         val DEFAULT: CardAction = CommonCardAction()
 

@@ -19,6 +19,4 @@ interface BaseCardMapper {
 
     fun update(sourceCard: BaseCard?, @MappingTarget targetCard: BaseCard?)
 
-    fun update(sourceCard: BaseCard?, @MappingTarget targetCard: Card?)
-
 }

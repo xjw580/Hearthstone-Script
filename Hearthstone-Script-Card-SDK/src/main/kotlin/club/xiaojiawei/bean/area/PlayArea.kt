@@ -116,4 +116,16 @@ class PlayArea(allowLog: Boolean = false, player: Player) : Area(allowLog = allo
         return card
     }
 
+    override fun removeCard(index: Int): Card? {
+        val removeCard = super.removeCard(index)
+        removeCard?.let {
+            if (it.isStarshipPiece && it.isDead()) {
+                player.starshipAtc += it.atc
+                player.starshipHealth += it.health
+            }
+        }
+        return removeCard
+    }
+
+
 }

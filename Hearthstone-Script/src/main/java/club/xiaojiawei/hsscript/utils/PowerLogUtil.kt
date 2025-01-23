@@ -73,6 +73,12 @@ object PowerLogUtil {
                 ?: let {
                     log.debug { "生成的card【entityId:${card.entityId}】不应没有area" }
                 }
+            val creator = card.creator
+            if (creator.isNotEmpty()) {
+                war.cardMap[creator]?.child?.add(card) ?: let {
+                    log.debug { "找不到creator:${card.creator}" }
+                }
+            }
         } else {
 //        不退出客户端的情况下断线重连会导致牌库的牌重新在日志中输出
             log.debug { "生成的card重复，将不会生成新Card，疑似掉线重连" }

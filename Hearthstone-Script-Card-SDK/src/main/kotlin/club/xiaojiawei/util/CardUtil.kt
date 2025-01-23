@@ -1,15 +1,26 @@
 package club.xiaojiawei.util
 
 import club.xiaojiawei.bean.Card
+import club.xiaojiawei.bean.War
 import club.xiaojiawei.bean.area.PlayArea
 import club.xiaojiawei.enums.CardTypeEnum
-import club.xiaojiawei.bean.War
 
 /**
  * @author 肖嘉威
  * @date 2025/1/15 10:47
  */
 object CardUtil {
+
+    fun handleCardExhaustedWhenIntoPlayArea(card: Card) {
+        if (card.isCharge) {
+            card.isExhausted = false
+        } else if (card.isRush) {
+            card.isAttackableByRush = true
+            card.isExhausted = false
+        } else {
+            card.isExhausted = true
+        }
+    }
 
     fun getTauntCards(cards: List<Card>, canBeAttacked: Boolean = true): MutableList<Card> {
         val result = mutableListOf<Card>()
@@ -40,7 +51,7 @@ object CardUtil {
 //        处理我方武器情况
         if (myCard.cardType === CardTypeEnum.HERO) {
             myPlayArea.weapon?.let {
-                if (!it.isImmune){
+                if (!it.isImmune) {
                     it.damage++
                 }
             }
