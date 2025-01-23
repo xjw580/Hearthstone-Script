@@ -29,14 +29,12 @@ public class VersionMsgController implements Initializable {
         version.setText(VersionUtil.INSTANCE.getVERSION());
 //        TODO 版本更新时修改！！！
         versionDescription.setText("""
-                1. 权重设置页新增出牌权重
-                2. 优化进入游戏主界面时的点击行为
-                3. 激进策略支持简单识别伤害法术
-                4. 策略设置页增加随机事件，随机表情，随机投降设置项
-                5. 增加对超级风怒的识别
-                6. 修复敌方变身时无法正确识别的问题
-                7. 策略设置页中添加增加只打人机选项
-                8. 初始设置页中添加选择卡组位选项
+                1. 增加mcts策略
+                2. 基础卡牌插件适配沙包战的所有卡牌(AAECAQcC4+YG5eYGDp6fBJ+fBLSfBIagBIigBImgBI7UBJDUBJzUBJ/UBKPUBLT4BbX4Bd3zBgAA)，配合mcts策略使用
+                3. 适配星舰，疲劳伤害，武器的耐久
+                4. 强化游戏关闭
+                5. 高级设置页中增加置顶游戏窗口选项
+                6. 卡牌插件sdk不兼容更改
                 """);
     }
 
