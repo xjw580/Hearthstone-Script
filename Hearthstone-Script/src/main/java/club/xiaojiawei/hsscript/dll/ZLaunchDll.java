@@ -13,7 +13,7 @@ public interface ZLaunchDll extends Library {
 
     ZLaunchDll INSTANCE = Native.load("dll/zlaunch", ZLaunchDll.class);
 
-    void ShowPage(WString bgImgPath, WString programImgPath, WString text, int width, int height);
+    void ShowPage(WString bgImgPath, WString programImgPath, WString text, WString version, int width, int height);
 
     void HidePage();
 
