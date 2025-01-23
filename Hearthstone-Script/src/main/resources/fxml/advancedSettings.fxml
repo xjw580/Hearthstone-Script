@@ -15,19 +15,6 @@
         <ScrollPane VBox.vgrow="ALWAYS" styleClass="scroll-pane-item">
             <VBox fx:id="mainVBox">
                 <HBox styleClass="h-box">
-                    <Text text="执行策略"/>
-                    <Label>
-                        <graphic>
-                            <HelpIco/>
-                        </graphic>
-                        <tooltip>
-                            <Tooltip text="是否执行卡组策略"/>
-                        </tooltip>
-                    </Label>
-                    <HBox HBox.hgrow="ALWAYS"/>
-                    <Switch fx:id="strategySwitch"/>
-                </HBox>
-                <HBox styleClass="h-box">
                     <Text text="更新开发版"/>
                     <HBox HBox.hgrow="ALWAYS"/>
                     <Switch fx:id="updateDev"/>

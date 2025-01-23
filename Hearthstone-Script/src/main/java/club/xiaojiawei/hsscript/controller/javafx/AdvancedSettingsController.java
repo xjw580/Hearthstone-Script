@@ -38,8 +38,7 @@ public class AdvancedSettingsController implements Initializable {
     private VBox mainVBox;
     @FXML
     private NotificationManager<Object> notificationManager;
-    @FXML
-    private Switch strategySwitch;
+
     @FXML
     private Switch updateDev;
     @FXML
@@ -64,7 +63,6 @@ public class AdvancedSettingsController implements Initializable {
     }
 
     private void initValue() {
-        strategySwitch.setStatus(ConfigUtil.INSTANCE.getBoolean(ConfigEnum.STRATEGY));
         updateDev.setStatus(ConfigUtil.INSTANCE.getBoolean(ConfigEnum.UPDATE_DEV));
         autoUpdate.setStatus(ConfigUtil.INSTANCE.getBoolean(ConfigEnum.AUTO_UPDATE));
         runningMinimize.setStatus(ConfigUtil.INSTANCE.getBoolean(ConfigEnum.RUNNING_MINIMIZE));
@@ -83,10 +81,6 @@ public class AdvancedSettingsController implements Initializable {
     }
 
     private void listen() {
-//        监听策略开关
-        strategySwitch.statusProperty().addListener((observable, oldValue, newValue) -> {
-            ConfigUtil.INSTANCE.putBoolean(ConfigEnum.STRATEGY, newValue, true);
-        });
 //        监听更新开发版开关
         updateDev.statusProperty().addListener((observable, oldValue, newValue) -> {
             ConfigUtil.INSTANCE.putBoolean(ConfigEnum.UPDATE_DEV, newValue, true);

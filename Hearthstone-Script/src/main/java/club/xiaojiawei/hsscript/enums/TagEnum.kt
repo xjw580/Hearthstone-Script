@@ -63,7 +63,7 @@ enum class TagEnum(
     RESOURCES_USED(
         "已使用水晶数",
         TagChangeHandler { card: Card?, tagChangeEntity: TagChangeEntity, war: War, player: Player?, area: Area? ->
-            war.currentPlayer.resourcesUsed = tagChangeEntity.value.toInt()
+            war.currentPlayer.usedResources = tagChangeEntity.value.toInt()
         },
         null
     ),
@@ -100,13 +100,13 @@ enum class TagEnum(
                     ) {
                         war.currentPlayer = war.me
                         war.me.resetResources()
-                        war.rival.resetResources()
+//                        war.rival.resetResources()
                         war.rival.overloadLocked = 0
                         war.me.gameId = gameId
                     } else {
 //                        是对手
                         war.currentPlayer = war.rival
-                        war.me.resetResources()
+//                        war.me.resetResources()
                         war.rival.resetResources()
                         war.me.overloadLocked = 0
                         war.rival.gameId = gameId

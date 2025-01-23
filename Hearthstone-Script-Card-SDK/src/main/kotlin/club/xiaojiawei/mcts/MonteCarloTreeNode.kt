@@ -17,7 +17,7 @@ import kotlin.math.sqrt
 class MonteCarloTreeNode(
     war: War,
     action: Action,
-    var arg: MCTSArg,
+    val arg: MCTSArg,
     var parent: MonteCarloTreeNode? = null,
 ) {
 
@@ -34,7 +34,7 @@ class MonteCarloTreeNode(
     /**
      * 当前状态
      */
-    val state: State by lazy { State(war, arg) }
+    val state: State = State(war, arg)
 
     /**
      * 当前所有可执行的动作
@@ -69,10 +69,7 @@ class MonteCarloTreeNode(
                 }
             }
             playArea.hero?.let { myHero ->
-                if (myHero.canAttack() || (myHero.canAttack(ignoreAtc = true) && playArea.weapon?.canAttack(
-                        ignoreExhausted = true
-                    ) == true)
-                ) {
+                if (myHero.canAttack()) {
                     result.addAll(myHero.action.generateAttackActions(war, me))
                 }
             }
@@ -234,7 +231,6 @@ class MonteCarloTreeNode(
                     }
                 }
 
-//            反演时尽量调大maxDepth值，可以减少资源消耗
                 val bestActions =
                     MonteCarloTreeSearch(maxDepth = MCTS_DEFAULT_DEPTH + 5).searchBestNode(inverseWar, inverseArg)
                 return if (bestActions.isEmpty()) {

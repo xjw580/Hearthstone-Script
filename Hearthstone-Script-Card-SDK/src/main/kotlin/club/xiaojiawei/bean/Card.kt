@@ -170,7 +170,7 @@ class Card(var action: CardAction) : BaseCard(), Cloneable {
 
     /**
      * 能攻击
-     * 适用的卡牌类型：[club.xiaojiawei.enums.CardTypeEnum.MINION],[club.xiaojiawei.enums.CardTypeEnum.HERO],[club.xiaojiawei.enums.CardTypeEnum.WEAPON]
+     * 适用的卡牌类型：[club.xiaojiawei.enums.CardTypeEnum.MINION],[club.xiaojiawei.enums.CardTypeEnum.HERO]
      * 对于地标和技能，参见[club.xiaojiawei.bean.Card.canPower]
      */
     fun canAttack(ignoreExhausted: Boolean = false, ignoreAtc: Boolean = false): Boolean {
@@ -179,7 +179,7 @@ class Card(var action: CardAction) : BaseCard(), Cloneable {
 
     /**
      * 无法攻击
-     * 适用的卡牌类型：[club.xiaojiawei.enums.CardTypeEnum.MINION],[club.xiaojiawei.enums.CardTypeEnum.HERO],[club.xiaojiawei.enums.CardTypeEnum.WEAPON]
+     * 适用的卡牌类型：[club.xiaojiawei.enums.CardTypeEnum.MINION],[club.xiaojiawei.enums.CardTypeEnum.HERO]
      * 对于地标和技能，参见[club.xiaojiawei.bean.Card.canPower]
      */
     fun cantAttack(ignoreExhausted: Boolean = false, ignoreAtc: Boolean = false): Boolean {
@@ -190,8 +190,8 @@ class Card(var action: CardAction) : BaseCard(), Cloneable {
      * 获取能攻击的目标
      * 比如刚下场的突袭随从只能解场，此时返回[club.xiaojiawei.enums.TargetEnum.MINION]
      */
-    fun getAttackTarget(ignoreExhausted: Boolean = false, ignoreAtc: Boolean = false): TargetEnum {
-        if (!(cardType === CardTypeEnum.MINION || cardType === CardTypeEnum.HERO || cardType === CardTypeEnum.WEAPON) && isAlive()) return TargetEnum.NONE
+    private fun getAttackTarget(ignoreExhausted: Boolean = false, ignoreAtc: Boolean = false): TargetEnum {
+        if (!(cardType === CardTypeEnum.MINION || cardType === CardTypeEnum.HERO) && isAlive()) return TargetEnum.NONE
 
         if ((isExhausted && !ignoreExhausted) || isUntouchable || isCantAttack || isFrozen || isDormantAwakenConditionEnchant || (!ignoreAtc && atc <= 0)) return TargetEnum.NONE
 

@@ -19,15 +19,25 @@ abstract class MCTSDeckStrategy : DeckStrategy() {
         val war = WAR
         val mctsArgList = executeMCTSOutCard(war)
         val monteCarloTreeSearch = MonteCarloTreeSearch()
+        var execTime = 0L
         for ((index, mctsArg) in mctsArgList.withIndex()) {
             val start = System.currentTimeMillis()
-            val bestNodes = monteCarloTreeSearch.searchBestNode(war, mctsArg).filter { it.applyAction !is EmptyAction }
-            log.info { "思考耗时：${(System.currentTimeMillis() - start)}ms，执行动作数：${bestNodes.size}" }
+            val arg = MCTSArg(
+                mctsArg.endMillisTime + execTime,
+                mctsArg.turnCount,
+                mctsArg.turnFactor,
+                mctsArg.countPerTurn,
+                mctsArg.scoreCalculator,
+                mctsArg.enableMultiThread
+            )
+            val bestNodes = monteCarloTreeSearch.searchBestNode(war, arg).filter { it.applyAction !is EmptyAction }
+            execTime += (System.currentTimeMillis() - start)
+            log.info { "思考耗时：${execTime}ms，执行动作数：${bestNodes.size}" }
             bestNodes.forEach { action ->
                 action.applyAction.exec.accept(war)
             }
             if (index < mctsArgList.size - 1) {
-                Thread.sleep(2000)
+                Thread.sleep(1000)
             }
             System.gc()
         }

@@ -245,6 +245,16 @@ object GameUtil {
         GREET_RECT.lClick()
     }
 
+    /**
+     * 失误表情
+     */
+    fun sendErrorEmoji() {
+        log.info { "发送失误表情" }
+        MY_HERO_RECT.rClick()
+        SystemUtil.delayMedium()
+        ERROR_RECT.lClick()
+    }
+
 
     fun getThreeDiscoverCardRect(index: Int): GameRect {
         if (index < 0 || index > THREE_DISCOVER_RECTS.size - 1) {

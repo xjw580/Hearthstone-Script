@@ -37,14 +37,20 @@ public class DeveloperSettingsController implements Initializable {
     private NotificationManager<String> notificationManager;
     @FXML
     private ComboBox<String> fileLogLevelComboBox;
-
+    @FXML
+    private Switch strategySwitch;
 
     private void initValue() {
+        strategySwitch.setStatus(ConfigUtil.INSTANCE.getBoolean(ConfigEnum.STRATEGY));
         fileLogLevelComboBox.setValue(ConfigExUtil.INSTANCE.getFileLogLevel().levelStr.toUpperCase(Locale.ROOT));
         autoOpenAnalysis.setStatus(ConfigUtil.INSTANCE.getBoolean(ConfigEnum.AUTO_OPEN_GAME_ANALYSIS));
     }
 
     private void addListener() {
+        //        监听策略开关
+        strategySwitch.statusProperty().addListener((observable, oldValue, newValue) -> {
+            ConfigUtil.INSTANCE.putBoolean(ConfigEnum.STRATEGY, newValue, true);
+        });
         autoOpenAnalysis.statusProperty().addListener((observable, oldValue, newValue) -> {
             ConfigUtil.INSTANCE.putBoolean(ConfigEnum.AUTO_OPEN_GAME_ANALYSIS, newValue, true);
         });

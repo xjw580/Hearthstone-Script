@@ -1,8 +1,8 @@
 package club.xiaojiawei.hsscript.utils
 
 import club.xiaojiawei.bean.Card
-import club.xiaojiawei.enums.CardTypeEnum
 import club.xiaojiawei.bean.War
+import club.xiaojiawei.enums.CardTypeEnum
 import javafx.scene.canvas.Canvas
 import javafx.scene.canvas.GraphicsContext
 import javafx.scene.paint.Color
@@ -22,6 +22,7 @@ object GameDataAnalysisUtil {
     private val areaFont = Font("Arial", 30.0)
     private val cardFont = Font("Arial", 20.0)
     private val cardNameFont = Font("Arial", 14.0)
+    private val cardIdFont = Font("Arial", 10.0)
     private val cardTypeFont = Font("Arial", 10.0)
     private const val ITEM_RATION = 0.166
     private const val CARD_WIDTH_RATION = 0.075
@@ -310,6 +311,7 @@ object GameDataAnalysisUtil {
             fill = Color.BLACK
             font = cardNameFont
             fillText(card.entityName, leftX, (bottomY + topY) / 2 - offset)
+            font = cardIdFont
             fillText(card.cardId, leftX, (bottomY + topY) / 2)
         }
     }

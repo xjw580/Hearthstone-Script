@@ -37,8 +37,8 @@ class InjectStarter : AbstractStarter() {
     private fun injectCheck(): Boolean {
         val injectUtilName = "injectUtil.exe"
         val dllName = "libHS.dll"
-        var injectFile: File
-        var dllFile: File
+        val injectFile: File
+        val dllFile: File
         if (Objects.requireNonNull<URL>(javaClass.getResource(""))
                 .protocol == "jar"
         ) {

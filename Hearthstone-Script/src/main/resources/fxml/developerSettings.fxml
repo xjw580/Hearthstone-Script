@@ -7,6 +7,8 @@
 <?import javafx.scene.layout.*?>
 <?import java.lang.*?>
 <?import club.xiaojiawei.controls.Switch?>
+<?import club.xiaojiawei.controls.ico.HelpIco?>
+<?import javafx.scene.text.Text?>
 <StackPane xmlns="http://javafx.com/javafx"
            xmlns:fx="http://javafx.com/fxml"
            stylesheets="@css/developerSettings.css"
@@ -15,6 +17,19 @@
     <VBox>
         <ScrollPane VBox.vgrow="ALWAYS" styleClass="scroll-pane-item">
             <VBox fx:id="mainVBox">
+                <HBox styleClass="h-box">
+                    <Text text="执行策略"/>
+                    <Label>
+                        <graphic>
+                            <HelpIco/>
+                        </graphic>
+                        <tooltip>
+                            <Tooltip text="是否执行卡组策略"/>
+                        </tooltip>
+                    </Label>
+                    <HBox HBox.hgrow="ALWAYS"/>
+                    <Switch fx:id="strategySwitch"/>
+                </HBox>
                 <HBox styleClass="h-box">
                     <HBox alignment="CENTER_LEFT">
                         <Hyperlink text="日志" onAction="#openLogFile"/>

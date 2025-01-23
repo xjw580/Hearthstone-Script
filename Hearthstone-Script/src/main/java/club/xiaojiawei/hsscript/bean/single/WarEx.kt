@@ -180,6 +180,17 @@ object WarEx {
     }
 
     @Synchronized
+    fun getPlayerByGameId(gameId: String): Player {
+        return war.run {
+            when (gameId) {
+                player1.gameId -> player1
+                player2.gameId -> player2
+                else -> Player.UNKNOWN_PLAYER
+            }
+        }
+    }
+
+    @Synchronized
     fun getReverseArea(area: Area): Area? {
         return war.run {
             when (area.player) {

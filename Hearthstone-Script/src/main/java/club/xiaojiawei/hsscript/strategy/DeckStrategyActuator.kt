@@ -3,6 +3,7 @@ package club.xiaojiawei.hsscript.strategy
 import club.xiaojiawei.DeckStrategy
 import club.xiaojiawei.bean.Card
 import club.xiaojiawei.bean.isValid
+import club.xiaojiawei.bean.safeRun
 import club.xiaojiawei.config.log
 import club.xiaojiawei.enums.ModeEnum
 import club.xiaojiawei.hsscript.enums.ConfigEnum
@@ -147,7 +148,7 @@ object DeckStrategyActuator {
         log.info { "执行出牌策略" }
 
         try {
-            war.me.let {
+            war.me.safeRun {
                 log.info { "回合开始可用水晶数：" + it.usableResource }
             }
             deckStrategy?.executeOutCard()

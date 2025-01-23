@@ -85,7 +85,7 @@ class Player(
      * 已使用的水晶
      */
     @Volatile
-    var resourcesUsed = 0
+    var usedResources = 0
         set(value) {
             (allowLog && value > 0).isTrue {
                 log.info { "玩家${playerId}【${gameId}】已使用${value}法力水晶" }
@@ -97,7 +97,7 @@ class Player(
      * 当前可用水晶数
      */
     val usableResource: Int
-        get() = resources - resourcesUsed + tempResources
+        get() = resources - usedResources + tempResources
 
     /**
      * 疲劳
@@ -115,7 +115,7 @@ class Player(
     var overloadLocked = 0
         set(value) {
             if (overloadLocked > 0) {
-                if (resourcesUsed == 0) {
+                if (usedResources == 0) {
                     allowLog.isTrue {
                         log.warn { "游戏过载日志打印不规范" }
                     }
@@ -135,7 +135,7 @@ class Player(
     var turn = 0
 
     fun resetResources() {
-        resourcesUsed = 0
+        usedResources = 0
         tempResources = 0
     }
 

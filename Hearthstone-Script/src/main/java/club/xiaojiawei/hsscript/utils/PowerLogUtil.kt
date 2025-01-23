@@ -2,6 +2,7 @@ package club.xiaojiawei.hsscript.utils
 
 import club.xiaojiawei.bean.Card
 import club.xiaojiawei.bean.Entity
+import club.xiaojiawei.bean.isValid
 import club.xiaojiawei.config.log
 import club.xiaojiawei.enums.ZoneEnum
 import club.xiaojiawei.hsscript.bean.CommonCardAction
@@ -136,7 +137,12 @@ object PowerLogUtil {
                 }
             } else {
 //            处理简单，例：TAG_CHANGE Entity=BouncyBear tag=NUM_TURNS_LEFT value=1
-                tagChangeEntity.tag?.tagChangeHandler?.handle(tagChangeEntity)
+                val player = WarEx.getPlayerByGameId(tagChangeEntity.entity)
+                if (player.isValid()) {
+                    tagChangeEntity.tag?.tagChangeHandler?.handle(null, tagChangeEntity, war, player, null)
+                } else {
+                    tagChangeEntity.tag?.tagChangeHandler?.handle(tagChangeEntity)
+                }
             }
         }
         return tagChangeEntity

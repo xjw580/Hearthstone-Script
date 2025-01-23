@@ -55,7 +55,7 @@ abstract class CardAction(createDefaultAction: Boolean = true) {
                     }, { newWar ->
 //                        模拟发射
                         findSelf(newWar)?.let { card ->
-                            card.area.player.resourcesUsed += card.launchCost()
+                            card.area.player.usedResources += card.launchCost()
                             card.isLaunchpad = false
                             card.isHideStats = false
                             CardUtil.handleCardExhaustedWhenIntoPlayArea(card)
@@ -66,8 +66,9 @@ abstract class CardAction(createDefaultAction: Boolean = true) {
                         }
                     })
                 )
+            }else{
+                emptyList()
             }
-            emptyList()
         } ?: emptyList()
     }
 
@@ -453,7 +454,7 @@ abstract class CardAction(createDefaultAction: Boolean = true) {
     fun spendSelfCost(war: War): Card? {
         val entityId = belongCard?.entityId ?: return null
         return war.cardMap[entityId]?.let { card ->
-            card.area.player.resourcesUsed += card.cost
+            card.area.player.usedResources += card.cost
             card
         } ?: let {
             log.warn { "查找卡牌失败,entityId:${entityId}" }

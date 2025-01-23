@@ -59,7 +59,11 @@ object GameTurnPhaseStrategy : AbstractPhaseStrategy() {
                             GameUtil.sendGreetEmoji()
                             SystemUtil.delayShortMedium()
                         }
+                        val start = System.currentTimeMillis()
                         DeckStrategyActuator.outCard()
+                        if (System.currentTimeMillis() - start > 30_000) {
+                            GameUtil.sendErrorEmoji()
+                        }
                         if (ConfigUtil.getBoolean(ConfigEnum.ONLY_ROBOT)) {
                             checkMeRobot()
                         }
