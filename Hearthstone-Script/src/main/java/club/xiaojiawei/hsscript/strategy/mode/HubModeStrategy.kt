@@ -16,8 +16,7 @@ import java.util.concurrent.TimeUnit
  */
 object HubModeStrategy : AbstractModeStrategy<Any?>() {
 
-    //    TODO ADD
-    val CLOSE_AD1_RECT: GameRect = GameRect(-0.0296, 0.0431, 0.2502, 0.2552)
+    val CLOSE_AD1_RECT: GameRect = GameRect(-0.0364, 0.0493, 0.2764, 0.3255);
 
     override fun wantEnter() {
     }
