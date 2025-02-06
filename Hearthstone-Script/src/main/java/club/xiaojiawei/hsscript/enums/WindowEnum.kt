@@ -8,6 +8,11 @@ import javafx.stage.StageStyle
  * @author 肖嘉威
  * @date 2023/10/1 10:37
  */
+
+private fun formatTitle(title: String): String {
+    return "$SCRIPT_NAME-${title}"
+}
+
 enum class WindowEnum(
     val fxmlName: String,
     val title: String = "",
@@ -20,7 +25,7 @@ enum class WindowEnum(
     val initStyle: StageStyle = StageStyle.DECORATED,
 ) {
     SETTINGS(
-        "settings.fxml", "$SCRIPT_NAME-设置",
+        "settings.fxml", formatTitle("设置"),
         width = 650.0, height = 450.0,
         alwaysOnTop = true
     ),
@@ -52,19 +57,24 @@ enum class WindowEnum(
         alwaysOnTop = true,
     ),
     STARTUP(
-        "startup.fxml", "$SCRIPT_NAME-启动页",
+        "startup.fxml", formatTitle("启动页"),
         558.0, 400.0
     ),
     VERSION_MSG(
-        "versionMsg.fxml", "版本说明",
+        "versionMsg.fxml", formatTitle("版本说明"),
         width = 550.0,
         alwaysOnTop = true
     ),
     GAME_DATA_ANALYSIS(
-        "gameDataAnalysis.fxml", "游戏数据分析",
+        "gameDataAnalysis.fxml", formatTitle("游戏数据分析"),
         x = 0.0, y = 0.0,
         cache = false,
         alwaysOnTop = true
     ),
+    MEASURE_GAME(
+        "measureGame.fxml", formatTitle("游戏控件测量"),
+        cache = false, alwaysOnTop = true
+    ),
     ;
+
 }

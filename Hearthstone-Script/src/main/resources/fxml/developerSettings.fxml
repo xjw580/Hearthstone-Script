@@ -50,7 +50,7 @@
                     </ComboBox>
                 </HBox>
                 <HBox styleClass="h-box">
-                    <Button text="测量游戏控件坐标" styleClass="btn-ui, btn-ui-normal, btn-ui-small"
+                    <Button text="测量游戏控件" styleClass="btn-ui, btn-ui-normal, btn-ui-small"
                             onAction="#openMeasureUtil"/>
                 </HBox>
                 <HBox styleClass="h-box">

@@ -125,7 +125,8 @@ public class DeveloperSettingsController implements Initializable {
 
     @FXML
     protected void openMeasureUtil(ActionEvent actionEvent) {
-        MeasureApplication.startStage(new Stage());
+//        MeasureApplication.startStage(new Stage());
+        WindowUtil.INSTANCE.showStage(WindowEnum.MEASURE_GAME, null);
     }
 
     @FXML

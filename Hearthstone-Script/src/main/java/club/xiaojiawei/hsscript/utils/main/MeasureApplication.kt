@@ -12,6 +12,7 @@ import javafx.event.EventHandler
 import javafx.geometry.Pos
 import javafx.scene.Scene
 import javafx.scene.control.Button
+import javafx.scene.control.Label
 import javafx.scene.control.TextArea
 import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyEvent
@@ -21,12 +22,11 @@ import javafx.scene.layout.HBox
 import javafx.scene.layout.StackPane
 import javafx.scene.layout.VBox
 import javafx.scene.paint.Color
+import javafx.scene.paint.Paint
 import javafx.scene.shape.Circle
 import javafx.scene.shape.Line
-import javafx.stage.Popup
-import javafx.stage.Screen
-import javafx.stage.Stage
-import javafx.stage.Window
+import javafx.scene.text.Text
+import javafx.stage.*
 import kotlin.math.max
 import kotlin.math.min
 
@@ -39,7 +39,16 @@ class MeasureApplication : Application() {
 
     @Throws(Exception::class)
     override fun start(primaryStage: Stage) {
-        startStage(primaryStage)
+//        startStage(primaryStage)
+        primaryStage.apply {
+            initStyle(StageStyle.TRANSPARENT)
+            scene = Scene(StackPane().apply {
+                children.add(Text("Code Style"))
+            }, 400.0, 400.0).apply {
+                fill = null
+            }
+            isAlwaysOnTop = true
+        }.show()
     }
 
     companion object {
@@ -89,7 +98,6 @@ class MeasureApplication : Application() {
         private fun show(stage: Stage, textArea: TextArea): Window? {
             val hwnd = findGameHWND()
             if (hwnd == null) {
-                println("null")
                 return null
             }
             SystemUtil.frontWindow(hwnd)
