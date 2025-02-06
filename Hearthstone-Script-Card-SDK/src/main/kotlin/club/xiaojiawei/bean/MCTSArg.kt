@@ -1,12 +1,14 @@
 package club.xiaojiawei.bean
 
-import club.xiaojiawei.bean.War
 import java.util.function.Function
 
 /**
  * @author 肖嘉威
  * @date 2025/1/15 10:59
  */
+
+typealias ScoreCalculator = Function<War, Double>
+
 data class MCTSArg(
     /**
      * 结束时间
@@ -27,7 +29,7 @@ data class MCTSArg(
     /**
      * 评分计算器，(输入游戏状态，返回游戏状态的评分，一个好的评分系统应该至少考虑战场和手牌)
      */
-    val scoreCalculator: Function<War, Double>,
+    val scoreCalculator: ScoreCalculator,
     /**
      * 开启多线程计算
      */

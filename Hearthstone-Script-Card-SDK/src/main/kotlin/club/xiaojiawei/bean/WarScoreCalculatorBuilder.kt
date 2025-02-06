@@ -6,7 +6,6 @@ import club.xiaojiawei.bean.area.PlayArea
 import club.xiaojiawei.bean.area.SecretArea
 import club.xiaojiawei.data.CARD_WEIGHT_TRIE
 import club.xiaojiawei.enums.CardTypeEnum
-import java.util.function.Function
 import kotlin.math.log
 import kotlin.math.max
 
@@ -34,8 +33,8 @@ val DEFAULT_WAR_SCORE_CALCULATOR by lazy { WarScoreCalculatorBuilder() }
 
 open class WarScoreCalculatorBuilder {
 
-    fun build(): Function<War, Double> {
-        return Function<War, Double> { war ->
+    fun build(): ScoreCalculator {
+        return ScoreCalculator { war ->
             calcPlayerScore(war.me) - calcPlayerScore(war.rival)
         }
     }
