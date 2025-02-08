@@ -1,16 +1,21 @@
 package club.xiaojiawei.hsscript.utils
 
 import club.xiaojiawei.bean.LRunnable
+import club.xiaojiawei.config.VIRTUAL_THREAD_POOL
 import club.xiaojiawei.config.log
 import club.xiaojiawei.hsscript.custom.MouseClickListener
 import club.xiaojiawei.hsscript.data.*
 import club.xiaojiawei.hsscript.dll.NoticeDll
 import club.xiaojiawei.hsscript.dll.SystemDll
+import club.xiaojiawei.hsscript.dll.SystemDll.Companion.MB_ICONERROR
+import club.xiaojiawei.hsscript.dll.SystemDll.Companion.MB_OK
 import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.enums.RegCommonNameEnum
+import club.xiaojiawei.hsscript.enums.WindowEnum
 import club.xiaojiawei.hsscript.status.PauseStatus
 import club.xiaojiawei.util.RandomUtil
 import club.xiaojiawei.util.isTrue
+import com.sun.jna.WString
 import com.sun.jna.platform.win32.*
 import javafx.application.Platform
 import java.awt.*
@@ -343,4 +348,21 @@ object SystemUtil {
         }
     }
 
+    fun message(text: String, type: Int, hwnd: WinDef.HWND? = null) {
+        VIRTUAL_THREAD_POOL.submit {
+            var hwnd: WinDef.HWND? = null
+            WindowUtil.getStage(WindowEnum.MAIN)?.let {
+                hwnd = SystemDll.INSTANCE.FindWindowW_(null, WString(it.title))
+            }
+            SystemDll.INSTANCE.MessageBox_(hwnd, text, SCRIPT_NAME, type)
+        }
+    }
+
+    fun messageOk(text: String, type: Int = MB_OK, hwnd: WinDef.HWND? = null) {
+        message(text, type, hwnd)
+    }
+
+    fun messageError(text: String, type: Int = MB_ICONERROR, hwnd: WinDef.HWND? = null) {
+        message(text, type, hwnd)
+    }
 }

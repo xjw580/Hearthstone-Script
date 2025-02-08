@@ -6,11 +6,10 @@ import club.xiaojiawei.hsscript.data.GAME_HWND
 import club.xiaojiawei.hsscript.data.GAME_US_NAME
 import club.xiaojiawei.hsscript.data.SCRIPT_NAME
 import club.xiaojiawei.hsscript.dll.SystemDll
-import club.xiaojiawei.hsscript.dll.SystemDll.MB_ICONERROR
-import club.xiaojiawei.hsscript.dll.SystemDll.MB_OK
 import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.utils.CMDUtil
 import club.xiaojiawei.hsscript.utils.ConfigUtil
+import club.xiaojiawei.hsscript.utils.SystemUtil
 import java.io.File
 import java.io.IOException
 import java.net.URL
@@ -47,14 +46,14 @@ class InjectStarter : AbstractStarter() {
             injectFile = Path.of(rootPath, injectUtilName).toFile()
             if (!injectFile.exists()) {
                 log.error { "未找到${injectFile.absolutePath}" }
-                SystemDll.INSTANCE.MessageBox_(null, "未找到${injectFile.absolutePath}", SCRIPT_NAME, MB_ICONERROR)
+                SystemUtil.messageError("未找到${injectFile.absolutePath}")
                 return false
             }
 
             dllFile = Path.of(DLL_PATH, dllName).toFile()
             if (!dllFile.exists()) {
                 log.error { "未找到${dllFile.absolutePath}" }
-                SystemDll.INSTANCE.MessageBox_(null, "未找到${dllFile.absolutePath}", SCRIPT_NAME, MB_ICONERROR)
+                SystemUtil.messageError("未找到${dllFile.absolutePath}")
                 return false
             }
         } else {
@@ -80,12 +79,12 @@ class InjectStarter : AbstractStarter() {
                     file = it
                 } else {
                     log.error { "未找到${it.absolutePath}" }
-                    SystemDll.INSTANCE.MessageBox_(null, "未找到${it.absolutePath}", SCRIPT_NAME, MB_ICONERROR)
+                    SystemUtil.messageError("未找到${it.absolutePath}")
                 }
             }
         } ?: let {
             log.error { "未找到${path}" }
-            SystemDll.INSTANCE.MessageBox_(null, "未找到${path}", SCRIPT_NAME, MB_ICONERROR)
+            SystemUtil.messageError("未找到${path}")
         }
         return file
     }
@@ -100,7 +99,7 @@ class InjectStarter : AbstractStarter() {
                 log.error { "注入失败：${result}" }
                 if (!SystemDll.INSTANCE.IsRunAsAdministrator()) {
                     log.error { "请以管理员运行本软件" }
-                    SystemDll.INSTANCE.MessageBox_(null, "请以管理员运行本软件", SCRIPT_NAME, MB_OK)
+                    SystemUtil.messageError("请以管理员运行本软件")
                 }
             }
         } catch (e: IOException) {

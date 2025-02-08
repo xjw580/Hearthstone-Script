@@ -9,6 +9,8 @@ import club.xiaojiawei.hsscript.bean.CommonCardAction.Companion.DEFAULT
 import club.xiaojiawei.hsscript.bean.Release
 import club.xiaojiawei.hsscript.config.InitializerConfig
 import club.xiaojiawei.hsscript.core.Core
+import club.xiaojiawei.hsscript.data.ARG_PAGE
+import club.xiaojiawei.hsscript.data.ARG_PAUSE
 import club.xiaojiawei.hsscript.data.GAME_CN_NAME
 import club.xiaojiawei.hsscript.dll.SystemDll
 import club.xiaojiawei.hsscript.dll.ZLaunchDll
@@ -25,12 +27,17 @@ import club.xiaojiawei.hsscript.utils.SystemUtil.shutdown
 import club.xiaojiawei.hsscript.utils.WindowUtil.buildStage
 import club.xiaojiawei.hsscript.utils.WindowUtil.getStage
 import club.xiaojiawei.hsscript.utils.WindowUtil.hideStage
+import club.xiaojiawei.hsscript.utils.WindowUtil.loadRoot
 import club.xiaojiawei.hsscript.utils.WindowUtil.showStage
 import club.xiaojiawei.util.isFalse
 import javafx.application.Application
 import javafx.application.Platform
 import javafx.beans.value.ChangeListener
 import javafx.beans.value.ObservableValue
+import javafx.scene.Scene
+import javafx.scene.control.Label
+import javafx.scene.layout.StackPane
+import javafx.stage.Popup
 import javafx.stage.Screen
 import javafx.stage.Stage
 import java.awt.MenuItem
@@ -50,7 +57,7 @@ class MainApplication : Application() {
 
     private var mainShowingListener: ChangeListener<Boolean?>? = null
 
-    var startUpVThread: Thread? = null
+    private var startUpVThread: Thread? = null
 
     override fun start(stage: Stage?) {
         startUpVThread = Thread.ofVirtual().start {
@@ -73,6 +80,16 @@ class MainApplication : Application() {
     }
 
     private fun showMainPage() {
+        if (PROGRAM_ARGS.stream().anyMatch {
+                if (it.startsWith(ARG_PAGE)) {
+                    WindowEnum.fromString(it.removePrefix(ARG_PAGE).uppercase())?.let { windowEnum ->
+                        showStage(windowEnum)
+                        ZLaunchDll.INSTANCE.HidePage()
+                        return@anyMatch true
+                    }
+                }
+                return@anyMatch false
+            }) return
         val stage = buildStage(WindowEnum.MAIN)
         mainShowingListener =
             ChangeListener { observableValue: ObservableValue<out Boolean?>, aBoolean: Boolean?, t1: Boolean? ->
@@ -175,7 +192,7 @@ class MainApplication : Application() {
                 val args = this.parameters.raw
                 var pause: String? = ""
                 for (arg in args) {
-                    if (arg.startsWith("--pause=")) {
+                    if (arg.startsWith(ARG_PAUSE)) {
                         val split: Array<String?> = arg.split("=".toRegex(), limit = 2).toTypedArray()
                         if (split.size > 1) {
                             pause = split[1]

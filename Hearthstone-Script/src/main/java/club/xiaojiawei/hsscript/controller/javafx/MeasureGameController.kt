@@ -2,9 +2,13 @@ package club.xiaojiawei.hsscript.controller.javafx
 
 import club.xiaojiawei.controls.NotificationManager
 import club.xiaojiawei.controls.Switch
+import club.xiaojiawei.hsscript.enums.WindowEnum
+import club.xiaojiawei.hsscript.utils.SystemUtil
+import club.xiaojiawei.hsscript.utils.WindowUtil
 import javafx.event.ActionEvent
 import javafx.fxml.FXML
-import javafx.scene.control.TitledPane
+import javafx.scene.control.TextArea
+import javafx.scene.control.ToggleButton
 import javafx.scene.layout.StackPane
 
 /**
@@ -14,10 +18,10 @@ import javafx.scene.layout.StackPane
 class MeasureGameController {
 
     @FXML
-    lateinit var codeStyleSwitch: Switch
+    lateinit var resultArea: TextArea
 
     @FXML
-    lateinit var usePane: TitledPane
+    lateinit var ktStyleSwitch: Switch
 
     @FXML
     lateinit var notificationManager: NotificationManager<String>
@@ -26,6 +30,50 @@ class MeasureGameController {
     lateinit var rootPane: StackPane
 
     @FXML
-    fun showGameModal(actionEvent: ActionEvent) {
+    private fun showGameModal(actionEvent: ActionEvent) {
+        val source = actionEvent.source
+        source as ToggleButton
+        if (source.isSelected) {
+            WindowUtil.showStage(WindowEnum.GAME_MEASURE_MODAL, rootPane.scene.window)
+        } else {
+            WindowUtil.hideStage(WindowEnum.GAME_MEASURE_MODAL)
+        }
     }
+
+    @FXML
+    private fun printResult(actionEvent: ActionEvent) {
+        WindowUtil.getController(WindowEnum.GAME_MEASURE_MODAL)?.let {
+            it as GameMeasureModalController
+            val builder = StringBuilder()
+            for ((index, gameRect) in it.getGameRect().withIndex()) {
+                if (ktStyleSwitch.status) {
+                    builder.append(
+                        String.format(
+                            "val RECT%d = GameRect(%.4f, %.4f, %.4f, %.4f);\n",
+                            index + 1, gameRect.left, gameRect.right, gameRect.top, gameRect.bottom
+                        )
+                    )
+                } else {
+                    builder.append(
+                        String.format(
+                            "public static final GameRect RECT%d = new GameRect(%.4fD, %.4fD, %.4fD, %.4fD);\n",
+                            index + 1, gameRect.left, gameRect.right, gameRect.top, gameRect.bottom
+                        )
+                    )
+                }
+            }
+            val result = builder.toString()
+            if (result.isNotEmpty()) {
+                SystemUtil.copyToClipboard(result)
+                resultArea.appendText(result)
+                notificationManager.showSuccess("已复制到剪切板", 1)
+            }
+        }
+    }
+
+    @FXML
+    fun clearResult(actionEvent: ActionEvent) {
+        resultArea.text = ""
+    }
+
 }

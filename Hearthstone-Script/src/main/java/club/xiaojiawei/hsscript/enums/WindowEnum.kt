@@ -1,5 +1,8 @@
 package club.xiaojiawei.hsscript.enums
 
+import club.xiaojiawei.config.log
+import club.xiaojiawei.enums.CardTypeEnum
+import club.xiaojiawei.enums.CardTypeEnum.UNKNOWN
 import club.xiaojiawei.hsscript.data.SCRIPT_NAME
 import javafx.stage.Screen
 import javafx.stage.StageStyle
@@ -75,6 +78,22 @@ enum class WindowEnum(
         "measureGame.fxml", formatTitle("游戏控件测量"),
         cache = false, alwaysOnTop = true
     ),
+    GAME_MEASURE_MODAL(
+        "gameMeasureModal.fxml",
+        cache = false, alwaysOnTop = true,
+        initStyle = StageStyle.TRANSPARENT,
+    ),
     ;
 
+    companion object {
+        fun fromString(str: String?): WindowEnum? {
+            if (str.isNullOrBlank()) return null
+            return try {
+                WindowEnum.valueOf(str.uppercase())
+            } catch (e: Exception) {
+                log.error(e) { }
+                null
+            }
+        }
+    }
 }

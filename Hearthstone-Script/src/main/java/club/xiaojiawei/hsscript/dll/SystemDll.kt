@@ -1,80 +1,82 @@
-package club.xiaojiawei.hsscript.dll;
+package club.xiaojiawei.hsscript.dll
 
-import com.sun.jna.Library;
-import com.sun.jna.Native;
-import com.sun.jna.WString;
-import com.sun.jna.platform.win32.WinDef;
+import com.sun.jna.Library
+import com.sun.jna.Native
+import com.sun.jna.WString
+import com.sun.jna.platform.win32.WinDef.HWND
 
 /**
  * 系统相关功能
  * @author 肖嘉威
  * @date 2023/9/16 17:34
  */
-@SuppressWarnings("all")
-public interface SystemDll extends Library {
+interface SystemDll : Library {
+    fun normalLeftClick(x: Int, y: Int)
 
-    SystemDll INSTANCE = Native.load("dll/system", SystemDll.class);
+    fun leftClick(x: Long, y: Long, hwnd: HWND?, isReal: Boolean)
 
-    void normalLeftClick(int x, int y);
+    fun rightClick(x: Long, y: Long, hwnd: HWND?, isReal: Boolean)
 
-    void leftClick(long x, long y, WinDef.HWND hwnd, boolean isReal);
+    fun moveMouse(x: Long, y: Long, hwnd: HWND?)
 
-    void rightClick(long x, long y, WinDef.HWND hwnd, boolean isReal);
+    fun simulateHumanMove(startX: Int, startY: Int, endX: Int, endY: Int, hwnd: HWND?, pauseStep: Int, isReal: Boolean)
 
-    void moveMouse(long x, long y, WinDef.HWND hwnd);
+    fun closeProgram(hwnd: HWND?)
 
-    void simulateHumanMove(int startX, int startY, int endX, int endY, WinDef.HWND hwnd, int pauseStep, boolean isReal);
-
-    void closeProgram(WinDef.HWND hwnd);
-
-    void frontWindow(WinDef.HWND hwnd);
+    fun frontWindow(hwnd: HWND?)
 
     /**
      * 点击登录战网页的登入按钮
      * @param loginPlatformRootHWND
      */
-    void clickLoginPlatformLoginBtn(WinDef.HWND loginPlatformRootHWND);
+    fun clickLoginPlatformLoginBtn(loginPlatformRootHWND: HWND?)
 
-    void sendText(WinDef.HWND hwnd, String text, boolean append);
+    fun sendText(hwnd: HWND?, text: String?, append: Boolean)
 
-    boolean topWindow(WinDef.HWND hwnd, boolean isTop);
+    fun topWindow(hwnd: HWND?, isTop: Boolean): Boolean
 
-    boolean topWindowForTitle(String title, boolean isTop);
+    fun topWindowForTitle(title: String?, isTop: Boolean): Boolean
 
-    boolean moveWindow(WinDef.HWND hwnd, int x, int y, int w, int h, boolean ignoreSize);
+    fun moveWindow(hwnd: HWND?, x: Int, y: Int, w: Int, h: Int, ignoreSize: Boolean): Boolean
 
-    boolean moveWindowForTitle(String title, int x, int y, int w, int h, boolean ignoreSize);
+    fun moveWindowForTitle(title: String?, x: Int, y: Int, w: Int, h: Int, ignoreSize: Boolean): Boolean
 
-    boolean IsIconicWindow(WinDef.HWND hwnd);
+    fun IsIconicWindow(hwnd: HWND?): Boolean
 
-    void uninstallDll(WinDef.HWND hwnd);
+    fun uninstallDll(hwnd: HWND?)
 
     /**
      * 是否禁用输入
      * @param hwnd
      * @param disable
      */
-    void changeInput(WinDef.HWND hwnd, boolean disable);
+    fun changeInput(hwnd: HWND?, disable: Boolean)
 
     /**
      * 是否禁用窗口调整
      * @param hwnd
      * @param disable
      */
-    void changeWindow(WinDef.HWND hwnd, boolean disable);
+    fun changeWindow(hwnd: HWND?, disable: Boolean)
 
-    boolean IsRunAsAdministrator();
+    fun IsRunAsAdministrator(): Boolean
 
-    void MessageBox_(WinDef.HWND hwnd, String text, String title, int type);
+    fun MessageBox_(hwnd: HWND?, text: String?, title: String?, type: Int)
 
-    WinDef.HWND FindWindowW_(WString className, WString windowName);
+    fun FindWindowW_(className: WString?, windowName: WString?): HWND?
 
-    WinDef.HWND FindWindowsByProcessName(String processName);
+    fun FindWindowsByProcessName(processName: String?): HWND?
 
-    long FindProcessId_(String processName);
+    fun FindProcessId_(processName: String?): Long
 
-    int MB_ICONERROR = 0x00000010;
+    companion object {
 
-    int MB_OK = 0x00000000;
+        val INSTANCE: SystemDll = Native.load("dll/system", SystemDll::class.java)
 
+        const val MB_ICONERROR: Int = 0x00000010
+
+        const val MB_TOPMOST: Int = 0x00040000
+
+        const val MB_OK: Int = 0x00000000
+    }
 }

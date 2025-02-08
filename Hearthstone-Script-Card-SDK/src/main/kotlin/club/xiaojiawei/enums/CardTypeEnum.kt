@@ -63,7 +63,7 @@ enum class CardTypeEnum {
 
     companion object {
         fun fromString(str: String?): CardTypeEnum {
-            if (str == null || str.isBlank()) return UNKNOWN
+            if (str.isNullOrBlank()) return UNKNOWN
             return try {
                 valueOf(str.uppercase())
             }catch (_:Exception){

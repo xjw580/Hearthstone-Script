@@ -676,7 +676,7 @@ enum class TagEnum(
 
     companion object {
         fun fromString(tagEnumName: String?): TagEnum {
-            if (tagEnumName == null || tagEnumName.isBlank()) return UNKNOWN
+            if (tagEnumName.isNullOrBlank()) return UNKNOWN
             return try {
                 valueOf(tagEnumName)
             } catch (_: IllegalArgumentException) {

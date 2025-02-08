@@ -208,7 +208,7 @@ object WindowUtil {
         try {
             val fxmlLoader =
                 FXMLLoader(WindowUtil::class.java.getResource(FXML_PATH + windowEnum.fxmlName))
-            return fxmlLoader.load<Node>()
+            return fxmlLoader.load()
         } catch (e: IOException) {
             throw RuntimeException(e)
         }
@@ -243,6 +243,9 @@ object WindowUtil {
             }
             stage.isAlwaysOnTop = windowEnum.alwaysOnTop
             stage.initStyle(windowEnum.initStyle)
+            if (windowEnum.initStyle === StageStyle.TRANSPARENT) {
+                scene.fill = null
+            }
         } catch (e: IOException) {
             throw RuntimeException(e)
         }
