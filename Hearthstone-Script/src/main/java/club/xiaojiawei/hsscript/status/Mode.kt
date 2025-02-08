@@ -11,6 +11,7 @@ import club.xiaojiawei.hsscript.strategy.AbstractModeStrategy
  */
 object Mode {
 
+    @Volatile
     var currMode: ModeEnum? = null
         set(value) {
             field?.modeStrategy?.afterLeave()
@@ -20,6 +21,7 @@ object Mode {
             value?.modeStrategy?.entering()
         }
 
+    @Volatile
     var prevMode: ModeEnum? = null
 
     fun reset() {

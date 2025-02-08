@@ -16,7 +16,7 @@ val MAIN_PATH = ROOT_PATH
 
 val TEMP_VERSION_PATH: String = Path.of(ROOT_PATH, "new_version_temp").toString()
 
-val LOG_DIR: String = Path.of(ROOT_PATH, "log").toString()
+val LOG_PATH: String = Path.of(ROOT_PATH, "log").toString()
 
 val LIBRARY_PATH: String = Path.of(ROOT_PATH, "lib").toString()
 val DLL_PATH: String = Path.of(LIBRARY_PATH, "dll").toString()
@@ -27,7 +27,9 @@ val PLUGIN_PATH: String = Path.of(ROOT_PATH, "plugin").toString()
 
 val WEIGHT_CONFIG_PATH: Path = Path.of(CONFIG_PATH, "card.weight");
 
-const val FXML_PATH: String = "/fxml/"
+const val FXML_DIR: String = "/fxml/"
+
+const val GAME_LOG_DIR: String = "Logs"
 
 /**
  * 图片路径

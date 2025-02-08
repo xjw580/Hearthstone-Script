@@ -552,9 +552,9 @@ object GameUtil {
     }
 
     fun getLatestLogDir(): File? {
-        val gameLogDir = Path.of(ConfigUtil.getString(ConfigEnum.GAME_PATH), "Logs").toFile()
+        val gameLogDir = Path.of(ConfigUtil.getString(ConfigEnum.GAME_PATH), GAME_LOG_DIR).toFile()
 
-        var files: Array<File>? = null
+        val files: Array<File>?
         if (gameLogDir.exists() && gameLogDir.isDirectory) {
             files = gameLogDir.listFiles()
             Arrays.sort(files, Comparator.comparing { obj: File -> obj.name })

@@ -39,11 +39,11 @@ object ScreenLogListener :
             var line: String?
             while (!PauseStatus.isPause && WorkListener.working) {
                 line = it.readLine()
-                if (line == null || line.isEmpty()) {
+                if (line.isNullOrEmpty()) {
                     break
                 }
-                resolveLog(line)?.let {
-                    Mode.currMode = it
+                resolveLog(line)?.let { mode ->
+                    Mode.currMode = mode
                 }
             }
         }
@@ -54,7 +54,7 @@ object ScreenLogListener :
         return line?.let { l ->
             var index: Int
             if ((l.indexOf("currMode").also { index = it }) != -1) {
-                return ModeEnum.valueOf(l.substring(index + 9))
+                return ModeEnum.fromString(l.substring(index + 9))
             } else if (l.contains("OnDestroy()")) {
                 Thread.sleep(2000)
                 GameUtil.isAliveOfGame().isFalse {

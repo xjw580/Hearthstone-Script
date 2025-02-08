@@ -365,4 +365,10 @@ object SystemUtil {
     fun messageError(text: String, type: Int = MB_ICONERROR, hwnd: WinDef.HWND? = null) {
         message(text, type, hwnd)
     }
+
+    @Suppress("DEPRECATION")
+    fun openPath(path: String) {
+        Runtime.getRuntime().exec(String.format("explorer %s", path))
+    }
+
 }

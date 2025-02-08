@@ -3,13 +3,14 @@ package club.xiaojiawei.hsscript.controller.javafx
 import ch.qos.logback.classic.Level
 import club.xiaojiawei.controls.NotificationManager
 import club.xiaojiawei.controls.Switch
-import club.xiaojiawei.hsscript.data.LOG_DIR
+import club.xiaojiawei.hsscript.data.LOG_PATH
 import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.enums.WindowEnum
 import club.xiaojiawei.hsscript.utils.ConfigExUtil.getFileLogLevel
 import club.xiaojiawei.hsscript.utils.ConfigExUtil.storeFileLogLevel
 import club.xiaojiawei.hsscript.utils.ConfigUtil.getBoolean
 import club.xiaojiawei.hsscript.utils.ConfigUtil.putBoolean
+import club.xiaojiawei.hsscript.utils.SystemUtil
 import club.xiaojiawei.hsscript.utils.WindowUtil.showStage
 import javafx.beans.value.ObservableValue
 import javafx.event.ActionEvent
@@ -133,9 +134,8 @@ class DeveloperSettingsController : Initializable {
     }
 
     @FXML
-    @Throws(IOException::class)
     protected fun openLogFile(actionEvent: ActionEvent?) {
-        Runtime.getRuntime().exec(String.format("explorer %s", LOG_DIR))
+        SystemUtil.openPath(LOG_PATH)
     }
 
     @FXML

@@ -6,9 +6,14 @@ import club.xiaojiawei.bean.isValid
 import club.xiaojiawei.bean.safeRun
 import club.xiaojiawei.config.log
 import club.xiaojiawei.enums.ModeEnum
+import club.xiaojiawei.hsscript.data.GAME_LOG_DIR
 import club.xiaojiawei.hsscript.enums.ConfigEnum
+import club.xiaojiawei.hsscript.listener.log.AbstractLogListener
+import club.xiaojiawei.hsscript.listener.log.ScreenLogListener
+import club.xiaojiawei.hsscript.starter.LogListenStarter
 import club.xiaojiawei.hsscript.status.Mode
 import club.xiaojiawei.hsscript.status.PauseStatus
+import club.xiaojiawei.hsscript.utils.ConfigExUtil
 import club.xiaojiawei.hsscript.utils.ConfigUtil
 import club.xiaojiawei.hsscript.utils.GameUtil
 import club.xiaojiawei.hsscript.utils.SystemUtil
@@ -16,6 +21,7 @@ import club.xiaojiawei.status.WAR
 import club.xiaojiawei.util.RandomUtil
 import club.xiaojiawei.util.isFalse
 import club.xiaojiawei.util.isTrue
+import java.nio.file.Path
 
 /**
  * 卡牌策略抽象类
@@ -133,6 +139,13 @@ object DeckStrategyActuator {
 
     fun outCard() {
         if (!canExec()) return
+
+        if (Mode.currMode !== ModeEnum.GAMEPLAY) {
+            log.warn { "没有处于${ModeEnum.GAMEPLAY.comment}，但试图执行出牌方法，如脚本运行不正常请提交issue并附带游戏日志" }
+            ScreenLogListener.logFilePath?.let {
+                SystemUtil.openPath(it)
+            }
+        }
 
         val surrenderNumber = ConfigUtil.getInt(ConfigEnum.AUTO_SURRENDER)
 

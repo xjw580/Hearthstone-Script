@@ -32,7 +32,7 @@ enum class ModeEnum(val comment: String) {
     companion object {
         fun fromString(string: String): ModeEnum? {
             return try {
-                ModeEnum.valueOf(string)
+                ModeEnum.valueOf(string.trim().uppercase())
             } catch (_: Exception) {
                 log.warn { "未适配${string}" }
                 null

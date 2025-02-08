@@ -1,7 +1,7 @@
 package club.xiaojiawei.hsscript.utils
 
 import club.xiaojiawei.JavaFXUI
-import club.xiaojiawei.hsscript.data.FXML_PATH
+import club.xiaojiawei.hsscript.data.FXML_DIR
 import club.xiaojiawei.hsscript.enums.WindowEnum
 import club.xiaojiawei.hsscript.interfaces.StageHook
 import club.xiaojiawei.hsscript.utils.SystemUtil.findHWND
@@ -207,7 +207,7 @@ object WindowUtil {
     fun loadRoot(windowEnum: WindowEnum): Node {
         try {
             val fxmlLoader =
-                FXMLLoader(WindowUtil::class.java.getResource(FXML_PATH + windowEnum.fxmlName))
+                FXMLLoader(WindowUtil::class.java.getResource(FXML_DIR + windowEnum.fxmlName))
             return fxmlLoader.load()
         } catch (e: IOException) {
             throw RuntimeException(e)
@@ -218,7 +218,7 @@ object WindowUtil {
         val stage = Stage()
         try {
             val fxmlLoader =
-                FXMLLoader(WindowUtil::class.java.getResource(FXML_PATH + windowEnum.fxmlName))
+                FXMLLoader(WindowUtil::class.java.getResource(FXML_DIR + windowEnum.fxmlName))
             val scene = Scene(fxmlLoader.load())
             stage.properties[CONTROLLER_KEY] = fxmlLoader.getController()
             scene.stylesheets.add(JavaFXUI.javafxUIStylesheet())

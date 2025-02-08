@@ -23,7 +23,7 @@ abstract class AbstractLogListener(
     protected var listenInitialDelay: Long,
     protected var listenPeriod: Long,
     protected var listenTimeUnit: TimeUnit
-): ScheduledCloser {
+) : ScheduledCloser {
 
     init {
         TaskManager.addTask(this)
@@ -34,6 +34,7 @@ abstract class AbstractLogListener(
     val logFile: RandomAccessFile?
         get() = innerLogFile
 
+    var logFilePath: String? = null
 
     private var logScheduledFuture: ScheduledFuture<*>? = null
 
@@ -98,6 +99,7 @@ abstract class AbstractLogListener(
                     fileWriter.write("")
                 }
             }
+            logFilePath = logFile.absolutePath
             logFile
         }
     }
@@ -106,6 +108,7 @@ abstract class AbstractLogListener(
         innerLogFile?.let {
             it.close()
             innerLogFile = null
+            logFilePath = null
         }
     }
 
@@ -121,7 +124,7 @@ abstract class AbstractLogListener(
         closeLogListener()
     }
 
-    companion object{
+    companion object {
         var logPath: File? = null
     }
 
