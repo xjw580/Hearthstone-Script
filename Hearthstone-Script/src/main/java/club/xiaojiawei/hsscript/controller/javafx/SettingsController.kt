@@ -1,75 +1,79 @@
-package club.xiaojiawei.hsscript.controller.javafx;
+package club.xiaojiawei.hsscript.controller.javafx
 
-import club.xiaojiawei.hsscript.enums.WindowEnum;
-import club.xiaojiawei.hsscript.utils.WindowUtil;
-import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
-
-import java.net.URL;
-import java.util.Objects;
-import java.util.ResourceBundle;
+import club.xiaojiawei.hsscript.enums.WindowEnum
+import club.xiaojiawei.hsscript.utils.WindowUtil.loadRoot
+import javafx.beans.value.ObservableValue
+import javafx.fxml.FXML
+import javafx.fxml.Initializable
+import javafx.scene.control.Tab
+import javafx.scene.control.TabPane
+import java.net.URL
+import java.util.*
 
 /**
  * @author 肖嘉威
  * @date 2023/10/14 12:43
  */
-public class SettingsController implements Initializable {
+class SettingsController : Initializable {
+    @FXML
+    lateinit var initTab: Tab
 
     @FXML
-    protected Tab initTab;
-    @FXML
-    protected Tab advancedTab;
-    @FXML
-    protected Tab pluginTab;
-    @FXML
-    protected Tab strategyTab;
-    @FXML
-    protected Tab weightTab;
-    @FXML
-    protected Tab developerTab;
-    @FXML
-    protected TabPane rootPane;
+    lateinit var advancedTab: Tab
 
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
-        Tab selectedItem = rootPane.getSelectionModel().getSelectedItem();
+    @FXML
+    lateinit var pluginTab: Tab
+
+    @FXML
+    lateinit var strategyTab: Tab
+
+    @FXML
+    lateinit var weightTab: Tab
+
+    @FXML
+    lateinit var developerTab: Tab
+
+    @FXML
+    lateinit var rootPane: TabPane
+
+    override fun initialize(url: URL?, resourceBundle: ResourceBundle?) {
+        val selectedItem = rootPane.selectionModel.selectedItem
         if (selectedItem != null) {
-            loadTab(selectedItem);
+            loadTab(selectedItem)
         }
-        rootPane.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            loadTab(newValue);
-        });
+        rootPane.selectionModel.selectedItemProperty()
+            .addListener { observable: ObservableValue<out Tab>?, oldValue: Tab?, newValue: Tab ->
+                loadTab(newValue)
+            }
     }
 
-    private void loadTab(Tab tab) {
-        if (Objects.equals(advancedTab, tab)) {
-            if (advancedTab.getContent() == null) {
+    private fun loadTab(tab: Tab) {
+        if (advancedTab == tab) {
+            if (advancedTab.content == null) {
 //                Node node = WindowUtil.INSTANCE.loadRoot(WindowEnum.ADVANCED_SETTINGS);
 //                ScrollPane scrollPane = new ScrollPane(node);
 //                scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-                advancedTab.setContent(WindowUtil.INSTANCE.loadRoot(WindowEnum.ADVANCED_SETTINGS));
+                advancedTab.content = loadRoot(WindowEnum.ADVANCED_SETTINGS)
             }
-        } else if (Objects.equals(initTab, tab)) {
-            if (initTab.getContent() == null) {
-                initTab.setContent(WindowUtil.INSTANCE.loadRoot(WindowEnum.INIT_SETTINGS));
+        } else if (initTab == tab) {
+            if (initTab.content == null) {
+                initTab.content = loadRoot(WindowEnum.INIT_SETTINGS)
             }
-        } else if (Objects.equals(pluginTab, tab)) {
-            if (pluginTab.getContent() == null) {
-                pluginTab.setContent(WindowUtil.INSTANCE.loadRoot(WindowEnum.PLUGIN_SETTINGS));
+        } else if (pluginTab == tab) {
+            if (pluginTab.content == null) {
+                pluginTab.content = loadRoot(WindowEnum.PLUGIN_SETTINGS)
             }
-        } else if (Objects.equals(strategyTab, tab)) {
-            if (strategyTab.getContent() == null) {
-                strategyTab.setContent(WindowUtil.INSTANCE.loadRoot(WindowEnum.STRATEGY_SETTINGS));
+        } else if (strategyTab == tab) {
+            if (strategyTab.content == null) {
+                strategyTab.content = loadRoot(WindowEnum.STRATEGY_SETTINGS)
             }
-        } else if (Objects.equals(weightTab, tab)) {
-            if (weightTab.getContent() == null) {
-                weightTab.setContent(WindowUtil.INSTANCE.loadRoot(WindowEnum.WEIGHT_SETTINGS));
+        } else if (weightTab == tab) {
+            if (weightTab.content == null) {
+                weightTab.content = loadRoot(WindowEnum.WEIGHT_SETTINGS)
             }
-        } else if (Objects.equals(developerTab, tab)) {
-            if (developerTab.getContent() == null) {
-                developerTab.setContent(WindowUtil.INSTANCE.loadRoot(WindowEnum.DEVELOPER_SETTINGS));
+        } else if (developerTab == tab) {
+            if (developerTab.content == null) {
+                developerTab.content = loadRoot(WindowEnum.DEVELOPER_SETTINGS)
             }
         }
     }

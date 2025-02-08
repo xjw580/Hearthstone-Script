@@ -1,137 +1,145 @@
-package club.xiaojiawei.hsscript.controller.javafx;
+package club.xiaojiawei.hsscript.controller.javafx
 
-import club.xiaojiawei.controls.NotificationManager;
-import club.xiaojiawei.controls.PasswordTextField;
-import club.xiaojiawei.hsscript.enums.ConfigEnum;
-import club.xiaojiawei.hsscript.enums.WindowEnum;
-import club.xiaojiawei.hsscript.utils.ConfigExUtil;
-import club.xiaojiawei.hsscript.utils.ConfigUtil;
-import club.xiaojiawei.hsscript.utils.WindowUtil;
-import javafx.beans.value.ChangeListener;
-import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
-import javafx.stage.DirectoryChooser;
-import javafx.stage.FileChooser;
-import javafx.stage.Stage;
-
-import java.io.File;
-import java.net.URL;
-import java.util.ResourceBundle;
-
-import static club.xiaojiawei.hsscript.data.ScriptDataKt.*;
-
+import club.xiaojiawei.controls.NotificationManager
+import club.xiaojiawei.controls.PasswordTextField
+import club.xiaojiawei.hsscript.data.GAME_CN_NAME
+import club.xiaojiawei.hsscript.data.PLATFORM_CN_NAME
+import club.xiaojiawei.hsscript.data.haveProgramPath
+import club.xiaojiawei.hsscript.enums.ConfigEnum
+import club.xiaojiawei.hsscript.enums.WindowEnum
+import club.xiaojiawei.hsscript.utils.ConfigExUtil.storeGamePath
+import club.xiaojiawei.hsscript.utils.ConfigExUtil.storePlatformPath
+import club.xiaojiawei.hsscript.utils.ConfigUtil.getInt
+import club.xiaojiawei.hsscript.utils.ConfigUtil.getString
+import club.xiaojiawei.hsscript.utils.ConfigUtil.putInt
+import club.xiaojiawei.hsscript.utils.ConfigUtil.putString
+import club.xiaojiawei.hsscript.utils.WindowUtil.hideStage
+import javafx.beans.value.ChangeListener
+import javafx.beans.value.ObservableValue
+import javafx.fxml.FXML
+import javafx.fxml.Initializable
+import javafx.scene.Scene
+import javafx.scene.control.*
+import javafx.scene.layout.StackPane
+import javafx.scene.layout.VBox
+import javafx.scene.text.Text
+import javafx.stage.DirectoryChooser
+import javafx.stage.FileChooser
+import javafx.stage.Stage
+import java.net.URL
+import java.util.*
 
 /**
  * @author 肖嘉威
  * @date 2023/2/11 17:24
  */
-public class InitSettingsController implements Initializable {
+class InitSettingsController : Initializable {
+    @FXML
+    lateinit var deckPosComboBox: ComboBox<String>
 
     @FXML
-    private ComboBox<String> deckPosComboBox;
-    @FXML
-    private VBox mainVBox;
-    @FXML
-    private NotificationManager<Object> notificationManager;
-    @FXML
-    private Text gamePath;
-    @FXML
-    private Text platformPath;
-    @FXML
-    private PasswordTextField password;
-    @FXML
-    private StackPane rootPane;
-    @FXML
-    private Button apply;
-    @FXML
-    private Button save;
-
-    private ChangeListener<Scene> sceneListener;
+    lateinit var mainVBox: VBox
 
     @FXML
-    protected void gameClicked() {
-        DirectoryChooser directoryChooser = new DirectoryChooser();
-        directoryChooser.setTitle("选择" + GAME_CN_NAME + "安装路径");
-        File file = directoryChooser.showDialog(new Stage());
+    lateinit var notificationManager: NotificationManager<Any>
+
+    @FXML
+    lateinit var gamePath: Text
+
+    @FXML
+    lateinit var platformPath: Text
+
+    @FXML
+    lateinit var password: PasswordTextField
+
+    @FXML
+    lateinit var rootPane: StackPane
+
+    @FXML
+    lateinit var apply: Button
+
+    @FXML
+    lateinit var save: Button
+
+    private var sceneListener: ChangeListener<Scene>? = null
+
+    @FXML
+    protected fun gameClicked() {
+        val directoryChooser = DirectoryChooser()
+        directoryChooser.title = "选择" + GAME_CN_NAME + "安装路径"
+        val file = directoryChooser.showDialog(Stage())
         if (file != null) {
-            gamePath.setText(file.getAbsolutePath());
+            gamePath.text = file.absolutePath
         }
     }
 
     @FXML
-    protected void platformClicked() {
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("选择" + PLATFORM_CN_NAME + "程序");
-        fileChooser.getExtensionFilters().add(
-                new FileChooser.ExtensionFilter("程序", "*.exe")
-        );
-        File chooseFile = fileChooser.showOpenDialog(new Stage());
+    protected fun platformClicked() {
+        val fileChooser = FileChooser()
+        fileChooser.title = "选择" + PLATFORM_CN_NAME + "程序"
+        fileChooser.extensionFilters.add(
+            FileChooser.ExtensionFilter("程序", "*.exe")
+        )
+        val chooseFile = fileChooser.showOpenDialog(Stage())
         if (chooseFile != null) {
-            platformPath.setText(chooseFile.getAbsolutePath());
+            platformPath.text = chooseFile.absolutePath
         }
     }
 
     @FXML
-    protected void apply() {
+    protected fun apply() {
         if (checkConfiguration()) {
-            notificationManager.showSuccess("应用成功", 2);
+            notificationManager.showSuccess("应用成功", 2)
         }
     }
 
     @FXML
-    protected void save() {
+    protected fun save() {
         if (checkConfiguration()) {
-            WindowUtil.INSTANCE.hideStage(WindowEnum.SETTINGS);
+            hideStage(WindowEnum.SETTINGS)
         }
     }
 
-    private boolean checkConfiguration() {
-        ConfigUtil.INSTANCE.putString(ConfigEnum.PLATFORM_PASSWORD, password.getText(), true);
-        if (!ConfigExUtil.INSTANCE.storePlatformPath(platformPath.getText())) {
-            notificationManager.showError(PLATFORM_CN_NAME + "安装路径不正确,请重新选择", 3);
-            initValue();
-            return false;
+    private fun checkConfiguration(): Boolean {
+        putString(ConfigEnum.PLATFORM_PASSWORD, password.text, true)
+        if (!storePlatformPath(platformPath.text)) {
+            notificationManager.showError(PLATFORM_CN_NAME + "安装路径不正确,请重新选择", 3)
+            initValue()
+            return false
         }
-        if (!ConfigExUtil.INSTANCE.storeGamePath(gamePath.getText())) {
-            notificationManager.showError(GAME_CN_NAME + "安装路径不正确,请重新选择", 3);
-            initValue();
-            return false;
+        if (!storeGamePath(gamePath.text)) {
+            notificationManager.showError(GAME_CN_NAME + "安装路径不正确,请重新选择", 3)
+            initValue()
+            return false
         }
-        setHaveProgramPath(true);
-        return true;
+        haveProgramPath = true
+        return true
     }
 
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
-        initValue();
-        addListener();
+    override fun initialize(url: URL?, resourceBundle: ResourceBundle?) {
+        initValue()
+        addListener()
     }
 
-    private void addListener() {
-        sceneListener = (observableValue, scene, t1) -> {
-            mainVBox.prefWidthProperty().bind(t1.widthProperty());
-            mainVBox.prefWidthProperty().bind(t1.widthProperty());
-            mainVBox.sceneProperty().removeListener(sceneListener);
-        };
-        mainVBox.sceneProperty().addListener(sceneListener);
-        deckPosComboBox.valueProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue == null || newValue.isBlank()) return;
-            ConfigUtil.INSTANCE.putInt(ConfigEnum.CHOOSE_DECK_POS, Integer.parseInt(newValue), true);
-            notificationManager.showSuccess("修改成功", 2);
-        });
+    private fun addListener() {
+        sceneListener = ChangeListener { observableValue: ObservableValue<out Scene>?, scene: Scene?, t1: Scene ->
+            mainVBox.prefWidthProperty().bind(t1.widthProperty())
+            mainVBox.prefWidthProperty().bind(t1.widthProperty())
+            mainVBox.sceneProperty().removeListener(sceneListener)
+        }
+        mainVBox.sceneProperty().addListener(sceneListener)
+        deckPosComboBox.valueProperty()
+            .addListener { observable: ObservableValue<out String>?, oldValue: String?, newValue: String? ->
+                if (newValue.isNullOrBlank()) return@addListener
+                putInt(ConfigEnum.CHOOSE_DECK_POS, newValue.toInt(), true)
+                notificationManager.showSuccess("修改成功", 2)
+            }
     }
 
-    private void initValue() {
-        gamePath.setText(ConfigUtil.INSTANCE.getString(ConfigEnum.GAME_PATH));
-        platformPath.setText(ConfigUtil.INSTANCE.getString(ConfigEnum.PLATFORM_PATH));
-        password.setText(ConfigUtil.INSTANCE.getString(ConfigEnum.PLATFORM_PASSWORD));
-        deckPosComboBox.setValue(String.valueOf(ConfigUtil.INSTANCE.getInt(ConfigEnum.CHOOSE_DECK_POS)));
+    private fun initValue() {
+        gamePath.text = getString(ConfigEnum.GAME_PATH)
+        platformPath.text = getString(ConfigEnum.PLATFORM_PATH)
+        password.text = getString(ConfigEnum.PLATFORM_PASSWORD)
+        deckPosComboBox.value = getInt(ConfigEnum.CHOOSE_DECK_POS).toString()
     }
-
 }

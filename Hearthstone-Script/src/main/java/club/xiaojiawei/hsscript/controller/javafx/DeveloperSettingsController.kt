@@ -1,134 +1,151 @@
-package club.xiaojiawei.hsscript.controller.javafx;
+package club.xiaojiawei.hsscript.controller.javafx
 
-import ch.qos.logback.classic.Level;
-import club.xiaojiawei.controls.NotificationManager;
-import club.xiaojiawei.controls.Switch;
-import club.xiaojiawei.hsscript.data.PathDataKt;
-import club.xiaojiawei.hsscript.enums.ConfigEnum;
-import club.xiaojiawei.hsscript.enums.WindowEnum;
-import club.xiaojiawei.hsscript.utils.ConfigExUtil;
-import club.xiaojiawei.hsscript.utils.ConfigUtil;
-import club.xiaojiawei.hsscript.utils.WindowUtil;
-import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
-import javafx.util.Callback;
-
-import java.io.IOException;
-import java.net.URL;
-import java.util.Locale;
-import java.util.ResourceBundle;
+import ch.qos.logback.classic.Level
+import club.xiaojiawei.controls.NotificationManager
+import club.xiaojiawei.controls.Switch
+import club.xiaojiawei.hsscript.data.LOG_DIR
+import club.xiaojiawei.hsscript.enums.ConfigEnum
+import club.xiaojiawei.hsscript.enums.WindowEnum
+import club.xiaojiawei.hsscript.utils.ConfigExUtil.getFileLogLevel
+import club.xiaojiawei.hsscript.utils.ConfigExUtil.storeFileLogLevel
+import club.xiaojiawei.hsscript.utils.ConfigUtil.getBoolean
+import club.xiaojiawei.hsscript.utils.ConfigUtil.putBoolean
+import club.xiaojiawei.hsscript.utils.WindowUtil.showStage
+import javafx.beans.value.ObservableValue
+import javafx.event.ActionEvent
+import javafx.fxml.FXML
+import javafx.fxml.Initializable
+import javafx.scene.control.*
+import java.io.IOException
+import java.net.URL
+import java.util.*
 
 /**
  * @author 肖嘉威
  * @date 2025/1/20 22:38
  */
-public class DeveloperSettingsController implements Initializable {
+class DeveloperSettingsController : Initializable {
 
     @FXML
-    private Switch autoOpenAnalysis;
-    @FXML
-    private NotificationManager<String> notificationManager;
-    @FXML
-    private ComboBox<String> fileLogLevelComboBox;
-    @FXML
-    private Switch strategySwitch;
+    lateinit var autoOpenAnalysis: Switch
 
-    private void initValue() {
-        strategySwitch.setStatus(ConfigUtil.INSTANCE.getBoolean(ConfigEnum.STRATEGY));
-        fileLogLevelComboBox.setValue(ConfigExUtil.INSTANCE.getFileLogLevel().levelStr.toUpperCase(Locale.ROOT));
-        autoOpenAnalysis.setStatus(ConfigUtil.INSTANCE.getBoolean(ConfigEnum.AUTO_OPEN_GAME_ANALYSIS));
+    @FXML
+    lateinit var notificationManager: NotificationManager<String>
+
+    @FXML
+    lateinit var fileLogLevelComboBox: ComboBox<String>
+
+    @FXML
+    lateinit var strategySwitch: Switch
+
+    private fun initValue() {
+        strategySwitch.status = getBoolean(ConfigEnum.STRATEGY)
+        fileLogLevelComboBox.value = getFileLogLevel().levelStr.uppercase()
+        autoOpenAnalysis.status = getBoolean(ConfigEnum.AUTO_OPEN_GAME_ANALYSIS)
     }
 
-    private void addListener() {
+    private fun addListener() {
         //        监听策略开关
-        strategySwitch.statusProperty().addListener((observable, oldValue, newValue) -> {
-            ConfigUtil.INSTANCE.putBoolean(ConfigEnum.STRATEGY, newValue, true);
-        });
-        autoOpenAnalysis.statusProperty().addListener((observable, oldValue, newValue) -> {
-            ConfigUtil.INSTANCE.putBoolean(ConfigEnum.AUTO_OPEN_GAME_ANALYSIS, newValue, true);
-        });
-        fileLogLevelComboBox.valueProperty().addListener((observable, oldValue, newValue) -> {
-            ConfigExUtil.INSTANCE.storeFileLogLevel(newValue);
-        });
-        fileLogLevelComboBox.setCellFactory(new Callback<>() {
-            @Override
-            public ListCell<String> call(ListView<String> param) {
-                return new ListCell<>() {
-
-                    @Override
-                    protected void updateItem(String s, boolean b) {
-                        super.updateItem(s, b);
-                        if (s == null || b) return;
-                        Level level = Level.valueOf(s);
-                        if (level == Level.OFF) {
-                            setText(level.levelStr);
-                        } else if (level == Level.ERROR) {
-                            if (isSelected()) {
-                                setGraphic(new Label(level.levelStr));
-                            } else {
-                                setGraphic(new Label(level.levelStr) {{
-                                    setStyle("-fx-text-fill: #ff0000;");
-                                }});
+        strategySwitch.statusProperty()
+            .addListener { observable, oldValue, newValue ->
+                putBoolean(
+                    ConfigEnum.STRATEGY,
+                    newValue, true
+                )
+            }
+        autoOpenAnalysis.statusProperty()
+            .addListener { observable, oldValue, newValue ->
+                putBoolean(
+                    ConfigEnum.AUTO_OPEN_GAME_ANALYSIS,
+                    newValue, true
+                )
+            }
+        fileLogLevelComboBox.valueProperty()
+            .addListener { observable: ObservableValue<out String>?, oldValue: String?, newValue: String? ->
+                newValue?.let {
+                    storeFileLogLevel(
+                        newValue
+                    )
+                }
+            }
+        fileLogLevelComboBox.setCellFactory {
+            object : ListCell<String?>() {
+                override fun updateItem(s: String?, b: Boolean) {
+                    super.updateItem(s, b)
+                    if (s == null || b) return
+                    val level = Level.valueOf(s)
+                    if (level == Level.OFF) {
+                        text = level.levelStr
+                    } else if (level == Level.ERROR) {
+                        if (isSelected) {
+                            graphic = Label(level.levelStr)
+                        } else {
+                            graphic = object : Label(level.levelStr) {
+                                init {
+                                    style = "-fx-text-fill: #ff0000;"
+                                }
                             }
-                        } else if (level == Level.WARN) {
-                            if (isSelected()) {
-                                setGraphic(new Label(level.levelStr));
-                            } else {
-                                setGraphic(new Label(level.levelStr) {{
-                                    setStyle("-fx-text-fill: #ff8000;");
-                                }});
+                        }
+                    } else if (level == Level.WARN) {
+                        if (isSelected) {
+                            graphic = Label(level.levelStr)
+                        } else {
+                            graphic = object : Label(level.levelStr) {
+                                init {
+                                    style = "-fx-text-fill: #ff8000;"
+                                }
                             }
-                        } else if (level == Level.INFO) {
-                            setGraphic(new Label(level.levelStr) {{
-                                setStyle("-fx-text-fill: #009e00;");
-                            }});
-                            if (isSelected()) {
-                                setGraphic(new Label(level.levelStr));
-                            } else {
-                                setGraphic(new Label(level.levelStr) {{
-                                    setStyle("-fx-text-fill: #009e00;");
-                                }});
+                        }
+                    } else if (level == Level.INFO) {
+                        graphic = object : Label(level.levelStr) {
+                            init {
+                                style = "-fx-text-fill: #009e00;"
                             }
-                        } else if (level == Level.DEBUG) {
-                            if (isSelected()) {
-                                setGraphic(new Label(level.levelStr));
-                            } else {
-                                setGraphic(new Label(level.levelStr) {{
-                                    setStyle("-fx-text-fill: #1982fd;");
-                                }});
+                        }
+                        if (isSelected) {
+                            graphic = Label(level.levelStr)
+                        } else {
+                            graphic = object : Label(level.levelStr) {
+                                init {
+                                    style = "-fx-text-fill: #009e00;"
+                                }
+                            }
+                        }
+                    } else if (level == Level.DEBUG) {
+                        if (isSelected) {
+                            graphic = Label(level.levelStr)
+                        } else {
+                            graphic = object : Label(level.levelStr) {
+                                init {
+                                    style = "-fx-text-fill: #1982fd;"
+                                }
                             }
                         }
                     }
-                };
+                }
             }
-        });
+        }
     }
 
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
-        initValue();
-        addListener();
-    }
-
-    @FXML
-    @SuppressWarnings("all")
-    protected void openLogFile(ActionEvent actionEvent) throws IOException {
-        Runtime.getRuntime().exec(String.format("explorer %s", PathDataKt.getLOG_DIR()));
+    override fun initialize(url: URL?, resourceBundle: ResourceBundle?) {
+        initValue()
+        addListener()
     }
 
     @FXML
-    protected void openMeasureUtil(ActionEvent actionEvent) {
+    @Throws(IOException::class)
+    protected fun openLogFile(actionEvent: ActionEvent?) {
+        Runtime.getRuntime().exec(String.format("explorer %s", LOG_DIR))
+    }
+
+    @FXML
+    protected fun openMeasureUtil(actionEvent: ActionEvent?) {
 //        MeasureApplication.startStage(new Stage());
-        WindowUtil.INSTANCE.showStage(WindowEnum.MEASURE_GAME, null);
+        showStage(WindowEnum.MEASURE_GAME, null)
     }
 
     @FXML
-    protected void openGameDataAnalysis(ActionEvent actionEvent) {
-        WindowUtil.INSTANCE.showStage(WindowEnum.GAME_DATA_ANALYSIS, null);
+    protected fun openGameDataAnalysis(actionEvent: ActionEvent?) {
+        showStage(WindowEnum.GAME_DATA_ANALYSIS, null)
     }
 }

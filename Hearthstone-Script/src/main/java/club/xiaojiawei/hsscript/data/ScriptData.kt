@@ -95,9 +95,7 @@ const val CONCEDED: String = "CONCEDED"
 const val ARG_PAUSE: String = "--pause="
 const val ARG_PAGE: String = "--page="
 
-
-
-fun reload() {
+fun reloadScriptData() {
     MAX_LOG_SIZE_KB = ConfigUtil.getInt(ConfigEnum.GAME_LOG_LIMIT)
     MAX_LOG_SIZE_B = MAX_LOG_SIZE_KB * 1024
 }

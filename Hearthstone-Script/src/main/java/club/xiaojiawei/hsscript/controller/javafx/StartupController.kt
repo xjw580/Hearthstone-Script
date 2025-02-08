@@ -1,57 +1,58 @@
-package club.xiaojiawei.hsscript.controller.javafx;
+package club.xiaojiawei.hsscript.controller.javafx
 
-import club.xiaojiawei.hsscript.enums.WindowEnum;
-import club.xiaojiawei.hsscript.utils.WindowUtil;
-import javafx.application.Platform;
-import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
-import javafx.scene.control.ProgressBar;
-import javafx.scene.text.Text;
-
-import java.net.URL;
-import java.util.ResourceBundle;
-import java.util.Timer;
-import java.util.TimerTask;
-
-import static club.xiaojiawei.hsscript.data.ScriptDataKt.SCRIPT_NAME;
+import club.xiaojiawei.hsscript.data.SCRIPT_NAME
+import club.xiaojiawei.hsscript.enums.WindowEnum
+import club.xiaojiawei.hsscript.utils.WindowUtil.hideStage
+import javafx.application.Platform
+import javafx.fxml.FXML
+import javafx.fxml.Initializable
+import javafx.scene.control.ProgressBar
+import javafx.scene.text.Text
+import java.net.URL
+import java.util.*
 
 /**
  * @author 肖嘉威
  * @date 2023/10/14 12:43
  */
-public class StartupController implements Initializable {
+class StartupController : Initializable {
+    @FXML
+    lateinit var progressBar: ProgressBar
 
     @FXML
-    private ProgressBar progressBar;
-    @FXML
-    private Text tip;
-    private static int count;
-    private static ProgressBar staticProgressBar;
-    private static Timer timer;
+    lateinit var tip: Text
 
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
-        staticProgressBar = progressBar;
-        tip.setText(SCRIPT_NAME + "启动中......");
-        timer = new Timer();
-        timer.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                if (++count >= 100) {
-                    timer.cancel();
-                } else {
-                    Platform.runLater(() -> progressBar.setProgress((double) count / 100));
+    override fun initialize(url: URL?, resourceBundle: ResourceBundle?) {
+        staticProgressBar = progressBar
+        tip.text = SCRIPT_NAME + "启动中......"
+        timer = Timer().apply {
+            scheduleAtFixedRate(object : TimerTask() {
+                override fun run() {
+                    if (++count >= 100) {
+                        cancel()
+                    } else {
+                        Platform.runLater {
+                            progressBar.progress =
+                                count.toDouble() / 100
+                        }
+                    }
                 }
-            }
-        }, 0, 20);
+            }, 0, 20)
+        }
     }
 
-    /**
-     * 完成进度条并隐藏此窗口
-     */
-    public static void complete() {
-        timer.cancel();
-        staticProgressBar.setProgress(1D);
-        WindowUtil.INSTANCE.hideStage(WindowEnum.STARTUP);
+    companion object {
+        private var count = 0
+        private var staticProgressBar: ProgressBar? = null
+        private var timer: Timer? = null
+
+        /**
+         * 完成进度条并隐藏此窗口
+         */
+        fun complete() {
+            timer?.cancel()
+            staticProgressBar?.progress = 1.0
+            hideStage(WindowEnum.STARTUP)
+        }
     }
 }

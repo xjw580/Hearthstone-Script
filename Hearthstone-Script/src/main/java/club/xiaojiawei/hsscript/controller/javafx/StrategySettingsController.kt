@@ -1,224 +1,249 @@
-package club.xiaojiawei.hsscript.controller.javafx;
+package club.xiaojiawei.hsscript.controller.javafx
 
-import club.xiaojiawei.controls.NotificationManager;
-import club.xiaojiawei.controls.NumberField;
-import club.xiaojiawei.controls.Switch;
-import club.xiaojiawei.hsscript.bean.CommonCardAction;
-import club.xiaojiawei.hsscript.data.ScriptDataKt;
-import club.xiaojiawei.hsscript.enums.ConfigEnum;
-import club.xiaojiawei.hsscript.enums.WindowEnum;
-import club.xiaojiawei.hsscript.utils.ConfigUtil;
-import club.xiaojiawei.hsscript.utils.MouseUtil;
-import club.xiaojiawei.hsscript.utils.WindowUtil;
-import javafx.beans.value.ChangeListener;
-import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
-import javafx.scene.Scene;
-import javafx.scene.control.Tooltip;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
-
-import java.net.URL;
-import java.util.ResourceBundle;
+import club.xiaojiawei.controls.NotificationManager
+import club.xiaojiawei.controls.NumberField
+import club.xiaojiawei.controls.Switch
+import club.xiaojiawei.hsscript.bean.CommonCardAction
+import club.xiaojiawei.hsscript.data.reloadScriptData
+import club.xiaojiawei.hsscript.enums.ConfigEnum
+import club.xiaojiawei.hsscript.enums.WindowEnum
+import club.xiaojiawei.hsscript.utils.ConfigUtil.getBoolean
+import club.xiaojiawei.hsscript.utils.ConfigUtil.getString
+import club.xiaojiawei.hsscript.utils.ConfigUtil.putBoolean
+import club.xiaojiawei.hsscript.utils.ConfigUtil.putString
+import club.xiaojiawei.hsscript.utils.ConfigUtil.store
+import club.xiaojiawei.hsscript.utils.MouseUtil
+import club.xiaojiawei.hsscript.utils.WindowUtil.hideStage
+import javafx.beans.value.ChangeListener
+import javafx.beans.value.ObservableValue
+import javafx.event.ActionEvent
+import javafx.fxml.FXML
+import javafx.fxml.Initializable
+import javafx.scene.Scene
+import javafx.scene.control.Tooltip
+import javafx.scene.layout.StackPane
+import javafx.scene.layout.VBox
+import java.net.URL
+import java.util.*
 
 /**
  *
  * @author 肖嘉威
  * @date 2023/9/10 15:07
  */
-public class StrategySettingsController implements Initializable {
+class StrategySettingsController : Initializable {
+    @FXML
+    protected lateinit var rootPane: StackPane
 
     @FXML
-    private StackPane rootPane;
-    @FXML
-    private NumberField actionIntervalField;
-    @FXML
-    private NumberField moveSpeedField;
-    @FXML
-    private NumberField matchMaximumTimeField;
-    @FXML
-    private NumberField idleMaximumTimeField;
-    @FXML
-    private NumberField logLimitField;
-    @FXML
-    private NotificationManager<Object> notificationManager;
-    @FXML
-    private VBox mainVBox;
-    @FXML
-    private Switch randomEventSwitch;
-    @FXML
-    private Switch randomEmotionSwitch;
-    @FXML
-    private Switch onlyRobotSwitch;
-    @FXML
-    private NumberField autoSurrenderField;
+    protected lateinit var actionIntervalField: NumberField
 
-    private ChangeListener<Scene> sceneListener;
+    @FXML
+    protected lateinit var moveSpeedField: NumberField
 
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
-        initActionInterval();
-        initMoveSpeed();
-        initMatchMaximumTime();
-        initIdleMaximumTime();
-        initLogLimit();
-        initRandomEvent();
-        initRandomEmotion();
-        initOnlyRobot();
-        initAutoSurrender();
+    @FXML
+    protected lateinit var matchMaximumTimeField: NumberField
 
-        listen();
+    @FXML
+    protected lateinit var idleMaximumTimeField: NumberField
+
+    @FXML
+    protected lateinit var logLimitField: NumberField
+
+    @FXML
+    protected lateinit var notificationManager: NotificationManager<Any>
+
+    @FXML
+    protected lateinit var mainVBox: VBox
+
+    @FXML
+    protected lateinit var randomEventSwitch: Switch
+
+    @FXML
+    protected lateinit var randomEmotionSwitch: Switch
+
+    @FXML
+    protected lateinit var onlyRobotSwitch: Switch
+
+    @FXML
+    protected lateinit var autoSurrenderField: NumberField
+
+    private var sceneListener: ChangeListener<Scene>? = null
+
+    override fun initialize(url: URL?, resourceBundle: ResourceBundle?) {
+        initActionInterval()
+        initMoveSpeed()
+        initMatchMaximumTime()
+        initIdleMaximumTime()
+        initLogLimit()
+        initRandomEvent()
+        initRandomEmotion()
+        initOnlyRobot()
+        initAutoSurrender()
+
+        listen()
     }
 
-    private void initActionInterval() {
-        ConfigEnum key = ConfigEnum.MOUSE_ACTION_INTERVAL;
-        actionIntervalField.setMinValue("1");
-        actionIntervalField.setPromptText("默认：" + key.getDefaultValue());
-        actionIntervalField.setTooltip(new Tooltip("默认：" + key.getDefaultValue()));
-        actionIntervalField.setText(ConfigUtil.INSTANCE.getString(key));
+    private fun initActionInterval() {
+        val key = ConfigEnum.MOUSE_ACTION_INTERVAL
+        actionIntervalField.setMinValue("1")
+        actionIntervalField.promptText = "默认：" + key.defaultValue
+        actionIntervalField.tooltip = Tooltip("默认：" + key.defaultValue)
+        actionIntervalField.text = getString(key)
     }
 
-    private void initMoveSpeed() {
-        ConfigEnum key = ConfigEnum.PAUSE_STEP;
-        moveSpeedField.setMinValue("1");
-        moveSpeedField.setPromptText("默认：" + key.getDefaultValue());
-        moveSpeedField.setTooltip(new Tooltip("默认：" + key.getDefaultValue()));
-        moveSpeedField.setText(ConfigUtil.INSTANCE.getString(key));
+    private fun initMoveSpeed() {
+        val key = ConfigEnum.PAUSE_STEP
+        moveSpeedField.setMinValue("1")
+        moveSpeedField.promptText = "默认：" + key.defaultValue
+        moveSpeedField.tooltip = Tooltip("默认：" + key.defaultValue)
+        moveSpeedField.text = getString(key)
     }
 
-    private void initMatchMaximumTime() {
-        ConfigEnum key = ConfigEnum.MATCH_MAXIMUM_TIME;
-        matchMaximumTimeField.setMinValue("1");
-        matchMaximumTimeField.setPromptText("默认：" + key.getDefaultValue());
-        matchMaximumTimeField.setTooltip(new Tooltip("默认：" + key.getDefaultValue()));
-        matchMaximumTimeField.setText(ConfigUtil.INSTANCE.getString(key));
+    private fun initMatchMaximumTime() {
+        val key = ConfigEnum.MATCH_MAXIMUM_TIME
+        matchMaximumTimeField.setMinValue("1")
+        matchMaximumTimeField.promptText = "默认：" + key.defaultValue
+        matchMaximumTimeField.tooltip = Tooltip("默认：" + key.defaultValue)
+        matchMaximumTimeField.text = getString(key)
     }
 
-    private void initIdleMaximumTime() {
-        ConfigEnum key = ConfigEnum.IDLE_MAXIMUM_TIME;
-        idleMaximumTimeField.setMinValue("1");
-        idleMaximumTimeField.setPromptText("默认：" + key.getDefaultValue());
-        idleMaximumTimeField.setTooltip(new Tooltip("默认：" + key.getDefaultValue()));
-        idleMaximumTimeField.setText(ConfigUtil.INSTANCE.getString(key));
+    private fun initIdleMaximumTime() {
+        val key = ConfigEnum.IDLE_MAXIMUM_TIME
+        idleMaximumTimeField.setMinValue("1")
+        idleMaximumTimeField.promptText = "默认：" + key.defaultValue
+        idleMaximumTimeField.tooltip = Tooltip("默认：" + key.defaultValue)
+        idleMaximumTimeField.text = getString(key)
     }
 
-    private void initLogLimit() {
-        ConfigEnum key = ConfigEnum.GAME_LOG_LIMIT;
-        logLimitField.setMinValue("1");
-        logLimitField.setMaxValue("102400");
-        logLimitField.setPromptText("默认：" + key.getDefaultValue());
-        logLimitField.setTooltip(new Tooltip("默认：" + key.getDefaultValue()));
-        logLimitField.setText(ConfigUtil.INSTANCE.getString(key));
+    private fun initLogLimit() {
+        val key = ConfigEnum.GAME_LOG_LIMIT
+        logLimitField.setMinValue("1")
+        logLimitField.setMaxValue("102400")
+        logLimitField.promptText = "默认：" + key.defaultValue
+        logLimitField.tooltip = Tooltip("默认：" + key.defaultValue)
+        logLimitField.text = getString(key)
     }
 
-    private void initRandomEvent() {
-        ConfigEnum key = ConfigEnum.RANDOM_EVENT;
-        randomEventSwitch.setStatus(ConfigUtil.INSTANCE.getBoolean(key));
-        randomEventSwitch.statusProperty().addListener((observable, oldValue, newValue) -> {
-            ConfigUtil.INSTANCE.putBoolean(key, newValue, true);
-            notificationManager.showSuccess("修改成功", 1);
-        });
+    private fun initRandomEvent() {
+        val key = ConfigEnum.RANDOM_EVENT
+        randomEventSwitch.status = getBoolean(key)
+        randomEventSwitch.statusProperty()
+            .addListener { observable, oldValue, newValue ->
+                putBoolean(
+                    key,
+                    newValue, true
+                )
+                notificationManager.showSuccess("修改成功", 1)
+            }
     }
 
-    private void initRandomEmotion() {
-        ConfigEnum key = ConfigEnum.RANDOM_EMOTION;
-        randomEmotionSwitch.setStatus(ConfigUtil.INSTANCE.getBoolean(key));
-        randomEmotionSwitch.statusProperty().addListener((observable, oldValue, newValue) -> {
-            ConfigUtil.INSTANCE.putBoolean(key, newValue, true);
-            notificationManager.showSuccess("修改成功", 1);
-        });
+    private fun initRandomEmotion() {
+        val key = ConfigEnum.RANDOM_EMOTION
+        randomEmotionSwitch.status = getBoolean(key)
+        randomEmotionSwitch.statusProperty()
+            .addListener { observable, oldValue, newValue ->
+                putBoolean(
+                    key,
+                    newValue, true
+                )
+                notificationManager.showSuccess("修改成功", 1)
+            }
     }
 
-    private void initOnlyRobot() {
-        ConfigEnum key = ConfigEnum.ONLY_ROBOT;
-        onlyRobotSwitch.setStatus(ConfigUtil.INSTANCE.getBoolean(key));
-        onlyRobotSwitch.statusProperty().addListener((observable, oldValue, newValue) -> {
-            ConfigUtil.INSTANCE.putBoolean(key, newValue, true);
-            notificationManager.showSuccess("修改成功", 1);
-        });
+    private fun initOnlyRobot() {
+        val key = ConfigEnum.ONLY_ROBOT
+        onlyRobotSwitch.status = getBoolean(key)
+        onlyRobotSwitch.statusProperty()
+            .addListener { observable, oldValue, newValue ->
+                putBoolean(
+                    key,
+                    newValue, true
+                )
+                notificationManager.showSuccess("修改成功", 1)
+            }
     }
 
-    private void initAutoSurrender() {
-        ConfigEnum key = ConfigEnum.AUTO_SURRENDER;
-        autoSurrenderField.setMinValue("-1");
-        String defaultText = "默认：" + key.getDefaultValue();
-        autoSurrenderField.setPromptText(defaultText);
-        autoSurrenderField.setTooltip(new Tooltip(defaultText));
-        autoSurrenderField.setText(ConfigUtil.INSTANCE.getString(key));
+    private fun initAutoSurrender() {
+        val key = ConfigEnum.AUTO_SURRENDER
+        autoSurrenderField.setMinValue("-1")
+        val defaultText = "默认：" + key.defaultValue
+        autoSurrenderField.promptText = defaultText
+        autoSurrenderField.tooltip = Tooltip(defaultText)
+        autoSurrenderField.text = getString(key)
     }
 
 
-    private void listen() {
-        sceneListener = (observableValue, scene, t1) -> {
-            mainVBox.prefWidthProperty().bind(t1.widthProperty());
-            mainVBox.sceneProperty().removeListener(sceneListener);
-        };
-        mainVBox.sceneProperty().addListener(sceneListener);
+    private fun listen() {
+        sceneListener = ChangeListener { observableValue: ObservableValue<out Scene>?, scene: Scene?, t1: Scene ->
+            mainVBox.prefWidthProperty().bind(t1.widthProperty())
+            mainVBox.sceneProperty().removeListener(sceneListener)
+        }
+        mainVBox.sceneProperty().addListener(sceneListener)
     }
 
     @FXML
-    protected void apply(ActionEvent actionEvent) {
+    protected fun apply(actionEvent: ActionEvent?) {
         if (saveProperties()) {
-            notificationManager.showSuccess("应用成功，即刻生效", 2);
+            notificationManager.showSuccess("应用成功，即刻生效", 2)
         }
     }
 
     @FXML
-    protected void save(ActionEvent actionEvent) {
+    protected fun save(actionEvent: ActionEvent?) {
         if (saveProperties()) {
-            WindowUtil.INSTANCE.hideStage(WindowEnum.SETTINGS);
+            hideStage(WindowEnum.SETTINGS)
         }
     }
 
-    private boolean saveProperties() {
-        String actionInterval = actionIntervalField.getText();
+    private fun saveProperties(): Boolean {
+        var actionInterval = actionIntervalField.text
         if (actionInterval == null || actionInterval.isBlank()) {
-            actionInterval = ConfigEnum.MOUSE_ACTION_INTERVAL.getDefaultValue();
-            actionIntervalField.setText(actionInterval);
-            return false;
+            actionInterval = ConfigEnum.MOUSE_ACTION_INTERVAL.defaultValue
+            actionIntervalField.text = actionInterval
+            return false
         }
-        ConfigUtil.INSTANCE.putString(ConfigEnum.MOUSE_ACTION_INTERVAL, actionInterval, false);
+        putString(ConfigEnum.MOUSE_ACTION_INTERVAL, actionInterval, false)
 
-        String moveSpeed = moveSpeedField.getText();
+        var moveSpeed = moveSpeedField.text
         if (moveSpeed == null || moveSpeed.isBlank()) {
-            moveSpeed = ConfigEnum.PAUSE_STEP.getDefaultValue();
-            moveSpeedField.setText(moveSpeed);
+            moveSpeed = ConfigEnum.PAUSE_STEP.defaultValue
+            moveSpeedField.text = moveSpeed
         }
-        ConfigUtil.INSTANCE.putString(ConfigEnum.PAUSE_STEP, moveSpeed, false);
+        putString(ConfigEnum.PAUSE_STEP, moveSpeed, false)
 
-        String matchMaximumTime = matchMaximumTimeField.getText();
+        var matchMaximumTime = matchMaximumTimeField.text
         if (matchMaximumTime == null || matchMaximumTime.isBlank()) {
-            matchMaximumTime = ConfigEnum.MATCH_MAXIMUM_TIME.getDefaultValue();
-            matchMaximumTimeField.setText(matchMaximumTime);
+            matchMaximumTime = ConfigEnum.MATCH_MAXIMUM_TIME.defaultValue
+            matchMaximumTimeField.text = matchMaximumTime
         }
-        ConfigUtil.INSTANCE.putString(ConfigEnum.MATCH_MAXIMUM_TIME, matchMaximumTime, false);
+        putString(ConfigEnum.MATCH_MAXIMUM_TIME, matchMaximumTime, false)
 
-        String idleMaximumTime = idleMaximumTimeField.getText();
+        var idleMaximumTime = idleMaximumTimeField.text
         if (idleMaximumTime == null || idleMaximumTime.isBlank()) {
-            idleMaximumTime = ConfigEnum.IDLE_MAXIMUM_TIME.getDefaultValue();
-            logLimitField.setText(idleMaximumTime);
+            idleMaximumTime = ConfigEnum.IDLE_MAXIMUM_TIME.defaultValue
+            logLimitField.text = idleMaximumTime
         }
-        ConfigUtil.INSTANCE.putString(ConfigEnum.IDLE_MAXIMUM_TIME, idleMaximumTime, false);
+        putString(ConfigEnum.IDLE_MAXIMUM_TIME, idleMaximumTime, false)
 
-        String logLimit = logLimitField.getText();
+        var logLimit = logLimitField.text
         if (logLimit == null || logLimit.isBlank()) {
-            logLimit = ConfigEnum.GAME_LOG_LIMIT.getDefaultValue();
-            logLimitField.setText(logLimit);
+            logLimit = ConfigEnum.GAME_LOG_LIMIT.defaultValue
+            logLimitField.text = logLimit
         }
-        ConfigUtil.INSTANCE.putString(ConfigEnum.GAME_LOG_LIMIT, logLimit, false);
+        putString(ConfigEnum.GAME_LOG_LIMIT, logLimit, false)
 
-        String autoSurrender = autoSurrenderField.getText();
-        if (autoSurrender == null || autoSurrender.isBlank() || autoSurrender.equals("-")) {
-            autoSurrender = ConfigEnum.AUTO_SURRENDER.getDefaultValue();
-            autoSurrenderField.setText(autoSurrender);
+        var autoSurrender = autoSurrenderField.text
+        if (autoSurrender == null || autoSurrender.isBlank() || autoSurrender == "-") {
+            autoSurrender = ConfigEnum.AUTO_SURRENDER.defaultValue
+            autoSurrenderField.text = autoSurrender
         }
-        ConfigUtil.INSTANCE.putString(ConfigEnum.AUTO_SURRENDER, autoSurrender, false);
+        putString(ConfigEnum.AUTO_SURRENDER, autoSurrender, false)
 
-        ConfigUtil.INSTANCE.store();
-        CommonCardAction.Companion.reload();
-        ScriptDataKt.reload();
-        MouseUtil.INSTANCE.reload();
-        return true;
+        store()
+        CommonCardAction.reload()
+        reloadScriptData()
+        MouseUtil.reload()
+        return true
     }
 }

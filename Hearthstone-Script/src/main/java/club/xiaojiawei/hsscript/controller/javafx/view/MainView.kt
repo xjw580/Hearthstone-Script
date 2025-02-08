@@ -1,74 +1,97 @@
-package club.xiaojiawei.hsscript.controller.javafx.view;
+package club.xiaojiawei.hsscript.controller.javafx.view
 
-import club.xiaojiawei.DeckStrategy;
-import club.xiaojiawei.controls.NotificationManager;
-import club.xiaojiawei.controls.ico.FlushIco;
-import club.xiaojiawei.controls.ico.PauseIco;
-import club.xiaojiawei.controls.ico.StartIco;
-import club.xiaojiawei.enums.RunModeEnum;
-import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
-import javafx.scene.control.*;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.TilePane;
-import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
+import club.xiaojiawei.DeckStrategy
+import club.xiaojiawei.controls.NotificationManager
+import club.xiaojiawei.controls.ico.FlushIco
+import club.xiaojiawei.controls.ico.PauseIco
+import club.xiaojiawei.controls.ico.StartIco
+import club.xiaojiawei.enums.RunModeEnum
+import javafx.fxml.FXML
+import javafx.fxml.Initializable
+import javafx.scene.control.*
+import javafx.scene.layout.StackPane
+import javafx.scene.layout.TilePane
+import javafx.scene.layout.VBox
+import javafx.scene.text.Text
 
 /**
  * @author 肖嘉威
  * @date 2024/10/11 14:49
  */
-abstract public class MainView implements Initializable {
+abstract class MainView : Initializable {
 
     @FXML
-    protected StartIco startIco;
-    @FXML
-    protected PauseIco pauseIco;
-    @FXML
-    protected ToggleGroup pauseToggleGroup;
-    @FXML
-    protected StackPane rootPane;
-    @FXML
-    protected NotificationManager<Object> notificationManger;
-    @FXML
-    protected ScrollPane logScrollPane;
-    @FXML
-    protected Button updateBtn;
-    @FXML
-    protected Button flushBtn;
-    @FXML
-    protected FlushIco flushIco;
-    @FXML
-    protected Text versionText;
-    @FXML
-    protected VBox logVBox;
-    @FXML
-    protected Accordion accordion;
-    @FXML
-    protected ToggleButton startButton;
-    @FXML
-    protected ToggleButton pauseButton;
-    @FXML
-    protected TitledPane titledPaneLog;
-    @FXML
-    protected Text gameCount;
-    @FXML
-    protected Text winningPercentage;
-    @FXML
-    protected Text gameTime;
-    @FXML
-    protected Text exp;
-    @FXML
-    protected ComboBox<RunModeEnum> runModeBox;
-    @FXML
-    protected ComboBox<DeckStrategy> deckBox;
-    @FXML
-    protected TilePane workDay;
-    @FXML
-    protected VBox workTime;
-    @FXML
-    protected ProgressBar downloadProgress;
-    @FXML
-    protected TitledPane titledPaneControl;
+    protected lateinit var startIco: StartIco
 
+    @FXML
+    protected lateinit var pauseIco: PauseIco
+
+    @FXML
+    protected lateinit var pauseToggleGroup: ToggleGroup
+
+    @FXML
+    protected lateinit var rootPane: StackPane
+
+    @FXML
+    protected lateinit var notificationManger: NotificationManager<Any>
+
+    @FXML
+    protected lateinit var logScrollPane: ScrollPane
+
+    @FXML
+    protected lateinit var updateBtn: Button
+
+    @FXML
+    protected lateinit var flushBtn: Button
+
+    @FXML
+    protected lateinit var flushIco: FlushIco
+
+    @FXML
+    protected lateinit var versionText: Text
+
+    @FXML
+    protected lateinit var logVBox: VBox
+
+    @FXML
+    protected lateinit var accordion: Accordion
+
+    @FXML
+    protected lateinit var startButton: ToggleButton
+
+    @FXML
+    protected lateinit var pauseButton: ToggleButton
+
+    @FXML
+    protected lateinit var titledPaneLog: TitledPane
+
+    @FXML
+    protected lateinit var gameCount: Text
+
+    @FXML
+    protected lateinit var winningPercentage: Text
+
+    @FXML
+    protected lateinit var gameTime: Text
+
+    @FXML
+    protected lateinit var exp: Text
+
+    @FXML
+    protected lateinit var runModeBox: ComboBox<RunModeEnum>
+
+    @FXML
+    protected lateinit var deckBox: ComboBox<DeckStrategy>
+
+    @FXML
+    protected lateinit var workDay: TilePane
+
+    @FXML
+    protected lateinit var workTime: VBox
+
+    @FXML
+    protected var downloadProgress: ProgressBar? = null
+
+    @FXML
+    protected lateinit var titledPaneControl: TitledPane
 }

@@ -1,365 +1,378 @@
-package club.xiaojiawei.hsscript.controller.javafx;
+package club.xiaojiawei.hsscript.controller.javafx
 
-import club.xiaojiawei.controls.FilterField;
-import club.xiaojiawei.controls.NotificationManager;
-import club.xiaojiawei.controls.NumberField;
-import club.xiaojiawei.bean.DBCard;
-import club.xiaojiawei.hsscript.bean.WeightCard;
-import club.xiaojiawei.hsscript.data.PathDataKt;
-import club.xiaojiawei.hsscript.utils.CardUtil;
-import club.xiaojiawei.util.CardDBUtil;
-import club.xiaojiawei.tablecell.NumberFieldTableCellUI;
-import club.xiaojiawei.tablecell.TextFieldTableCellUI;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
-import javafx.scene.control.SelectionMode;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
-import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.StackPane;
-import javafx.stage.FileChooser;
-import javafx.util.StringConverter;
-
-import java.io.File;
-import java.net.URL;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.ResourceBundle;
-import java.util.stream.IntStream;
+import club.xiaojiawei.bean.DBCard
+import club.xiaojiawei.controls.FilterField
+import club.xiaojiawei.controls.NotificationManager
+import club.xiaojiawei.controls.NumberField
+import club.xiaojiawei.func.FilterAction
+import club.xiaojiawei.hsscript.bean.WeightCard
+import club.xiaojiawei.hsscript.data.CONFIG_PATH
+import club.xiaojiawei.hsscript.utils.CardUtil
+import club.xiaojiawei.hsscript.utils.CardUtil.getCardWeightCache
+import club.xiaojiawei.hsscript.utils.CardUtil.reloadCardWeight
+import club.xiaojiawei.hsscript.utils.CardUtil.saveWeightConfig
+import club.xiaojiawei.tablecell.NumberFieldTableCellUI
+import club.xiaojiawei.tablecell.TextFieldTableCellUI
+import club.xiaojiawei.util.CardDBUtil.queryCardByName
+import javafx.beans.property.SimpleIntegerProperty
+import javafx.beans.value.ObservableValue
+import javafx.event.ActionEvent
+import javafx.fxml.FXML
+import javafx.fxml.Initializable
+import javafx.scene.control.SelectionMode
+import javafx.scene.control.TableColumn
+import javafx.scene.control.TableView
+import javafx.scene.control.TextField
+import javafx.scene.control.cell.PropertyValueFactory
+import javafx.scene.input.KeyCode
+import javafx.scene.input.KeyEvent
+import javafx.scene.layout.StackPane
+import javafx.stage.FileChooser
+import javafx.util.StringConverter
+import java.net.URL
+import java.nio.file.Path
+import java.util.*
+import java.util.stream.IntStream
 
 /**
  *
  * @author 肖嘉威
  * @date 2023/9/10 15:07
  */
-public class WeightSettingsController implements Initializable {
+class WeightSettingsController : Initializable {
+    //    private static final Logger log = LoggerFactory.getLogger(WeightSettingsController.class);
+    @FXML
+    protected lateinit var limit: NumberField
 
-//    private static final Logger log = LoggerFactory.getLogger(WeightSettingsController.class);
+    @FXML
+    protected lateinit var offset: NumberField
 
     @FXML
-    protected NumberField limit;
-    @FXML
-    protected NumberField offset;
-    @FXML
-    protected StackPane rootPane;
-    @FXML
-    protected TableView<DBCard> cardTable;
-    @FXML
-    protected TableColumn<DBCard, Number> noCol;
-    @FXML
-    protected TableColumn<DBCard, String> cardIdCol;
-    @FXML
-    protected TableColumn<DBCard, String> nameCol;
-    @FXML
-    protected TableColumn<DBCard, Number> attackCol;
-    @FXML
-    protected TableColumn<DBCard, Number> healthCol;
-    @FXML
-    protected TableColumn<DBCard, Number> costCol;
-    @FXML
-    protected TableColumn<DBCard, String> textCol;
-    @FXML
-    protected TableColumn<DBCard, String> typeCol;
-    @FXML
-    protected TableColumn<DBCard, String> cardSetCol;
-    @FXML
-    protected TableView<WeightCard> weightTable;
-    @FXML
-    protected TableColumn<WeightCard, Number> weightNoCol;
-    @FXML
-    protected TableColumn<WeightCard, String> weightCardIdCol;
-    @FXML
-    protected TableColumn<WeightCard, String> weightNameCol;
-    @FXML
-    protected TableColumn<WeightCard, Number> weightCol;
-    @FXML
-    protected TableColumn<WeightCard, Number> powerWeightCol;
-    @FXML
-    protected NotificationManager<String> notificationManager;
-    @FXML
-    protected FilterField searchCardField;
+    protected lateinit var rootPane: StackPane
 
-    private int currentOffset = 0;
+    @FXML
+    protected lateinit var cardTable: TableView<DBCard>
 
-    private static final Path WEIGHT_CONFIG_PATH = Path.of(PathDataKt.getCONFIG_PATH(), "card.weight");
+    @FXML
+    protected lateinit var noCol: TableColumn<DBCard, Number?>
 
-    static class NoEditTextFieldTableCell<S, T> extends TextFieldTableCellUI<S, T> {
+    @FXML
+    protected lateinit var cardIdCol: TableColumn<DBCard, String>
 
-        public NoEditTextFieldTableCell(StringConverter<T> stringConverter) {
-            super(stringConverter);
-        }
+    @FXML
+    protected lateinit var nameCol: TableColumn<DBCard, String>
 
-        @Override
-        public void startEdit() {
-            super.startEdit();
-            if (getGraphic() instanceof TextField textField) {
-                textField.setEditable(false);
-            }
+    @FXML
+    protected lateinit var attackCol: TableColumn<DBCard, Number>
+
+    @FXML
+    protected lateinit var healthCol: TableColumn<DBCard, Number>
+
+    @FXML
+    protected lateinit var costCol: TableColumn<DBCard, Number>
+
+    @FXML
+    protected lateinit var textCol: TableColumn<DBCard, String>
+
+    @FXML
+    protected lateinit var typeCol: TableColumn<DBCard, String>
+
+    @FXML
+    protected lateinit var cardSetCol: TableColumn<DBCard, String>
+
+    @FXML
+    protected lateinit var weightTable: TableView<WeightCard>
+
+    @FXML
+    protected lateinit var weightNoCol: TableColumn<WeightCard, Number?>
+
+    @FXML
+    protected lateinit var weightCardIdCol: TableColumn<WeightCard, String>
+
+    @FXML
+    protected lateinit var weightNameCol: TableColumn<WeightCard, String>
+
+    @FXML
+    protected lateinit var weightCol: TableColumn<WeightCard, Number?>
+
+    @FXML
+    protected lateinit var powerWeightCol: TableColumn<WeightCard, Number?>
+
+    @FXML
+    protected lateinit var notificationManager: NotificationManager<String>
+
+    @FXML
+    protected lateinit var searchCardField: FilterField
+
+    private var currentOffset = 0
+
+    internal open class NoEditTextFieldTableCell<S, T>(stringConverter: StringConverter<T>?) :
+        TextFieldTableCellUI<S, T>(stringConverter) {
+        override fun startEdit() {
+            super.startEdit()
+            (graphic as TextField).isEditable = false
         }
     }
 
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
-        initTable();
-        addListener();
-        var cards = CardUtil.INSTANCE.getCardWeightCache();
+    override fun initialize(url: URL?, resourceBundle: ResourceBundle?) {
+        initTable()
+        addListener()
+        val cards = getCardWeightCache()
         if (cards != null) {
-            HashSet<WeightCard> weightCards = new HashSet<>(weightTable.getItems());
-            for (WeightCard card : cards) {
+            val weightCards = HashSet(weightTable.items)
+            for (card in cards) {
                 if (!weightCards.contains(card)) {
-                    weightTable.getItems().add(card);
+                    weightTable.items.add(card)
                 }
             }
         }
     }
 
-    private void search() {
-        String text = searchCardField.getText();
+    private fun search() {
+        val text = searchCardField.text
         if (text == null || text.isEmpty()) {
-            cardTable.getItems().clear();
-            return;
+            cardTable.items.clear()
+            return
         }
-        int limit;
-        int offset;
-        if (this.limit.getText().isBlank()) {
-            limit = Integer.parseInt(this.limit.getPromptText());
+        val limit = if (limit.text.isBlank()) {
+            limit.promptText.toInt()
         } else {
-            limit = Integer.parseInt(this.limit.getText());
+            limit.text.toInt()
         }
-        if (this.offset.getText().isBlank()) {
-            offset = Integer.parseInt(this.offset.getPromptText());
+        val offset = if (offset.text.isBlank()) {
+            offset.promptText.toInt()
         } else {
-            offset = Integer.parseInt(this.offset.getText());
+            offset.text.toInt()
         }
-        currentOffset = offset;
-        cardTable.getItems().setAll(CardDBUtil.INSTANCE.queryCardByName(text, limit, offset, false));
+        currentOffset = offset
+        cardTable.items.setAll(queryCardByName(text, limit, offset, false))
     }
 
-    private void addListener() {
-        searchCardField.setOnFilterAction(text -> {
-            search();
-        });
-        weightTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue != null) {
-                searchCardField.setText(newValue.getName());
+    private fun addListener() {
+        searchCardField.onFilterAction = FilterAction { text: String? ->
+            search()
+        }
+        weightTable.selectionModel.selectedItemProperty()
+            .addListener { observable: ObservableValue<out WeightCard>?, oldValue: WeightCard?, newValue: WeightCard? ->
+                if (newValue != null) {
+                    searchCardField.text = newValue.name
+                }
             }
-        });
-        limit.addEventFilter(KeyEvent.KEY_RELEASED, event -> {
-            if (event.getCode() == KeyCode.ENTER) {
-                search();
+        limit.addEventFilter(
+            KeyEvent.KEY_RELEASED
+        ) { event: KeyEvent ->
+            if (event.code == KeyCode.ENTER) {
+                search()
             }
-        });
-        offset.addEventFilter(KeyEvent.KEY_RELEASED, event -> {
-            if (event.getCode() == KeyCode.ENTER) {
-                search();
+        }
+        offset.addEventFilter(
+            KeyEvent.KEY_RELEASED
+        ) { event: KeyEvent ->
+            if (event.code == KeyCode.ENTER) {
+                search()
             }
-        });
+        }
     }
 
-    private void initTable() {
-        StringConverter<String> stringConverter = new StringConverter<>() {
-            @Override
-            public String toString(String object) {
-                return object;
+    private fun initTable() {
+        val stringConverter: StringConverter<String?> = object : StringConverter<String?>() {
+            override fun toString(`object`: String?): String? {
+                return `object`
             }
 
-            @Override
-            public String fromString(String string) {
-                return string;
+            override fun fromString(string: String?): String? {
+                return string
             }
-        };
-        StringConverter<Number> numberConverter = new StringConverter<>() {
-            @Override
-            public String toString(Number number) {
-                return number == null ? "" : number.toString();
+        }
+        val numberConverter: StringConverter<Number> = object : StringConverter<Number>() {
+            override fun toString(number: Number): String {
+                return number.toString()
             }
 
-            @Override
-            public Number fromString(String s) {
-                return s == null || s.isBlank() ? 0 : Double.parseDouble(s);
+            override fun fromString(s: String?): Number {
+                return if (s.isNullOrBlank()) 0.0 else s.toDouble()
             }
-        };
-        cardTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-        cardTable.setEditable(true);
-        noCol.setCellValueFactory(param -> {
-            var items = param.getTableView().getItems();
-            int index = IntStream.range(0, items.size()).filter(i -> items.get(i) == param.getValue()).findFirst().orElse(-2);
-            return new SimpleIntegerProperty(index + 1 + currentOffset);
-        });
-        cardIdCol.setCellValueFactory(new PropertyValueFactory<>("cardId"));
-        cardIdCol.setCellFactory(weightCardNumberTableColumn -> new NoEditTextFieldTableCell<>(stringConverter) {
-            @Override
-            public void commitEdit(String s) {
-                super.commitEdit(s);
-                notificationManager.showInfo("不允许修改", 1);
+        }
+        cardTable.selectionModel.selectionMode = SelectionMode.MULTIPLE
+        cardTable.isEditable = true
+        noCol.setCellValueFactory { param: TableColumn.CellDataFeatures<DBCard, Number?> ->
+            val items = param.tableView.items
+            val index =
+                IntStream.range(0, items.size).filter { i: Int -> items[i] === param.value }.findFirst().orElse(-2)
+            SimpleIntegerProperty(index + 1 + currentOffset)
+        }
+        cardIdCol.setCellValueFactory(PropertyValueFactory("cardId"))
+        cardIdCol.setCellFactory { weightCardNumberTableColumn: TableColumn<DBCard, String>? ->
+            object : NoEditTextFieldTableCell<DBCard?, String?>(stringConverter) {
+                override fun commitEdit(s: String?) {
+                    super.commitEdit(s)
+                    notificationManager.showInfo("不允许修改", 1)
+                }
             }
-        });
-        nameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
-        nameCol.setCellFactory(weightCardNumberTableColumn -> new NoEditTextFieldTableCell<>(stringConverter) {
-            @Override
-            public void commitEdit(String s) {
-                super.commitEdit(s);
-                notificationManager.showInfo("不允许修改", 1);
+        }
+        nameCol.setCellValueFactory(PropertyValueFactory("name"))
+        nameCol.setCellFactory { weightCardNumberTableColumn: TableColumn<DBCard, String>? ->
+            object : NoEditTextFieldTableCell<DBCard?, String?>(stringConverter) {
+                override fun commitEdit(s: String?) {
+                    super.commitEdit(s)
+                    notificationManager.showInfo("不允许修改", 1)
+                }
             }
-        });
-        attackCol.setCellValueFactory(new PropertyValueFactory<>("attack"));
-        healthCol.setCellValueFactory(new PropertyValueFactory<>("health"));
-        costCol.setCellValueFactory(new PropertyValueFactory<>("cost"));
-        textCol.setCellValueFactory(new PropertyValueFactory<>("text"));
-        textCol.setCellFactory(weightCardNumberTableColumn -> new NoEditTextFieldTableCell<>(stringConverter) {
-            @Override
-            public void commitEdit(String s) {
-                super.commitEdit(s);
-                notificationManager.showInfo("不允许修改", 1);
+        }
+        attackCol.setCellValueFactory(PropertyValueFactory("attack"))
+        healthCol.setCellValueFactory(PropertyValueFactory("health"))
+        costCol.setCellValueFactory(PropertyValueFactory("cost"))
+        textCol.setCellValueFactory(PropertyValueFactory("text"))
+        textCol.setCellFactory { weightCardNumberTableColumn: TableColumn<DBCard, String>? ->
+            object : NoEditTextFieldTableCell<DBCard?, String?>(stringConverter) {
+                override fun commitEdit(s: String?) {
+                    super.commitEdit(s)
+                    notificationManager.showInfo("不允许修改", 1)
+                }
             }
-        });
-        typeCol.setCellValueFactory(new PropertyValueFactory<>("type"));
-        cardSetCol.setCellValueFactory(new PropertyValueFactory<>("cardSet"));
+        }
+        typeCol.setCellValueFactory(PropertyValueFactory("type"))
+        cardSetCol.setCellValueFactory(PropertyValueFactory("cardSet"))
 
-        weightTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-        weightTable.setEditable(true);
-        weightNoCol.setCellValueFactory(param -> {
-            var items = param.getTableView().getItems();
-            int index = IntStream.range(0, items.size()).filter(i -> items.get(i) == param.getValue()).findFirst().orElse(-2);
-            return new SimpleIntegerProperty(index + 1 + currentOffset);
-        });
-        weightCardIdCol.setCellValueFactory(new PropertyValueFactory<>("cardId"));
-        weightCardIdCol.setCellFactory(weightCardNumberTableColumn -> new TextFieldTableCellUI<>(stringConverter) {
-            @Override
-            public void commitEdit(String s) {
-                super.commitEdit(s);
-                weightTable.getItems().get(getIndex()).setCardId(s);
-                saveWeightConfig();
-                notificationManager.showSuccess("修改ID成功", 2);
+        weightTable.selectionModel.selectionMode = SelectionMode.MULTIPLE
+        weightTable.isEditable = true
+        weightNoCol.setCellValueFactory { param: TableColumn.CellDataFeatures<WeightCard, Number?> ->
+            val items = param.tableView.items
+            val index =
+                IntStream.range(0, items.size).filter { i: Int -> items[i] === param.value }.findFirst().orElse(-2)
+            SimpleIntegerProperty(index + 1 + currentOffset)
+        }
+        weightCardIdCol.setCellValueFactory(PropertyValueFactory("cardId"))
+        weightCardIdCol.setCellFactory { weightCardNumberTableColumn: TableColumn<WeightCard, String>? ->
+            object : TextFieldTableCellUI<WeightCard?, String?>(stringConverter) {
+                override fun commitEdit(s: String?) {
+                    super.commitEdit(s)
+                    s?.let {
+                        weightTable.items[index].cardId = it
+                    }
+                    saveWeightConfig()
+                    notificationManager.showSuccess("修改ID成功", 2)
+                }
             }
-        });
-        weightNameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
-        weightNameCol.setCellFactory(weightCardNumberTableColumn -> new NoEditTextFieldTableCell<>(stringConverter) {
-            @Override
-            public void commitEdit(String s) {
-                super.commitEdit(s);
-                notificationManager.showInfo("不允许修改", 1);
+        }
+        weightNameCol.setCellValueFactory(PropertyValueFactory("name"))
+        weightNameCol.setCellFactory { weightCardNumberTableColumn: TableColumn<WeightCard, String>? ->
+            object : NoEditTextFieldTableCell<WeightCard?, String?>(stringConverter) {
+                override fun commitEdit(s: String?) {
+                    super.commitEdit(s)
+                    notificationManager.showInfo("不允许修改", 1)
+                }
             }
-        });
-        weightCol.setCellValueFactory(o -> o.getValue().getWeightProperty());
-        weightCol.setCellFactory(weightCardNumberTableColumn -> new NumberFieldTableCellUI<>(numberConverter) {
-            @Override
-            public void commitEdit(Number number) {
-                super.commitEdit(number);
-                saveWeightConfig();
-                notificationManager.showSuccess("修改权重成功", 2);
+        }
+        weightCol.setCellValueFactory { o: TableColumn.CellDataFeatures<WeightCard, Number?> -> o.value.weightProperty }
+        weightCol.setCellFactory { weightCardNumberTableColumn: TableColumn<WeightCard, Number?>? ->
+            object : NumberFieldTableCellUI<WeightCard?, Number>(numberConverter) {
+                override fun commitEdit(number: Number) {
+                    super.commitEdit(number)
+                    saveWeightConfig()
+                    notificationManager.showSuccess("修改权重成功", 2)
+                }
             }
-        });
-        powerWeightCol.setCellValueFactory(o -> o.getValue().getPowerWeightProperty());
-        powerWeightCol.setCellFactory(weightCardNumberTableColumn -> new NumberFieldTableCellUI<>(numberConverter) {
-            @Override
-            public void commitEdit(Number number) {
-                super.commitEdit(number);
-                saveWeightConfig();
-                notificationManager.showSuccess("修改权重成功", 2);
+        }
+        powerWeightCol.setCellValueFactory { o: TableColumn.CellDataFeatures<WeightCard, Number?> -> o.value.powerWeightProperty }
+        powerWeightCol.setCellFactory { weightCardNumberTableColumn: TableColumn<WeightCard, Number?>? ->
+            object : NumberFieldTableCellUI<WeightCard?, Number>(numberConverter) {
+                override fun commitEdit(number: Number) {
+                    super.commitEdit(number)
+                    saveWeightConfig()
+                    notificationManager.showSuccess("修改权重成功", 2)
+                }
             }
-        });
+        }
     }
 
-    private void readWeightConfig(Path weigthPath) {
-        List<WeightCard> cards = CardUtil.INSTANCE.readWeightConfig(weigthPath);
-        HashSet<WeightCard> weightCards = new HashSet<>(weightTable.getItems());
-        for (WeightCard card : cards) {
+    private fun readWeightConfig(weigthPath: Path = WEIGHT_CONFIG_PATH) {
+        val cards = CardUtil.readWeightConfig(weigthPath)
+        val weightCards = HashSet(weightTable.items)
+        for (card in cards) {
             if (!weightCards.contains(card)) {
-                weightTable.getItems().add(card);
+                weightTable.items.add(card)
             }
         }
     }
 
-    private void readWeightConfig() {
-        readWeightConfig(WEIGHT_CONFIG_PATH);
-    }
-
-    private void saveWeightConfig(Path weigthPath) {
-        CardUtil.INSTANCE.saveWeightConfig(weightTable.getItems(), weigthPath);
-        CardUtil.INSTANCE.reloadCardWeight(weightTable.getItems());
-    }
-
-    private void saveWeightConfig() {
-        saveWeightConfig(WEIGHT_CONFIG_PATH);
+    private fun saveWeightConfig(weigthPath: Path = WEIGHT_CONFIG_PATH) {
+        saveWeightConfig(weightTable.items, weigthPath)
+        reloadCardWeight(weightTable.items)
     }
 
     @FXML
-    protected void importConfig(ActionEvent actionEvent) {
-        FileChooser chooser = new FileChooser();
-        chooser.setTitle("选择要导入的权重文件");
-        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("权重文件 (*.weight)", "*.weight");
-        chooser.getExtensionFilters().add(extFilter);
+    protected fun importConfig(actionEvent: ActionEvent?) {
+        val chooser = FileChooser()
+        chooser.title = "选择要导入的权重文件"
+        val extFilter = FileChooser.ExtensionFilter("权重文件 (*.weight)", "*.weight")
+        chooser.extensionFilters.add(extFilter)
 
-        List<File> files = chooser.showOpenMultipleDialog(rootPane.getScene().getWindow());
+        val files = chooser.showOpenMultipleDialog(rootPane.scene.window)
         if (files == null || files.isEmpty()) {
-            notificationManager.showInfo("未选择导入路径，导入取消", 2);
-            return;
+            notificationManager.showInfo("未选择导入路径，导入取消", 2)
+            return
         }
-        for (File file : files) {
-            readWeightConfig(file.toPath());
+        for (file in files) {
+            readWeightConfig(file.toPath())
         }
-        saveWeightConfig();
-        notificationManager.showSuccess("导入成功", 2);
+        saveWeightConfig()
+        notificationManager.showSuccess("导入成功", 2)
     }
 
     @FXML
-    protected void exportConfig(ActionEvent actionEvent) {
-        FileChooser chooser = new FileChooser();
-        chooser.setTitle("导出至");
-        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("权重文件 (*.weight)", "*.weight");
-        chooser.getExtensionFilters().add(extFilter);
+    protected fun exportConfig(actionEvent: ActionEvent?) {
+        val chooser = FileChooser()
+        chooser.title = "导出至"
+        val extFilter = FileChooser.ExtensionFilter("权重文件 (*.weight)", "*.weight")
+        chooser.extensionFilters.add(extFilter)
 
-        File file = chooser.showSaveDialog(rootPane.getScene().getWindow());
+        val file = chooser.showSaveDialog(rootPane.scene.window)
         if (file == null) {
-            notificationManager.showInfo("未选择导出路径，导出取消", 2);
-            return;
+            notificationManager.showInfo("未选择导出路径，导出取消", 2)
+            return
         }
-        saveWeightConfig(file.toPath());
-        notificationManager.showSuccess("导出成功", 2);
+        saveWeightConfig(file.toPath())
+        notificationManager.showSuccess("导出成功", 2)
     }
 
     @FXML
-    protected void addWeight(ActionEvent actionEvent) {
-        ObservableList<DBCard> selectedItems = cardTable.getSelectionModel().getSelectedItems();
+    protected fun addWeight(actionEvent: ActionEvent?) {
+        val selectedItems = cardTable.selectionModel.selectedItems
         if (selectedItems.isEmpty()) {
-            notificationManager.showInfo("左边数据表没有选中行", 2);
-            return;
+            notificationManager.showInfo("左边数据表没有选中行", 2)
+            return
         }
-        ArrayList<DBCard> list = new ArrayList<>(selectedItems);
-        HashSet<WeightCard> weightSet = new HashSet<>(weightTable.getItems());
-        boolean hasUpdate = false;
-        for (DBCard dbCard : list) {
-            WeightCard weightCard = new WeightCard(dbCard.getCardId(), dbCard.getName(), 1.0, 1.0);
+        val list = ArrayList(selectedItems)
+        val weightSet = HashSet(weightTable.items)
+        var hasUpdate = false
+        for ((cardId, name) in list) {
+            val weightCard = WeightCard(cardId, name, 1.0, 1.0)
             if (weightSet.contains(weightCard)) {
-                hasUpdate = true;
+                hasUpdate = true
             } else {
-                weightTable.getItems().add(weightCard);
+                weightTable.items.add(weightCard)
             }
         }
-        saveWeightConfig();
-        notificationManager.showSuccess(hasUpdate ? "更新成功" : "添加成功", 2);
+        saveWeightConfig()
+        notificationManager.showSuccess(if (hasUpdate) "更新成功" else "添加成功", 2)
     }
 
     @FXML
-    protected void removeWeight(ActionEvent actionEvent) {
-        ObservableList<WeightCard> selectedItems = weightTable.getSelectionModel().getSelectedItems();
+    protected fun removeWeight(actionEvent: ActionEvent?) {
+        val selectedItems = weightTable.selectionModel.selectedItems
         if (selectedItems.isEmpty()) {
-            notificationManager.showInfo("右边权重表没有选中行", 2);
-            return;
+            notificationManager.showInfo("右边权重表没有选中行", 2)
+            return
         }
-        ArrayList<WeightCard> weightCards = new ArrayList<>(selectedItems);
-        weightTable.getSelectionModel().clearSelection();
-        weightTable.getItems().removeAll(weightCards);
-        saveWeightConfig();
-        notificationManager.showSuccess("移除成功", 2);
+        val weightCards = ArrayList(selectedItems)
+        weightTable.selectionModel.clearSelection()
+        weightTable.items.removeAll(weightCards)
+        saveWeightConfig()
+        notificationManager.showSuccess("移除成功", 2)
+    }
+
+    companion object {
+        private val WEIGHT_CONFIG_PATH: Path = Path.of(CONFIG_PATH, "card.weight")
     }
 }

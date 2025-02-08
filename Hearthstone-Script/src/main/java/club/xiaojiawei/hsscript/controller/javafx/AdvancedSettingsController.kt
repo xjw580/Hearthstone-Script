@@ -1,197 +1,242 @@
-package club.xiaojiawei.hsscript.controller.javafx;
+package club.xiaojiawei.hsscript.controller.javafx
 
-import club.xiaojiawei.controls.NotificationManager;
-import club.xiaojiawei.controls.Switch;
-import club.xiaojiawei.hsscript.bean.HotKey;
-import club.xiaojiawei.hsscript.data.ScriptDataKt;
-import club.xiaojiawei.hsscript.dll.SystemDll;
-import club.xiaojiawei.hsscript.enums.ConfigEnum;
-import club.xiaojiawei.hsscript.listener.GlobalHotkeyListener;
-import club.xiaojiawei.hsscript.starter.InjectStarter;
-import club.xiaojiawei.hsscript.utils.ConfigExUtil;
-import club.xiaojiawei.hsscript.utils.ConfigUtil;
-import com.melloware.jintellitype.JIntellitypeConstants;
-import javafx.beans.value.ChangeListener;
-import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
-import javafx.scene.Scene;
-import javafx.scene.control.TextField;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
-
-import java.net.URL;
-import java.util.ResourceBundle;
+import club.xiaojiawei.controls.NotificationManager
+import club.xiaojiawei.controls.Switch
+import club.xiaojiawei.hsscript.bean.HotKey
+import club.xiaojiawei.hsscript.enums.ConfigEnum
+import club.xiaojiawei.hsscript.listener.GlobalHotkeyListener
+import club.xiaojiawei.hsscript.utils.ConfigExUtil.getExitHotKey
+import club.xiaojiawei.hsscript.utils.ConfigExUtil.getPauseHotKey
+import club.xiaojiawei.hsscript.utils.ConfigExUtil.storeControlMode
+import club.xiaojiawei.hsscript.utils.ConfigExUtil.storeExitHotKey
+import club.xiaojiawei.hsscript.utils.ConfigExUtil.storePauseHotKey
+import club.xiaojiawei.hsscript.utils.ConfigExUtil.storeTopGameWindow
+import club.xiaojiawei.hsscript.utils.ConfigUtil.getBoolean
+import club.xiaojiawei.hsscript.utils.ConfigUtil.putBoolean
+import com.melloware.jintellitype.JIntellitypeConstants
+import javafx.beans.value.ChangeListener
+import javafx.beans.value.ObservableValue
+import javafx.event.EventHandler
+import javafx.fxml.FXML
+import javafx.fxml.Initializable
+import javafx.scene.Scene
+import javafx.scene.control.TextField
+import javafx.scene.input.KeyCode
+import javafx.scene.input.KeyEvent
+import javafx.scene.layout.StackPane
+import javafx.scene.layout.VBox
+import java.net.URL
+import java.util.*
 
 /**
  * @author 肖嘉威
  * @date 2023/9/10 15:07
  */
-public class AdvancedSettingsController implements Initializable {
+class AdvancedSettingsController : Initializable {
+    @FXML
+    lateinit var pauseHotKey: TextField
 
     @FXML
-    private TextField pauseHotKey;
-    @FXML
-    private TextField exitHotKey;
-    @FXML
-    private VBox mainVBox;
-    @FXML
-    private NotificationManager<Object> notificationManager;
+    lateinit var exitHotKey: TextField
 
     @FXML
-    private Switch updateDev;
-    @FXML
-    private Switch autoUpdate;
-    @FXML
-    private Switch runningMinimize;
-    @FXML
-    private Switch controlMode;
-    @FXML
-    private Switch topGameWindow;
-    @FXML
-    private Switch sendNotice;
-    @FXML
-    private StackPane rootPane;
+    lateinit var mainVBox: VBox
 
-    private ChangeListener<Scene> sceneListener;
+    @FXML
+    lateinit var notificationManager: NotificationManager<Any>
 
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
-        initValue();
-        listen();
+    @FXML
+    lateinit var updateDev: Switch
+
+    @FXML
+    lateinit var autoUpdate: Switch
+
+    @FXML
+    lateinit var runningMinimize: Switch
+
+    @FXML
+    lateinit var controlMode: Switch
+
+    @FXML
+    lateinit var topGameWindow: Switch
+
+    @FXML
+    lateinit var sendNotice: Switch
+
+    @FXML
+    lateinit var rootPane: StackPane
+
+    private var sceneListener: ChangeListener<Scene>? = null
+
+    override fun initialize(url: URL?, resourceBundle: ResourceBundle?) {
+        initValue()
+        listen()
     }
 
-    private void initValue() {
-        updateDev.setStatus(ConfigUtil.INSTANCE.getBoolean(ConfigEnum.UPDATE_DEV));
-        autoUpdate.setStatus(ConfigUtil.INSTANCE.getBoolean(ConfigEnum.AUTO_UPDATE));
-        runningMinimize.setStatus(ConfigUtil.INSTANCE.getBoolean(ConfigEnum.RUNNING_MINIMIZE));
-        controlMode.setStatus(ConfigUtil.INSTANCE.getBoolean(ConfigEnum.CONTROL_MODE));
-        topGameWindow.setStatus(ConfigUtil.INSTANCE.getBoolean(ConfigEnum.TOP_GAME_WINDOW));
-        sendNotice.setStatus(ConfigUtil.INSTANCE.getBoolean(ConfigEnum.SEND_NOTICE));
+    private fun initValue() {
+        updateDev.status = getBoolean(ConfigEnum.UPDATE_DEV)
+        autoUpdate.status = getBoolean(ConfigEnum.AUTO_UPDATE)
+        runningMinimize.status = getBoolean(ConfigEnum.RUNNING_MINIMIZE)
+        controlMode.status = getBoolean(ConfigEnum.CONTROL_MODE)
+        topGameWindow.status = getBoolean(ConfigEnum.TOP_GAME_WINDOW)
+        sendNotice.status = getBoolean(ConfigEnum.SEND_NOTICE)
 
-        HotKey pauseKey = ConfigExUtil.INSTANCE.getPauseHotKey();
+        val pauseKey = getPauseHotKey()
         if (pauseKey != null) {
-            pauseHotKey.setText(pauseKey.toString());
+            pauseHotKey.text = pauseKey.toString()
         }
-        HotKey exitKey = ConfigExUtil.INSTANCE.getExitHotKey();
+        val exitKey = getExitHotKey()
         if (exitKey != null) {
-            exitHotKey.setText(exitKey.toString());
+            exitHotKey.text = exitKey.toString()
         }
     }
 
-    private void listen() {
+    private fun listen() {
 //        监听更新开发版开关
-        updateDev.statusProperty().addListener((observable, oldValue, newValue) -> {
-            ConfigUtil.INSTANCE.putBoolean(ConfigEnum.UPDATE_DEV, newValue, true);
-        });
-//        监听自动更新开关
-        autoUpdate.statusProperty().addListener((observable, oldValue, newValue) -> {
-            ConfigUtil.INSTANCE.putBoolean(ConfigEnum.AUTO_UPDATE, newValue, true);
-        });
-//        监听运行最小化开关
-        runningMinimize.statusProperty().addListener((observable, oldValue, newValue) -> {
-            ConfigUtil.INSTANCE.putBoolean(ConfigEnum.RUNNING_MINIMIZE, newValue, true);
-        });
-//        监听控制开关
-        controlMode.statusProperty().addListener((observable, oldValue, newValue) -> {
-            ConfigExUtil.INSTANCE.storeControlMode(newValue);
-            topGameWindow.setStatus(newValue);
-        });
-//        监听置顶游戏窗口开关
-        topGameWindow.statusProperty().addListener((observable, oldValue, newValue) -> {
-            ConfigExUtil.INSTANCE.storeTopGameWindow(newValue);
-        });
-//        监听发送通知开关
-        sendNotice.statusProperty().addListener((observable, oldValue, newValue) -> {
-            ConfigUtil.INSTANCE.putBoolean(ConfigEnum.SEND_NOTICE, newValue, true);
-        });
-        sceneListener = (observableValue, scene, t1) -> {
-            mainVBox.prefWidthProperty().bind(t1.widthProperty());
-            mainVBox.sceneProperty().removeListener(sceneListener);
-        };
-        mainVBox.sceneProperty().addListener(sceneListener);
+        updateDev.statusProperty()
+            .addListener { observable, oldValue, newValue ->
+                putBoolean(
+                    ConfigEnum.UPDATE_DEV,
+                    newValue, true
+                )
+            }
+        //        监听自动更新开关
+        autoUpdate.statusProperty()
+            .addListener { observable, oldValue, newValue ->
+                putBoolean(
+                    ConfigEnum.AUTO_UPDATE,
+                    newValue, true
+                )
+            }
+        //        监听运行最小化开关
+        runningMinimize.statusProperty()
+            .addListener { observable, oldValue, newValue ->
+                putBoolean(
+                    ConfigEnum.RUNNING_MINIMIZE,
+                    newValue, true
+                )
+            }
+        //        监听控制开关
+        controlMode.statusProperty()
+            .addListener { observable, oldValue, newValue ->
+                storeControlMode(
+                    newValue
+                )
+                topGameWindow.status = newValue
+            }
+        //        监听置顶游戏窗口开关
+        topGameWindow.statusProperty()
+            .addListener { observable, oldValue, newValue ->
+                storeTopGameWindow(
+                    newValue
+                )
+            }
+        //        监听发送通知开关
+        sendNotice.statusProperty()
+            .addListener { observable, oldValue, newValue ->
+                putBoolean(
+                    ConfigEnum.SEND_NOTICE,
+                    newValue, true
+                )
+            }
+        sceneListener = ChangeListener { observableValue: ObservableValue<out Scene>?, scene: Scene?, t1: Scene ->
+            mainVBox.prefWidthProperty().bind(t1.widthProperty())
+            mainVBox.sceneProperty().removeListener(sceneListener)
+        }
+        mainVBox.sceneProperty().addListener(sceneListener)
 
-        pauseHotKey.setOnKeyPressed(event -> {
-            HotKey hotKey = plusModifier(event);
-            if (hotKey != null) {
-                if (hotKey.getKeyCode() == 0) {
-                    pauseHotKey.setText("");
-                    ConfigExUtil.INSTANCE.storePauseHotKey(hotKey);
-                    GlobalHotkeyListener.INSTANCE.reload();
-                    notificationManager.showSuccess("开始/暂停热键热键已删除", 2);
-                } else {
-                    pauseHotKey.setText(hotKey.toString());
-                    ConfigExUtil.INSTANCE.storePauseHotKey(hotKey);
-                    GlobalHotkeyListener.INSTANCE.reload();
-                    notificationManager.showSuccess("开始/暂停热键已修改", 2);
+        pauseHotKey.onKeyPressed =
+            EventHandler { event: KeyEvent ->
+                val hotKey = plusModifier(event)
+                if (hotKey != null) {
+                    if (hotKey.keyCode == 0) {
+                        pauseHotKey.text = ""
+                        storePauseHotKey(hotKey)
+                        GlobalHotkeyListener.reload()
+                        notificationManager.showSuccess("开始/暂停热键热键已删除", 2)
+                    } else {
+                        pauseHotKey.text = hotKey.toString()
+                        storePauseHotKey(hotKey)
+                        GlobalHotkeyListener.reload()
+                        notificationManager.showSuccess("开始/暂停热键已修改", 2)
+                    }
                 }
             }
-        });
-        pauseHotKey.setOnKeyReleased(this::reduceModifier);
-        pauseHotKey.focusedProperty().addListener((observable, oldValue, newValue) -> {
-            if (!newValue) {
-                modifier = 0;
+        pauseHotKey.onKeyReleased =
+            EventHandler { event: KeyEvent ->
+                this.reduceModifier(
+                    event
+                )
             }
-        });
-
-        exitHotKey.setOnKeyPressed(event -> {
-            HotKey hotKey = plusModifier(event);
-            if (hotKey != null) {
-                if (hotKey.getKeyCode() == 0) {
-                    exitHotKey.setText("");
-                    ConfigExUtil.INSTANCE.storeExitHotKey(hotKey);
-                    GlobalHotkeyListener.INSTANCE.reload();
-                    notificationManager.showSuccess("退出热键已删除", 2);
-                } else {
-                    exitHotKey.setText(hotKey.toString());
-                    ConfigExUtil.INSTANCE.storeExitHotKey(hotKey);
-                    GlobalHotkeyListener.INSTANCE.reload();
-                    notificationManager.showSuccess("退出热键已修改", 2);
+        pauseHotKey.focusedProperty()
+            .addListener { observable, oldValue, newValue ->
+                if (!newValue) {
+                    modifier = 0
                 }
             }
-        });
-        exitHotKey.setOnKeyReleased(this::reduceModifier);
-        exitHotKey.focusedProperty().addListener((observable, oldValue, newValue) -> {
-            if (!newValue) {
-                modifier = 0;
-            }
-        });
 
+        exitHotKey.onKeyPressed =
+            EventHandler { event: KeyEvent ->
+                val hotKey = plusModifier(event)
+                if (hotKey != null) {
+                    if (hotKey.keyCode == 0) {
+                        exitHotKey.text = ""
+                        storeExitHotKey(hotKey)
+                        GlobalHotkeyListener.reload()
+                        notificationManager.showSuccess("退出热键已删除", 2)
+                    } else {
+                        exitHotKey.text = hotKey.toString()
+                        storeExitHotKey(hotKey)
+                        GlobalHotkeyListener.reload()
+                        notificationManager.showSuccess("退出热键已修改", 2)
+                    }
+                }
+            }
+        exitHotKey.onKeyReleased =
+            EventHandler { event: KeyEvent ->
+                this.reduceModifier(
+                    event
+                )
+            }
+        exitHotKey.focusedProperty()
+            .addListener { observable, oldValue, newValue ->
+                if (!newValue) {
+                    modifier = 0
+                }
+            }
     }
 
-    private HotKey plusModifier(KeyEvent event) {
-        if (event.getCode() == KeyCode.ALT) {
-            modifier += JIntellitypeConstants.MOD_ALT;
-        } else if (event.getCode() == KeyCode.CONTROL) {
-            modifier += JIntellitypeConstants.MOD_CONTROL;
-        } else if (event.getCode() == KeyCode.SHIFT) {
-            modifier += JIntellitypeConstants.MOD_SHIFT;
-        } else if (event.getCode() == KeyCode.WINDOWS) {
-            modifier += JIntellitypeConstants.MOD_WIN;
-        } else if (event.getCode() == KeyCode.BACK_SPACE) {
-            return new HotKey();
+    private fun plusModifier(event: KeyEvent): HotKey? {
+        if (event.code == KeyCode.ALT) {
+            modifier += JIntellitypeConstants.MOD_ALT
+        } else if (event.code == KeyCode.CONTROL) {
+            modifier += JIntellitypeConstants.MOD_CONTROL
+        } else if (event.code == KeyCode.SHIFT) {
+            modifier += JIntellitypeConstants.MOD_SHIFT
+        } else if (event.code == KeyCode.WINDOWS) {
+            modifier += JIntellitypeConstants.MOD_WIN
+        } else if (event.code == KeyCode.BACK_SPACE) {
+            return HotKey()
         } else {
-            int code = event.getCode().getCode();
-            if (code >= KeyCode.A.getCode() && code <= KeyCode.Z.getCode()) {
-                return new HotKey(modifier, code);
+            val code = event.code.code
+            if (code >= KeyCode.A.code && code <= KeyCode.Z.code) {
+                return HotKey(modifier, code)
             }
         }
-        return null;
+        return null
     }
 
-    private void reduceModifier(KeyEvent event) {
-        if (event.getCode() == KeyCode.ALT) {
-            modifier -= JIntellitypeConstants.MOD_ALT;
-        } else if (event.getCode() == KeyCode.CONTROL) {
-            modifier -= JIntellitypeConstants.MOD_CONTROL;
-        } else if (event.getCode() == KeyCode.SHIFT) {
-            modifier -= JIntellitypeConstants.MOD_SHIFT;
-        } else if (event.getCode() == KeyCode.WINDOWS) {
-            modifier -= JIntellitypeConstants.MOD_WIN;
+    private fun reduceModifier(event: KeyEvent) {
+        if (event.code == KeyCode.ALT) {
+            modifier -= JIntellitypeConstants.MOD_ALT
+        } else if (event.code == KeyCode.CONTROL) {
+            modifier -= JIntellitypeConstants.MOD_CONTROL
+        } else if (event.code == KeyCode.SHIFT) {
+            modifier -= JIntellitypeConstants.MOD_SHIFT
+        } else if (event.code == KeyCode.WINDOWS) {
+            modifier -= JIntellitypeConstants.MOD_WIN
         }
     }
 
-    private int modifier;
-
+    private var modifier = 0
 }
