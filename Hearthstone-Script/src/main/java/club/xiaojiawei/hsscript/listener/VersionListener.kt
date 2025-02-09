@@ -13,10 +13,7 @@ import club.xiaojiawei.hsscript.data.TEMP_VERSION_PATH
 import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.enums.VersionTypeEnum
 import club.xiaojiawei.hsscript.status.PauseStatus
-import club.xiaojiawei.hsscript.utils.ConfigUtil
-import club.xiaojiawei.hsscript.utils.FileUtil
-import club.xiaojiawei.hsscript.utils.SystemUtil
-import club.xiaojiawei.hsscript.utils.VersionUtil
+import club.xiaojiawei.hsscript.utils.*
 import javafx.beans.property.DoubleProperty
 import javafx.beans.property.ReadOnlyBooleanProperty
 import javafx.beans.property.ReadOnlyBooleanWrapper
@@ -202,7 +199,7 @@ object VersionListener {
         ) {
             return
         }
-        synchronized(canUpdateProperty){
+        synchronized(canUpdateProperty) {
             val updateDev = ConfigUtil.getBoolean(ConfigEnum.UPDATE_DEV)
             log.info { "开始检查更新，更新开发版：$updateDev" }
             for (repository in repositoryList) {
@@ -239,53 +236,50 @@ object VersionListener {
     private fun downloadRelease(release: Release, url: String, progress: DoubleProperty): String? {
         var rootPath: Path
         try {
-            URI(url)
-                .toURL()
-                .openConnection()
-                .getInputStream().use { inputStream ->
-                    ZipInputStream(inputStream).use { zipInputStream ->
-                        val startContent = "开始下载<" + release.tagName + ">"
-                        log.info { startContent }
-                        progress.set(0.0)
-                        var nextEntry: ZipEntry
-                        val count = 59.0
-                        val step = 0.95 / count
-                        rootPath = Path.of(TEMP_VERSION_PATH, release.tagName)
-                        val rootFile = rootPath.toFile()
-                        if (!FileUtil.createDirectory(rootFile)) {
-                            log.error { rootFile.absolutePath + "创建失败" }
-                            return null
-                        }
-                        rootFile.listFiles()?.forEach { file ->
-                            file.delete()
-                        }
-                        while ((zipInputStream.getNextEntry().also { nextEntry = it }) != null) {
-                            val entryFile = rootPath.resolve(nextEntry!!.getName()).toFile()
-                            if (nextEntry.isDirectory) {
-                                if (entryFile.mkdirs()) {
-                                    log.info { "created_dir：" + entryFile.path }
-                                }
-                            } else {
-                                val parentFile = entryFile.getParentFile()
-                                if (parentFile.exists() || parentFile.mkdirs()) {
-                                    BufferedOutputStream(FileOutputStream(entryFile)).use { bufferedOutputStream ->
-                                        var l: Int
-                                        val bytes = ByteArray(8192)
-                                        while ((zipInputStream.read(bytes).also { l = it }) != -1) {
-                                            bufferedOutputStream.write(bytes, 0, l)
-                                        }
-                                    }
-                                    log.info { "downloaded_file：" + entryFile.path }
-                                }
-                            }
-                            progress.set(step + progress.get())
-                        }
-                        writeVersionFileCompleteFlag(rootPath.toString())
-                        progress.set(1.0)
-                        val endContent = "<" + release.tagName + ">下载完毕"
-                        log.info { endContent }
+            NetUtil.buildConnection(url).getInputStream().use { inputStream ->
+                ZipInputStream(inputStream).use { zipInputStream ->
+                    val startContent = "开始下载<" + release.tagName + ">"
+                    log.info { startContent }
+                    progress.set(0.0)
+                    var nextEntry: ZipEntry
+                    val count = 59.0
+                    val step = 0.95 / count
+                    rootPath = Path.of(TEMP_VERSION_PATH, release.tagName)
+                    val rootFile = rootPath.toFile()
+                    if (!FileUtil.createDirectory(rootFile)) {
+                        log.error { rootFile.absolutePath + "创建失败" }
+                        return null
                     }
+                    rootFile.listFiles()?.forEach { file ->
+                        file.delete()
+                    }
+                    while ((zipInputStream.getNextEntry().also { nextEntry = it }) != null) {
+                        val entryFile = rootPath.resolve(nextEntry!!.getName()).toFile()
+                        if (nextEntry.isDirectory) {
+                            if (entryFile.mkdirs()) {
+                                log.info { "created_dir：" + entryFile.path }
+                            }
+                        } else {
+                            val parentFile = entryFile.getParentFile()
+                            if (parentFile.exists() || parentFile.mkdirs()) {
+                                BufferedOutputStream(FileOutputStream(entryFile)).use { bufferedOutputStream ->
+                                    var l: Int
+                                    val bytes = ByteArray(8192)
+                                    while ((zipInputStream.read(bytes).also { l = it }) != -1) {
+                                        bufferedOutputStream.write(bytes, 0, l)
+                                    }
+                                }
+                                log.info { "downloaded_file：" + entryFile.path }
+                            }
+                        }
+                        progress.set(step + progress.get())
+                    }
+                    writeVersionFileCompleteFlag(rootPath.toString())
+                    progress.set(1.0)
+                    val endContent = "<" + release.tagName + ">下载完毕"
+                    log.info { endContent }
                 }
+            }
         } catch (e: RuntimeException) {
             val errorContent = "<" + release.tagName + ">下载失败"
             log.error(e) { "$errorContent,$url" }

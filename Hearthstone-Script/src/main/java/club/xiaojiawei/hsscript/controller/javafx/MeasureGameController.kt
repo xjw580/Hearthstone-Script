@@ -18,16 +18,16 @@ import javafx.scene.layout.StackPane
 class MeasureGameController {
 
     @FXML
-    lateinit var resultArea: TextArea
+    protected lateinit var resultArea: TextArea
 
     @FXML
-    lateinit var ktStyleSwitch: Switch
+    protected lateinit var ktStyleSwitch: Switch
 
     @FXML
-    lateinit var notificationManager: NotificationManager<String>
+    protected lateinit var notificationManager: NotificationManager<String>
 
     @FXML
-    lateinit var rootPane: StackPane
+    protected lateinit var rootPane: StackPane
 
     @FXML
     private fun showGameModal(actionEvent: ActionEvent) {

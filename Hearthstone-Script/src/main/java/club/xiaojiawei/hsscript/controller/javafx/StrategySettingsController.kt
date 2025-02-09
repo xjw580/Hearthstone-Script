@@ -54,9 +54,6 @@ class StrategySettingsController : Initializable {
     protected lateinit var notificationManager: NotificationManager<Any>
 
     @FXML
-    protected lateinit var mainVBox: VBox
-
-    @FXML
     protected lateinit var randomEventSwitch: Switch
 
     @FXML
@@ -67,8 +64,6 @@ class StrategySettingsController : Initializable {
 
     @FXML
     protected lateinit var autoSurrenderField: NumberField
-
-    private var sceneListener: ChangeListener<Scene>? = null
 
     override fun initialize(url: URL?, resourceBundle: ResourceBundle?) {
         initActionInterval()
@@ -175,11 +170,6 @@ class StrategySettingsController : Initializable {
 
 
     private fun listen() {
-        sceneListener = ChangeListener { observableValue: ObservableValue<out Scene>?, scene: Scene?, t1: Scene ->
-            mainVBox.prefWidthProperty().bind(t1.widthProperty())
-            mainVBox.sceneProperty().removeListener(sceneListener)
-        }
-        mainVBox.sceneProperty().addListener(sceneListener)
     }
 
     @FXML

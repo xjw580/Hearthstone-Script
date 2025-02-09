@@ -11,8 +11,6 @@ import org.springframework.web.client.RestTemplate
  */
 abstract class AbstractRepository {
 
-    protected val restTemplate: RestTemplate = RestTemplate()
-
     fun getReleaseDownloadURL(isPreview: Boolean = false): String?{
         val latestRelease = getLatestRelease(isPreview)
         latestRelease?.let {

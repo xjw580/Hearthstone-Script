@@ -8,6 +8,16 @@ import com.sun.jna.platform.win32.WinDef
 import com.sun.jna.platform.win32.WinDef.HWND
 import java.awt.Robot
 import java.awt.Toolkit
+import java.net.URI
+import java.net.http.HttpClient
+import java.net.http.HttpRequest
+import java.net.http.HttpResponse
+import java.security.SecureRandom
+import javax.net.ssl.SSLContext
+
+
+
+
 
 /**
  * 存储脚本常量
@@ -98,4 +108,27 @@ const val ARG_PAGE: String = "--page="
 fun reloadScriptData() {
     MAX_LOG_SIZE_KB = ConfigUtil.getInt(ConfigEnum.GAME_LOG_LIMIT)
     MAX_LOG_SIZE_B = MAX_LOG_SIZE_KB * 1024
+}
+
+fun main() {
+    val sslContext = SSLContext.getInstance("TLSv1.2")
+    sslContext.init(null, null, SecureRandom())
+
+    val client = HttpClient.newBuilder()
+        .sslContext(sslContext)
+        .build()
+
+    val request = HttpRequest.newBuilder()
+        .uri(URI.create("https://api.hearthstonejson.com/v1/latest/zhCN/cards.json"))
+        .header(
+            "User-Agent",
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+        )
+        .GET()
+        .build()
+
+    val response = client.send(request, HttpResponse.BodyHandlers.ofString())
+
+    println("Status Code: " + response.statusCode())
+    println("Response Body: " + response.body())
 }

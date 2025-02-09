@@ -31,6 +31,15 @@ const val FXML_DIR: String = "/fxml/"
 
 const val GAME_LOG_DIR: String = "Logs"
 
+@JvmInline
+value class ResourceFile(val name: String)
+
+val INJECT_UTIL_FILE = ResourceFile("injectUtil.exe")
+
+val LIB_HS_FILE = ResourceFile("libHS.dll")
+
+val HS_CARD_UTIL_FILE = ResourceFile("HSCardUtil.exe")
+
 /**
  * 图片路径
  */

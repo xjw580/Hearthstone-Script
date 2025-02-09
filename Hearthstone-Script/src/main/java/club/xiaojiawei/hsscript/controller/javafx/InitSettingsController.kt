@@ -34,34 +34,30 @@ import java.util.*
  * @date 2023/2/11 17:24
  */
 class InitSettingsController : Initializable {
-    @FXML
-    lateinit var deckPosComboBox: ComboBox<String>
 
     @FXML
-    lateinit var mainVBox: VBox
+    protected lateinit var deckPosComboBox: ComboBox<String>
 
     @FXML
-    lateinit var notificationManager: NotificationManager<Any>
+    protected lateinit var notificationManager: NotificationManager<Any>
 
     @FXML
-    lateinit var gamePath: Text
+    protected lateinit var gamePath: Text
 
     @FXML
-    lateinit var platformPath: Text
+    protected lateinit var platformPath: Text
 
     @FXML
-    lateinit var password: PasswordTextField
+    protected lateinit var password: PasswordTextField
 
     @FXML
-    lateinit var rootPane: StackPane
+    protected lateinit var rootPane: StackPane
 
     @FXML
-    lateinit var apply: Button
+    protected lateinit var apply: Button
 
     @FXML
-    lateinit var save: Button
-
-    private var sceneListener: ChangeListener<Scene>? = null
+    protected lateinit var save: Button
 
     @FXML
     protected fun gameClicked() {
@@ -122,12 +118,6 @@ class InitSettingsController : Initializable {
     }
 
     private fun addListener() {
-        sceneListener = ChangeListener { observableValue: ObservableValue<out Scene>?, scene: Scene?, t1: Scene ->
-            mainVBox.prefWidthProperty().bind(t1.widthProperty())
-            mainVBox.prefWidthProperty().bind(t1.widthProperty())
-            mainVBox.sceneProperty().removeListener(sceneListener)
-        }
-        mainVBox.sceneProperty().addListener(sceneListener)
         deckPosComboBox.valueProperty()
             .addListener { observable: ObservableValue<out String>?, oldValue: String?, newValue: String? ->
                 if (newValue.isNullOrBlank()) return@addListener

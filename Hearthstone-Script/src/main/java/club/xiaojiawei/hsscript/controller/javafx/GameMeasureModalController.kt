@@ -42,7 +42,7 @@ class GameMeasureModalController : Initializable, StageHook {
 
 
     @FXML
-    lateinit var rootPane: AnchorPane
+    protected lateinit var rootPane: AnchorPane
 
     private var updateTask: Future<*>? = null
 

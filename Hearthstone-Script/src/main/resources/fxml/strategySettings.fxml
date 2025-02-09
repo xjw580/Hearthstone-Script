@@ -19,7 +19,7 @@
     </fx:define>
     <VBox>
         <ScrollPane VBox.vgrow="ALWAYS" styleClass="scroll-pane-item">
-            <VBox fx:id="mainVBox">
+            <VBox fx:id="mainVBox" styleClass="item-v-box">
                 <HBox styleClass="h-box">
                     <Text text="操作间隔/ms"/>
                     <Label>

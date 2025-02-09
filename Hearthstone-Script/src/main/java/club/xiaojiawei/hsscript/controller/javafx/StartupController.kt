@@ -17,10 +17,10 @@ import java.util.*
  */
 class StartupController : Initializable {
     @FXML
-    lateinit var progressBar: ProgressBar
+    protected lateinit var progressBar: ProgressBar
 
     @FXML
-    lateinit var tip: Text
+    protected lateinit var tip: Text
 
     override fun initialize(url: URL?, resourceBundle: ResourceBundle?) {
         staticProgressBar = progressBar

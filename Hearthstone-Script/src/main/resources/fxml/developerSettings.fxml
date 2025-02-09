@@ -16,7 +16,7 @@
            fx:controller="club.xiaojiawei.hsscript.controller.javafx.DeveloperSettingsController">
     <VBox>
         <ScrollPane VBox.vgrow="ALWAYS" styleClass="scroll-pane-item">
-            <VBox fx:id="mainVBox">
+            <VBox styleClass="item-v-box">
                 <HBox styleClass="h-box">
                     <Text text="执行策略"/>
                     <Label>
@@ -61,6 +61,21 @@
                             <Switch fx:id="autoOpenAnalysis" status="false"/>
                         </graphic>
                     </Label>
+                </HBox>
+                <HBox styleClass="h-box">
+                    <Button text="更新卡牌数据库" styleClass="btn-ui, btn-ui-normal, btn-ui-small"
+                            onAction="#updateCardDB" contentDisplay="RIGHT">
+                        <graphic>
+                            <Label>
+                                <graphic>
+                                    <HelpIco/>
+                                </graphic>
+                                <tooltip>
+                                    <Tooltip text="更新hs_cards.db，需要魔法"/>
+                                </tooltip>
+                            </Label>
+                        </graphic>
+                    </Button>
                 </HBox>
             </VBox>
         </ScrollPane>

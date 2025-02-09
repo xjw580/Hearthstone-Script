@@ -2,6 +2,7 @@ package club.xiaojiawei.hsscript.bean.single.repository
 
 import club.xiaojiawei.hsscript.bean.Release
 import club.xiaojiawei.hsscript.data.PROJECT_NAME
+import club.xiaojiawei.hsscript.utils.NetUtil
 
 /**
  * @author 肖嘉威
@@ -12,7 +13,7 @@ object GithubRepository : AbstractRepository() {
     override fun getLatestRelease(isPreview: Boolean): Release? {
         var latestRelease: Release? = null
         if (isPreview) {
-            val releases: Array<Release>? = restTemplate.getForObject(
+            val releases: Array<Release>? = NetUtil.buildRestTemplate().getForObject(
                 getLatestReleaseURL(true),
                 Array<Release>::class.java
             )
@@ -20,7 +21,7 @@ object GithubRepository : AbstractRepository() {
                 latestRelease = releases[0]
             }
         } else {
-            latestRelease = restTemplate.getForObject(
+            latestRelease = NetUtil.buildRestTemplate().getForObject(
                 getLatestReleaseURL(false),
                 Release::class.java
             )

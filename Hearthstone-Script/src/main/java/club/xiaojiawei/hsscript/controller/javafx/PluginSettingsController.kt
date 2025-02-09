@@ -27,34 +27,34 @@ import java.util.stream.Stream
  */
 class PluginSettingsController : Initializable {
     @FXML
-    lateinit var pluginGraphicDescription: Pane
+    protected lateinit var pluginGraphicDescription: Pane
 
     @FXML
-    lateinit var pluginDescription: CopyLabel
+    protected lateinit var pluginDescription: CopyLabel
 
     @FXML
-    lateinit var pluginInfo: VBox
+    protected lateinit var pluginInfo: VBox
 
     @FXML
-    lateinit var pluginName: CopyLabel
+    protected lateinit var pluginName: CopyLabel
 
     @FXML
-    lateinit var pluginAuthor: CopyLabel
+    protected lateinit var pluginAuthor: CopyLabel
 
     @FXML
-    lateinit var pluginId: CopyLabel
+    protected lateinit var pluginId: CopyLabel
 
     @FXML
-    lateinit var pluginVersion: CopyLabel
+    protected lateinit var pluginVersion: CopyLabel
 
     @FXML
-    lateinit var rootPane: AnchorPane
+    protected lateinit var rootPane: AnchorPane
 
     @FXML
-    lateinit var notificationManager: NotificationManager<Any>
+    protected lateinit var notificationManager: NotificationManager<Any>
 
     @FXML
-    lateinit var pluginListView: ListView<PluginItem>
+    protected lateinit var pluginListView: ListView<PluginItem>
 
     override fun initialize(url: URL?, resourceBundle: ResourceBundle?) {
         initValue()

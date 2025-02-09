@@ -44,3 +44,4 @@ config.json
 /log
 /resource
 /config
+*.db-journal

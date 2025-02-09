@@ -40,32 +40,33 @@ import kotlin.math.min
  * @date 2025/1/21 12:52
  */
 class GameDataAnalysisController : Initializable, StageHook {
-    @FXML
-    lateinit var filterField: TextField
 
     @FXML
-    lateinit var outerPane: VBox
+    protected lateinit var filterField: TextField
 
     @FXML
-    lateinit var topPane: VBox
+    protected lateinit var outerPane: VBox
 
     @FXML
-    lateinit var outputField: TextField
+    protected lateinit var topPane: VBox
 
     @FXML
-    lateinit var cardCanvas: Canvas
+    protected lateinit var outputField: TextField
 
     @FXML
-    lateinit var inputField: TextField
+    protected lateinit var cardCanvas: Canvas
 
     @FXML
-    lateinit var rootPane: StackPane
+    protected lateinit var inputField: TextField
 
     @FXML
-    lateinit var warCanvas: Canvas
+    protected lateinit var rootPane: StackPane
 
     @FXML
-    lateinit var analysisSwitch: Switch
+    protected lateinit var warCanvas: Canvas
+
+    @FXML
+    protected lateinit var analysisSwitch: Switch
 
     private var canvasWidth = 0.0
     private var canvasHeight = 0.0

@@ -1,7 +1,9 @@
 package club.xiaojiawei.hsscript.dll
 
 import com.sun.jna.Library
+import com.sun.jna.Memory
 import com.sun.jna.Native
+import com.sun.jna.Pointer
 import com.sun.jna.WString
 import com.sun.jna.platform.win32.WinDef.HWND
 
@@ -11,6 +13,7 @@ import com.sun.jna.platform.win32.WinDef.HWND
  * @date 2023/9/16 17:34
  */
 interface SystemDll : Library {
+
     fun normalLeftClick(x: Int, y: Int)
 
     fun leftClick(x: Long, y: Long, hwnd: HWND?, isReal: Boolean)
@@ -69,9 +72,12 @@ interface SystemDll : Library {
 
     fun FindProcessId_(processName: String?): Long
 
+    fun GetWindowsProxy(proxyUrl:Pointer, length:Int)
+
     companion object {
 
-        val INSTANCE: SystemDll = Native.load("dll/system", SystemDll::class.java)
+//        val INSTANCE: SystemDll = Native.load("dll/system", SystemDll::class.java)
+        val INSTANCE: SystemDll = Native.load("S:\\CLionProjects\\HearthstoneScript-systemDLL\\cmake-build-release-visual-studio\\system.dll", SystemDll::class.java)
 
         const val MB_ICONERROR: Int = 0x00000010
 

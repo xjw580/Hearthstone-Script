@@ -173,6 +173,11 @@ enum class ConfigEnum(
     SEND_NOTICE(group = "system", defaultValue = "true"),
 
     /**
+     * 使用系统代理
+     */
+    USE_PROXY(group = "system", defaultValue = "true"),
+
+    /**
      * 退出程序热键
      */
     EXIT_HOT_KEY(group = "system", defaultValue = JSON.toJSONString(HotKey(JIntellitype.MOD_ALT, 'P'.code))),

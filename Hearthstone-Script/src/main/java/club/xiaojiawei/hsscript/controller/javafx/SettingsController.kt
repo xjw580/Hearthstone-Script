@@ -16,25 +16,25 @@ import java.util.*
  */
 class SettingsController : Initializable {
     @FXML
-    lateinit var initTab: Tab
+    protected lateinit var initTab: Tab
 
     @FXML
-    lateinit var advancedTab: Tab
+    protected lateinit var advancedTab: Tab
 
     @FXML
-    lateinit var pluginTab: Tab
+    protected lateinit var pluginTab: Tab
 
     @FXML
-    lateinit var strategyTab: Tab
+    protected lateinit var strategyTab: Tab
 
     @FXML
-    lateinit var weightTab: Tab
+    protected lateinit var weightTab: Tab
 
     @FXML
-    lateinit var developerTab: Tab
+    protected lateinit var developerTab: Tab
 
     @FXML
-    lateinit var rootPane: TabPane
+    protected lateinit var rootPane: TabPane
 
     override fun initialize(url: URL?, resourceBundle: ResourceBundle?) {
         val selectedItem = rootPane.selectionModel.selectedItem

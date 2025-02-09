@@ -26,6 +26,7 @@ import java.io.File
 import java.net.URI
 import java.nio.charset.StandardCharsets
 import java.nio.file.Path
+import java.util.*
 import java.util.function.Consumer
 import kotlin.system.exitProcess
 
@@ -364,6 +365,48 @@ object SystemUtil {
 
     fun messageError(text: String, type: Int = MB_ICONERROR, hwnd: WinDef.HWND? = null) {
         message(text, type, hwnd)
+    }
+
+    /**
+     * 获取软件的dll文件路径
+     */
+    fun getDllFilePath(file: ResourceFile): File? {
+        return if (Objects.requireNonNull(javaClass.getResource(""))
+                .protocol == "jar"
+        ) {
+            Path.of(DLL_PATH, file.name).toFile()
+        } else {
+            loadResource("dll/${file.name}")
+        }
+    }
+
+    /**
+     * 获取软件的exe文件路径
+     */
+    fun getExeFilePath(file: ResourceFile): File? {
+        return if (Objects.requireNonNull(javaClass.getResource(""))
+                .protocol == "jar"
+        ) {
+            Path.of(ROOT_PATH, file.name).toFile()
+        } else {
+            loadResource("exe/${file.name}")
+        }
+    }
+
+    private fun loadResource(path: String): File? {
+        var file: File? = null
+        javaClass.classLoader.getResource(path)?.let {
+            File(it.path).let { f->
+                if (f.exists()) {
+                    file = f
+                } else {
+                    log.error { "未找到${f.absolutePath}" }
+                }
+            }
+        } ?: let {
+            log.error { "未找到${path}" }
+        }
+        return file
     }
 
     @Suppress("DEPRECATION")

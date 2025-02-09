@@ -17,7 +17,7 @@
            fx:controller="club.xiaojiawei.hsscript.controller.javafx.InitSettingsController">
     <VBox>
         <ScrollPane VBox.vgrow="ALWAYS" styleClass="scroll-pane-item">
-            <VBox fx:id="mainVBox">
+            <VBox styleClass="item-v-box">
                 <HBox styleClass="h-box">
                     <Text text="炉石传说安装路径"/>
                     <Text fx:id="gamePath" underline="true"/>

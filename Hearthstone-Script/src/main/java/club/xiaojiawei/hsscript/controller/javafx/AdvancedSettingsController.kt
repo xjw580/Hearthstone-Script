@@ -20,11 +20,11 @@ import javafx.event.EventHandler
 import javafx.fxml.FXML
 import javafx.fxml.Initializable
 import javafx.scene.Scene
+import javafx.scene.control.Accordion
 import javafx.scene.control.TextField
 import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyEvent
 import javafx.scene.layout.StackPane
-import javafx.scene.layout.VBox
 import java.net.URL
 import java.util.*
 
@@ -33,40 +33,39 @@ import java.util.*
  * @date 2023/9/10 15:07
  */
 class AdvancedSettingsController : Initializable {
-    @FXML
-    lateinit var pauseHotKey: TextField
 
     @FXML
-    lateinit var exitHotKey: TextField
+    protected lateinit var pauseHotKey: TextField
 
     @FXML
-    lateinit var mainVBox: VBox
+    protected lateinit var exitHotKey: TextField
 
     @FXML
-    lateinit var notificationManager: NotificationManager<Any>
+    protected lateinit var notificationManager: NotificationManager<Any>
 
     @FXML
-    lateinit var updateDev: Switch
+    protected lateinit var updateDev: Switch
 
     @FXML
-    lateinit var autoUpdate: Switch
+    protected lateinit var autoUpdate: Switch
 
     @FXML
-    lateinit var runningMinimize: Switch
+    protected lateinit var runningMinimize: Switch
 
     @FXML
-    lateinit var controlMode: Switch
+    protected lateinit var controlMode: Switch
 
     @FXML
-    lateinit var topGameWindow: Switch
+    protected lateinit var topGameWindow: Switch
 
     @FXML
-    lateinit var sendNotice: Switch
+    protected lateinit var sendNotice: Switch
 
     @FXML
-    lateinit var rootPane: StackPane
+    protected lateinit var useProxy: Switch
 
-    private var sceneListener: ChangeListener<Scene>? = null
+    @FXML
+    protected lateinit var rootPane: StackPane
 
     override fun initialize(url: URL?, resourceBundle: ResourceBundle?) {
         initValue()
@@ -80,6 +79,7 @@ class AdvancedSettingsController : Initializable {
         controlMode.status = getBoolean(ConfigEnum.CONTROL_MODE)
         topGameWindow.status = getBoolean(ConfigEnum.TOP_GAME_WINDOW)
         sendNotice.status = getBoolean(ConfigEnum.SEND_NOTICE)
+        useProxy.status = getBoolean(ConfigEnum.USE_PROXY)
 
         val pauseKey = getPauseHotKey()
         if (pauseKey != null) {
@@ -139,11 +139,14 @@ class AdvancedSettingsController : Initializable {
                     newValue, true
                 )
             }
-        sceneListener = ChangeListener { observableValue: ObservableValue<out Scene>?, scene: Scene?, t1: Scene ->
-            mainVBox.prefWidthProperty().bind(t1.widthProperty())
-            mainVBox.sceneProperty().removeListener(sceneListener)
-        }
-        mainVBox.sceneProperty().addListener(sceneListener)
+        //        监听使用系统代理开关
+        useProxy.statusProperty()
+            .addListener { observable, oldValue, newValue ->
+                putBoolean(
+                    ConfigEnum.USE_PROXY,
+                    newValue, true
+                )
+            }
 
         pauseHotKey.onKeyPressed =
             EventHandler { event: KeyEvent ->
