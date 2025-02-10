@@ -42,7 +42,7 @@
         <!--java/fx-->
         <java.version>21</java.version>
         <javafx-version>21.0.1</javafx-version>
-        <javafx-ui-version>v2.16.1</javafx-ui-version>
+        <javafx-ui-version>v2.25.0</javafx-ui-version>
 
         <!--other-->
         <lombok-version>1.18.30</lombok-version>
@@ -102,6 +102,13 @@
             <groupId>io.github.oshai</groupId>
             <artifactId>kotlin-logging-jvm</artifactId>
             <version>${kotlin-logging-jvm-version}</version>
+        </dependency>
+        <!--set get-->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>${lombok-version}</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 
@@ -167,13 +174,6 @@
                 <groupId>club.xiaojiawei</groupId>
                 <artifactId>hs-script-deck-sdk</artifactId>
                 <version>${hs-script-deck-sdk-version}</version>
-            </dependency>
-            <!--set get-->
-            <dependency>
-                <groupId>org.projectlombok</groupId>
-                <artifactId>lombok</artifactId>
-                <version>${lombok-version}</version>
-                <scope>provided</scope>
             </dependency>
             <!--javafx-->
             <dependency>
