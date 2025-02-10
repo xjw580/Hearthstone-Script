@@ -141,7 +141,7 @@ class DeveloperSettingsController : Initializable {
 
     @FXML
     protected fun openLogFile(actionEvent: ActionEvent?) {
-        SystemUtil.openPath(LOG_PATH)
+        SystemUtil.openFile(LOG_PATH)
     }
 
     @FXML

@@ -22,7 +22,7 @@
     /*-fx-alignment: CENTER_LEFT;*/
 }
 .item-titled-pane{
-    /*-fx-alignment: center;*/
+    -fx-alignment: center_left;
 }
 .item-titled-pane > .content{
     -fx-background-color: none!important;

@@ -50,6 +50,9 @@ enum class WindowEnum(
     DEVELOPER_SETTINGS(
         "developerSettings.fxml"
     ),
+    ABOUT(
+        "about.fxml"
+    ),
     MAIN(
         "main.fxml",
         SCRIPT_NAME,

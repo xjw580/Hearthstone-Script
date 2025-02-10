@@ -409,8 +409,11 @@ object SystemUtil {
         return file
     }
 
+    /**
+     * 打开文件
+     */
     @Suppress("DEPRECATION")
-    fun openPath(path: String) {
+    fun openFile(path: String) {
         Runtime.getRuntime().exec(String.format("explorer %s", path))
     }
 

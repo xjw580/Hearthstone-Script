@@ -15,6 +15,7 @@ import java.util.*
  * @date 2023/10/14 12:43
  */
 class SettingsController : Initializable {
+
     @FXML
     protected lateinit var initTab: Tab
 
@@ -32,6 +33,9 @@ class SettingsController : Initializable {
 
     @FXML
     protected lateinit var developerTab: Tab
+
+    @FXML
+    protected lateinit var aboutTab: Tab
 
     @FXML
     protected lateinit var rootPane: TabPane
@@ -74,6 +78,10 @@ class SettingsController : Initializable {
         } else if (developerTab == tab) {
             if (developerTab.content == null) {
                 developerTab.content = loadRoot(WindowEnum.DEVELOPER_SETTINGS)
+            }
+        } else if (aboutTab == tab) {
+            if (aboutTab.content == null) {
+                aboutTab.content = loadRoot(WindowEnum.ABOUT)
             }
         }
     }
