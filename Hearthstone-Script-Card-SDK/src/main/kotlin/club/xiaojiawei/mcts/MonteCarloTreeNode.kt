@@ -7,6 +7,7 @@ import club.xiaojiawei.bean.War
 import club.xiaojiawei.enums.CardTypeEnum
 import java.util.*
 import kotlin.math.ln
+import kotlin.math.max
 import kotlin.math.sqrt
 
 /**
@@ -188,7 +189,7 @@ class MonteCarloTreeNode(
 
         private fun calcScore(war: War, arg: MCTSArg): Double {
             val currentScore = arg.scoreCalculator.apply(war)
-            val surplusTurn = arg.turnCount - 1
+            val surplusTurn = max(arg.turnCount - 1, 0)
 //        判断是否需要进行反演
             if (surplusTurn > 0) {
                 val inverseArg = MCTSArg(

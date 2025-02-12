@@ -4,8 +4,8 @@ import club.xiaojiawei.CardAction
 import club.xiaojiawei.bean.Card
 import club.xiaojiawei.bean.PlayAction
 import club.xiaojiawei.bean.Player
-import club.xiaojiawei.enums.CardTypeEnum
 import club.xiaojiawei.bean.War
+import club.xiaojiawei.enums.CardTypeEnum
 import kotlin.random.Random
 
 /**
@@ -25,6 +25,7 @@ class Brawl : CardAction.DefaultCardAction() {
         return listOf(
             PlayAction({ newWar ->
                 findSelf(newWar)?.action?.power()
+                Thread.sleep(5000L)
             }, { newWar ->
                 val newMyCards =
                     newWar.me.playArea.cards.filter { card: Card -> card.cardType === CardTypeEnum.MINION && !card.isDormantAwakenConditionEnchant }
@@ -50,8 +51,6 @@ class Brawl : CardAction.DefaultCardAction() {
                         card.damage = card.bloodLimit()
                     }
                 }
-//                乱斗动画长
-                Thread.sleep(3000L + size * 500L)
             })
         )
     }

@@ -17,7 +17,7 @@ object GithubRepository : AbstractRepository() {
                 getLatestReleaseURL(true),
                 Array<Release>::class.java
             )
-            if (releases != null && releases.isNotEmpty()) {
+            if (!releases.isNullOrEmpty()) {
                 latestRelease = releases[0]
             }
         } else {

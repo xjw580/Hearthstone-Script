@@ -76,8 +76,7 @@ interface SystemDll : Library {
 
     companion object {
 
-//        val INSTANCE: SystemDll = Native.load("dll/system", SystemDll::class.java)
-        val INSTANCE: SystemDll = Native.load("S:\\CLionProjects\\HearthstoneScript-systemDLL\\cmake-build-release-visual-studio\\system.dll", SystemDll::class.java)
+        val INSTANCE: SystemDll = Native.load("dll/system", SystemDll::class.java)
 
         const val MB_ICONERROR: Int = 0x00000010
 

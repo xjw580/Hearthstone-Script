@@ -6,12 +6,19 @@ import club.xiaojiawei.config.log
 import club.xiaojiawei.enums.CardTypeEnum
 import club.xiaojiawei.util.CardUtil
 import club.xiaojiawei.util.isTrue
+import java.util.concurrent.atomic.AtomicInteger
+import java.util.concurrent.atomic.AtomicLong
 import java.util.function.Supplier
 
 /**
  * @author 肖嘉威
  * @date 2024/9/8 18:42
  */
+
+private const val MAX_ERROR_LOG_COUNT = 100L
+
+private val errorLogCount = AtomicLong()
+
 abstract class CardAction(createDefaultAction: Boolean = true) {
 
     protected var depth = 0
@@ -432,7 +439,9 @@ abstract class CardAction(createDefaultAction: Boolean = true) {
     fun removeSelf(war: War): Card? {
         val entityId = belongCard?.entityId ?: return null
         return war.cardMap[entityId]?.area?.removeByEntityId(entityId) ?: let {
-            log.warn { "移除卡牌失败,entityId:${entityId},className:${this::class.qualifiedName}" }
+            if (errorLogCount.incrementAndGet() <= MAX_ERROR_LOG_COUNT){
+                log.warn { "移除卡牌失败,entityId:${entityId},className:${this::class.qualifiedName},action:${this::class.qualifiedName}" }
+            }
             null
         }
     }
@@ -443,7 +452,9 @@ abstract class CardAction(createDefaultAction: Boolean = true) {
     fun findSelf(war: War): Card? {
         val entityId = belongCard?.entityId ?: return null
         return war.cardMap[entityId] ?: let {
-            log.warn { "查找卡牌失败,entityId:${entityId},className:${this::class.qualifiedName}" }
+            if (errorLogCount.incrementAndGet() <= MAX_ERROR_LOG_COUNT){
+                log.warn { "查找卡牌失败,entityId:${entityId},className:${this::class.qualifiedName},action:${this::class.qualifiedName}" }
+            }
             null
         }
     }
@@ -457,7 +468,9 @@ abstract class CardAction(createDefaultAction: Boolean = true) {
             card.area.player.usedResources += card.cost
             card
         } ?: let {
-            log.warn { "查找卡牌失败,entityId:${entityId}" }
+            if (errorLogCount.incrementAndGet() <= MAX_ERROR_LOG_COUNT){
+                log.warn { "查找卡牌失败,entityId:${entityId},className:${this::class.qualifiedName},action:${this::class.qualifiedName}" }
+            }
             null
         }
     }
