@@ -27,7 +27,7 @@ class DeathwingMadAspect : CardAction.DefaultCardAction() {
         return listOf(
             PlayAction({ newWar ->
                 findSelf(newWar)?.action?.power()
-                Thread.sleep(2000L)
+                Thread.sleep(3000L)
             }, { newWar ->
                 spendSelfCost(newWar)
                 val me = newWar.me

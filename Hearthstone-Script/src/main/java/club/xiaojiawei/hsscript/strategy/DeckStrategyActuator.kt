@@ -62,7 +62,7 @@ object DeckStrategyActuator {
         if (random.nextInt() and 1 == 1) {
             log.info { "随机做点事情" }
             Thread.sleep(2000)
-            val minTime = 4000
+            val minTime = 5000
             val maxTime = 12000
             while (!PauseStatus.isPause && !war.isMyTurn && !Thread.interrupted() && Mode.currMode === ModeEnum.GAMEPLAY) {
                 var toList = war.rival.playArea.cards.toList()

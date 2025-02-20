@@ -233,6 +233,7 @@ object GameUtil {
         MY_HERO_RECT.rClick()
         SystemUtil.delayMedium()
         THANK_RECT.lClick()
+        SystemUtil.delayShortMedium()
     }
 
     /**
@@ -243,6 +244,7 @@ object GameUtil {
         MY_HERO_RECT.rClick()
         SystemUtil.delayMedium()
         GREET_RECT.lClick()
+        SystemUtil.delayShortMedium()
     }
 
     /**
@@ -253,6 +255,7 @@ object GameUtil {
         MY_HERO_RECT.rClick()
         SystemUtil.delayMedium()
         ERROR_RECT.lClick()
+        SystemUtil.delayShortMedium()
     }
 
 
@@ -271,7 +274,7 @@ object GameUtil {
     }
 
     fun lClickDeckPos() {
-        var deckPos = ConfigUtil.getInt(ConfigEnum.CHOOSE_DECK_POS)
+        val deckPos = ConfigUtil.getInt(ConfigEnum.CHOOSE_DECK_POS)
         DECK_POS_RECTS[deckPos - 1].lClick()
     }
 

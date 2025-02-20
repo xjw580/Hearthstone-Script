@@ -140,7 +140,7 @@ enum class ConfigEnum(
     /**
      * 运行后最小化软件
      */
-    RUNNING_MINIMIZE(group = "other", defaultValue = "false"),
+    RUNNING_MINIMIZE(group = "other", defaultValue = "true"),
 
     /**
      * 当前版本

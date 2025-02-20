@@ -20,12 +20,12 @@ class Bladestorm : CardAction.DefaultCardAction() {
         return listOf(
             PlayAction({ newWar ->
                 findSelf(newWar)?.action?.power()
+                Thread.sleep(2000L)
             }, { newWar ->
                 spendSelfCost(newWar)
                 removeSelf(newWar)
                 val damage = 1 + newWar.me.getSpellPower()
                 var noDead = true
-                var count = 0
                 val cards = (newWar.me.playArea.cards + newWar.rival.playArea.cards).filter { it.canHurt() }
                     .sortedBy { it.numTurnsInPlay }.reversed()
                 var isWork: Boolean
@@ -35,7 +35,6 @@ class Bladestorm : CardAction.DefaultCardAction() {
                         if (card.canHurt()) {
                             isWork = true
                             card.injured(damage)
-                            count++
                             if (!card.isAlive()) {
                                 noDead = false
                             }
@@ -43,7 +42,6 @@ class Bladestorm : CardAction.DefaultCardAction() {
                     }
                     if (!isWork) break
                 }
-                Thread.sleep(count * 250L)
             })
         )
     }
