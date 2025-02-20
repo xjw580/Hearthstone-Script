@@ -8,6 +8,7 @@ import club.xiaojiawei.hsscript.data.*
 import club.xiaojiawei.hsscript.dll.NoticeDll
 import club.xiaojiawei.hsscript.dll.SystemDll
 import club.xiaojiawei.hsscript.dll.SystemDll.Companion.MB_ICONERROR
+import club.xiaojiawei.hsscript.dll.SystemDll.Companion.MB_ICONINFORMATION
 import club.xiaojiawei.hsscript.dll.SystemDll.Companion.MB_OK
 import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.enums.RegCommonNameEnum
@@ -351,12 +352,16 @@ object SystemUtil {
 
     fun message(text: String, type: Int, hwnd: WinDef.HWND? = null) {
         VIRTUAL_THREAD_POOL.submit {
-            var hwnd: WinDef.HWND? = null
-            WindowUtil.getStage(WindowEnum.MAIN)?.let {
-                hwnd = SystemDll.INSTANCE.FindWindowW_(null, WString(it.title))
-            }
-            SystemDll.INSTANCE.MessageBox_(hwnd, text, SCRIPT_NAME, type)
+            SystemDll.INSTANCE.MessageBox_(hwnd ?: let {
+                WindowUtil.getStage(WindowEnum.MAIN)?.let {
+                    SystemDll.INSTANCE.FindWindowW_(null, WString(it.title))
+                }
+            }, text, SCRIPT_NAME, type)
         }
+    }
+
+    fun messageInfoOk(text: String, type: Int = MB_OK xor MB_ICONINFORMATION, hwnd: WinDef.HWND? = null) {
+        message(text, type, hwnd)
     }
 
     fun messageOk(text: String, type: Int = MB_OK, hwnd: WinDef.HWND? = null) {
@@ -396,7 +401,7 @@ object SystemUtil {
     private fun loadResource(path: String): File? {
         var file: File? = null
         javaClass.classLoader.getResource(path)?.let {
-            File(it.path).let { f->
+            File(it.path).let { f ->
                 if (f.exists()) {
                     file = f
                 } else {

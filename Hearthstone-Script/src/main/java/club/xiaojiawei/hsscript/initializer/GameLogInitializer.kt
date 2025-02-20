@@ -1,10 +1,13 @@
 package club.xiaojiawei.hsscript.initializer
 
+import club.xiaojiawei.config.VIRTUAL_THREAD_POOL
 import club.xiaojiawei.config.log
+import club.xiaojiawei.hsscript.data.GAME_CN_NAME
 import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.utils.ConfigUtil
 import club.xiaojiawei.hsscript.utils.FileUtil
 import club.xiaojiawei.hsscript.utils.SystemUtil
+import club.xiaojiawei.hsscript.utils.runUI
 import club.xiaojiawei.util.isTrue
 import org.ini4j.Ini
 import java.nio.file.Path
@@ -59,8 +62,12 @@ object GameLogInitializer : AbstractInitializer() {
 
         modify.isTrue {
             gameLogIni.store()
-            SystemUtil.notice("炉石日志配置已更改，请重启游戏，否则脚本将无法运行")
-            log.info { "炉石日志配置已更改，请重启游戏，否则脚本将无法运行" }
+            val text = "${GAME_CN_NAME}日志配置已更改，请重启${GAME_CN_NAME}，否则脚本将无法正常运行"
+            log.info { text }
+            VIRTUAL_THREAD_POOL.submit {
+                Thread.sleep(3000)
+                SystemUtil.messageInfoOk(text)
+            }
         }
 
         modify = false

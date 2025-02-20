@@ -77,7 +77,14 @@ class MainController : MainView() {
 
     private var isNotHoverLog = true
 
-    private val runModeMap: MutableMap<RunModeEnum, MutableList<DeckStrategy>> = HashMap()
+    private val runModeMap: MutableMap<RunModeEnum, MutableList<DeckStrategy>> = EnumMap(RunModeEnum::class.java)
+
+    override fun initialize(url: URL?, resourceBundle: ResourceBundle?) {
+        versionText.text = "当前版本：" + currentRelease.tagName
+        addListener()
+        initModeAndDeck()
+        initWorkDate()
+    }
 
     /**
      * 初始化模式和卡组
@@ -400,13 +407,6 @@ class MainController : MainView() {
             pauseToggleGroup.selectToggle(startButton)
             accordion.expandedPane = titledPaneLog
         }
-    }
-
-    override fun initialize(url: URL?, resourceBundle: ResourceBundle?) {
-        versionText.text = "当前版本：" + currentRelease.tagName
-        addListener()
-        initModeAndDeck()
-        initWorkDate()
     }
 
     @FXML
