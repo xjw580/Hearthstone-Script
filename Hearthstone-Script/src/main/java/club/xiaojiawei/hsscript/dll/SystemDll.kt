@@ -83,5 +83,7 @@ interface SystemDll : Library {
         const val MB_TOPMOST: Int = 0x00040000
 
         const val MB_OK: Int = 0x00000000
+
+        const val MB_ICONINFORMATION: Int = 0x00000040
     }
 }
