@@ -85,6 +85,8 @@ object WorkListener {
         }
     }
 
+    private val DEFAULT_TIME = LocalTime.parse("00:00")
+
     /**
      * 验证是否在工作时间内
      *
@@ -92,7 +94,7 @@ object WorkListener {
      */
     fun isDuringWorkDate(): Boolean {
         //        天校验
-        var workDay = ConfigExUtil.getWorkDay()
+        val workDay = ConfigExUtil.getWorkDay()
         val nowDay = LocalDate.now().getDayOfWeek().value
         if (workDay.isNotEmpty()) {
             if (!(workDay[0].enabled || workDay[nowDay].enabled)) {
@@ -103,21 +105,21 @@ object WorkListener {
         }
 
         //        段校验
-        var workTime = ConfigExUtil.getWorkTime().toList()
+        val workTime = ConfigExUtil.getWorkTime().toList()
         val nowTime: LocalTime = LocalTime.now()
         for (time in workTime) {
             if (time.enabled) {
-                val startTime = time.parseStartTime()
-                val endTime = time.parseEndTime()
+                val startTime = time.parseStartTime() ?: DEFAULT_TIME
+                val endTime = time.parseEndTime() ?: DEFAULT_TIME
                 if (startTime == endTime) {
                     return true
                 }
-                if (startTime != null && startTime.isBefore(nowTime) && (endTime == null || endTime.isAfter(nowTime))) {
-                    return true
-                }
-
-                if (endTime != null && endTime.isAfter(nowTime) && (startTime == null || startTime.isBefore(nowTime))) {
-                    return true
+                if (startTime.isBefore(endTime)) {
+                    // 同一天的情况：startTime < endTime
+                    return !nowTime.isBefore(startTime) && !nowTime.isAfter(endTime);
+                } else {
+                    // 跨天的情况：startTime >= endTime
+                    return !nowTime.isBefore(startTime) || !nowTime.isAfter(endTime);
                 }
             }
         }

@@ -15,6 +15,7 @@ import club.xiaojiawei.hsscript.starter.InjectStarter
 import club.xiaojiawei.hsscript.status.PauseStatus
 import java.io.File
 import java.nio.file.Path
+import java.time.LocalTime
 
 /**
  * @author 肖嘉威 xjw580@qq.com
@@ -76,13 +77,14 @@ object ConfigExUtil {
     }
 
     fun storeWorkTime(workTime: List<WorkTime>) {
-        workTime.forEach {
-            val parseStartTime = it.parseStartTime()
-            val parseEndTime = it.parseEndTime()
-            if (parseStartTime != null && parseEndTime != null) {
-                if (parseEndTime.isBefore(parseStartTime)) {
-                    it.endTime = it.startTime
-                }
+        workTime.forEach { time->
+            val parseStartTime = time.parseStartTime()
+            val parseEndTime = time.parseEndTime()
+            parseStartTime?:let {
+                time.startTime = "00:00"
+            }
+            parseEndTime?:let {
+                time.endTime = "00:00"
             }
         }
         ConfigUtil.putArray(ConfigEnum.WORK_TIME, workTime)

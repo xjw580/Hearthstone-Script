@@ -33,7 +33,7 @@ class WorkTime {
     }
 
     private fun parseTime(timeStr: String?):LocalTime? {
-        if (timeStr == null || timeStr.isBlank()) return null
+        if (timeStr.isNullOrBlank()) return null
         return LocalTime.from(pattern.parse(timeStr))
     }
 }
