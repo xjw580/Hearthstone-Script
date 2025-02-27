@@ -1,16 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import club.xiaojiawei.controls.FilterField?>
-<?import club.xiaojiawei.controls.ico.ExportIco?>
-<?import club.xiaojiawei.controls.ico.ImportIco?>
-<?import club.xiaojiawei.controls.ico.NextIco?>
+<?import club.xiaojiawei.controls.ico.*?>
 <?import club.xiaojiawei.controls.NotificationManager?>
-<?import club.xiaojiawei.controls.NumberField?>
 <?import club.xiaojiawei.factory.NotificationFactory?>
+<?import club.xiaojiawei.hsscript.component.CardField?>
+<?import club.xiaojiawei.hsscript.component.CardTableView?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import java.lang.Double?>
-<?import club.xiaojiawei.controls.ico.HelpIco?>
+<?import club.xiaojiawei.hsscript.component.CardSearcher?>
 <StackPane xmlns="http://javafx.com/javafx"
            xmlns:fx="http://javafx.com/fxml"
            stylesheets="@css/weightSettings.css"
@@ -21,46 +19,17 @@
         <Double fx:id="icoScale" fx:value="0.8"/>
     </fx:define>
     <SplitPane dividerPositions="0.6" styleClass="split-pane-line">
-        <VBox minWidth="0">
-            <TableView fx:id="cardTable" styleClass="table-view-idea, table-view-idea-tiny, table-view-idea-upright"
-                       VBox.vgrow="ALWAYS">
-                <columns>
-                    <TableColumn minWidth="${colMinWeight}" prefWidth="${colMinWeight}" fx:id="noCol"/>
-                    <TableColumn minWidth="${colMinWeight}" fx:id="cardIdCol" text="ID"/>
-                    <TableColumn minWidth="${colMinWeight}" fx:id="nameCol" text="名字"/>
-                    <TableColumn minWidth="${colMinWeight}" fx:id="attackCol" text="攻击力"/>
-                    <TableColumn minWidth="${colMinWeight}" fx:id="healthCol" text="血量"/>
-                    <TableColumn minWidth="${colMinWeight}" fx:id="costCol" text="费用"/>
-                    <TableColumn minWidth="${colMinWeight}" fx:id="textCol" text="描述"/>
-                    <TableColumn minWidth="${colMinWeight}" fx:id="typeCol" text="类型"/>
-                    <TableColumn minWidth="${colMinWeight}" fx:id="cardSetCol" text="扩展包"/>
-                </columns>
+        <fx:define>
+            <CardTableView fx:id="cardTable" VBox.vgrow="ALWAYS">
                 <placeholder>
                     <StackPane>
-                        <Label text="2.选中此表的行，点击向右按钮添加至右侧表"/>
+                        <Label text="1.选中此表的行，点击向右按钮添加至右侧表"/>
                     </StackPane>
                 </placeholder>
-                <columnResizePolicy>
-                    <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
-                </columnResizePolicy>
-            </TableView>
-            <HBox style="-fx-padding: 10;-fx-spacing: 10">
-                <FilterField fx:id="searchCardField" HBox.hgrow="ALWAYS" styleClass="text-field-ui, text-field-ui-small"
-                             promptText="1.输入卡牌名，支持通配符%和_"/>
-                <Label text="limit:" contentDisplay="RIGHT">
-                    <graphic>
-                        <NumberField fx:id="limit" text="100" promptText="100" hideIcon="true" maxWidth="45"
-                                     styleClass="text-field-ui, text-field-ui-small"/>
-                    </graphic>
-                </Label>
-                <Label text="offset:" contentDisplay="RIGHT">
-                    <graphic>
-                        <NumberField fx:id="offset" text="0" promptText="0" hideIcon="true" maxWidth="45"
-                                     styleClass="text-field-ui, text-field-ui-small"/>
-                    </graphic>
-                </Label>
-            </HBox>
-        </VBox>
+            </CardTableView>
+            <CardField fx:id="cardField"/>
+        </fx:define>
+        <CardSearcher minWidth="0" cardField="$cardField" cardTableView="$cardTable"/>
         <HBox minWidth="0">
             <VBox alignment="CENTER" spacing="10" style="-fx-padding: 5">
                 <Button styleClass="btn-ui, btn-ui-small, control-btn" onAction="#addWeight">
@@ -126,7 +95,7 @@
                     </columns>
                     <placeholder>
                         <StackPane>
-                            <Label text="3.双击权重单元格以编辑"/>
+                            <Label text="2.双击权重单元格以编辑"/>
                         </StackPane>
                     </placeholder>
                     <columnResizePolicy>

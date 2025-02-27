@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.StackPane?>
+<?import java.lang.Double?>
+<fx:root type="TableView" xmlns="http://javafx.com/javafx"
+         xmlns:fx="http://javafx.com/fxml"
+         styleClass="table-view-idea, table-view-idea-tiny, table-view-idea-upright">
+    <fx:define>
+        <Double fx:id="colMinWeight" fx:value="25"/>
+    </fx:define>
+    <columns>
+        <TableColumn minWidth="${colMinWeight}" prefWidth="${colMinWeight}" fx:id="noCol"/>
+        <TableColumn minWidth="${colMinWeight}" fx:id="cardIdCol" text="ID"/>
+        <TableColumn minWidth="${colMinWeight}" fx:id="nameCol" text="名字"/>
+        <TableColumn minWidth="${colMinWeight}" fx:id="attackCol" text="攻击力"/>
+        <TableColumn minWidth="${colMinWeight}" fx:id="healthCol" text="血量"/>
+        <TableColumn minWidth="${colMinWeight}" fx:id="costCol" text="费用"/>
+        <TableColumn minWidth="${colMinWeight}" fx:id="textCol" text="描述"/>
+        <TableColumn minWidth="${colMinWeight}" fx:id="typeCol" text="类型"/>
+        <TableColumn minWidth="${colMinWeight}" fx:id="cardSetCol" text="扩展包"/>
+    </columns>
+    <placeholder>
+        <StackPane>
+            <Label text="2.选中此表的行，点击向右按钮添加至右侧表"/>
+        </StackPane>
+    </placeholder>
+    <columnResizePolicy>
+        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+    </columnResizePolicy>
+</fx:root>

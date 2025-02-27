@@ -57,7 +57,7 @@
                     </TitledPane>
                 </Group>
                 <Group>
-                    <TitledPane text="第三方库开源许可"
+                    <TitledPane text="开源许可"
                                 styleClass="titled-pane-ui, titled-pane-ui-big, titled-pane-ui-pure, item-titled-pane">
                         <VBox styleClass="item-v-box">
                             <HBox styleClass="h-box">

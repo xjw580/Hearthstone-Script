@@ -7,14 +7,14 @@ import kotlin.random.Random
  * @date 2024/9/28 14:18
  */
 
-fun Boolean.isTrue(block: () -> Unit): Boolean {
+inline fun Boolean.isTrue(block: () -> Unit): Boolean {
     if (this) {
         block()
     }
     return this
 }
 
-fun Boolean.isFalse(block: () -> Unit): Boolean {
+inline fun Boolean.isFalse(block: () -> Unit): Boolean {
     if (!this) {
         block()
     }
@@ -23,4 +23,13 @@ fun Boolean.isFalse(block: () -> Unit): Boolean {
 
 fun <T> List<T>.randomSelect(): T {
     return this[Random.nextInt(this.size)]
+}
+
+inline fun <T1, T2> withNotNull(a: T1?, b: T2?, block: (T1, T2) -> Unit): Boolean {
+    return if (a != null && b != null) {
+        block(a, b)
+        true
+    } else {
+        false
+    }
 }

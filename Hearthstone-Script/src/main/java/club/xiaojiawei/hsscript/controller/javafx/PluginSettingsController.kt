@@ -1,14 +1,21 @@
 package club.xiaojiawei.hsscript.controller.javafx
 
 import club.xiaojiawei.CardAction
+import club.xiaojiawei.CardPlugin
+import club.xiaojiawei.DeckPlugin
 import club.xiaojiawei.DeckStrategy
+import club.xiaojiawei.bean.DBCard
 import club.xiaojiawei.bean.PluginWrapper
+import club.xiaojiawei.config.EXTRA_THREAD_POOL
 import club.xiaojiawei.controls.CopyLabel
 import club.xiaojiawei.controls.NotificationManager
+import club.xiaojiawei.hsscript.component.CardTableView
 import club.xiaojiawei.hsscript.component.PluginItem
 import club.xiaojiawei.hsscript.status.PluginManager.CARD_ACTION_PLUGINS
 import club.xiaojiawei.hsscript.status.PluginManager.DECK_STRATEGY_PLUGINS
 import club.xiaojiawei.hsscript.utils.SystemUtil.openURL
+import club.xiaojiawei.hsscript.utils.runUI
+import club.xiaojiawei.util.CardDBUtil
 import javafx.beans.value.ObservableValue
 import javafx.event.ActionEvent
 import javafx.fxml.FXML
@@ -26,6 +33,10 @@ import java.util.stream.Stream
  * @date 2023/9/10 15:07
  */
 class PluginSettingsController : Initializable {
+
+    @FXML
+    protected lateinit var cardTable: CardTableView
+
     @FXML
     protected lateinit var pluginGraphicDescription: Pane
 
@@ -75,15 +86,37 @@ class PluginSettingsController : Initializable {
                 pluginInfo.isVisible =
                     newValue != null
                 if (newValue != null) {
-                    pluginName.text = newValue.pluginWrapper.plugin.name()
-                    pluginAuthor.text = newValue.pluginWrapper.plugin.author()
-                    pluginId.text = newValue.pluginWrapper.plugin.id()
-                    pluginVersion.text = newValue.pluginWrapper.plugin.version()
-                    pluginDescription.text = newValue.pluginWrapper.plugin.description()
-                    val pane = newValue.pluginWrapper.plugin.graphicDescription()
+                    val plugin = newValue.pluginWrapper.plugin
+                    pluginName.text = plugin.name()
+                    pluginAuthor.text = plugin.author()
+                    pluginId.text = plugin.id()
+                    pluginVersion.text = plugin.version()
+                    pluginDescription.text = plugin.description()
                     pluginGraphicDescription.children.clear()
-                    if (pane != null) {
-                        pluginGraphicDescription.children.add(pane)
+                    plugin.graphicDescription()?.let {
+                        pluginGraphicDescription.children.add(it)
+                    }
+                    val spiInstance = newValue.pluginWrapper.spiInstance
+                    when (plugin) {
+                        is CardPlugin -> {
+                            EXTRA_THREAD_POOL.submit {
+                                val dbCards = mutableSetOf<DBCard>()
+                                for (cardAction in spiInstance) {
+                                    cardAction as CardAction
+                                    val cardIds = cardAction.getCardId()
+                                    for (cardId in cardIds) {
+                                        dbCards.addAll(CardDBUtil.queryCardById(cardId, 100, 0, false))
+                                    }
+                                }
+                                runUI {
+                                    cardTable.items.setAll(dbCards)
+                                }
+                            }
+                        }
+
+                        is DeckPlugin -> {
+                            cardTable.items.clear()
+                        }
                     }
                 }
             }

@@ -36,21 +36,21 @@
 
      > 所有出牌逻辑都按此类规定执行
      >
-     > 
+     >
      >
      > 连接模板项目下的[hs_cards.db](https://github.com/xjw580/Deck-Plugin-Market/blob/master/hs_cards.db)（sqlite数据库）可查看卡牌信息
      > ```sql
      > select * from cards
      > ```
-   
 
-   - 在resources目录下新建`META-INF/services`目录
 
-   - 创建两个文件`club.xiaojiawei.DeckPlugin`和`club.xiaojiawei.DeckStrategy`置于`META-INF/services`目录下
+- 在resources目录下新建`META-INF/services`目录
 
-   - `club.xiaojiawei.DeckPlugin`内容为插件类的全限定类名
+- 创建两个文件`club.xiaojiawei.DeckPlugin`和`club.xiaojiawei.DeckStrategy`置于`META-INF/services`目录下
 
-   - `club.xiaojiawei.DeckStrategy`内容为套牌策略类的全限定类名，如有多个套牌策略类可都写入，一行写一个类
+- `club.xiaojiawei.DeckPlugin`内容为插件类的全限定类名
+
+- `club.xiaojiawei.DeckStrategy`内容为套牌策略类的全限定类名，如有多个套牌策略类可都写入，一行写一个类
 
 4. ##### 打包
 
@@ -72,4 +72,117 @@
 
 #### 卡牌插件
 
-> 未来会有较大变动，不建议编写
+> 描述卡牌的行为
+
+类似`套牌策略插件`，参考[基础卡牌插件](https://github.com/xjw580/Hearthstone-Script/tree/master/Hearthstone-Script-Base-Card)
+
+自`4.3.1-DEV`版本增加`mcts策略`，该策略将联动卡牌插件，卡牌插件中描述的卡牌可以被该策略理解。
+
+##### 示例
+
+1. [斩杀](Hearthstone-Script-Base-Card/src/main/kotlin/club/xiaojiawei/bean/warrior/Execute.kt)
+
+   ```kotlin
+   package club.xiaojiawei.bean.warrior
+   
+   import club.xiaojiawei.CardAction
+   import club.xiaojiawei.bean.PlayAction
+   import club.xiaojiawei.bean.Player
+   import club.xiaojiawei.enums.CardTypeEnum
+   import club.xiaojiawei.bean.War
+   
+   /**
+    * [斩杀](https://hearthstone.huijiwiki.com/wiki/Card/69535)
+    * @author 肖嘉威
+    * @date 2025/1/18 8:19
+    */
+   
+   private val cardIds = arrayOf<String>(
+       "%CS2_108",
+   )
+   
+   class Execute : CardAction.DefaultCardAction() {
+   
+       override fun generatePlayActions(war: War, player: Player): List<PlayAction> {
+           val result = mutableListOf<PlayAction>()
+           war.rival.playArea.cards.forEach { rivalCard ->
+               if (rivalCard.cardType === CardTypeEnum.MINION && rivalCard.canBeTargetedByRivalSpells() && rivalCard.isInjured()) {
+                   result.add(PlayAction({ newWar ->
+                       findSelf(newWar)?.action?.power(rivalCard.action.findSelf(newWar))
+                   }, { newWar ->
+                       spendSelfCost(newWar)
+                       removeSelf(newWar)?.let {
+                           rivalCard.action.findSelf(newWar)?.let { rivalCard->
+                               rivalCard.damage = rivalCard.bloodLimit()
+                           }
+                       }
+                   }))
+               }
+           }
+           return result
+       }
+   
+       override fun createNewInstance(): CardAction {
+           return Execute()
+       }
+   
+       override fun getCardId(): Array<String> {
+           return cardIds
+       }
+   
+   }
+   ```
+
+   - 继承`CardAction.DefaultCardAction`类，`CardAction.DefaultCardAction`是`CardAction`的子类
+   - `Execute`类重写了`generatePlayActions`方法，该方法表示生成可用的打出行为，`Execute`将遍历敌方可被法术指向且受伤的随从，并为每个符合该条件的随从生成一个`Action`，最后将这些`Action`返回，`mcts策略`将根据这些`Action`计算最好的打法
+
+2. [焦油爬行者](Hearthstone-Script-Base-Card/src/main/kotlin/club/xiaojiawei/bean/warrior/TarCreeper.kt)
+
+   ```kotlin
+   package club.xiaojiawei.bean.warrior
+   
+   import club.xiaojiawei.CardAction
+   import club.xiaojiawei.bean.War
+   
+   /**
+    * [焦油爬行者](https://hearthstone.huijiwiki.com/wiki/Card/41418)
+    * @author 肖嘉威
+    * @date 2025/1/18 20:31
+    */
+   private val cardIds = arrayOf<String>(
+       "%UNG_928",
+   )
+   
+   class TarCreeper : CardAction.DefaultCardAction() {
+   
+       override fun triggerTurnStart(war: War) {
+           super.triggerTurnStart(war)
+           findSelf(war)?.let { card ->
+               if (card.area.player === war.currentPlayer) {
+                   card.atc -= 2
+               }
+           }
+       }
+   
+       override fun triggerTurnEnd(war: War) {
+           super.triggerTurnEnd(war)
+           findSelf(war)?.let { card ->
+               if (card.area.player === war.currentPlayer) {
+                   card.atc += 2
+               }
+           }
+       }
+   
+       override fun createNewInstance(): CardAction {
+           return TarCreeper()
+       }
+   
+       override fun getCardId(): Array<String> {
+           return cardIds
+       }
+   
+   }
+   ```
+   
+   - 继承`CardAction.DefaultCardAction`类，`CardAction.DefaultCardAction`是`CardAction`的子类
+   - `DeathwingMadAspect`类重写了`triggerTurnStart`和`triggerTurnEnd`方法，`triggerTurnStart`表示触发回合开始`triggerTurnEnd`表示触发回合结束，上面`triggerTurnStart`将此随从的攻击力降低两点，`triggerTurnEnd`将此随从的攻击力提高两点

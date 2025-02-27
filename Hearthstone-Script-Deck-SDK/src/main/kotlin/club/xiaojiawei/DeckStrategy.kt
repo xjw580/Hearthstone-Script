@@ -27,13 +27,18 @@ abstract class DeckStrategy {
     }
 
     /**
-     * 卡组名，将会显示在界面中
+     * 策略名，将会显示在界面中
      * @return 非空
      */
     abstract fun name(): String
 
     /**
-     * 卡组运行的模式
+     * 策略描述
+     */
+    open fun description(): String = ""
+
+    /**
+     * 策略运行的模式
      * @return 返回非null非空且不包含null,推荐每次返回的数组对象是一样的
      */
     protected abstract fun getRunMode(): Array<RunModeEnum>

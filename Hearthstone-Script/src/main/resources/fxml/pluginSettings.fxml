@@ -2,6 +2,9 @@
 
 <?import club.xiaojiawei.controls.*?>
 <?import club.xiaojiawei.factory.NotificationFactory?>
+<?import club.xiaojiawei.hsscript.component.CardField?>
+<?import club.xiaojiawei.hsscript.component.CardSearcher?>
+<?import club.xiaojiawei.hsscript.component.CardTableView?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <AnchorPane xmlns="http://javafx.com/javafx"
@@ -26,10 +29,22 @@
             <TabPane styleClass="tab-pane-ui, tab-pane-ui-small" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
                 <Tab text="描述" fx:id="desRoot">
                     <VBox fx:id="desRootPane" style="-fx-padding: 5;-fx-spacing: 5">
-                        <CopyLabel fx:id="pluginDescription" notificationManager="${notificationManager}" wrapText="true"/>
+                        <CopyLabel fx:id="pluginDescription" notificationManager="${notificationManager}"
+                                   wrapText="true"/>
                         <Separator/>
                         <AnchorPane fx:id="pluginGraphicDescription"/>
                     </VBox>
+                </Tab>
+                <Tab text="适配的卡牌" fx:id="cardRoot">
+                    <ScrollPane fx:id="cardRootPane" style="-fx-padding: 5;-fx-spacing: 5" fitToHeight="true" fitToWidth="true">
+                        <CardTableView fx:id="cardTable" notificationManager="${notificationManager}">
+                            <placeholder>
+                                <StackPane>
+                                    <Label text="未适配任何卡牌"/>
+                                </StackPane>
+                            </placeholder>
+                        </CardTableView>
+                    </ScrollPane>
                 </Tab>
             </TabPane>
         </VBox>

@@ -9,7 +9,7 @@ import javafx.application.Platform
  * @date 2024/9/28 14:22
  */
 
-fun runUI(block: () -> Unit) {
+inline fun runUI(crossinline block: () -> Unit) {
     Platform.isFxApplicationThread().isTrue {
         block()
     }.isFalse {
