@@ -3,6 +3,8 @@ package club.xiaojiawei.hsscript.controller.javafx
 import ch.qos.logback.classic.Level
 import ch.qos.logback.classic.spi.ILoggingEvent
 import club.xiaojiawei.DeckStrategy
+import club.xiaojiawei.config.VIRTUAL_THREAD_POOL
+import club.xiaojiawei.config.log
 import club.xiaojiawei.controls.CopyLabel
 import club.xiaojiawei.controls.Modal
 import club.xiaojiawei.controls.Time
@@ -18,17 +20,8 @@ import club.xiaojiawei.hsscript.bean.single.WarEx.resetStatistics
 import club.xiaojiawei.hsscript.controller.javafx.view.MainView
 import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.enums.WindowEnum
-import club.xiaojiawei.hsscript.listener.VersionListener.canUpdate
-import club.xiaojiawei.hsscript.listener.VersionListener.canUpdateReadOnlyProperty
-import club.xiaojiawei.hsscript.listener.VersionListener.checkVersion
-import club.xiaojiawei.hsscript.listener.VersionListener.currentRelease
-import club.xiaojiawei.hsscript.listener.VersionListener.downloadLatestRelease
-import club.xiaojiawei.hsscript.listener.VersionListener.downloadingReadOnlyProperty
-import club.xiaojiawei.hsscript.listener.VersionListener.execUpdate
-import club.xiaojiawei.hsscript.listener.VersionListener.latestRelease
-import club.xiaojiawei.hsscript.status.DeckStrategyManager.currentDeckStrategy
-import club.xiaojiawei.hsscript.status.DeckStrategyManager.currentDeckStrategyProperty
-import club.xiaojiawei.hsscript.status.DeckStrategyManager.deckStrategies
+import club.xiaojiawei.hsscript.listener.VersionListener
+import club.xiaojiawei.hsscript.status.DeckStrategyManager
 import club.xiaojiawei.hsscript.status.PauseStatus.addListener
 import club.xiaojiawei.hsscript.status.PauseStatus.asyncSetPause
 import club.xiaojiawei.hsscript.utils.ConfigExUtil.getWorkDay
@@ -43,6 +36,7 @@ import club.xiaojiawei.hsscript.utils.WindowUtil.buildStage
 import club.xiaojiawei.hsscript.utils.WindowUtil.createAlert
 import club.xiaojiawei.hsscript.utils.WindowUtil.getStage
 import club.xiaojiawei.hsscript.utils.WindowUtil.showStage
+import club.xiaojiawei.hsscript.utils.runUI
 import javafx.animation.RotateTransition
 import javafx.animation.Timeline
 import javafx.application.Platform
@@ -81,7 +75,7 @@ class MainController : MainView() {
     private val runModeMap: MutableMap<RunModeEnum, MutableList<DeckStrategy>> = EnumMap(RunModeEnum::class.java)
 
     override fun initialize(url: URL?, resourceBundle: ResourceBundle?) {
-        versionText.text = "当前版本：" + currentRelease.tagName
+        versionText.text = "当前版本：" + VersionListener.currentRelease.tagName
         addListener()
         initModeAndDeck()
         initWorkDate()
@@ -138,12 +132,12 @@ class MainController : MainView() {
                         }
                     }
                 }
-                currentDeckStrategy = newValue
+                DeckStrategyManager.currentDeckStrategy = newValue
             }
 
         val defaultDeckId = getString(ConfigEnum.DEFAULT_DECK_STRATEGY)
         val defaultRunModeEnum = fromString(getString(ConfigEnum.DEFAULT_RUN_MODE))
-        val defaultDeck = deckStrategies
+        val defaultDeck = DeckStrategyManager.deckStrategies
             .stream()
             .filter { deckStrategy: DeckStrategy ->
                 defaultDeckId == deckStrategy.id()
@@ -168,7 +162,7 @@ class MainController : MainView() {
             }
         }
 
-        currentDeckStrategyProperty.addListener { observableValue: ObservableValue<out DeckStrategy?>?, deck: DeckStrategy?, t1: DeckStrategy? ->
+        DeckStrategyManager.currentDeckStrategyProperty.addListener { observableValue: ObservableValue<out DeckStrategy?>?, deck: DeckStrategy?, t1: DeckStrategy? ->
             if (t1 != null) {
                 t1.runModes
                 runModeBox.value = t1.runModes[0]
@@ -179,7 +173,7 @@ class MainController : MainView() {
 
     fun reloadRunMode() {
         runModeMap.clear()
-        for (deckStrategy in deckStrategies) {
+        for (deckStrategy in DeckStrategyManager.deckStrategies) {
             for (runModeEnum in deckStrategy.runModes) {
                 val strategies = runModeMap.getOrDefault(runModeEnum, ArrayList())
                 strategies.add(deckStrategy)
@@ -265,11 +259,11 @@ class MainController : MainView() {
             gameTime.text = formatTime(warInstance.hangingTime)
             exp.text = warInstance.hangingEXP.toString()
         }
-        deckStrategies.addListener(SetChangeListener { observable: SetChangeListener.Change<out DeckStrategy?>? ->
+        DeckStrategyManager.deckStrategies.addListener(SetChangeListener { observable: SetChangeListener.Change<out DeckStrategy?>? ->
             reloadRunMode()
         } as SetChangeListener<in DeckStrategy?>)
         //        是否在下载中监听
-        downloadingReadOnlyProperty().addListener { observable, oldValue, newValue ->
+        VersionListener.downloadingReadOnlyProperty().addListener { observable, oldValue, newValue ->
             Platform.runLater {
                 updateBtn.isDisable = newValue
             }
@@ -281,7 +275,7 @@ class MainController : MainView() {
                     logScrollPane.vvalue = logScrollPane.vmax
                 }
             }
-        canUpdateReadOnlyProperty().addListener { observable, oldValue, newValue ->
+        VersionListener.canUpdateReadOnlyProperty().addListener { observable, oldValue, newValue ->
             Platform.runLater {
                 flushBtn.isVisible = !newValue
                 flushBtn.isManaged = !newValue
@@ -386,15 +380,11 @@ class MainController : MainView() {
         transition.fromAngle = 0.0
         transition.toAngle = 360.0
         transition.cycleCount = Timeline.INDEFINITE
-        try {
-            transition.play()
-            checkVersion()
-            if (canUpdate) {
-                notificationManger.showSuccess("发现新版本", 2)
-            } else {
-                notificationManger.showInfo("已是最新版本", 2)
+        transition.play()
+        VIRTUAL_THREAD_POOL.submit {
+            runCatching {
+                VersionListener.checkVersion()
             }
-        } finally {
             transition.stop()
         }
     }
@@ -413,11 +403,11 @@ class MainController : MainView() {
 
     @FXML
     protected fun updateVersion() {
-        if (canUpdate) {
+        if (VersionListener.canUpdate) {
             val progress = SimpleDoubleProperty()
-            val release = latestRelease ?: return
+            val release = VersionListener.latestRelease ?: return
 
-            downloadLatestRelease(
+            VersionListener.downloadLatestRelease(
                 false, progress
             ) { path: String? ->
                 if (path == null) {
@@ -433,7 +423,7 @@ class MainController : MainView() {
                         createAlert(
                             "新版本[" + release.tagName + "]下载完毕",
                             "现在更新？",
-                            { event: ActionEvent? -> execUpdate(path) },
+                            { event: ActionEvent? -> VersionListener.execUpdate(path) },
                             { event: ActionEvent? -> },
                             rootPane.scene.window
                         ).show()
@@ -520,9 +510,6 @@ class MainController : MainView() {
     }
 
     companion object {
-        //调试日志
-        private val log: Logger = LoggerFactory.getLogger(MainController::class.java)
-
 
         private fun formatTime(time: Int): String {
             val timeStr = if (time == 0) {

@@ -91,9 +91,9 @@ object VersionListener {
     fun launch() {
         if (checkVersionTask != null) return
 
-        checkVersionTask = EXTRA_THREAD_POOL.scheduleAtFixedRate(LRunnable {
-            checkVersion()
-        }, 500, 1000 * 60 * 60 * 12, TimeUnit.MILLISECONDS)
+//        checkVersionTask = EXTRA_THREAD_POOL.scheduleAtFixedRate(LRunnable {
+//            checkVersion()
+//        }, 500, 1000 * 60 * 60 * 1, TimeUnit.MILLISECONDS)
         log.info { "版本更新检测已启动" }
     }
 
@@ -194,7 +194,7 @@ object VersionListener {
      */
     fun checkVersion() {
 //        以IDEA启动不检查更新
-        if (Objects.requireNonNull<URL>(javaClass.getResource(""))
+        if (Objects.requireNonNull(javaClass.getResource(""))
                 .protocol != "jar" && !PROGRAM_ARGS.contains("--update")
         ) {
             return
