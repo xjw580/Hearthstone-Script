@@ -62,7 +62,7 @@ object GameTurnPhaseStrategy : AbstractPhaseStrategy() {
                         }
                         val start = System.currentTimeMillis()
                         DeckStrategyActuator.outCard()
-                        if (System.currentTimeMillis() - start > 60_000) {
+                        if (ConfigUtil.getBoolean(ConfigEnum.RANDOM_EMOTION) && System.currentTimeMillis() - start > 60_000) {
                             GameUtil.sendErrorEmoji()
                         }
                         if (ConfigUtil.getBoolean(ConfigEnum.ONLY_ROBOT)) {
