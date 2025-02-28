@@ -45,3 +45,4 @@ config.json
 /resource
 /config
 *.db-journal
+.pid

@@ -16,8 +16,9 @@ import club.xiaojiawei.hsscript.utils.VersionUtil
 import com.sun.jna.WString
 import javafx.application.Application
 import org.slf4j.LoggerFactory
-import java.awt.Toolkit
 import java.io.File
+import java.io.RandomAccessFile
+import java.nio.file.Files
 import java.nio.file.Path
 
 /**
@@ -61,6 +62,16 @@ private fun setLogPath() {
 }
 
 fun main(args: Array<String>) {
+    val file = File(".pid")
+    if (!file.exists()) {
+        file.createNewFile()
+        Files.setAttribute(file.toPath(), "dos:hidden", true);
+    }
+    val randomAccessFile = RandomAccessFile(file, "rw")
+    randomAccessFile.channel.tryLock()?:return
+    randomAccessFile.setLength(0)
+    randomAccessFile.write(SCRIPT_NAME.toByteArray());
+
     System.setProperty("jna.library.path", "lib")
 
     ZLaunchDll.INSTANCE.ShowPage(
