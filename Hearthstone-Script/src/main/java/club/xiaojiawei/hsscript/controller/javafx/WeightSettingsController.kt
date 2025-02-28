@@ -1,9 +1,7 @@
 package club.xiaojiawei.hsscript.controller.javafx
 
-import club.xiaojiawei.controls.FilterField
 import club.xiaojiawei.controls.NotificationManager
-import club.xiaojiawei.controls.NumberField
-import club.xiaojiawei.func.FilterAction
+import club.xiaojiawei.controls.TableFilterManagerGroup
 import club.xiaojiawei.hsscript.bean.WeightCard
 import club.xiaojiawei.hsscript.component.CardTableView
 import club.xiaojiawei.hsscript.data.CONFIG_PATH
@@ -14,7 +12,6 @@ import club.xiaojiawei.hsscript.utils.CardUtil.saveWeightConfig
 import club.xiaojiawei.tablecell.NumberFieldTableCellUI
 import club.xiaojiawei.tablecell.TextFieldTableCellUI
 import javafx.beans.property.SimpleIntegerProperty
-import javafx.beans.value.ObservableValue
 import javafx.event.ActionEvent
 import javafx.fxml.FXML
 import javafx.fxml.Initializable
@@ -23,8 +20,6 @@ import javafx.scene.control.TableColumn
 import javafx.scene.control.TableView
 import javafx.scene.control.TextField
 import javafx.scene.control.cell.PropertyValueFactory
-import javafx.scene.input.KeyCode
-import javafx.scene.input.KeyEvent
 import javafx.scene.layout.StackPane
 import javafx.stage.FileChooser
 import javafx.util.StringConverter
@@ -49,6 +44,9 @@ class WeightSettingsController : Initializable {
 
     @FXML
     protected lateinit var weightTable: TableView<WeightCard>
+
+    @FXML
+    protected lateinit var weightTableProxy: TableFilterManagerGroup<WeightCard, WeightCard>
 
     @FXML
     protected lateinit var weightNoCol: TableColumn<WeightCard, Number?>

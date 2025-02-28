@@ -9,6 +9,8 @@
 <?import javafx.scene.layout.*?>
 <?import java.lang.Double?>
 <?import club.xiaojiawei.hsscript.component.CardSearcher?>
+<?import club.xiaojiawei.controls.TableFilterManagerGroup?>
+<?import club.xiaojiawei.controls.TableValueFilterManager?>
 <StackPane xmlns="http://javafx.com/javafx"
            xmlns:fx="http://javafx.com/fxml"
            stylesheets="@css/weightSettings.css"
@@ -61,12 +63,23 @@
                 <TableView fx:id="weightTable"
                            styleClass="table-view-idea, table-view-idea-tiny, table-view-idea-upright"
                            VBox.vgrow="ALWAYS">
+                    <fx:define>
+                        <TableFilterManagerGroup fx:id="weightTableProxy" tableView="$weightTable" autoRegisterColFilter="false"/>
+                    </fx:define>
                     <columns>
                         <TableColumn minWidth="${colMinWeight}" prefWidth="${colMinWeight}" fx:id="weightNoCol"/>
                         <TableColumn minWidth="${colMinWeight}" prefWidth="${colMinWeight}" fx:id="weightCardIdCol"
-                                     text="ID"/>
+                                     text="ID">
+                            <graphic>
+                                <TableValueFilterManager tableColumn="$weightCardIdCol" tableFilterManagerGroup="$weightTableProxy"/>
+                            </graphic>
+                        </TableColumn>
                         <TableColumn minWidth="${colMinWeight}" prefWidth="${colMinWeight}" fx:id="weightNameCol"
-                                     text="名字"/>
+                                     text="名字">
+                            <graphic>
+                                <TableValueFilterManager tableColumn="$weightNameCol" tableFilterManagerGroup="$weightTableProxy"/>
+                            </graphic>
+                        </TableColumn>
                         <TableColumn minWidth="${colMinWeight}" prefWidth="50" fx:id="weightCol">
                             <graphic>
                                 <Label text="权重" contentDisplay="RIGHT">

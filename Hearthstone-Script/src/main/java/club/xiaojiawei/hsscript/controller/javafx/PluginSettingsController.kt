@@ -9,6 +9,8 @@ import club.xiaojiawei.bean.PluginWrapper
 import club.xiaojiawei.config.EXTRA_THREAD_POOL
 import club.xiaojiawei.controls.CopyLabel
 import club.xiaojiawei.controls.NotificationManager
+import club.xiaojiawei.controls.ProgressModal
+import club.xiaojiawei.controls.TableFilterManagerGroup
 import club.xiaojiawei.hsscript.component.CardTableView
 import club.xiaojiawei.hsscript.component.PluginItem
 import club.xiaojiawei.hsscript.status.PluginManager.CARD_ACTION_PLUGINS
@@ -35,7 +37,16 @@ import java.util.stream.Stream
 class PluginSettingsController : Initializable {
 
     @FXML
+    protected lateinit var cardRootProgressModal: ProgressModal
+
+    @FXML
+    protected lateinit var rootProgressModal: ProgressModal
+
+    @FXML
     protected lateinit var cardTable: CardTableView
+
+    @FXML
+    protected lateinit var cardTableProxy: TableFilterManagerGroup<DBCard, DBCard>
 
     @FXML
     protected lateinit var pluginGraphicDescription: Pane
@@ -73,18 +84,33 @@ class PluginSettingsController : Initializable {
     }
 
     private fun initValue() {
+        val progress = rootProgressModal.show()
         val pluginItems = pluginListView.items
-        Stream.concat(
-            DECK_STRATEGY_PLUGINS.values.stream().flatMap { obj: List<PluginWrapper<DeckStrategy>> -> obj.stream() },
-            CARD_ACTION_PLUGINS.values.stream().flatMap { obj: List<PluginWrapper<CardAction>> -> obj.stream() }
-        ).forEach { plugin: PluginWrapper<out Any> -> pluginItems.add(PluginItem(plugin, notificationManager)) }
+        EXTRA_THREAD_POOL.submit {
+            runCatching {
+                Stream.concat(
+                    DECK_STRATEGY_PLUGINS.values.stream()
+                        .flatMap { obj: List<PluginWrapper<DeckStrategy>> -> obj.stream() },
+                    CARD_ACTION_PLUGINS.values.stream().flatMap { obj: List<PluginWrapper<CardAction>> -> obj.stream() }
+                ).map { PluginItem(it, notificationManager) }.toList()
+            }.onSuccess { plugins ->
+                runUI {
+                    pluginItems.addAll(plugins)
+                    rootProgressModal.hide(progress)
+                }
+            }.onFailure {
+                runUI {
+                    rootProgressModal.hide(progress)
+                    notificationManager.showError("加载插件异常", it.message, 5)
+                }
+            }
+        }
     }
 
     private fun listen() {
         pluginListView.selectionModel.selectedItemProperty()
             .addListener { observable: ObservableValue<out PluginItem>?, oldValue: PluginItem?, newValue: PluginItem? ->
-                pluginInfo.isVisible =
-                    newValue != null
+                pluginInfo.isVisible = newValue != null
                 if (newValue != null) {
                     val plugin = newValue.pluginWrapper.plugin
                     pluginName.text = plugin.name()
@@ -99,23 +125,34 @@ class PluginSettingsController : Initializable {
                     val spiInstance = newValue.pluginWrapper.spiInstance
                     when (plugin) {
                         is CardPlugin -> {
+                            val progress = cardRootProgressModal.show()
                             EXTRA_THREAD_POOL.submit {
-                                val dbCards = mutableSetOf<DBCard>()
-                                for (cardAction in spiInstance) {
-                                    cardAction as CardAction
-                                    val cardIds = cardAction.getCardId()
-                                    for (cardId in cardIds) {
-                                        dbCards.addAll(CardDBUtil.queryCardById(cardId, 100, 0, false))
+                                runCatching {
+                                    val dbCards = mutableSetOf<DBCard>()
+                                    for (cardAction in spiInstance) {
+                                        cardAction as CardAction
+                                        val cardIds = cardAction.getCardId()
+                                        for (cardId in cardIds) {
+                                            dbCards.addAll(CardDBUtil.queryCardById(cardId, 100, 0, false))
+                                        }
                                     }
-                                }
-                                runUI {
-                                    cardTable.items.setAll(dbCards)
+                                    dbCards
+                                }.onSuccess { dbCards ->
+                                    runUI {
+                                        cardTableProxy.setAll(dbCards)
+                                        cardRootProgressModal.hide(progress)
+                                    }
+                                }.onFailure {
+                                    runUI {
+                                        cardRootProgressModal.hide(progress)
+                                        notificationManager.showError(it.message, 5)
+                                    }
                                 }
                             }
                         }
 
                         is DeckPlugin -> {
-                            cardTable.items.clear()
+                            cardTableProxy.clear()
                         }
                     }
                 }
