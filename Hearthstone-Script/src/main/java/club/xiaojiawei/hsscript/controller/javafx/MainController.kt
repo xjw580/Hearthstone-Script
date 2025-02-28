@@ -234,6 +234,12 @@ class MainController : MainView() {
 
 
     private fun addListener() {
+        downloadProgress.progressProperty().addListener { _, _, newValue ->
+            val progress = newValue.toDouble()
+            val downloading = progress > 0.0 && progress < 1.0
+            downloadProgress.isVisible = downloading
+            downloadProgress.isManaged = downloading
+        }
 //        日志监听
         ExtraLogAppender.addCallback { event: ILoggingEvent -> this.appendLog(event) }
 
@@ -248,9 +254,9 @@ class MainController : MainView() {
 
         //        游戏局数监听
         warInstance.warCountProperty.addListener { observableValue: ObservableValue<out Number>?, number: Number?, t1: Number ->
-            log.info(
+            log.info {
                 "已完成第 $t1 把游戏"
-            )
+            }
             gameCount.text = warInstance.warCount.toString()
             winningPercentage.text = (String.format(
                 "%.1f",
@@ -404,11 +410,11 @@ class MainController : MainView() {
     @FXML
     protected fun updateVersion() {
         if (VersionListener.canUpdate) {
-            val progress = SimpleDoubleProperty()
+            downloadProgress.progress
             val release = VersionListener.latestRelease ?: return
 
             VersionListener.downloadLatestRelease(
-                false, progress
+                false, downloadProgress.progressProperty()
             ) { path: String? ->
                 if (path == null) {
                     Platform.runLater {

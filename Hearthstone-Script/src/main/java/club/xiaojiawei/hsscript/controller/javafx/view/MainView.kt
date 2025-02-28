@@ -90,7 +90,7 @@ abstract class MainView : Initializable {
     protected lateinit var workTime: VBox
 
     @FXML
-    protected var downloadProgress: ProgressBar? = null
+    protected lateinit var downloadProgress: ProgressBar
 
     @FXML
     protected lateinit var titledPaneControl: TitledPane

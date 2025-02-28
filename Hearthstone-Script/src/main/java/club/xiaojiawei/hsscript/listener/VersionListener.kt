@@ -91,9 +91,9 @@ object VersionListener {
     fun launch() {
         if (checkVersionTask != null) return
 
-//        checkVersionTask = EXTRA_THREAD_POOL.scheduleAtFixedRate(LRunnable {
-//            checkVersion()
-//        }, 500, 1000 * 60 * 60 * 1, TimeUnit.MILLISECONDS)
+        checkVersionTask = EXTRA_THREAD_POOL.scheduleAtFixedRate(LRunnable {
+            checkVersion()
+        }, 500, 1000 * 60 * 60 * 1, TimeUnit.MILLISECONDS)
         log.info { "版本更新检测已启动" }
     }
 
@@ -217,8 +217,8 @@ object VersionListener {
                     canUpdateProperty.set(true)
                     log.info { "有更新可用😊，当前版本：【${currentRelease.tagName}】, 最新版本：【${it.tagName}】" }
                     SystemUtil.notice(
-                        String.format("发现新版本：%s", it.tagName),
                         String.format("更新日志：\n%s", it.body),
+                        String.format("发现新版本：%s", it.tagName),
                         "查看详情",
                         GithubRepository.getReleasePageURL(it)
                     )
@@ -240,7 +240,9 @@ object VersionListener {
                 ZipInputStream(inputStream).use { zipInputStream ->
                     val startContent = "开始下载<" + release.tagName + ">"
                     log.info { startContent }
-                    progress.set(0.0)
+                    runUI {
+                        progress.set(0.0)
+                    }
                     var nextEntry: ZipEntry
                     val count = 59.0
                     val step = 0.95 / count
@@ -272,10 +274,14 @@ object VersionListener {
                                 log.info { "downloaded_file：" + entryFile.path }
                             }
                         }
-                        progress.set(step + progress.get())
+                        runUI {
+                            progress.set(step + progress.get())
+                        }
                     }
                     writeVersionFileCompleteFlag(rootPath.toString())
-                    progress.set(1.0)
+                    runUI {
+                        progress.set(1.0)
+                    }
                     val endContent = "<" + release.tagName + ">下载完毕"
                     log.info { endContent }
                 }
