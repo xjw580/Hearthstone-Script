@@ -30,6 +30,7 @@ object GameTurnPhaseStrategy : AbstractPhaseStrategy() {
         log.info { "计算对面" }
         if (rivalBehavior.renewCalcRobotProbability() < 0.1) {
             log.info { "发现对面这个b疑似真人，准备投降，gameId:${war.rival.gameId}" }
+            GameUtil.surrender()
         }
         log.info { "对面是脚本概率:" + rivalBehavior.robotProbability }
     }

@@ -20,7 +20,7 @@ class PlayerBehavior(val player: Player) {
     var robotProbability: Double = 0.5
 
     private fun setProbability(newProbability: Double): Double {
-        var value = min(max(newProbability, 0.0), 1.0)
+        val value = min(max(newProbability, 0.0), 1.0)
         robotProbability = value
         return robotProbability
     }
@@ -55,7 +55,7 @@ class PlayerBehavior(val player: Player) {
 
     fun robotGameIdCheck(): Boolean {
         val gameId = player.gameId
-        return gameId.contains("之")
+        return gameId.contains("之") || gameId.contains("的")
     }
 
     fun calcVariance(clickIntervals: List<Long>): Double {
@@ -78,11 +78,11 @@ class PlayerBehavior(val player: Player) {
 
         if (!isCalcGameId && robotGameIdCheck()) {
             isCalcGameId = true
-            newProbability += 0.3
+            newProbability += 0.5
         }
         val (atcInterval, playInterval, avgInterval) = calcInterval()
-        log.info { "atcInterval:$atcInterval" }
-        log.info { "playInterval:$playInterval" }
+        log.debug { "atcInterval:$atcInterval" }
+        log.debug { "playInterval:$playInterval" }
 //        log.info { "avgInterval:$avgInterval" }
         var atcProbability = 0.0
         var playProbability = 0.0
@@ -90,20 +90,20 @@ class PlayerBehavior(val player: Player) {
         val countThreshold = 5.0
         if (atcInterval.size > 1) {
             val variance = calcVariance(atcInterval)
-            log.info { "atcInterval variance:$variance" }
+            log.debug { "atcInterval variance:$variance" }
             atcProbability = calcProbabilityByVariance(variance, 1000.0) * min((atcInterval.size) / countThreshold, 1.0)
-            log.info { "atcProbability:$atcProbability" }
+            log.debug { "atcProbability:$atcProbability" }
         }
         if (playInterval.size > 1) {
             val variance = calcVariance(playInterval)
-            log.info { "playInterval variance:$variance" }
+            log.debug { "playInterval variance:$variance" }
             playProbability =
                 calcProbabilityByVariance(variance, 1100.0) * min((playInterval.size) / countThreshold, 1.0)
-            log.info { "playProbability:$playProbability" }
+            log.debug { "playProbability:$playProbability" }
         }
 //        if (avgInterval.size > 5) {
 //            val variance = calcVariance(avgInterval)
-//            log.info { "avgInterval variance:$variance" }
+//            log.debug { "avgInterval variance:$variance" }
 //            avgProbability = calcProbabilityByVariance(variance, 1000.0) * min((avgInterval.size) / countThreshold, 1.0)
 //        }
 //        newProbability += atcProbability * (3 / 7.0) + playProbability * (3 / 7.0) + avgProbability * (1 / 7.0)
