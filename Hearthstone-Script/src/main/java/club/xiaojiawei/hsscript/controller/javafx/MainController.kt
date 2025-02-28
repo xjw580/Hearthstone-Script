@@ -32,15 +32,14 @@ import club.xiaojiawei.hsscript.utils.ConfigUtil.getString
 import club.xiaojiawei.hsscript.utils.ConfigUtil.putString
 import club.xiaojiawei.hsscript.utils.FXUtil
 import club.xiaojiawei.hsscript.utils.SystemUtil.copyToClipboard
+import club.xiaojiawei.hsscript.utils.WindowUtil
 import club.xiaojiawei.hsscript.utils.WindowUtil.buildStage
-import club.xiaojiawei.hsscript.utils.WindowUtil.createAlert
 import club.xiaojiawei.hsscript.utils.WindowUtil.getStage
 import club.xiaojiawei.hsscript.utils.WindowUtil.showStage
 import club.xiaojiawei.hsscript.utils.runUI
 import javafx.animation.RotateTransition
 import javafx.animation.Timeline
 import javafx.application.Platform
-import javafx.beans.property.SimpleDoubleProperty
 import javafx.beans.value.ObservableValue
 import javafx.collections.SetChangeListener
 import javafx.event.ActionEvent
@@ -49,6 +48,7 @@ import javafx.fxml.FXML
 import javafx.scene.control.CheckBox
 import javafx.scene.control.Label
 import javafx.scene.control.Toggle
+import javafx.scene.control.Tooltip
 import javafx.scene.input.MouseButton
 import javafx.scene.input.MouseEvent
 import javafx.scene.layout.AnchorPane
@@ -57,8 +57,6 @@ import javafx.scene.layout.VBox
 import javafx.stage.Popup
 import javafx.util.Duration
 import javafx.util.StringConverter
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 import java.net.URL
 import java.util.*
 import java.util.stream.Collectors
@@ -239,6 +237,7 @@ class MainController : MainView() {
             val downloading = progress > 0.0 && progress < 1.0
             downloadProgress.isVisible = downloading
             downloadProgress.isManaged = downloading
+            downloadProgress.tooltip = Tooltip("下载进度：${String.format("%.1f", progress * 100)}%")
         }
 //        日志监听
         ExtraLogAppender.addCallback { event: ILoggingEvent -> this.appendLog(event) }
@@ -417,20 +416,20 @@ class MainController : MainView() {
                 false, downloadProgress.progressProperty()
             ) { path: String? ->
                 if (path == null) {
-                    Platform.runLater {
-                        createAlert(
+                    runUI {
+                        WindowUtil.createAlert(
                             String.format("新版本<%s>下载失败", release.tagName),
                             "",
                             rootPane.scene.window
                         ).show()
                     }
                 } else {
-                    Platform.runLater {
-                        createAlert(
+                    runUI {
+                        WindowUtil.createAlert(
                             "新版本[" + release.tagName + "]下载完毕",
                             "现在更新？",
                             { event: ActionEvent? -> VersionListener.execUpdate(path) },
-                            { event: ActionEvent? -> },
+                            null,
                             rootPane.scene.window
                         ).show()
                     }

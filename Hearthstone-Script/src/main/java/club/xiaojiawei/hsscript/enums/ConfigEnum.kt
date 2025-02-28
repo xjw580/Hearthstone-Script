@@ -14,6 +14,15 @@ import com.melloware.jintellitype.JIntellitype
  * @date 2023/7/5 11:26
  */
 
+const val PATH_CONFIG_GROUP = "path"
+const val TIME_CONFIG_GROUP = "time"
+const val VERSION_CONFIG_GROUP = "version"
+const val ACTION_CONFIG_GROUP = "action"
+const val PLUGIN_CONFIG_GROUP = "plugin"
+const val OTHER_CONFIG_GROUP = "other"
+const val SYSTEM_CONFIG_GROUP = "system"
+const val DEV_CONFIG_GROUP = "dev"
+
 enum class ConfigEnum(
     val group: String = "",
     val defaultValue: String = "",
@@ -22,18 +31,18 @@ enum class ConfigEnum(
     /**
      * 游戏路径
      */
-    GAME_PATH(group = "path", defaultValue = ""),
+    GAME_PATH(group = PATH_CONFIG_GROUP, defaultValue = ""),
 
     /**
      * 战网路径
      */
-    PLATFORM_PATH(group = "path", defaultValue = ""),
+    PLATFORM_PATH(group = PATH_CONFIG_GROUP, defaultValue = ""),
 
     /**
      * 工作日标记
      */
     WORK_DAY(
-        group = "time",
+        group = TIME_CONFIG_GROUP,
         defaultValue = JSON.toJSONString(
             listOf(
                 WorkDay("every", true)
@@ -45,7 +54,7 @@ enum class ConfigEnum(
      * 工作时间，具体时间段
      */
     WORK_TIME(
-        group = "time", defaultValue = JSON.toJSONString(
+        group = TIME_CONFIG_GROUP, defaultValue = JSON.toJSONString(
             listOf(
                 WorkTime("00:00", "00:00", true),
             )
@@ -53,149 +62,154 @@ enum class ConfigEnum(
     ),
 
     /**
+     * 更新源
+     */
+    UPDATE_SOURCE(group = VERSION_CONFIG_GROUP, defaultValue = "Gitee"),
+
+    /**
      * 更新开发版
      */
-    UPDATE_DEV(group = "version", defaultValue = "false"),
+    UPDATE_DEV(group = VERSION_CONFIG_GROUP, defaultValue = "false"),
 
     /**
      * 自动更新
      */
-    AUTO_UPDATE(group = "version", defaultValue = "false"),
+    AUTO_UPDATE(group = VERSION_CONFIG_GROUP, defaultValue = "false"),
 
     /**
      * 是否执行策略
      */
-    STRATEGY(group = "action", defaultValue = "true"),
+    STRATEGY(group = ACTION_CONFIG_GROUP, defaultValue = "true"),
 
     /**
      * 动作间隔/ms
      */
-    MOUSE_ACTION_INTERVAL(group = "action", defaultValue = "3500"),
+    MOUSE_ACTION_INTERVAL(group = ACTION_CONFIG_GROUP, defaultValue = "3500"),
 
     /**
      * 适配畸变模式
      */
-    DISTORTION(group = "action", defaultValue = "true"),
+    DISTORTION(group = ACTION_CONFIG_GROUP, defaultValue = "true"),
 
     /**
      * 鼠标移动暂停间隔，值越小越慢，最小为1
      */
-    PAUSE_STEP(group = "action", defaultValue = "7"),
+    PAUSE_STEP(group = ACTION_CONFIG_GROUP, defaultValue = "7"),
 
     /**
      * 控制模式/真实控制鼠标
      */
-    CONTROL_MODE(group = "action", defaultValue = "false"),
+    CONTROL_MODE(group = ACTION_CONFIG_GROUP, defaultValue = "false"),
 
     /**
      * 置顶游戏窗口
      */
-    TOP_GAME_WINDOW(group = "action", defaultValue = CONTROL_MODE.defaultValue),
+    TOP_GAME_WINDOW(group = ACTION_CONFIG_GROUP, defaultValue = CONTROL_MODE.defaultValue),
 
     /**
      * 选择卡组位
      */
-    CHOOSE_DECK_POS(group = "action", defaultValue = "1"),
+    CHOOSE_DECK_POS(group = ACTION_CONFIG_GROUP, defaultValue = "1"),
 
     /**
      * 套牌插件禁用列表
      */
-    DECK_PLUGIN_DISABLED(group = "plugin", defaultValue = JSON.toJSONString(emptyList<String>())),
+    DECK_PLUGIN_DISABLED(group = PLUGIN_CONFIG_GROUP, defaultValue = JSON.toJSONString(emptyList<String>())),
 
     /**
      * 卡牌插件禁用列表
      */
-    CARD_PLUGIN_DISABLED(group = "plugin", defaultValue = JSON.toJSONString(emptyList<String>())),
+    CARD_PLUGIN_DISABLED(group = PLUGIN_CONFIG_GROUP, defaultValue = JSON.toJSONString(emptyList<String>())),
 
     /**
      * 默认套牌(deck id)
      */
-    DEFAULT_DECK_STRATEGY(group = "other", defaultValue = ""),
+    DEFAULT_DECK_STRATEGY(group = OTHER_CONFIG_GROUP, defaultValue = ""),
 
     /**
      * 默认运行模式
      */
-    DEFAULT_RUN_MODE(group = "other", defaultValue = RunModeEnum.CASUAL.name),
+    DEFAULT_RUN_MODE(group = OTHER_CONFIG_GROUP, defaultValue = RunModeEnum.CASUAL.name),
 
     /**
      * 战网密码
      */
-    PLATFORM_PASSWORD(group = "other", defaultValue = ""),
+    PLATFORM_PASSWORD(group = OTHER_CONFIG_GROUP, defaultValue = ""),
 
     /**
      * 游戏日志大小限制/KB，游戏默认10240
      */
-    GAME_LOG_LIMIT(group = "other", defaultValue = "51200"),
+    GAME_LOG_LIMIT(group = OTHER_CONFIG_GROUP, defaultValue = "51200"),
 
     /**
      * 最长匹配时间/s（超过重新匹配）
      */
-    MATCH_MAXIMUM_TIME(group = "other", defaultValue = "90"),
+    MATCH_MAXIMUM_TIME(group = OTHER_CONFIG_GROUP, defaultValue = "90"),
 
     /**
      * 最长空闲时间/min（超过重启游戏）
      */
-    IDLE_MAXIMUM_TIME(group = "other", defaultValue = "10"),
+    IDLE_MAXIMUM_TIME(group = OTHER_CONFIG_GROUP, defaultValue = "10"),
 
     /**
      * 运行后最小化软件
      */
-    RUNNING_MINIMIZE(group = "other", defaultValue = "true"),
+    RUNNING_MINIMIZE(group = OTHER_CONFIG_GROUP, defaultValue = "true"),
 
     /**
      * 当前版本
      */
-    CURRENT_VERSION(group = "other", defaultValue = "0.0.0-GA"),
+    CURRENT_VERSION(group = OTHER_CONFIG_GROUP, defaultValue = "0.0.0-GA"),
 
     /**
      * 随机事件
      */
-    RANDOM_EVENT(group = "other", defaultValue = "true"),
+    RANDOM_EVENT(group = OTHER_CONFIG_GROUP, defaultValue = "true"),
 
     /**
      * 随机表情
      */
-    RANDOM_EMOTION(group = "other", defaultValue = "true"),
+    RANDOM_EMOTION(group = OTHER_CONFIG_GROUP, defaultValue = "true"),
 
     /**
      * 自动投降
      */
-    AUTO_SURRENDER(group = "other", defaultValue = "-1"),
+    AUTO_SURRENDER(group = OTHER_CONFIG_GROUP, defaultValue = "-1"),
 
     /**
      * 只打人机
      */
-    ONLY_ROBOT(group = "other", defaultValue = "false"),
+    ONLY_ROBOT(group = OTHER_CONFIG_GROUP, defaultValue = "false"),
 
     /**
      * 允许发送windows通知
      */
-    SEND_NOTICE(group = "system", defaultValue = "true"),
+    SEND_NOTICE(group = SYSTEM_CONFIG_GROUP, defaultValue = "true"),
 
     /**
      * 使用系统代理
      */
-    USE_PROXY(group = "system", defaultValue = "true"),
+    USE_PROXY(group = SYSTEM_CONFIG_GROUP, defaultValue = "true"),
 
     /**
      * 退出程序热键
      */
-    EXIT_HOT_KEY(group = "system", defaultValue = JSON.toJSONString(HotKey(JIntellitype.MOD_ALT, 'P'.code))),
+    EXIT_HOT_KEY(group = SYSTEM_CONFIG_GROUP, defaultValue = JSON.toJSONString(HotKey(JIntellitype.MOD_ALT, 'P'.code))),
 
     /**
      * 暂停程序热键
      */
-    PAUSE_HOT_KEY(group = "system", defaultValue = JSON.toJSONString(HotKey(JIntellitype.MOD_CONTROL, 'P'.code))),
+    PAUSE_HOT_KEY(group = SYSTEM_CONFIG_GROUP, defaultValue = JSON.toJSONString(HotKey(JIntellitype.MOD_CONTROL, 'P'.code))),
 
     /**
      * 文件日志级别
      */
-    FILE_LOG_LEVEL(group = "dev", defaultValue = Level.INFO.levelStr),
+    FILE_LOG_LEVEL(group = DEV_CONFIG_GROUP, defaultValue = Level.INFO.levelStr),
 
     /**
      * 自动打开游戏数据分析页
      */
-    AUTO_OPEN_GAME_ANALYSIS(group = "dev", defaultValue = "false"),
+    AUTO_OPEN_GAME_ANALYSIS(group = DEV_CONFIG_GROUP, defaultValue = "false"),
 
     ;
 }

@@ -192,7 +192,7 @@
                                 </graphic>
                             </Button>
                         </HBox>
-                        <ProgressBar fx:id="downloadProgress" progress="1" styleClass="progress-bar-ui" prefHeight="3"
+                        <ProgressBar fx:id="downloadProgress" styleClass="progress-bar-ui" prefHeight="4"
                                      prefWidth="${titledPaneControl.width}" visible="false" managed="false"/>
                     </VBox>
 

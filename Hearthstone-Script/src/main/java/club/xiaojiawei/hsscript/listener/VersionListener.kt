@@ -5,7 +5,6 @@ import club.xiaojiawei.config.EXTRA_THREAD_POOL
 import club.xiaojiawei.config.log
 import club.xiaojiawei.hsscript.PROGRAM_ARGS
 import club.xiaojiawei.hsscript.bean.Release
-import club.xiaojiawei.hsscript.bean.single.repository.AbstractRepository
 import club.xiaojiawei.hsscript.bean.single.repository.GiteeRepository
 import club.xiaojiawei.hsscript.bean.single.repository.GithubRepository
 import club.xiaojiawei.hsscript.data.MAIN_PATH
@@ -21,8 +20,6 @@ import java.io.BufferedOutputStream
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
-import java.net.URI
-import java.net.URL
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.StandardCopyOption
@@ -50,8 +47,6 @@ object VersionListener {
     val currentRelease: Release = Release()
 
     var latestRelease: Release? = null
-
-    private val repositoryList: List<AbstractRepository> = listOf(GithubRepository, GiteeRepository)
 
     /**
      * 能否升级
@@ -165,6 +160,7 @@ object VersionListener {
                     if (!force && versionDir.exists()) {
                         path = versionDir.parentFile.absolutePath
                     } else {
+                        val repositoryList = ConfigExUtil.getUpdateSourceList()
                         for (repository in repositoryList) {
                             if ((downloadRelease(
                                     release,
@@ -201,7 +197,18 @@ object VersionListener {
         }
         synchronized(canUpdateProperty) {
             val updateDev = ConfigUtil.getBoolean(ConfigEnum.UPDATE_DEV)
-            log.info { "开始检查更新，更新开发版：$updateDev" }
+            val repositoryList = ConfigExUtil.getUpdateSourceList()
+            log.info {
+                "开始检查更新，更新源：${
+                    if (repositoryList.isEmpty()) GiteeRepository::class.java.simpleName.replace(
+                        "Repository",
+                        ""
+                    ) else repositoryList.first()::class.java.simpleName.replace(
+                        "Repository",
+                        ""
+                    )
+                }, 更新开发版：$updateDev"
+            }
             for (repository in repositoryList) {
                 try {
                     latestRelease = repository.getLatestRelease(updateDev)

@@ -3,25 +3,27 @@ package club.xiaojiawei.hsscript.controller.javafx
 import club.xiaojiawei.controls.NotificationManager
 import club.xiaojiawei.controls.Switch
 import club.xiaojiawei.hsscript.bean.HotKey
+import club.xiaojiawei.hsscript.bean.single.repository.GiteeRepository
 import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.listener.GlobalHotkeyListener
+import club.xiaojiawei.hsscript.utils.ConfigExUtil
 import club.xiaojiawei.hsscript.utils.ConfigExUtil.getExitHotKey
 import club.xiaojiawei.hsscript.utils.ConfigExUtil.getPauseHotKey
 import club.xiaojiawei.hsscript.utils.ConfigExUtil.storeControlMode
 import club.xiaojiawei.hsscript.utils.ConfigExUtil.storeExitHotKey
 import club.xiaojiawei.hsscript.utils.ConfigExUtil.storePauseHotKey
 import club.xiaojiawei.hsscript.utils.ConfigExUtil.storeTopGameWindow
+import club.xiaojiawei.hsscript.utils.ConfigUtil
 import club.xiaojiawei.hsscript.utils.ConfigUtil.getBoolean
 import club.xiaojiawei.hsscript.utils.ConfigUtil.putBoolean
 import com.melloware.jintellitype.JIntellitypeConstants
-import javafx.beans.value.ChangeListener
-import javafx.beans.value.ObservableValue
 import javafx.event.EventHandler
 import javafx.fxml.FXML
 import javafx.fxml.Initializable
-import javafx.scene.Scene
-import javafx.scene.control.Accordion
+import javafx.scene.control.RadioButton
 import javafx.scene.control.TextField
+import javafx.scene.control.ToggleButton
+import javafx.scene.control.ToggleGroup
 import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyEvent
 import javafx.scene.layout.StackPane
@@ -33,6 +35,15 @@ import java.util.*
  * @date 2023/9/10 15:07
  */
 class AdvancedSettingsController : Initializable {
+
+    @FXML
+    protected lateinit var githubUpdateSource: RadioButton
+
+    @FXML
+    protected lateinit var giteeUpdateSource: RadioButton
+
+    @FXML
+    protected lateinit var updateSourceToggle: ToggleGroup
 
     @FXML
     protected lateinit var pauseHotKey: TextField
@@ -73,6 +84,12 @@ class AdvancedSettingsController : Initializable {
     }
 
     private fun initValue() {
+        val repositoryList = ConfigExUtil.getUpdateSourceList()
+        if (repositoryList.isEmpty() || repositoryList.first() == GiteeRepository) {
+            giteeUpdateSource.isSelected = true
+        } else {
+            githubUpdateSource.isSelected = true
+        }
         updateDev.status = getBoolean(ConfigEnum.UPDATE_DEV)
         autoUpdate.status = getBoolean(ConfigEnum.AUTO_UPDATE)
         runningMinimize.status = getBoolean(ConfigEnum.RUNNING_MINIMIZE)
@@ -92,6 +109,10 @@ class AdvancedSettingsController : Initializable {
     }
 
     private fun listen() {
+//        监听更新源
+        updateSourceToggle.selectedToggleProperty().addListener { _, _, newValue ->
+            ConfigUtil.putString(ConfigEnum.UPDATE_SOURCE, (newValue as ToggleButton).text)
+        }
 //        监听更新开发版开关
         updateDev.statusProperty()
             .addListener { observable, oldValue, newValue ->

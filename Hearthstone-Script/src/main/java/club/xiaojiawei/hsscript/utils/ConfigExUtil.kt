@@ -4,6 +4,9 @@ import ch.qos.logback.classic.Level
 import club.xiaojiawei.hsscript.bean.HotKey
 import club.xiaojiawei.hsscript.bean.WorkDay
 import club.xiaojiawei.hsscript.bean.WorkTime
+import club.xiaojiawei.hsscript.bean.single.repository.AbstractRepository
+import club.xiaojiawei.hsscript.bean.single.repository.GiteeRepository
+import club.xiaojiawei.hsscript.bean.single.repository.GithubRepository
 import club.xiaojiawei.hsscript.data.GAME_HWND
 import club.xiaojiawei.hsscript.data.GAME_PROGRAM_NAME
 import club.xiaojiawei.hsscript.data.PLATFORM_PROGRAM_NAME
@@ -15,7 +18,6 @@ import club.xiaojiawei.hsscript.starter.InjectStarter
 import club.xiaojiawei.hsscript.status.PauseStatus
 import java.io.File
 import java.nio.file.Path
-import java.time.LocalTime
 
 /**
  * @author 肖嘉威 xjw580@qq.com
@@ -77,13 +79,13 @@ object ConfigExUtil {
     }
 
     fun storeWorkTime(workTime: List<WorkTime>) {
-        workTime.forEach { time->
+        workTime.forEach { time ->
             val parseStartTime = time.parseStartTime()
             val parseEndTime = time.parseEndTime()
-            parseStartTime?:let {
+            parseStartTime ?: let {
                 time.startTime = "00:00"
             }
-            parseEndTime?:let {
+            parseEndTime ?: let {
                 time.endTime = "00:00"
             }
         }
@@ -136,6 +138,17 @@ object ConfigExUtil {
         } else {
             SystemDll.INSTANCE.topWindow(GAME_HWND, false)
         }
+    }
+
+    fun getUpdateSourceList(): List<AbstractRepository> {
+        val updateSource = ConfigUtil.getString(ConfigEnum.UPDATE_SOURCE).lowercase()
+        if (updateSource.isBlank()) {
+            return listOf(GiteeRepository, GithubRepository)
+        }
+        if (GiteeRepository::class.java.simpleName.lowercase().startsWith(updateSource)) {
+            return listOf(GiteeRepository, GithubRepository)
+        }
+        return listOf(GithubRepository, GiteeRepository)
     }
 
 }

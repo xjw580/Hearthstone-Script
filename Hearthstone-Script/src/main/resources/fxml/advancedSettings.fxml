@@ -7,6 +7,9 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 <?import javafx.scene.Group?>
+<?import java.lang.Double?>
+<?import club.xiaojiawei.controls.ico.GiteeIco?>
+<?import club.xiaojiawei.controls.ico.GithubIco?>
 <StackPane xmlns="http://javafx.com/javafx"
            xmlns:fx="http://javafx.com/fxml"
            stylesheets="@css/advancedSettings.css"
@@ -16,8 +19,33 @@
         <ScrollPane VBox.vgrow="ALWAYS" styleClass="scroll-pane-item">
             <VBox alignment="CENTER">
                 <Group>
-                    <TitledPane text="版本" styleClass="titled-pane-ui, titled-pane-ui-big, titled-pane-ui-pure, item-titled-pane">
+                    <TitledPane text="版本"
+                                styleClass="titled-pane-ui, titled-pane-ui-big, titled-pane-ui-pure, item-titled-pane">
                         <VBox styleClass="item-v-box">
+                            <HBox styleClass="h-box" spacing="30">
+                                <fx:define>
+                                    <Double fx:id="icoScale" fx:value="1.1"/>
+                                    <ToggleGroup fx:id="updateSourceToggle"/>
+                                </fx:define>
+                                <Text text="更新源"/>
+                                <HBox HBox.hgrow="ALWAYS"/>
+                                <RadioButton fx:id="giteeUpdateSource" text="Gitee" toggleGroup="$updateSourceToggle" styleClass="radio-button-ui, radio-button-ui-main">
+                                    <graphic>
+                                        <GiteeIco scaleX="${icoScale}" scaleY="${icoScale}"/>
+                                    </graphic>
+                                    <tooltip>
+                                        <Tooltip text="没有魔法推荐选此，此更新源只有稳定版"/>
+                                    </tooltip>
+                                </RadioButton>
+                                <RadioButton fx:id="githubUpdateSource" text="Github" toggleGroup="$updateSourceToggle" styleClass="radio-button-ui, radio-button-ui-main">
+                                    <graphic>
+                                        <GithubIco scaleX="${icoScale}" scaleY="${icoScale}"/>
+                                    </graphic>
+                                    <tooltip>
+                                        <Tooltip text="有魔法推荐选此，此更新源拥有所有版本"/>
+                                    </tooltip>
+                                </RadioButton >
+                            </HBox>
                             <HBox styleClass="h-box">
                                 <Text text="更新开发版"/>
                                 <HBox HBox.hgrow="ALWAYS"/>
@@ -32,7 +60,8 @@
                     </TitledPane>
                 </Group>
                 <Group>
-                    <TitledPane text="行为" styleClass="titled-pane-ui, titled-pane-ui-big, titled-pane-ui-pure, item-titled-pane">
+                    <TitledPane text="行为"
+                                styleClass="titled-pane-ui, titled-pane-ui-big, titled-pane-ui-pure, item-titled-pane">
                         <VBox styleClass="item-v-box">
                             <HBox styleClass="h-box">
                                 <Text text="挂机时最小化"/>
@@ -54,7 +83,8 @@
                                         <HelpIco/>
                                     </graphic>
                                     <tooltip>
-                                        <Tooltip text="真实控制鼠标移动，或许可能大概能降低被检测概率，在虚拟机里使用时推荐打开"/>
+                                        <Tooltip
+                                                text="真实控制鼠标移动，或许可能大概能降低被检测概率，在虚拟机里使用时推荐打开"/>
                                     </tooltip>
                                 </Label>
                                 <HBox HBox.hgrow="ALWAYS"/>
@@ -69,7 +99,8 @@
                     </TitledPane>
                 </Group>
                 <Group>
-                    <TitledPane text="系统" styleClass="titled-pane-ui, titled-pane-ui-big, titled-pane-ui-pure, item-titled-pane">
+                    <TitledPane text="系统"
+                                styleClass="titled-pane-ui, titled-pane-ui-big, titled-pane-ui-pure, item-titled-pane">
                         <VBox styleClass="item-v-box">
                             <HBox styleClass="h-box">
                                 <Text text="发送Windows通知"/>
@@ -84,12 +115,14 @@
                             <HBox styleClass="h-box">
                                 <Text text="开始/暂停快捷键"/>
                                 <HBox HBox.hgrow="ALWAYS"/>
-                                <TextField fx:id="pauseHotKey" styleClass="text-field-ui, text-field-ui-small" editable="false"/>
+                                <TextField fx:id="pauseHotKey" styleClass="text-field-ui, text-field-ui-small"
+                                           editable="false"/>
                             </HBox>
                             <HBox styleClass="h-box">
                                 <Text text="退出快捷键"/>
                                 <HBox HBox.hgrow="ALWAYS"/>
-                                <TextField fx:id="exitHotKey" styleClass="text-field-ui, text-field-ui-small" editable="false"/>
+                                <TextField fx:id="exitHotKey" styleClass="text-field-ui, text-field-ui-small"
+                                           editable="false"/>
                             </HBox>
                         </VBox>
                     </TitledPane>
