@@ -25,6 +25,10 @@ class HsRadicalDeckStrategy : DeckStrategy() {
         return "激进策略"
     }
 
+    override fun description(): String {
+        return "会在基础策略的基础上使用战吼，法术，地标牌（依旧不识别战吼或法术）。参考权重设置"
+    }
+
     override fun getRunMode(): Array<RunModeEnum> {
         return arrayOf(RunModeEnum.CASUAL, RunModeEnum.STANDARD, RunModeEnum.WILD, RunModeEnum.PRACTICE)
     }

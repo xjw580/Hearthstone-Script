@@ -9,8 +9,13 @@ import club.xiaojiawei.enums.RunModeEnum
  * @date 2024/10/14 16:31
  */
 class HsSurrenderDeckStrategy: DeckStrategy() {
+
     override fun name(): String {
         return "秒投策略"
+    }
+
+    override fun description(): String {
+        return "开局秒投"
     }
 
     override fun getRunMode(): Array<RunModeEnum> {

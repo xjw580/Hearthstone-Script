@@ -5,15 +5,15 @@
 <?import club.xiaojiawei.hsscript.component.CardTableView?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<AnchorPane xmlns="http://javafx.com/javafx"
+<StackPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             stylesheets="@css/pluginSettings.css"
             fx:id="rootPane"
             fx:controller="club.xiaojiawei.hsscript.controller.javafx.PluginSettingsController">
     <SplitPane dividerPositions="0.25" styleClass="split-pane-line"
                prefHeight="${rootPane.height}" prefWidth="${rootPane.width}">
-        <ListView fx:id="pluginListView" minWidth="150" maxWidth="300" styleClass="list-view-ui"/>
-        <VBox fx:id="pluginInfo" style="-fx-background-color: white" visible="false">
+        <ListView fx:id="pluginListView" minWidth="150" maxWidth="250" styleClass="list-view-ui"/>
+        <VBox fx:id="pluginInfo" style="-fx-background-color: white;" visible="false">
             <VBox spacing="3" style="-fx-padding: 5">
                 <CopyLabel fx:id="pluginName" notificationManager="${notificationManager}"
                            style="-fx-font-size: 18;-fx-font-weight: bold"/>
@@ -24,7 +24,30 @@
                 </HBox>
                 <CopyLabel fx:id="pluginVersion" notificationManager="${notificationManager}"/>
             </VBox>
-            <TabPane styleClass="tab-pane-ui, tab-pane-ui-small" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
+            <fx:define>
+                <Tab text="适配的卡牌" fx:id="cardTab">
+                    <StackPane style="-fx-padding: 5;">
+                        <CardTableView fx:id="cardTable" notificationManager="${notificationManager}">
+                            <placeholder>
+                                <StackPane>
+                                    <Label text="未适配任何卡牌"/>
+                                </StackPane>
+                            </placeholder>
+                        </CardTableView>
+                        <fx:define>
+                            <TableFilterManagerGroup fx:id="cardTableProxy" tableView="$cardTable" autoRegisterColFilter="true"/>
+                        </fx:define>
+                        <ProgressModal fx:id="cardRootProgressModal" title="加载中..."/>
+                    </StackPane>
+                </Tab>
+                <Tab text="包含的策略" fx:id="deckTab">
+                    <StackPane style="-fx-padding: 5;">
+                        <ListView fx:id="deckListView" styleClass="list-view-ui"/>
+                        <ProgressModal fx:id="deckRootProgressModal" title="加载中..."/>
+                    </StackPane>
+                </Tab>
+            </fx:define>
+            <TabPane fx:id="pluginTabPane" styleClass="tab-pane-ui, tab-pane-ui-small" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
                 <Tab text="描述" fx:id="desRoot">
                     <VBox fx:id="desRootPane" style="-fx-padding: 5;-fx-spacing: 5">
                         <CopyLabel fx:id="pluginDescription" notificationManager="${notificationManager}"
@@ -33,23 +56,6 @@
                         <AnchorPane fx:id="pluginGraphicDescription"/>
                     </VBox>
                 </Tab>
-                <Tab text="适配的卡牌" fx:id="cardRoot">
-                    <ScrollPane fx:id="cardRootPane" style="-fx-padding: 5;-fx-spacing: 5" fitToHeight="true" fitToWidth="true">
-                        <StackPane>
-                            <CardTableView fx:id="cardTable" notificationManager="${notificationManager}">
-                                <placeholder>
-                                    <StackPane>
-                                        <Label text="未适配任何卡牌"/>
-                                    </StackPane>
-                                </placeholder>
-                            </CardTableView>
-                            <fx:define>
-                                <TableFilterManagerGroup fx:id="cardTableProxy" tableView="$cardTable" autoRegisterColFilter="true"/>
-                            </fx:define>
-                            <ProgressModal fx:id="cardRootProgressModal" title="加载中..."/>
-                        </StackPane>
-                    </ScrollPane>
-                </Tab>
             </TabPane>
         </VBox>
     </SplitPane>
@@ -57,4 +63,4 @@
     <NotificationManager fx:id="notificationManager" notificationPos="BOTTOM_CENTER">
         <NotificationFactory showingCloseBtn="false" size="SMALL"/>
     </NotificationManager>
-</AnchorPane>
+</StackPane>

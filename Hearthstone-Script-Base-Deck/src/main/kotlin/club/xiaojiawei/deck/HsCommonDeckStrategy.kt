@@ -20,6 +20,10 @@ class HsCommonDeckStrategy : DeckStrategy() {
         return "基础策略"
     }
 
+    override fun description(): String {
+        return "未对卡牌和卡组适配，自行组一套无战吼无法术的套牌即可。参考权重设置"
+    }
+
     override fun getRunMode(): Array<RunModeEnum> {
         return arrayOf(RunModeEnum.CASUAL, RunModeEnum.STANDARD, RunModeEnum.WILD, RunModeEnum.PRACTICE)
     }

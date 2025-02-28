@@ -116,10 +116,12 @@ object WorkListener {
                 }
                 if (startTime.isBefore(endTime)) {
                     // 同一天的情况：startTime < endTime
-                    return !nowTime.isBefore(startTime) && !nowTime.isAfter(endTime);
-                } else {
+                    if (!nowTime.isBefore(startTime) && !nowTime.isAfter(endTime)){
+                        return true
+                    }
+                } else if (!nowTime.isBefore(startTime) || !nowTime.isAfter(endTime)){
                     // 跨天的情况：startTime >= endTime
-                    return !nowTime.isBefore(startTime) || !nowTime.isAfter(endTime);
+                    return true
                 }
             }
         }

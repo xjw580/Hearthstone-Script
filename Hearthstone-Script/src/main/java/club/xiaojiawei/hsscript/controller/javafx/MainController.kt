@@ -3,11 +3,11 @@ package club.xiaojiawei.hsscript.controller.javafx
 import ch.qos.logback.classic.Level
 import ch.qos.logback.classic.spi.ILoggingEvent
 import club.xiaojiawei.DeckStrategy
-import club.xiaojiawei.controls.*
+import club.xiaojiawei.controls.CopyLabel
+import club.xiaojiawei.controls.Modal
+import club.xiaojiawei.controls.Time
 import club.xiaojiawei.controls.ico.AbstractIco
 import club.xiaojiawei.controls.ico.ClearIco
-import club.xiaojiawei.controls.ico.CopyIco
-import club.xiaojiawei.controls.ico.OKIco
 import club.xiaojiawei.enums.RunModeEnum
 import club.xiaojiawei.enums.RunModeEnum.Companion.fromString
 import club.xiaojiawei.hsscript.appender.ExtraLogAppender
@@ -37,12 +37,12 @@ import club.xiaojiawei.hsscript.utils.ConfigExUtil.storeWorkDay
 import club.xiaojiawei.hsscript.utils.ConfigExUtil.storeWorkTime
 import club.xiaojiawei.hsscript.utils.ConfigUtil.getString
 import club.xiaojiawei.hsscript.utils.ConfigUtil.putString
+import club.xiaojiawei.hsscript.utils.FXUtil
 import club.xiaojiawei.hsscript.utils.SystemUtil.copyToClipboard
 import club.xiaojiawei.hsscript.utils.WindowUtil.buildStage
 import club.xiaojiawei.hsscript.utils.WindowUtil.createAlert
 import club.xiaojiawei.hsscript.utils.WindowUtil.getStage
 import club.xiaojiawei.hsscript.utils.WindowUtil.showStage
-import javafx.animation.PauseTransition
 import javafx.animation.RotateTransition
 import javafx.animation.Timeline
 import javafx.application.Platform
@@ -52,8 +52,9 @@ import javafx.collections.SetChangeListener
 import javafx.event.ActionEvent
 import javafx.event.EventHandler
 import javafx.fxml.FXML
-import javafx.scene.Node
-import javafx.scene.control.*
+import javafx.scene.control.CheckBox
+import javafx.scene.control.Label
+import javafx.scene.control.Toggle
 import javafx.scene.input.MouseButton
 import javafx.scene.input.MouseEvent
 import javafx.scene.layout.AnchorPane
@@ -228,43 +229,13 @@ class MainController : MainView() {
     private fun wrapLabel(label: Label): AnchorPane {
         val anchorPane = AnchorPane()
         anchorPane.styleClass.add("hoverRootNode")
-        val node = buildCopyNode { copyToClipboard(label.text) }
+        val node = FXUtil.buildCopyNode({ copyToClipboard(label.text) })
         node.styleClass.add("hoverChildrenNode")
         anchorPane.children.add(label)
         anchorPane.children.add(node)
         AnchorPane.setRightAnchor(node, 5.0)
         AnchorPane.setTopAnchor(node, 5.0)
         return anchorPane
-    }
-
-    private fun buildCopyNode(clickHandler: Runnable?): Node {
-        val graphicLabel = Label()
-        val copyIco = CopyIco()
-        val icoColor = "#e4e4e4"
-        copyIco.color = icoColor
-        graphicLabel.graphic = copyIco
-        graphicLabel.style = """
-                    -fx-cursor: hand;
-                    -fx-alignment: CENTER;
-                    -fx-pref-width: 22;
-                    -fx-pref-height: 22;
-                    -fx-background-radius: 3;
-                    -fx-background-color: rgba(128,128,128,0.9);
-                    -fx-font-size: 10;
-                    
-                    """.trimIndent()
-        graphicLabel.onMouseClicked = EventHandler<MouseEvent> { actionEvent: MouseEvent? ->
-            clickHandler?.run()
-            val okIco = OKIco()
-            okIco.color = icoColor
-            graphicLabel.graphic = okIco
-            val pauseTransition = PauseTransition(Duration.millis(1000.0))
-            pauseTransition.onFinished = EventHandler { actionEvent1: ActionEvent? ->
-                graphicLabel.graphic = copyIco
-            }
-            pauseTransition.play()
-        }
-        return graphicLabel
     }
 
 

@@ -16,6 +16,10 @@ class HsMCTSStrategy : MCTSDeckStrategy() {
         return "mcts策略"
     }
 
+    override fun description(): String {
+        return "通过蒙特卡洛树搜索算法来计算最佳出牌，需要适配卡牌支持"
+    }
+
     override fun getRunMode(): Array<RunModeEnum> {
         return arrayOf(RunModeEnum.CASUAL, RunModeEnum.STANDARD, RunModeEnum.WILD, RunModeEnum.PRACTICE)
     }

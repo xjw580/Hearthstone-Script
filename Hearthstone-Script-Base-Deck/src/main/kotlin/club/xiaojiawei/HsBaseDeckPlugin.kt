@@ -15,11 +15,7 @@ class HsBaseDeckPlugin : DeckPlugin {
 
     override fun description(): String {
         return """
-            捆绑。会参考权重设置。包含以下策略
-            秒投策略：开局秒投。
-            基础策略：未对卡牌和卡组适配，自行组一套无战吼无法术的套牌即可。
-            激进策略：会在基础策略的基础上使用战吼，法术，地标牌（依旧不识别战吼或法术）。
-            mcts策略：通过蒙特卡洛树搜索算法来计算最佳出牌
+            捆绑
         """.trimIndent()
     }
 

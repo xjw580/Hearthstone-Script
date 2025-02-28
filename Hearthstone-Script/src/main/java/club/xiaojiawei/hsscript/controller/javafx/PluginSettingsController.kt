@@ -7,22 +7,25 @@ import club.xiaojiawei.DeckStrategy
 import club.xiaojiawei.bean.DBCard
 import club.xiaojiawei.bean.PluginWrapper
 import club.xiaojiawei.config.EXTRA_THREAD_POOL
+import club.xiaojiawei.config.log
 import club.xiaojiawei.controls.CopyLabel
 import club.xiaojiawei.controls.NotificationManager
 import club.xiaojiawei.controls.ProgressModal
 import club.xiaojiawei.controls.TableFilterManagerGroup
 import club.xiaojiawei.hsscript.component.CardTableView
+import club.xiaojiawei.hsscript.component.PluginDeckItem
 import club.xiaojiawei.hsscript.component.PluginItem
 import club.xiaojiawei.hsscript.status.PluginManager.CARD_ACTION_PLUGINS
 import club.xiaojiawei.hsscript.status.PluginManager.DECK_STRATEGY_PLUGINS
 import club.xiaojiawei.hsscript.utils.SystemUtil.openURL
 import club.xiaojiawei.hsscript.utils.runUI
 import club.xiaojiawei.util.CardDBUtil
-import javafx.beans.value.ObservableValue
 import javafx.event.ActionEvent
 import javafx.fxml.FXML
 import javafx.fxml.Initializable
 import javafx.scene.control.ListView
+import javafx.scene.control.Tab
+import javafx.scene.control.TabPane
 import javafx.scene.layout.AnchorPane
 import javafx.scene.layout.Pane
 import javafx.scene.layout.VBox
@@ -35,6 +38,21 @@ import java.util.stream.Stream
  * @date 2023/9/10 15:07
  */
 class PluginSettingsController : Initializable {
+
+    @FXML
+    protected lateinit var pluginTabPane: TabPane
+
+    @FXML
+    protected lateinit var deckListView: ListView<PluginDeckItem>
+
+    @FXML
+    protected lateinit var deckRootProgressModal: ProgressModal
+
+    @FXML
+    protected lateinit var deckTab: Tab
+
+    @FXML
+    protected lateinit var cardTab: Tab
 
     @FXML
     protected lateinit var cardRootProgressModal: ProgressModal
@@ -70,7 +88,7 @@ class PluginSettingsController : Initializable {
     protected lateinit var pluginVersion: CopyLabel
 
     @FXML
-    protected lateinit var rootPane: AnchorPane
+    protected lateinit var rootPane: Pane
 
     @FXML
     protected lateinit var notificationManager: NotificationManager<Any>
@@ -109,54 +127,95 @@ class PluginSettingsController : Initializable {
 
     private fun listen() {
         pluginListView.selectionModel.selectedItemProperty()
-            .addListener { observable: ObservableValue<out PluginItem>?, oldValue: PluginItem?, newValue: PluginItem? ->
-                pluginInfo.isVisible = newValue != null
-                if (newValue != null) {
-                    val plugin = newValue.pluginWrapper.plugin
-                    pluginName.text = plugin.name()
-                    pluginAuthor.text = plugin.author()
-                    pluginId.text = plugin.id()
-                    pluginVersion.text = plugin.version()
-                    pluginDescription.text = plugin.description()
-                    pluginGraphicDescription.children.clear()
-                    plugin.graphicDescription()?.let {
-                        pluginGraphicDescription.children.add(it)
-                    }
-                    val spiInstance = newValue.pluginWrapper.spiInstance
-                    when (plugin) {
-                        is CardPlugin -> {
-                            val progress = cardRootProgressModal.show()
-                            EXTRA_THREAD_POOL.submit {
-                                runCatching {
-                                    val dbCards = mutableSetOf<DBCard>()
-                                    for (cardAction in spiInstance) {
-                                        cardAction as CardAction
-                                        val cardIds = cardAction.getCardId()
-                                        for (cardId in cardIds) {
-                                            dbCards.addAll(CardDBUtil.queryCardById(cardId, 100, 0, false))
-                                        }
-                                    }
-                                    dbCards
-                                }.onSuccess { dbCards ->
-                                    runUI {
-                                        cardTableProxy.setAll(dbCards)
-                                        cardRootProgressModal.hide(progress)
-                                    }
-                                }.onFailure {
-                                    runUI {
-                                        cardRootProgressModal.hide(progress)
-                                        notificationManager.showError(it.message, 5)
-                                    }
-                                }
+            .addListener { _, _, newPluginItem: PluginItem? ->
+                pluginInfo.isVisible = newPluginItem != null
+                if (newPluginItem != null) {
+                    loadPluginMainMsg(newPluginItem)
+                    loadPluginExtraMsg(newPluginItem)
+                }
+            }
+    }
+
+    private fun loadPluginMainMsg(pluginItem: PluginItem) {
+        val plugin = pluginItem.pluginWrapper.plugin
+        pluginName.text = plugin.name()
+        pluginAuthor.text = plugin.author()
+        pluginId.text = plugin.id()
+        pluginVersion.text = plugin.version()
+        pluginDescription.text = plugin.description()
+        pluginGraphicDescription.children.clear()
+        plugin.graphicDescription()?.let {
+            pluginGraphicDescription.children.add(it)
+        }
+    }
+
+    private fun loadPluginExtraMsg(pluginItem: PluginItem) {
+        val spiInstance = pluginItem.pluginWrapper.spiInstance
+        if (pluginTabPane.tabs.size > 1) {
+            pluginTabPane.tabs.removeLast()
+        }
+        when (pluginItem.pluginWrapper.plugin) {
+            is CardPlugin -> {
+                pluginTabPane.tabs.addLast(cardTab)
+                val progress = cardRootProgressModal.show()
+                EXTRA_THREAD_POOL.submit {
+                    runCatching {
+                        val dbCards = mutableSetOf<DBCard>()
+                        for (cardAction in spiInstance) {
+                            cardAction as CardAction
+                            val cardIds = cardAction.getCardId()
+                            for (cardId in cardIds) {
+                                dbCards.addAll(CardDBUtil.queryCardById(cardId, 100, 0, false))
                             }
                         }
-
-                        is DeckPlugin -> {
-                            cardTableProxy.clear()
+                        dbCards
+                    }.onSuccess { dbCards ->
+                        runUI {
+                            cardTableProxy.setAll(dbCards)
+                            cardRootProgressModal.hide(progress)
+                        }
+                    }.onFailure {
+                        runUI {
+                            cardRootProgressModal.hide(progress)
+                            notificationManager.showError(it.message, 5)
+                            log.error(it) { }
                         }
                     }
                 }
             }
+
+            is DeckPlugin -> {
+                pluginTabPane.tabs.addLast(deckTab)
+                val progress = deckRootProgressModal.show()
+                EXTRA_THREAD_POOL.submit {
+                    runCatching {
+                        val pluginDeckItems = mutableSetOf<PluginDeckItem>()
+                        for (deckStrategy in spiInstance) {
+                            deckStrategy as DeckStrategy
+                            pluginDeckItems.add(
+                                PluginDeckItem().apply {
+                                    name.text = deckStrategy.name()
+                                    description.text = deckStrategy.description()
+                                    this.deckStrategy = deckStrategy
+                                }
+                            )
+                        }
+                        pluginDeckItems
+                    }.onSuccess { pluginDeckItems ->
+                        runUI {
+                            deckListView.items.setAll(pluginDeckItems)
+                            deckRootProgressModal.hide(progress)
+                        }
+                    }.onFailure {
+                        runUI {
+                            deckRootProgressModal.hide(progress)
+                            notificationManager.showError(it.message, 5)
+                            log.error(it) { }
+                        }
+                    }
+                }
+            }
+        }
     }
 
 
