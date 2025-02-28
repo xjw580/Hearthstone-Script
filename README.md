@@ -11,6 +11,14 @@
 
 
 
+### 捐赠
+
+> 您的捐赠不仅是对代码的认可，更是对自由软件理念的支持。
+>
+> <img src="payment-code.jpg" alt="Image description"  height="300">
+
+
+
 ### **[提Bug](https://github.com/xjw580/Hearthstone-Script/issues/new?template=01_bug_report.yml) · [提点子](https://github.com/xjw580/Hearthstone-Script/issues/new?template=02_feature_request.yml)**
 
 

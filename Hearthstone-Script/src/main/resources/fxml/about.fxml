@@ -10,6 +10,7 @@
 <?import javafx.scene.layout.*?>
 <?import java.lang.Double?>
 <?import club.xiaojiawei.hsscript.component.UrlLabel?>
+<?import javafx.scene.text.Text?>
 <StackPane xmlns="http://javafx.com/javafx"
            xmlns:fx="http://javafx.com/fxml"
            stylesheets="@css/about.css"
@@ -50,6 +51,9 @@
                                                 </graphic>
                                             </UrlLabel>
                                         </HBox>
+                                    </HBox>
+                                    <HBox>
+                                        <UrlLabel text="捐赠" url="https://gitee.com/zergqueen/Hearthstone-Script/blob/master/payment-code.jpg"/>
                                     </HBox>
                                 </VBox>
                             </HBox>
