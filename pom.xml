@@ -71,7 +71,6 @@
         <hs-script-deck-sdk-version>1.0.0</hs-script-deck-sdk-version>
 
         <!--plugin-->
-        <dokka.version>1.9.10</dokka.version>  <!-- 使用最新的 Dokka 版本 -->
         <maven-assembly-plugin-version>3.6.0</maven-assembly-plugin-version>
         <maven-jar-plugin-version>3.3.0</maven-jar-plugin-version>
         <maven-compiler-plugin-version>3.12.1</maven-compiler-plugin-version>
@@ -373,23 +372,6 @@
                         </path>
                     </annotationProcessorPaths>
                 </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.jetbrains.dokka</groupId>
-                <artifactId>dokka-maven-plugin</artifactId>
-                <version>${dokka.version}</version>
-                <configuration>
-                    <outputDir>${project.build.directory}/dokka</outputDir> <!-- 输出目录 -->
-                    <failOnWarning>false</failOnWarning>
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>prepare-package</phase>
-                        <goals>
-                            <goal>dokka</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>

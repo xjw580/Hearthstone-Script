@@ -1,12 +1,9 @@
-package club.xiaojiawei.hsscript.appender;
+package club.xiaojiawei.hsscript.appender
 
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.core.UnsynchronizedAppenderBase;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Consumer;
+import ch.qos.logback.classic.Level
+import ch.qos.logback.classic.spi.ILoggingEvent
+import ch.qos.logback.core.UnsynchronizedAppenderBase
+import java.util.function.Consumer
 
 /**
  * 额外的日志Appender
@@ -14,27 +11,27 @@ import java.util.function.Consumer;
  * @author 肖嘉威 xjw580@qq.com
  * @date 2022/9/28 上午10:11
  */
-public class ExtraLogAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
-
-    private static final List<Consumer<ILoggingEvent>> callbacks = new ArrayList<>();
-
-    public static void addCallback(Consumer<ILoggingEvent> callback) {
-        callbacks.add(callback);
-    }
-
-    public static void removeCallback(Consumer<ILoggingEvent> callback) {
-        callbacks.remove(callback);
-    }
-
-    public static void clearCallbacks() {
-        callbacks.clear();
-    }
-
-    @Override
-    protected void append(ILoggingEvent event) {
-        if (event.getLevel().levelInt >= Level.INFO_INT) {
-            new ArrayList<>(callbacks).forEach(c -> c.accept(event));
+class ExtraLogAppender : UnsynchronizedAppenderBase<ILoggingEvent>() {
+    override fun append(event: ILoggingEvent) {
+        if (event.level.levelInt >= Level.INFO_INT) {
+            ArrayList(callbacks).forEach(
+                Consumer { c: Consumer<ILoggingEvent> -> c.accept(event) })
         }
     }
 
+    companion object {
+        private val callbacks: MutableList<Consumer<ILoggingEvent>> = ArrayList()
+
+        fun addCallback(callback: Consumer<ILoggingEvent>) {
+            callbacks.add(callback)
+        }
+
+        fun removeCallback(callback: Consumer<ILoggingEvent>) {
+            callbacks.remove(callback)
+        }
+
+        fun clearCallbacks() {
+            callbacks.clear()
+        }
+    }
 }

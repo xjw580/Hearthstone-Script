@@ -12,7 +12,9 @@ import club.xiaojiawei.hsscript.data.GAME_PROGRAM_NAME
 import club.xiaojiawei.hsscript.data.PLATFORM_PROGRAM_NAME
 import club.xiaojiawei.hsscript.dll.SystemDll
 import club.xiaojiawei.hsscript.enums.ConfigEnum
+import club.xiaojiawei.hsscript.enums.MouseControlModeEnum
 import club.xiaojiawei.hsscript.fileLogLevel
+import club.xiaojiawei.hsscript.initializer.DriveInitializer
 import club.xiaojiawei.hsscript.listener.WorkListener
 import club.xiaojiawei.hsscript.starter.InjectStarter
 import club.xiaojiawei.hsscript.status.PauseStatus
@@ -118,15 +120,29 @@ object ConfigExUtil {
         fileLogLevel = getFileLogLevel().toInt()
     }
 
-    fun storeControlMode(enabled: Boolean) {
-        ConfigUtil.putBoolean(ConfigEnum.CONTROL_MODE, enabled)
-        if (enabled) {
-            SystemDll.INSTANCE.uninstallDll(GAME_HWND)
-        } else {
-            InjectStarter().use {
-                it.start()
+    fun storeMouseControlMode(mouseControlModeEnum: MouseControlModeEnum) {
+        ConfigUtil.putString(ConfigEnum.MOUSE_CONTROL_MODE, mouseControlModeEnum.name)
+        when (mouseControlModeEnum) {
+            MouseControlModeEnum.MESSAGE -> {
+                InjectStarter().use {
+                    it.start()
+                }
+                return
+            }
+
+            MouseControlModeEnum.EVENT -> {
+
+            }
+
+            MouseControlModeEnum.DRIVE -> {
+                DriveInitializer().init()
             }
         }
+        SystemDll.INSTANCE.uninstallDll(GAME_HWND)
+    }
+
+    fun getMouseControlMode(): MouseControlModeEnum {
+        return MouseControlModeEnum.fromString(ConfigUtil.getString(ConfigEnum.MOUSE_CONTROL_MODE))
     }
 
     fun storeTopGameWindow(enabled: Boolean) {

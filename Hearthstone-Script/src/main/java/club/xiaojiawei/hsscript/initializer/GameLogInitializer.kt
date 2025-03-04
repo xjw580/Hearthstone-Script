@@ -7,7 +7,6 @@ import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.utils.ConfigUtil
 import club.xiaojiawei.hsscript.utils.FileUtil
 import club.xiaojiawei.hsscript.utils.SystemUtil
-import club.xiaojiawei.hsscript.utils.runUI
 import club.xiaojiawei.util.isTrue
 import org.ini4j.Ini
 import java.nio.file.Path
@@ -17,7 +16,7 @@ import java.nio.file.Path
  * @author 肖嘉威
  * @date 2023/7/4 11:33
  */
-object GameLogInitializer : AbstractInitializer() {
+class GameLogInitializer : AbstractInitializer() {
 
     private fun checkLogConfig(ini: Ini, section: String): Boolean {
         var modify = false

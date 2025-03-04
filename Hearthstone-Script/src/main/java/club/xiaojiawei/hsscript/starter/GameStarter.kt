@@ -8,6 +8,7 @@ import club.xiaojiawei.hsscript.config.StarterConfig
 import club.xiaojiawei.hsscript.data.GAME_CN_NAME
 import club.xiaojiawei.hsscript.data.GAME_HWND
 import club.xiaojiawei.hsscript.dll.SystemDll
+import club.xiaojiawei.hsscript.enums.MouseControlModeEnum
 import club.xiaojiawei.hsscript.status.PauseStatus
 import club.xiaojiawei.hsscript.utils.GameUtil
 import club.xiaojiawei.hsscript.utils.MouseUtil
@@ -76,7 +77,7 @@ class GameStarter : AbstractStarter() {
         MouseUtil.leftButtonClick(
             Point(145, rect.bottom - rect.top - 150),
             platformHWND,
-            false
+            MouseControlModeEnum.MESSAGE.code
         )
     }
 

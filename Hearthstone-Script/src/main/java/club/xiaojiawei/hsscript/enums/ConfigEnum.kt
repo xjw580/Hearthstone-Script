@@ -69,17 +69,17 @@ enum class ConfigEnum(
     /**
      * 更新开发版
      */
-    UPDATE_DEV(group = VERSION_CONFIG_GROUP, defaultValue = "false"),
+    UPDATE_DEV(group = VERSION_CONFIG_GROUP, defaultValue = false.toString()),
 
     /**
      * 自动更新
      */
-    AUTO_UPDATE(group = VERSION_CONFIG_GROUP, defaultValue = "false"),
+    AUTO_UPDATE(group = VERSION_CONFIG_GROUP, defaultValue = false.toString()),
 
     /**
      * 是否执行策略
      */
-    STRATEGY(group = ACTION_CONFIG_GROUP, defaultValue = "true"),
+    STRATEGY(group = ACTION_CONFIG_GROUP, defaultValue = true.toString()),
 
     /**
      * 动作间隔/ms
@@ -89,7 +89,7 @@ enum class ConfigEnum(
     /**
      * 适配畸变模式
      */
-    DISTORTION(group = ACTION_CONFIG_GROUP, defaultValue = "true"),
+    DISTORTION(group = ACTION_CONFIG_GROUP, defaultValue = true.toString()),
 
     /**
      * 鼠标移动暂停间隔，值越小越慢，最小为1
@@ -97,14 +97,14 @@ enum class ConfigEnum(
     PAUSE_STEP(group = ACTION_CONFIG_GROUP, defaultValue = "7"),
 
     /**
-     * 控制模式/真实控制鼠标
+     * 鼠标控制模式
      */
-    CONTROL_MODE(group = ACTION_CONFIG_GROUP, defaultValue = "false"),
+    MOUSE_CONTROL_MODE(group = ACTION_CONFIG_GROUP, defaultValue = MouseControlModeEnum.MESSAGE.name),
 
     /**
      * 置顶游戏窗口
      */
-    TOP_GAME_WINDOW(group = ACTION_CONFIG_GROUP, defaultValue = CONTROL_MODE.defaultValue),
+    TOP_GAME_WINDOW(group = ACTION_CONFIG_GROUP, defaultValue = MOUSE_CONTROL_MODE.defaultValue),
 
     /**
      * 选择卡组位
@@ -154,7 +154,7 @@ enum class ConfigEnum(
     /**
      * 运行后最小化软件
      */
-    RUNNING_MINIMIZE(group = OTHER_CONFIG_GROUP, defaultValue = "true"),
+    RUNNING_MINIMIZE(group = OTHER_CONFIG_GROUP, defaultValue = true.toString()),
 
     /**
      * 当前版本
@@ -164,12 +164,12 @@ enum class ConfigEnum(
     /**
      * 随机事件
      */
-    RANDOM_EVENT(group = OTHER_CONFIG_GROUP, defaultValue = "true"),
+    RANDOM_EVENT(group = OTHER_CONFIG_GROUP, defaultValue = true.toString()),
 
     /**
      * 随机表情
      */
-    RANDOM_EMOTION(group = OTHER_CONFIG_GROUP, defaultValue = "true"),
+    RANDOM_EMOTION(group = OTHER_CONFIG_GROUP, defaultValue = true.toString()),
 
     /**
      * 自动投降
@@ -179,17 +179,17 @@ enum class ConfigEnum(
     /**
      * 只打人机
      */
-    ONLY_ROBOT(group = OTHER_CONFIG_GROUP, defaultValue = "false"),
+    ONLY_ROBOT(group = OTHER_CONFIG_GROUP, defaultValue = false.toString()),
 
     /**
      * 允许发送windows通知
      */
-    SEND_NOTICE(group = SYSTEM_CONFIG_GROUP, defaultValue = "true"),
+    SEND_NOTICE(group = SYSTEM_CONFIG_GROUP, defaultValue = true.toString()),
 
     /**
      * 使用系统代理
      */
-    USE_PROXY(group = SYSTEM_CONFIG_GROUP, defaultValue = "true"),
+    USE_PROXY(group = SYSTEM_CONFIG_GROUP, defaultValue = true.toString()),
 
     /**
      * 退出程序热键
@@ -199,7 +199,10 @@ enum class ConfigEnum(
     /**
      * 暂停程序热键
      */
-    PAUSE_HOT_KEY(group = SYSTEM_CONFIG_GROUP, defaultValue = JSON.toJSONString(HotKey(JIntellitype.MOD_CONTROL, 'P'.code))),
+    PAUSE_HOT_KEY(
+        group = SYSTEM_CONFIG_GROUP,
+        defaultValue = JSON.toJSONString(HotKey(JIntellitype.MOD_CONTROL, 'P'.code))
+    ),
 
     /**
      * 文件日志级别
@@ -209,7 +212,7 @@ enum class ConfigEnum(
     /**
      * 自动打开游戏数据分析页
      */
-    AUTO_OPEN_GAME_ANALYSIS(group = DEV_CONFIG_GROUP, defaultValue = "false"),
+    AUTO_OPEN_GAME_ANALYSIS(group = DEV_CONFIG_GROUP, defaultValue = false.toString()),
 
     ;
 }

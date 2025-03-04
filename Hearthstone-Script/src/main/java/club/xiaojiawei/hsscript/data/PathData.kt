@@ -31,14 +31,22 @@ const val FXML_DIR: String = "/fxml/"
 
 const val GAME_LOG_DIR: String = "Logs"
 
+const val DRIVE_PATH = "C:\\Windows\\System32\\drivers"
+
+val MOUSE_DRIVE_PATH: String = Path.of(DRIVE_PATH, "mouse.sys").toString()
+
+val KEYBOARD_DRIVE_PATH: String = Path.of(DRIVE_PATH, "keyboard.sys").toString()
+
 @JvmInline
 value class ResourceFile(val name: String)
 
-val INJECT_UTIL_FILE = ResourceFile("injectUtil.exe")
+val INJECT_UTIL_FILE = ResourceFile("inject-util.exe")
 
-val LIB_HS_FILE = ResourceFile("libHS.dll")
+val INSTALL_DRIVE_FILE = ResourceFile("install-drive.exe")
 
-val HS_CARD_UTIL_FILE = ResourceFile("HSCardUtil.exe")
+val LIB_HS_FILE = ResourceFile("hs.dll")
+
+val HS_CARD_UTIL_FILE = ResourceFile("card-update-util.exe")
 
 /**
  * 图片路径

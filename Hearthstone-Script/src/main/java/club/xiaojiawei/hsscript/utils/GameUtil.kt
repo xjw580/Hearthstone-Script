@@ -317,7 +317,7 @@ object GameUtil {
     }
 
     fun rightButtonClick(point: Point) {
-        MouseUtil.leftButtonClick(point, GAME_HWND)
+        MouseUtil.rightButtonClick(point, GAME_HWND)
     }
 
     fun moveMouse(startPos: Point?, endPos: Point) {

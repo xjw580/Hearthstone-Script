@@ -1,11 +1,7 @@
 package club.xiaojiawei.hsscript.initializer
 
 import club.xiaojiawei.config.log
-import club.xiaojiawei.hsscript.data.GAME_CN_NAME
-import club.xiaojiawei.hsscript.data.GAME_US_NAME
-import club.xiaojiawei.hsscript.data.PLATFORM_CN_NAME
-import club.xiaojiawei.hsscript.data.PLATFORM_US_NAME
-import club.xiaojiawei.hsscript.data.haveProgramPath
+import club.xiaojiawei.hsscript.data.*
 import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.enums.RegCommonNameEnum
 import club.xiaojiawei.hsscript.utils.ConfigExUtil
@@ -17,12 +13,12 @@ import club.xiaojiawei.hsscript.utils.SystemUtil
  * @author 肖嘉威
  * @date 2023/7/4 11:33
  */
-object GamePathInitializer : AbstractInitializer() {
+class GamePathInitializer : AbstractInitializer() {
 
     public override fun exec() {
         haveProgramPath = true
 
-        var platformInstallLocation: String?
+        val platformInstallLocation: String?
         if (ConfigUtil.getString(ConfigEnum.PLATFORM_PATH).isBlank()) {
             log.info {
                 String.format(
@@ -56,7 +52,7 @@ object GamePathInitializer : AbstractInitializer() {
             }
         }
 
-        var gameInstallLocation: String?
+        val gameInstallLocation: String?
         if (ConfigUtil.getString(ConfigEnum.GAME_PATH).isBlank()) {
             log.info {
                 String.format("未配置%s安装路径，尝试从注册表读取", GAME_CN_NAME)

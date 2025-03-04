@@ -77,18 +77,9 @@
                                 <Switch fx:id="runningMinimize"/>
                             </HBox>
                             <HBox styleClass="h-box">
-                                <Text text="控制模式"/>
-                                <Label>
-                                    <graphic>
-                                        <HelpIco/>
-                                    </graphic>
-                                    <tooltip>
-                                        <Tooltip
-                                                text="真实控制鼠标移动，或许可能大概能降低被检测概率，在虚拟机里使用时推荐打开"/>
-                                    </tooltip>
-                                </Label>
+                                <Text text="鼠标控制模式"/>
                                 <HBox HBox.hgrow="ALWAYS"/>
-                                <Switch fx:id="controlMode"/>
+                                <ComboBox fx:id="mouseControlModeComboBox" styleClass="combo-box-ui, combo-box-ui-small, combo-box-ui-normal"/>
                             </HBox>
                             <HBox styleClass="h-box">
                                 <Text text="置顶游戏窗口"/>

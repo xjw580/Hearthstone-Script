@@ -49,7 +49,7 @@ class MeasureGameController {
                 if (ktStyleSwitch.status) {
                     builder.append(
                         String.format(
-                            "val RECT%d = GameRect(%.4f, %.4f, %.4f, %.4f);\n",
+                            "val RECT%d = GameRect(%.4f, %.4f, %.4f, %.4f)\n",
                             index + 1, gameRect.left, gameRect.right, gameRect.top, gameRect.bottom
                         )
                     )

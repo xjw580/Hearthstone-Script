@@ -1,17 +1,16 @@
 package club.xiaojiawei.hsscript.starter
 
 import club.xiaojiawei.config.log
-import club.xiaojiawei.hsscript.data.*
+import club.xiaojiawei.hsscript.data.GAME_HWND
+import club.xiaojiawei.hsscript.data.GAME_US_NAME
+import club.xiaojiawei.hsscript.data.INJECT_UTIL_FILE
+import club.xiaojiawei.hsscript.data.LIB_HS_FILE
 import club.xiaojiawei.hsscript.dll.SystemDll
-import club.xiaojiawei.hsscript.enums.ConfigEnum
+import club.xiaojiawei.hsscript.enums.MouseControlModeEnum
 import club.xiaojiawei.hsscript.utils.CMDUtil
-import club.xiaojiawei.hsscript.utils.ConfigUtil
+import club.xiaojiawei.hsscript.utils.ConfigExUtil
 import club.xiaojiawei.hsscript.utils.SystemUtil
-import java.io.File
 import java.io.IOException
-import java.net.URL
-import java.nio.file.Path
-import java.util.*
 
 /**
  * 启动游戏
@@ -21,9 +20,9 @@ import java.util.*
 class InjectStarter : AbstractStarter() {
 
     override fun execStart() {
-        val controlMode = ConfigUtil.getBoolean(ConfigEnum.CONTROL_MODE)
-        log.info { "控制模式：${controlMode}" }
-        if (!(controlMode || GAME_HWND == null || injectCheck())) {
+        val mouseControlMode = ConfigExUtil.getMouseControlMode()
+        log.info { "鼠标控制模式：${mouseControlMode.name}" }
+        if (!(mouseControlMode !== MouseControlModeEnum.MESSAGE || GAME_HWND == null || injectCheck())) {
             pause()
             return
         }

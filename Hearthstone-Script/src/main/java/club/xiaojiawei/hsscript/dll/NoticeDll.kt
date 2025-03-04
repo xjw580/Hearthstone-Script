@@ -25,6 +25,6 @@ interface NoticeDll : Library {
     )
 
     companion object {
-        val INSTANCE: NoticeDll = Native.load("dll/libnotice", NoticeDll::class.java)
+        val INSTANCE: NoticeDll = Native.load("dll/notice", NoticeDll::class.java)
     }
 }

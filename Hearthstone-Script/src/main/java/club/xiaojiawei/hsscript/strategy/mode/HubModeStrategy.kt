@@ -16,7 +16,26 @@ import java.util.concurrent.TimeUnit
  */
 object HubModeStrategy : AbstractModeStrategy<Any?>() {
 
-    val CLOSE_AD1_RECT: GameRect = GameRect(-0.0364, 0.0493, 0.2764, 0.3255);
+    /**
+     * 广告弹窗关闭按钮
+     */
+    val CLOSE_AD1_RECT: GameRect = GameRect(-0.0364, 0.0493, 0.2764, 0.3255)
+
+    /**
+     * 月初结算弹窗关闭按钮
+     */
+    val CLOSE_SETTLEMENT_RECT = GameRect(-0.0498, 0.0534, 0.2944, 0.3424);
+
+    /**
+     * 月初结算弹窗宝箱
+     */
+    val CHEST_RECT = GameRect(-0.0771, 0.0858, -0.0368, 0.1576);
+
+    /**
+     * 结算完成按钮
+     */
+    val CONFIRM_SETTLEMENT_RECT = GameRect(-0.0668, 0.0709, -0.0007, 0.0611);
+
 
     override fun wantEnter() {
     }
@@ -26,6 +45,8 @@ object HubModeStrategy : AbstractModeStrategy<Any?>() {
             if (PauseStatus.isPause) return@scheduleAtFixedRate
             log.info { "点击广告弹窗等" }
             CLOSE_AD1_RECT.lClick()
+            SystemUtil.delayShortMedium()
+            CLOSE_SETTLEMENT_RECT.lClick()
             SystemUtil.delayShortMedium()
         }, 5, 2, TimeUnit.SECONDS))
 

@@ -2,7 +2,6 @@ package club.xiaojiawei.hsscript.initializer
 
 import club.xiaojiawei.enums.ModeEnum
 import club.xiaojiawei.enums.WarPhaseEnum
-import club.xiaojiawei.hsscript.utils.ConfigUtil
 import club.xiaojiawei.interfaces.ModeStrategy
 import club.xiaojiawei.interfaces.PhaseStrategy
 
@@ -10,7 +9,7 @@ import club.xiaojiawei.interfaces.PhaseStrategy
  * @author 肖嘉威
  * @date 2023/7/4 11:33
  */
-object BaseInitializer : AbstractInitializer() {
+class BaseInitializer : AbstractInitializer() {
 
     private fun toCamelCase(snakeCase: String): String {
         return snakeCase.split("_")
@@ -26,7 +25,6 @@ object BaseInitializer : AbstractInitializer() {
             it.phaseStrategy =
                 Class.forName("club.xiaojiawei.hsscript.strategy.phase." + toCamelCase(it.name) + "PhaseStrategy").kotlin.objectInstance as PhaseStrategy?
         }
-        ConfigUtil
     }
 
 }

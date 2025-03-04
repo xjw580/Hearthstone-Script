@@ -27,17 +27,12 @@ import club.xiaojiawei.hsscript.utils.SystemUtil.shutdown
 import club.xiaojiawei.hsscript.utils.WindowUtil.buildStage
 import club.xiaojiawei.hsscript.utils.WindowUtil.getStage
 import club.xiaojiawei.hsscript.utils.WindowUtil.hideStage
-import club.xiaojiawei.hsscript.utils.WindowUtil.loadRoot
 import club.xiaojiawei.hsscript.utils.WindowUtil.showStage
 import club.xiaojiawei.util.isFalse
 import javafx.application.Application
 import javafx.application.Platform
 import javafx.beans.value.ChangeListener
 import javafx.beans.value.ObservableValue
-import javafx.scene.Scene
-import javafx.scene.control.Label
-import javafx.scene.layout.StackPane
-import javafx.stage.Popup
 import javafx.stage.Screen
 import javafx.stage.Stage
 import java.awt.MenuItem

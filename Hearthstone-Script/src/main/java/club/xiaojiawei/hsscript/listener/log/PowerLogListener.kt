@@ -83,7 +83,7 @@ object PowerLogListener :
         innerLogFile = RandomAccessFile("S:\\Hearthstone\\Logs\\Hearthstone_2024_11_27_17_38_36\\Power.log", "r")
         PauseStatus.isPause = false
         WorkListener.working = true
-        BaseInitializer.init()
+        BaseInitializer().init()
         WarEx.reset()
 //        innerLogFile = RandomAccessFile("S:\\Hearthstone\\Logs\\Hearthstone_2024_12_04_19_06_41\\Power.log", "r")
         dealNewLog()

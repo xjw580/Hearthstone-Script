@@ -56,16 +56,28 @@ object MouseUtil {
         leftButtonClick(lastPoint, hwnd)
     }
 
-    fun leftButtonClick(pos: Point, hwnd: HWND?, isReal:Boolean = ConfigUtil.getBoolean(ConfigEnum.CONTROL_MODE)) {
+    fun leftButtonClick(
+        pos: Point,
+        hwnd: HWND?,
+        mouseMode: Int = ConfigExUtil.getMouseControlMode().code
+    ) {
         hwnd ?: return
         if (isDeckStrategyThread() && Mode.currMode !== ModeEnum.GAMEPLAY) return
         if (!PauseStatus.isPause && validPoint(pos)) {
             synchronized(MouseUtil::javaClass) {
                 if (lastPoint != pos) {
-                    SystemDll.INSTANCE.simulateHumanMove(lastPoint.x, lastPoint.y, pos.x, pos.y, hwnd, mouseMovePauseStep, isReal)
+                    SystemDll.INSTANCE.simulateHumanMove(
+                        lastPoint.x,
+                        lastPoint.y,
+                        pos.x,
+                        pos.y,
+                        hwnd,
+                        mouseMovePauseStep,
+                        mouseMode
+                    )
                     SystemUtil.delayShort()
                 }
-                SystemDll.INSTANCE.leftClick(pos.x.toLong(), pos.y.toLong(), hwnd, isReal)
+                SystemDll.INSTANCE.leftClick(pos.x.toLong(), pos.y.toLong(), hwnd, mouseMode)
                 savePos(pos)
             }
         }
@@ -75,17 +87,29 @@ object MouseUtil {
         rightButtonClick(lastPoint, hwnd)
     }
 
-    fun rightButtonClick(pos: Point, hwnd: HWND?, isReal:Boolean = ConfigUtil.getBoolean(ConfigEnum.CONTROL_MODE)) {
+    fun rightButtonClick(
+        pos: Point,
+        hwnd: HWND?,
+        mouseMode: Int = ConfigExUtil.getMouseControlMode().code
+    ) {
         hwnd ?: return
         if (isDeckStrategyThread() && Mode.currMode !== ModeEnum.GAMEPLAY) return
 
         if (!PauseStatus.isPause && validPoint(pos)) {
             synchronized(MouseUtil::javaClass) {
                 if (lastPoint != pos) {
-                    SystemDll.INSTANCE.simulateHumanMove(lastPoint.x, lastPoint.y, pos.x, pos.y, hwnd, mouseMovePauseStep, isReal)
+                    SystemDll.INSTANCE.simulateHumanMove(
+                        lastPoint.x,
+                        lastPoint.y,
+                        pos.x,
+                        pos.y,
+                        hwnd,
+                        mouseMovePauseStep,
+                        mouseMode
+                    )
                     SystemUtil.delayShort()
                 }
-                SystemDll.INSTANCE.rightClick(pos.x.toLong(), pos.y.toLong(), hwnd, isReal)
+                SystemDll.INSTANCE.rightClick(pos.x.toLong(), pos.y.toLong(), hwnd, mouseMode)
                 savePos(pos)
             }
         }
@@ -97,9 +121,14 @@ object MouseUtil {
     }
 
     /**
-     * 鼠标按照直线方式移动
+     * 鼠标移动
      */
-    fun moveMouseByHuman(startPos: Point?, endPos: Point, hwnd: HWND?, isReal:Boolean = ConfigUtil.getBoolean(ConfigEnum.CONTROL_MODE)) {
+    fun moveMouseByHuman(
+        startPos: Point?,
+        endPos: Point,
+        hwnd: HWND?,
+        mouseMode: Int = ConfigExUtil.getMouseControlMode().code
+    ) {
         hwnd ?: return
         if (isDeckStrategyThread() && Mode.currMode !== ModeEnum.GAMEPLAY) return
         synchronized(MouseUtil::javaClass) {
@@ -109,13 +138,29 @@ object MouseUtil {
                 if (!PauseStatus.isPause && validPoint(endPos)) {
                     SystemUtil.delayShort()
                     if (startPos != endPos) {
-                        SystemDll.INSTANCE.simulateHumanMove(startPos.x, startPos.y, endPos.x, endPos.y, hwnd, mouseMovePauseStep, isReal)
+                        SystemDll.INSTANCE.simulateHumanMove(
+                            startPos.x,
+                            startPos.y,
+                            endPos.x,
+                            endPos.y,
+                            hwnd,
+                            mouseMovePauseStep,
+                            mouseMode
+                        )
                         savePos(endPos)
                     }
                 }
             } else if (validPoint(lastPoint)) {
                 if (lastPoint != endPos) {
-                    SystemDll.INSTANCE.simulateHumanMove(lastPoint.x, lastPoint.y, endPos.x, endPos.y, hwnd, mouseMovePauseStep, isReal)
+                    SystemDll.INSTANCE.simulateHumanMove(
+                        lastPoint.x,
+                        lastPoint.y,
+                        endPos.x,
+                        endPos.y,
+                        hwnd,
+                        mouseMovePauseStep,
+                        mouseMode
+                    )
                     savePos(endPos)
                 }
             }
@@ -170,7 +215,7 @@ object MouseUtil {
         }
     }
 
-    fun reload(){
+    fun reload() {
         mouseMovePauseStep = ConfigUtil.getInt(ConfigEnum.PAUSE_STEP)
     }
 

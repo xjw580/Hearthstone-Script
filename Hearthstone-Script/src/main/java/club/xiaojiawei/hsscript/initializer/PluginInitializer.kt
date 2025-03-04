@@ -8,7 +8,8 @@ import club.xiaojiawei.hsscript.status.PluginManager.loadAllPlugins
  * @author 肖嘉威
  * @date 2023/7/4 11:33
  */
-object PluginInitializer : AbstractInitializer() {
+class PluginInitializer : AbstractInitializer() {
+
     public override fun exec() {
         try {
             loadAllPlugins()

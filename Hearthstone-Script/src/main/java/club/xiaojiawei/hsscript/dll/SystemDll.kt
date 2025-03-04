@@ -1,7 +1,6 @@
 package club.xiaojiawei.hsscript.dll
 
 import com.sun.jna.Library
-import com.sun.jna.Memory
 import com.sun.jna.Native
 import com.sun.jna.Pointer
 import com.sun.jna.WString
@@ -16,13 +15,21 @@ interface SystemDll : Library {
 
     fun normalLeftClick(x: Int, y: Int)
 
-    fun leftClick(x: Long, y: Long, hwnd: HWND?, isReal: Boolean)
+    fun leftClick(x: Long, y: Long, hwnd: HWND?, mouseMode: Int)
 
-    fun rightClick(x: Long, y: Long, hwnd: HWND?, isReal: Boolean)
+    fun rightClick(x: Long, y: Long, hwnd: HWND?, mouseMode: Int)
 
     fun moveMouse(x: Long, y: Long, hwnd: HWND?)
 
-    fun simulateHumanMove(startX: Int, startY: Int, endX: Int, endY: Int, hwnd: HWND?, pauseStep: Int, isReal: Boolean)
+    fun simulateHumanMove(
+        startX: Int,
+        startY: Int,
+        endX: Int,
+        endY: Int,
+        hwnd: HWND?,
+        pauseStep: Int,
+        mouseMode: Int,
+    )
 
     fun closeProgram(hwnd: HWND?)
 
@@ -72,7 +79,7 @@ interface SystemDll : Library {
 
     fun FindProcessId_(processName: String?): Long
 
-    fun GetWindowsProxy(proxyUrl:Pointer, length:Int)
+    fun GetWindowsProxy(proxyUrl: Pointer, length: Int)
 
     companion object {
 
