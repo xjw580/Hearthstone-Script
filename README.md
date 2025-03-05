@@ -14,12 +14,18 @@
 ### 捐赠
 
 > 您的捐赠不仅是对代码的认可，更是对自由软件理念的支持。
->
-> <img src="payment-code.jpg" alt="Image description"  height="300">
+
+<img src="payment-code.jpg" alt="Image description"  height="300">
 
 
 
 ### **[提Bug](https://github.com/xjw580/Hearthstone-Script/issues/new?template=01_bug_report.yml) · [提点子](https://github.com/xjw580/Hearthstone-Script/issues/new?template=02_feature_request.yml)**
+
+
+
+### 开发计划
+
+- [ ] 测试封禁行为与鼠标事件的模拟是否有关（此项测试完成前不会增加其他防封禁手段）
 
 
 
