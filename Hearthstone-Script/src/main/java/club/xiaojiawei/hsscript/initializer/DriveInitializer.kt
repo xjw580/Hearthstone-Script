@@ -19,13 +19,18 @@ class DriveInitializer : AbstractInitializer() {
     @Suppress("DEPRECATION")
     override fun exec() {
         val mouseControlMode = ConfigExUtil.getMouseControlMode()
-        if (mouseControlMode === MouseControlModeEnum.DRIVE){
-            File(MOUSE_DRIVE_PATH).exists().isFalse {
+        if (mouseControlMode === MouseControlModeEnum.DRIVE) {
+            val driveFile = File(MOUSE_DRIVE_PATH)
+            driveFile.exists().isFalse {
                 if (SystemDll.INSTANCE.IsRunAsAdministrator()) {
                     SystemUtil.getExeFilePath(INSTALL_DRIVE_FILE)?.let {
                         Runtime.getRuntime().exec("$it /install").waitFor()
                         Thread.sleep(1000)
-                        SystemUtil.messageOk("需要重启系统")
+                        if (driveFile.exists()) {
+                            SystemUtil.messageOk("安装成功，需要重启系统")
+                        } else {
+                            SystemUtil.messageError("安装失败")
+                        }
                     } ?: let {
                         val text = "找不到${INSTALL_DRIVE_FILE}"
                         log.info { text }
