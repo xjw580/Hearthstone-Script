@@ -1,6 +1,7 @@
 package club.xiaojiawei.hsscript.core
 
 import club.xiaojiawei.config.CORE_THREAD_POOL
+import club.xiaojiawei.config.VIRTUAL_THREAD_POOL
 import club.xiaojiawei.config.log
 import club.xiaojiawei.hsscript.config.StarterConfig
 import club.xiaojiawei.hsscript.data.GAME_CN_NAME
@@ -9,6 +10,7 @@ import club.xiaojiawei.hsscript.data.PLATFORM_CN_NAME
 import club.xiaojiawei.hsscript.data.haveProgramPath
 import club.xiaojiawei.hsscript.dll.SystemDll
 import club.xiaojiawei.hsscript.enums.ConfigEnum
+import club.xiaojiawei.hsscript.enums.MouseControlModeEnum
 import club.xiaojiawei.hsscript.enums.WindowEnum
 import club.xiaojiawei.hsscript.listener.WorkListener
 import club.xiaojiawei.hsscript.status.Mode

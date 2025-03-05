@@ -154,7 +154,7 @@ enum class ConfigEnum(
     /**
      * 运行后最小化软件
      */
-    RUNNING_MINIMIZE(group = OTHER_CONFIG_GROUP, defaultValue = true.toString()),
+    RUNNING_MINIMIZE(group = OTHER_CONFIG_GROUP, defaultValue = false.toString()),
 
     /**
      * 当前版本

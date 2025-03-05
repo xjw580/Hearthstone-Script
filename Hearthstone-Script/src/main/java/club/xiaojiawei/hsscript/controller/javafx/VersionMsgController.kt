@@ -29,17 +29,10 @@ class VersionMsgController : Initializable {
         version.text = VERSION
         //        TODO 版本更新时修改！！！
         versionDescription.text = """
-                    1. 增加mcts策略
-                    2. 基础卡牌插件适配沙包战的所有卡牌(AAECAQcC4+YG5eYGDp6fBJ+fBLSfBIagBIigBImgBI7UBJDUBJzUBJ/UBKPUBLT4BbX4Bd3zBgAA)，配合mcts策略使用
-                    3. 适配星舰，疲劳伤害，武器的耐久
-                    4. 强化游戏关闭
-                    5. 高级设置页中增加置顶游戏窗口选项
-                    6. 卡牌插件sdk不兼容更改
-                    7. 增加自动关闭主界面广告功能
-                    8. 增加使用系统代理设置项
-                    9. 开发者选项页增加更新卡牌数据库功能
-                    10. 修复只打人机功能不投降的问题
-                    11. 插件设置页更加详细的展示
+                    1. 增加驱动级鼠标模拟
+                    2. 🤖注意！当前版本仅用于测试驱动级鼠标模拟的封禁概率！🤖
+                    2. 出牌超时发送的抱歉表情将被随机表情开关控制
+                    3. 增加重复打开软件检测
                     """.trimIndent()
     }
 

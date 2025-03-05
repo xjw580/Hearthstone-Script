@@ -173,7 +173,7 @@ class AdvancedSettingsController : Initializable {
                     if (File(MOUSE_DRIVE_PATH).exists()) {
                         exec()
                     } else {
-                        WindowUtil.createAlert("${MouseControlModeEnum.DRIVE}模式需要安装驱动", "是否安装", {
+                        WindowUtil.createAlert("${MouseControlModeEnum.DRIVE}模式需要安装驱动（安装时请提前关闭杀毒软件或windows defender）", "是否安装", {
                             exec()
                         }, {
                             mouseControlModeComboBoxCallback = true
