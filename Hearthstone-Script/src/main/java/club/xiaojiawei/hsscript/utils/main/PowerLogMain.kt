@@ -9,6 +9,7 @@ import java.nio.charset.StandardCharsets
  * @date 2024/8/28 15:45
  */
 object PowerLogMain {
+
     @JvmStatic
     fun main(args: Array<String>) {
         decontamination("S:\\Hearthstone\\Logs\\Hearthstone_2024_11_27_17_38_36", true)

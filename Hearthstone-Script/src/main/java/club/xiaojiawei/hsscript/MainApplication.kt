@@ -1,7 +1,6 @@
 package club.xiaojiawei.hsscript
 
 import club.xiaojiawei.CardAction.Companion.commonActionFactory
-import club.xiaojiawei.bean.LRunnable
 import club.xiaojiawei.bean.LThread
 import club.xiaojiawei.config.EXTRA_THREAD_POOL
 import club.xiaojiawei.config.log
@@ -17,6 +16,7 @@ import club.xiaojiawei.hsscript.dll.ZLaunchDll
 import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.enums.WindowEnum
 import club.xiaojiawei.hsscript.listener.GlobalHotkeyListener
+import club.xiaojiawei.hsscript.listener.SystemListener
 import club.xiaojiawei.hsscript.listener.VersionListener
 import club.xiaojiawei.hsscript.listener.WorkListener
 import club.xiaojiawei.hsscript.status.PauseStatus
@@ -105,13 +105,13 @@ class MainApplication : Application() {
                 PauseStatus.asyncSetPause(!PauseStatus.isPause)
             }
         })
-        PauseStatus.addListener({ observableValue: ObservableValue<out Boolean?>?, aBoolean: Boolean?, isPause: Boolean ->
+        PauseStatus.addListener { observableValue: ObservableValue<out Boolean?>?, aBoolean: Boolean?, isPause: Boolean ->
             if (isPause) {
                 isPauseItem.label = "开始"
             } else {
                 isPauseItem.label = "暂停"
             }
-        })
+        }
 
         val settingsItem = MenuItem("设置")
         settingsItem.addActionListener(object : AbstractAction() {
@@ -150,66 +150,71 @@ class MainApplication : Application() {
         }, isPauseItem, settingsItem, quitItem)
     }
 
-    private fun initClass() {
-        Core
-        TaskManager
+    private fun launchService() {
+        TaskManager.launch
+        Core.launch
+        GlobalHotkeyListener.launch
+        VersionListener.launch
+        WorkListener.launch
+        SystemListener.launch
+    }
+
+    private fun checkArg() {
+        val args = this.parameters.raw
+        var pause: String? = ""
+        for (arg in args) {
+            if (arg.startsWith(ARG_PAUSE)) {
+                val split: Array<String?> = arg.split("=".toRegex(), limit = 2).toTypedArray()
+                if (split.size > 1) {
+                    pause = split[1]
+                }
+            }
+        }
+        if ("false" == pause) {
+            log.info { "接收到开始参数，开始脚本" }
+            Thread.sleep(1000)
+            PauseStatus.isPause = false
+        } else {
+            val version = ConfigUtil.getString(ConfigEnum.CURRENT_VERSION)
+            if (Release.compareVersion(VersionUtil.VERSION, version) > 0) {
+                runUI {
+                    showStage(WindowEnum.VERSION_MSG, getStage(WindowEnum.MAIN))
+                    ConfigUtil.putString(ConfigEnum.CURRENT_VERSION, VersionUtil.VERSION)
+                }
+            }
+        }
+    }
+
+    private fun checkSystem() {
+        SystemDll.INSTANCE.IsRunAsAdministrator().isFalse {
+            val text = "当前进程不是以管理员启动，功能可能受限"
+            log.warn { text }
+            SystemUtil.notice(text)
+        }
+
+        Screen.getScreens()?.let {
+            if (it.size > 1) {
+                log.info { "检测到多台显示器，开始运行后${GAME_CN_NAME}不要移动到其他显示器" }
+            }
+        }
     }
 
     private fun afterShowing() {
-        EXTRA_THREAD_POOL.submit(
-            LRunnable {
-                initClass()
-                GlobalHotkeyListener.register()
-                VersionListener.launch()
-                WorkListener.launch()
-                CardUtil.reloadCardWeight()
-                startUpVThread?.interrupt()
-                ZLaunchDll.INSTANCE.HidePage()
-                Runtime.getRuntime()
-                    .addShutdownHook(
-                        LThread(
-                            { SystemDll.INSTANCE.uninstallDll(GameUtil.findGameHWND()) },
-                            "ShutdownHook Thread"
-                        )
+        EXTRA_THREAD_POOL.submit {
+            launchService()
+            CardUtil.reloadCardWeight()
+            startUpVThread?.interrupt()
+            ZLaunchDll.INSTANCE.HidePage()
+            Runtime.getRuntime()
+                .addShutdownHook(
+                    LThread(
+                        { SystemDll.INSTANCE.uninstallDll(GameUtil.findGameHWND()) },
+                        "ShutdownHook Thread"
                     )
-
-                SystemDll.INSTANCE.IsRunAsAdministrator().isFalse {
-                    val text = "当前进程不是以管理员启动，功能可能受限"
-                    log.warn { text }
-                    SystemUtil.notice(text)
-                }
-
-                Screen.getScreens()?.let {
-                    if (it.size > 1) {
-                        log.info { "检测到多台显示器，开始运行后${GAME_CN_NAME}不要移动到其他显示器" }
-                    }
-                }
-
-                val args = this.parameters.raw
-                var pause: String? = ""
-                for (arg in args) {
-                    if (arg.startsWith(ARG_PAUSE)) {
-                        val split: Array<String?> = arg.split("=".toRegex(), limit = 2).toTypedArray()
-                        if (split.size > 1) {
-                            pause = split[1]
-                        }
-                    }
-                }
-                if ("false" == pause) {
-                    log.info { "接收到开始参数，开始脚本" }
-                    Thread.sleep(1000)
-                    PauseStatus.isPause = false
-                } else {
-                    val version = ConfigUtil.getString(ConfigEnum.CURRENT_VERSION)
-                    if (Release.compareVersion(VersionUtil.VERSION, version) > 0) {
-                        runUI {
-                            showStage(WindowEnum.VERSION_MSG, getStage(WindowEnum.MAIN))
-                            ConfigUtil.putString(ConfigEnum.CURRENT_VERSION, VersionUtil.VERSION)
-                        }
-                    }
-                }
-            }
-        )
+                )
+            checkSystem()
+            checkArg()
+        }
     }
 
 }

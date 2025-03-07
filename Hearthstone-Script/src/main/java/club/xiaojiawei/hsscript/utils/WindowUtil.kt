@@ -66,8 +66,10 @@ object WindowUtil {
         headerText: String?,
         contentText: String?,
         okHandler: EventHandler<ActionEvent?>?,
-        cancelHandler: EventHandler<ActionEvent?>?,
-        window: Window?
+        cancelHandler: EventHandler<ActionEvent?>? = null,
+        window: Window?,
+        okText: String = "确认",
+        cancelText: String = "取消",
     ): Stage {
         val stage = Stage().apply {
             title = SCRIPT_NAME
@@ -81,37 +83,54 @@ object WindowUtil {
         }
         addIcon(stage)
 
-        val okBtn = Button("确认").apply {
+        val okBtn = Button(okText).apply {
             styleClass.addAll("btn-ui", "btn-ui-success")
             onAction = EventHandler { actionEvent: ActionEvent? ->
                 stage.hide()
                 okHandler?.handle(actionEvent)
             }
         }
-        val cancelBtn = Button("取消").apply {
-            styleClass.addAll("btn-ui")
-            onAction = EventHandler { actionEvent: ActionEvent? ->
-                stage.hide()
-                cancelHandler?.handle(actionEvent)
+        val cancelBtn: Button? = cancelHandler?.let {
+            Button(cancelText).apply {
+                styleClass.addAll("btn-ui")
+                onAction = EventHandler { actionEvent: ActionEvent? ->
+                    stage.hide()
+                    cancelHandler.handle(actionEvent)
+                }
             }
         }
-        val head = HBox(Label(headerText).apply {
-            style = "-fx-wrap-text: true"
-        }).apply {
-            alignment = Pos.CENTER_LEFT
-            style = "-fx-padding: 15;-fx-font-weight: bold"
+        val head:HBox? = headerText?.let {
+            HBox(Label(it).apply {
+                style = "-fx-wrap-text: true"
+            }).apply {
+                alignment = Pos.CENTER_LEFT
+                style = "-fx-padding: 15;-fx-font-weight: bold"
+            }
         }
-        val center = HBox(Label(contentText).apply {
-            style = "-fx-wrap-text: true"
-        }).apply {
-            alignment = Pos.CENTER_LEFT
-            style = "-fx-padding: 10 30 10 30;-fx-font-size: 14"
+        val center:HBox? = contentText?.let {
+            HBox(Label(it).apply {
+                style = "-fx-wrap-text: true"
+            }).apply {
+                alignment = Pos.CENTER_LEFT
+                style = "-fx-padding: 10 30 10 30;-fx-font-size: 14"
+            }
         }
-        val bottom = HBox(okBtn, cancelBtn).apply {
+        val bottom = HBox(okBtn).apply {
+            cancelBtn?.let {
+                children.add(it)
+            }
             alignment = Pos.CENTER_RIGHT
             style = "-fx-padding: 10;-fx-spacing: 20"
         }
-        val scene = Scene(VBox(head, center, bottom), 400.0, -1.0).apply {
+        val scene = Scene(VBox().apply {
+            head?.let {
+                children.add(it)
+            }
+            center?.let {
+                children.add(it)
+            }
+            children.add(bottom)
+        }, 400.0, -1.0).apply {
             fill = Paint.valueOf("#FFFFFF00")
         }
         JavaFXUI.addjavafxUIStylesheet(scene)

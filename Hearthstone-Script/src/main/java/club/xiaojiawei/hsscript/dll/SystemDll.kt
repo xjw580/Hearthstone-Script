@@ -81,10 +81,11 @@ interface SystemDll : Library {
 
     fun GetWindowsProxy(proxyUrl: Pointer, length: Int)
 
-    /**
-     * 唤醒系统
-     */
-    fun WakeUpSystem(seconds: Int);
+    fun CheckS3Support(): Boolean
+
+    fun EnableWakeUpTimer(): Boolean
+
+    fun SetWakeUpTimer(seconds: Int): Boolean
 
     /**
      * 睡眠系统

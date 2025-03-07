@@ -8,11 +8,11 @@ import com.sun.jna.Native
  */
 interface User32ExDll {
 
-//    fun SetSuspendState(FALSE, FALSE, FALSE);
-
     companion object {
 
-//        val INSTANCE: ZLaunchDll = Native.load("user32", ZLaunchDll::class.java)
+        val INSTANCE: ZLaunchDll by lazy {
+            Native.load("user32", ZLaunchDll::class.java)
+        }
 
         val SC_MONITORPOWER: Long = 0xF170
 

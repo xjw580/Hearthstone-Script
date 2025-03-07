@@ -1,7 +1,5 @@
 package club.xiaojiawei.hsscript.status
 
-import club.xiaojiawei.hsscript.data.GAME_HWND
-import club.xiaojiawei.hsscript.dll.SystemDll
 import club.xiaojiawei.hsscript.interfaces.closer.Closable
 import club.xiaojiawei.hsscript.listener.WorkListener
 
@@ -13,7 +11,7 @@ object TaskManager {
 
     private val taskList: MutableSet<Closable> = mutableSetOf()
 
-    init {
+    val launch: Unit by lazy {
         PauseStatus.addListener { _, _, isPause ->
             if (isPause) {
                 closeAllTasks()

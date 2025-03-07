@@ -68,7 +68,7 @@ fun main(args: Array<String>) {
         Files.setAttribute(file.toPath(), "dos:hidden", true);
     }
     val randomAccessFile = RandomAccessFile(file, "rw")
-    randomAccessFile.channel.tryLock()?:return
+    randomAccessFile.channel.tryLock() ?: return
     randomAccessFile.setLength(0)
     randomAccessFile.write(SCRIPT_NAME.toByteArray());
 
@@ -79,8 +79,8 @@ fun main(args: Array<String>) {
         WString(SystemUtil.getProgramIconFile().absolutePath),
         WString(SCRIPT_NAME),
         WString(VersionUtil.VERSION),
-        (640 * SCREEN_SCALE).toInt(),
-        (360 * SCREEN_SCALE).toInt()
+        (382 * SCREEN_SCALE).toInt(),
+        (590 * SCREEN_SCALE).toInt()
     )
 
     setLogPath()

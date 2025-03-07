@@ -1,7 +1,6 @@
 package club.xiaojiawei.hsscript.core
 
 import club.xiaojiawei.config.CORE_THREAD_POOL
-import club.xiaojiawei.config.VIRTUAL_THREAD_POOL
 import club.xiaojiawei.config.log
 import club.xiaojiawei.hsscript.config.StarterConfig
 import club.xiaojiawei.hsscript.data.GAME_CN_NAME
@@ -10,7 +9,6 @@ import club.xiaojiawei.hsscript.data.PLATFORM_CN_NAME
 import club.xiaojiawei.hsscript.data.haveProgramPath
 import club.xiaojiawei.hsscript.dll.SystemDll
 import club.xiaojiawei.hsscript.enums.ConfigEnum
-import club.xiaojiawei.hsscript.enums.VERSION_CONFIG_GROUP
 import club.xiaojiawei.hsscript.enums.WindowEnum
 import club.xiaojiawei.hsscript.listener.WorkListener
 import club.xiaojiawei.hsscript.status.Mode
@@ -29,7 +27,7 @@ object Core {
     @Volatile
     var lastActiveTime: Long = 0
 
-    init {
+    val launch: Unit by lazy {
         PauseStatus.addListener { _, _, newValue ->
             newValue.isTrue {
                 SystemDll.INSTANCE.changeInput(GAME_HWND, false)
@@ -44,7 +42,6 @@ object Core {
                     start()
                 } else {
                     WorkListener.cannotWorkLog()
-                    SystemUtil.checkAutoTask()
                 }
                 if (ConfigUtil.getBoolean(ConfigEnum.TOP_GAME_WINDOW)) {
                     SystemDll.INSTANCE.topWindow(GAME_HWND, true)

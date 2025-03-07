@@ -6,7 +6,6 @@ import club.xiaojiawei.config.log
 import club.xiaojiawei.hsscript.PROGRAM_ARGS
 import club.xiaojiawei.hsscript.bean.Release
 import club.xiaojiawei.hsscript.bean.single.repository.GiteeRepository
-import club.xiaojiawei.hsscript.bean.single.repository.GithubRepository
 import club.xiaojiawei.hsscript.data.MAIN_PATH
 import club.xiaojiawei.hsscript.data.TEMP_VERSION_PATH
 import club.xiaojiawei.hsscript.enums.ConfigEnum
@@ -83,8 +82,8 @@ object VersionListener {
         currentRelease.isPreRelease = VersionTypeEnum.getEnum(currentRelease).isPreview
     }
 
-    fun launch() {
-        if (checkVersionTask != null) return
+    val launch: Unit by lazy {
+        if (checkVersionTask != null) return@lazy
 
         checkVersionTask = EXTRA_THREAD_POOL.scheduleAtFixedRate(LRunnable {
             checkVersion()
@@ -227,7 +226,7 @@ object VersionListener {
                         String.format("更新日志：\n%s", it.body),
                         String.format("发现新版本：%s", it.tagName),
                         "查看详情",
-                        GithubRepository.getReleasePageURL(it)
+                        repositoryList.first().getReleasePageURL(it)
                     )
                 } else {
                     log.info { "已是最新，当前版本：【${currentRelease.tagName}】, 最新版本：【${it.tagName}】" }

@@ -28,17 +28,17 @@ object GlobalHotkeyListener : HotkeyListener {
         register()
     }
 
-    fun register() {
+    private fun register() {
         if (JIntellitype.isJIntellitypeSupported()) {
             ConfigExUtil.getExitHotKey()?.let {
-                if (it.keyCode != 0){
+                if (it.keyCode != 0) {
                     JIntellitype.getInstance()
                         .registerHotKey(HOT_KEY_EXIT, it.modifier, it.keyCode)
                     log.info { "退出热键：$it" }
                 }
             }
             ConfigExUtil.getPauseHotKey()?.let {
-                if (it.keyCode != 0){
+                if (it.keyCode != 0) {
                     JIntellitype.getInstance()
                         .registerHotKey(HOT_KEY_PAUSE, it.modifier, it.keyCode)
                     log.info { "开始/暂停热键：$it" }
@@ -49,7 +49,7 @@ object GlobalHotkeyListener : HotkeyListener {
         }
     }
 
-    fun unregister() {
+    private fun unregister() {
         if (JIntellitype.isJIntellitypeSupported()) {
             JIntellitype.getInstance().unregisterHotKey(HOT_KEY_PAUSE)
             JIntellitype.getInstance().unregisterHotKey(HOT_KEY_EXIT)
@@ -84,6 +84,10 @@ object GlobalHotkeyListener : HotkeyListener {
                 }
             }
         }
+    }
+
+    val launch: Unit by lazy {
+        register()
     }
 
 }

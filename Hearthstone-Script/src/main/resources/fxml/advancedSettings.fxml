@@ -10,11 +10,15 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 <?import java.lang.Double?>
+<?import javafx.util.Duration?>
 <StackPane xmlns="http://javafx.com/javafx"
            xmlns:fx="http://javafx.com/fxml"
            stylesheets="@css/advancedSettings.css"
            fx:id="rootPane"
            fx:controller="club.xiaojiawei.hsscript.controller.javafx.AdvancedSettingsController">
+    <fx:define>
+        <Duration fx:id="tooltipDuration" fx:value="60s"/>
+    </fx:define>
     <StackPane>
         <ScrollPane fx:id="scrollPane" VBox.vgrow="ALWAYS" styleClass="scroll-pane-item">
             <VBox fx:id="titledRootPane" alignment="CENTER">
@@ -35,7 +39,11 @@
                                         <GiteeIco scaleX="${icoScale}" scaleY="${icoScale}"/>
                                     </graphic>
                                     <tooltip>
-                                        <Tooltip text="没有魔法推荐选此，此更新源只有稳定版"/>
+                                        <Tooltip text="没有魔法推荐选此，此更新源只有稳定版">
+                                            <showDuration>
+                                                <fx:reference source="tooltipDuration"/>
+                                            </showDuration>
+                                        </Tooltip>
                                     </tooltip>
                                 </RadioButton>
                                 <RadioButton fx:id="githubUpdateSource" text="Github" toggleGroup="$updateSourceToggle"
@@ -44,7 +52,11 @@
                                         <GithubIco scaleX="${icoScale}" scaleY="${icoScale}"/>
                                     </graphic>
                                     <tooltip>
-                                        <Tooltip text="有魔法推荐选此，此更新源拥有所有版本"/>
+                                        <Tooltip text="有魔法推荐选此，此更新源拥有所有版本">
+                                            <showDuration>
+                                                <fx:reference source="tooltipDuration"/>
+                                            </showDuration>
+                                        </Tooltip>
                                     </tooltip>
                                 </RadioButton>
                             </HBox>
@@ -72,7 +84,11 @@
                                         <HelpIco/>
                                     </graphic>
                                     <tooltip>
-                                        <Tooltip text="挂机时将关闭软件窗口仅保留托盘，此时只能检测到Java进程"/>
+                                        <Tooltip text="挂机时将关闭软件窗口仅保留托盘，此时只能检测到Java进程">
+                                            <showDuration>
+                                                <fx:reference source="tooltipDuration"/>
+                                            </showDuration>
+                                        </Tooltip>
                                     </tooltip>
                                 </Label>
                                 <HBox HBox.hgrow="ALWAYS"/>
@@ -125,7 +141,12 @@
                                         <HelpIco/>
                                     </graphic>
                                     <tooltip>
-                                        <Tooltip text="软件处于运行状态但不在工作时间时关闭显示器"/>
+                                        <Tooltip
+                                                text="软件处于运行状态但不在工作时间时关闭显示器，因系统而异，不一定能关闭成功">
+                                            <showDuration>
+                                                <fx:reference source="tooltipDuration"/>
+                                            </showDuration>
+                                        </Tooltip>
                                     </tooltip>
                                 </Label>
                                 <HBox HBox.hgrow="ALWAYS"/>
@@ -138,7 +159,11 @@
                                         <HelpIco/>
                                     </graphic>
                                     <tooltip>
-                                        <Tooltip text="软件处于运行状态但不在工作时间时让系统睡眠"/>
+                                        <Tooltip text="软件处于运行状态但不在工作时间时让系统睡眠">
+                                            <showDuration>
+                                                <fx:reference source="tooltipDuration"/>
+                                            </showDuration>
+                                        </Tooltip>
                                     </tooltip>
                                 </Label>
                                 <HBox HBox.hgrow="ALWAYS"/>
@@ -151,7 +176,11 @@
                                         <HelpIco/>
                                     </graphic>
                                     <tooltip>
-                                        <Tooltip text="软件处于运行状态且在工作时间时唤醒系统"/>
+                                        <Tooltip text="软件处于运行状态且在工作时间时唤醒系统">
+                                            <showDuration>
+                                                <fx:reference source="tooltipDuration"/>
+                                            </showDuration>
+                                        </Tooltip>
                                     </tooltip>
                                 </Label>
                                 <HBox HBox.hgrow="ALWAYS"/>
@@ -170,9 +199,9 @@
             <ToggleButton fx:id="versionNavigation" text="版本" styleClass="navigationBar"
                           toggleGroup="$navigationBarToggle" selected="true" onAction="#scrollVersion"/>
             <ToggleButton fx:id="behaviorNavigation" text="行为" styleClass="navigationBar"
-                          toggleGroup="$navigationBarToggle"  onAction="#scrollBehavior"/>
+                          toggleGroup="$navigationBarToggle" onAction="#scrollBehavior"/>
             <ToggleButton fx:id="systemNavigation" text="系统" styleClass="navigationBar"
-                          toggleGroup="$navigationBarToggle"  onAction="#scrollSystem"/>
+                          toggleGroup="$navigationBarToggle" onAction="#scrollSystem"/>
         </VBox>
     </StackPane>
     <NotificationManager fx:id="notificationManager" notificationPos="BOTTOM_CENTER">

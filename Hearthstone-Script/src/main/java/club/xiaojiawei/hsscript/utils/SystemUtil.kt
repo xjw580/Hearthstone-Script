@@ -14,7 +14,6 @@ import club.xiaojiawei.hsscript.dll.User32ExDll.Companion.SC_MONITORPOWER
 import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.enums.RegCommonNameEnum
 import club.xiaojiawei.hsscript.enums.WindowEnum
-import club.xiaojiawei.hsscript.listener.WorkListener
 import club.xiaojiawei.hsscript.status.PauseStatus
 import club.xiaojiawei.util.RandomUtil
 import club.xiaojiawei.util.isTrue
@@ -431,53 +430,6 @@ object SystemUtil {
     fun offScreen() {
         User32.INSTANCE.GetForegroundWindow()?.let {
             User32.INSTANCE.SendMessage(it, WM_SYSCOMMAND, WinDef.WPARAM(SC_MONITORPOWER), WinDef.LPARAM(2));
-        }
-    }
-
-    fun checkAutoTask(){
-        run {
-            var res = true
-            var countdown = 10
-            if (ConfigUtil.getBoolean(ConfigEnum.AUTO_SLEEP)) {
-                val thread = Thread.ofVirtual().start {
-                    while (--countdown >= 0) {
-                        Thread.sleep(1000)
-                    }
-                    SystemDll.INSTANCE.SleepSystem()
-                }
-                WindowUtil.createAlert(
-                    "${countdown}秒后将关闭显示器",
-                    "是否阻止",
-                    {
-                        thread.interrupt()
-                    },
-                    {},
-                    WindowUtil.getStage(WindowEnum.MAIN)
-                )
-            } else if (ConfigUtil.getBoolean(ConfigEnum.AUTO_OFF_SCREEN)) {
-                val thread = Thread.ofVirtual().start {
-                    while (--countdown >= 0) {
-                        Thread.sleep(1000)
-                    }
-                    offScreen()
-                }
-                WindowUtil.createAlert(
-                    "${countdown}秒后将睡眠系统",
-                    "是否阻止",
-                    {
-                        thread.interrupt()
-                    },
-                    {},
-                    WindowUtil.getStage(WindowEnum.MAIN)
-                )
-            } else {
-                res = false
-            }
-            res
-        }.isTrue {
-            if (ConfigUtil.getBoolean(ConfigEnum.AUTO_WAKE)) {
-                SystemDll.INSTANCE.WakeUpSystem(WorkListener.getSecondsUntilNextWorkPeriod())
-            }
         }
     }
 

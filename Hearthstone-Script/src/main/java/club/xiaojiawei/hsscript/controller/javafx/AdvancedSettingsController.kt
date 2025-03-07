@@ -5,9 +5,11 @@ import club.xiaojiawei.hsscript.bean.HotKey
 import club.xiaojiawei.hsscript.bean.single.repository.GiteeRepository
 import club.xiaojiawei.hsscript.controller.javafx.view.AdvancedSettingsView
 import club.xiaojiawei.hsscript.data.MOUSE_DRIVE_PATH
+import club.xiaojiawei.hsscript.dll.SystemDll
 import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.enums.MouseControlModeEnum
 import club.xiaojiawei.hsscript.listener.GlobalHotkeyListener
+import club.xiaojiawei.hsscript.listener.SystemListener
 import club.xiaojiawei.hsscript.utils.ConfigExUtil
 import club.xiaojiawei.hsscript.utils.ConfigExUtil.getExitHotKey
 import club.xiaojiawei.hsscript.utils.ConfigExUtil.getPauseHotKey
@@ -19,6 +21,8 @@ import club.xiaojiawei.hsscript.utils.ConfigUtil
 import club.xiaojiawei.hsscript.utils.ConfigUtil.getBoolean
 import club.xiaojiawei.hsscript.utils.ConfigUtil.putBoolean
 import club.xiaojiawei.hsscript.utils.WindowUtil
+import club.xiaojiawei.util.isFalse
+import club.xiaojiawei.util.isTrue
 import com.melloware.jintellitype.JIntellitypeConstants
 import javafx.animation.KeyFrame
 import javafx.animation.KeyValue
@@ -312,6 +316,9 @@ class AdvancedSettingsController : AdvancedSettingsView(), Initializable {
                     ConfigEnum.AUTO_OFF_SCREEN,
                     newValue, true
                 )
+                newValue.isTrue {
+                    SystemListener.check()
+                }
             }
         autoSleep.statusProperty()
             .addListener { observable, oldValue, newValue ->
@@ -319,6 +326,9 @@ class AdvancedSettingsController : AdvancedSettingsView(), Initializable {
                     ConfigEnum.AUTO_SLEEP,
                     newValue, true
                 )
+                newValue.isTrue {
+                    SystemListener.check()
+                }
             }
         autoWake.statusProperty()
             .addListener { observable, oldValue, newValue ->
@@ -326,6 +336,11 @@ class AdvancedSettingsController : AdvancedSettingsView(), Initializable {
                     ConfigEnum.AUTO_WAKE,
                     newValue, true
                 )
+                newValue.isTrue {
+                    SystemListener.check()
+                }.isFalse {
+                    SystemDll.INSTANCE.SetWakeUpTimer(0)
+                }
             }
     }
 

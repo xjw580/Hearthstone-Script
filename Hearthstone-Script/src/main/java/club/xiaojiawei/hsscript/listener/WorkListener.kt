@@ -12,10 +12,10 @@ import club.xiaojiawei.hsscript.utils.GameUtil
 import club.xiaojiawei.hsscript.utils.SystemUtil
 import javafx.beans.property.SimpleBooleanProperty
 import javafx.beans.property.SimpleDoubleProperty
-import java.time.Duration
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
+import java.time.ZoneOffset
 import java.util.concurrent.ScheduledFuture
 import java.util.concurrent.TimeUnit
 
@@ -29,8 +29,7 @@ object WorkListener {
 
     private var checkVersionTask: ScheduledFuture<*>? = null
 
-    fun launch() {
-        checkVersionTask?.let { return }
+    val launch: Unit by lazy {
         checkVersionTask = EXTRA_THREAD_POOL.scheduleAtFixedRate(LRunnable {
             checkWork()
         }, 0, 1000 * 60, TimeUnit.MILLISECONDS)
@@ -130,8 +129,46 @@ object WorkListener {
         return false
     }
 
-    fun getSecondsUntilNextWorkPeriod(): Int {
-        TODO()
+    /**
+     * 获取下一次可工作的时间
+     */
+    fun getSecondsUntilNextWorkPeriod(): Long {
+        if (isDuringWorkDate()) {
+            return 0L
+        }
+        val nowDay = LocalDate.now().getDayOfWeek().value
+        val workDay = ConfigExUtil.getWorkDay()
+        val workTime = ConfigExUtil.getWorkTime().toMutableList()
+        if (workDay[0].enabled) {
+            for (day in workDay) {
+                day.enabled = true
+            }
+        }
+        workDay.removeFirst()
+        val dayList = listOf(nowDay..6, 0 until nowDay)
+        var diffDay = 0L
+        val now = LocalDateTime.now()
+        for (intRange in dayList) {
+            for (d in intRange) {
+                val day = workDay[d]
+                if (day.enabled) {
+                    val usableDate = LocalDateTime.now().plusDays(diffDay)
+                    for (time in workTime) {
+                        if (time.enabled) {
+                            time.parseStartTime()?.let {
+                                val usableDateTime =
+                                    usableDate.withHour(it.hour).withMinute(it.minute).withSecond(it.second)
+                                if (usableDateTime.isAfter(now)) {
+                                    return usableDateTime.toEpochSecond(ZoneOffset.UTC) - now.toEpochSecond(ZoneOffset.UTC)
+                                }
+                            }
+                        }
+                    }
+                }
+                diffDay++
+            }
+        }
+        return -1L
     }
 
 }

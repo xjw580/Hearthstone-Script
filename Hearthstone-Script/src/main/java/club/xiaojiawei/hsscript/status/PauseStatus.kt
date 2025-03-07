@@ -1,7 +1,6 @@
 package club.xiaojiawei.hsscript.status
 
 import club.xiaojiawei.config.EXTRA_THREAD_POOL
-import club.xiaojiawei.config.VIRTUAL_THREAD_POOL
 import club.xiaojiawei.hsscript.enums.MouseControlModeEnum
 import club.xiaojiawei.hsscript.enums.WindowEnum
 import club.xiaojiawei.hsscript.utils.ConfigExUtil

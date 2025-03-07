@@ -55,14 +55,5 @@ object CardActionManager {
         log.info { "重新加载卡牌库" }
         CARD_ACTION_MAP.clear()
         CARD_ACTION_MAP.putAll(load())
-
-
-        val supplier: Supplier<CardAction>? = (CARD_ACTION_MAP["xjw-base-plugin"] ?: let {
-            CARD_ACTION_MAP[""]
-        })?.let {
-            val supplier = it["CORE_SW_030"]
-            supplier
-        }
-        println("supplier:${supplier?.get()}")
     }
 }

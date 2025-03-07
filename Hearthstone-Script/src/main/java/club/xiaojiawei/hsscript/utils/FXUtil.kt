@@ -19,6 +19,9 @@ import javafx.util.Duration
  * @date 2024/9/28 14:22
  */
 
+/**
+ * 确保在ui线程中执行
+ */
 inline fun runUI(crossinline block: () -> Unit) {
     Platform.isFxApplicationThread().isTrue {
         block()
@@ -30,6 +33,10 @@ inline fun runUI(crossinline block: () -> Unit) {
 }
 
 object FXUtil {
+
+    /**
+     * 构建复制节点
+     */
     fun buildCopyNode(clickHandler: Runnable?, tooltip: String? = null, opacity: Double = 0.9): Node {
         val graphicLabel = Label()
         val copyIco = CopyIco()
@@ -61,5 +68,6 @@ object FXUtil {
         }
         return graphicLabel
     }
+
 }
 

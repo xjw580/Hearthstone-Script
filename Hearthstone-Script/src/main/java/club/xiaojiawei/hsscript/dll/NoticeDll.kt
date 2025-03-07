@@ -9,6 +9,7 @@ import com.sun.jna.Native
  * @date 2023/9/16 17:34
  */
 interface NoticeDll : Library {
+
     fun notice(
         appID: ByteArray?,
         title: ByteArray?,
@@ -25,6 +26,8 @@ interface NoticeDll : Library {
     )
 
     companion object {
-        val INSTANCE: NoticeDll = Native.load("dll/notice", NoticeDll::class.java)
+        val INSTANCE: NoticeDll by lazy {
+            Native.load("dll/notice", NoticeDll::class.java)
+        }
     }
 }
