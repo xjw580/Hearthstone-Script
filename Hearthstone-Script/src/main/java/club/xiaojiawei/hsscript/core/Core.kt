@@ -10,7 +10,7 @@ import club.xiaojiawei.hsscript.data.PLATFORM_CN_NAME
 import club.xiaojiawei.hsscript.data.haveProgramPath
 import club.xiaojiawei.hsscript.dll.SystemDll
 import club.xiaojiawei.hsscript.enums.ConfigEnum
-import club.xiaojiawei.hsscript.enums.MouseControlModeEnum
+import club.xiaojiawei.hsscript.enums.VERSION_CONFIG_GROUP
 import club.xiaojiawei.hsscript.enums.WindowEnum
 import club.xiaojiawei.hsscript.listener.WorkListener
 import club.xiaojiawei.hsscript.status.Mode
@@ -44,6 +44,7 @@ object Core {
                     start()
                 } else {
                     WorkListener.cannotWorkLog()
+                    SystemUtil.checkAutoTask()
                 }
                 if (ConfigUtil.getBoolean(ConfigEnum.TOP_GAME_WINDOW)) {
                     SystemDll.INSTANCE.topWindow(GAME_HWND, true)

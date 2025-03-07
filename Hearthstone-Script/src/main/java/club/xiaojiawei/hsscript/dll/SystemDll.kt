@@ -81,6 +81,16 @@ interface SystemDll : Library {
 
     fun GetWindowsProxy(proxyUrl: Pointer, length: Int)
 
+    /**
+     * 唤醒系统
+     */
+    fun WakeUpSystem(seconds: Int);
+
+    /**
+     * 睡眠系统
+     */
+    fun SleepSystem();
+
     companion object {
 
         val INSTANCE: SystemDll = Native.load("dll/system", SystemDll::class.java)

@@ -12,7 +12,9 @@ import club.xiaojiawei.hsscript.utils.GameUtil
 import club.xiaojiawei.hsscript.utils.SystemUtil
 import javafx.beans.property.SimpleBooleanProperty
 import javafx.beans.property.SimpleDoubleProperty
+import java.time.Duration
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.LocalTime
 import java.util.concurrent.ScheduledFuture
 import java.util.concurrent.TimeUnit
@@ -116,16 +118,20 @@ object WorkListener {
                 }
                 if (startTime.isBefore(endTime)) {
                     // 同一天的情况：startTime < endTime
-                    if (!nowTime.isBefore(startTime) && !nowTime.isAfter(endTime)){
+                    if (!nowTime.isBefore(startTime) && !nowTime.isAfter(endTime)) {
                         return true
                     }
-                } else if (!nowTime.isBefore(startTime) || !nowTime.isAfter(endTime)){
+                } else if (!nowTime.isBefore(startTime) || !nowTime.isAfter(endTime)) {
                     // 跨天的情况：startTime >= endTime
                     return true
                 }
             }
         }
         return false
+    }
+
+    fun getSecondsUntilNextWorkPeriod(): Int {
+        TODO()
     }
 
 }

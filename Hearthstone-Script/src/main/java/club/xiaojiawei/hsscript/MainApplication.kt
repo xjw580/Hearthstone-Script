@@ -174,8 +174,9 @@ class MainApplication : Application() {
                     )
 
                 SystemDll.INSTANCE.IsRunAsAdministrator().isFalse {
-                    log.warn { "当前进程不是以管理员启动，功能受限" }
-                    SystemUtil.notice("当前进程不是以管理员启动，功能受限")
+                    val text = "当前进程不是以管理员启动，功能可能受限"
+                    log.warn { text }
+                    SystemUtil.notice(text)
                 }
 
                 Screen.getScreens()?.let {

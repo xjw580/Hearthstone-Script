@@ -1,25 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import club.xiaojiawei.controls.ico.GiteeIco?>
+<?import club.xiaojiawei.controls.ico.GithubIco?>
 <?import club.xiaojiawei.controls.ico.HelpIco?>
 <?import club.xiaojiawei.controls.*?>
 <?import club.xiaojiawei.factory.NotificationFactory?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.Group?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
-<?import javafx.scene.Group?>
 <?import java.lang.Double?>
-<?import club.xiaojiawei.controls.ico.GiteeIco?>
-<?import club.xiaojiawei.controls.ico.GithubIco?>
 <StackPane xmlns="http://javafx.com/javafx"
            xmlns:fx="http://javafx.com/fxml"
            stylesheets="@css/advancedSettings.css"
            fx:id="rootPane"
            fx:controller="club.xiaojiawei.hsscript.controller.javafx.AdvancedSettingsController">
-    <VBox>
-        <ScrollPane VBox.vgrow="ALWAYS" styleClass="scroll-pane-item">
-            <VBox alignment="CENTER">
-                <Group>
-                    <TitledPane text="版本"
+    <StackPane>
+        <ScrollPane fx:id="scrollPane" VBox.vgrow="ALWAYS" styleClass="scroll-pane-item">
+            <VBox fx:id="titledRootPane" alignment="CENTER">
+                <Group fx:id="versionPane">
+                    <TitledPane fx:id="versionTitled" text="版本"
                                 styleClass="titled-pane-ui, titled-pane-ui-big, titled-pane-ui-pure, item-titled-pane">
                         <VBox styleClass="item-v-box">
                             <HBox styleClass="h-box" spacing="30">
@@ -29,7 +29,8 @@
                                 </fx:define>
                                 <Text text="更新源"/>
                                 <HBox HBox.hgrow="ALWAYS"/>
-                                <RadioButton fx:id="giteeUpdateSource" text="Gitee" toggleGroup="$updateSourceToggle" styleClass="radio-button-ui, radio-button-ui-main">
+                                <RadioButton fx:id="giteeUpdateSource" text="Gitee" toggleGroup="$updateSourceToggle"
+                                             styleClass="radio-button-ui, radio-button-ui-main">
                                     <graphic>
                                         <GiteeIco scaleX="${icoScale}" scaleY="${icoScale}"/>
                                     </graphic>
@@ -37,14 +38,15 @@
                                         <Tooltip text="没有魔法推荐选此，此更新源只有稳定版"/>
                                     </tooltip>
                                 </RadioButton>
-                                <RadioButton fx:id="githubUpdateSource" text="Github" toggleGroup="$updateSourceToggle" styleClass="radio-button-ui, radio-button-ui-main">
+                                <RadioButton fx:id="githubUpdateSource" text="Github" toggleGroup="$updateSourceToggle"
+                                             styleClass="radio-button-ui, radio-button-ui-main">
                                     <graphic>
                                         <GithubIco scaleX="${icoScale}" scaleY="${icoScale}"/>
                                     </graphic>
                                     <tooltip>
                                         <Tooltip text="有魔法推荐选此，此更新源拥有所有版本"/>
                                     </tooltip>
-                                </RadioButton >
+                                </RadioButton>
                             </HBox>
                             <HBox styleClass="h-box">
                                 <Text text="更新开发版"/>
@@ -59,8 +61,8 @@
                         </VBox>
                     </TitledPane>
                 </Group>
-                <Group>
-                    <TitledPane text="行为"
+                <Group fx:id="behaviorPane">
+                    <TitledPane fx:id="behaviorTitled" text="行为"
                                 styleClass="titled-pane-ui, titled-pane-ui-big, titled-pane-ui-pure, item-titled-pane">
                         <VBox styleClass="item-v-box">
                             <HBox styleClass="h-box">
@@ -79,7 +81,8 @@
                             <HBox styleClass="h-box">
                                 <Text text="鼠标控制模式"/>
                                 <HBox HBox.hgrow="ALWAYS"/>
-                                <ComboBox fx:id="mouseControlModeComboBox" styleClass="combo-box-ui, combo-box-ui-small, combo-box-ui-normal"/>
+                                <ComboBox fx:id="mouseControlModeComboBox"
+                                          styleClass="combo-box-ui, combo-box-ui-small, combo-box-ui-normal"/>
                             </HBox>
                             <HBox styleClass="h-box">
                                 <Text text="置顶游戏窗口"/>
@@ -89,8 +92,8 @@
                         </VBox>
                     </TitledPane>
                 </Group>
-                <Group>
-                    <TitledPane text="系统"
+                <Group fx:id="systemPane">
+                    <TitledPane fx:id="systemTitled" text="系统"
                                 styleClass="titled-pane-ui, titled-pane-ui-big, titled-pane-ui-pure, item-titled-pane">
                         <VBox styleClass="item-v-box">
                             <HBox styleClass="h-box">
@@ -115,12 +118,63 @@
                                 <TextField fx:id="exitHotKey" styleClass="text-field-ui, text-field-ui-small"
                                            editable="false"/>
                             </HBox>
+                            <HBox styleClass="h-box">
+                                <Text text="自动熄屏"/>
+                                <Label>
+                                    <graphic>
+                                        <HelpIco/>
+                                    </graphic>
+                                    <tooltip>
+                                        <Tooltip text="软件处于运行状态但不在工作时间时关闭显示器"/>
+                                    </tooltip>
+                                </Label>
+                                <HBox HBox.hgrow="ALWAYS"/>
+                                <Switch fx:id="autoOffScreen"/>
+                            </HBox>
+                            <HBox styleClass="h-box">
+                                <Text text="自动睡眠"/>
+                                <Label>
+                                    <graphic>
+                                        <HelpIco/>
+                                    </graphic>
+                                    <tooltip>
+                                        <Tooltip text="软件处于运行状态但不在工作时间时让系统睡眠"/>
+                                    </tooltip>
+                                </Label>
+                                <HBox HBox.hgrow="ALWAYS"/>
+                                <Switch fx:id="autoSleep"/>
+                            </HBox>
+                            <HBox styleClass="h-box">
+                                <Text text="自动唤醒"/>
+                                <Label>
+                                    <graphic>
+                                        <HelpIco/>
+                                    </graphic>
+                                    <tooltip>
+                                        <Tooltip text="软件处于运行状态且在工作时间时唤醒系统"/>
+                                    </tooltip>
+                                </Label>
+                                <HBox HBox.hgrow="ALWAYS"/>
+                                <Switch fx:id="autoWake"/>
+                            </HBox>
                         </VBox>
                     </TitledPane>
                 </Group>
             </VBox>
         </ScrollPane>
-    </VBox>
+        <VBox pickOnBounds="false" alignment="TOP_LEFT" style="-fx-padding: 40 0 0 20;-fx-spacing: 15"
+              translateY="-10">
+            <fx:define>
+                <ToggleGroup fx:id="navigationBarToggle"/>
+            </fx:define>
+            <ToggleButton fx:id="versionNavigation" text="版本" styleClass="navigationBar"
+                          toggleGroup="$navigationBarToggle" selected="true" onAction="#scrollVersion"/>
+            <ToggleButton fx:id="behaviorNavigation" text="行为" styleClass="navigationBar"
+                          toggleGroup="$navigationBarToggle"  onAction="#scrollBehavior"/>
+            <ToggleButton fx:id="systemNavigation" text="系统" styleClass="navigationBar"
+                          toggleGroup="$navigationBarToggle"  onAction="#scrollSystem"/>
+        </VBox>
+    </StackPane>
     <NotificationManager fx:id="notificationManager" notificationPos="BOTTOM_CENTER">
         <NotificationFactory showingCloseBtn="false" size="SMALL"/>
     </NotificationManager>

@@ -7,6 +7,7 @@ import club.xiaojiawei.hsscript.bean.WorkDay
 import club.xiaojiawei.hsscript.bean.WorkTime
 import com.alibaba.fastjson.JSON
 import com.melloware.jintellitype.JIntellitype
+import com.sun.jna.platform.win32.User32
 
 /**
  * 脚本配置信息
@@ -203,6 +204,20 @@ enum class ConfigEnum(
         group = SYSTEM_CONFIG_GROUP,
         defaultValue = JSON.toJSONString(HotKey(JIntellitype.MOD_CONTROL, 'P'.code))
     ),
+
+    /**
+     * 自动关闭显示器
+     */
+    AUTO_OFF_SCREEN(group = SYSTEM_CONFIG_GROUP, defaultValue = false.toString()),
+    /**
+     * 自动睡眠
+     */
+    AUTO_SLEEP(group = SYSTEM_CONFIG_GROUP, defaultValue = false.toString()),
+
+    /**
+     * 自动唤醒
+     */
+    AUTO_WAKE(group = SYSTEM_CONFIG_GROUP, defaultValue = false.toString()),
 
     /**
      * 文件日志级别
