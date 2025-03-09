@@ -61,16 +61,6 @@ private fun setLogPath() {
 }
 
 fun main(args: Array<String>) {
-    val file = File(".pid")
-    if (!file.exists()) {
-        file.createNewFile()
-        Files.setAttribute(file.toPath(), "dos:hidden", true);
-    }
-    val randomAccessFile = RandomAccessFile(file, "rw")
-    randomAccessFile.channel.tryLock() ?: return
-    randomAccessFile.setLength(0)
-    randomAccessFile.write(SCRIPT_NAME.toByteArray());
-
     System.setProperty("jna.library.path", "lib")
 
     ZLaunchDll.INSTANCE.ShowPage(
@@ -81,6 +71,16 @@ fun main(args: Array<String>) {
         458,
         708
     )
+
+    val file = File(".pid")
+    if (!file.exists()) {
+        file.createNewFile()
+        Files.setAttribute(file.toPath(), "dos:hidden", true);
+    }
+    val randomAccessFile = RandomAccessFile(file, "rw")
+    randomAccessFile.channel.tryLock() ?: return
+    randomAccessFile.setLength(0)
+    randomAccessFile.write(SCRIPT_NAME.toByteArray());
 
     setLogPath()
 

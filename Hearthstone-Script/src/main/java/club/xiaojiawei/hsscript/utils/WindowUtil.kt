@@ -99,7 +99,7 @@ object WindowUtil {
                 }
             }
         }
-        val head:HBox? = headerText?.let {
+        val head: HBox? = headerText?.let {
             HBox(Label(it).apply {
                 style = "-fx-wrap-text: true"
             }).apply {
@@ -107,7 +107,7 @@ object WindowUtil {
                 style = "-fx-padding: 15;-fx-font-weight: bold"
             }
         }
-        val center:HBox? = contentText?.let {
+        val center: HBox? = contentText?.let {
             HBox(Label(it).apply {
                 style = "-fx-wrap-text: true"
             }).apply {
@@ -147,9 +147,9 @@ object WindowUtil {
     fun showStage(windowEnum: WindowEnum, owner: Window? = null) {
         var stage = getStage(windowEnum)
         if (stage == null) {
-            stage = buildStage(windowEnum)
+            stage = buildStage(windowEnum, owner)
         }
-        if (owner != null && stage.owner == null) {
+        if (stage.owner == null && owner != null) {
             stage.initOwner(owner)
         }
         if (stage.isShowing) {
@@ -180,14 +180,17 @@ object WindowUtil {
         }
     }
 
-    fun buildStage(windowEnum: WindowEnum): Stage {
-        return buildStage(windowEnum, true)
+    fun buildStage(windowEnum: WindowEnum, owner: Window? = null): Stage {
+        return buildStage(windowEnum, true, owner)
     }
 
-    fun buildStage(windowEnum: WindowEnum, createStage: Boolean): Stage {
+    fun buildStage(windowEnum: WindowEnum, createStage: Boolean, owner: Window? = null): Stage {
         var stage = STAGE_MAP[windowEnum]
         if (stage == null || createStage) {
             stage = createStage(windowEnum)
+            owner?.let {
+                stage.initOwner(it)
+            }
             STAGE_MAP[windowEnum] = stage
             val controller = getController(windowEnum)
             if (controller is StageHook) {

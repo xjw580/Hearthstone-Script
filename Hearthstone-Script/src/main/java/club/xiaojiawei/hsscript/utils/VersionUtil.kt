@@ -1,7 +1,7 @@
 package club.xiaojiawei.hsscript.utils
 
 import club.xiaojiawei.config.log
-import java.util.Properties
+import java.util.*
 
 /**
  * @author 肖嘉威 xjw580@qq.com
@@ -9,17 +9,18 @@ import java.util.Properties
  */
 object VersionUtil {
 
-    var VERSION: String = "UNKNOWN"
-
-    init {
+    val VERSION: String by lazy {
+        var version = "UNKNOWN"
         VersionUtil::class.java.getClassLoader().getResourceAsStream("build.version").use { resourceStream ->
             if (resourceStream == null) {
                 log.error { "build.version file is not found in the classpath." }
             } else {
                 val properties = Properties()
                 properties.load(resourceStream)
-                VERSION = properties.getProperty("version", VERSION)
+                version = properties.getProperty("version", version)
             }
         }
+        version
     }
+
 }

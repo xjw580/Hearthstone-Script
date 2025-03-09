@@ -33,9 +33,6 @@ import club.xiaojiawei.hsscript.utils.ConfigUtil.putString
 import club.xiaojiawei.hsscript.utils.FXUtil
 import club.xiaojiawei.hsscript.utils.SystemUtil.copyToClipboard
 import club.xiaojiawei.hsscript.utils.WindowUtil
-import club.xiaojiawei.hsscript.utils.WindowUtil.buildStage
-import club.xiaojiawei.hsscript.utils.WindowUtil.getStage
-import club.xiaojiawei.hsscript.utils.WindowUtil.showStage
 import club.xiaojiawei.hsscript.utils.runUI
 import javafx.animation.RotateTransition
 import javafx.animation.Timeline
@@ -396,14 +393,7 @@ class MainController : MainView() {
 
     @FXML
     protected fun openSettings() {
-        var stage = getStage(WindowEnum.SETTINGS)
-        if (stage == null) {
-            stage = buildStage(WindowEnum.SETTINGS)
-        }
-        if (stage.getOwner() == null) {
-            stage.initOwner(getStage(WindowEnum.MAIN))
-        }
-        stage.show()
+        WindowUtil.showStage(WindowEnum.SETTINGS, rootPane.scene.window)
     }
 
     @FXML
@@ -511,7 +501,7 @@ class MainController : MainView() {
 
     @FXML
     protected fun openVersionMsg(mouseEvent: MouseEvent?) {
-        showStage(WindowEnum.VERSION_MSG, rootPane.scene.window)
+        WindowUtil.showStage(WindowEnum.VERSION_MSG, rootPane.scene.window)
     }
 
     companion object {

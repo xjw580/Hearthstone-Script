@@ -64,7 +64,7 @@ object Core {
                 if (WorkListener.working) return@execute
                 if (!haveProgramPath) {
                     SystemUtil.notice("需要配置" + GAME_CN_NAME + "和" + PLATFORM_CN_NAME + "的路径")
-                    runUI { WindowUtil.showStage(WindowEnum.SETTINGS) }
+                    runUI { WindowUtil.showStage(WindowEnum.SETTINGS, WindowUtil.getStage(WindowEnum.MAIN)) }
                     PauseStatus.isPause = true
                 } else if (!PauseStatus.isPause) {
                     WorkListener.working = true

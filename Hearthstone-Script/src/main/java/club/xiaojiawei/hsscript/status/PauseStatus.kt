@@ -28,7 +28,7 @@ object PauseStatus {
             if (!value && ConfigExUtil.getMouseControlMode() !== MouseControlModeEnum.DRIVE) {
                 SystemUtil.messageInfoOk("当前版本仅支持[${MouseControlModeEnum.DRIVE}]鼠标控制模式，请于高级设置中切换")
                 runUI {
-                    val stage = WindowUtil.buildStage(WindowEnum.SETTINGS)
+                    val stage = WindowUtil.buildStage(WindowEnum.SETTINGS, WindowUtil.getStage(WindowEnum.MAIN))
                     val controller = WindowUtil.getController(WindowEnum.SETTINGS) as SettingsController
                     controller.showTab(WindowEnum.ADVANCED_SETTINGS)
                     stage.show()

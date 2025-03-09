@@ -7,6 +7,7 @@ import club.xiaojiawei.util.isFalse
 import com.alibaba.fastjson.JSON
 import org.ini4j.Config
 import org.ini4j.Ini
+import java.io.File
 import java.nio.file.Path
 
 
@@ -16,29 +17,30 @@ import java.nio.file.Path
  */
 object ConfigUtil {
 
-    private val configFile = Path.of(CONFIG_PATH, "script.ini").toFile()
+    private val configFile: File by lazy {
+        Path.of(CONFIG_PATH, "script.ini").toFile()
+    }
 
-    private val CONFIG: Ini
-
-    init {
+    private val CONFIG: Ini by lazy {
         configFile.exists().isFalse {
             configFile.parentFile.mkdirs()
             configFile.createNewFile()
             log.info { "已创建配置文件【${configFile.absolutePath}】" }
         }
-        CONFIG = Ini(configFile)
+        val ini = Ini(configFile)
         val cfg = Config()
-        CONFIG.config = cfg
-        checkConfig()
+        ini.config = cfg
+        checkConfig(ini)
+        ini
     }
 
-    private fun checkConfig() {
+    private fun checkConfig(ini: Ini) {
         ConfigEnum.values().forEach { entry ->
-            if (CONFIG.get(entry.group, entry.name) == null) {
-                putString(entry, entry.defaultValue, false)
+            if (ini.get(entry.group, entry.name) == null) {
+                ini.put(entry.group, entry.name, entry.defaultValue)
             }
         }
-        store()
+        ini.store()
     }
 
 

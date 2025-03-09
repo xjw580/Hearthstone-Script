@@ -117,13 +117,7 @@ class MainApplication : Application() {
         settingsItem.addActionListener(object : AbstractAction() {
             override fun actionPerformed(e: ActionEvent?) {
                 runUI {
-                    val stage = getStage(WindowEnum.SETTINGS) ?: buildStage(WindowEnum.SETTINGS)
-                    if (stage.owner == null) {
-                        getStage(WindowEnum.MAIN)?.let {
-                            stage.initOwner(it)
-                        }
-                    }
-                    stage.show()
+                    showStage(WindowEnum.SETTINGS, getStage(WindowEnum.MAIN))
                 }
             }
         })

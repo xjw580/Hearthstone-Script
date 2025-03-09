@@ -94,7 +94,9 @@ interface SystemDll : Library {
 
     companion object {
 
-        val INSTANCE: SystemDll = Native.load("dll/system", SystemDll::class.java)
+        val INSTANCE: SystemDll by lazy {
+            Native.load("dll/system", SystemDll::class.java)
+        }
 
         const val MB_ICONERROR: Int = 0x00000010
 

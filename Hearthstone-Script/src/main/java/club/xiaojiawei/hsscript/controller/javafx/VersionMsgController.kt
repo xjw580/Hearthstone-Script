@@ -29,10 +29,8 @@ class VersionMsgController : Initializable {
         version.text = VERSION
         //        TODO 版本更新时修改！！！
         versionDescription.text = """
-                    1. 增加驱动级鼠标模拟
-                    2. 🤖注意！当前版本仅用于测试驱动级鼠标模拟的封禁概率！🤖
-                    2. 出牌超时发送的抱歉表情将被随机表情开关控制
-                    3. 增加重复打开软件检测
+                    1. 高级设置->系统: 增加自动睡眠等功能
+                    2. 高级设置->行为: 增加阻止反作弊功能
                     """.trimIndent()
     }
 
