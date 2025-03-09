@@ -16,6 +16,9 @@ import javafx.scene.layout.VBox
 open class AdvancedSettingsView {
 
     @FXML
+    protected lateinit var preventAntiCheat: Switch
+
+    @FXML
     protected lateinit var systemTitled: TitledPane
 
     @FXML

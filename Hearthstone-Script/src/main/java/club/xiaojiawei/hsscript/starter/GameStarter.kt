@@ -18,7 +18,6 @@ import com.sun.jna.platform.win32.WinDef.HWND
 import java.awt.Point
 import java.io.File
 import java.util.concurrent.TimeUnit
-import java.util.concurrent.atomic.AtomicInteger
 
 /**
  * 启动游戏
@@ -36,23 +35,29 @@ class GameStarter : AbstractStarter() {
             return
         }
         latestLogDir = GameUtil.getLatestLogDir()
-        val launchCount = AtomicInteger()
-
+        var startTime = System.currentTimeMillis()
+        var firstLogLaunch = true
+        var firstLogSecondaryLaunch = true
         addTask(
             LAUNCH_PROGRAM_THREAD_POOL.scheduleAtFixedRate(LRunnable {
-                if (launchCount.incrementAndGet() > 15) {
-                    log.info { "更改${GAME_CN_NAME}启动方式" }
-                    GameUtil.launchPlatformAndGame()
-                } else if (launchCount.incrementAndGet() > 20) {
-                    log.warn { "打开${GAME_CN_NAME}失败次数过多，重新执行启动器链" }
+                val diffTime = System.currentTimeMillis() - startTime
+                if (diffTime > 20_000) {
+                    log.warn { "启动${GAME_CN_NAME}失败次数过多，重新执行启动器链" }
                     stopTask()
+                    startTime = System.currentTimeMillis()
                     EXTRA_THREAD_POOL.schedule({
+                        GameUtil.killGame()
                         GameUtil.killLoginPlatform()
                         GameUtil.killPlatform()
-                        launchCount.set(0)
                         StarterConfig.starter.start()
                     }, 1, TimeUnit.SECONDS)
                     return@LRunnable
+                } else if (diffTime > 5_000) {
+                    if (firstLogSecondaryLaunch){
+                        firstLogSecondaryLaunch = false
+                        log.info { "更改${GAME_CN_NAME}启动方式" }
+                    }
+                    GameUtil.launchPlatformAndGame()
                 }
                 if (GameUtil.isAliveOfGame()) {
 //                    游戏刚启动时可能找不到窗口句柄
@@ -63,14 +68,17 @@ class GameStarter : AbstractStarter() {
                         return@LRunnable
                     }
                 } else {
+                    if (firstLogLaunch){
+                        firstLogLaunch = false
+                        log.info { "正在启动$GAME_CN_NAME" }
+                    }
                     launchGameBySendMessage()
                 }
-            }, 100, 2000, TimeUnit.MILLISECONDS)
+            }, 100, 500, TimeUnit.MILLISECONDS)
         )
     }
 
     private fun launchGameBySendMessage() {
-        log.info { "正在打开$GAME_CN_NAME" }
         val platformHWND = GameUtil.findPlatformHWND()
         val rect = WinDef.RECT()
         SystemUtil.updateRECT(platformHWND, rect)

@@ -7,7 +7,6 @@ import club.xiaojiawei.hsscript.bean.WorkDay
 import club.xiaojiawei.hsscript.bean.WorkTime
 import com.alibaba.fastjson.JSON
 import com.melloware.jintellitype.JIntellitype
-import com.sun.jna.platform.win32.User32
 
 /**
  * 脚本配置信息
@@ -106,6 +105,11 @@ enum class ConfigEnum(
      * 置顶游戏窗口
      */
     TOP_GAME_WINDOW(group = ACTION_CONFIG_GROUP, defaultValue = MOUSE_CONTROL_MODE.defaultValue),
+
+    /**
+     * 阻止游戏的反作弊
+     */
+    PREVENT_AC(group = ACTION_CONFIG_GROUP, defaultValue = false.toString()),
 
     /**
      * 选择卡组位

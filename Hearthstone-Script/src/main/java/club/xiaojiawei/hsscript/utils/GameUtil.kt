@@ -232,7 +232,7 @@ object GameUtil {
         log.info { "发送谢谢表情" }
         MY_HERO_RECT.rClick()
         SystemUtil.delayMedium()
-        THANK_RECT.lClick()
+        THANK_RECT.lClick(false)
         SystemUtil.delayShortMedium()
     }
 
@@ -243,7 +243,7 @@ object GameUtil {
         log.info { "发送问候表情" }
         MY_HERO_RECT.rClick()
         SystemUtil.delayMedium()
-        GREET_RECT.lClick()
+        GREET_RECT.lClick(false)
         SystemUtil.delayShortMedium()
     }
 
@@ -254,7 +254,7 @@ object GameUtil {
         log.info { "发送失误表情" }
         MY_HERO_RECT.rClick()
         SystemUtil.delayMedium()
-        ERROR_RECT.lClick()
+        ERROR_RECT.lClick(false)
         SystemUtil.delayShortMedium()
     }
 
@@ -500,23 +500,21 @@ object GameUtil {
         if (isAliveOfGame()) {
             try {
                 SystemDll.INSTANCE.closeProgram(GAME_HWND)
-                delay(2000)
+                delay(3000)
                 if (isAliveOfGame()) {
-                    Runtime.getRuntime().exec("cmd /c taskkill /f /t /im $GAME_PROGRAM_NAME")
+                    val pid = SystemDll.INSTANCE.FindProcessId_(GAME_PROGRAM_NAME)
+                    Runtime.getRuntime().exec("cmd /c taskkill -f -pid $pid")
                         .waitFor()
-                    delay(2000)
+                    delay(3000)
                     if (isAliveOfGame()) {
-                        val pid = SystemDll.INSTANCE.FindProcessId_(GAME_PROGRAM_NAME)
-                        Runtime.getRuntime().exec("cmd /c taskkill -f -pid $pid")
+                        Runtime.getRuntime().exec("cmd /c taskkill /f /t /im $GAME_PROGRAM_NAME")
                             .waitFor()
-                        delay(2000)
+                        delay(3000)
                     }
                 }
                 log.info { "${GAME_CN_NAME}已关闭" }
             } catch (e: IOException) {
                 log.error(e) { "关闭${GAME_CN_NAME}异常" }
-            } catch (e: InterruptedException) {
-                log.warn(e) { "关闭${GAME_CN_NAME}可能异常" }
             }
         } else {
             log.info { "${GAME_CN_NAME}不在运行" }

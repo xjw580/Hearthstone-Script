@@ -78,6 +78,7 @@ class AdvancedSettingsController : AdvancedSettingsView(), Initializable {
         mouseControlModeComboBox.items.addAll(MouseControlModeEnum.values())
         mouseControlModeComboBox.value = ConfigExUtil.getMouseControlMode()
         topGameWindow.status = getBoolean(ConfigEnum.TOP_GAME_WINDOW)
+        preventAntiCheat.status = getBoolean(ConfigEnum.PREVENT_AC)
         sendNotice.status = getBoolean(ConfigEnum.SEND_NOTICE)
         useProxy.status = getBoolean(ConfigEnum.USE_PROXY)
         autoOffScreen.status = getBoolean(ConfigEnum.AUTO_OFF_SCREEN)
@@ -151,7 +152,7 @@ class AdvancedSettingsController : AdvancedSettingsView(), Initializable {
             if (newV - oldV > 0) {
                 if (newV > behaviorMaxY) {
                     navigationBarToggle.selectToggle(systemNavigation)
-                }else if (newV > versionMaxY) {
+                } else if (newV > versionMaxY) {
                     navigationBarToggle.selectToggle(behaviorNavigation)
                 }
             } else {
@@ -232,6 +233,11 @@ class AdvancedSettingsController : AdvancedSettingsView(), Initializable {
                 storeTopGameWindow(
                     newValue
                 )
+            }
+//        监听阻止反作弊开关
+        preventAntiCheat.statusProperty()
+            .addListener { observable, oldValue, newValue ->
+                ConfigExUtil.storePreventAntiCheat(newValue)
             }
         //        监听发送通知开关
         sendNotice.statusProperty()

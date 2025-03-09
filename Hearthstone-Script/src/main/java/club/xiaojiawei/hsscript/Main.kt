@@ -7,7 +7,6 @@ import ch.qos.logback.classic.joran.JoranConfigurator
 import ch.qos.logback.classic.spi.ILoggingEvent
 import ch.qos.logback.core.spi.FilterReply
 import club.xiaojiawei.hsscript.data.IMG_PATH
-import club.xiaojiawei.hsscript.data.SCREEN_SCALE
 import club.xiaojiawei.hsscript.data.SCRIPT_NAME
 import club.xiaojiawei.hsscript.dll.ZLaunchDll
 import club.xiaojiawei.hsscript.utils.ConfigExUtil
@@ -79,8 +78,8 @@ fun main(args: Array<String>) {
         WString(SystemUtil.getProgramIconFile().absolutePath),
         WString(SCRIPT_NAME),
         WString(VersionUtil.VERSION),
-        (382 * SCREEN_SCALE).toInt(),
-        (590 * SCREEN_SCALE).toInt()
+        458,
+        708
     )
 
     setLogPath()

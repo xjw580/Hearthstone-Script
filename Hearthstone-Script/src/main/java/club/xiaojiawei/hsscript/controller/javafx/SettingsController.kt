@@ -51,35 +51,71 @@ class SettingsController : Initializable {
             }
     }
 
+    fun showTab(window: WindowEnum) {
+        when (window) {
+            WindowEnum.INIT_SETTINGS -> {
+                rootPane.selectionModel.select(initTab)
+            }
+
+            WindowEnum.ADVANCED_SETTINGS -> {
+                rootPane.selectionModel.select(advancedTab)
+            }
+
+            WindowEnum.PLUGIN_SETTINGS -> {
+                rootPane.selectionModel.select(pluginTab)
+            }
+
+            WindowEnum.STRATEGY_SETTINGS -> {
+                rootPane.selectionModel.select(strategyTab)
+            }
+
+            WindowEnum.WEIGHT_SETTINGS -> {
+                rootPane.selectionModel.select(weightTab)
+            }
+
+            WindowEnum.DEVELOPER_SETTINGS -> {
+                rootPane.selectionModel.select(developerTab)
+            }
+
+            WindowEnum.ABOUT -> {
+                rootPane.selectionModel.select(aboutTab)
+            }
+
+            else -> {
+
+            }
+        }
+    }
+
     private fun loadTab(tab: Tab) {
-        if (advancedTab == tab) {
+        if (advancedTab === tab) {
             if (advancedTab.content == null) {
 //                Node node = WindowUtil.INSTANCE.loadRoot(WindowEnum.ADVANCED_SETTINGS);
 //                ScrollPane scrollPane = new ScrollPane(node);
 //                scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
                 advancedTab.content = loadRoot(WindowEnum.ADVANCED_SETTINGS)
             }
-        } else if (initTab == tab) {
+        } else if (initTab === tab) {
             if (initTab.content == null) {
                 initTab.content = loadRoot(WindowEnum.INIT_SETTINGS)
             }
-        } else if (pluginTab == tab) {
+        } else if (pluginTab === tab) {
             if (pluginTab.content == null) {
                 pluginTab.content = loadRoot(WindowEnum.PLUGIN_SETTINGS)
             }
-        } else if (strategyTab == tab) {
+        } else if (strategyTab === tab) {
             if (strategyTab.content == null) {
                 strategyTab.content = loadRoot(WindowEnum.STRATEGY_SETTINGS)
             }
-        } else if (weightTab == tab) {
+        } else if (weightTab === tab) {
             if (weightTab.content == null) {
                 weightTab.content = loadRoot(WindowEnum.WEIGHT_SETTINGS)
             }
-        } else if (developerTab == tab) {
+        } else if (developerTab === tab) {
             if (developerTab.content == null) {
                 developerTab.content = loadRoot(WindowEnum.DEVELOPER_SETTINGS)
             }
-        } else if (aboutTab == tab) {
+        } else if (aboutTab === tab) {
             if (aboutTab.content == null) {
                 aboutTab.content = loadRoot(WindowEnum.ABOUT)
             }

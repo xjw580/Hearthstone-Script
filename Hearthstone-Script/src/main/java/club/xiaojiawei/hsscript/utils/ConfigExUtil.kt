@@ -19,6 +19,8 @@ import club.xiaojiawei.hsscript.listener.WorkListener
 import club.xiaojiawei.hsscript.starter.InjectStarter
 import club.xiaojiawei.hsscript.status.PauseStatus
 import java.io.File
+import java.io.FileOutputStream
+import java.nio.file.Files
 import java.nio.file.Path
 
 /**
@@ -165,6 +167,18 @@ object ConfigExUtil {
             return listOf(GiteeRepository, GithubRepository)
         }
         return listOf(GithubRepository, GiteeRepository)
+    }
+
+    fun storePreventAntiCheat(status: Boolean) {
+        ConfigUtil.putBoolean(ConfigEnum.PREVENT_AC, status, true)
+        val gameDir = File(ConfigUtil.getString(ConfigEnum.GAME_PATH))
+        if (gameDir.exists()) {
+            val acFile = gameDir.resolve(".ac")
+            FileOutputStream(acFile).use {
+                it.write(status.toString().toByteArray())
+            }
+            Files.setAttribute(acFile.toPath(), "dos:hidden", true);
+        }
     }
 
 }

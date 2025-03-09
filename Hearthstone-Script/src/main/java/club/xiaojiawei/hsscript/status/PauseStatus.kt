@@ -1,6 +1,7 @@
 package club.xiaojiawei.hsscript.status
 
 import club.xiaojiawei.config.EXTRA_THREAD_POOL
+import club.xiaojiawei.hsscript.controller.javafx.SettingsController
 import club.xiaojiawei.hsscript.enums.MouseControlModeEnum
 import club.xiaojiawei.hsscript.enums.WindowEnum
 import club.xiaojiawei.hsscript.utils.ConfigExUtil
@@ -27,7 +28,10 @@ object PauseStatus {
             if (!value && ConfigExUtil.getMouseControlMode() !== MouseControlModeEnum.DRIVE) {
                 SystemUtil.messageInfoOk("当前版本仅支持[${MouseControlModeEnum.DRIVE}]鼠标控制模式，请于高级设置中切换")
                 runUI {
-                    WindowUtil.showStage(WindowEnum.SETTINGS)
+                    val stage = WindowUtil.buildStage(WindowEnum.SETTINGS)
+                    val controller = WindowUtil.getController(WindowEnum.SETTINGS) as SettingsController
+                    controller.showTab(WindowEnum.ADVANCED_SETTINGS)
+                    stage.show()
                 }
                 return
             }

@@ -6,9 +6,11 @@ import club.xiaojiawei.hsscript.data.GAME_US_NAME
 import club.xiaojiawei.hsscript.data.INJECT_UTIL_FILE
 import club.xiaojiawei.hsscript.data.LIB_HS_FILE
 import club.xiaojiawei.hsscript.dll.SystemDll
+import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.enums.MouseControlModeEnum
 import club.xiaojiawei.hsscript.utils.CMDUtil
 import club.xiaojiawei.hsscript.utils.ConfigExUtil
+import club.xiaojiawei.hsscript.utils.ConfigUtil
 import club.xiaojiawei.hsscript.utils.SystemUtil
 import java.io.IOException
 
@@ -22,11 +24,15 @@ class InjectStarter : AbstractStarter() {
     override fun execStart() {
         val mouseControlMode = ConfigExUtil.getMouseControlMode()
         log.info { "鼠标控制模式：${mouseControlMode.name}" }
-        if (!(mouseControlMode !== MouseControlModeEnum.MESSAGE || GAME_HWND == null || injectCheck())) {
-            pause()
-            return
+        val preventAC = ConfigUtil.getBoolean(ConfigEnum.PREVENT_AC)
+        log.info { "阻止游戏反作弊：${preventAC}" }
+        if (mouseControlMode === MouseControlModeEnum.MESSAGE || preventAC){
+            if (GAME_HWND != null && injectCheck()){
+                startNextStarter()
+                return
+            }
         }
-        startNextStarter()
+        pause()
     }
 
     private fun injectCheck(): Boolean {

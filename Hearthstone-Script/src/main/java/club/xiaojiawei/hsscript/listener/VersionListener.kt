@@ -87,7 +87,7 @@ object VersionListener {
 
         checkVersionTask = EXTRA_THREAD_POOL.scheduleAtFixedRate(LRunnable {
             checkVersion()
-        }, 500, 1000 * 60 * 60 * 1, TimeUnit.MILLISECONDS)
+        }, 500, 1000 * 60 * 60 * 2, TimeUnit.MILLISECONDS)
         log.info { "版本更新检测已启动" }
     }
 

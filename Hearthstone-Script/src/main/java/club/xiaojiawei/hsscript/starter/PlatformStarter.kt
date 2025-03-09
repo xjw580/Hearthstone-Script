@@ -32,7 +32,7 @@ class PlatformStarter : AbstractStarter() {
                 if (GameUtil.findPlatformHWND() != null || GameUtil.findLoginPlatformHWND() != null) {
                     startNextStarter()
                 }
-            }, 1, 100, TimeUnit.MILLISECONDS)
+            }, 1, 50, TimeUnit.MILLISECONDS)
         )
     }
 }

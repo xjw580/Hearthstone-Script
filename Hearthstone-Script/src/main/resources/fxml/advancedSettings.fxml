@@ -105,6 +105,23 @@
                                 <HBox HBox.hgrow="ALWAYS"/>
                                 <Switch fx:id="topGameWindow"/>
                             </HBox>
+                            <HBox styleClass="h-box">
+                                <Text text="阻止游戏反作弊（Beta）"/>
+                                <Label>
+                                    <graphic>
+                                        <HelpIco/>
+                                    </graphic>
+                                    <tooltip>
+                                        <Tooltip text="阻止游戏加载本地反作弊插件，必须用本软件启动游戏才能生效。效果未知，斟酌使用">
+                                            <showDuration>
+                                                <fx:reference source="tooltipDuration"/>
+                                            </showDuration>
+                                        </Tooltip>
+                                    </tooltip>
+                                </Label>
+                                <HBox HBox.hgrow="ALWAYS"/>
+                                <Switch fx:id="preventAntiCheat"/>
+                            </HBox>
                         </VBox>
                     </TitledPane>
                 </Group>

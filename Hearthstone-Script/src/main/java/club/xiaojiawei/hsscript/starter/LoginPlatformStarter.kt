@@ -1,6 +1,7 @@
 package club.xiaojiawei.hsscript.starter
 
 import club.xiaojiawei.config.EXTRA_THREAD_POOL
+import club.xiaojiawei.config.VIRTUAL_THREAD_POOL
 import club.xiaojiawei.config.log
 import club.xiaojiawei.hsscript.config.StarterConfig
 import club.xiaojiawei.hsscript.data.PLATFORM_CN_NAME
@@ -13,7 +14,6 @@ import club.xiaojiawei.util.isTrue
 import com.sun.jna.platform.win32.WinDef.HWND
 import java.awt.event.KeyEvent
 import java.util.concurrent.TimeUnit
-import java.util.concurrent.atomic.AtomicInteger
 
 /**
  * 登录战网
@@ -31,30 +31,46 @@ class LoginPlatformStarter : AbstractStarter() {
             startNextStarter()
             return
         }
-        val loginCount = AtomicInteger()
+        var startTime = System.currentTimeMillis()
         addTask(
             EXTRA_THREAD_POOL.scheduleAtFixedRate({
                 var loginPlatformHWND: HWND?
                 if ((GameUtil.findLoginPlatformHWND().also { loginPlatformHWND = it }) == null || GameUtil.isAliveOfGame()) {
                     startNextStarter()
                 } else {
-                    if (loginCount.incrementAndGet() > 10) {
+                    val diffTime = System.currentTimeMillis() - startTime
+                    if (diffTime > 60_000) {
                         log.warn { "登录${PLATFORM_CN_NAME}失败次数过多，重新执行启动器链" }
                         stopTask()
+                        startTime = System.currentTimeMillis()
                         EXTRA_THREAD_POOL.schedule({
                             GameUtil.killLoginPlatform()
                             GameUtil.killPlatform()
-                            loginCount.set(0)
                             StarterConfig.starter.start()
                         }, 1, TimeUnit.SECONDS)
                         return@scheduleAtFixedRate
                     }
-                    inputPassword(loginPlatformHWND!!)
-                    SystemUtil.delayShort()
-                    clickLoginButton(loginPlatformHWND)
+                    VIRTUAL_THREAD_POOL.submit {
+                        input(loginPlatformHWND)
+                    }
                 }
-            }, 1000, 5000, TimeUnit.MILLISECONDS)
+            }, 1000, 500, TimeUnit.MILLISECONDS)
         )
+    }
+
+    private var isInput = false
+
+    private fun input(loginPlatformHWND: HWND?){
+        loginPlatformHWND?:return
+        if (isInput) return
+        synchronized(LoginPlatformStarter::class.java) {
+            isInput = true
+            inputPassword(loginPlatformHWND)
+            SystemUtil.delayShort()
+            clickLoginButton(loginPlatformHWND)
+            isInput = false
+            SystemUtil.delayHuge()
+        }
     }
 
     private fun inputPassword(loginPlatformHWND: HWND) {
