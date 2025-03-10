@@ -8,6 +8,7 @@ import club.xiaojiawei.hsscript.data.MOUSE_DRIVE_PATH
 import club.xiaojiawei.hsscript.dll.SystemDll
 import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.enums.MouseControlModeEnum
+import club.xiaojiawei.hsscript.initializer.DriveInitializer
 import club.xiaojiawei.hsscript.listener.GlobalHotkeyListener
 import club.xiaojiawei.hsscript.listener.SystemListener
 import club.xiaojiawei.hsscript.utils.ConfigExUtil
@@ -206,7 +207,25 @@ class AdvancedSettingsController : AdvancedSettingsView(), Initializable {
                     topGameWindow.status =
                         (newValue === MouseControlModeEnum.EVENT || newValue === MouseControlModeEnum.DRIVE)
                 }
-                if (newValue === MouseControlModeEnum.DRIVE) {
+                if (oldValue === MouseControlModeEnum.DRIVE){
+                    storeMouseControlMode(
+                        newValue
+                    )
+                    if (File(MOUSE_DRIVE_PATH).exists()) {
+                        WindowUtil.createAlert(
+                            "是否卸载驱动",
+                            null,
+                            {
+                                DriveInitializer().uninstall()
+                            },
+                            {
+                            },
+                            rootPane.scene.window,
+                            "是",
+                            "否"
+                        ).show()
+                    }
+                } else if (newValue === MouseControlModeEnum.DRIVE) {
                     if (File(MOUSE_DRIVE_PATH).exists()) {
                         exec()
                     } else {
@@ -220,7 +239,9 @@ class AdvancedSettingsController : AdvancedSettingsView(), Initializable {
                                 mouseControlModeComboBoxCallback = true
                                 mouseControlModeComboBox.value = oldValue
                             },
-                            rootPane.scene.window
+                            rootPane.scene.window,
+                            "是",
+                            "否"
                         ).show()
                     }
                 } else {

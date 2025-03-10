@@ -10,6 +10,7 @@ import club.xiaojiawei.hsscript.dll.SystemDll
 import club.xiaojiawei.hsscript.dll.SystemDll.Companion.MB_ICONERROR
 import club.xiaojiawei.hsscript.dll.SystemDll.Companion.MB_ICONINFORMATION
 import club.xiaojiawei.hsscript.dll.SystemDll.Companion.MB_OK
+import club.xiaojiawei.hsscript.dll.SystemDll.Companion.MB_TOPMOST
 import club.xiaojiawei.hsscript.dll.User32ExDll.Companion.SC_MONITORPOWER
 import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.enums.RegCommonNameEnum
@@ -358,7 +359,7 @@ object SystemUtil {
                 WindowUtil.getStage(WindowEnum.MAIN)?.let {
                     SystemDll.INSTANCE.FindWindowW_(null, WString(it.title))
                 }
-            }, text, SCRIPT_NAME, type)
+            }, text, SCRIPT_NAME, type xor MB_TOPMOST)
         }
     }
 

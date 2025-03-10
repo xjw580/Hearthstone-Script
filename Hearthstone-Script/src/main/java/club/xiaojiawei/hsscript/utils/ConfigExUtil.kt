@@ -137,7 +137,7 @@ object ConfigExUtil {
             }
 
             MouseControlModeEnum.DRIVE -> {
-                DriveInitializer().init()
+                DriveInitializer().install()
             }
         }
         SystemDll.INSTANCE.uninstallDll(GAME_HWND)
