@@ -3,7 +3,6 @@ package club.xiaojiawei.hsscript.dll
 import com.sun.jna.Library
 import com.sun.jna.Native
 import com.sun.jna.Pointer
-import com.sun.jna.WString
 import com.sun.jna.platform.win32.WinDef.HWND
 
 /**
@@ -13,15 +12,11 @@ import com.sun.jna.platform.win32.WinDef.HWND
  */
 interface SystemDll : Library {
 
-    fun normalLeftClick(x: Int, y: Int)
-
     fun leftClick(x: Long, y: Long, hwnd: HWND?, mouseMode: Int)
 
     fun rightClick(x: Long, y: Long, hwnd: HWND?, mouseMode: Int)
 
-    fun moveMouse(x: Long, y: Long, hwnd: HWND?)
-
-    fun simulateHumanMove(
+    fun simulateHumanMoveMouse(
         startX: Int,
         startY: Int,
         endX: Int,
@@ -31,15 +26,11 @@ interface SystemDll : Library {
         mouseMode: Int,
     )
 
-    fun closeProgram(hwnd: HWND?)
+    fun quitWindow(hwnd: HWND?)
 
     fun frontWindow(hwnd: HWND?)
 
-    /**
-     * 点击登录战网页的登入按钮
-     * @param loginPlatformRootHWND
-     */
-    fun clickLoginPlatformLoginBtn(loginPlatformRootHWND: HWND?)
+    fun clickPlatformLoginBtn(loginPlatformHWND: HWND?)
 
     fun sendText(hwnd: HWND?, text: String?, append: Boolean)
 
@@ -51,9 +42,7 @@ interface SystemDll : Library {
 
     fun moveWindowForTitle(title: String?, x: Int, y: Int, w: Int, h: Int, ignoreSize: Boolean): Boolean
 
-    fun IsIconicWindow(hwnd: HWND?): Boolean
-
-    fun uninstallDll(hwnd: HWND?)
+     fun uninstallInjectDll(hwnd: HWND?)
 
     /**
      * 是否禁用输入
@@ -69,28 +58,30 @@ interface SystemDll : Library {
      */
     fun changeWindow(hwnd: HWND?, disable: Boolean)
 
-    fun IsRunAsAdministrator(): Boolean
+    fun isRunAsAdministrator(): Boolean
 
-    fun MessageBox_(hwnd: HWND?, text: String?, title: String?, type: Int)
+    fun messageBox(hwnd: HWND?, text: String?, title: String?, type: Int)
 
-    fun FindWindowW_(className: WString?, windowName: WString?): HWND?
+    fun findWindowsByProcessName(processName: String?): HWND?
 
-    fun FindWindowsByProcessName(processName: String?): HWND?
+    fun findProcessId(processName: String?): Long
 
-    fun FindProcessId_(processName: String?): Long
+    fun getWindowsProxy(proxyUrl: Pointer, length: Int)
 
-    fun GetWindowsProxy(proxyUrl: Pointer, length: Int)
+    fun checkS3Support(): Boolean
 
-    fun CheckS3Support(): Boolean
+    fun enableWakeUpTimer(): Boolean
 
-    fun EnableWakeUpTimer(): Boolean
-
-    fun SetWakeUpTimer(seconds: Int): Boolean
+    fun setWakeUpTimer(seconds: Int): Boolean
 
     /**
      * 睡眠系统
      */
-    fun SleepSystem();
+    fun sleepSystem()
+
+    fun killProcessByName(processName: String)
+
+    fun isProcessRunning(processName: String): Boolean
 
     companion object {
 
