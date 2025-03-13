@@ -4,9 +4,10 @@ import club.xiaojiawei.config.log
 import club.xiaojiawei.hsscript.data.INSTALL_DRIVE_FILE
 import club.xiaojiawei.hsscript.data.MOUSE_DRIVE_PATH
 import club.xiaojiawei.hsscript.dll.SystemDll
+import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.enums.MouseControlModeEnum
-import club.xiaojiawei.hsscript.utils.ConfigExUtil
-import club.xiaojiawei.hsscript.utils.SystemUtil
+import club.xiaojiawei.hsscript.enums.WindowEnum
+import club.xiaojiawei.hsscript.utils.*
 import club.xiaojiawei.util.isFalse
 import club.xiaojiawei.util.isTrue
 import java.io.BufferedReader
@@ -20,28 +21,59 @@ import java.io.InputStreamReader
 @Suppress("DEPRECATION")
 class DriveInitializer : AbstractInitializer() {
 
+    private val driveFile = File(MOUSE_DRIVE_PATH)
+
     override fun exec() {
         val mouseControlMode = ConfigExUtil.getMouseControlMode()
         if (mouseControlMode === MouseControlModeEnum.DRIVE) {
-            install()
+            ConfigExUtil.storePreventAntiCheat(ConfigUtil.getBoolean(ConfigEnum.PREVENT_AC))
+            install(true)
         }
     }
 
-    fun install() {
-        val driveFile = File(MOUSE_DRIVE_PATH)
+    fun install(silent: Boolean = false) {
         driveFile.exists().isFalse {
-            if (SystemDll.INSTANCE.IsRunAsAdministrator()) {
+            if (SystemDll.INSTANCE.isRunAsAdministrator()) {
                 SystemUtil.getExeFilePath(INSTALL_DRIVE_FILE)?.let {
-                    Runtime.getRuntime().exec("$it /install").waitFor()
-                    Thread.sleep(1000)
-                    if (driveFile.exists()) {
-                        val text = "驱动安装成功，需要重启系统"
-                        log.info { text }
-                        SystemUtil.messageOk(text)
+                    val exec = {
+                        val process = Runtime.getRuntime().exec("$it /install")
+                        val res = StringBuilder()
+                        BufferedReader(InputStreamReader(process.inputStream)).use { reader ->
+                            var line: String?
+                            while (true) {
+                                line = reader.readLine()
+                                line ?: break
+                                res.append(line)
+                            }
+                        }
+                        Thread.sleep(1000)
+                        if (res.toString().contains("Interception successfully installed")) {
+                            val text = "驱动安装成功，需要重启系统"
+                            log.info { text }
+                            SystemUtil.messageInfoOk(text)
+                        } else {
+                            val text = "驱动安装失败"
+                            log.error { text }
+                            SystemUtil.messageError(text)
+                        }
+                    }
+                    if (silent) {
+                        exec()
                     } else {
-                        val text = "驱动安装失败"
-                        log.error { text }
-                        SystemUtil.messageError(text)
+                        runUI {
+                            WindowUtil.createAlert(
+                                "${MouseControlModeEnum.DRIVE}模式需要安装驱动（安装时请提前关闭杀毒软件或windows defender）",
+                                "是否安装",
+                                {
+                                    exec()
+                                },
+                                {
+                                },
+                                WindowUtil.getStage(WindowEnum.SETTINGS) ?: WindowUtil.getStage(WindowEnum.MAIN),
+                                "是",
+                                "否"
+                            ).show()
+                        }
                     }
                 } ?: let {
                     val text = "找不到${INSTALL_DRIVE_FILE}"
@@ -56,30 +88,49 @@ class DriveInitializer : AbstractInitializer() {
         }
     }
 
-    fun uninstall() {
-        val driveFile = File(MOUSE_DRIVE_PATH)
+    fun uninstall(silent: Boolean = false) {
         driveFile.exists().isTrue {
-            if (SystemDll.INSTANCE.IsRunAsAdministrator()) {
+            if (SystemDll.INSTANCE.isRunAsAdministrator()) {
                 SystemUtil.getExeFilePath(INSTALL_DRIVE_FILE)?.let {
-                    val process = Runtime.getRuntime().exec("$it /uninstall")
-                    val res = StringBuilder()
-                    BufferedReader(InputStreamReader(process.inputStream)).use { reader->
-                        var line:String?
-                        while (true) {
-                            line = reader.readLine()
-                            line?:break
-                            res.append(line)
+                    val exec = {
+                        val process = Runtime.getRuntime().exec("$it /uninstall")
+                        val res = StringBuilder()
+                        BufferedReader(InputStreamReader(process.inputStream)).use { reader ->
+                            var line: String?
+                            while (true) {
+                                line = reader.readLine()
+                                line ?: break
+                                res.append(line)
+                            }
+                        }
+                        Thread.sleep(1000)
+                        if (res.toString().contains("Interception uninstalled")) {
+                            val text = "驱动卸载成功，需要重启系统"
+                            log.info { text }
+                            SystemUtil.messageInfoOk(text)
+                        } else {
+                            val text = "驱动卸载失败"
+                            log.error { text }
+                            SystemUtil.messageError(text)
                         }
                     }
-                    Thread.sleep(1000)
-                    if (res.toString().contains("Interception uninstalled")) {
-                        val text = "驱动卸载成功，需要重启系统"
-                        log.info { text }
-                        SystemUtil.messageOk(text)
-                    } else {
-                        val text = "驱动卸载失败"
-                        log.error { text }
-                        SystemUtil.messageError(text)
+                    if (silent) {
+                        exec()
+                    }else{
+                        runUI {
+                            WindowUtil.createAlert(
+                                "是否卸载驱动",
+                                null,
+                                {
+                                    exec()
+                                },
+                                {
+                                },
+                                WindowUtil.getStage(WindowEnum.SETTINGS) ?: WindowUtil.getStage(WindowEnum.MAIN),
+                                "是",
+                                "否"
+                            ).show()
+                        }
                     }
                 } ?: let {
                     val text = "找不到${INSTALL_DRIVE_FILE}"

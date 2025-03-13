@@ -12,17 +12,12 @@ import club.xiaojiawei.hsscript.utils.ConfigUtil.getString
 import club.xiaojiawei.hsscript.utils.ConfigUtil.putBoolean
 import club.xiaojiawei.hsscript.utils.ConfigUtil.putString
 import club.xiaojiawei.hsscript.utils.ConfigUtil.store
-import club.xiaojiawei.hsscript.utils.MouseUtil
 import club.xiaojiawei.hsscript.utils.WindowUtil.hideStage
-import javafx.beans.value.ChangeListener
-import javafx.beans.value.ObservableValue
 import javafx.event.ActionEvent
 import javafx.fxml.FXML
 import javafx.fxml.Initializable
-import javafx.scene.Scene
 import javafx.scene.control.Tooltip
 import javafx.scene.layout.StackPane
-import javafx.scene.layout.VBox
 import java.net.URL
 import java.util.*
 
@@ -233,7 +228,6 @@ class StrategySettingsController : Initializable {
         store()
         CommonCardAction.reload()
         reloadScriptData()
-        MouseUtil.reload()
         return true
     }
 }

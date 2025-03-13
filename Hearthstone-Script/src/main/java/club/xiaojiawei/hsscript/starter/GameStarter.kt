@@ -46,7 +46,7 @@ class GameStarter : AbstractStarter() {
                     stopTask()
                     startTime = System.currentTimeMillis()
                     EXTRA_THREAD_POOL.schedule({
-                        GameUtil.killGame()
+                        GameUtil.killGame(true)
                         GameUtil.killLoginPlatform()
                         GameUtil.killPlatform()
                         StarterConfig.starter.start()
@@ -64,8 +64,10 @@ class GameStarter : AbstractStarter() {
                     GameUtil.findGameHWND()?.let {
                         next(it)
                     } ?: let {
-                        log.info { "${GAME_CN_NAME}已在运行，但未找到对应窗口句柄" }
-                        return@LRunnable
+                        if (diffTime > 5_000) {
+                            log.info { "${GAME_CN_NAME}已在运行，但未找到对应窗口句柄" }
+                            return@LRunnable
+                        }
                     }
                 } else {
                     if (firstLogLaunch){

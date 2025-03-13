@@ -71,7 +71,6 @@ fun main(args: Array<String>) {
         458,
         708
     )
-
     val file = File(".pid")
     if (!file.exists()) {
         file.createNewFile()

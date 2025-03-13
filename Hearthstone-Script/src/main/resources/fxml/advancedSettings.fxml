@@ -22,57 +22,6 @@
     <StackPane>
         <ScrollPane fx:id="scrollPane" VBox.vgrow="ALWAYS" styleClass="scroll-pane-item">
             <VBox fx:id="titledRootPane" alignment="CENTER">
-                <Group fx:id="versionPane">
-                    <TitledPane fx:id="versionTitled" text="版本"
-                                styleClass="titled-pane-ui, titled-pane-ui-big, titled-pane-ui-pure, item-titled-pane">
-                        <VBox styleClass="item-v-box">
-                            <HBox styleClass="h-box" spacing="30">
-                                <fx:define>
-                                    <Double fx:id="icoScale" fx:value="1.1"/>
-                                    <ToggleGroup fx:id="updateSourceToggle"/>
-                                </fx:define>
-                                <Text text="更新源"/>
-                                <HBox HBox.hgrow="ALWAYS"/>
-                                <RadioButton fx:id="giteeUpdateSource" text="Gitee" toggleGroup="$updateSourceToggle"
-                                             styleClass="radio-button-ui, radio-button-ui-main">
-                                    <graphic>
-                                        <GiteeIco scaleX="${icoScale}" scaleY="${icoScale}"/>
-                                    </graphic>
-                                    <tooltip>
-                                        <Tooltip text="没有魔法推荐选此，此更新源只有稳定版">
-                                            <showDuration>
-                                                <fx:reference source="tooltipDuration"/>
-                                            </showDuration>
-                                        </Tooltip>
-                                    </tooltip>
-                                </RadioButton>
-                                <RadioButton fx:id="githubUpdateSource" text="Github" toggleGroup="$updateSourceToggle"
-                                             styleClass="radio-button-ui, radio-button-ui-main">
-                                    <graphic>
-                                        <GithubIco scaleX="${icoScale}" scaleY="${icoScale}"/>
-                                    </graphic>
-                                    <tooltip>
-                                        <Tooltip text="有魔法推荐选此，此更新源拥有所有版本">
-                                            <showDuration>
-                                                <fx:reference source="tooltipDuration"/>
-                                            </showDuration>
-                                        </Tooltip>
-                                    </tooltip>
-                                </RadioButton>
-                            </HBox>
-                            <HBox styleClass="h-box">
-                                <Text text="更新开发版"/>
-                                <HBox HBox.hgrow="ALWAYS"/>
-                                <Switch fx:id="updateDev"/>
-                            </HBox>
-                            <HBox styleClass="h-box">
-                                <Text text="自动更新"/>
-                                <HBox HBox.hgrow="ALWAYS"/>
-                                <Switch fx:id="autoUpdate"/>
-                            </HBox>
-                        </VBox>
-                    </TitledPane>
-                </Group>
                 <Group fx:id="behaviorPane">
                     <TitledPane fx:id="behaviorTitled" text="行为"
                                 styleClass="titled-pane-ui, titled-pane-ui-big, titled-pane-ui-pure, item-titled-pane">
@@ -206,6 +155,57 @@
                         </VBox>
                     </TitledPane>
                 </Group>
+                <Group fx:id="versionPane">
+                    <TitledPane fx:id="versionTitled" text="版本"
+                                styleClass="titled-pane-ui, titled-pane-ui-big, titled-pane-ui-pure, item-titled-pane">
+                        <VBox styleClass="item-v-box">
+                            <HBox styleClass="h-box" spacing="30">
+                                <fx:define>
+                                    <Double fx:id="icoScale" fx:value="1.1"/>
+                                    <ToggleGroup fx:id="updateSourceToggle"/>
+                                </fx:define>
+                                <Text text="更新源"/>
+                                <HBox HBox.hgrow="ALWAYS"/>
+                                <RadioButton fx:id="giteeUpdateSource" text="Gitee" toggleGroup="$updateSourceToggle"
+                                             styleClass="radio-button-ui, radio-button-ui-main">
+                                    <graphic>
+                                        <GiteeIco scaleX="${icoScale}" scaleY="${icoScale}"/>
+                                    </graphic>
+                                    <tooltip>
+                                        <Tooltip text="没有魔法推荐选此，此更新源只有稳定版">
+                                            <showDuration>
+                                                <fx:reference source="tooltipDuration"/>
+                                            </showDuration>
+                                        </Tooltip>
+                                    </tooltip>
+                                </RadioButton>
+                                <RadioButton fx:id="githubUpdateSource" text="Github" toggleGroup="$updateSourceToggle"
+                                             styleClass="radio-button-ui, radio-button-ui-main">
+                                    <graphic>
+                                        <GithubIco scaleX="${icoScale}" scaleY="${icoScale}"/>
+                                    </graphic>
+                                    <tooltip>
+                                        <Tooltip text="有魔法推荐选此，此更新源拥有所有版本">
+                                            <showDuration>
+                                                <fx:reference source="tooltipDuration"/>
+                                            </showDuration>
+                                        </Tooltip>
+                                    </tooltip>
+                                </RadioButton>
+                            </HBox>
+                            <HBox styleClass="h-box">
+                                <Text text="更新开发版"/>
+                                <HBox HBox.hgrow="ALWAYS"/>
+                                <Switch fx:id="updateDev"/>
+                            </HBox>
+                            <HBox styleClass="h-box">
+                                <Text text="自动更新"/>
+                                <HBox HBox.hgrow="ALWAYS"/>
+                                <Switch fx:id="autoUpdate"/>
+                            </HBox>
+                        </VBox>
+                    </TitledPane>
+                </Group>
             </VBox>
         </ScrollPane>
         <VBox pickOnBounds="false" alignment="TOP_LEFT" style="-fx-padding: 40 0 0 20;-fx-spacing: 15"
@@ -213,12 +213,12 @@
             <fx:define>
                 <ToggleGroup fx:id="navigationBarToggle"/>
             </fx:define>
-            <ToggleButton fx:id="versionNavigation" text="版本" styleClass="navigationBar"
-                          toggleGroup="$navigationBarToggle" selected="true" onAction="#scrollVersion"/>
-            <ToggleButton fx:id="behaviorNavigation" text="行为" styleClass="navigationBar"
+            <ToggleButton fx:id="behaviorNavigation" text="行为" selected="true" styleClass="navigationBar"
                           toggleGroup="$navigationBarToggle" onAction="#scrollBehavior"/>
             <ToggleButton fx:id="systemNavigation" text="系统" styleClass="navigationBar"
                           toggleGroup="$navigationBarToggle" onAction="#scrollSystem"/>
+            <ToggleButton fx:id="versionNavigation" text="版本" styleClass="navigationBar"
+                          toggleGroup="$navigationBarToggle" onAction="#scrollVersion"/>
         </VBox>
     </StackPane>
     <NotificationManager fx:id="notificationManager" notificationPos="BOTTOM_CENTER">

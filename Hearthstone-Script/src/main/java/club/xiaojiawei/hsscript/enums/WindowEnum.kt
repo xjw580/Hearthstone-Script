@@ -1,8 +1,6 @@
 package club.xiaojiawei.hsscript.enums
 
 import club.xiaojiawei.config.log
-import club.xiaojiawei.enums.CardTypeEnum
-import club.xiaojiawei.enums.CardTypeEnum.UNKNOWN
 import club.xiaojiawei.hsscript.data.SCRIPT_NAME
 import javafx.stage.Screen
 import javafx.stage.StageStyle
@@ -69,6 +67,7 @@ enum class WindowEnum(
     VERSION_MSG(
         "versionMsg.fxml", formatTitle("版本说明"),
         width = 550.0,
+        cache = false,
         alwaysOnTop = true
     ),
     GAME_DATA_ANALYSIS(

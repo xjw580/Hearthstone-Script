@@ -2,6 +2,7 @@ package club.xiaojiawei.hsscript.utils
 
 import club.xiaojiawei.bean.LRunnable
 import club.xiaojiawei.config.EXTRA_THREAD_POOL
+import club.xiaojiawei.config.VIRTUAL_THREAD_POOL
 import club.xiaojiawei.config.log
 import club.xiaojiawei.enums.ModeEnum
 import club.xiaojiawei.hsscript.bean.GameRect
@@ -460,17 +461,17 @@ object GameUtil {
     }
 
     fun isAliveOfGame(): Boolean {
-        return SystemUtil.isAliveOfProgram(GAME_PROGRAM_NAME)
+        return SystemDll.INSTANCE.isProcessRunning(GAME_PROGRAM_NAME)
     }
 
     fun isAliveOfPlatform(): Boolean {
-        return SystemUtil.isAliveOfProgram(PLATFORM_PROGRAM_NAME)
+        return SystemDll.INSTANCE.isProcessRunning(PLATFORM_PROGRAM_NAME)
     }
 
     fun findGameHWND(): WinDef.HWND? {
         return SystemUtil.findHWND("UnityWndClass", GAME_CN_NAME)
             ?: SystemUtil.findHWND("UnityWndClass", GAME_US_NAME)
-            ?: SystemDll.INSTANCE.FindWindowsByProcessName(GAME_PROGRAM_NAME)
+            ?: SystemDll.INSTANCE.findWindowsByProcessName(GAME_PROGRAM_NAME)
     }
 
     fun findPlatformHWND(): WinDef.HWND? {
@@ -495,29 +496,39 @@ object GameUtil {
     /**
      * 通过此方式停止的游戏，screen.log监听器可能无法监测到游戏被关闭
      */
-    @Suppress("DEPRECATION")
-    fun killGame() {
-        if (isAliveOfGame()) {
-            try {
-                SystemDll.INSTANCE.closeProgram(GAME_HWND)
-                delay(3000)
-                if (isAliveOfGame()) {
-                    val pid = SystemDll.INSTANCE.FindProcessId_(GAME_PROGRAM_NAME)
-                    Runtime.getRuntime().exec("cmd /c taskkill -f -pid $pid")
-                        .waitFor()
-                    delay(3000)
-                    if (isAliveOfGame()) {
-                        Runtime.getRuntime().exec("cmd /c taskkill /f /t /im $GAME_PROGRAM_NAME")
-                            .waitFor()
-                        delay(3000)
+    fun killGame(sync: Boolean = false) {
+        val exec = {
+            if (isAliveOfGame()) {
+                kotlin.runCatching {
+                    for (i in 0 until 2) {
+                        SystemDll.INSTANCE.quitWindow(GAME_HWND)
+                        delay(2000)
+                        if (!isAliveOfGame()) return@runCatching
                     }
+                    for (i in 0 until 2) {
+                        SystemDll.INSTANCE.killProcessByName(GAME_PROGRAM_NAME)
+                        delay(2000)
+                        if (!isAliveOfGame()) return@runCatching
+                    }
+                }.onSuccess {
+                    if (isAliveOfGame()) {
+                        log.error { "${GAME_CN_NAME}关闭失败" }
+                    } else {
+                        log.info { "${GAME_CN_NAME}已关闭" }
+                    }
+                }.onFailure {
+                    log.error(it) { "关闭${GAME_CN_NAME}异常" }
                 }
-                log.info { "${GAME_CN_NAME}已关闭" }
-            } catch (e: IOException) {
-                log.error(e) { "关闭${GAME_CN_NAME}异常" }
+            } else {
+                log.info { "${GAME_CN_NAME}不在运行" }
             }
-        } else {
-            log.info { "${GAME_CN_NAME}不在运行" }
+        }
+        if (sync){
+            exec()
+        }else{
+            VIRTUAL_THREAD_POOL.submit {
+                exec()
+            }
         }
     }
 
@@ -525,8 +536,8 @@ object GameUtil {
         val platformHWND: WinDef.HWND? = findPlatformHWND()
         val loginPlatformHWND: WinDef.HWND? = findLoginPlatformHWND()
         if (platformHWND != null || loginPlatformHWND != null) {
-            SystemDll.INSTANCE.closeProgram(platformHWND)
-            SystemDll.INSTANCE.closeProgram(loginPlatformHWND)
+            SystemDll.INSTANCE.quitWindow(platformHWND)
+            SystemDll.INSTANCE.quitWindow(loginPlatformHWND)
             log.info { "${PLATFORM_CN_NAME}已关闭" }
         } else {
             log.info { "${PLATFORM_CN_NAME}不在运行" }
@@ -538,7 +549,7 @@ object GameUtil {
         if (loginPlatformHWND == null) {
             log.info { "${PLATFORM_LOGIN_CN_NAME}不在运行" }
         } else {
-            SystemDll.INSTANCE.closeProgram(loginPlatformHWND)
+            SystemDll.INSTANCE.quitWindow(loginPlatformHWND)
             log.info { "${PLATFORM_LOGIN_CN_NAME}已关闭" }
         }
     }
@@ -557,7 +568,7 @@ object GameUtil {
 
         val files: Array<File>?
         if (gameLogDir.exists() && gameLogDir.isDirectory) {
-            files = gameLogDir.listFiles()
+            files = gameLogDir.listFiles() ?: return null
             Arrays.sort(files, Comparator.comparing { obj: File -> obj.name })
             if (files.isNotEmpty()) return files[files.size - 1]
         }

@@ -83,7 +83,7 @@ class LoginPlatformStarter : AbstractStarter() {
 
     private fun clickLoginButton(loginPlatformHWND: HWND) {
         log.info { "点击登入按钮" }
-        SystemDll.INSTANCE.clickLoginPlatformLoginBtn(loginPlatformHWND)
+        SystemDll.INSTANCE.clickPlatformLoginBtn(loginPlatformHWND)
     }
 
     @Deprecated("体验差")

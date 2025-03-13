@@ -27,12 +27,12 @@ class InjectStarter : AbstractStarter() {
         val preventAC = ConfigUtil.getBoolean(ConfigEnum.PREVENT_AC)
         log.info { "阻止游戏反作弊：${preventAC}" }
         if (mouseControlMode === MouseControlModeEnum.MESSAGE || preventAC){
-            if (GAME_HWND != null && injectCheck()){
-                startNextStarter()
+            if (GAME_HWND == null || !injectCheck()){
+                pause()
                 return
             }
         }
-        pause()
+        startNextStarter()
     }
 
     private fun injectCheck(): Boolean {
@@ -49,7 +49,7 @@ class InjectStarter : AbstractStarter() {
                 return true
             } else {
                 log.error { "注入失败：${result}" }
-                if (!SystemDll.INSTANCE.IsRunAsAdministrator()) {
+                if (!SystemDll.INSTANCE.isRunAsAdministrator()) {
                     log.error { "请以管理员运行本软件" }
                     SystemUtil.messageError("请以管理员运行本软件")
                 }

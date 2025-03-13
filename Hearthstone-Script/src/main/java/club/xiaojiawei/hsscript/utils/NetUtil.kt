@@ -20,7 +20,7 @@ object NetUtil {
 
     fun getSystemProxy(): Proxy? {
         val proxyPointer = Memory(256)
-        SystemDll.INSTANCE.GetWindowsProxy(proxyPointer, proxyPointer.size().toInt())
+        SystemDll.INSTANCE.getWindowsProxy(proxyPointer, proxyPointer.size().toInt())
         val proxyUrl = proxyPointer.getString(0)
         val split = proxyUrl.split(":")
         return if (split.size == 2) {

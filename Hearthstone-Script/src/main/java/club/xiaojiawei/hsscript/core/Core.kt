@@ -84,8 +84,8 @@ object Core {
      */
     fun restart() {
         CORE_THREAD_POOL.execute {
-            PauseStatus.isPause = true
-            GameUtil.killGame()
+            PauseStatus.asyncSetPause(true)
+            GameUtil.killGame(true)
             log.info { "${GAME_CN_NAME}重启中……" }
             PauseStatus.isPause = false
         }

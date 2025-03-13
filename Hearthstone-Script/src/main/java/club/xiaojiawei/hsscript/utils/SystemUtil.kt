@@ -11,6 +11,7 @@ import club.xiaojiawei.hsscript.dll.SystemDll.Companion.MB_ICONERROR
 import club.xiaojiawei.hsscript.dll.SystemDll.Companion.MB_ICONINFORMATION
 import club.xiaojiawei.hsscript.dll.SystemDll.Companion.MB_OK
 import club.xiaojiawei.hsscript.dll.SystemDll.Companion.MB_TOPMOST
+import club.xiaojiawei.hsscript.dll.User32ExDll
 import club.xiaojiawei.hsscript.dll.User32ExDll.Companion.SC_MONITORPOWER
 import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.enums.RegCommonNameEnum
@@ -18,7 +19,6 @@ import club.xiaojiawei.hsscript.enums.WindowEnum
 import club.xiaojiawei.hsscript.status.PauseStatus
 import club.xiaojiawei.util.RandomUtil
 import club.xiaojiawei.util.isTrue
-import com.sun.jna.WString
 import com.sun.jna.platform.win32.*
 import com.sun.jna.platform.win32.WinUser.WM_SYSCOMMAND
 import javafx.application.Platform
@@ -142,7 +142,7 @@ object SystemUtil {
      */
     fun showWindow(programHWND: WinDef.HWND?): Boolean {
         programHWND ?: return false
-        if (SystemDll.INSTANCE.IsIconicWindow(programHWND)) {
+        if (User32ExDll.INSTANCE.IsIconic(programHWND)) {
             if (!User32.INSTANCE.ShowWindow(programHWND, 9)) {
                 log.error { "显示窗口异常，错误代码：" + Kernel32.INSTANCE.GetLastError() }
                 return false
@@ -188,7 +188,7 @@ object SystemUtil {
      * @param delay
      */
     fun delay(delay: Int) {
-        ROBOT.delay(delay)
+        Thread.sleep(delay.toLong())
     }
 
     fun delay(minDelay: Int, maxDelay: Int) {
@@ -235,13 +235,6 @@ object SystemUtil {
         ROBOT.keyRelease(115)
         ROBOT.keyRelease(18)
         log.info { "已关闭程序" }
-    }
-
-    @Suppress("DEPRECATION")
-    fun isAliveOfProgram(programName: String): Boolean {
-        return String(
-            Runtime.getRuntime().exec("cmd /c tasklist | find \"$programName\"").inputStream.readAllBytes()
-        ).isNotBlank()
     }
 
     /**
@@ -337,7 +330,7 @@ object SystemUtil {
     fun shutdown() {
         val gameHWND = GAME_HWND
         if (gameHWND != null) {
-            SystemDll.INSTANCE.uninstallDll(gameHWND)
+            SystemDll.INSTANCE.uninstallInjectDll(gameHWND)
         }
         removeTray()
         PauseStatus.isPause = true
@@ -355,9 +348,9 @@ object SystemUtil {
 
     fun message(text: String, type: Int, hwnd: WinDef.HWND? = null) {
         VIRTUAL_THREAD_POOL.submit {
-            SystemDll.INSTANCE.MessageBox_(hwnd ?: let {
+            SystemDll.INSTANCE.messageBox(hwnd ?: let {
                 WindowUtil.getStage(WindowEnum.MAIN)?.let {
-                    SystemDll.INSTANCE.FindWindowW_(null, WString(it.title))
+                    User32.INSTANCE.FindWindow(null, it.title)
                 }
             }, text, SCRIPT_NAME, type xor MB_TOPMOST)
         }

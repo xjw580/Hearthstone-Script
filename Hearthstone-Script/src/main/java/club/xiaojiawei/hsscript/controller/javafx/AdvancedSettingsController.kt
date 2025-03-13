@@ -4,11 +4,9 @@ import club.xiaojiawei.controls.ico.HelpIco
 import club.xiaojiawei.hsscript.bean.HotKey
 import club.xiaojiawei.hsscript.bean.single.repository.GiteeRepository
 import club.xiaojiawei.hsscript.controller.javafx.view.AdvancedSettingsView
-import club.xiaojiawei.hsscript.data.MOUSE_DRIVE_PATH
 import club.xiaojiawei.hsscript.dll.SystemDll
 import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.enums.MouseControlModeEnum
-import club.xiaojiawei.hsscript.initializer.DriveInitializer
 import club.xiaojiawei.hsscript.listener.GlobalHotkeyListener
 import club.xiaojiawei.hsscript.listener.SystemListener
 import club.xiaojiawei.hsscript.utils.ConfigExUtil
@@ -21,7 +19,6 @@ import club.xiaojiawei.hsscript.utils.ConfigExUtil.storeTopGameWindow
 import club.xiaojiawei.hsscript.utils.ConfigUtil
 import club.xiaojiawei.hsscript.utils.ConfigUtil.getBoolean
 import club.xiaojiawei.hsscript.utils.ConfigUtil.putBoolean
-import club.xiaojiawei.hsscript.utils.WindowUtil
 import club.xiaojiawei.util.isFalse
 import club.xiaojiawei.util.isTrue
 import com.melloware.jintellitype.JIntellitypeConstants
@@ -37,7 +34,6 @@ import javafx.scene.control.*
 import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyEvent
 import javafx.util.Duration
-import java.io.File
 import java.net.URL
 import java.util.*
 
@@ -151,16 +147,16 @@ class AdvancedSettingsController : AdvancedSettingsView(), Initializable {
             val newV = newValue.toDouble()
             val oldV = oldValue.toDouble()
             if (newV - oldV > 0) {
-                if (newV > behaviorMaxY) {
+                if (newV > systemMaxY) {
+                    navigationBarToggle.selectToggle(versionNavigation)
+                } else if (newV > behaviorMaxY) {
                     navigationBarToggle.selectToggle(systemNavigation)
-                } else if (newV > versionMaxY) {
-                    navigationBarToggle.selectToggle(behaviorNavigation)
                 }
             } else {
-                if (newV <= versionMinY) {
-                    navigationBarToggle.selectToggle(versionNavigation)
-                } else if (newV <= behaviorMinY) {
+                if (newV <= behaviorMinY) {
                     navigationBarToggle.selectToggle(behaviorNavigation)
+                } else if (newV <= systemMinY) {
+                    navigationBarToggle.selectToggle(systemNavigation)
                 }
             }
         }
@@ -192,61 +188,12 @@ class AdvancedSettingsController : AdvancedSettingsView(), Initializable {
                     newValue, true
                 )
             }
-        var mouseControlModeComboBoxCallback = false
         //        监听控制开关
         mouseControlModeComboBox.valueProperty()
             .addListener { observable, oldValue, newValue ->
-                if (mouseControlModeComboBoxCallback) {
-                    mouseControlModeComboBoxCallback = false
-                    return@addListener
-                }
-                val exec = {
-                    storeMouseControlMode(
-                        newValue
-                    )
-                    topGameWindow.status =
-                        (newValue === MouseControlModeEnum.EVENT || newValue === MouseControlModeEnum.DRIVE)
-                }
-                if (oldValue === MouseControlModeEnum.DRIVE){
-                    storeMouseControlMode(
-                        newValue
-                    )
-                    if (File(MOUSE_DRIVE_PATH).exists()) {
-                        WindowUtil.createAlert(
-                            "是否卸载驱动",
-                            null,
-                            {
-                                DriveInitializer().uninstall()
-                            },
-                            {
-                            },
-                            rootPane.scene.window,
-                            "是",
-                            "否"
-                        ).show()
-                    }
-                } else if (newValue === MouseControlModeEnum.DRIVE) {
-                    if (File(MOUSE_DRIVE_PATH).exists()) {
-                        exec()
-                    } else {
-                        WindowUtil.createAlert(
-                            "${MouseControlModeEnum.DRIVE}模式需要安装驱动（安装时请提前关闭杀毒软件或windows defender）",
-                            "是否安装",
-                            {
-                                exec()
-                            },
-                            {
-                                mouseControlModeComboBoxCallback = true
-                                mouseControlModeComboBox.value = oldValue
-                            },
-                            rootPane.scene.window,
-                            "是",
-                            "否"
-                        ).show()
-                    }
-                } else {
-                    exec()
-                }
+                storeMouseControlMode(newValue)
+                topGameWindow.status =
+                    (newValue === MouseControlModeEnum.EVENT || newValue === MouseControlModeEnum.DRIVE)
             }
         //        监听置顶游戏窗口开关
         topGameWindow.statusProperty()
@@ -366,7 +313,7 @@ class AdvancedSettingsController : AdvancedSettingsView(), Initializable {
                 newValue.isTrue {
                     SystemListener.check()
                 }.isFalse {
-                    SystemDll.INSTANCE.SetWakeUpTimer(0)
+                    SystemDll.INSTANCE.setWakeUpTimer(0)
                 }
             }
     }

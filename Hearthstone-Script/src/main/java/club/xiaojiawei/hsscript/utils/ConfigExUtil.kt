@@ -122,25 +122,32 @@ object ConfigExUtil {
         fileLogLevel = getFileLogLevel().toInt()
     }
 
-    fun storeMouseControlMode(mouseControlModeEnum: MouseControlModeEnum) {
-        ConfigUtil.putString(ConfigEnum.MOUSE_CONTROL_MODE, mouseControlModeEnum.name)
+    fun storeMouseControlMode(mouseControlModeEnum: MouseControlModeEnum):Boolean {
+        val oldMouseControlMode = getMouseControlMode()
         when (mouseControlModeEnum) {
             MouseControlModeEnum.MESSAGE -> {
+                if (oldMouseControlMode === MouseControlModeEnum.DRIVE) {
+                    DriveInitializer().uninstall()
+                }
                 InjectStarter().use {
                     it.start()
                 }
-                return
             }
 
             MouseControlModeEnum.EVENT -> {
-
+                if (oldMouseControlMode === MouseControlModeEnum.DRIVE) {
+                    DriveInitializer().uninstall()
+                }
+                SystemDll.INSTANCE.uninstallInjectDll(GAME_HWND)
             }
 
             MouseControlModeEnum.DRIVE -> {
                 DriveInitializer().install()
+                SystemDll.INSTANCE.uninstallInjectDll(GAME_HWND)
             }
         }
-        SystemDll.INSTANCE.uninstallDll(GAME_HWND)
+        ConfigUtil.putString(ConfigEnum.MOUSE_CONTROL_MODE, mouseControlModeEnum.name)
+        return true
     }
 
     fun getMouseControlMode(): MouseControlModeEnum {
@@ -174,6 +181,9 @@ object ConfigExUtil {
         val gameDir = File(ConfigUtil.getString(ConfigEnum.GAME_PATH))
         if (gameDir.exists()) {
             val acFile = gameDir.resolve(".ac")
+            if (acFile.exists()) {
+                Files.setAttribute(acFile.toPath(), "dos:hidden", false)
+            }
             FileOutputStream(acFile).use {
                 it.write(status.toString().toByteArray())
             }

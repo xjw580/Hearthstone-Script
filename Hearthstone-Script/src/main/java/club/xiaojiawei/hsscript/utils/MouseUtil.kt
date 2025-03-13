@@ -4,11 +4,10 @@ import club.xiaojiawei.enums.ModeEnum
 import club.xiaojiawei.hsscript.bean.isDeckStrategyThread
 import club.xiaojiawei.hsscript.dll.SystemDll
 import club.xiaojiawei.hsscript.enums.ConfigEnum
+import club.xiaojiawei.hsscript.listener.WorkListener
 import club.xiaojiawei.hsscript.status.Mode
-import club.xiaojiawei.hsscript.status.PauseStatus
 import com.sun.jna.platform.win32.WinDef.HWND
 import java.awt.Point
-import kotlin.math.abs
 
 /**
  * 鼠标工具类
@@ -17,21 +16,12 @@ import kotlin.math.abs
  */
 object MouseUtil {
 
-    /**
-     * 鼠标每次移动后的最小间隔时间：ms
-     */
-    private const val MIN_MOVE_INTERVAL = 1
+    private val mouseMovePauseStep: Int
+        get() {
+            return ConfigUtil.getInt(ConfigEnum.PAUSE_STEP)
+        }
 
-    private val MAX_MOVE_INTERVAL = 4
-
-    /**
-     * 鼠标每次移动的距离：px
-     */
-    private const val MOVE_DISTANCE = 10
-
-    private var mouseMovePauseStep = ConfigUtil.getInt(ConfigEnum.PAUSE_STEP)
-
-    private val lastPoint = Point(0, 0)
+    private val prevPoint = Point(0, 0)
 
     private fun validPoint(point: Point?): Boolean {
         return point?.let {
@@ -40,8 +30,8 @@ object MouseUtil {
     }
 
     private fun savePos(pos: Point) {
-        lastPoint.x = pos.x
-        lastPoint.y = pos.y
+        prevPoint.x = pos.x
+        prevPoint.y = pos.y
     }
 
     /**
@@ -53,7 +43,7 @@ object MouseUtil {
     }
 
     fun leftButtonClick(hwnd: HWND?) {
-        leftButtonClick(lastPoint, hwnd)
+        leftButtonClick(prevPoint, hwnd)
     }
 
     fun leftButtonClick(
@@ -62,13 +52,15 @@ object MouseUtil {
         mouseMode: Int = ConfigExUtil.getMouseControlMode().code
     ) {
         hwnd ?: return
-        if (isDeckStrategyThread() && Mode.currMode !== ModeEnum.GAMEPLAY) return
-        if (!PauseStatus.isPause && validPoint(pos)) {
+        if (isDeckStrategyThread() && Mode.currMode !== ModeEnum.GAMEPLAY || !WorkListener.working) return
+
+        if (validPoint(pos)) {
             synchronized(MouseUtil::javaClass) {
-                if (lastPoint != pos) {
-                    SystemDll.INSTANCE.simulateHumanMove(
-                        lastPoint.x,
-                        lastPoint.y,
+                val prevPoint = prevPoint
+                if (prevPoint != pos) {
+                    SystemDll.INSTANCE.simulateHumanMoveMouse(
+                        prevPoint.x,
+                        prevPoint.y,
                         pos.x,
                         pos.y,
                         hwnd,
@@ -84,7 +76,7 @@ object MouseUtil {
     }
 
     fun rightButtonClick(hwnd: HWND?) {
-        rightButtonClick(lastPoint, hwnd)
+        rightButtonClick(prevPoint, hwnd)
     }
 
     fun rightButtonClick(
@@ -93,14 +85,15 @@ object MouseUtil {
         mouseMode: Int = ConfigExUtil.getMouseControlMode().code
     ) {
         hwnd ?: return
-        if (isDeckStrategyThread() && Mode.currMode !== ModeEnum.GAMEPLAY) return
+        if (isDeckStrategyThread() && Mode.currMode !== ModeEnum.GAMEPLAY || !WorkListener.working) return
 
-        if (!PauseStatus.isPause && validPoint(pos)) {
+        if (validPoint(pos)) {
             synchronized(MouseUtil::javaClass) {
-                if (lastPoint != pos) {
-                    SystemDll.INSTANCE.simulateHumanMove(
-                        lastPoint.x,
-                        lastPoint.y,
+                val prevPoint = prevPoint
+                if (prevPoint != pos) {
+                    SystemDll.INSTANCE.simulateHumanMoveMouse(
+                        prevPoint.x,
+                        prevPoint.y,
                         pos.x,
                         pos.y,
                         hwnd,
@@ -130,15 +123,17 @@ object MouseUtil {
         mouseMode: Int = ConfigExUtil.getMouseControlMode().code
     ) {
         hwnd ?: return
-        if (isDeckStrategyThread() && Mode.currMode !== ModeEnum.GAMEPLAY) return
+        if (isDeckStrategyThread() && Mode.currMode !== ModeEnum.GAMEPLAY || !WorkListener.working) return
         synchronized(MouseUtil::javaClass) {
+            if (!WorkListener.working) return
+            val prevPoint = prevPoint
             if (validPoint(startPos)) {
                 startPos!!
                 moveMouseByHuman(startPos, hwnd)
-                if (!PauseStatus.isPause && validPoint(endPos)) {
+                if (validPoint(endPos)) {
                     SystemUtil.delayShort()
                     if (startPos != endPos) {
-                        SystemDll.INSTANCE.simulateHumanMove(
+                        SystemDll.INSTANCE.simulateHumanMoveMouse(
                             startPos.x,
                             startPos.y,
                             endPos.x,
@@ -150,11 +145,11 @@ object MouseUtil {
                         savePos(endPos)
                     }
                 }
-            } else if (validPoint(lastPoint)) {
-                if (lastPoint != endPos) {
-                    SystemDll.INSTANCE.simulateHumanMove(
-                        lastPoint.x,
-                        lastPoint.y,
+            } else if (validPoint(prevPoint)) {
+                if (prevPoint != endPos) {
+                    SystemDll.INSTANCE.simulateHumanMoveMouse(
+                        prevPoint.x,
+                        prevPoint.y,
                         endPos.x,
                         endPos.y,
                         hwnd,
@@ -165,58 +160,6 @@ object MouseUtil {
                 }
             }
         }
-    }
-
-    @Deprecated("")
-    fun moveMouseByRobot(endPos: Point, hwnd: HWND?) {
-        moveMouseByRobot(null, endPos, hwnd)
-    }
-
-    /**
-     * 鼠标按照直线方式移动
-     */
-    @Deprecated("")
-    fun moveMouseByRobot(startPos: Point?, endPos: Point, hwnd: HWND?) {
-        hwnd ?: return
-        if (!PauseStatus.isPause && validPoint(endPos)) {
-            val endX = endPos.x
-            val endY = endPos.y
-            if (validPoint(startPos)) {
-                var startX = startPos!!.x
-                var startY = startPos.y
-                if (abs((startY - endY).toDouble()) <= 5) {
-                    startX -= MOVE_DISTANCE
-                    while (startX >= endX && !PauseStatus.isPause) {
-                        SystemDll.INSTANCE.moveMouse(startX.toLong(), startY.toLong(), hwnd)
-                        SystemUtil.delay(MIN_MOVE_INTERVAL, MAX_MOVE_INTERVAL)
-                        startX -= MOVE_DISTANCE
-                    }
-                } else if (abs((startX - endX).toDouble()) <= 5) {
-                    startY -= MOVE_DISTANCE
-                    while (startY >= endY && !PauseStatus.isPause) {
-                        SystemDll.INSTANCE.moveMouse(startX.toLong(), startY.toLong(), hwnd)
-                        SystemUtil.delay(MIN_MOVE_INTERVAL, MAX_MOVE_INTERVAL)
-                        startY -= MOVE_DISTANCE
-                    }
-                } else {
-                    val k = calcK(startX, startY, endX, endY)
-                    val b = startY - k * startX
-                    startY -= MOVE_DISTANCE
-                    while (startY >= endY && !PauseStatus.isPause) {
-                        val x = ((startY - b) / k).toInt()
-                        SystemDll.INSTANCE.moveMouse(x.toLong(), startY.toLong(), hwnd)
-                        SystemUtil.delay(MIN_MOVE_INTERVAL, MAX_MOVE_INTERVAL)
-                        startY -= MOVE_DISTANCE
-                    }
-                }
-            }
-            SystemDll.INSTANCE.moveMouse(endX.toLong(), endY.toLong(), hwnd)
-            savePos(endPos)
-        }
-    }
-
-    fun reload() {
-        mouseMovePauseStep = ConfigUtil.getInt(ConfigEnum.PAUSE_STEP)
     }
 
 }

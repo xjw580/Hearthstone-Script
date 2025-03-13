@@ -180,7 +180,7 @@ class MainApplication : Application() {
     }
 
     private fun checkSystem() {
-        SystemDll.INSTANCE.IsRunAsAdministrator().isFalse {
+        SystemDll.INSTANCE.isRunAsAdministrator().isFalse {
             val text = "当前进程不是以管理员启动，功能可能受限"
             log.warn { text }
             SystemUtil.notice(text)
@@ -202,7 +202,7 @@ class MainApplication : Application() {
             Runtime.getRuntime()
                 .addShutdownHook(
                     LThread(
-                        { SystemDll.INSTANCE.uninstallDll(GameUtil.findGameHWND()) },
+                        { SystemDll.INSTANCE.uninstallInjectDll(GameUtil.findGameHWND()) },
                         "ShutdownHook Thread"
                     )
                 )
