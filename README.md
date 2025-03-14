@@ -1,13 +1,13 @@
 ![GitHub release](https://img.shields.io/github/release/xjw580/Hearthstone-Script.svg)  ![GitHub](https://img.shields.io/github/license/xjw580/Hearthstone-Script?style=flat-square)
 
-# 🎮 炉石传说脚本（雷火服封禁力度大）
+# 炉石传说脚本
 <img src="Hearthstone-Script/src/main/resources/resources/img/favicon.png" alt="Image description" width="100" height="100">
 
 
 
 ## ⚠️ 免责申明
 
-本项目仅供学习交流 **`Java`**、**`Kotlin`** 以及 **《炉石传说》玩法**，不得用于任何违反法律法规及游戏协议的地方！🚨😡  
+本项目仅供学习交流 **`Java`**、**`Kotlin`** 以及 **`炉石传说`** 玩法，不得用于任何违反法律法规及游戏协议的地方！🚨😡  
 
 
 
