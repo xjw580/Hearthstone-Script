@@ -3,7 +3,6 @@ package club.xiaojiawei.hsscript.controller.javafx
 import ch.qos.logback.classic.Level
 import ch.qos.logback.classic.spi.ILoggingEvent
 import club.xiaojiawei.DeckStrategy
-import club.xiaojiawei.config.VIRTUAL_THREAD_POOL
 import club.xiaojiawei.config.log
 import club.xiaojiawei.controls.CopyLabel
 import club.xiaojiawei.controls.Modal
@@ -33,6 +32,7 @@ import club.xiaojiawei.hsscript.utils.ConfigUtil.putString
 import club.xiaojiawei.hsscript.utils.FXUtil
 import club.xiaojiawei.hsscript.utils.SystemUtil.copyToClipboard
 import club.xiaojiawei.hsscript.utils.WindowUtil
+import club.xiaojiawei.hsscript.utils.go
 import club.xiaojiawei.hsscript.utils.runUI
 import javafx.animation.RotateTransition
 import javafx.animation.Timeline
@@ -246,20 +246,18 @@ class MainController : MainView() {
             )
         }
 
-        val warInstance = WarEx
-
         //        游戏局数监听
-        warInstance.warCountProperty.addListener { observableValue: ObservableValue<out Number>?, number: Number?, t1: Number ->
+        WarEx.warCountProperty.addListener { observableValue: ObservableValue<out Number>?, number: Number?, t1: Number ->
             log.info {
                 "已完成第 $t1 把游戏"
             }
-            gameCount.text = warInstance.warCount.toString()
+            gameCount.text = WarEx.warCount.toString()
             winningPercentage.text = (String.format(
                 "%.1f",
-                warInstance.winCount.toDouble() / warInstance.warCount * 100.0
+                WarEx.winCount.toDouble() / WarEx.warCount * 100.0
             ) + "%")
-            gameTime.text = formatTime(warInstance.hangingTime)
-            exp.text = warInstance.hangingEXP.toString()
+            gameTime.text = formatTime(WarEx.hangingTime)
+            exp.text = WarEx.hangingEXP.toString()
         }
         DeckStrategyManager.deckStrategies.addListener(SetChangeListener { observable: SetChangeListener.Change<out DeckStrategy?>? ->
             reloadRunMode()
@@ -383,7 +381,7 @@ class MainController : MainView() {
         transition.toAngle = 360.0
         transition.cycleCount = Timeline.INDEFINITE
         transition.play()
-        VIRTUAL_THREAD_POOL.submit {
+        go {
             runCatching {
                 VersionListener.checkVersion()
             }
@@ -502,6 +500,11 @@ class MainController : MainView() {
     @FXML
     protected fun openVersionMsg(mouseEvent: MouseEvent?) {
         WindowUtil.showStage(WindowEnum.VERSION_MSG, rootPane.scene.window)
+    }
+
+    @FXML
+    protected fun openStatistics(actionEvent: ActionEvent) {
+        WindowUtil.showStage(WindowEnum.STATISTICS, rootPane.scene.window)
     }
 
     companion object {

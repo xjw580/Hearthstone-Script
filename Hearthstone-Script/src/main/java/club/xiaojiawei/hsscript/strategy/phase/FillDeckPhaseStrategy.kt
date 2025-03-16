@@ -10,7 +10,6 @@ import club.xiaojiawei.hsscript.enums.WindowEnum
 import club.xiaojiawei.hsscript.status.DeckStrategyManager
 import club.xiaojiawei.hsscript.strategy.AbstractPhaseStrategy
 import club.xiaojiawei.hsscript.strategy.DeckStrategyActuator
-import club.xiaojiawei.hsscript.strategy.DeckStrategyActuator.deckStrategy
 import club.xiaojiawei.hsscript.utils.ConfigUtil
 import club.xiaojiawei.hsscript.utils.WindowUtil
 import club.xiaojiawei.hsscript.utils.runUI
@@ -37,8 +36,7 @@ object FillDeckPhaseStrategy : AbstractPhaseStrategy() {
                     WindowUtil.showStage(WindowEnum.GAME_DATA_ANALYSIS)
                 }
             }
-            deckStrategy = DeckStrategyManager.currentDeckStrategy
-            WarEx.startWar(DeckStrategyManager.currentDeckStrategy?.runModes[0])
+            WarEx.startWar(DeckStrategyManager.currentDeckStrategy?.runModes?.get(0))
             (LThread({
                 DeckStrategyActuator.reset()
             }, "Reset Deck Strategy Thread").also { addTask(it) }).start()

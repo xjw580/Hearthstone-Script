@@ -11,7 +11,7 @@
 <?import javafx.scene.text.Text?>
 <StackPane xmlns="http://javafx.com/javafx"
            xmlns:fx="http://javafx.com/fxml"
-           stylesheets="@css/developerSettings.css"
+           stylesheets="@../css/settings/developerSettings.css"
            fx:id="rootPane"
            fx:controller="club.xiaojiawei.hsscript.controller.javafx.DeveloperSettingsController">
     <VBox>

@@ -1,6 +1,5 @@
 package club.xiaojiawei.hsscript.controller.javafx
 
-import club.xiaojiawei.config.VIRTUAL_THREAD_POOL
 import club.xiaojiawei.hsscript.bean.GameRect
 import club.xiaojiawei.hsscript.data.GAME_CN_NAME
 import club.xiaojiawei.hsscript.data.GameRationConst
@@ -10,6 +9,7 @@ import club.xiaojiawei.hsscript.dll.SystemDll.Companion.MB_TOPMOST
 import club.xiaojiawei.hsscript.interfaces.StageHook
 import club.xiaojiawei.hsscript.utils.GameUtil
 import club.xiaojiawei.hsscript.utils.SystemUtil
+import club.xiaojiawei.hsscript.utils.go
 import com.sun.jna.platform.win32.User32
 import com.sun.jna.platform.win32.WinDef
 import com.sun.jna.platform.win32.WinDef.HWND
@@ -208,17 +208,15 @@ class GameMeasureModalController : Initializable, StageHook {
                 val exec = Consumer<Window> { newWindow ->
                     GameUtil.findGameHWND()?.let {
                         SystemDll.INSTANCE.topWindow(it, true)
-                    } ?: let {
-                        VIRTUAL_THREAD_POOL.submit {
-                            GameUtil.launchPlatformAndGame()
-                            SystemUtil.message("${GAME_CN_NAME}不在运行", type = MB_ICONERROR xor MB_TOPMOST)
-                            SystemDll.INSTANCE.topWindow(GameUtil.findGameHWND(), true)
-                        }
+                    } ?: go {
+                        GameUtil.launchPlatformAndGame()
+                        SystemUtil.message("${GAME_CN_NAME}不在运行", type = MB_ICONERROR xor MB_TOPMOST)
+                        SystemDll.INSTANCE.topWindow(GameUtil.findGameHWND(), true)
                     }
                     newWindow.showingProperty().addListener { _, _, isShow ->
                         if (isShow) {
                             updateTask?.cancel(true)
-                            updateTask = VIRTUAL_THREAD_POOL.submit {
+                            updateTask = go {
                                 while (!Thread.interrupted()) {
                                     GameUtil.findGameHWND()?.let {
                                         val gameRect = calcGameRect(it)

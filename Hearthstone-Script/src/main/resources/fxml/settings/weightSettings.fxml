@@ -13,7 +13,7 @@
 <?import club.xiaojiawei.controls.TableValueFilterManager?>
 <StackPane xmlns="http://javafx.com/javafx"
            xmlns:fx="http://javafx.com/fxml"
-           stylesheets="@css/weightSettings.css"
+           stylesheets="@../css/settings/weightSettings.css"
            fx:id="rootPane"
            fx:controller="club.xiaojiawei.hsscript.controller.javafx.WeightSettingsController">
     <fx:define>

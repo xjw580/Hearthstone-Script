@@ -15,10 +15,7 @@ import club.xiaojiawei.hsscript.dll.SystemDll
 import club.xiaojiawei.hsscript.dll.ZLaunchDll
 import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.enums.WindowEnum
-import club.xiaojiawei.hsscript.listener.GlobalHotkeyListener
-import club.xiaojiawei.hsscript.listener.SystemListener
-import club.xiaojiawei.hsscript.listener.VersionListener
-import club.xiaojiawei.hsscript.listener.WorkListener
+import club.xiaojiawei.hsscript.listener.*
 import club.xiaojiawei.hsscript.status.PauseStatus
 import club.xiaojiawei.hsscript.status.TaskManager
 import club.xiaojiawei.hsscript.utils.*
@@ -151,6 +148,7 @@ class MainApplication : Application() {
         VersionListener.launch
         WorkListener.launch
         SystemListener.launch
+        StatisticsListener.launch
     }
 
     private fun checkArg() {

@@ -11,7 +11,7 @@
 <?import club.xiaojiawei.controls.Switch?>
 <StackPane xmlns="http://javafx.com/javafx"
            xmlns:fx="http://javafx.com/fxml"
-           stylesheets="@css/strategySettings.css"
+           stylesheets="@../css/settings/strategySettings.css"
            fx:id="rootPane"
            fx:controller="club.xiaojiawei.hsscript.controller.javafx.StrategySettingsController">
     <fx:define>

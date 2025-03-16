@@ -3,6 +3,7 @@ package club.xiaojiawei.hsscript.utils
 import club.xiaojiawei.CardAction
 import club.xiaojiawei.bean.Card
 import club.xiaojiawei.bean.CardWeight
+import club.xiaojiawei.bean.War
 import club.xiaojiawei.config.log
 import club.xiaojiawei.data.CARD_WEIGHT_TRIE
 import club.xiaojiawei.enums.ZoneEnum
@@ -14,10 +15,9 @@ import club.xiaojiawei.hsscript.bean.log.TagChangeEntity
 import club.xiaojiawei.hsscript.bean.single.WarEx
 import club.xiaojiawei.hsscript.data.WEIGHT_CONFIG_PATH
 import club.xiaojiawei.hsscript.status.CardActionManager.CARD_ACTION_MAP
-import club.xiaojiawei.hsscript.strategy.DeckStrategyActuator
+import club.xiaojiawei.hsscript.status.DeckStrategyManager
 import club.xiaojiawei.mapper.BaseCardMapper
 import club.xiaojiawei.mapper.EntityMapper
-import club.xiaojiawei.bean.War
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
 import java.io.IOException
@@ -63,7 +63,7 @@ object CardUtil {
 
     fun setCardAction(card: Card?) {
         card ?: return
-        val deckStrategy = DeckStrategyActuator.deckStrategy
+        val deckStrategy = DeckStrategyManager.currentDeckStrategy
         deckStrategy ?: return
 
         val supplier: Supplier<CardAction>? = (CARD_ACTION_MAP[deckStrategy.pluginId] ?: let {

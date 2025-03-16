@@ -26,30 +26,29 @@ enum class WindowEnum(
     val initStyle: StageStyle = StageStyle.DECORATED,
 ) {
     SETTINGS(
-        "settings.fxml", formatTitle("设置"),
+        "settings/settings.fxml", formatTitle("设置"),
         width = 650.0, height = 450.0,
-        alwaysOnTop = true
     ),
     INIT_SETTINGS(
-        "initSettings.fxml"
+        "settings/initSettings.fxml"
     ),
     ADVANCED_SETTINGS(
-        "advancedSettings.fxml"
+        "settings/advancedSettings.fxml"
     ),
     PLUGIN_SETTINGS(
-        "pluginSettings.fxml"
+        "settings/pluginSettings.fxml"
     ),
     STRATEGY_SETTINGS(
-        "strategySettings.fxml"
+        "settings/strategySettings.fxml"
     ),
     WEIGHT_SETTINGS(
-        "weightSettings.fxml"
+        "settings/weightSettings.fxml"
     ),
     DEVELOPER_SETTINGS(
-        "developerSettings.fxml"
+        "settings/developerSettings.fxml"
     ),
     ABOUT(
-        "about.fxml"
+        "settings/about.fxml"
     ),
     MAIN(
         "main.fxml",
@@ -68,7 +67,10 @@ enum class WindowEnum(
         "versionMsg.fxml", formatTitle("版本说明"),
         width = 550.0,
         cache = false,
-        alwaysOnTop = true
+    ),
+    STATISTICS(
+        "statistics.fxml", formatTitle("数据统计"),
+        cache = false,
     ),
     GAME_DATA_ANALYSIS(
         "gameDataAnalysis.fxml", formatTitle("游戏数据分析"),

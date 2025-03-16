@@ -12,7 +12,7 @@
 <?import java.lang.String?>
 <StackPane xmlns="http://javafx.com/javafx"
            xmlns:fx="http://javafx.com/fxml"
-           stylesheets="@css/initSettings.css"
+           stylesheets="@../css/settings/initSettings.css"
            fx:id="rootPane"
            fx:controller="club.xiaojiawei.hsscript.controller.javafx.InitSettingsController">
     <VBox>
@@ -39,9 +39,20 @@
                     </Button>
                 </HBox>
                 <HBox styleClass="h-box">
-                    <Text text="战网账号密码"/>
+                    <Label text="战网账号密码" contentDisplay="RIGHT">
+                        <graphic>
+                            <Label>
+                                <graphic>
+                                    <HelpIco/>
+                                </graphic>
+                                <tooltip>
+                                    <Tooltip text="用于自动登录战网"/>
+                                </tooltip>
+                            </Label>
+                        </graphic>
+                    </Label>
                     <PasswordTextField styleClass="text-field-ui, text-field-ui-small" fx:id="password"
-                                       promptText="非必填项，防止登录失败用" hideForever="true"/>
+                                       promptText="" hideForever="true"/>
                 </HBox>
                 <HBox styleClass="h-box">
                     <Text text="选择卡组位"/>

@@ -9,6 +9,3 @@ changelog:
     - title: 🔧 重构与优化
       labels:
         - refactor
-    - title: 🛠 构建与依赖更新
-      labels:
-        - build

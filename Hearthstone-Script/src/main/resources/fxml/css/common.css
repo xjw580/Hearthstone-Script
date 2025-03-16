@@ -5,3 +5,10 @@
     -fx-border-width: 0;
     -fx-alignment: CENTER_RIGHT;
 }
+
+
+.scroll-pane-item {
+    -fx-fit-to-width: true;
+    -fx-hbar-policy: NEVER;
+    -fx-background-insets: 0
+}

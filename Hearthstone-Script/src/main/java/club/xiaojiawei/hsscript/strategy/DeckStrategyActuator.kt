@@ -1,6 +1,5 @@
 package club.xiaojiawei.hsscript.strategy
 
-import club.xiaojiawei.DeckStrategy
 import club.xiaojiawei.bean.Card
 import club.xiaojiawei.bean.isValid
 import club.xiaojiawei.bean.safeRun
@@ -8,6 +7,7 @@ import club.xiaojiawei.config.log
 import club.xiaojiawei.enums.ModeEnum
 import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.listener.log.ScreenLogListener
+import club.xiaojiawei.hsscript.status.DeckStrategyManager
 import club.xiaojiawei.hsscript.status.Mode
 import club.xiaojiawei.hsscript.status.PauseStatus
 import club.xiaojiawei.hsscript.utils.ConfigUtil
@@ -27,14 +27,8 @@ object DeckStrategyActuator {
 
     private val war = WAR
 
-    var deckStrategy: DeckStrategy? = null
-        set(value) {
-            log.info { "本局游戏使用策略：【${value?.name()}】" }
-            field = value
-        }
-
     fun reset() {
-        deckStrategy?.reset()
+        DeckStrategyManager.currentDeckStrategy?.reset()
 
         checkSurrender()
     }
@@ -112,7 +106,7 @@ object DeckStrategyActuator {
         val me = war.me
         try {
             val copyHandCards = HashSet(me.handArea.cards)
-            deckStrategy?.executeChangeCard(copyHandCards)
+            DeckStrategyManager.currentDeckStrategy?.executeChangeCard(copyHandCards)
             for (i in me.handArea.cards.indices) {
                 val card = me.handArea.cards[i]
                 if (!copyHandCards.contains(card)) {
@@ -159,7 +153,7 @@ object DeckStrategyActuator {
             war.me.safeRun {
                 log.info { "回合开始可用水晶数：" + it.usableResource }
             }
-            deckStrategy?.executeOutCard()
+            DeckStrategyManager.currentDeckStrategy?.executeOutCard()
             log.info { "执行出牌策略完毕" }
         } finally {
             GameUtil.cancelAction()
@@ -183,7 +177,7 @@ object DeckStrategyActuator {
         log.info { "执行发现选牌策略" }
 
         SystemUtil.delayShortMedium()
-        val index = deckStrategy?.executeDiscoverChooseCard(*cards) ?: 0
+        val index = DeckStrategyManager.currentDeckStrategy?.executeDiscoverChooseCard(*cards) ?: 0
         war.me.let {
             GameUtil.clickDiscover(index, it.handArea.cardSize())
             SystemUtil.delayShort()
@@ -208,7 +202,7 @@ object DeckStrategyActuator {
     }
 
     private fun checkSurrender(): Boolean {
-        deckStrategy?.let {
+        DeckStrategyManager.currentDeckStrategy?.let {
             if (it.needSurrender) {
                 GameUtil.surrender()
                 it.needSurrender = false

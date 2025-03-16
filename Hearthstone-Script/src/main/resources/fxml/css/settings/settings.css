@@ -46,9 +46,3 @@
 .control-btn {
     -fx-background-color: rgba(128, 128, 128, 0.5)
 }
-
-.scroll-pane-item {
-    -fx-fit-to-width: true;
-    -fx-hbar-policy: NEVER;
-    -fx-background-insets: 0
-}

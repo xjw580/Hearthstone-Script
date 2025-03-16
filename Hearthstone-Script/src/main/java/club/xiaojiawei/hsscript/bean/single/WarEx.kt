@@ -23,7 +23,7 @@ object WarEx {
 
     private val endCallbackList: MutableList<Runnable> = ArrayList()
 
-    private val war = WAR
+    val war = WAR
 
     /**
      * 已挂游戏局数
@@ -33,6 +33,10 @@ object WarEx {
     var warCount
         get() = warCountProperty.get()
         set(value) = warCountProperty.set(value)
+
+    var isWin = false
+
+    var aEXP = 0L
 
     /**
      * 已挂胜场
@@ -88,6 +92,8 @@ object WarEx {
             endTime = 0
             startTime = endTime
         }
+        isWin = false
+        aEXP = 0L
         print.isTrue {
             log.info { "已重置游戏状态" }
         }
@@ -118,9 +124,8 @@ object WarEx {
     @Synchronized
     fun endWar() {
         war.run {
-            var flag = false
             me.safeRun {
-                flag = printResult()
+                isWin = printResult()
             }
             endTime = if (startTime == 0L) 0 else System.currentTimeMillis()
             val time = (endTime - startTime) / 1000 / 60
@@ -146,9 +151,9 @@ object WarEx {
                     log.info { "未知模式，增加经验值0" }
                 }
             }
-            val earnExp = (min(time.toDouble(), 30.0) * (if (flag) winExp else lostExp)).toLong()
-            log.info { "本局游戏获得经验值：$earnExp" }
-            hangingEXP += earnExp.toInt()
+            aEXP = (min(time.toDouble(), 30.0) * (if (isWin) winExp else lostExp)).toLong()
+            log.info { "本局游戏获得经验值：$aEXP" }
+            hangingEXP += aEXP.toInt()
             endCallbackList.forEach(Consumer { obj: Runnable -> obj.run() })
             warCountProperty.set(warCountProperty.get() + 1)
         }

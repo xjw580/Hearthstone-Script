@@ -13,7 +13,7 @@
 <?import javafx.scene.text.Text?>
 <StackPane xmlns="http://javafx.com/javafx"
            xmlns:fx="http://javafx.com/fxml"
-           stylesheets="@css/about.css"
+           stylesheets="@../css/settings/about.css"
            fx:id="rootPane"
            fx:controller="club.xiaojiawei.hsscript.controller.javafx.AboutController">
     <VBox>
@@ -143,6 +143,11 @@
                                 <UrlLabel text="Interception" url="https://github.com/oblitum/Interception"/>
                                 <HBox HBox.hgrow="ALWAYS"/>
                                 <Label text="LGPL 3.0"/>
+                            </HBox>
+                            <HBox styleClass="h-box">
+                                <UrlLabel text="tilesfx" url="https://github.com/HanSolo/tilesfx"/>
+                                <HBox HBox.hgrow="ALWAYS"/>
+                                <Label text="Apache 2.0"/>
                             </HBox>
                         </VBox>
                     </TitledPane>

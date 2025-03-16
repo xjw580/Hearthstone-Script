@@ -2,7 +2,6 @@ package club.xiaojiawei.hsscript.controller.javafx
 
 import ch.qos.logback.classic.Level
 import club.xiaojiawei.config.DBConfig.DB_NAME
-import club.xiaojiawei.config.VIRTUAL_THREAD_POOL
 import club.xiaojiawei.config.log
 import club.xiaojiawei.controls.NotificationManager
 import club.xiaojiawei.controls.Switch
@@ -11,10 +10,7 @@ import club.xiaojiawei.hsscript.data.LOG_PATH
 import club.xiaojiawei.hsscript.data.ROOT_PATH
 import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.enums.WindowEnum
-import club.xiaojiawei.hsscript.utils.ConfigExUtil
-import club.xiaojiawei.hsscript.utils.ConfigUtil
-import club.xiaojiawei.hsscript.utils.NetUtil
-import club.xiaojiawei.hsscript.utils.SystemUtil
+import club.xiaojiawei.hsscript.utils.*
 import club.xiaojiawei.hsscript.utils.WindowUtil.showStage
 import javafx.beans.value.ObservableValue
 import javafx.event.ActionEvent
@@ -165,7 +161,7 @@ class DeveloperSettingsController : Initializable {
                     proxyPath = proxy.address().toString().removePrefix("/")
                 }
             }
-            VIRTUAL_THREAD_POOL.submit {
+            go {
                 Runtime.getRuntime()
                     .exec("cmd /c start ${exeFile.absolutePath} --proxyAddress=$proxyPath --dbPath=${Path.of(ROOT_PATH, DB_NAME)}")
             }

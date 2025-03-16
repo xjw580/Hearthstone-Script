@@ -1,7 +1,6 @@
 package club.xiaojiawei.hsscript.starter
 
 import club.xiaojiawei.config.EXTRA_THREAD_POOL
-import club.xiaojiawei.config.VIRTUAL_THREAD_POOL
 import club.xiaojiawei.config.log
 import club.xiaojiawei.hsscript.config.StarterConfig
 import club.xiaojiawei.hsscript.data.PLATFORM_CN_NAME
@@ -10,6 +9,7 @@ import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.utils.ConfigUtil
 import club.xiaojiawei.hsscript.utils.GameUtil
 import club.xiaojiawei.hsscript.utils.SystemUtil
+import club.xiaojiawei.hsscript.utils.go
 import club.xiaojiawei.util.isTrue
 import com.sun.jna.platform.win32.WinDef.HWND
 import java.awt.event.KeyEvent
@@ -50,7 +50,7 @@ class LoginPlatformStarter : AbstractStarter() {
                         }, 1, TimeUnit.SECONDS)
                         return@scheduleAtFixedRate
                     }
-                    VIRTUAL_THREAD_POOL.submit {
+                    go {
                         input(loginPlatformHWND)
                     }
                 }

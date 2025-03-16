@@ -13,7 +13,7 @@
 <?import javafx.util.Duration?>
 <StackPane xmlns="http://javafx.com/javafx"
            xmlns:fx="http://javafx.com/fxml"
-           stylesheets="@css/advancedSettings.css"
+           stylesheets="@../css/settings/advancedSettings.css"
            fx:id="rootPane"
            fx:controller="club.xiaojiawei.hsscript.controller.javafx.AdvancedSettingsController">
     <fx:define>

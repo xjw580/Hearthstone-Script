@@ -1,5 +1,6 @@
 package club.xiaojiawei.hsscript.utils
 
+import club.xiaojiawei.config.VIRTUAL_THREAD_POOL
 import club.xiaojiawei.controls.ico.CopyIco
 import club.xiaojiawei.controls.ico.OKIco
 import club.xiaojiawei.util.isFalse
@@ -13,11 +14,39 @@ import javafx.scene.control.Label
 import javafx.scene.control.Tooltip
 import javafx.scene.input.MouseEvent
 import javafx.util.Duration
+import java.util.concurrent.Future
 
 /**
  * @author 肖嘉威
  * @date 2024/9/28 14:22
  */
+
+/**
+ * 虚拟线程中执行
+ */
+inline fun go(crossinline block: () -> Unit): Future<*> {
+    return VIRTUAL_THREAD_POOL.submit {
+        block()
+    }
+}
+
+/**
+ * 虚拟线程中执行
+ */
+fun Runnable.go(): Future<*> {
+    return VIRTUAL_THREAD_POOL.submit {
+        this.run()
+    }
+}
+
+/**
+ * 虚拟线程中执行
+ */
+fun (() -> Any).goWithResult(): Future<*> {
+    return VIRTUAL_THREAD_POOL.submit {
+        this()
+    }
+}
 
 /**
  * 确保在ui线程中执行

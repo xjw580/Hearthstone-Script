@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.*?>
 <StackPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
-            stylesheets="@css/pluginSettings.css"
+            stylesheets="@../css/settings/pluginSettings.css"
             fx:id="rootPane"
             fx:controller="club.xiaojiawei.hsscript.controller.javafx.PluginSettingsController">
     <SplitPane dividerPositions="0.25" styleClass="split-pane-line"

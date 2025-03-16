@@ -9,6 +9,7 @@
 <?import javafx.scene.text.*?>
 <?import javafx.util.Duration?>
 <?import java.lang.Double?>
+<?import club.xiaojiawei.hsscript.component.svg.StatisticsIco?>
 <StackPane xmlns:fx="http://javafx.com/fxml"
            stylesheets="@css/main.css"
            fx:id="rootPane"
@@ -196,11 +197,19 @@
                                      prefWidth="${titledPaneControl.width}" visible="false" managed="false"/>
                     </VBox>
 
-                    <Button onAction="#openSettings" text="设置" styleClass="btn-ui, btn-ui-small">
-                        <graphic>
-                            <SettingsIco/>
-                        </graphic>
-                    </Button>
+                    <HBox alignment="CENTER">
+                        <Button onAction="#openSettings" text="设置" styleClass="btn-ui, btn-ui-small">
+                            <graphic>
+                                <SettingsIco/>
+                            </graphic>
+                        </Button>
+                        <HBox HBox.hgrow="ALWAYS" maxWidth="30"/>
+                        <Button onAction="#openStatistics" text="统计" styleClass="btn-ui, btn-ui-small">
+                            <graphic>
+                                <StatisticsIco/>
+                            </graphic>
+                        </Button>
+                    </HBox>
                 </VBox>
             </TitledPane>
             <TitledPane text="日志" fx:id="titledPaneLog">

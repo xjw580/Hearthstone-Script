@@ -15,10 +15,11 @@ object DBConfig {
     const val DB_NAME = "hs_cards.db"
 
     init {
-        val dataSource = DriverManagerDataSource()
-        dataSource.setDriverClassName("org.sqlite.JDBC")
-        val dbPath = Path.of(System.getProperty("user.dir"), DB_NAME).toString()
-        dataSource.url = "jdbc:sqlite:${dbPath}"
+        val dataSource = DriverManagerDataSource().apply {
+            setDriverClassName("org.sqlite.JDBC")
+            val dbPath = Path.of(System.getProperty("user.dir"), DB_NAME).toString()
+            url = "jdbc:sqlite:${dbPath}"
+        }
         CARD_DB = JdbcTemplate(dataSource)
     }
 

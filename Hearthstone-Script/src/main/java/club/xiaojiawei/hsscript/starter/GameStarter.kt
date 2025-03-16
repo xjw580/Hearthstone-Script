@@ -13,6 +13,7 @@ import club.xiaojiawei.hsscript.status.PauseStatus
 import club.xiaojiawei.hsscript.utils.GameUtil
 import club.xiaojiawei.hsscript.utils.MouseUtil
 import club.xiaojiawei.hsscript.utils.SystemUtil
+import club.xiaojiawei.hsscript.utils.go
 import com.sun.jna.platform.win32.WinDef
 import com.sun.jna.platform.win32.WinDef.HWND
 import java.awt.Point
@@ -53,7 +54,7 @@ class GameStarter : AbstractStarter() {
                     }, 1, TimeUnit.SECONDS)
                     return@LRunnable
                 } else if (diffTime > 5_000) {
-                    if (firstLogSecondaryLaunch){
+                    if (firstLogSecondaryLaunch) {
                         firstLogSecondaryLaunch = false
                         log.info { "更改${GAME_CN_NAME}启动方式" }
                     }
@@ -70,7 +71,7 @@ class GameStarter : AbstractStarter() {
                         }
                     }
                 } else {
-                    if (firstLogLaunch){
+                    if (firstLogLaunch) {
                         firstLogLaunch = false
                         log.info { "正在启动$GAME_CN_NAME" }
                     }
@@ -98,7 +99,7 @@ class GameStarter : AbstractStarter() {
             while (!PauseStatus.isPause) {
                 val currentLatestLogDir = GameUtil.getLatestLogDir()
                 if (currentLatestLogDir != null) {
-                    if (currentLatestLogDir > latestLogDir){
+                    if (currentLatestLogDir > latestLogDir) {
                         log.info { "${GAME_CN_NAME}已创建最新日志文件夹：${currentLatestLogDir.absolutePath}" }
                         break
                     }
@@ -113,7 +114,7 @@ class GameStarter : AbstractStarter() {
     private fun updateGameMsg(gameHWND: HWND) {
         GAME_HWND = gameHWND
         GameUtil.updateGameRect()
-        Thread.ofVirtual().name("Update GameRect VThread").start {
+        go {
             Thread.sleep(3000)
             GameUtil.updateGameRect()
             SystemDll.INSTANCE.changeWindow(GAME_HWND, true)

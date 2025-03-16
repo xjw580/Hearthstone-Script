@@ -2,7 +2,6 @@ package club.xiaojiawei.hsscript.utils
 
 import club.xiaojiawei.bean.LRunnable
 import club.xiaojiawei.config.EXTRA_THREAD_POOL
-import club.xiaojiawei.config.VIRTUAL_THREAD_POOL
 import club.xiaojiawei.config.log
 import club.xiaojiawei.enums.ModeEnum
 import club.xiaojiawei.hsscript.bean.GameRect
@@ -526,9 +525,7 @@ object GameUtil {
         if (sync){
             exec()
         }else{
-            VIRTUAL_THREAD_POOL.submit {
-                exec()
-            }
+            exec.goWithResult()
         }
     }
 

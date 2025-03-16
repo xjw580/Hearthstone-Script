@@ -1,7 +1,6 @@
 package club.xiaojiawei.hsscript.utils
 
 import club.xiaojiawei.bean.LRunnable
-import club.xiaojiawei.config.VIRTUAL_THREAD_POOL
 import club.xiaojiawei.config.log
 import club.xiaojiawei.hsscript.custom.MouseClickListener
 import club.xiaojiawei.hsscript.data.*
@@ -347,7 +346,7 @@ object SystemUtil {
     }
 
     fun message(text: String, type: Int, hwnd: WinDef.HWND? = null) {
-        VIRTUAL_THREAD_POOL.submit {
+        go {
             SystemDll.INSTANCE.messageBox(hwnd ?: let {
                 WindowUtil.getStage(WindowEnum.MAIN)?.let {
                     User32.INSTANCE.FindWindow(null, it.title)

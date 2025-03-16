@@ -37,6 +37,10 @@ val MOUSE_DRIVE_PATH: String = Path.of(DRIVE_PATH, "mouse.sys").toString()
 
 val KEYBOARD_DRIVE_PATH: String = Path.of(DRIVE_PATH, "keyboard.sys").toString()
 
+val STATISTICS_DIR: Path = Path.of(ROOT_PATH, "statistics")
+
+const val STATISTICS_DB_NAME: String = "statistics_%s.db"
+
 @JvmInline
 value class ResourceFile(val name: String)
 
