@@ -73,6 +73,10 @@
     </build>
 
     <dependencies>
+        <dependency>
+            <groupId>eu.hansolo</groupId>
+            <artifactId>tilesfx</artifactId>
+        </dependency>
         <!--连接数据库需要-->
         <dependency>
             <groupId>org.springframework</groupId>

@@ -60,6 +60,7 @@
         <jna-version>5.14.0</jna-version>
         <kotlin-logging-jvm-version>5.1.4</kotlin-logging-jvm-version>
         <ini-version>0.5.4</ini-version>
+        <tilesfx-version>21.0.9</tilesfx-version>
 
         <hs-script-base-deck-version>1.0.0</hs-script-base-deck-version>
         <hs-script-base-card-version>1.0.0</hs-script-base-card-version>
@@ -114,6 +115,13 @@
 
     <dependencyManagement>
         <dependencies>
+            <!--图表库-->
+            <dependency>
+                <groupId>eu.hansolo</groupId>
+                <artifactId>tilesfx</artifactId>
+                <version>${tilesfx-version}</version>
+            </dependency>
+
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-jdbc</artifactId>
