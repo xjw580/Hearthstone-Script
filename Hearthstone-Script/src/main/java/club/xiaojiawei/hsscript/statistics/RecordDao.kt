@@ -24,7 +24,7 @@ data class Record(
     val id: Int? = null,
     val strategyId: String? = null,
     val strategyName: String? = null,
-    val runMode: RunModeEnum? = null,  // 原mode字段，已改名为runMode
+    val runMode: RunModeEnum? = null,
     val result: Boolean? = null,
     val experience: Int? = null,
     val startTime: LocalDateTime? = null,

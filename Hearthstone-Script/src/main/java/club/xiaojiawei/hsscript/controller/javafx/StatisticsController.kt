@@ -1,18 +1,25 @@
 package club.xiaojiawei.hsscript.controller.javafx
 
+import club.xiaojiawei.config.EXTRA_THREAD_POOL
 import club.xiaojiawei.controls.Date
+import club.xiaojiawei.controls.ProgressModal
 import club.xiaojiawei.controls.ico.OfflineIco
 import club.xiaojiawei.controls.ico.OnlineIco
+import club.xiaojiawei.hsscript.interfaces.StageHook
 import club.xiaojiawei.hsscript.statistics.Record
 import club.xiaojiawei.hsscript.statistics.RecordDaoEx
+import club.xiaojiawei.hsscript.utils.runUI
 import club.xiaojiawei.util.isTrue
+import javafx.beans.property.DoubleProperty
 import javafx.fxml.FXML
 import javafx.fxml.Initializable
 import javafx.geometry.Pos
 import javafx.scene.chart.*
+import javafx.scene.control.ComboBox
 import javafx.scene.control.Label
 import javafx.scene.input.MouseEvent
 import javafx.scene.layout.StackPane
+import javafx.util.StringConverter
 import java.net.URL
 import java.time.Duration
 import java.time.LocalDate
@@ -25,13 +32,23 @@ import kotlin.math.max
  * @author 肖嘉威
  * @date 2025/3/13 23:52
  */
-class StatisticsController : Initializable {
+class StatisticsController : Initializable, StageHook {
+
+    data class StrategyItem(val id: String?, val name: String)
+
+    @FXML
+    protected lateinit var wrPane: StackPane
+
+    @FXML
+    protected lateinit var strategyComboBox: ComboBox<StrategyItem>
+
+    @FXML
+    protected lateinit var mainProgressModal: ProgressModal
 
     @FXML
     protected lateinit var unBindIco: OfflineIco
 
     @FXML
-
     protected lateinit var bindIco: OnlineIco
 
     @FXML
@@ -55,7 +72,24 @@ class StatisticsController : Initializable {
     @FXML
     protected lateinit var rootPane: StackPane
 
+    private var progress: DoubleProperty? = null
+
     override fun initialize(p0: URL?, p1: ResourceBundle?) {
+        progress = mainProgressModal.show()
+        strategyComboBox.converter = object : StringConverter<StrategyItem>() {
+            override fun toString(`object`: StrategyItem?): String {
+                return `object`?.name ?: ""
+            }
+
+            override fun fromString(string: String?): StrategyItem? {
+                return null
+            }
+        }
+    }
+
+    override fun onShown() {
+        startDate.localDate = LocalDate.now()
+        endDate.localDate = LocalDate.now()
         startDate.dateProperty().addListener { observable, oldValue, newValue ->
             if (bindIco.isVisible) {
                 val noChange = endDate.date == startDate.date
@@ -78,18 +112,68 @@ class StatisticsController : Initializable {
                 loadData()
             }
         }
+        strategyComboBox.items.setAll(StrategyItem(null, "所有"))
+        runUI { strategyComboBox.selectionModel.selectFirst() }
+        strategyComboBox.selectionModel.selectedItemProperty().addListener { _, _, newValue ->
+            val strategyItem = newValue ?: return@addListener
+            val strategyId = strategyItem.id
+            val records = queryRecord(calcStartDate(), calcEndDate()).filter {
+                var res = false
+                do {
+                    val id = it.strategyId ?: break
+                    strategyId?.let {
+                        if (strategyId == id) {
+                            res = true
+                        }
+                    } ?: let {
+                        res = true
+                    }
+                } while (false)
+                res
+            }
+            progress = mainProgressModal.show()
+            EXTRA_THREAD_POOL.submit {
+                initTimePane(records)
+                initDurationPane(records)
+                runUI {
+                    mainProgressModal.hide(progress)
+                }
+            }
+        }
         loadData()
     }
 
     private fun loadData() {
-        val startDate: LocalDate = this.startDate.localDate ?: LocalDate.of(1970, 1, 1)
-        val endDate: LocalDate = this.endDate.localDate ?: LocalDate.of(9999, 1, 1)
+        val startDate: LocalDate = calcStartDate()
+        val endDate: LocalDate = calcEndDate()
         loadData(startDate, endDate)
     }
 
     private fun loadData(startDate: LocalDate, endDate: LocalDate) {
         if (startDate.isAfter(endDate)) return
 
+        EXTRA_THREAD_POOL.submit {
+            val records = queryRecord(startDate, endDate)
+            initStrategyPane(records)
+            initRunModePane(records)
+            initTimePane(records)
+            initDurationPane(records)
+            initWRPane(records)
+            runUI {
+                mainProgressModal.hide(progress)
+            }
+        }
+    }
+
+    private fun calcStartDate(): LocalDate {
+        return this.startDate.localDate ?: LocalDate.of(1970, 1, 1)
+    }
+
+    private fun calcEndDate(): LocalDate {
+        return this.endDate.localDate ?: LocalDate.of(9999, 1, 1)
+    }
+
+    private fun queryRecord(startDate: LocalDate, endDate: LocalDate): List<Record> {
         val recordDao = RecordDaoEx.getRecordDao(LocalDate.now())
         val minDateTime = LocalDateTime.of(startDate.year, startDate.monthValue, startDate.dayOfMonth, 0, 0)
         val maxDateTime = LocalDateTime.of(endDate.year, endDate.monthValue, endDate.dayOfMonth, 0, 0).plusDays(1)
@@ -97,16 +181,17 @@ class StatisticsController : Initializable {
             val endTime = it.endTime ?: return@filter false
             endTime.isAfter(minDateTime) && endTime.isBefore(maxDateTime)
         }
-        initStrategyPane(records)
-        initRunModePane(records)
-        initTimePane(records)
-        initDurationPane(records)
+        return records
     }
 
     private fun initStrategyPane(records: List<Record>) {
+        if (strategyComboBox.items.size > 1) {
+            strategyComboBox.items.remove(1, strategyComboBox.items.size)
+        }
         val strategyCount = records.groupBy { it.strategyId }
             .map { (strategyId, list) ->
                 val strategyName = list.first().strategyName ?: "未知"
+                strategyComboBox.items.add(StrategyItem(strategyId, strategyName))
                 PieChart.Data("${strategyName}\t${list.size}次", list.size.toDouble())
             }
         val pieChart = PieChart().apply {
@@ -118,7 +203,9 @@ class StatisticsController : Initializable {
             labelsVisible = true
             startAngle = 90.0
         }
-        strategyPane.children.setAll(pieChart)
+        runUI {
+            strategyPane.children.setAll(pieChart)
+        }
     }
 
     private fun initRunModePane(records: List<Record>) {
@@ -136,7 +223,9 @@ class StatisticsController : Initializable {
             labelsVisible = true
             startAngle = 90.0
         }
-        runModePane.children.setAll(pieChart)
+        runUI {
+            runModePane.children.setAll(pieChart)
+        }
     }
 
     private fun removeLeadingZeros(value: String): String {
@@ -197,7 +286,9 @@ class StatisticsController : Initializable {
 
         lineChart.data.add(series)
 
-        timePane.children.setAll(lineChart)
+        runUI {
+            timePane.children.setAll(lineChart)
+        }
     }
 
     fun initDurationPane(records: List<Record>) {
@@ -254,16 +345,73 @@ class StatisticsController : Initializable {
         }
 
         barChart.data.add(series)
-        durationPane.children.setAll(barChart)
+
+        runUI {
+            durationPane.children.setAll(barChart)
+        }
     }
 
-    // 创建数值标签
+    fun initWRPane(records: List<Record>){
+// 1️⃣ 统计胜率
+        val strategyWinRates = records
+            .groupBy { it.strategyId to it.strategyName }  // 按 strategyId & strategyName 分组
+            .mapValues { (_, games) ->
+                val totalGames = games.size
+                val winGames = games.count { it.result == true }
+                val winRate = if (totalGames > 0) (winGames.toDouble() / totalGames) * 100 else 0.0
+                winRate
+            }
+
+        // 2️⃣ 创建 X 轴（策略名）
+        val xAxis = CategoryAxis().apply {
+            label = "策略"
+        }
+
+        // 3️⃣ 创建 Y 轴（胜率 %）
+        val yAxis = NumberAxis(0.0, 100.0, 10.0).apply {
+            label = "胜率 (%)"
+            isAutoRanging = false
+        }
+
+        // 4️⃣ 创建柱状图
+        val barChart = BarChart(xAxis, yAxis).apply {
+            title = "策略胜率对比"
+            isLegendVisible = false
+        }
+
+        // 5️⃣ 填充数据
+        val series = XYChart.Series<String, Number>().apply {
+            name = "WR"  // 胜率 (Win Rate)
+
+            strategyWinRates.forEach { (strategy, winRate) ->
+                val strategyName = strategy.second ?: "Unknown"
+                val data: XYChart.Data<String, Number> = XYChart.Data(strategyName, winRate)
+                data.node = createPercentDataLabel(winRate)
+                this.data.add(data)
+            }
+        }
+
+        barChart.data.add(series)
+
+        runUI { wrPane.children.setAll(barChart) }
+    }
+
+    private fun createPercentDataLabel(value: Number): StackPane {
+        val label = Label("${"%.2f".format(value)}%").apply {
+            style = "-fx-font-size: 12px;-fx-padding: 1 0 0 0;"
+        }
+        return StackPane(label).apply {
+            alignment = Pos.TOP_CENTER
+        }
+    }
+
+
     private fun createDataLabel(value: Number, unit: String = ""): StackPane {
         val label = Label(value.toString() + unit).apply {
             style = "-fx-font-size: 12px;-fx-padding: 1 0 0 0;"
         }
         return StackPane(label).apply {
-            alignment = Pos.TOP_CENTER  // 让标签贴近柱子的顶部
+            alignment = Pos.TOP_CENTER
         }
     }
 

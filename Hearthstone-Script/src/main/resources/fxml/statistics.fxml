@@ -1,15 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import club.xiaojiawei.controls.Date?>
+<?import club.xiaojiawei.controls.ico.OfflineIco?>
+<?import club.xiaojiawei.controls.ico.OnlineIco?>
+<?import club.xiaojiawei.controls.ProgressModal?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.*?>
 <?import java.lang.Double?>
-<?import club.xiaojiawei.controls.ico.OnlineIco?>
-<?import club.xiaojiawei.controls.ico.OfflineIco?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Separator?>
 <StackPane xmlns="http://javafx.com/javafx"
            xmlns:fx="http://javafx.com/fxml"
-           prefHeight="700"
+           prefHeight="770"
+           prefWidth="1300"
            fx:id="rootPane"
            fx:controller="club.xiaojiawei.hsscript.controller.javafx.StatisticsController">
     <ScrollPane styleClass="scroll-pane-item">
@@ -46,14 +50,39 @@
                     <ColumnConstraints halignment="CENTER" hgrow="ALWAYS"/>
                 </columnConstraints>
                 <rowConstraints>
+                    <RowConstraints vgrow="NEVER" valignment="CENTER"/>
                     <RowConstraints prefHeight="${chartHeight}" vgrow="ALWAYS" valignment="CENTER"/>
+                    <RowConstraints vgrow="NEVER" valignment="CENTER"/>
+                    <RowConstraints prefHeight="${chartHeight}" vgrow="ALWAYS" valignment="CENTER"/>
+                    <RowConstraints vgrow="NEVER" valignment="CENTER"/>
                     <RowConstraints prefHeight="${chartHeight}" vgrow="ALWAYS" valignment="CENTER"/>
                 </rowConstraints>
-                <StackPane fx:id="strategyPane"/>
-                <StackPane GridPane.columnIndex="1" fx:id="runModePane"/>
-                <StackPane GridPane.rowIndex="1" fx:id="timePane"/>
-                <StackPane GridPane.rowIndex="1" GridPane.columnIndex="1" fx:id="durationPane"/>
+
+                <VBox GridPane.columnSpan="2" alignment="CENTER" spacing="10" style="-fx-padding: 10">
+                    <Separator/>
+                </VBox>
+
+                <StackPane GridPane.rowIndex="1" fx:id="strategyPane"/>
+                <StackPane GridPane.rowIndex="1" GridPane.columnIndex="1" fx:id="runModePane"/>
+
+                <VBox GridPane.rowIndex="2" GridPane.columnSpan="2" alignment="CENTER" spacing="10" style="-fx-padding: 10">
+                    <Separator/>
+                    <HBox alignment="CENTER" spacing="10">
+                        <Label text="策略"/>
+                        <ComboBox fx:id="strategyComboBox" styleClass="combo-box-ui, combo-box-ui-normal, combo-box-ui-small" prefWidth="100"/>
+                    </HBox>
+                </VBox>
+
+                <StackPane GridPane.rowIndex="3" fx:id="timePane"/>
+                <StackPane GridPane.rowIndex="3" GridPane.columnIndex="1" fx:id="durationPane"/>
+
+                <VBox GridPane.rowIndex="4" GridPane.columnSpan="2" alignment="CENTER" spacing="10" style="-fx-padding: 10">
+                    <Separator/>
+                </VBox>
+
+                <StackPane GridPane.rowIndex="5" fx:id="wrPane"/>
             </GridPane>
         </VBox>
     </ScrollPane>
+    <ProgressModal fx:id="mainProgressModal" tip="计算中"/>
 </StackPane>
