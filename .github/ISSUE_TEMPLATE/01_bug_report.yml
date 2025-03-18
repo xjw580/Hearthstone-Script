@@ -51,8 +51,8 @@ body:
   - type: checkboxes
     id: "issues"
     attributes:
-      label: "我确认已查询历史issues及参阅QUESTION"
-      description: "否则请查询及参阅[QUESTION](https://github.com/xjw580/Hearthstone-Script/blob/master/QUESTION.md)后提出"
+      label: "我确认已查询历史issues及参阅常见问题"
+      description: "否则请查询及参阅[常见问题](https://github.com/xjw580/Hearthstone-Script/blob/master/常见问题.md)后提出"
       options:
         - label: 是
           required: true
