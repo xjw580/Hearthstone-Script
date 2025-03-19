@@ -32,9 +32,7 @@ object StatisticsListener {
                         experience = WarEx.aEXP.toInt(),
                         startTime = startDateTime,
                         endTime = endDateTime,
-                    ).apply {
-                        println("record:$this")
-                    })
+                    ))
             }
         }
     }

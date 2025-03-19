@@ -1,9 +1,12 @@
 package club.xiaojiawei.hsscript.dll
 
+import club.xiaojiawei.config.log
 import com.sun.jna.Library
 import com.sun.jna.Native
 import com.sun.jna.Pointer
 import com.sun.jna.platform.win32.WinDef.HWND
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 /**
  * 系统相关功能
@@ -42,7 +45,7 @@ interface SystemDll : Library {
 
     fun moveWindowForTitle(title: String?, x: Int, y: Int, w: Int, h: Int, ignoreSize: Boolean): Boolean
 
-     fun uninstallInjectDll(hwnd: HWND?)
+    fun uninstallInjectDll(hwnd: HWND?)
 
     /**
      * 是否禁用输入
@@ -96,5 +99,20 @@ interface SystemDll : Library {
         const val MB_OK: Int = 0x00000000
 
         const val MB_ICONINFORMATION: Int = 0x00000040
+
+        @Synchronized
+        fun setWakeUpTimer(seconds: Int): Boolean {
+            if (seconds > 0) {
+                log.info {
+                    "设置[${
+                        LocalDateTime.now().plusSeconds(seconds.toLong())
+                            .format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss"))
+                    }]定时唤醒电脑"
+                }
+            } else {
+                log.info { "取消定时唤醒电脑" }
+            }
+            return INSTANCE.setWakeUpTimer(seconds)
+        }
     }
 }

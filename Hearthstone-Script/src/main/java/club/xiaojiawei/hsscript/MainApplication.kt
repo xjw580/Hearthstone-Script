@@ -200,7 +200,10 @@ class MainApplication : Application() {
             Runtime.getRuntime()
                 .addShutdownHook(
                     LThread(
-                        { SystemDll.INSTANCE.uninstallInjectDll(GameUtil.findGameHWND()) },
+                        {
+                            log.info { "软件已退出" }
+                            SystemDll.INSTANCE.uninstallInjectDll(GameUtil.findGameHWND())
+                        },
                         "ShutdownHook Thread"
                     )
                 )

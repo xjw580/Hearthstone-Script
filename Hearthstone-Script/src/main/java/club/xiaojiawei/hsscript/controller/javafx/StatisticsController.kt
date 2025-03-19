@@ -244,14 +244,21 @@ class StatisticsController : Initializable, StageHook {
             hourCount[removeLeadingZeros(entry.key)] = entry.value
         }
 
-
-        // 2️⃣ 创建 X 轴（小时）
-        val xAxis = CategoryAxis().apply {
-            label = "时间"
+        // 2️⃣ 创建完整的 0 到 23 小时列表
+        val allHours = (0..23).map { "${it}点" }
+        val completeHourCount = mutableMapOf<String, Int>()
+        allHours.forEach { hour ->
+            completeHourCount[hour] = hourCount[hour] ?: 0 // 如果 hourCount 中没有该小时的数据，则默认为 0
         }
 
-        val maxCount = if (hourCount.isEmpty()) 0 else hourCount.maxBy { it.value }.value
-        val minCount = if (hourCount.isEmpty()) 0 else hourCount.minBy { it.value }.value
+        // 3️⃣ 创建 X 轴（小时）
+        val xAxis = CategoryAxis().apply {
+            label = "时间"
+            categories.addAll(allHours) // 设置完整的 X 轴分类
+        }
+
+        val maxCount = if (completeHourCount.isEmpty()) 0 else completeHourCount.maxBy { it.value }.value
+        val minCount = if (completeHourCount.isEmpty()) 0 else completeHourCount.minBy { it.value }.value
         val diffCount = maxCount - minCount + 2
         var tick = 1
         for (i in 1 until Int.MAX_VALUE) {
@@ -261,7 +268,7 @@ class StatisticsController : Initializable, StageHook {
             }
         }
 
-        // 3️⃣ 创建 Y 轴（次数）
+        // 4️⃣ 创建 Y 轴（次数）
         val yAxis = NumberAxis().apply {
             label = "局数"
             tickUnit = tick.toDouble()
@@ -271,15 +278,15 @@ class StatisticsController : Initializable, StageHook {
             isMinorTickVisible = false
         }
 
-        // 4️⃣ 创建折线图
+        // 5️⃣ 创建折线图
         val lineChart = LineChart(xAxis, yAxis).apply {
             title = "活跃时间分布"
             isLegendVisible = false
         }
 
-        // 5️⃣ 填充数据
+        // 6️⃣ 填充数据
         val series = XYChart.Series<String, Number>().apply {
-            hourCount.forEach { (hour, count) ->
+            completeHourCount.forEach { (hour, count) ->
                 data.add(XYChart.Data(hour, count))
             }
         }

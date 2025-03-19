@@ -313,7 +313,7 @@ class AdvancedSettingsController : AdvancedSettingsView(), Initializable {
                 newValue.isTrue {
                     SystemListener.check()
                 }.isFalse {
-                    SystemDll.INSTANCE.setWakeUpTimer(0)
+                    SystemDll.setWakeUpTimer(0)
                 }
             }
     }

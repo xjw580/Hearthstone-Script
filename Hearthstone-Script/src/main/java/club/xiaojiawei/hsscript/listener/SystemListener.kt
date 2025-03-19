@@ -64,6 +64,7 @@ object SystemListener {
                         null,
                         {
                             thread.interrupt()
+                            SystemDll.setWakeUpTimer(0)
                         },
                         null,
                         WindowUtil.getStage(WindowEnum.MAIN),
@@ -75,35 +76,34 @@ object SystemListener {
             if (ConfigUtil.getBoolean(ConfigEnum.AUTO_WAKE)) {
                 val time = WorkListener.getSecondsUntilNextWorkPeriod() - 120
                 if (time > 0) {
-                    if (!SystemDll.INSTANCE.isRunAsAdministrator()){
+                    if (!SystemDll.INSTANCE.isRunAsAdministrator()) {
                         text = "没有管理员权限，无法设置定时唤醒"
                         log.error { text }
                         SystemUtil.messageError(text)
                         return
                     }
-                    if (!SystemDll.INSTANCE.checkS3Support()){
+                    if (!SystemDll.INSTANCE.checkS3Support()) {
                         text = "不支持S3睡眠，无法设置定时唤醒"
                         log.error { text }
                         SystemUtil.messageError(text)
                         return
                     }
-                    if (!SystemDll.INSTANCE.enableWakeUpTimer()){
+                    if (!SystemDll.INSTANCE.enableWakeUpTimer()) {
                         text = "启用'允许唤醒定时器'失败，无法设置定时唤醒"
                         log.error { text }
                         SystemUtil.messageError(text)
                         return
                     }
-                    if (!SystemDll.INSTANCE.setWakeUpTimer(time.toInt())){
+                    if (!SystemDll.setWakeUpTimer(time.toInt())) {
                         text = "设置定时唤醒失败，定时时间:${time}秒"
                         log.error { text }
                         SystemUtil.messageError(text)
                         return
                     }
-                    log.info { "设置定时唤醒成功，定时时间:${time}秒" }
                 }
             }
         } else {
-            SystemDll.INSTANCE.setWakeUpTimer(0)
+            SystemDll.setWakeUpTimer(0)
         }
     }
 
