@@ -46,4 +46,5 @@ config.json
 /config
 *.db-journal
 .pid
-/statistics
+/data
+/data/statistics.db

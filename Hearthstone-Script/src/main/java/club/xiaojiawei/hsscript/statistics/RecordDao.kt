@@ -8,8 +8,9 @@ import org.springframework.jdbc.support.GeneratedKeyHolder
 import java.sql.Connection
 import java.sql.ResultSet
 import java.sql.Statement
+import java.time.Instant
 import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
+import java.time.ZoneOffset
 
 /**
  * @author 肖嘉威
@@ -36,9 +37,9 @@ data class Record(
  */
 class RecordDao(dbPath: String) {
 
-    private val format = DateTimeFormatter.ofPattern("yyyyMMddHHmmss")
-
     private val jdbcTemplate: JdbcTemplate
+
+    private val OFFSET = ZoneOffset.ofHours(8)
 
     init {
         // 创建数据源
@@ -65,8 +66,8 @@ class RecordDao(dbPath: String) {
                 run_mode TEXT NOT NULL,
                 result INTEGER NOT NULL,
                 experience INTEGER NOT NULL,
-                start_time TEXT NOT NULL,
-                end_time TEXT NOT NULL
+                start_time INTEGER  NOT NULL,
+                end_time INTEGER  NOT NULL
             )
         """
 
@@ -106,7 +107,7 @@ class RecordDao(dbPath: String) {
     /**
      * 将ResultSet行映射到Record对象
      */
-    private val recordMapper = RowMapper<Record> { rs: ResultSet, _: Int ->
+    private val recordMapper = RowMapper { rs: ResultSet, _: Int ->
         Record(
             id = rs.getInt("id"),
             strategyId = rs.getString("strategy_id"),
@@ -114,8 +115,8 @@ class RecordDao(dbPath: String) {
             runMode = RunModeEnum.fromString(rs.getString("run_mode")),
             result = rs.getBoolean("result"),
             experience = rs.getInt("experience"),
-            startTime = rs.getString("start_time")?.let { LocalDateTime.parse(it, format) },
-            endTime = rs.getString("end_time")?.let { LocalDateTime.parse(it, format) }
+            startTime = Instant.ofEpochSecond(rs.getLong("start_time")).atZone(OFFSET).toLocalDateTime(),
+            endTime = Instant.ofEpochSecond(rs.getLong("end_time")).atZone(OFFSET).toLocalDateTime()
         )
     }
 
@@ -126,16 +127,15 @@ class RecordDao(dbPath: String) {
      */
     fun insert(record: Record): Record {
         val keyHolder = GeneratedKeyHolder()
-
         jdbcTemplate.update({ connection: Connection ->
             val ps = connection.prepareStatement(SQL_INSERT, Statement.RETURN_GENERATED_KEYS)
             ps.setString(1, record.strategyId)
             ps.setString(2, record.strategyName)
             ps.setString(3, record.runMode?.name)
-            ps.setBoolean(4, record.result?:false)
+            ps.setBoolean(4, record.result ?: false)
             ps.setInt(5, record.experience ?: 0)
-            ps.setString(6, format.format(record.startTime))
-            ps.setString(7, format.format(record.endTime))
+            ps.setLong(6, record.startTime?.toEpochSecond(OFFSET) ?: 0)
+            ps.setLong(7, record.endTime?.toEpochSecond(OFFSET) ?: 0)
             ps
         }, keyHolder)
 
@@ -157,8 +157,8 @@ class RecordDao(dbPath: String) {
             record.runMode,  // 使用runMode代替mode
             record.result,
             record.experience,
-            record.startTime,
-            record.endTime,
+            record.startTime?.toEpochSecond(OFFSET) ?: 0,
+            record.endTime?.toEpochSecond(OFFSET) ?: 0,
             record.id
         )
     }
@@ -233,15 +233,18 @@ class RecordDao(dbPath: String) {
                 params.add(it)
             }
 
-            record.startTime?.let {
-                conditions.add("start_time = ?")
-                params.add(it)
+            record.startTime?.let { startTime ->
+                val startTimestamp = startTime.atZone(OFFSET).toEpochSecond()
+                conditions.add("end_time >= ?")
+                params.add(startTimestamp)
             }
 
-            record.endTime?.let {
-                conditions.add("end_time = ?")
-                params.add(it)
+            record.endTime?.let { endTime ->
+                val endTimestamp = endTime.atZone(OFFSET).toEpochSecond()
+                conditions.add("end_time < ?")
+                params.add(endTimestamp)
             }
+
         }
 
         var sql = SQL_FIND_ALL
@@ -254,13 +257,18 @@ class RecordDao(dbPath: String) {
 
     /**
      * 更复杂查询示例 - 根据日期范围查找记录
-     * @param startDate 开始日期（ISO 8601格式）
-     * @param endDate 结束日期（ISO 8601格式）
+     * @param startDate
+     * @param endDate
      * @return 匹配的记录列表
      */
-    fun findByDateRange(startDate: String, endDate: String): List<Record> {
-        val sql = "$SQL_FIND_ALL WHERE start_time >= ? AND end_time <= ?"
-        return jdbcTemplate.query(sql, recordMapper, startDate, endDate)
+    fun queryByDateRange(startDate: LocalDateTime, endDate: LocalDateTime): List<Record> {
+        val sql = "$SQL_FIND_ALL WHERE end_time >= ? AND end_time < ?"
+        return jdbcTemplate.query(
+            sql,
+            recordMapper,
+            startDate.atZone(OFFSET).toEpochSecond(),
+            endDate.atZone(OFFSET).toEpochSecond()
+        )
     }
 
     /**

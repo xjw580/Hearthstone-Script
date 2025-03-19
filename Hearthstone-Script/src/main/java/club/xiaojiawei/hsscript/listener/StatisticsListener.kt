@@ -20,7 +20,7 @@ object StatisticsListener {
             WarEx.war.run {
                 val startDateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(startTime), ZoneId.systemDefault())
                 val endDateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(endTime), ZoneId.systemDefault())
-                val recordDao = RecordDaoEx.getRecordDao(endDateTime.toLocalDate())
+                val recordDao = RecordDaoEx.RECORD_DAO
                 val deckStrategy = DeckStrategyManager.currentDeckStrategy ?: return@run
 
                 recordDao.insert(

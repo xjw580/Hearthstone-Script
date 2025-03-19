@@ -19,6 +19,7 @@ import javafx.scene.control.ComboBox
 import javafx.scene.control.Label
 import javafx.scene.input.MouseEvent
 import javafx.scene.layout.StackPane
+import javafx.scene.text.Text
 import javafx.util.StringConverter
 import java.net.URL
 import java.time.Duration
@@ -35,6 +36,18 @@ import kotlin.math.max
 class StatisticsController : Initializable, StageHook {
 
     data class StrategyItem(val id: String?, val name: String)
+
+    @FXML
+    protected lateinit var totalDuration: Text
+
+    @FXML
+    protected lateinit var totalEXP: Text
+
+    @FXML
+    protected lateinit var avgWR: Text
+
+    @FXML
+    protected lateinit var totalCount: Text
 
     @FXML
     protected lateinit var wrPane: StackPane
@@ -159,6 +172,7 @@ class StatisticsController : Initializable, StageHook {
             initTimePane(records)
             initDurationPane(records)
             initWRPane(records)
+            initSummarizePane(records)
             runUI {
                 mainProgressModal.hide(progress)
             }
@@ -174,10 +188,10 @@ class StatisticsController : Initializable, StageHook {
     }
 
     private fun queryRecord(startDate: LocalDate, endDate: LocalDate): List<Record> {
-        val recordDao = RecordDaoEx.getRecordDao(LocalDate.now())
+        val recordDao = RecordDaoEx.RECORD_DAO
         val minDateTime = LocalDateTime.of(startDate.year, startDate.monthValue, startDate.dayOfMonth, 0, 0)
         val maxDateTime = LocalDateTime.of(endDate.year, endDate.monthValue, endDate.dayOfMonth, 0, 0).plusDays(1)
-        val records = recordDao.query().filter {
+        val records = recordDao.queryByDateRange(minDateTime, maxDateTime).filter {
             val endTime = it.endTime ?: return@filter false
             endTime.isAfter(minDateTime) && endTime.isBefore(maxDateTime)
         }
@@ -358,7 +372,7 @@ class StatisticsController : Initializable, StageHook {
         }
     }
 
-    fun initWRPane(records: List<Record>){
+    fun initWRPane(records: List<Record>) {
 // 1️⃣ 统计胜率
         val strategyWinRates = records
             .groupBy { it.strategyId to it.strategyName }  // 按 strategyId & strategyName 分组
@@ -401,6 +415,39 @@ class StatisticsController : Initializable, StageHook {
         barChart.data.add(series)
 
         runUI { wrPane.children.setAll(barChart) }
+    }
+
+    private fun initSummarizePane(records: List<Record>) {
+        // 1️⃣ 总计局数
+        val totalGames = records.size
+
+        // 2️⃣ 计算胜场数
+        val winGames = records.count { it.result == true }
+
+        // 3️⃣ 平均胜率
+        val winRate = (if (totalGames > 0) "%.2f".format((winGames.toDouble() / totalGames) * 100) else "0.00") + "%"
+
+        // 4️⃣ 总计经验
+        val totalExperience = records.sumOf { it.experience ?: 0 }
+
+        // 5️⃣ 计算总计时长
+        val totalMinutes = records.sumOf {
+            val duration = if (it.startTime != null && it.endTime != null) {
+                Duration.between(it.startTime, it.endTime).toMinutes()
+            } else {
+                0
+            }
+            duration
+        }
+
+        // 转换为小时和分钟
+        val hours = totalMinutes / 60
+        val minutes = totalMinutes % 60
+
+        totalCount.text = totalGames.toString()
+        avgWR.text = winRate
+        totalEXP.text = totalExperience.toString()
+        totalDuration.text = "${hours}小时${minutes}分钟"
     }
 
     private fun createPercentDataLabel(value: Number): StackPane {

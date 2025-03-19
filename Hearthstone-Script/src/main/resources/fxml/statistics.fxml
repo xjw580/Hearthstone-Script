@@ -10,6 +10,7 @@
 <?import java.lang.Double?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Separator?>
+<?import javafx.scene.text.Text?>
 <StackPane xmlns="http://javafx.com/javafx"
            xmlns:fx="http://javafx.com/fxml"
            prefHeight="770"
@@ -62,8 +63,28 @@
                     <Separator/>
                 </VBox>
 
-                <StackPane GridPane.rowIndex="1" fx:id="strategyPane"/>
-                <StackPane GridPane.rowIndex="1" GridPane.columnIndex="1" fx:id="runModePane"/>
+                <VBox GridPane.rowIndex="1" alignment="CENTER" spacing="20" style="-fx-font-size: 20;-fx-padding: 0 0 0 50">
+                    <fx:define>
+                        <Double fx:id="itemSpace" fx:value="20"/>
+                    </fx:define>
+                    <HBox spacing="${itemSpace}">
+                        <Text text="总计局数"/>
+                        <Text fx:id="totalCount"/>
+                    </HBox>
+                    <HBox spacing="${itemSpace}">
+                        <Text text="平均胜率"/>
+                        <Text fx:id="avgWR"/>
+                    </HBox>
+                    <HBox spacing="${itemSpace}">
+                        <Text text="总计经验"/>
+                        <Text fx:id="totalEXP"/>
+                    </HBox>
+                    <HBox spacing="${itemSpace}">
+                        <Text text="总计时长"/>
+                        <Text fx:id="totalDuration"/>
+                    </HBox>
+                </VBox>
+                <StackPane GridPane.rowIndex="1" GridPane.columnIndex="1" fx:id="wrPane"/>
 
                 <VBox GridPane.rowIndex="2" GridPane.columnSpan="2" alignment="CENTER" spacing="10" style="-fx-padding: 10">
                     <Separator/>
@@ -80,7 +101,9 @@
                     <Separator/>
                 </VBox>
 
-                <StackPane GridPane.rowIndex="5" fx:id="wrPane"/>
+                <StackPane GridPane.rowIndex="5" fx:id="strategyPane"/>
+                <StackPane GridPane.rowIndex="5" GridPane.columnIndex="1" fx:id="runModePane"/>
+
             </GridPane>
         </VBox>
     </ScrollPane>
