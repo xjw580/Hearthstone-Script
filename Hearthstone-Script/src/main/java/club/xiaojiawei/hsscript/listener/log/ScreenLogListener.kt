@@ -23,7 +23,9 @@ object ScreenLogListener :
         var index: Int
         var finalMode: ModeEnum? = null
         while ((innerLogFile!!.readLine().also { line = it }) != null) {
-            if ((line.indexOf("currMode").also { index = it }) != -1) {
+            if ((line.indexOf("currMode").also { index = it }) != -1 || (line.indexOf("nextMode")
+                    .also { index = it }) != -1
+            ) {
                 finalMode = ModeEnum.fromString(line.substring(index + 9))
             }
         }
@@ -53,7 +55,9 @@ object ScreenLogListener :
     private fun resolveLog(line: String?): ModeEnum? {
         return line?.let { l ->
             var index: Int
-            if ((l.indexOf("currMode").also { index = it }) != -1) {
+            if ((l.indexOf("currMode").also { index = it }) != -1
+                || (l.indexOf("nextMode").also { index = it }) != -1
+            ) {
                 return ModeEnum.fromString(l.substring(index + 9))
             } else if (l.contains("OnDestroy()")) {
                 Thread.sleep(2000)

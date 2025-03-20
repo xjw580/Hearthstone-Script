@@ -650,7 +650,7 @@ object DeckStrategyUtil {
         for (weightCard in card) {
             CardDBUtil.queryCardById(weightCard.card.cardId).let {
                 if (it.isNotEmpty()) {
-                    weightCard.text = it[0].text
+                    weightCard.text = it.first().text
                 }
             }
         }
