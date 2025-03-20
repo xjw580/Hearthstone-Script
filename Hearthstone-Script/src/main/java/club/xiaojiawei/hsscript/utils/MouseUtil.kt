@@ -23,7 +23,7 @@ object MouseUtil {
 
     private val prevPoint = Point(0, 0)
 
-    private fun validPoint(point: Point?): Boolean {
+    private fun validatePoint(point: Point?): Boolean {
         return point?.let {
             it.x != -1 && it.y != -1
         } == true
@@ -51,12 +51,12 @@ object MouseUtil {
         hwnd: HWND?,
         mouseMode: Int = ConfigExUtil.getMouseControlMode().code
     ) {
-        hwnd ?: return
-        if (isDeckStrategyThread() && Mode.currMode !== ModeEnum.GAMEPLAY || !WorkListener.working) return
+        if (!validateEnv(hwnd)) return
 
-        if (validPoint(pos)) {
+        if (validatePoint(pos)) {
             synchronized(MouseUtil::javaClass) {
-                val prevPoint = prevPoint
+                if (!WorkListener.working) return
+
                 if (prevPoint != pos) {
                     CSystemDll.INSTANCE.simulateHumanMoveMouse(
                         prevPoint.x,
@@ -84,12 +84,12 @@ object MouseUtil {
         hwnd: HWND?,
         mouseMode: Int = ConfigExUtil.getMouseControlMode().code
     ) {
-        hwnd ?: return
-        if (isDeckStrategyThread() && Mode.currMode !== ModeEnum.GAMEPLAY || !WorkListener.working) return
+        if (!validateEnv(hwnd)) return
 
-        if (validPoint(pos)) {
+        if (validatePoint(pos)) {
             synchronized(MouseUtil::javaClass) {
-                val prevPoint = prevPoint
+                if (!WorkListener.working) return
+
                 if (prevPoint != pos) {
                     CSystemDll.INSTANCE.simulateHumanMoveMouse(
                         prevPoint.x,
@@ -113,6 +113,11 @@ object MouseUtil {
         moveMouseByHuman(null, endPos, hwnd)
     }
 
+    private fun validateEnv(hwnd: HWND?): Boolean {
+        hwnd ?: return false
+        return !(isDeckStrategyThread() && Mode.currMode !== ModeEnum.GAMEPLAY || !WorkListener.working)
+    }
+
     /**
      * 鼠标移动
      */
@@ -122,15 +127,16 @@ object MouseUtil {
         hwnd: HWND?,
         mouseMode: Int = ConfigExUtil.getMouseControlMode().code
     ) {
-        hwnd ?: return
-        if (isDeckStrategyThread() && Mode.currMode !== ModeEnum.GAMEPLAY || !WorkListener.working) return
+        if (!validateEnv(hwnd)) return
+
         synchronized(MouseUtil::javaClass) {
             if (!WorkListener.working) return
+
             val prevPoint = prevPoint
-            if (validPoint(startPos)) {
+            if (validatePoint(startPos)) {
                 startPos!!
                 moveMouseByHuman(startPos, hwnd)
-                if (validPoint(endPos)) {
+                if (validatePoint(endPos)) {
                     SystemUtil.delayShort()
                     if (startPos != endPos) {
                         CSystemDll.INSTANCE.simulateHumanMoveMouse(
@@ -145,7 +151,7 @@ object MouseUtil {
                         savePos(endPos)
                     }
                 }
-            } else if (validPoint(prevPoint)) {
+            } else if (validatePoint(prevPoint)) {
                 if (prevPoint != endPos) {
                     CSystemDll.INSTANCE.simulateHumanMoveMouse(
                         prevPoint.x,
