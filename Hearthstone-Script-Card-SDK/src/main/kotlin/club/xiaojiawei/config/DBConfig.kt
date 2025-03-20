@@ -1,8 +1,10 @@
 package club.xiaojiawei.config
 
+import club.xiaojiawei.util.isFalse
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.jdbc.datasource.DriverManagerDataSource
 import java.nio.file.Path
+import kotlin.io.path.exists
 
 /**
  * @author 肖嘉威
@@ -17,7 +19,14 @@ object DBConfig {
     init {
         val dataSource = DriverManagerDataSource().apply {
             setDriverClassName("org.sqlite.JDBC")
-            val dbPath = Path.of(System.getProperty("user.dir"), DB_NAME).toString()
+            var dbPath = Path.of(System.getProperty("user.dir"), DB_NAME)
+            dbPath.exists().isFalse {
+                dbPath = Path.of(System.getProperty("user.dir")).parent.resolve(DB_NAME)
+            }
+            dbPath.exists().isFalse {
+                dbPath = Path.of(System.getProperty("user.dir"), DB_NAME)
+                log.warn { "不存在默认的卡牌数据库" }
+            }
             url = "jdbc:sqlite:${dbPath}"
         }
         CARD_DB = JdbcTemplate(dataSource)
