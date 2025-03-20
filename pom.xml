@@ -15,9 +15,9 @@
         <module>Hearthstone-Script-Base</module>
         <module>Hearthstone-Script-Plugin-SDK</module>
         <module>Hearthstone-Script-Card-SDK</module>
-        <module>Hearthstone-Script-Deck-SDK</module>
+        <module>Hearthstone-Script-Strategy-SDK</module>
         <module>Hearthstone-Script-Base-Card</module>
-        <module>Hearthstone-Script-Base-Deck</module>
+        <module>Hearthstone-Script-Base-Strategy</module>
     </modules>
 
     <repositories>
@@ -176,7 +176,7 @@
             </dependency>
             <dependency>
                 <groupId>club.xiaojiawei</groupId>
-                <artifactId>hs-script-base-deck</artifactId>
+                <artifactId>hs-script-base-strategy</artifactId>
                 <version>${hs-script-base-deck-version}</version>
                 <!--                <scope>provided</scope>-->
             </dependency>
@@ -198,7 +198,7 @@
             </dependency>
             <dependency>
                 <groupId>club.xiaojiawei</groupId>
-                <artifactId>hs-script-deck-sdk</artifactId>
+                <artifactId>hs-script-strategy-sdk</artifactId>
                 <version>${hs-script-deck-sdk-version}</version>
             </dependency>
             <!--javafx-->

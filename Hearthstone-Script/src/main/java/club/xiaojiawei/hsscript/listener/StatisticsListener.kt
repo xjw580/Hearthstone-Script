@@ -24,11 +24,12 @@ object StatisticsListener {
                 val recordDao = RecordDaoEx.RECORD_DAO
                 val deckStrategy = DeckStrategyManager.currentDeckStrategy ?: return@run
 
+                val runModeEnum = currentRunMode?:return@run
                 recordDao.insert(
                     Record(
                         strategyId = deckStrategy.id(),
                         strategyName = deckStrategy.name(),
-                        runMode = currentRunMode,
+                        runMode = runModeEnum,
                         result = WarEx.isWin,
                         experience = WarEx.aEXP.toInt(),
                         startTime = startDateTime,

@@ -46,7 +46,7 @@
         <!--卡组插件-->
         <dependency>
             <groupId>club.xiaojiawei</groupId>
-            <artifactId>hs-script-base-deck</artifactId>
+            <artifactId>hs-script-base-strategy</artifactId>
         </dependency>
         <!--卡牌插件-->
         <dependency>
@@ -94,7 +94,7 @@
         <!--sdk-->
         <dependency>
             <groupId>club.xiaojiawei</groupId>
-            <artifactId>hs-script-deck-sdk</artifactId>
+            <artifactId>hs-script-strategy-sdk</artifactId>
         </dependency>
         <dependency>
             <groupId>club.xiaojiawei</groupId>

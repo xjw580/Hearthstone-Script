@@ -40,7 +40,7 @@ class GameStarter : AbstractStarter() {
         var firstLogLaunch = true
         var firstLogSecondaryLaunch = true
         addTask(
-            LAUNCH_PROGRAM_THREAD_POOL.scheduleAtFixedRate(LRunnable {
+            LAUNCH_PROGRAM_THREAD_POOL.scheduleWithFixedDelay(LRunnable {
                 val diffTime = System.currentTimeMillis() - startTime
                 if (diffTime > 20_000) {
                     log.warn { "启动${GAME_CN_NAME}失败次数过多，重新执行启动器链" }

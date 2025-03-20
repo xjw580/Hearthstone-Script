@@ -85,7 +85,7 @@ object VersionListener {
     val launch: Unit by lazy {
         if (checkVersionTask != null) return@lazy
 
-        checkVersionTask = EXTRA_THREAD_POOL.scheduleAtFixedRate(LRunnable {
+        checkVersionTask = EXTRA_THREAD_POOL.scheduleWithFixedDelay(LRunnable {
             checkVersion()
         }, 500, 1000 * 60 * 60 * 2, TimeUnit.MILLISECONDS)
         log.info { "版本更新检测已启动" }

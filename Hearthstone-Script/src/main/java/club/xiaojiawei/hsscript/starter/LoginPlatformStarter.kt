@@ -33,7 +33,7 @@ class LoginPlatformStarter : AbstractStarter() {
         }
         var startTime = System.currentTimeMillis()
         addTask(
-            EXTRA_THREAD_POOL.scheduleAtFixedRate({
+            EXTRA_THREAD_POOL.scheduleWithFixedDelay({
                 var loginPlatformHWND: HWND?
                 if ((GameUtil.findLoginPlatformHWND().also { loginPlatformHWND = it }) == null || GameUtil.isAliveOfGame()) {
                     startNextStarter()
@@ -48,7 +48,7 @@ class LoginPlatformStarter : AbstractStarter() {
                             GameUtil.killPlatform()
                             StarterConfig.starter.start()
                         }, 1, TimeUnit.SECONDS)
-                        return@scheduleAtFixedRate
+                        return@scheduleWithFixedDelay
                     }
                     go {
                         input(loginPlatformHWND)

@@ -14,7 +14,7 @@ import javafx.scene.text.Text
  * @author 肖嘉威
  * @date 2025/2/28 12:19
  */
-class PluginDeckItem : HBox() {
+class PluginDeckStrategyItem : HBox() {
 
     @FXML
     lateinit var name: Text
@@ -41,7 +41,7 @@ class PluginDeckItem : HBox() {
         }
 
     init {
-        val fxmlLoader = FXMLLoader(javaClass.getResource("/fxml/component/PluginDeckItem.fxml"))
+        val fxmlLoader = FXMLLoader(javaClass.getResource("/fxml/component/PluginDeckStrategyItem.fxml"))
         fxmlLoader.setRoot(this)
         fxmlLoader.setController(this)
         fxmlLoader.load<Any>()

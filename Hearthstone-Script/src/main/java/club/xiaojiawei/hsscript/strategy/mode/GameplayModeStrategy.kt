@@ -5,7 +5,6 @@ import club.xiaojiawei.enums.ModeEnum
 import club.xiaojiawei.hsscript.status.Mode.prevMode
 import club.xiaojiawei.hsscript.strategy.AbstractModeStrategy
 import club.xiaojiawei.hsscript.utils.GameUtil
-import club.xiaojiawei.hsscript.utils.SystemUtil.delay
 
 /**
  * 游戏界面
@@ -24,4 +23,5 @@ object GameplayModeStrategy : AbstractModeStrategy<Any?>() {
             GameUtil.surrender()
         }
     }
+
 }

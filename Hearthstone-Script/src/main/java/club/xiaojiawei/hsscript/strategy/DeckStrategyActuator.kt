@@ -13,6 +13,7 @@ import club.xiaojiawei.hsscript.status.PauseStatus
 import club.xiaojiawei.hsscript.utils.ConfigUtil
 import club.xiaojiawei.hsscript.utils.GameUtil
 import club.xiaojiawei.hsscript.utils.SystemUtil
+import club.xiaojiawei.hsscript.utils.go
 import club.xiaojiawei.status.WAR
 import club.xiaojiawei.util.RandomUtil
 import club.xiaojiawei.util.isFalse
@@ -116,14 +117,13 @@ object DeckStrategyActuator {
                 }
             }
             log.info { "执行换牌策略完毕" }
+            checkSurrender()
         } finally {
             for (i in 0..2) {
                 GameUtil.CONFIRM_RECT.lClick(false)
                 SystemUtil.delayShort()
             }
         }
-
-        checkSurrender()
     }
 
     fun outCard() {
@@ -155,6 +155,7 @@ object DeckStrategyActuator {
             }
             DeckStrategyManager.currentDeckStrategy?.executeOutCard()
             log.info { "执行出牌策略完毕" }
+            checkSurrender()
         } finally {
             GameUtil.cancelAction()
             for (i in 0 until 20) {
@@ -167,8 +168,6 @@ object DeckStrategyActuator {
                 SystemUtil.delayShortMedium()
             }
         }
-
-        checkSurrender()
     }
 
     fun discoverChooseCard(vararg cards: Card) {
@@ -204,7 +203,7 @@ object DeckStrategyActuator {
     private fun checkSurrender(): Boolean {
         DeckStrategyManager.currentDeckStrategy?.let {
             if (it.needSurrender) {
-                GameUtil.surrender()
+                go { GameUtil.surrender() }
                 it.needSurrender = false
                 return true
             }

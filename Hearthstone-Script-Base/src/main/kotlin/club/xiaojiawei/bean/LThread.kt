@@ -6,7 +6,12 @@ package club.xiaojiawei.bean
  */
 open class LThread : Thread {
 
-    constructor(task: Runnable?) : super(LRunnable(task))
-    constructor(task: Runnable?, name: String?) : super(LRunnable(task), name)
+    constructor(task: Runnable?, ignoreInterrupted: Boolean = false) : super(LRunnable(ignoreInterrupted, task))
+    constructor(task: Runnable?, name: String?, ignoreInterrupted: Boolean = false) : super(
+        LRunnable(
+            ignoreInterrupted,
+            task
+        ), name
+    )
 
 }

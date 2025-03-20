@@ -30,7 +30,7 @@ object WorkListener {
     private var checkVersionTask: ScheduledFuture<*>? = null
 
     val launch: Unit by lazy {
-        checkVersionTask = EXTRA_THREAD_POOL.scheduleAtFixedRate(LRunnable {
+        checkVersionTask = EXTRA_THREAD_POOL.scheduleWithFixedDelay(LRunnable {
             checkWork()
         }, 0, 1000 * 60, TimeUnit.MILLISECONDS)
         log.info { "工作时段监听已启动" }

@@ -81,7 +81,7 @@ abstract class MainView : Initializable {
     protected lateinit var runModeBox: ComboBox<RunModeEnum>
 
     @FXML
-    protected lateinit var deckBox: ComboBox<DeckStrategy>
+    protected lateinit var deckStrategyBox: ComboBox<DeckStrategy>
 
     @FXML
     protected lateinit var workDay: TilePane

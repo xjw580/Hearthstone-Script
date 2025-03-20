@@ -13,7 +13,7 @@ import club.xiaojiawei.controls.NotificationManager
 import club.xiaojiawei.controls.ProgressModal
 import club.xiaojiawei.controls.TableFilterManagerGroup
 import club.xiaojiawei.hsscript.component.CardTableView
-import club.xiaojiawei.hsscript.component.PluginDeckItem
+import club.xiaojiawei.hsscript.component.PluginDeckStrategyItem
 import club.xiaojiawei.hsscript.component.PluginItem
 import club.xiaojiawei.hsscript.status.PluginManager.CARD_ACTION_PLUGINS
 import club.xiaojiawei.hsscript.status.PluginManager.DECK_STRATEGY_PLUGINS
@@ -42,10 +42,10 @@ class PluginSettingsController : Initializable {
     protected lateinit var pluginTabPane: TabPane
 
     @FXML
-    protected lateinit var deckListView: ListView<PluginDeckItem>
+    protected lateinit var deckStrategyListView: ListView<PluginDeckStrategyItem>
 
     @FXML
-    protected lateinit var deckRootProgressModal: ProgressModal
+    protected lateinit var deckStrategyRootProgressModal: ProgressModal
 
     @FXML
     protected lateinit var deckTab: Tab
@@ -185,29 +185,29 @@ class PluginSettingsController : Initializable {
 
             is DeckPlugin -> {
                 pluginTabPane.tabs.addLast(deckTab)
-                val progress = deckRootProgressModal.show()
+                val progress = deckStrategyRootProgressModal.show()
                 EXTRA_THREAD_POOL.submit {
                     runCatching {
-                        val pluginDeckItems = mutableSetOf<PluginDeckItem>()
+                        val pluginDeckStrategyItems = mutableSetOf<PluginDeckStrategyItem>()
                         for (deckStrategy in spiInstance) {
                             deckStrategy as DeckStrategy
-                            pluginDeckItems.add(
-                                PluginDeckItem().apply {
+                            pluginDeckStrategyItems.add(
+                                PluginDeckStrategyItem().apply {
                                     name.text = deckStrategy.name()
                                     description.text = deckStrategy.description()
                                     this.deckStrategy = deckStrategy
                                 }
                             )
                         }
-                        pluginDeckItems
+                        pluginDeckStrategyItems
                     }.onSuccess { pluginDeckItems ->
                         runUI {
-                            deckListView.items.setAll(pluginDeckItems)
-                            deckRootProgressModal.hide(progress)
+                            deckStrategyListView.items.setAll(pluginDeckItems)
+                            deckStrategyRootProgressModal.hide(progress)
                         }
                     }.onFailure {
                         runUI {
-                            deckRootProgressModal.hide(progress)
+                            deckStrategyRootProgressModal.hide(progress)
                             notificationManager.showError(it.message, 5)
                             log.error(it) { }
                         }

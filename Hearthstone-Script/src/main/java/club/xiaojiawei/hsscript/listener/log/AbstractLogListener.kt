@@ -75,7 +75,7 @@ abstract class AbstractLogListener(
             log.error(e) {}
             return
         }
-        logScheduledFuture = LISTEN_LOG_THREAD_POOL.scheduleAtFixedRate({
+        logScheduledFuture = LISTEN_LOG_THREAD_POOL.scheduleWithFixedDelay({
             if (PauseStatus.isPause || !WorkListener.working) {
                 stopAll()
             } else {

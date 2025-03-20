@@ -8,6 +8,9 @@ import club.xiaojiawei.hsscript.status.Mode
 import club.xiaojiawei.hsscript.status.PauseStatus
 import club.xiaojiawei.hsscript.utils.GameUtil
 import club.xiaojiawei.util.isFalse
+import java.time.Duration
+import java.time.LocalTime
+import java.time.format.DateTimeFormatter
 import java.util.concurrent.TimeUnit
 
 /**
@@ -16,7 +19,7 @@ import java.util.concurrent.TimeUnit
  * @date 2023/7/5 14:55
  */
 object ScreenLogListener :
-    AbstractLogListener("LoadingScreen.log", 0, 1000L, TimeUnit.MILLISECONDS) {
+    AbstractLogListener("LoadingScreen.log", 0, 50L, TimeUnit.MILLISECONDS) {
 
     private const val CURR_MODE_STR = "currMode="
 
@@ -25,6 +28,8 @@ object ScreenLogListener :
     private const val NEXT_MODE_STR = "nextMode="
 
     private const val NEXT_MODE_STR_LEN = NEXT_MODE_STR.length
+
+    private val formatter = DateTimeFormatter.ofPattern("HH:mm:ss.SSSSSSS")
 
     override fun dealOldLog() {
         var line: String
@@ -54,6 +59,13 @@ object ScreenLogListener :
                     break
                 }
                 resolveLog(line)?.let { mode ->
+                    val logTime = LocalTime.parse(line.substring(2, 18), formatter)
+                    val nowTime = LocalTime.now()
+                    val logDiffTime =
+                        Duration.between(logTime, nowTime).toMillis()
+                    if (logDiffTime > 1000) {
+                        log.warn { "LoadingScreen.log日志实际打印时间与输出时间相差过大，diff:${logDiffTime}，log:${line}，logTime:${logTime}，nowTime:${nowTime}" }
+                    }
                     Mode.currMode = mode
                 }
             }

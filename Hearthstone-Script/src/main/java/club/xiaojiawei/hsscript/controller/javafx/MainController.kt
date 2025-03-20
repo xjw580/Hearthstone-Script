@@ -89,7 +89,7 @@ class MainController : MainView() {
                 return if (s == null || s.isBlank()) null else RunModeEnum.valueOf(s)
             }
         }
-        deckBox.converter = object : StringConverter<DeckStrategy?>() {
+        deckStrategyBox.converter = object : StringConverter<DeckStrategy?>() {
             override fun toString(deckStrategy: DeckStrategy?): String {
                 return deckStrategy?.name() ?: ""
             }
@@ -104,19 +104,24 @@ class MainController : MainView() {
         //        模式更改监听
         runModeBox.selectionModel.selectedItemProperty()
             .addListener { observable: ObservableValue<out RunModeEnum?>?, oldValue: RunModeEnum?, newValue: RunModeEnum? ->
-                deckBox.selectionModel.select(null)
-                if (newValue == null) {
-                    deckBox.items.clear()
-                } else {
-                    deckBox.items.setAll(runModeMap[newValue])
+                val deckStrategies = if (newValue == null) null else runModeMap[newValue]
+                deckStrategies?.let {
+                    deckStrategyBox.items.setAll(deckStrategies)
+                }?:let {
+                    deckStrategyBox.items.clear()
                 }
                 putString(ConfigEnum.DEFAULT_RUN_MODE, newValue?.name ?: "", true)
             }
 
         //        卡组更改监听
-        deckBox.selectionModel.selectedItemProperty()
+        deckStrategyBox.selectionModel.selectedItemProperty()
             .addListener { observable: ObservableValue<out DeckStrategy?>?, oldValue: DeckStrategy?, newValue: DeckStrategy? ->
-                if (newValue != null) {
+                if (newValue == null) {
+                    runModeMap[runModeBox.selectionModel.selectedItem]?.find { it == oldValue }?.let {
+                        deckStrategyBox.selectionModel.select(oldValue)
+                        return@addListener
+                    }
+                }else{
 //                将卡组策略的第一个运行模式改为当前运行模式
                     for (i in newValue.runModes.indices) {
                         val runModeEnum = newValue.runModes[i]
@@ -149,7 +154,7 @@ class MainController : MainView() {
             runModeBox.value = Objects.requireNonNullElseGet(
                 defaultRunModeEnum
             ) { deckStrategy.runModes[0] }
-            deckBox.value = deckStrategy
+            deckStrategyBox.value = deckStrategy
             val deckCode = deckStrategy.deckCode()
             if (!deckCode.isEmpty()) {
                 log.info("当前卡组代码↓")
@@ -161,7 +166,7 @@ class MainController : MainView() {
             if (t1 != null) {
                 t1.runModes
                 runModeBox.value = t1.runModes[0]
-                deckBox.value = t1
+                deckStrategyBox.value = t1
             }
         }
     }

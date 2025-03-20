@@ -22,7 +22,7 @@ import java.util.concurrent.TimeUnit
  * @date 2023/7/5 20:40
  */
 object PowerLogListener :
-    AbstractLogListener("Power.log", 0, 1000L, TimeUnit.MILLISECONDS) {
+    AbstractLogListener("Power.log", 0, 50L, TimeUnit.MILLISECONDS) {
 
     private val war = WAR
 

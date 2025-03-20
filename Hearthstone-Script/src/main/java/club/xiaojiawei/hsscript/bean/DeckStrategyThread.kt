@@ -1,7 +1,6 @@
 package club.xiaojiawei.hsscript.bean
 
 import club.xiaojiawei.bean.LThread
-import java.lang.Thread
 
 /**
  * @author 肖嘉威
@@ -13,6 +12,6 @@ fun isDeckStrategyThread():Boolean{
 }
 
 open class DeckStrategyThread: LThread{
-    constructor(task: Runnable?) : super(task)
-    constructor(task: Runnable?, name: String?) : super(task, name)
+    constructor(task: Runnable?) : super(task, true)
+    constructor(task: Runnable?, name: String?) : super(task, name, true)
 }

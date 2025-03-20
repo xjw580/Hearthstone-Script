@@ -27,7 +27,7 @@ abstract class DeckStrategy {
     }
 
     /**
-     * 策略名，将会显示在界面中
+     * 套牌策略名，将会显示在界面中
      * @return 非空
      */
     abstract fun name(): String
@@ -50,7 +50,7 @@ abstract class DeckStrategy {
     abstract fun deckCode(): String
 
     /**
-     * 卡组唯一标识
+     * 套牌策略唯一标识
      * @return 非空
      */
     abstract fun id(): String

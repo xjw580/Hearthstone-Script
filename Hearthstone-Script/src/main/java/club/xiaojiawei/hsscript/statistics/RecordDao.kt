@@ -1,6 +1,7 @@
 package club.xiaojiawei.hsscript.statistics
 
 import club.xiaojiawei.enums.RunModeEnum
+import club.xiaojiawei.hsscript.data.ZONE_OFFSET
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.jdbc.core.RowMapper
 import org.springframework.jdbc.datasource.DriverManagerDataSource
@@ -11,7 +12,6 @@ import java.sql.ResultSet
 import java.sql.Statement
 import java.time.Instant
 import java.time.LocalDateTime
-import java.time.ZoneOffset
 
 /**
  * @author 肖嘉威
@@ -39,8 +39,6 @@ data class Record(
 class RecordDao(dbPath: String) {
 
     private val jdbcTemplate: JdbcTemplate
-
-    private val OFFSET = ZoneOffset.ofHours(8)
 
     init {
         val dbFile = File(dbPath)
@@ -120,8 +118,8 @@ class RecordDao(dbPath: String) {
             runMode = RunModeEnum.fromString(rs.getString("run_mode")),
             result = rs.getBoolean("result"),
             experience = rs.getInt("experience"),
-            startTime = Instant.ofEpochSecond(rs.getLong("start_time")).atZone(OFFSET).toLocalDateTime(),
-            endTime = Instant.ofEpochSecond(rs.getLong("end_time")).atZone(OFFSET).toLocalDateTime()
+            startTime = Instant.ofEpochSecond(rs.getLong("start_time")).atZone(ZONE_OFFSET).toLocalDateTime(),
+            endTime = Instant.ofEpochSecond(rs.getLong("end_time")).atZone(ZONE_OFFSET).toLocalDateTime()
         )
     }
 
@@ -139,8 +137,8 @@ class RecordDao(dbPath: String) {
             ps.setString(3, record.runMode?.name)
             ps.setBoolean(4, record.result ?: false)
             ps.setInt(5, record.experience ?: 0)
-            ps.setLong(6, record.startTime?.toEpochSecond(OFFSET) ?: 0)
-            ps.setLong(7, record.endTime?.toEpochSecond(OFFSET) ?: 0)
+            ps.setLong(6, record.startTime?.toEpochSecond(ZONE_OFFSET) ?: 0)
+            ps.setLong(7, record.endTime?.toEpochSecond(ZONE_OFFSET) ?: 0)
             ps
         }, keyHolder)
 
@@ -162,8 +160,8 @@ class RecordDao(dbPath: String) {
             record.runMode,  // 使用runMode代替mode
             record.result,
             record.experience,
-            record.startTime?.toEpochSecond(OFFSET) ?: 0,
-            record.endTime?.toEpochSecond(OFFSET) ?: 0,
+            record.startTime?.toEpochSecond(ZONE_OFFSET) ?: 0,
+            record.endTime?.toEpochSecond(ZONE_OFFSET) ?: 0,
             record.id
         )
     }
@@ -239,13 +237,13 @@ class RecordDao(dbPath: String) {
             }
 
             record.startTime?.let { startTime ->
-                val startTimestamp = startTime.atZone(OFFSET).toEpochSecond()
+                val startTimestamp = startTime.atZone(ZONE_OFFSET).toEpochSecond()
                 conditions.add("end_time >= ?")
                 params.add(startTimestamp)
             }
 
             record.endTime?.let { endTime ->
-                val endTimestamp = endTime.atZone(OFFSET).toEpochSecond()
+                val endTimestamp = endTime.atZone(ZONE_OFFSET).toEpochSecond()
                 conditions.add("end_time < ?")
                 params.add(endTimestamp)
             }
@@ -271,8 +269,8 @@ class RecordDao(dbPath: String) {
         return jdbcTemplate.query(
             sql,
             recordMapper,
-            startDate.atZone(OFFSET).toEpochSecond(),
-            endDate.atZone(OFFSET).toEpochSecond()
+            startDate.atZone(ZONE_OFFSET).toEpochSecond(),
+            endDate.atZone(ZONE_OFFSET).toEpochSecond()
         )
     }
 

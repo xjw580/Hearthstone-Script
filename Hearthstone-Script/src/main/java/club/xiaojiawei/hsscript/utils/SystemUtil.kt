@@ -4,12 +4,12 @@ import club.xiaojiawei.bean.LRunnable
 import club.xiaojiawei.config.log
 import club.xiaojiawei.hsscript.custom.MouseClickListener
 import club.xiaojiawei.hsscript.data.*
-import club.xiaojiawei.hsscript.dll.GSystemDll
 import club.xiaojiawei.hsscript.dll.CSystemDll
 import club.xiaojiawei.hsscript.dll.CSystemDll.Companion.MB_ICONERROR
 import club.xiaojiawei.hsscript.dll.CSystemDll.Companion.MB_ICONINFORMATION
 import club.xiaojiawei.hsscript.dll.CSystemDll.Companion.MB_OK
 import club.xiaojiawei.hsscript.dll.CSystemDll.Companion.MB_TOPMOST
+import club.xiaojiawei.hsscript.dll.GSystemDll
 import club.xiaojiawei.hsscript.dll.User32ExDll
 import club.xiaojiawei.hsscript.dll.User32ExDll.Companion.SC_MONITORPOWER
 import club.xiaojiawei.hsscript.enums.ConfigEnum

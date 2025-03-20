@@ -28,7 +28,7 @@ class PlatformStarter : AbstractStarter() {
         }
 
         addTask(
-            LAUNCH_PROGRAM_THREAD_POOL.scheduleAtFixedRate(LRunnable {
+            LAUNCH_PROGRAM_THREAD_POOL.scheduleWithFixedDelay(LRunnable {
                 if (GameUtil.findPlatformHWND() != null || GameUtil.findLoginPlatformHWND() != null) {
                     startNextStarter()
                 }

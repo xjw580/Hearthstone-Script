@@ -127,7 +127,7 @@ enum class ConfigEnum(
     CARD_PLUGIN_DISABLED(group = PLUGIN_CONFIG_GROUP, defaultValue = JSON.toJSONString(emptyList<String>())),
 
     /**
-     * 默认套牌(deck id)
+     * 默认套牌策略(deck id)
      */
     DEFAULT_DECK_STRATEGY(group = OTHER_CONFIG_GROUP, defaultValue = ""),
 

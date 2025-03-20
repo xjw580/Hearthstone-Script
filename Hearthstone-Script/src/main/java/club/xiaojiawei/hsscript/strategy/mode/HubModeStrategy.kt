@@ -41,8 +41,8 @@ object HubModeStrategy : AbstractModeStrategy<Any?>() {
     }
 
     override fun afterEnter(t: Any?) {
-        addEnteredTask(EXTRA_THREAD_POOL.scheduleAtFixedRate({
-            if (PauseStatus.isPause) return@scheduleAtFixedRate
+        addEnteredTask(EXTRA_THREAD_POOL.scheduleWithFixedDelay({
+            if (PauseStatus.isPause) return@scheduleWithFixedDelay
             log.info { "点击广告弹窗等" }
             CLOSE_AD1_RECT.lClick()
             SystemUtil.delayShortMedium()

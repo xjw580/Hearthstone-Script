@@ -11,9 +11,11 @@ import com.sun.jna.platform.win32.WinDef.POINT
  */
 interface User32ExDll : Library {
 
-    fun IsIconic(hwnd: WinDef.HWND): Boolean
+    fun IsIconic(hwnd: WinDef.HWND?): Boolean
 
     fun GetCursorPos(point: POINT)
+
+    fun ClientToScreen(hWnd: WinDef.HWND?, point: POINT)
 
     companion object {
 

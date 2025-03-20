@@ -8,6 +8,7 @@ import com.sun.jna.platform.win32.WinDef
 import com.sun.jna.platform.win32.WinDef.HWND
 import java.awt.Robot
 import java.awt.Toolkit
+import java.time.ZoneOffset
 
 /**
  * 存储脚本常量
@@ -78,6 +79,8 @@ const val PLATFORM_PROGRAM_NAME: String = "$PLATFORM_US_NAME.exe"
  * 作者
  */
 const val AUTHOR: String = "XiaoJiawei"
+
+val ZONE_OFFSET = ZoneOffset.ofHours(8)
 
 
 /*日志相关*/

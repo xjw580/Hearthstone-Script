@@ -59,11 +59,11 @@
                         </graphic>
                     </Label>
 
-                    <Label text="卡组："
+                    <Label text="策略："
                            contentDisplay="RIGHT">
                         <graphic>
                             <ComboBox prefWidth="110" styleClass="combo-box-ui, combo-box-ui-small, combo-box-ui-normal"
-                                      fx:id="deckBox"/>
+                                      fx:id="deckStrategyBox"/>
                         </graphic>
                     </Label>
 

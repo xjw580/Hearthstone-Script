@@ -45,7 +45,7 @@ class PluginItem(val pluginWrapper: PluginWrapper<*>, var notificationManager: N
     private fun afterLoaded() {
         name.text = pluginWrapper.plugin.name()
         if (pluginWrapper.plugin is DeckPlugin) {
-            type.text = "套牌"
+            type.text = "策略"
             type.styleClass.add("label-ui-success")
         } else {
             type.text = "卡牌"

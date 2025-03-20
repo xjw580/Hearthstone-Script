@@ -38,7 +38,7 @@ class ExceptionListenStarter : AbstractStarter() {
         closeListener()
         log.info { "开始监听异常情况" }
         Core.lastActiveTime = System.currentTimeMillis()
-        errorScheduledFuture = LISTEN_LOG_THREAD_POOL.scheduleAtFixedRate(LRunnable {
+        errorScheduledFuture = LISTEN_LOG_THREAD_POOL.scheduleWithFixedDelay(LRunnable {
             if (PauseStatus.isPause || !WorkListener.working) {
                 closeListener()
                 return@LRunnable

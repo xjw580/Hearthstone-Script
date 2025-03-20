@@ -42,8 +42,8 @@
                 </Tab>
                 <Tab text="包含的策略" fx:id="deckTab">
                     <StackPane style="-fx-padding: 5;">
-                        <ListView fx:id="deckListView" styleClass="list-view-ui"/>
-                        <ProgressModal fx:id="deckRootProgressModal" title="加载中..."/>
+                        <ListView fx:id="deckStrategyListView" styleClass="list-view-ui"/>
+                        <ProgressModal fx:id="deckStrategyRootProgressModal" title="加载中..."/>
                     </StackPane>
                 </Tab>
             </fx:define>
