@@ -7,7 +7,7 @@ import club.xiaojiawei.hsscript.data.GAME_CN_NAME
 import club.xiaojiawei.hsscript.data.GAME_HWND
 import club.xiaojiawei.hsscript.data.PLATFORM_CN_NAME
 import club.xiaojiawei.hsscript.data.haveProgramPath
-import club.xiaojiawei.hsscript.dll.SystemDll
+import club.xiaojiawei.hsscript.dll.CSystemDll
 import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.enums.WindowEnum
 import club.xiaojiawei.hsscript.listener.WorkListener
@@ -30,12 +30,12 @@ object Core {
     val launch: Unit by lazy {
         PauseStatus.addListener { _, _, newValue ->
             newValue.isTrue {
-                SystemDll.INSTANCE.changeInput(GAME_HWND, false)
-                SystemDll.INSTANCE.changeWindow(GAME_HWND, false)
+                CSystemDll.INSTANCE.changeInput(GAME_HWND, false)
+                CSystemDll.INSTANCE.changeWindow(GAME_HWND, false)
                 WorkListener.working = false
                 Mode.reset()
                 runUI { WindowUtil.getStage(WindowEnum.MAIN)?.show() }
-                SystemDll.INSTANCE.topWindow(GAME_HWND, false)
+                CSystemDll.INSTANCE.topWindow(GAME_HWND, false)
                 log.info { "当前处于【停止】状态" }
             }.isFalse {
                 if (WorkListener.isDuringWorkDate()) {
@@ -44,7 +44,7 @@ object Core {
                     WorkListener.cannotWorkLog()
                 }
                 if (ConfigUtil.getBoolean(ConfigEnum.TOP_GAME_WINDOW)) {
-                    SystemDll.INSTANCE.topWindow(GAME_HWND, true)
+                    CSystemDll.INSTANCE.topWindow(GAME_HWND, true)
                 }
                 log.info { "当前处于【运行】状态" }
             }

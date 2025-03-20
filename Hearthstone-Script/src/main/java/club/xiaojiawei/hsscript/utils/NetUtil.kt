@@ -1,6 +1,6 @@
 package club.xiaojiawei.hsscript.utils
 
-import club.xiaojiawei.hsscript.dll.SystemDll
+import club.xiaojiawei.hsscript.dll.CSystemDll
 import club.xiaojiawei.hsscript.enums.ConfigEnum
 import com.sun.jna.Memory
 import org.springframework.http.client.SimpleClientHttpRequestFactory
@@ -20,7 +20,7 @@ object NetUtil {
 
     fun getSystemProxy(): Proxy? {
         val proxyPointer = Memory(256)
-        SystemDll.INSTANCE.getWindowsProxy(proxyPointer, proxyPointer.size().toInt())
+        CSystemDll.INSTANCE.getWindowsProxy(proxyPointer, proxyPointer.size().toInt())
         val proxyUrl = proxyPointer.getString(0)
         val split = proxyUrl.split(":")
         return if (split.size == 2) {

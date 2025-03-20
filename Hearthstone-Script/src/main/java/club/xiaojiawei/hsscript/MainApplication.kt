@@ -11,7 +11,8 @@ import club.xiaojiawei.hsscript.core.Core
 import club.xiaojiawei.hsscript.data.ARG_PAGE
 import club.xiaojiawei.hsscript.data.ARG_PAUSE
 import club.xiaojiawei.hsscript.data.GAME_CN_NAME
-import club.xiaojiawei.hsscript.dll.SystemDll
+import club.xiaojiawei.hsscript.dll.CSystemDll
+import club.xiaojiawei.hsscript.dll.GSystemDll
 import club.xiaojiawei.hsscript.dll.ZLaunchDll
 import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.enums.WindowEnum
@@ -277,7 +278,7 @@ class MainApplication : Application() {
     }
 
     private fun checkSystem() {
-        SystemDll.INSTANCE.isRunAsAdministrator().isFalse {
+        CSystemDll.INSTANCE.isRunAsAdministrator().isFalse {
             val text = "当前进程不是以管理员启动，功能可能受限"
             log.warn { text }
             SystemUtil.notice(text)
@@ -301,7 +302,7 @@ class MainApplication : Application() {
                     LThread(
                         {
                             log.info { "软件已退出" }
-                            SystemDll.INSTANCE.uninstallInjectDll(GameUtil.findGameHWND())
+                            CSystemDll.INSTANCE.uninstallInjectDll(GameUtil.findGameHWND())
                         },
                         "ShutdownHook Thread"
                     )

@@ -4,12 +4,12 @@ import club.xiaojiawei.bean.LRunnable
 import club.xiaojiawei.config.log
 import club.xiaojiawei.hsscript.custom.MouseClickListener
 import club.xiaojiawei.hsscript.data.*
-import club.xiaojiawei.hsscript.dll.NoticeDll
-import club.xiaojiawei.hsscript.dll.SystemDll
-import club.xiaojiawei.hsscript.dll.SystemDll.Companion.MB_ICONERROR
-import club.xiaojiawei.hsscript.dll.SystemDll.Companion.MB_ICONINFORMATION
-import club.xiaojiawei.hsscript.dll.SystemDll.Companion.MB_OK
-import club.xiaojiawei.hsscript.dll.SystemDll.Companion.MB_TOPMOST
+import club.xiaojiawei.hsscript.dll.GSystemDll
+import club.xiaojiawei.hsscript.dll.CSystemDll
+import club.xiaojiawei.hsscript.dll.CSystemDll.Companion.MB_ICONERROR
+import club.xiaojiawei.hsscript.dll.CSystemDll.Companion.MB_ICONINFORMATION
+import club.xiaojiawei.hsscript.dll.CSystemDll.Companion.MB_OK
+import club.xiaojiawei.hsscript.dll.CSystemDll.Companion.MB_TOPMOST
 import club.xiaojiawei.hsscript.dll.User32ExDll
 import club.xiaojiawei.hsscript.dll.User32ExDll.Companion.SC_MONITORPOWER
 import club.xiaojiawei.hsscript.enums.ConfigEnum
@@ -74,7 +74,7 @@ object SystemUtil {
                     getProgramIconFile().toPath().normalize().toString().toByteArray(StandardCharsets.UTF_8)
                 val btnTextBytes = btnText.toByteArray(StandardCharsets.UTF_8)
                 val btnURLBytes = btnURL.toByteArray(StandardCharsets.UTF_8)
-                NoticeDll.INSTANCE.notice(
+                GSystemDll.INSTANCE.notice(
                     appIDBytes,
                     titleBytes,
                     msgBytes,
@@ -329,7 +329,7 @@ object SystemUtil {
     fun shutdown() {
         val gameHWND = GAME_HWND
         if (gameHWND != null) {
-            SystemDll.INSTANCE.uninstallInjectDll(gameHWND)
+            CSystemDll.INSTANCE.uninstallInjectDll(gameHWND)
         }
         removeTray()
         PauseStatus.isPause = true
@@ -347,7 +347,7 @@ object SystemUtil {
 
     fun message(text: String, type: Int, hwnd: WinDef.HWND? = null) {
         go {
-            SystemDll.INSTANCE.messageBox(hwnd ?: let {
+            CSystemDll.INSTANCE.messageBox(hwnd ?: let {
                 WindowUtil.getStage(WindowEnum.MAIN)?.let {
                     User32.INSTANCE.FindWindow(null, it.title)
                 }

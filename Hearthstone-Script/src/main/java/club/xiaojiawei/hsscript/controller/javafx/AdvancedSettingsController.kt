@@ -4,7 +4,7 @@ import club.xiaojiawei.controls.ico.HelpIco
 import club.xiaojiawei.hsscript.bean.HotKey
 import club.xiaojiawei.hsscript.bean.single.repository.GiteeRepository
 import club.xiaojiawei.hsscript.controller.javafx.view.AdvancedSettingsView
-import club.xiaojiawei.hsscript.dll.SystemDll
+import club.xiaojiawei.hsscript.dll.CSystemDll
 import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.enums.MouseControlModeEnum
 import club.xiaojiawei.hsscript.listener.GlobalHotkeyListener
@@ -313,7 +313,7 @@ class AdvancedSettingsController : AdvancedSettingsView(), Initializable {
                 newValue.isTrue {
                     SystemListener.check()
                 }.isFalse {
-                    SystemDll.setWakeUpTimer(0)
+                    CSystemDll.setWakeUpTimer(0)
                 }
             }
     }

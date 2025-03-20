@@ -1,6 +1,6 @@
 package club.xiaojiawei.hsscript.data
 
-import club.xiaojiawei.hsscript.dll.SystemDll
+import club.xiaojiawei.hsscript.dll.CSystemDll
 import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.status.PauseStatus
 import club.xiaojiawei.hsscript.utils.ConfigUtil
@@ -29,7 +29,7 @@ var GAME_HWND: HWND? = null
     set(value) {
         value?.let {
             if (!PauseStatus.isPause && ConfigUtil.getBoolean(ConfigEnum.TOP_GAME_WINDOW)) {
-                SystemDll.INSTANCE.topWindow(value, true)
+                CSystemDll.INSTANCE.topWindow(value, true)
             }
         }
         field = value

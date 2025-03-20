@@ -8,7 +8,7 @@ import com.sun.jna.Native
  * @author 肖嘉威
  * @date 2023/9/16 17:34
  */
-interface NoticeDll : Library {
+interface GSystemDll : Library {
 
     fun notice(
         appID: ByteArray?,
@@ -26,8 +26,8 @@ interface NoticeDll : Library {
     )
 
     companion object {
-        val INSTANCE: NoticeDll by lazy {
-            Native.load("dll/notice", NoticeDll::class.java)
+        val INSTANCE: GSystemDll by lazy {
+            Native.load("dll/gsystem", GSystemDll::class.java)
         }
     }
 }

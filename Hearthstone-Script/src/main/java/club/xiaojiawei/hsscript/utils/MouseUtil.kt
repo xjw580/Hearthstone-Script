@@ -2,7 +2,7 @@ package club.xiaojiawei.hsscript.utils
 
 import club.xiaojiawei.enums.ModeEnum
 import club.xiaojiawei.hsscript.bean.isDeckStrategyThread
-import club.xiaojiawei.hsscript.dll.SystemDll
+import club.xiaojiawei.hsscript.dll.CSystemDll
 import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.listener.WorkListener
 import club.xiaojiawei.hsscript.status.Mode
@@ -58,7 +58,7 @@ object MouseUtil {
             synchronized(MouseUtil::javaClass) {
                 val prevPoint = prevPoint
                 if (prevPoint != pos) {
-                    SystemDll.INSTANCE.simulateHumanMoveMouse(
+                    CSystemDll.INSTANCE.simulateHumanMoveMouse(
                         prevPoint.x,
                         prevPoint.y,
                         pos.x,
@@ -69,7 +69,7 @@ object MouseUtil {
                     )
                     SystemUtil.delayShort()
                 }
-                SystemDll.INSTANCE.leftClick(pos.x.toLong(), pos.y.toLong(), hwnd, mouseMode)
+                CSystemDll.INSTANCE.leftClick(pos.x.toLong(), pos.y.toLong(), hwnd, mouseMode)
                 savePos(pos)
             }
         }
@@ -91,7 +91,7 @@ object MouseUtil {
             synchronized(MouseUtil::javaClass) {
                 val prevPoint = prevPoint
                 if (prevPoint != pos) {
-                    SystemDll.INSTANCE.simulateHumanMoveMouse(
+                    CSystemDll.INSTANCE.simulateHumanMoveMouse(
                         prevPoint.x,
                         prevPoint.y,
                         pos.x,
@@ -102,7 +102,7 @@ object MouseUtil {
                     )
                     SystemUtil.delayShort()
                 }
-                SystemDll.INSTANCE.rightClick(pos.x.toLong(), pos.y.toLong(), hwnd, mouseMode)
+                CSystemDll.INSTANCE.rightClick(pos.x.toLong(), pos.y.toLong(), hwnd, mouseMode)
                 savePos(pos)
             }
         }
@@ -133,7 +133,7 @@ object MouseUtil {
                 if (validPoint(endPos)) {
                     SystemUtil.delayShort()
                     if (startPos != endPos) {
-                        SystemDll.INSTANCE.simulateHumanMoveMouse(
+                        CSystemDll.INSTANCE.simulateHumanMoveMouse(
                             startPos.x,
                             startPos.y,
                             endPos.x,
@@ -147,7 +147,7 @@ object MouseUtil {
                 }
             } else if (validPoint(prevPoint)) {
                 if (prevPoint != endPos) {
-                    SystemDll.INSTANCE.simulateHumanMoveMouse(
+                    CSystemDll.INSTANCE.simulateHumanMoveMouse(
                         prevPoint.x,
                         prevPoint.y,
                         endPos.x,

@@ -3,9 +3,9 @@ package club.xiaojiawei.hsscript.controller.javafx
 import club.xiaojiawei.hsscript.bean.GameRect
 import club.xiaojiawei.hsscript.data.GAME_CN_NAME
 import club.xiaojiawei.hsscript.data.GameRationConst
-import club.xiaojiawei.hsscript.dll.SystemDll
-import club.xiaojiawei.hsscript.dll.SystemDll.Companion.MB_ICONERROR
-import club.xiaojiawei.hsscript.dll.SystemDll.Companion.MB_TOPMOST
+import club.xiaojiawei.hsscript.dll.CSystemDll
+import club.xiaojiawei.hsscript.dll.CSystemDll.Companion.MB_ICONERROR
+import club.xiaojiawei.hsscript.dll.CSystemDll.Companion.MB_TOPMOST
 import club.xiaojiawei.hsscript.interfaces.StageHook
 import club.xiaojiawei.hsscript.utils.GameUtil
 import club.xiaojiawei.hsscript.utils.SystemUtil
@@ -207,11 +207,11 @@ class GameMeasureModalController : Initializable, StageHook {
             newScene?.let {
                 val exec = Consumer<Window> { newWindow ->
                     GameUtil.findGameHWND()?.let {
-                        SystemDll.INSTANCE.topWindow(it, true)
+                        CSystemDll.INSTANCE.topWindow(it, true)
                     } ?: go {
                         GameUtil.launchPlatformAndGame()
                         SystemUtil.message("${GAME_CN_NAME}不在运行", type = MB_ICONERROR xor MB_TOPMOST)
-                        SystemDll.INSTANCE.topWindow(GameUtil.findGameHWND(), true)
+                        CSystemDll.INSTANCE.topWindow(GameUtil.findGameHWND(), true)
                     }
                     newWindow.showingProperty().addListener { _, _, isShow ->
                         if (isShow) {
@@ -293,6 +293,6 @@ class GameMeasureModalController : Initializable, StageHook {
     }
 
     override fun onHidden() {
-        SystemDll.INSTANCE.topWindow(GameUtil.findGameHWND(), false)
+        CSystemDll.INSTANCE.topWindow(GameUtil.findGameHWND(), false)
     }
 }

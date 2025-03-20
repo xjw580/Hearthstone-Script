@@ -1,6 +1,6 @@
 package club.xiaojiawei.hsscript.starter
 
-import club.xiaojiawei.hsscript.dll.SystemDll
+import club.xiaojiawei.hsscript.dll.CSystemDll
 import club.xiaojiawei.hsscript.status.Mode
 
 /**
@@ -13,7 +13,7 @@ class ClearStarter : AbstractStarter() {
 
     public override fun execStart() {
         Mode.reset()
-        SystemDll.setWakeUpTimer(0)
+        CSystemDll.setWakeUpTimer(0)
         startNextStarter()
     }
 

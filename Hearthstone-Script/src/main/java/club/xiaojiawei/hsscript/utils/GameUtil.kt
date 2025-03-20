@@ -7,7 +7,7 @@ import club.xiaojiawei.enums.ModeEnum
 import club.xiaojiawei.hsscript.bean.GameRect
 import club.xiaojiawei.hsscript.bean.single.WarEx
 import club.xiaojiawei.hsscript.data.*
-import club.xiaojiawei.hsscript.dll.SystemDll
+import club.xiaojiawei.hsscript.dll.CSystemDll
 import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.status.Mode
 import club.xiaojiawei.hsscript.status.PauseStatus
@@ -460,17 +460,17 @@ object GameUtil {
     }
 
     fun isAliveOfGame(): Boolean {
-        return SystemDll.INSTANCE.isProcessRunning(GAME_PROGRAM_NAME)
+        return CSystemDll.INSTANCE.isProcessRunning(GAME_PROGRAM_NAME)
     }
 
     fun isAliveOfPlatform(): Boolean {
-        return SystemDll.INSTANCE.isProcessRunning(PLATFORM_PROGRAM_NAME)
+        return CSystemDll.INSTANCE.isProcessRunning(PLATFORM_PROGRAM_NAME)
     }
 
     fun findGameHWND(): WinDef.HWND? {
         return SystemUtil.findHWND("UnityWndClass", GAME_CN_NAME)
             ?: SystemUtil.findHWND("UnityWndClass", GAME_US_NAME)
-            ?: SystemDll.INSTANCE.findWindowsByProcessName(GAME_PROGRAM_NAME)
+            ?: CSystemDll.INSTANCE.findWindowsByProcessName(GAME_PROGRAM_NAME)
     }
 
     fun findPlatformHWND(): WinDef.HWND? {
@@ -500,12 +500,12 @@ object GameUtil {
             if (isAliveOfGame()) {
                 kotlin.runCatching {
                     for (i in 0 until 2) {
-                        SystemDll.INSTANCE.quitWindow(GAME_HWND)
+                        CSystemDll.INSTANCE.quitWindow(GAME_HWND)
                         delay(2000)
                         if (!isAliveOfGame()) return@runCatching
                     }
                     for (i in 0 until 2) {
-                        SystemDll.INSTANCE.killProcessByName(GAME_PROGRAM_NAME)
+                        CSystemDll.INSTANCE.killProcessByName(GAME_PROGRAM_NAME)
                         delay(2000)
                         if (!isAliveOfGame()) return@runCatching
                     }
@@ -533,8 +533,8 @@ object GameUtil {
         val platformHWND: WinDef.HWND? = findPlatformHWND()
         val loginPlatformHWND: WinDef.HWND? = findLoginPlatformHWND()
         if (platformHWND != null || loginPlatformHWND != null) {
-            SystemDll.INSTANCE.quitWindow(platformHWND)
-            SystemDll.INSTANCE.quitWindow(loginPlatformHWND)
+            CSystemDll.INSTANCE.quitWindow(platformHWND)
+            CSystemDll.INSTANCE.quitWindow(loginPlatformHWND)
             log.info { "${PLATFORM_CN_NAME}已关闭" }
         } else {
             log.info { "${PLATFORM_CN_NAME}不在运行" }
@@ -546,7 +546,7 @@ object GameUtil {
         if (loginPlatformHWND == null) {
             log.info { "${PLATFORM_LOGIN_CN_NAME}不在运行" }
         } else {
-            SystemDll.INSTANCE.quitWindow(loginPlatformHWND)
+            CSystemDll.INSTANCE.quitWindow(loginPlatformHWND)
             log.info { "${PLATFORM_LOGIN_CN_NAME}已关闭" }
         }
     }

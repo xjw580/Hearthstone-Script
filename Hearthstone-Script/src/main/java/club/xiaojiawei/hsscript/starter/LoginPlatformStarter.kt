@@ -4,7 +4,7 @@ import club.xiaojiawei.config.EXTRA_THREAD_POOL
 import club.xiaojiawei.config.log
 import club.xiaojiawei.hsscript.config.StarterConfig
 import club.xiaojiawei.hsscript.data.PLATFORM_CN_NAME
-import club.xiaojiawei.hsscript.dll.SystemDll
+import club.xiaojiawei.hsscript.dll.CSystemDll
 import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.utils.ConfigUtil
 import club.xiaojiawei.hsscript.utils.GameUtil
@@ -77,13 +77,13 @@ class LoginPlatformStarter : AbstractStarter() {
         log.info { "输入${PLATFORM_CN_NAME}密码中..." }
         val password = ConfigUtil.getString(ConfigEnum.PLATFORM_PASSWORD)
         password.isNotBlank().isTrue {
-            SystemDll.INSTANCE.sendText(loginPlatformHWND, password, false)
+            CSystemDll.INSTANCE.sendText(loginPlatformHWND, password, false)
         }
     }
 
     private fun clickLoginButton(loginPlatformHWND: HWND) {
         log.info { "点击登入按钮" }
-        SystemDll.INSTANCE.clickPlatformLoginBtn(loginPlatformHWND)
+        CSystemDll.INSTANCE.clickPlatformLoginBtn(loginPlatformHWND)
     }
 
     @Deprecated("体验差")

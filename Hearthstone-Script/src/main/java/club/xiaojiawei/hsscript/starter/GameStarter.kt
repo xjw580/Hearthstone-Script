@@ -7,7 +7,7 @@ import club.xiaojiawei.config.log
 import club.xiaojiawei.hsscript.config.StarterConfig
 import club.xiaojiawei.hsscript.data.GAME_CN_NAME
 import club.xiaojiawei.hsscript.data.GAME_HWND
-import club.xiaojiawei.hsscript.dll.SystemDll
+import club.xiaojiawei.hsscript.dll.CSystemDll
 import club.xiaojiawei.hsscript.enums.MouseControlModeEnum
 import club.xiaojiawei.hsscript.status.PauseStatus
 import club.xiaojiawei.hsscript.utils.GameUtil
@@ -117,8 +117,8 @@ class GameStarter : AbstractStarter() {
         go {
             Thread.sleep(3000)
             GameUtil.updateGameRect()
-            SystemDll.INSTANCE.changeWindow(GAME_HWND, true)
-            SystemDll.INSTANCE.changeInput(GAME_HWND, true)
+            CSystemDll.INSTANCE.changeWindow(GAME_HWND, true)
+            CSystemDll.INSTANCE.changeInput(GAME_HWND, true)
         }
     }
 

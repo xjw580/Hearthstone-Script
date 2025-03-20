@@ -13,7 +13,7 @@ import java.time.format.DateTimeFormatter
  * @author 肖嘉威
  * @date 2023/9/16 17:34
  */
-interface SystemDll : Library {
+interface CSystemDll : Library {
 
     fun leftClick(x: Long, y: Long, hwnd: HWND?, mouseMode: Int)
 
@@ -88,8 +88,8 @@ interface SystemDll : Library {
 
     companion object {
 
-        val INSTANCE: SystemDll by lazy {
-            Native.load("dll/system", SystemDll::class.java)
+        val INSTANCE: CSystemDll by lazy {
+            Native.load("dll/csystem", CSystemDll::class.java)
         }
 
         const val MB_ICONERROR: Int = 0x00000010

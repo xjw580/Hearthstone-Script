@@ -10,7 +10,7 @@ import club.xiaojiawei.hsscript.bean.single.repository.GithubRepository
 import club.xiaojiawei.hsscript.data.GAME_HWND
 import club.xiaojiawei.hsscript.data.GAME_PROGRAM_NAME
 import club.xiaojiawei.hsscript.data.PLATFORM_PROGRAM_NAME
-import club.xiaojiawei.hsscript.dll.SystemDll
+import club.xiaojiawei.hsscript.dll.CSystemDll
 import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.enums.MouseControlModeEnum
 import club.xiaojiawei.hsscript.fileLogLevel
@@ -138,12 +138,12 @@ object ConfigExUtil {
                 if (oldMouseControlMode === MouseControlModeEnum.DRIVE) {
                     DriveInitializer().uninstall()
                 }
-                SystemDll.INSTANCE.uninstallInjectDll(GAME_HWND)
+                CSystemDll.INSTANCE.uninstallInjectDll(GAME_HWND)
             }
 
             MouseControlModeEnum.DRIVE -> {
                 DriveInitializer().install()
-                SystemDll.INSTANCE.uninstallInjectDll(GAME_HWND)
+                CSystemDll.INSTANCE.uninstallInjectDll(GAME_HWND)
             }
         }
         ConfigUtil.putString(ConfigEnum.MOUSE_CONTROL_MODE, mouseControlModeEnum.name)
@@ -158,10 +158,10 @@ object ConfigExUtil {
         ConfigUtil.putBoolean(ConfigEnum.TOP_GAME_WINDOW, enabled)
         if (enabled) {
             if (!PauseStatus.isPause) {
-                SystemDll.INSTANCE.topWindow(GAME_HWND, true)
+                CSystemDll.INSTANCE.topWindow(GAME_HWND, true)
             }
         } else {
-            SystemDll.INSTANCE.topWindow(GAME_HWND, false)
+            CSystemDll.INSTANCE.topWindow(GAME_HWND, false)
         }
     }
 

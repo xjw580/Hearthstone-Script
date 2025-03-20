@@ -3,7 +3,7 @@ package club.xiaojiawei.hsscript.initializer
 import club.xiaojiawei.config.log
 import club.xiaojiawei.hsscript.data.INSTALL_DRIVE_FILE
 import club.xiaojiawei.hsscript.data.MOUSE_DRIVE_PATH
-import club.xiaojiawei.hsscript.dll.SystemDll
+import club.xiaojiawei.hsscript.dll.CSystemDll
 import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.enums.MouseControlModeEnum
 import club.xiaojiawei.hsscript.enums.WindowEnum
@@ -33,7 +33,7 @@ class DriveInitializer : AbstractInitializer() {
 
     fun install(silent: Boolean = false) {
         driveFile.exists().isFalse {
-            if (SystemDll.INSTANCE.isRunAsAdministrator()) {
+            if (CSystemDll.INSTANCE.isRunAsAdministrator()) {
                 SystemUtil.getExeFilePath(INSTALL_DRIVE_FILE)?.let {
                     val exec = {
                         val process = Runtime.getRuntime().exec("$it /install")
@@ -90,7 +90,7 @@ class DriveInitializer : AbstractInitializer() {
 
     fun uninstall(silent: Boolean = false) {
         driveFile.exists().isTrue {
-            if (SystemDll.INSTANCE.isRunAsAdministrator()) {
+            if (CSystemDll.INSTANCE.isRunAsAdministrator()) {
                 SystemUtil.getExeFilePath(INSTALL_DRIVE_FILE)?.let {
                     val exec = {
                         val process = Runtime.getRuntime().exec("$it /uninstall")

@@ -5,7 +5,7 @@ import club.xiaojiawei.hsscript.data.GAME_HWND
 import club.xiaojiawei.hsscript.data.GAME_US_NAME
 import club.xiaojiawei.hsscript.data.INJECT_UTIL_FILE
 import club.xiaojiawei.hsscript.data.LIB_HS_FILE
-import club.xiaojiawei.hsscript.dll.SystemDll
+import club.xiaojiawei.hsscript.dll.CSystemDll
 import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.enums.MouseControlModeEnum
 import club.xiaojiawei.hsscript.utils.CMDUtil
@@ -49,7 +49,7 @@ class InjectStarter : AbstractStarter() {
                 return true
             } else {
                 log.error { "注入失败：${result}" }
-                if (!SystemDll.INSTANCE.isRunAsAdministrator()) {
+                if (!CSystemDll.INSTANCE.isRunAsAdministrator()) {
                     log.error { "请以管理员运行本软件" }
                     SystemUtil.messageError("请以管理员运行本软件")
                 }

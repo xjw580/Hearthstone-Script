@@ -1,7 +1,7 @@
 package club.xiaojiawei.hsscript.listener
 
 import club.xiaojiawei.config.log
-import club.xiaojiawei.hsscript.dll.SystemDll
+import club.xiaojiawei.hsscript.dll.CSystemDll
 import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.enums.WindowEnum
 import club.xiaojiawei.hsscript.status.PauseStatus
@@ -36,7 +36,7 @@ object SystemListener {
             if (ConfigUtil.getBoolean(ConfigEnum.AUTO_SLEEP)) {
                 text = "${countdown}秒后将睡眠系统"
                 runnable = {
-                    SystemDll.INSTANCE.sleepSystem()
+                    CSystemDll.INSTANCE.sleepSystem()
                 }
             } else if (ConfigUtil.getBoolean(ConfigEnum.AUTO_OFF_SCREEN)) {
                 text = "${countdown}秒后将关闭显示器"
@@ -64,7 +64,7 @@ object SystemListener {
                         null,
                         {
                             thread.interrupt()
-                            SystemDll.setWakeUpTimer(0)
+                            CSystemDll.setWakeUpTimer(0)
                         },
                         null,
                         WindowUtil.getStage(WindowEnum.MAIN),
@@ -76,25 +76,25 @@ object SystemListener {
             if (ConfigUtil.getBoolean(ConfigEnum.AUTO_WAKE)) {
                 val time = WorkListener.getSecondsUntilNextWorkPeriod() - 120
                 if (time > 0) {
-                    if (!SystemDll.INSTANCE.isRunAsAdministrator()) {
+                    if (!CSystemDll.INSTANCE.isRunAsAdministrator()) {
                         text = "没有管理员权限，无法设置定时唤醒"
                         log.error { text }
                         SystemUtil.messageError(text)
                         return
                     }
-                    if (!SystemDll.INSTANCE.checkS3Support()) {
+                    if (!CSystemDll.INSTANCE.checkS3Support()) {
                         text = "不支持S3睡眠，无法设置定时唤醒"
                         log.error { text }
                         SystemUtil.messageError(text)
                         return
                     }
-                    if (!SystemDll.INSTANCE.enableWakeUpTimer()) {
+                    if (!CSystemDll.INSTANCE.enableWakeUpTimer()) {
                         text = "启用'允许唤醒定时器'失败，无法设置定时唤醒"
                         log.error { text }
                         SystemUtil.messageError(text)
                         return
                     }
-                    if (!SystemDll.setWakeUpTimer(time.toInt())) {
+                    if (!CSystemDll.setWakeUpTimer(time.toInt())) {
                         text = "设置定时唤醒失败，定时时间:${time}秒"
                         log.error { text }
                         SystemUtil.messageError(text)
@@ -103,7 +103,7 @@ object SystemListener {
                 }
             }
         } else {
-            SystemDll.setWakeUpTimer(0)
+            CSystemDll.setWakeUpTimer(0)
         }
     }
 
