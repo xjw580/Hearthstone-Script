@@ -126,30 +126,32 @@ class StatisticsController : Initializable, StageHook {
             }
         }
         strategyComboBox.items.setAll(StrategyItem(null, "所有"))
-        runUI { strategyComboBox.selectionModel.selectFirst() }
-        strategyComboBox.selectionModel.selectedItemProperty().addListener { _, _, newValue ->
-            val strategyItem = newValue ?: return@addListener
-            val strategyId = strategyItem.id
-            val records = queryRecord(calcStartDate(), calcEndDate()).filter {
-                var res = false
-                do {
-                    val id = it.strategyId ?: break
-                    strategyId?.let {
-                        if (strategyId == id) {
+        runUI {
+            strategyComboBox.selectionModel.selectFirst()
+            strategyComboBox.selectionModel.selectedItemProperty().addListener { _, _, newValue ->
+                val strategyItem = newValue ?: return@addListener
+                val strategyId = strategyItem.id
+                val records = queryRecord(calcStartDate(), calcEndDate()).filter {
+                    var res = false
+                    do {
+                        val id = it.strategyId ?: break
+                        strategyId?.let {
+                            if (strategyId == id) {
+                                res = true
+                            }
+                        } ?: let {
                             res = true
                         }
-                    } ?: let {
-                        res = true
+                    } while (false)
+                    res
+                }
+                progress = mainProgressModal.show()
+                EXTRA_THREAD_POOL.submit {
+                    initTimePane(records)
+                    initDurationPane(records)
+                    runUI {
+                        mainProgressModal.hide(progress)
                     }
-                } while (false)
-                res
-            }
-            progress = mainProgressModal.show()
-            EXTRA_THREAD_POOL.submit {
-                initTimePane(records)
-                initDurationPane(records)
-                runUI {
-                    mainProgressModal.hide(progress)
                 }
             }
         }

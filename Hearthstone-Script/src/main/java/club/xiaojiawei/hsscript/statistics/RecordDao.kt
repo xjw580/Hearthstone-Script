@@ -5,6 +5,7 @@ import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.jdbc.core.RowMapper
 import org.springframework.jdbc.datasource.DriverManagerDataSource
 import org.springframework.jdbc.support.GeneratedKeyHolder
+import java.io.File
 import java.sql.Connection
 import java.sql.ResultSet
 import java.sql.Statement
@@ -42,6 +43,10 @@ class RecordDao(dbPath: String) {
     private val OFFSET = ZoneOffset.ofHours(8)
 
     init {
+        val dbFile = File(dbPath)
+        if (!dbFile.exists()) {
+            dbFile.parentFile.mkdirs()
+        }
         // 创建数据源
         val dataSource = DriverManagerDataSource()
         dataSource.setDriverClassName("org.sqlite.JDBC")

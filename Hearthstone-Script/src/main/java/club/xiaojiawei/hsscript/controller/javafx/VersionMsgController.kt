@@ -29,8 +29,11 @@ class VersionMsgController : Initializable {
         version.text = VERSION
         //        TODO 版本更新时修改！！！
         versionDescription.text = """
-                    1. 高级设置->系统: 增加自动睡眠等功能
-                    2. 高级设置->行为: 增加阻止反作弊功能
+                    🚀 新功能
+                    - 增加统计功能
+                    
+                    🔧 重构与优化
+                    - 优化DRIVE模式
                     """.trimIndent()
     }
 

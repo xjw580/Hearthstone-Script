@@ -77,7 +77,7 @@
                         </graphic>
                     </Button>
                 </HBox>
-                <HBox styleClass="h-box">
+                <HBox styleClass="h-box" visible="false" managed="false">
                     <Button text="编写卡牌插件" styleClass="btn-ui, btn-ui-normal, btn-ui-small" onAction="#createCardAction"/>
                 </HBox>
             </VBox>

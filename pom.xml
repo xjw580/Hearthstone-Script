@@ -270,7 +270,7 @@
                 <version>${kotlin.version}</version>
             </dependency>
         </dependencies>
-    </dependencyManagement>·
+    </dependencyManagement>
 
     <build>
         <pluginManagement>
