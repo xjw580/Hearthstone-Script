@@ -18,15 +18,24 @@ import java.util.concurrent.TimeUnit
 object ScreenLogListener :
     AbstractLogListener("LoadingScreen.log", 0, 1000L, TimeUnit.MILLISECONDS) {
 
+    private const val CURR_MODE_STR = "currMode="
+
+    private const val CURR_MODE_STR_LEN = CURR_MODE_STR.length
+
+    private const val NEXT_MODE_STR = "nextMode="
+
+    private const val NEXT_MODE_STR_LEN = NEXT_MODE_STR.length
+
     override fun dealOldLog() {
         var line: String
         var index: Int
         var finalMode: ModeEnum? = null
         while ((innerLogFile!!.readLine().also { line = it }) != null) {
-            if ((line.indexOf("currMode").also { index = it }) != -1 || (line.indexOf("nextMode")
-                    .also { index = it }) != -1
-            ) {
-                finalMode = ModeEnum.fromString(line.substring(index + 9))
+            if ((line.indexOf(CURR_MODE_STR).also { index = it }) != -1) {
+                finalMode = ModeEnum.fromString(line.substring(index + CURR_MODE_STR_LEN))
+            } else if ((line.indexOf(NEXT_MODE_STR).also { index = it }) != -1) {
+                val blankIndex = line.indexOf(" ", index)
+                finalMode = ModeEnum.fromString(line.substring(index + NEXT_MODE_STR_LEN, blankIndex))
             }
         }
         Mode.currMode = finalMode
@@ -55,10 +64,11 @@ object ScreenLogListener :
     private fun resolveLog(line: String?): ModeEnum? {
         return line?.let { l ->
             var index: Int
-            if ((l.indexOf("currMode").also { index = it }) != -1
-                || (l.indexOf("nextMode").also { index = it }) != -1
-            ) {
-                return ModeEnum.fromString(l.substring(index + 9))
+            if ((l.indexOf(CURR_MODE_STR).also { index = it }) != -1) {
+                return ModeEnum.fromString(l.substring(index + CURR_MODE_STR_LEN))
+            } else if ((l.indexOf(NEXT_MODE_STR).also { index = it }) != -1) {
+                val blankIndex = l.indexOf(" ", index)
+                return ModeEnum.fromString(l.substring(index + NEXT_MODE_STR_LEN, blankIndex))
             } else if (l.contains("OnDestroy()")) {
                 Thread.sleep(2000)
                 GameUtil.isAliveOfGame().isFalse {

@@ -86,6 +86,8 @@ object MouseUtil {
     ) {
         if (!validateEnv(hwnd)) return
 
+        if (Mode.currMode !== ModeEnum.GAMEPLAY) return
+
         if (validatePoint(pos)) {
             synchronized(MouseUtil::javaClass) {
                 if (!WorkListener.working) return

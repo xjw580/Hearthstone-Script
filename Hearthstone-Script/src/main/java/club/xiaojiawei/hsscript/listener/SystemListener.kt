@@ -74,7 +74,7 @@ object SystemListener {
                 }
             }
             if (ConfigUtil.getBoolean(ConfigEnum.AUTO_WAKE)) {
-                val time = WorkListener.getSecondsUntilNextWorkPeriod() - 120
+                val time = WorkListener.getSecondsUntilNextWorkPeriod() - 60
                 if (time > 0) {
                     if (!CSystemDll.INSTANCE.isRunAsAdministrator()) {
                         text = "没有管理员权限，无法设置定时唤醒"

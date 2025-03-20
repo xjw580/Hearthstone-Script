@@ -14,6 +14,7 @@ object Mode {
     @Volatile
     var currMode: ModeEnum? = null
         set(value) {
+            if (value === field) return
             field?.modeStrategy?.afterLeave()
             prevMode = field
             field = value

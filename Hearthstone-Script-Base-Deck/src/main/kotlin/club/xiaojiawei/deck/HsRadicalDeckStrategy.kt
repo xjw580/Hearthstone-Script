@@ -64,7 +64,7 @@ class HsRadicalDeckStrategy : DeckStrategy() {
                         if (card.cardType === CardTypeEnum.SPELL) {
                             if (isDamageSpell(cardText)) {
                                 log.info { "[${card.cardId}]判断为伤害法术" }
-                                rival.playArea.cards.find { card -> card.canBeTargetedByMe() }?.let {
+                                rival.playArea.cards.find { c -> c.canBeTargetedByMe() }?.let {
                                     card.action.power(it)
                                 } ?: let {
                                     if (rival.playArea.hero?.canBeTargetedByMe() == true) {
@@ -72,7 +72,7 @@ class HsRadicalDeckStrategy : DeckStrategy() {
                                     }
                                 }
                             } else {
-                                me.playArea.cards.find { card -> card.canBeTargetedByMe() }?.let {
+                                me.playArea.cards.find { c -> c.canBeTargetedByMe() }?.let {
                                     card.action.power(it)
                                 } ?: let {
                                     card.action.power()
