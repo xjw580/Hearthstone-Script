@@ -203,10 +203,16 @@ object WindowUtil {
                 stage.setOnHidden {
                     controller.onHidden()
                 }
-                stage.setOnHiding {
+            }
+            stage.setOnHiding {
+                stage.isIconified = false
+                if (controller is StageHook){
                     controller.onHiding()
                 }
-                stage.setOnCloseRequest { event ->
+            }
+            stage.setOnCloseRequest { event ->
+                stage.isIconified = false
+                if (controller is StageHook){
                     controller.onCloseRequest(event)
                 }
             }
