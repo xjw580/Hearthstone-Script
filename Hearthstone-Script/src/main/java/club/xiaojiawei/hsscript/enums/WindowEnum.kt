@@ -59,6 +59,7 @@ enum class WindowEnum(
         (Screen.getPrimary().bounds.height - 670.0) / 2,
         alwaysOnTop = true,
     ),
+    CARD_ACTION_EDITOR(""),
     STARTUP(
         "startup.fxml", formatTitle("启动页"),
         558.0, 400.0

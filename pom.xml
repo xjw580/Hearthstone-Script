@@ -264,9 +264,13 @@
                 <artifactId>ini4j</artifactId>
                 <version>${ini-version}</version>
             </dependency>
-
+            <dependency>
+                <groupId>org.jetbrains.kotlin</groupId>
+                <artifactId>kotlin-compiler</artifactId>
+                <version>${kotlin.version}</version>
+            </dependency>
         </dependencies>
-    </dependencyManagement>
+    </dependencyManagement>·
 
     <build>
         <pluginManagement>

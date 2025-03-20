@@ -170,4 +170,9 @@ class DeveloperSettingsController : Initializable {
         }
     }
 
+    @FXML
+    protected fun createCardAction(actionEvent: ActionEvent) {
+        showStage(WindowEnum.CARD_ACTION_EDITOR, null)
+    }
+
 }

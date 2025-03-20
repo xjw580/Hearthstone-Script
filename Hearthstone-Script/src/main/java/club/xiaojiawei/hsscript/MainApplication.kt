@@ -32,9 +32,12 @@ import javafx.beans.value.ChangeListener
 import javafx.beans.value.ObservableValue
 import javafx.stage.Screen
 import javafx.stage.Stage
+import org.jetbrains.kotlin.cli.jvm.K2JVMCompiler
 import java.awt.MenuItem
 import java.awt.event.ActionEvent
 import java.awt.event.MouseEvent
+import java.io.File
+import java.net.URLClassLoader
 import java.util.function.Consumer
 import java.util.function.Supplier
 import javax.swing.AbstractAction
@@ -50,6 +53,99 @@ class MainApplication : Application() {
     private var mainShowingListener: ChangeListener<Boolean?>? = null
 
     private var startUpVThread: Thread? = null
+
+    fun testJava() {
+        try {
+            val classManager = DynamicClassManager()
+
+            // 加载外部Java文件
+            val testUtilClass =
+                classManager.loadJavaFile("S:\\IdeaProjects\\fs32\\src\\main\\java\\com\\fs\\TestUtil1.java")
+            println("成功加载类：${testUtilClass.name}")
+
+            // 创建实例
+            val testUtil = classManager.instantiate(testUtilClass)
+            println("成功创建示例： $testUtil")
+
+            // 调用方法 (使用反射)
+            val getWarMethod = testUtilClass.getMethod("getWar")
+            val result = getWarMethod.invoke(testUtil)
+            println("调用getWar方法结果： $result")
+
+        } catch (e: Exception) {
+            println("发生错误: ${e.message}")
+            e.printStackTrace()
+        }
+    }
+
+    fun testKt() {
+        try {
+            val manager = DynamicClassManager()
+
+            // 动态加载外部 Kotlin 文件
+            val loadedClass = manager.loadKotlinFile("S:\\IdeaProjects\\fs32\\src\\main\\java\\com\\fs\\TestUtil.kt")
+
+            // 创建实例
+            val instance = loadedClass.getDeclaredConstructor().newInstance()
+
+            // 调用方法 sayHello()
+            val method = loadedClass.getMethod("getWar")
+            method.invoke(instance)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+
+    fun compileAndRunExternalKtFiles(filePaths: List<String>, classpath: String) {
+        val ktFiles = filePaths.map { File(it) }.filter {
+            val res = it.exists()
+            res.isFalse {
+                println(it.absolutePath + "不存在")
+            }
+            res
+        }
+        if (ktFiles.isEmpty()) return
+
+        val tempDir = File(System.getProperty("java.io.tmpdir"), "kotlin-temp")
+        tempDir.mkdirs()
+
+        val classDir = File(tempDir, "classes")
+        classDir.mkdirs()
+
+        val compiler = K2JVMCompiler()
+        val args = mutableListOf<String>()
+        args.addAll(ktFiles.map { it.absolutePath }) // 添加所有文件路径
+        args.addAll(
+            arrayOf(
+                "-d",
+                classDir.absolutePath,
+                "-classpath",
+                classpath
+            )
+        )
+
+        val exitCode = compiler.exec(System.out, *args.toTypedArray())
+        if (exitCode.code != 0) {
+            println("Compilation failed")
+            return
+        }
+
+        val classLoader = URLClassLoader(arrayOf(classDir.toURI().toURL()))
+        val className = ktFiles.first().nameWithoutExtension.capitalize() // 使用第一个文件的类名
+        try {
+            val tempClass = classLoader.loadClass(className)
+            val newInstance = tempClass.getDeclaredConstructor().newInstance()
+            val mainMethod = tempClass.getDeclaredMethod("getWar")
+            println(mainMethod.invoke(newInstance))
+        } catch (e: ClassNotFoundException) {
+            println("Class not found: $className")
+        } catch (e: NoSuchMethodException) {
+            println("Main method not found in class: $className")
+        } catch (e: Exception) {
+            println("Error running compiled code: ${e.message}")
+        }
+    }
 
     override fun start(stage: Stage?) {
         startUpVThread = Thread.ofVirtual().start {
@@ -69,6 +165,9 @@ class MainApplication : Application() {
         InitializerConfig.initializer.init()
         setSystemTray()
         showMainPage()
+//        testJava()
+//        testKt()
+//        compileAndRunExternalKtFiles(listOf("S:\\IdeaProjects\\fs32\\src\\main\\java\\com\\fs\\TestUtil.kt"), System.getProperty("java.class.path"))
     }
 
     private fun showMainPage() {

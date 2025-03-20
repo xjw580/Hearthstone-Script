@@ -169,8 +169,8 @@ object WindowUtil {
     }
 
     fun hideAllStage() {
-        for (value in WindowEnum.values()) {
-            hideStage(value)
+        for (entry in STAGE_MAP) {
+            entry.value.hide()
         }
     }
 

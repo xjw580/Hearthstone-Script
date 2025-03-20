@@ -70,7 +70,7 @@ object Core {
                     WorkListener.working = true
                     if (ConfigUtil.getBoolean(ConfigEnum.RUNNING_MINIMIZE)) {
                         runUI {
-                            WindowUtil.hideStage(WindowEnum.MAIN)
+                            WindowUtil.hideAllStage()
                         }
                     }
                     StarterConfig.starter.start()
