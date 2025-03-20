@@ -120,6 +120,12 @@
                 <groupId>eu.hansolo</groupId>
                 <artifactId>tilesfx</artifactId>
                 <version>${tilesfx-version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.openjfx</groupId>
+                        <artifactId>javafx-web</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
 
             <dependency>
