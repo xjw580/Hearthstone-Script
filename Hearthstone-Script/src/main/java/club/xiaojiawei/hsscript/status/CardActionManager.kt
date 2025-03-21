@@ -52,7 +52,7 @@ object CardActionManager {
     }
 
     private fun reload() {
-        log.info { "重新加载卡牌库" }
+        log.info { "刷新卡牌库" }
         CARD_ACTION_MAP.clear()
         CARD_ACTION_MAP.putAll(load())
     }

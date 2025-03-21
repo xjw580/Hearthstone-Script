@@ -137,7 +137,8 @@ interface CSystemDll : Library {
     companion object {
 
         val INSTANCE: CSystemDll by lazy {
-            Native.load("dll/csystem", CSystemDll::class.java)
+//            Native.load("dll/csystem", CSystemDll::class.java)
+            Native.load("S:\\CLionProjects\\hs-script-csystem\\cmake-build-release-visual-studio\\csystem.dll", CSystemDll::class.java)
         }
 
         const val MB_ICONERROR: Int = 0x00000010

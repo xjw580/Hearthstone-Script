@@ -10,7 +10,7 @@ import java.util.concurrent.atomic.AtomicInteger
  * @date 2024/9/18 16:47
  */
 val LAUNCH_PROGRAM_THREAD_POOL: ScheduledThreadPoolExecutor by lazy {
-    ScheduledThreadPoolExecutor(3, object : ThreadFactory {
+    ScheduledThreadPoolExecutor(2, object : ThreadFactory {
         private val num = AtomicInteger(0)
         override fun newThread(r: Runnable): Thread {
             return WritableThread(r, "LaunchProgramPool Thread-" + num.getAndIncrement())
@@ -28,7 +28,7 @@ val LISTEN_LOG_THREAD_POOL: ScheduledThreadPoolExecutor by lazy {
 }
 
 val EXTRA_THREAD_POOL: ScheduledThreadPoolExecutor by lazy {
-    ScheduledThreadPoolExecutor(6, object : ThreadFactory {
+    ScheduledThreadPoolExecutor(8, object : ThreadFactory {
         private val num = AtomicInteger(0)
         override fun newThread(r: Runnable): Thread {
             return ReadableThread(r, "ExtraPool Thread-" + num.getAndIncrement())

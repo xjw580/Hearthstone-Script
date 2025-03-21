@@ -6,19 +6,14 @@ import ch.qos.logback.classic.filter.ThresholdFilter
 import ch.qos.logback.classic.joran.JoranConfigurator
 import ch.qos.logback.classic.spi.ILoggingEvent
 import ch.qos.logback.core.spi.FilterReply
-import club.xiaojiawei.hsscript.data.IMG_PATH
 import club.xiaojiawei.hsscript.data.SCRIPT_NAME
-import club.xiaojiawei.hsscript.dll.ZLaunchDll
 import club.xiaojiawei.hsscript.utils.ConfigExUtil
-import club.xiaojiawei.hsscript.utils.SystemUtil
-import club.xiaojiawei.hsscript.utils.VersionUtil
-import com.sun.jna.WString
+import club.xiaojiawei.hsscript.utils.WindowUtil
 import javafx.application.Application
 import org.slf4j.LoggerFactory
 import java.io.File
 import java.io.RandomAccessFile
 import java.nio.file.Files
-import java.nio.file.Path
 
 /**
  * @author 肖嘉威
@@ -65,21 +60,17 @@ private fun setLogPath() {
 fun main(args: Array<String>) {
     System.setProperty("jna.library.path", "lib")
 
-    ZLaunchDll.INSTANCE.ShowPage(
-        WString(Path.of(IMG_PATH, "startup.jpg").toString()),
-        WString(SystemUtil.getProgramIconFile().absolutePath),
-        WString(SCRIPT_NAME),
-        WString(VersionUtil.VERSION),
-        458,
-        708
-    )
     val file = File(".pid")
     if (!file.exists()) {
         file.createNewFile()
         Files.setAttribute(file.toPath(), "dos:hidden", true);
     }
     val randomAccessFile = RandomAccessFile(file, "rw")
-    randomAccessFile.channel.tryLock() ?: return
+    if (randomAccessFile.channel.tryLock() == null){
+        WindowUtil.hideLaunchPage()
+        return
+    }
+
     randomAccessFile.setLength(0)
     randomAccessFile.write(SCRIPT_NAME.toByteArray());
 

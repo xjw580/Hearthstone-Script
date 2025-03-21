@@ -47,3 +47,5 @@ config.json
 *.db-journal
 .pid
 /data
+
+*.log

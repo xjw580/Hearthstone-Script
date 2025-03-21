@@ -2,6 +2,7 @@ package club.xiaojiawei.hsscript.dll
 
 import com.sun.jna.Library
 import com.sun.jna.Native
+import com.sun.jna.WString
 import com.sun.jna.platform.win32.WinDef
 import com.sun.jna.platform.win32.WinDef.POINT
 
@@ -16,6 +17,8 @@ interface User32ExDll : Library {
     fun GetCursorPos(point: POINT)
 
     fun ClientToScreen(hWnd: WinDef.HWND?, point: POINT)
+
+    fun FindWindowW(className: WString? = null, windowTitle: WString?): WinDef.HWND?
 
     companion object {
 

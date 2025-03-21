@@ -186,7 +186,7 @@ class MainController : MainView() {
     }
 
     private fun appendLog(event: ILoggingEvent) {
-        Platform.runLater {
+        runUI {
             val list = logVBox.children
             //                大于二百五条就清空,防止内存泄露和性能问题
             if (list.size > 250) {
@@ -206,7 +206,7 @@ class MainController : MainView() {
                 label.styleClass.add("copyLog")
                 val anchorPane = wrapLabel(label)
                 list.add(anchorPane)
-                return@runLater
+                return@runUI
             }
             /*为日志上颜色*/
             if (event.throwableProxy == null && levelInt <= Level.INFO_INT) {
@@ -244,7 +244,11 @@ class MainController : MainView() {
             downloadProgress.tooltip = Tooltip("下载进度：${String.format("%.1f", progress * 100)}%")
         }
 //        日志监听
-        ExtraLogAppender.addCallback { event: ILoggingEvent -> this.appendLog(event) }
+        Thread({
+            while (true) {
+                appendLog(ExtraLogAppender.logQueue.take())
+            }
+        }, "Show Log Thread").start()
 
         //        暂停状态监听
         PauseStatus.addListener { observableValue: ObservableValue<out Boolean>?, aBoolean: Boolean?, t1: Boolean ->

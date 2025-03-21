@@ -8,6 +8,7 @@ import com.sun.jna.WString
  * @author 肖嘉威
  * @date 2023/9/16 17:34
  */
+@Deprecated("")
 interface ZLaunchDll : Library {
     fun ShowPage(
         bgImgPath: WString?,
@@ -25,6 +26,8 @@ interface ZLaunchDll : Library {
     fun SetText(text: WString?)
 
     companion object {
-        val INSTANCE: ZLaunchDll = Native.load("dll/zlaunch", ZLaunchDll::class.java)
+        val INSTANCE: ZLaunchDll by lazy {
+            Native.load("dll/zlaunch", ZLaunchDll::class.java)
+        }
     }
 }

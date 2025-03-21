@@ -2,7 +2,6 @@ package club.xiaojiawei.hsscript
 
 import club.xiaojiawei.CardAction.Companion.commonActionFactory
 import club.xiaojiawei.bean.LThread
-import club.xiaojiawei.config.EXTRA_THREAD_POOL
 import club.xiaojiawei.config.log
 import club.xiaojiawei.config.submitExtra
 import club.xiaojiawei.hsscript.bean.CommonCardAction.Companion.DEFAULT
@@ -14,7 +13,6 @@ import club.xiaojiawei.hsscript.data.ARG_PAUSE
 import club.xiaojiawei.hsscript.data.GAME_CN_NAME
 import club.xiaojiawei.hsscript.data.SCRIPT_NAME
 import club.xiaojiawei.hsscript.dll.CSystemDll
-import club.xiaojiawei.hsscript.dll.ZLaunchDll
 import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.enums.WindowEnum
 import club.xiaojiawei.hsscript.listener.*
@@ -45,7 +43,6 @@ import java.net.URLClassLoader
 import java.util.function.Consumer
 import java.util.function.Supplier
 import javax.swing.AbstractAction
-import kotlin.math.min
 
 /**
  * javaFX启动器
@@ -55,8 +52,6 @@ import kotlin.math.min
 class MainApplication : Application() {
 
     private var stageShowingListener: ChangeListener<Boolean?>? = null
-
-    private var startUpVThread: Thread? = null
 
     fun testJava() {
         try {
@@ -152,18 +147,6 @@ class MainApplication : Application() {
     }
 
     override fun start(stage: Stage?) {
-        startUpVThread = Thread.ofVirtual().start {
-            var progressValue = 0.0
-            while (!Thread.interrupted()) {
-                try {
-                    Thread.sleep(8)
-                } catch (e: InterruptedException) {
-                    break
-                }
-                progressValue += 0.005
-                ZLaunchDll.INSTANCE.SetProgress(min(progressValue, 0.99))
-            }
-        }
         preInit()
         InitializerConfig.initializer.init()
         showMainPage()
@@ -198,7 +181,7 @@ class MainApplication : Application() {
                 if (it.startsWith(ARG_PAGE)) {
                     WindowEnum.fromString(it.removePrefix(ARG_PAGE).uppercase())?.let { windowEnum ->
                         showStage(windowEnum)
-                        ZLaunchDll.INSTANCE.HidePage()
+                        WindowUtil.hideLaunchPage()
                         return@anyMatch true
                     }
                 }
@@ -386,11 +369,16 @@ class MainApplication : Application() {
     private fun afterShowing() {
         submitExtra {
             trayMenu
-            startUpVThread?.interrupt()
-            ZLaunchDll.INSTANCE.HidePage()
+            WindowUtil.hideLaunchPage()
             checkSystem()
             checkArg()
         }
     }
 
+}
+
+fun main() {
+    SystemUtil.findHWND("ZLaunch Class", null)?.let { launchWindow ->
+        CSystemDll.INSTANCE.quitWindow(launchWindow)
+    }
 }

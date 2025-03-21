@@ -77,7 +77,7 @@ object DeckStrategyManager {
     }
 
     private fun reload() {
-        log.info { "重新加载套牌库" }
+        log.info { "刷新策略库" }
         deckStrategies.clear()
         deckStrategies.addAll(load())
     }

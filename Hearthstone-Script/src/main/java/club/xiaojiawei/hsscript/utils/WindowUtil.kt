@@ -3,6 +3,7 @@ package club.xiaojiawei.hsscript.utils
 import club.xiaojiawei.JavaFXUI
 import club.xiaojiawei.hsscript.data.FXML_DIR
 import club.xiaojiawei.hsscript.data.SCRIPT_NAME
+import club.xiaojiawei.hsscript.dll.CSystemDll
 import club.xiaojiawei.hsscript.enums.WindowEnum
 import club.xiaojiawei.hsscript.exit
 import club.xiaojiawei.hsscript.interfaces.StageHook
@@ -304,4 +305,9 @@ object WindowUtil {
         return STAGE_MAP[windowEnum]
     }
 
+    fun hideLaunchPage(){
+        findHWND("ZLaunch Class", null)?.let { launchWindow ->
+            CSystemDll.INSTANCE.quitWindow(launchWindow)
+        }
+    }
 }

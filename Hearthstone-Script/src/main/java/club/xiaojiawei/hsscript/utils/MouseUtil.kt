@@ -88,7 +88,7 @@ object MouseUtil {
 
         if (validatePoint(pos)) {
             synchronized(MouseUtil::javaClass) {
-                if (!WorkListener.working) return
+                if (!WorkListener.working && Mode.currMode !== ModeEnum.GAMEPLAY) return
 
                 if (prevPoint != pos) {
                     CSystemDll.INSTANCE.simulateHumanMoveMouse(

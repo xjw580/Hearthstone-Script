@@ -60,13 +60,16 @@ class AdvancedSettingsController : AdvancedSettingsView(), Initializable {
         runningMinimize.status = getBoolean(ConfigEnum.RUNNING_MINIMIZE)
         mouseControlModeComboBox.setCellFactory {
             object : ListCell<MouseControlModeEnum?>() {
+                private val ico = HelpIco()
                 override fun updateItem(s: MouseControlModeEnum?, b: Boolean) {
                     super.updateItem(s, b)
                     if (s == null || b) return
                     contentDisplay = ContentDisplay.RIGHT
                     text = s.name
+                    ico.color =
+                        if (mouseControlModeComboBox.selectionModel.selectedItem != null && mouseControlModeComboBox.selectionModel.selectedItem === item) "white" else ""
                     graphic = Label().apply {
-                        graphic = HelpIco()
+                        graphic = ico
                         tooltip = Tooltip(s.comment)
                     }
                 }
