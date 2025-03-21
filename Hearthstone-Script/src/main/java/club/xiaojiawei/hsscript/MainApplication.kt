@@ -8,10 +8,7 @@ import club.xiaojiawei.hsscript.bean.CommonCardAction.Companion.DEFAULT
 import club.xiaojiawei.hsscript.bean.Release
 import club.xiaojiawei.hsscript.config.InitializerConfig
 import club.xiaojiawei.hsscript.core.Core
-import club.xiaojiawei.hsscript.data.ARG_PAGE
-import club.xiaojiawei.hsscript.data.ARG_PAUSE
-import club.xiaojiawei.hsscript.data.GAME_CN_NAME
-import club.xiaojiawei.hsscript.data.SCRIPT_NAME
+import club.xiaojiawei.hsscript.data.*
 import club.xiaojiawei.hsscript.dll.CSystemDll
 import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.enums.WindowEnum
@@ -244,9 +241,10 @@ class MainApplication : Application() {
     private var trayItemArr: CSystemDll.TrayItem.Reference? = null
 
     private val trayMenu: CSystemDll.TrayMenu.Reference by lazy {
-        val memorySize = 125L
+        val textMemorySize = 50L
+        val iconPathMemorySize = 255L
         CSystemDll.TrayMenu.Reference().apply {
-            text = Memory(memorySize).apply {
+            text = Memory(textMemorySize).apply {
                 setWideString(0, SCRIPT_NAME)
             }
             iconPath = WString(SystemUtil.getTrayIconFile().absolutePath)
@@ -259,15 +257,18 @@ class MainApplication : Application() {
                     }
                 }
             }
-            itemCount = 4
+            itemCount = 5
             trayItem = CSystemDll.TrayItem.Reference()
             trayItemArr = trayItem
             val trayItemArr = trayItem!!.toArray(itemCount) as Array<CSystemDll.TrayItem>
             trayItemArr[0].apply {
                 id = 1000
                 type = CSystemDll.MF_STRING
-                text = Memory(memorySize).apply {
+                text = Memory(textMemorySize).apply {
                     setWideString(0, "开始")
+                }
+                iconPath = Memory(iconPathMemorySize).apply {
+                    setWideString(0, SystemUtil.getResouceImgFile(TRAY_START_IMG_NAME).absolutePath)
                 }
                 callback = object : CSystemDll.TrayCallback {
                     override fun invoke() {
@@ -278,8 +279,11 @@ class MainApplication : Application() {
             trayItemArr[1].apply {
                 id = 1001
                 type = CSystemDll.MF_STRING
-                text = Memory(memorySize).apply {
+                text = Memory(textMemorySize).apply {
                     setWideString(0, "设置")
+                }
+                iconPath = Memory(iconPathMemorySize).apply {
+                    setWideString(0, SystemUtil.getResouceImgFile(TRAY_SETTINGS_IMG_NAME).absolutePath)
                 }
                 callback = object : CSystemDll.TrayCallback {
                     override fun invoke() {
@@ -289,13 +293,31 @@ class MainApplication : Application() {
             }
             trayItemArr[2].apply {
                 id = 1002
-                type = CSystemDll.MF_SEPARATOR
+                type = CSystemDll.MF_STRING
+                text = Memory(textMemorySize).apply {
+                    setWideString(0, "统计")
+                }
+                iconPath = Memory(iconPathMemorySize).apply {
+                    setWideString(0, SystemUtil.getResouceImgFile(TRAY_STATISTICS_IMG_NAME).absolutePath)
+                }
+                callback = object : CSystemDll.TrayCallback {
+                    override fun invoke() {
+                        showStage(WindowEnum.STATISTICS, getStage(WindowEnum.MAIN))
+                    }
+                }
             }
             trayItemArr[3].apply {
                 id = 1003
+                type = CSystemDll.MF_SEPARATOR
+            }
+            trayItemArr[4].apply {
+                id = 1004
                 type = CSystemDll.MF_STRING
-                text = Memory(memorySize).apply {
+                text = Memory(textMemorySize).apply {
                     setWideString(0, "退出")
+                }
+                iconPath = Memory(iconPathMemorySize).apply {
+                    setWideString(0, SystemUtil.getResouceImgFile(TRAY_EXIT_IMG_NAME).absolutePath)
                 }
                 callback = object : CSystemDll.TrayCallback {
                     override fun invoke() {
@@ -306,8 +328,10 @@ class MainApplication : Application() {
             PauseStatus.addListener { _, _, isPause: Boolean ->
                 if (isPause) {
                     trayItemArr[0].text?.setWideString(0, "开始")
+                    trayItemArr[0].iconPath?.setWideString(0, SystemUtil.getResouceImgFile(TRAY_START_IMG_NAME).absolutePath)
                 } else {
                     trayItemArr[0].text?.setWideString(0, "暂停")
+                    trayItemArr[0].iconPath?.setWideString(0, SystemUtil.getResouceImgFile(TRAY_PAUSE_IMG_NAME).absolutePath)
                 }
             }
             CSystemDll.INSTANCE.addSystemTray(this).isFalse {

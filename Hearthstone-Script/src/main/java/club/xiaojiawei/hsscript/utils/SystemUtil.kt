@@ -52,7 +52,11 @@ object SystemUtil {
     }
 
     fun getTrayIconFile(): File {
-        return Path.of(IMG_PATH, TRAY_IMG_NAME).toFile()
+        return getResouceImgFile(TRAY_IMG_NAME)
+    }
+
+    fun getResouceImgFile(name: String): File {
+        return Path.of(IMG_PATH, name).toFile()
     }
 
     /**

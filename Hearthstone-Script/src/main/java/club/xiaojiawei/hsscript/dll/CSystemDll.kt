@@ -89,17 +89,26 @@ interface CSystemDll : Library {
         fun invoke()
     }
 
-    @Structure.FieldOrder("id", "type", "text", "callback")
+    @Structure.FieldOrder("id", "type", "text", "iconPath", "callback")
     open class TrayItem : Structure() {
         @JvmField
         var id: Int = 0
+
         @JvmField
         var type: Int = 0
+
         /**
          * 对应wchar_t*
          */
         @JvmField
         var text: Pointer? = null
+
+        /**
+         * 对应wchar_t*
+         */
+        @JvmField
+        var iconPath: Pointer? = null
+
         @JvmField
         var callback: TrayCallback? = null
 
@@ -116,12 +125,16 @@ interface CSystemDll : Library {
          */
         @JvmField
         var text: Pointer? = null
+
         @JvmField
         var iconPath: WString? = null
+
         @JvmField
         var trayItem: TrayItem.Reference? = null
+
         @JvmField
         var itemCount: Int = 0
+
         @JvmField
         var clickCallback: TrayCallback? = null
 
@@ -137,8 +150,7 @@ interface CSystemDll : Library {
     companion object {
 
         val INSTANCE: CSystemDll by lazy {
-//            Native.load("dll/csystem", CSystemDll::class.java)
-            Native.load("S:\\CLionProjects\\hs-script-csystem\\cmake-build-release-visual-studio\\csystem.dll", CSystemDll::class.java)
+            Native.load("dll/csystem", CSystemDll::class.java)
         }
 
         const val MB_ICONERROR: Int = 0x00000010

@@ -78,3 +78,10 @@ val IMG_PATH by lazy {
 const val MAIN_IMG_NAME: String = "favicon.png"
 
 const val TRAY_IMG_NAME: String = "favicon.ico"
+
+const val TRAY_SETTINGS_IMG_NAME: String = "settings.ico"
+
+const val TRAY_STATISTICS_IMG_NAME: String = "statistics.ico"
+const val TRAY_START_IMG_NAME: String = "start.ico"
+const val TRAY_PAUSE_IMG_NAME: String = "pause.ico"
+const val TRAY_EXIT_IMG_NAME: String = "exit.ico"
