@@ -376,9 +376,3 @@ class MainApplication : Application() {
     }
 
 }
-
-fun main() {
-    SystemUtil.findHWND("ZLaunch Class", null)?.let { launchWindow ->
-        CSystemDll.INSTANCE.quitWindow(launchWindow)
-    }
-}
