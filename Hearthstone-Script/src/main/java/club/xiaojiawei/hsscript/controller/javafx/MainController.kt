@@ -249,9 +249,9 @@ class MainController : MainView() {
         //        暂停状态监听
         PauseStatus.addListener { observableValue: ObservableValue<out Boolean>?, aBoolean: Boolean?, t1: Boolean ->
             t1.isTrue {
-                pauseToggleGroup.selectToggle(startButton)
-            }.isFalse {
                 pauseToggleGroup.selectToggle(pauseButton)
+            }.isFalse {
+                pauseToggleGroup.selectToggle(startButton)
             }
         }
 
