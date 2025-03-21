@@ -332,17 +332,12 @@ object SystemUtil {
      * 关闭本软件
      */
     fun shutdown() {
+        log.info { "准备关闭软件..." }
         exit = true
-        val gameHWND = GAME_HWND
-        if (gameHWND != null) {
-            CSystemDll.INSTANCE.uninstallInjectDll(gameHWND)
-        }
-        removeTray()
         PauseStatus.isPause = true
         Platform.exit()
-        Thread.startVirtualThread {
+        go {
             try {
-                log.info { "关闭软件..." }
                 Thread.sleep(100)
             } catch (e: InterruptedException) {
                 log.error(e) { "休眠被中断" }

@@ -4,6 +4,7 @@ import club.xiaojiawei.CardAction.Companion.commonActionFactory
 import club.xiaojiawei.bean.LThread
 import club.xiaojiawei.config.EXTRA_THREAD_POOL
 import club.xiaojiawei.config.log
+import club.xiaojiawei.config.submitExtra
 import club.xiaojiawei.hsscript.bean.CommonCardAction.Companion.DEFAULT
 import club.xiaojiawei.hsscript.bean.Release
 import club.xiaojiawei.hsscript.config.InitializerConfig
@@ -53,7 +54,7 @@ import kotlin.math.min
  */
 class MainApplication : Application() {
 
-    private var mainShowingListener: ChangeListener<Boolean?>? = null
+    private var stageShowingListener: ChangeListener<Boolean?>? = null
 
     private var startUpVThread: Thread? = null
 
@@ -163,14 +164,32 @@ class MainApplication : Application() {
                 ZLaunchDll.INSTANCE.SetProgress(min(progressValue, 0.99))
             }
         }
-        commonActionFactory = Supplier { DEFAULT.createNewInstance() }
-        Platform.setImplicitExit(false)
+        preInit()
         InitializerConfig.initializer.init()
-        trayMenu
         showMainPage()
 //        testJava()
 //        testKt()
 //        compileAndRunExternalKtFiles(listOf("S:\\IdeaProjects\\fs32\\src\\main\\java\\com\\fs\\TestUtil.kt"), System.getProperty("java.class.path"))
+    }
+
+    private fun preInit() {
+        commonActionFactory = Supplier { DEFAULT.createNewInstance() }
+        Platform.setImplicitExit(false)
+        launchService()
+        CardUtil.reloadCardWeight()
+        Runtime.getRuntime()
+            .addShutdownHook(
+                LThread(
+                    {
+                        CSystemDll.INSTANCE.removeSystemTray()
+                        GameUtil.findGameHWND()?.let {
+                            CSystemDll.INSTANCE.uninstallInjectDll(it)
+                        }
+                        log.info { "软件已关闭" }
+                    },
+                    "ShutdownHook Thread"
+                )
+            )
     }
 
 
@@ -186,15 +205,15 @@ class MainApplication : Application() {
                 return@anyMatch false
             }) return
         val stage = buildStage(WindowEnum.MAIN)
-        mainShowingListener =
-            ChangeListener { observableValue: ObservableValue<out Boolean?>, aBoolean: Boolean?, t1: Boolean? ->
+        stageShowingListener =
+            ChangeListener { _, aBoolean: Boolean?, t1: Boolean? ->
                 if (t1 != null && t1) {
-                    stage.showingProperty().removeListener(mainShowingListener)
-                    mainShowingListener = null
+                    stage.showingProperty().removeListener(stageShowingListener)
+                    stageShowingListener = null
                     afterShowing()
                 }
             }
-        stage.showingProperty().addListener(mainShowingListener)
+        stage.showingProperty().addListener(stageShowingListener)
         stage.show()
     }
 
@@ -365,22 +384,10 @@ class MainApplication : Application() {
     }
 
     private fun afterShowing() {
-        EXTRA_THREAD_POOL.submit {
-            launchService()
-            CardUtil.reloadCardWeight()
+        submitExtra {
+            trayMenu
             startUpVThread?.interrupt()
             ZLaunchDll.INSTANCE.HidePage()
-            Runtime.getRuntime()
-                .addShutdownHook(
-                    LThread(
-                        {
-                            log.info { "软件已退出" }
-                            CSystemDll.INSTANCE.uninstallInjectDll(GameUtil.findGameHWND())
-                            CSystemDll.INSTANCE.removeSystemTray()
-                        },
-                        "ShutdownHook Thread"
-                    )
-                )
             checkSystem()
             checkArg()
         }
