@@ -27,6 +27,7 @@ import club.xiaojiawei.hsscript.utils.WindowUtil.getStage
 import club.xiaojiawei.hsscript.utils.WindowUtil.hideStage
 import club.xiaojiawei.hsscript.utils.WindowUtil.showStage
 import club.xiaojiawei.util.isFalse
+import club.xiaojiawei.util.isTrue
 import javafx.application.Application
 import javafx.application.Platform
 import javafx.beans.value.ChangeListener
@@ -213,9 +214,7 @@ class MainApplication : Application() {
         val settingsItem = MenuItem("设置")
         settingsItem.addActionListener(object : AbstractAction() {
             override fun actionPerformed(e: ActionEvent?) {
-                runUI {
-                    showStage(WindowEnum.SETTINGS, getStage(WindowEnum.MAIN))
-                }
+                showStage(WindowEnum.SETTINGS, getStage(WindowEnum.MAIN))
             }
         })
 
@@ -228,15 +227,12 @@ class MainApplication : Application() {
 
         addTray(Consumer { e: MouseEvent? ->
 //            左键点击
-            if (e!!.getButton() == 1) {
-                Platform.runLater(Runnable {
-                    val stage = getStage(WindowEnum.MAIN)
-                    if (stage!!.isShowing) {
-                        hideStage(WindowEnum.MAIN)
-                    } else {
-                        showStage(WindowEnum.MAIN)
-                    }
-                })
+            if (e?.button == 1) {
+                (getStage(WindowEnum.MAIN)?.isShowing?:false).isTrue {
+                    WindowUtil.hideAllStage()
+                }.isFalse {
+                    showStage(WindowEnum.MAIN)
+                }
             }
         }, isPauseItem, settingsItem, quitItem)
     }

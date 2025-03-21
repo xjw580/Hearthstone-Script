@@ -8,6 +8,7 @@ import club.xiaojiawei.hsscript.interfaces.StageHook
 import club.xiaojiawei.hsscript.utils.SystemUtil.findHWND
 import club.xiaojiawei.hsscript.utils.SystemUtil.showWindow
 import club.xiaojiawei.util.isTrue
+import javafx.application.Platform
 import javafx.event.ActionEvent
 import javafx.event.EventHandler
 import javafx.fxml.FXMLLoader
@@ -145,32 +146,38 @@ object WindowUtil {
 
 
     fun showStage(windowEnum: WindowEnum, owner: Window? = null) {
-        var stage = getStage(windowEnum)
-        if (stage == null) {
-            stage = buildStage(windowEnum, owner)
-        }
-        if (stage.owner == null && owner != null) {
-            stage.initOwner(owner)
-        }
-        if (stage.isShowing) {
-            showWindow(findHWND(windowTitle = windowEnum.title))
-            stage.requestFocus()
-        } else {
-            stage.show()
+        runUI {
+            (getStage(windowEnum)?:buildStage(windowEnum, owner)).run {
+                if (this.owner == null && owner != null) {
+                    initOwner(owner)
+                }
+                if (isShowing) {
+                    showWindow(findHWND(windowTitle = windowEnum.title))
+                    requestFocus()
+                } else {
+                    show()
+                }
+            }
         }
     }
 
     fun hideStage(windowEnum: WindowEnum) {
-        getStage(windowEnum)?.let {
-            it.isShowing.isTrue {
-                it.hide()
+        runUI {
+            getStage(windowEnum)?.let {
+                it.isShowing.isTrue {
+                    it.hide()
+                }
             }
         }
     }
 
     fun hideAllStage() {
-        for (entry in STAGE_MAP) {
-            entry.value.hide()
+        runUI {
+//            先关闭子窗口，不然有可能报错
+            val stageList = STAGE_MAP.values.sortedBy { if (it.owner == null) 1 else 0 }
+            for (stage in stageList) {
+                stage.hide()
+            }
         }
     }
 
@@ -185,6 +192,7 @@ object WindowUtil {
     }
 
     fun buildStage(windowEnum: WindowEnum, createStage: Boolean, owner: Window? = null): Stage {
+        if (!Platform.isFxApplicationThread()) throw RuntimeException("禁止在非ui线程中创建窗口")
         var stage = STAGE_MAP[windowEnum]
         if (stage == null || createStage) {
             stage = createStage(windowEnum)
@@ -235,7 +243,7 @@ object WindowUtil {
                 FXMLLoader(WindowUtil::class.java.getResource(FXML_DIR + windowEnum.fxmlName))
             return fxmlLoader.load()
         } catch (e: IOException) {
-            throw RuntimeException(e)
+            throw RuntimeException("加载fxml文件异常", e)
         }
     }
 
@@ -272,7 +280,7 @@ object WindowUtil {
                 scene.fill = null
             }
         } catch (e: IOException) {
-            throw RuntimeException(e)
+            throw RuntimeException("创建[${windowEnum}]窗口异常", e)
         }
         return stage
     }
