@@ -23,7 +23,7 @@
             <TitledPane text="控制" fx:id="titledPaneControl">
                 <VBox alignment="TOP_CENTER" spacing="20" style="-fx-padding: 5 5 0 5">
                     <HBox alignment="CENTER" spacing="40">
-                        <ToggleButton fx:id="startButton" toggleGroup="$pauseToggleGroup" text="开始"
+                        <ToggleButton fx:id="startButton" toggleGroup="$pauseToggleGroup" text="开始" onAction="#start"
                                       styleClass="btn-ui, btn-ui-small, btn-ui-success-3d">
                             <tooltip>
                                 <Tooltip text="开始工作">
@@ -36,7 +36,7 @@
                                 <StartIco fx:id="startIco"/>
                             </graphic>
                         </ToggleButton>
-                        <ToggleButton fx:id="pauseButton" toggleGroup="$pauseToggleGroup" selected="true" text="暂停"
+                        <ToggleButton fx:id="pauseButton" toggleGroup="$pauseToggleGroup" selected="true" text="暂停" onAction="#pause"
                                       styleClass="btn-ui, btn-ui-small, btn-ui-error-3d, btnPressed">
                             <tooltip>
                                 <Tooltip text="暂停工作">

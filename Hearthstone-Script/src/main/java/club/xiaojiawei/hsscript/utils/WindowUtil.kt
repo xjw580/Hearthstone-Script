@@ -4,10 +4,12 @@ import club.xiaojiawei.JavaFXUI
 import club.xiaojiawei.hsscript.data.FXML_DIR
 import club.xiaojiawei.hsscript.data.SCRIPT_NAME
 import club.xiaojiawei.hsscript.enums.WindowEnum
+import club.xiaojiawei.hsscript.exit
 import club.xiaojiawei.hsscript.interfaces.StageHook
 import club.xiaojiawei.hsscript.utils.SystemUtil.findHWND
 import club.xiaojiawei.hsscript.utils.SystemUtil.showWindow
 import club.xiaojiawei.util.isTrue
+import com.sun.jna.platform.win32.WinDef.HWND
 import javafx.application.Platform
 import javafx.event.ActionEvent
 import javafx.event.EventHandler
@@ -144,10 +146,14 @@ object WindowUtil {
         return createAlert(headerText, contentText, null, null, window)
     }
 
+    fun findWindow(windowEnum: WindowEnum): HWND? {
+        return findHWND(null, windowEnum.title)
+    }
+
 
     fun showStage(windowEnum: WindowEnum, owner: Window? = null) {
         runUI {
-            (getStage(windowEnum)?:buildStage(windowEnum, owner)).run {
+            (getStage(windowEnum) ?: buildStage(windowEnum, owner)).run {
                 if (this.owner == null && owner != null) {
                     initOwner(owner)
                 }
@@ -213,14 +219,18 @@ object WindowUtil {
                 }
             }
             stage.setOnHiding {
-                stage.isIconified = false
-                if (controller is StageHook){
+                if (!exit){
+                    stage.isIconified = false
+                }
+                if (controller is StageHook) {
                     controller.onHiding()
                 }
             }
             stage.setOnCloseRequest { event ->
-                stage.isIconified = false
-                if (controller is StageHook){
+                if (!exit){
+                    stage.isIconified = false
+                }
+                if (controller is StageHook) {
                     controller.onCloseRequest(event)
                 }
             }

@@ -76,3 +76,5 @@ val IMG_PATH by lazy {
  * 脚本程序图标名字
  */
 const val MAIN_IMG_NAME: String = "favicon.png"
+
+const val TRAY_IMG_NAME: String = "favicon.ico"

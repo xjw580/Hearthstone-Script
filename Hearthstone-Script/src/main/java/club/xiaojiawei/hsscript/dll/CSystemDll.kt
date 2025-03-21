@@ -1,9 +1,7 @@
 package club.xiaojiawei.hsscript.dll
 
 import club.xiaojiawei.config.log
-import com.sun.jna.Library
-import com.sun.jna.Native
-import com.sun.jna.Pointer
+import com.sun.jna.*
 import com.sun.jna.platform.win32.WinDef.HWND
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -86,6 +84,56 @@ interface CSystemDll : Library {
 
     fun isProcessRunning(processName: String): Boolean
 
+
+    interface TrayCallback : Callback {
+        fun invoke()
+    }
+
+    @Structure.FieldOrder("id", "type", "text", "callback")
+    open class TrayItem : Structure() {
+        @JvmField
+        var id: Int = 0
+        @JvmField
+        var type: Int = 0
+        /**
+         * 对应wchar_t*
+         */
+        @JvmField
+        var text: Pointer? = null
+        @JvmField
+        var callback: TrayCallback? = null
+
+        // 嵌套类用于指针访问
+        class Reference : TrayItem(), ByReference
+        class Value : TrayItem(), ByValue
+    }
+
+
+    @Structure.FieldOrder("text", "iconPath", "trayItem", "itemCount", "clickCallback")
+    open class TrayMenu : Structure() {
+        /**
+         * 对应wchar_t*
+         */
+        @JvmField
+        var text: Pointer? = null
+        @JvmField
+        var iconPath: WString? = null
+        @JvmField
+        var trayItem: TrayItem.Reference? = null
+        @JvmField
+        var itemCount: Int = 0
+        @JvmField
+        var clickCallback: TrayCallback? = null
+
+        // 嵌套类用于指针访问
+        class Reference : TrayMenu(), ByReference
+        class Value : TrayMenu(), ByValue
+    }
+
+    fun addSystemTray(trayMenu: TrayMenu.Reference?): Boolean
+
+    fun removeSystemTray(): Boolean
+
     companion object {
 
         val INSTANCE: CSystemDll by lazy {
@@ -99,6 +147,12 @@ interface CSystemDll : Library {
         const val MB_OK: Int = 0x00000000
 
         const val MB_ICONINFORMATION: Int = 0x00000040
+
+        const val MF_STRING: Int = 0x00000000
+
+        const val MF_SEPARATOR: Int = -0x80000000
+
+        const val MF_CHECKED: Int = 0x00000008
 
         @Synchronized
         fun setWakeUpTimer(seconds: Int): Boolean {

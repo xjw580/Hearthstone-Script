@@ -4,6 +4,7 @@ import ch.qos.logback.classic.Level
 import ch.qos.logback.classic.spi.ILoggingEvent
 import club.xiaojiawei.DeckStrategy
 import club.xiaojiawei.config.log
+import club.xiaojiawei.config.submitExtra
 import club.xiaojiawei.controls.CopyLabel
 import club.xiaojiawei.controls.Modal
 import club.xiaojiawei.controls.Time
@@ -21,8 +22,7 @@ import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.enums.WindowEnum
 import club.xiaojiawei.hsscript.listener.VersionListener
 import club.xiaojiawei.hsscript.status.DeckStrategyManager
-import club.xiaojiawei.hsscript.status.PauseStatus.addListener
-import club.xiaojiawei.hsscript.status.PauseStatus.asyncSetPause
+import club.xiaojiawei.hsscript.status.PauseStatus
 import club.xiaojiawei.hsscript.utils.ConfigExUtil.getWorkDay
 import club.xiaojiawei.hsscript.utils.ConfigExUtil.getWorkTime
 import club.xiaojiawei.hsscript.utils.ConfigExUtil.storeWorkDay
@@ -34,6 +34,8 @@ import club.xiaojiawei.hsscript.utils.SystemUtil.copyToClipboard
 import club.xiaojiawei.hsscript.utils.WindowUtil
 import club.xiaojiawei.hsscript.utils.go
 import club.xiaojiawei.hsscript.utils.runUI
+import club.xiaojiawei.util.isFalse
+import club.xiaojiawei.util.isTrue
 import javafx.animation.RotateTransition
 import javafx.animation.Timeline
 import javafx.application.Platform
@@ -107,7 +109,7 @@ class MainController : MainView() {
                 val deckStrategies = if (newValue == null) null else runModeMap[newValue]
                 deckStrategies?.let {
                     deckStrategyBox.items.setAll(deckStrategies)
-                }?:let {
+                } ?: let {
                     deckStrategyBox.items.clear()
                 }
                 putString(ConfigEnum.DEFAULT_RUN_MODE, newValue?.name ?: "", true)
@@ -121,7 +123,7 @@ class MainController : MainView() {
                         deckStrategyBox.selectionModel.select(oldValue)
                         return@addListener
                     }
-                }else{
+                } else {
 //                将卡组策略的第一个运行模式改为当前运行模式
                     for (i in newValue.runModes.indices) {
                         val runModeEnum = newValue.runModes[i]
@@ -245,17 +247,16 @@ class MainController : MainView() {
         ExtraLogAppender.addCallback { event: ILoggingEvent -> this.appendLog(event) }
 
         //        暂停状态监听
-        addListener { observableValue: ObservableValue<out Boolean>?, aBoolean: Boolean?, t1: Boolean ->
-            changeSwitch(
-                t1
-            )
+        PauseStatus.addListener { observableValue: ObservableValue<out Boolean>?, aBoolean: Boolean?, t1: Boolean ->
+            t1.isTrue {
+                pauseToggleGroup.selectToggle(startButton)
+            }.isFalse {
+                pauseToggleGroup.selectToggle(pauseButton)
+            }
         }
 
         //        游戏局数监听
-        WarEx.warCountProperty.addListener { observableValue: ObservableValue<out Number>?, number: Number?, t1: Number ->
-            log.info {
-                "已完成第 $t1 把游戏"
-            }
+        WarEx.warCountProperty.addListener { _, number: Number?, t1: Number ->
             gameCount.text = WarEx.warCount.toString()
             winningPercentage.text = (String.format(
                 "%.1f",
@@ -290,7 +291,7 @@ class MainController : MainView() {
         }
         val btnPressedStyleClass = "btnPressed"
         pauseToggleGroup.selectedToggleProperty()
-            .addListener { observableValue: ObservableValue<out Toggle?>?, toggle: Toggle?, t1: Toggle? ->
+            .addListener { _, toggle: Toggle?, t1: Toggle? ->
                 if (t1 == null) {
                     if (toggle != null) {
                         pauseToggleGroup.selectToggle(toggle)
@@ -302,14 +303,12 @@ class MainController : MainView() {
                         startIco.color = "gray"
                         pauseIco.color = "black"
                         startButton.styleClass.add(btnPressedStyleClass)
-                        asyncSetPause(false)
                     } else if (t1 === pauseButton) {
                         pauseIco.color = "gray"
                         startIco.color = "black"
                         pauseButton.styleClass.add(btnPressedStyleClass)
                         val graphic = pauseButton.graphic as AbstractIco
                         graphic.color = "gray"
-                        asyncSetPause(true)
                     }
                 }
             }
@@ -366,16 +365,6 @@ class MainController : MainView() {
             (timeControls[0] as Time).time = time.startTime
             (timeControls[2] as Time).time = time.endTime
             (timeHBox.children.first() as CheckBox).isSelected = time.enabled
-        }
-    }
-
-    private fun changeSwitch(isPause: Boolean) {
-        if (isPause) {
-            pauseToggleGroup.selectToggle(pauseButton)
-            accordion.expandedPane = titledPaneControl
-        } else {
-            pauseToggleGroup.selectToggle(startButton)
-            accordion.expandedPane = titledPaneLog
         }
     }
 
@@ -510,6 +499,28 @@ class MainController : MainView() {
     @FXML
     protected fun openStatistics(actionEvent: ActionEvent) {
         WindowUtil.showStage(WindowEnum.STATISTICS, rootPane.scene.window)
+    }
+
+    @FXML
+    protected fun start() {
+        submitExtra {
+            PauseStatus.setPauseReturn(false).isTrue {
+                runUI {
+                    pauseToggleGroup.selectToggle(pauseButton)
+                }
+            }
+        }
+    }
+
+    @FXML
+    protected fun pause() {
+        submitExtra {
+            PauseStatus.setPauseReturn(true).isFalse {
+                runUI {
+                    pauseToggleGroup.selectToggle(startButton)
+                }
+            }
+        }
     }
 
     companion object {

@@ -37,6 +37,11 @@ object PauseStatus {
             isPauseProperty.set(value)
         }
 
+    fun setPauseReturn(isPaused: Boolean): Boolean {
+        isPause = isPaused
+        return isPause
+    }
+
     fun asyncSetPause(isPaused: Boolean) {
         EXTRA_THREAD_POOL.submit {
             this.isPause = isPaused

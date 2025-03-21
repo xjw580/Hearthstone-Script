@@ -32,10 +32,23 @@ object WarEx {
 
     var warCount
         get() = warCountProperty.get()
-        set(value) = warCountProperty.set(value)
+        set(value) {
+            warCountProperty.set(value)
+            if (value > 0){
+                log.info {
+                    "已完成第 $value 把游戏"
+                }
+            }
+        }
 
+    /**
+     * 本局是否胜利
+     */
     var isWin = false
 
+    /**
+     * 本局获得经验
+     */
     var aEXP = 0L
 
     /**
@@ -68,10 +81,10 @@ object WarEx {
 
     @Synchronized
     fun resetStatistics() {
-        warCountProperty.set(0)
-        winCountProperty.set(0)
-        hangingTimeProperty.set(0)
-        hangingEXPProperty.set(0)
+        warCount = 0
+        winCount = 0
+        hangingTime = 0
+        hangingEXP = 0
     }
 
     @Synchronized
@@ -155,7 +168,7 @@ object WarEx {
             log.info { "本局游戏获得经验值：$aEXP" }
             hangingEXP += aEXP.toInt()
             endCallbackList.forEach(Consumer { obj: Runnable -> obj.run() })
-            warCountProperty.set(warCountProperty.get() + 1)
+            warCount++
         }
     }
 

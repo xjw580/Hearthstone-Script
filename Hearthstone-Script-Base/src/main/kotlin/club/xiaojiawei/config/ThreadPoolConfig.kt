@@ -62,4 +62,9 @@ val CALC_THREAD_POOL: ThreadPoolExecutor by lazy {
     )
 }
 
-val VIRTUAL_THREAD_POOL: ExecutorService = Executors.newThreadPerTaskExecutor(Thread.ofVirtual().name("VPool Thread-", 0).factory());
+fun submitExtra(block: () -> Unit) {
+    EXTRA_THREAD_POOL.submit(block)
+}
+
+val VIRTUAL_THREAD_POOL: ExecutorService =
+    Executors.newThreadPerTaskExecutor(Thread.ofVirtual().name("VPool Thread-", 0).factory());

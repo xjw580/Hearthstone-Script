@@ -15,6 +15,7 @@ import club.xiaojiawei.hsscript.dll.User32ExDll.Companion.SC_MONITORPOWER
 import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.enums.RegCommonNameEnum
 import club.xiaojiawei.hsscript.enums.WindowEnum
+import club.xiaojiawei.hsscript.exit
 import club.xiaojiawei.hsscript.status.PauseStatus
 import club.xiaojiawei.util.RandomUtil
 import club.xiaojiawei.util.isTrue
@@ -48,6 +49,10 @@ object SystemUtil {
 
     fun getProgramIconFile(): File {
         return Path.of(IMG_PATH, MAIN_IMG_NAME).toFile()
+    }
+
+    fun getTrayIconFile(): File {
+        return Path.of(IMG_PATH, TRAY_IMG_NAME).toFile()
     }
 
     /**
@@ -327,6 +332,7 @@ object SystemUtil {
      * 关闭本软件
      */
     fun shutdown() {
+        exit = true
         val gameHWND = GAME_HWND
         if (gameHWND != null) {
             CSystemDll.INSTANCE.uninstallInjectDll(gameHWND)
@@ -337,7 +343,7 @@ object SystemUtil {
         Thread.startVirtualThread {
             try {
                 log.info { "关闭软件..." }
-                Thread.sleep(1000)
+                Thread.sleep(100)
             } catch (e: InterruptedException) {
                 log.error(e) { "休眠被中断" }
             }

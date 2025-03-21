@@ -11,8 +11,8 @@ import club.xiaojiawei.hsscript.core.Core
 import club.xiaojiawei.hsscript.data.ARG_PAGE
 import club.xiaojiawei.hsscript.data.ARG_PAUSE
 import club.xiaojiawei.hsscript.data.GAME_CN_NAME
+import club.xiaojiawei.hsscript.data.SCRIPT_NAME
 import club.xiaojiawei.hsscript.dll.CSystemDll
-import club.xiaojiawei.hsscript.dll.GSystemDll
 import club.xiaojiawei.hsscript.dll.ZLaunchDll
 import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.enums.WindowEnum
@@ -24,10 +24,11 @@ import club.xiaojiawei.hsscript.utils.SystemUtil.addTray
 import club.xiaojiawei.hsscript.utils.SystemUtil.shutdown
 import club.xiaojiawei.hsscript.utils.WindowUtil.buildStage
 import club.xiaojiawei.hsscript.utils.WindowUtil.getStage
-import club.xiaojiawei.hsscript.utils.WindowUtil.hideStage
 import club.xiaojiawei.hsscript.utils.WindowUtil.showStage
 import club.xiaojiawei.util.isFalse
 import club.xiaojiawei.util.isTrue
+import com.sun.jna.Memory
+import com.sun.jna.WString
 import javafx.application.Application
 import javafx.application.Platform
 import javafx.beans.value.ChangeListener
@@ -165,12 +166,13 @@ class MainApplication : Application() {
         commonActionFactory = Supplier { DEFAULT.createNewInstance() }
         Platform.setImplicitExit(false)
         InitializerConfig.initializer.init()
-        setSystemTray()
+        trayMenu
         showMainPage()
 //        testJava()
 //        testKt()
 //        compileAndRunExternalKtFiles(listOf("S:\\IdeaProjects\\fs32\\src\\main\\java\\com\\fs\\TestUtil.kt"), System.getProperty("java.class.path"))
     }
+
 
     private fun showMainPage() {
         if (PROGRAM_ARGS.stream().anyMatch {
@@ -228,13 +230,88 @@ class MainApplication : Application() {
         addTray(Consumer { e: MouseEvent? ->
 //            左键点击
             if (e?.button == 1) {
-                (getStage(WindowEnum.MAIN)?.isShowing?:false).isTrue {
+                (getStage(WindowEnum.MAIN)?.isShowing ?: false).isTrue {
                     WindowUtil.hideAllStage()
                 }.isFalse {
                     showStage(WindowEnum.MAIN)
                 }
             }
         }, isPauseItem, settingsItem, quitItem)
+    }
+
+    private var trayItemArr: CSystemDll.TrayItem.Reference? = null
+
+    private val trayMenu: CSystemDll.TrayMenu.Reference by lazy {
+        val memorySize = 125L
+        CSystemDll.TrayMenu.Reference().apply {
+            text = Memory(memorySize).apply {
+                setWideString(0, SCRIPT_NAME)
+            }
+            iconPath = WString(SystemUtil.getTrayIconFile().absolutePath)
+            clickCallback = object : CSystemDll.TrayCallback {
+                override fun invoke() {
+                    (getStage(WindowEnum.MAIN)?.isShowing ?: false).isTrue {
+                        WindowUtil.hideAllStage()
+                    }.isFalse {
+                        showStage(WindowEnum.MAIN)
+                    }
+                }
+            }
+            itemCount = 4
+            trayItem = CSystemDll.TrayItem.Reference()
+            trayItemArr = trayItem
+            val trayItemArr = trayItem!!.toArray(itemCount) as Array<CSystemDll.TrayItem>
+            trayItemArr[0].apply {
+                id = 1000
+                type = CSystemDll.MF_STRING
+                text = Memory(memorySize).apply {
+                    setWideString(0, "开始")
+                }
+                callback = object : CSystemDll.TrayCallback {
+                    override fun invoke() {
+                        PauseStatus.asyncSetPause(!PauseStatus.isPause)
+                    }
+                }
+            }
+            trayItemArr[1].apply {
+                id = 1001
+                type = CSystemDll.MF_STRING
+                text = Memory(memorySize).apply {
+                    setWideString(0, "设置")
+                }
+                callback = object : CSystemDll.TrayCallback {
+                    override fun invoke() {
+                        showStage(WindowEnum.SETTINGS, getStage(WindowEnum.MAIN))
+                    }
+                }
+            }
+            trayItemArr[2].apply {
+                id = 1002
+                type = CSystemDll.MF_SEPARATOR
+            }
+            trayItemArr[3].apply {
+                id = 1003
+                type = CSystemDll.MF_STRING
+                text = Memory(memorySize).apply {
+                    setWideString(0, "退出")
+                }
+                callback = object : CSystemDll.TrayCallback {
+                    override fun invoke() {
+                        shutdown()
+                    }
+                }
+            }
+            PauseStatus.addListener { _, _, isPause: Boolean ->
+                if (isPause) {
+                    trayItemArr[0].text?.setWideString(0, "开始")
+                } else {
+                    trayItemArr[0].text?.setWideString(0, "暂停")
+                }
+            }
+            CSystemDll.INSTANCE.addSystemTray(this).isFalse {
+                log.warn { "系统托盘创建失败" }
+            }
+        }
     }
 
     private fun launchService() {
@@ -282,7 +359,7 @@ class MainApplication : Application() {
 
         Screen.getScreens()?.let {
             if (it.size > 1) {
-                log.info { "检测到多台显示器，开始运行后${GAME_CN_NAME}不要移动到其他显示器" }
+                log.info { "检测到多台显示器，开始运行后${GAME_CN_NAME}窗口不要移动到其他显示器" }
             }
         }
     }
@@ -299,6 +376,7 @@ class MainApplication : Application() {
                         {
                             log.info { "软件已退出" }
                             CSystemDll.INSTANCE.uninstallInjectDll(GameUtil.findGameHWND())
+                            CSystemDll.INSTANCE.removeSystemTray()
                         },
                         "ShutdownHook Thread"
                     )
