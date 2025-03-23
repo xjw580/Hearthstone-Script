@@ -86,6 +86,14 @@ class CommonCardAction : CardAction(false) {
     public override fun execPower(index: Int): Boolean {
         return belongCard?.let { belongCard ->
             if (belongCard.area.isInValid()) return false
+            if (belongCard.cardType === CardTypeEnum.HERO_POWER){
+                val powerRect = getCardRect(belongCard)
+                if (powerRect.isValid()){
+                    powerRect.lClick()
+                    return true
+                }
+                return false
+            }
             var startRect: GameRect
             val me = WAR.me
             if ((GameUtil.getMyHandCardRect(me.handArea.indexOfCard(belongCard), belongCard.area.cardSize())
