@@ -251,11 +251,13 @@ class MainController : MainView() {
         }, "Show Log Thread").start()
 
         //        暂停状态监听
-        PauseStatus.addListener { observableValue: ObservableValue<out Boolean>?, aBoolean: Boolean?, t1: Boolean ->
+        PauseStatus.addListener { _, _, t1: Boolean ->
             t1.isTrue {
                 pauseToggleGroup.selectToggle(pauseButton)
+                accordion.expandedPane = titledPaneControl
             }.isFalse {
                 pauseToggleGroup.selectToggle(startButton)
+                accordion.expandedPane = titledPaneLog
             }
         }
 

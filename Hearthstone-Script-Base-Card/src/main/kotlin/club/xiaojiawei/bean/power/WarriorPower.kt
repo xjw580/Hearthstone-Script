@@ -3,8 +3,8 @@ package club.xiaojiawei.bean.power
 import club.xiaojiawei.CardAction
 import club.xiaojiawei.bean.Player
 import club.xiaojiawei.bean.PowerAction
-import club.xiaojiawei.bean.abs.ClickPower
 import club.xiaojiawei.bean.War
+import club.xiaojiawei.bean.abs.ClickPower
 
 /**
  * 战士技能

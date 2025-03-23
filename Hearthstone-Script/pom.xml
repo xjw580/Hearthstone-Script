@@ -9,7 +9,7 @@
     </parent>
 
     <artifactId>hs-script</artifactId>
-    <version>v4.4.3-BETA</version><!--todo 修改版本号记得同步修改版本描述-->
+    <version>v4.4.4-DEV</version><!--todo 修改版本号记得同步修改版本描述-->
     <name>Hearthstone-Script</name>
     <description>炉石传说脚本</description>
 
@@ -37,6 +37,7 @@
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
             <artifactId>kotlin-compiler</artifactId>
+            <scope>provided</scope>
         </dependency>
         <!--INI配置文件读写-->
         <dependency>

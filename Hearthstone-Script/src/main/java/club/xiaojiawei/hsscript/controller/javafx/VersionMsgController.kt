@@ -29,11 +29,18 @@ class VersionMsgController : Initializable {
         version.text = VERSION
         //        TODO 版本更新时修改！！！
         versionDescription.text = """
-                    🚀 新功能
-                    - 增加统计功能
+                    🐛 Bug 修复
+                    1. 修复某些情况下关闭窗口将无法再次打开窗口的问题
+                    2. 修复某些情况下主页的开始暂停按钮显示错误的问题
                     
                     🔧 重构与优化
-                    - 优化DRIVE模式
+                    1. 优化DRIVE模式下的程序崩溃问题
+                    2. 优化鼠标右键
+                    3. 美化软件托盘
+                    4. 优化软件启动流程，提高启动页的显示速度
+                    5. 优化发现卡牌的处理流程
+                    6. 未适配的英雄技能默认行为为鼠标左击
+                    7. 优化基础卡牌插件性能
                     """.trimIndent()
     }
 
