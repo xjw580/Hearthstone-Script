@@ -15,7 +15,6 @@ import club.xiaojiawei.hsscript.dll.User32ExDll.Companion.SC_MONITORPOWER
 import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.enums.RegCommonNameEnum
 import club.xiaojiawei.hsscript.enums.WindowEnum
-import club.xiaojiawei.hsscript.exit
 import club.xiaojiawei.hsscript.status.PauseStatus
 import club.xiaojiawei.util.RandomUtil
 import club.xiaojiawei.util.isTrue
@@ -337,7 +336,6 @@ object SystemUtil {
      */
     fun shutdown() {
         log.info { "准备关闭软件..." }
-        exit = true
         PauseStatus.isPause = true
         Platform.exit()
         go {

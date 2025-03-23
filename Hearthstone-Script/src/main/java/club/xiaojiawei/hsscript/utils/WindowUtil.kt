@@ -5,7 +5,6 @@ import club.xiaojiawei.hsscript.data.FXML_DIR
 import club.xiaojiawei.hsscript.data.SCRIPT_NAME
 import club.xiaojiawei.hsscript.dll.CSystemDll
 import club.xiaojiawei.hsscript.enums.WindowEnum
-import club.xiaojiawei.hsscript.exit
 import club.xiaojiawei.hsscript.interfaces.StageHook
 import club.xiaojiawei.hsscript.utils.SystemUtil.findHWND
 import club.xiaojiawei.hsscript.utils.SystemUtil.showWindow
@@ -180,9 +179,8 @@ object WindowUtil {
 
     fun hideAllStage() {
         runUI {
-//            先关闭子窗口，不然有可能报错
-            val stageList = STAGE_MAP.values.sortedBy { if (it.owner == null) 1 else 0 }
-            for (stage in stageList) {
+            val stages = STAGE_MAP.map { it.value }.toList()
+            for (stage in stages) {
                 stage.hide()
             }
         }
@@ -220,16 +218,22 @@ object WindowUtil {
                 }
             }
             stage.setOnHiding {
-                if (!exit){
-                    stage.isIconified = false
+                stage.isIconified = false
+                for (entry in STAGE_MAP) {
+                    if (entry.value.owner == stage){
+                        entry.value.hide()
+                    }
                 }
                 if (controller is StageHook) {
                     controller.onHiding()
                 }
             }
             stage.setOnCloseRequest { event ->
-                if (!exit){
-                    stage.isIconified = false
+                stage.isIconified = false
+                for (entry in STAGE_MAP) {
+                    if (entry.value.owner == stage){
+                        entry.value.hide()
+                    }
                 }
                 if (controller is StageHook) {
                     controller.onCloseRequest(event)

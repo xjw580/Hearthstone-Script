@@ -23,8 +23,6 @@ var PROGRAM_ARGS: List<String> = emptyList()
 
 var fileLogLevel = ConfigExUtil.getFileLogLevel().toInt()
 
-var exit = false
-
 private fun setLogPath() {
     try {
         val context = LoggerFactory.getILoggerFactory()
