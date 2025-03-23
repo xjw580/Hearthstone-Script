@@ -3,13 +3,13 @@ package club.xiaojiawei.hsscript.listener
 import club.xiaojiawei.config.log
 import club.xiaojiawei.hsscript.dll.CSystemDll
 import club.xiaojiawei.hsscript.enums.ConfigEnum
+import club.xiaojiawei.hsscript.enums.MouseControlModeEnum
 import club.xiaojiawei.hsscript.enums.WindowEnum
 import club.xiaojiawei.hsscript.status.PauseStatus
-import club.xiaojiawei.hsscript.utils.ConfigUtil
-import club.xiaojiawei.hsscript.utils.SystemUtil
+import club.xiaojiawei.hsscript.utils.*
 import club.xiaojiawei.hsscript.utils.SystemUtil.offScreen
-import club.xiaojiawei.hsscript.utils.WindowUtil
-import club.xiaojiawei.hsscript.utils.runUI
+import club.xiaojiawei.util.isFalse
+import club.xiaojiawei.util.isTrue
 import javafx.stage.Stage
 
 /**
@@ -24,6 +24,13 @@ object SystemListener {
             check()
         }
         WorkListener.workingProperty.addListener { _, _, isWorking: Boolean ->
+            if (ConfigExUtil.getMouseControlMode() === MouseControlModeEnum.DRIVE) {
+                isWorking.isTrue {
+                    CSystemDll.safeRefreshDriver()
+                }.isFalse {
+                    CSystemDll.safeReleaseDriver()
+                }
+            }
             check()
         }
     }
@@ -64,7 +71,9 @@ object SystemListener {
                         null,
                         {
                             thread.interrupt()
-                            CSystemDll.setWakeUpTimer(0)
+                            if (ConfigUtil.getBoolean(ConfigEnum.AUTO_WAKE)){
+                                CSystemDll.setWakeUpTimer(0)
+                            }
                         },
                         null,
                         WindowUtil.getStage(WindowEnum.MAIN),
@@ -102,7 +111,7 @@ object SystemListener {
                     }
                 }
             }
-        } else {
+        } else if (ConfigUtil.getBoolean(ConfigEnum.AUTO_WAKE)) {
             CSystemDll.setWakeUpTimer(0)
         }
     }

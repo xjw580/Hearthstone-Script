@@ -49,7 +49,7 @@ object WorkListener {
 
     @Synchronized
     fun stopWork() {
-        workingProperty.set(false)
+        working = false
         cannotWorkLog()
         log.info { "停止工作，准备关闭游戏" }
         GameUtil.killGame()

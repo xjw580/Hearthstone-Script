@@ -1,6 +1,8 @@
 package club.xiaojiawei.hsscript.dll
 
 import club.xiaojiawei.config.log
+import club.xiaojiawei.hsscript.initializer.DRIVER_LOCK
+import club.xiaojiawei.hsscript.utils.SystemUtil
 import com.sun.jna.*
 import com.sun.jna.platform.win32.WinDef.HWND
 import java.time.LocalDateTime
@@ -147,11 +149,13 @@ interface CSystemDll : Library {
 
     fun removeSystemTray(): Boolean
 
-    companion object {
+    fun refreshDriver(): Int
 
-        val INSTANCE: CSystemDll by lazy {
-            Native.load("dll/csystem", CSystemDll::class.java)
-        }
+    fun loadDriver(): Int
+
+    fun releaseDriver(): Int
+
+    companion object {
 
         const val MB_ICONERROR: Int = 0x00000010
 
@@ -180,6 +184,62 @@ interface CSystemDll : Library {
                 log.info { "取消定时唤醒电脑" }
             }
             return INSTANCE.setWakeUpTimer(seconds)
+        }
+
+        fun safeLoadDriver(): Int {
+            DRIVER_LOCK.lock()
+            try {
+                val res = INSTANCE.loadDriver()
+                if (res > 0) {
+                    log.info { "加载驱动成功" }
+                } else if (res < 0) {
+                    val text = "加载驱动失败"
+                    SystemUtil.notice(text)
+                    log.error { text }
+                }
+                return res
+            } finally {
+                DRIVER_LOCK.unlock()
+            }
+        }
+
+        fun safeRefreshDriver(): Int {
+            DRIVER_LOCK.lock()
+            try {
+                val res = INSTANCE.refreshDriver()
+                if (res > 0) {
+                    log.info { "刷新驱动成功" }
+                } else if (res < 0) {
+                    val text = "刷新驱动失败"
+                    SystemUtil.notice(text)
+                    log.error { text }
+                }
+                return res
+            } finally {
+                DRIVER_LOCK.unlock()
+            }
+        }
+
+
+        fun safeReleaseDriver(): Int {
+            DRIVER_LOCK.lock()
+            try {
+                val res = INSTANCE.releaseDriver()
+                if (res > 0) {
+                    log.info { "释放驱动成功" }
+                } else if (res < 0) {
+                    val text = "释放驱动失败"
+                    SystemUtil.notice(text)
+                    log.error { text }
+                }
+                return res
+            } finally {
+                DRIVER_LOCK.unlock()
+            }
+        }
+
+        val INSTANCE: CSystemDll by lazy {
+            Native.load("dll/csystem", CSystemDll::class.java)
         }
     }
 }

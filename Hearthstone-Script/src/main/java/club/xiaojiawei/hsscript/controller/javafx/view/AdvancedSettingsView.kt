@@ -105,4 +105,7 @@ open class AdvancedSettingsView {
     @FXML
     protected lateinit var autoSleep: Switch
 
+    @FXML
+    protected lateinit var refreshDriver: Button
+
 }

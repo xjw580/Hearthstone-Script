@@ -9,7 +9,7 @@ import club.xiaojiawei.enums.RunModeEnum
 import club.xiaojiawei.status.WAR
 import club.xiaojiawei.util.DeckStrategyUtil
 import club.xiaojiawei.util.DeckStrategyUtil.activeLocation
-import club.xiaojiawei.util.DeckStrategyUtil.isDamageSpell
+import club.xiaojiawei.util.DeckStrategyUtil.isDamageText
 import club.xiaojiawei.util.isFalse
 import club.xiaojiawei.util.isTrue
 
@@ -62,7 +62,7 @@ class HsRadicalDeckStrategy : DeckStrategy() {
                     val cardText = simulateWeightCard.text
                     if (me.usableResource >= card.cost) {
                         if (card.cardType === CardTypeEnum.SPELL) {
-                            if (isDamageSpell(cardText)) {
+                            if (isDamageText(cardText)) {
                                 log.info { "[${card.cardId}]判断为伤害法术" }
                                 rival.playArea.cards.find { c -> c.canBeTargetedByMe() }?.let {
                                     card.action.power(it)

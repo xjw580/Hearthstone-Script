@@ -48,6 +48,7 @@
                                 <HBox HBox.hgrow="ALWAYS"/>
                                 <ComboBox fx:id="mouseControlModeComboBox"
                                           styleClass="combo-box-ui, combo-box-ui-small, combo-box-ui-normal"/>
+                                <Button fx:id="refreshDriver" text="刷新驱动" onAction="#refreshDriver" styleClass="btn-ui, btn-ui-small" visible="false" managed="false"/>
                             </HBox>
                             <HBox styleClass="h-box">
                                 <Text text="置顶游戏窗口"/>

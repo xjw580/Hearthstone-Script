@@ -19,16 +19,22 @@ import javafx.fxml.Initializable
 import javafx.scene.control.ComboBox
 import javafx.scene.control.Label
 import javafx.scene.control.ListCell
+import javafx.scene.layout.StackPane
 import java.net.URL
 import java.nio.file.Path
 import java.util.*
-import java.util.concurrent.TimeUnit
 
 /**
  * @author 肖嘉威
  * @date 2025/1/20 22:38
  */
 class DeveloperSettingsController : Initializable {
+
+    @FXML
+    protected lateinit var disableMouseSwitch: Switch
+
+    @FXML
+    protected lateinit var rootPane: StackPane
 
     @FXML
     protected lateinit var autoOpenAnalysis: Switch
@@ -43,12 +49,20 @@ class DeveloperSettingsController : Initializable {
     protected lateinit var strategySwitch: Switch
 
     private fun initValue() {
+        disableMouseSwitch.status = ConfigUtil.getBoolean(ConfigEnum.DISABLE_MOUSE)
         strategySwitch.status = ConfigUtil.getBoolean(ConfigEnum.STRATEGY)
         fileLogLevelComboBox.value = ConfigExUtil.getFileLogLevel().levelStr.uppercase()
         autoOpenAnalysis.status = ConfigUtil.getBoolean(ConfigEnum.AUTO_OPEN_GAME_ANALYSIS)
     }
 
     private fun addListener() {
+        disableMouseSwitch.statusProperty()
+            .addListener { observable, oldValue, newValue ->
+                ConfigUtil.putBoolean(
+                    ConfigEnum.DISABLE_MOUSE,
+                    newValue, true
+                )
+            }
         //        监听策略开关
         strategySwitch.statusProperty()
             .addListener { observable, oldValue, newValue ->

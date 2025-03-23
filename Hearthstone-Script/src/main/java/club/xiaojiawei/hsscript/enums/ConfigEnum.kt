@@ -82,6 +82,11 @@ enum class ConfigEnum(
     STRATEGY(group = ACTION_CONFIG_GROUP, defaultValue = true.toString()),
 
     /**
+     * 禁用鼠标
+     */
+    DISABLE_MOUSE(group = ACTION_CONFIG_GROUP, defaultValue = false.toString()),
+
+    /**
      * 动作间隔/ms
      */
     MOUSE_ACTION_INTERVAL(group = ACTION_CONFIG_GROUP, defaultValue = "3500"),

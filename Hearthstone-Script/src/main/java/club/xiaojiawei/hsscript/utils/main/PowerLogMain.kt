@@ -12,7 +12,7 @@ object PowerLogMain {
 
     @JvmStatic
     fun main(args: Array<String>) {
-        decontamination("S:\\Hearthstone\\Logs\\Hearthstone_2024_11_27_17_38_36", true)
+        decontamination("S:\\Hearthstone\\Logs\\Hearthstone_2025_03_22_18_35_57", true)
     }
 
     private fun decontamination(path: String, renew: Boolean) {

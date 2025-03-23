@@ -71,12 +71,6 @@ open class BaseCard : Entity() {
     var isDeathRattle = false
 
     /**
-     * 创建者id
-     */
-    @Volatile
-    var creatorEntityId: String = ""
-
-    /**
      * 嘲讽
      */
     @Volatile
@@ -335,6 +329,15 @@ open class BaseCard : Entity() {
      */
     @Volatile
     var isHideStats = false
+
+    @Volatile
+    var isHideCost = false
+
+    /**
+     * 黑暗之赐
+     */
+    @Volatile
+    var isNightmareBonus = false
 
 //    override fun toString(): String {
 //        return generateToString(this, true)

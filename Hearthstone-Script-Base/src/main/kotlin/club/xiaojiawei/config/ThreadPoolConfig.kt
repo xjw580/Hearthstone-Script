@@ -62,8 +62,8 @@ val CALC_THREAD_POOL: ThreadPoolExecutor by lazy {
     )
 }
 
-fun submitExtra(block: () -> Unit) {
-    EXTRA_THREAD_POOL.submit(block)
+fun submitExtra(block: () -> Unit): Future<*> {
+    return EXTRA_THREAD_POOL.submit(block)
 }
 
 val VIRTUAL_THREAD_POOL: ExecutorService =

@@ -12,6 +12,9 @@ import java.util.function.BiConsumer
  * @date 2022/11/27 14:56
  */
 
+/**
+ * 发射按钮卡牌的id
+ */
 private const val LAUNCH_CARD_ID = "GDB_905"
 
 class Card(var action: CardAction) : BaseCard(), Cloneable {
@@ -19,7 +22,7 @@ class Card(var action: CardAction) : BaseCard(), Cloneable {
     val child: MutableList<Card> by lazy { mutableListOf() }
 
     /**
-     * 模拟用
+     * 供mcts策略模拟用
      */
     var attackCount: Int = 0
 

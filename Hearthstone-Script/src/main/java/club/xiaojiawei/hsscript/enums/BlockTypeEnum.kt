@@ -60,11 +60,11 @@ enum class BlockTypeEnum {
 
     companion object {
         fun fromString(blockTypeName: String?): BlockTypeEnum {
-            if (blockTypeName == null || blockTypeName.isBlank()) return BlockTypeEnum.UNKNOWN
+            if (blockTypeName == null || blockTypeName.isBlank()) return UNKNOWN
             return try {
                 BlockTypeEnum.valueOf(blockTypeName)
             } catch (_: IllegalArgumentException) {
-                BlockTypeEnum.UNKNOWN
+                UNKNOWN
             }
         }
     }

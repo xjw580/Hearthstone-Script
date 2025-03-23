@@ -304,8 +304,11 @@ object GameUtil {
         return rects[i]
     }
 
-    fun clickDiscover(index: Int, discoverSize: Int) {
-        if (discoverSize == 3) {
+    /**
+     * 选择哪张发现牌
+     */
+    fun chooseDiscoverCard(index: Int, discoverCardSize: Int) {
+        if (discoverCardSize == 3) {
             getThreeDiscoverCardRect(index).lClick()
         } else {
             getFourDiscoverCardRect(index).lClick()

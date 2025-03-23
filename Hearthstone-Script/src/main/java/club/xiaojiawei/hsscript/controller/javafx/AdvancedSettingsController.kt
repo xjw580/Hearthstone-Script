@@ -77,6 +77,9 @@ class AdvancedSettingsController : AdvancedSettingsView(), Initializable {
         }
         mouseControlModeComboBox.items.addAll(MouseControlModeEnum.values())
         mouseControlModeComboBox.value = ConfigExUtil.getMouseControlMode()
+        val isDrive = mouseControlModeComboBox.value === MouseControlModeEnum.DRIVE
+        refreshDriver.isVisible = isDrive
+        refreshDriver.isManaged = isDrive
         topGameWindow.status = getBoolean(ConfigEnum.TOP_GAME_WINDOW)
         preventAntiCheat.status = getBoolean(ConfigEnum.PREVENT_AC)
         sendNotice.status = getBoolean(ConfigEnum.SEND_NOTICE)
@@ -191,10 +194,13 @@ class AdvancedSettingsController : AdvancedSettingsView(), Initializable {
                     newValue, true
                 )
             }
-        //        监听控制开关
+        //        监听鼠标模式开关
         mouseControlModeComboBox.valueProperty()
             .addListener { observable, oldValue, newValue ->
                 storeMouseControlMode(newValue)
+                val isDrive = ConfigExUtil.getMouseControlMode() === MouseControlModeEnum.DRIVE
+                refreshDriver.isVisible = isDrive
+                refreshDriver.isManaged = isDrive
                 topGameWindow.status =
                     (newValue === MouseControlModeEnum.EVENT || newValue === MouseControlModeEnum.DRIVE)
             }
@@ -368,6 +374,16 @@ class AdvancedSettingsController : AdvancedSettingsView(), Initializable {
     @FXML
     protected fun scrollSystem(actionEvent: ActionEvent) {
         scrollTo(systemPane)
+    }
+
+    @FXML
+    protected fun refreshDriver(actionEvent: ActionEvent) {
+        val res = CSystemDll.safeRefreshDriver()
+        if (res >= 0){
+            notificationManager.showSuccess("刷新驱动成功", 2)
+        }else {
+            notificationManager.showError("刷新驱动失败", 2)
+        }
     }
 
 }

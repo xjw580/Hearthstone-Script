@@ -1,11 +1,8 @@
 package club.xiaojiawei.hsscript.strategy
 
-import club.xiaojiawei.bean.Card
-import club.xiaojiawei.bean.isValid
 import club.xiaojiawei.config.log
 import club.xiaojiawei.enums.StepEnum
 import club.xiaojiawei.enums.WarPhaseEnum
-import club.xiaojiawei.hsscript.bean.DeckStrategyThread
 import club.xiaojiawei.hsscript.bean.log.Block
 import club.xiaojiawei.hsscript.bean.log.ExtraEntity
 import club.xiaojiawei.hsscript.bean.log.TagChangeEntity
@@ -14,7 +11,6 @@ import club.xiaojiawei.hsscript.interfaces.closer.ThreadCloser
 import club.xiaojiawei.hsscript.listener.log.PowerLogListener
 import club.xiaojiawei.hsscript.status.PauseStatus
 import club.xiaojiawei.hsscript.status.TaskManager
-import club.xiaojiawei.hsscript.strategy.DeckStrategyActuator.discoverChooseCard
 import club.xiaojiawei.hsscript.utils.PowerLogUtil
 import club.xiaojiawei.hsscript.utils.PowerLogUtil.dealChangeEntity
 import club.xiaojiawei.hsscript.utils.PowerLogUtil.dealFullEntity
@@ -34,8 +30,6 @@ import java.io.IOException
  */
 abstract class AbstractPhaseStrategy : PhaseStrategy {
 
-    private var lastDiscoverEntityId: String? = null
-
     protected val war = WAR
 
     override fun deal(line: String) {
@@ -53,32 +47,10 @@ abstract class AbstractPhaseStrategy : PhaseStrategy {
         val accessFile = PowerLogListener.logFile
         accessFile ?: return
         var l: String? = line
-        var mark: Long
         while (!PauseStatus.isPause) {
             try {
                 if (l == null) {
-                    mark = accessFile.filePointer
-                    SystemUtil.delay(1000)
-                    if (accessFile.length() <= mark && war.me.isValid()) {
-                        val cards: List<Card> = war.me.setasideArea.cards
-                        val size = cards.size
-                        if (size >= 3 && lastDiscoverEntityId != cards.last().entityId && cards[size - 1].creator == cards[size - 2].creator
-                            && cards[size - 1].creator == cards[size - 3].creator
-                        ) {
-                            lastDiscoverEntityId = cards.last().entityId
-                            if (war.currentPhase != WarPhaseEnum.REPLACE_CARD) {
-                                log.info { "触发发现动作" }
-                                (DeckStrategyThread({
-                                    discoverChooseCard(
-                                        cards[size - 3],
-                                        cards[size - 2],
-                                        cards[size - 1]
-                                    )
-                                }, "Discover Choose Card Thread").also { addTask(it) }).start()
-
-                            }
-                        }
-                    }
+                    SystemUtil.delay(100)
                 } else if (isRelevance(l)) {
                     log.debug { l }
                     if (l.contains(TAG_CHANGE)) {
@@ -101,8 +73,12 @@ abstract class AbstractPhaseStrategy : PhaseStrategy {
                         if (dealChangeEntityThenIsOver(l, dealChangeEntity(l, accessFile))) {
                             break
                         }
-                    } else if (l.contains(BLOCK_TYPE)) {
+                    } else if (l.contains(BLOCK_TYPE) || l.contains(BLOCK_START_NULL)) {
                         if (dealBlockIsOver(l, PowerLogUtil.dealBlock(l))) {
+                            break
+                        }
+                    } else if (l.contains(BLOCK_END) || l.contains(BLOCK_END_NULL)) {
+                        if (dealBlockEndIsOver(l, PowerLogUtil.dealBlockEnd(l))) {
                             break
                         }
                     } else {
@@ -147,6 +123,10 @@ abstract class AbstractPhaseStrategy : PhaseStrategy {
     }
 
     protected open fun dealBlockIsOver(line: String, block: Block): Boolean {
+        return false
+    }
+
+    protected open fun dealBlockEndIsOver(line: String, block: Block?): Boolean {
         return false
     }
 

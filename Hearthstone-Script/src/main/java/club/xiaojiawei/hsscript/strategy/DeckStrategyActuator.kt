@@ -112,7 +112,7 @@ object DeckStrategyActuator {
                 val card = me.handArea.cards[i]
                 if (!copyHandCards.contains(card)) {
                     log.info { "换掉起始卡牌：【entityId:" + card.entityId + "，entityName:" + card.entityName + "，cardId:" + card.cardId + "】" }
-                    GameUtil.clickDiscover(i, me.handArea.cardSize())
+                    GameUtil.chooseDiscoverCard(i, me.handArea.cardSize())
                     SystemUtil.delayShortMedium()
                 }
             }
@@ -170,18 +170,28 @@ object DeckStrategyActuator {
         }
     }
 
-    fun discoverChooseCard(vararg cards: Card) {
+    fun discoverChooseCard(cards: List<Card>) {
         if (!canExec()) return
 
         log.info { "执行发现选牌策略" }
 
         SystemUtil.delayShortMedium()
-        val index = DeckStrategyManager.currentDeckStrategy?.executeDiscoverChooseCard(*cards) ?: 0
+        var index = -1
+        try {
+            index = DeckStrategyManager.currentDeckStrategy?.executeDiscoverChooseCard(*cards.toTypedArray()) ?: 0
+        } catch (e: Exception) {
+            log.error(e) { "执行发现选择策略异常" }
+        } finally {
+            if (index == -1) {
+                index = 0
+                GameUtil.chooseDiscoverCard(index, cards.size)
+            }
+        }
         war.me.let {
-            GameUtil.clickDiscover(index, it.handArea.cardSize())
+            GameUtil.chooseDiscoverCard(index, cards.size)
             SystemUtil.delayShort()
             val card = cards[index]
-            log.info { "选择了：" + card.toSimpleString() }
+            log.info { "选择了第${index + 1}张：" + card.toSimpleString() }
         }
         log.info { "执行发现选牌策略完毕" }
 

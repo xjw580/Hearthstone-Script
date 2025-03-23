@@ -14,7 +14,7 @@ import club.xiaojiawei.hsscript.dll.CSystemDll
 import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.enums.MouseControlModeEnum
 import club.xiaojiawei.hsscript.fileLogLevel
-import club.xiaojiawei.hsscript.initializer.DriveInitializer
+import club.xiaojiawei.hsscript.initializer.DriverInitializer
 import club.xiaojiawei.hsscript.listener.WorkListener
 import club.xiaojiawei.hsscript.starter.InjectStarter
 import club.xiaojiawei.hsscript.status.PauseStatus
@@ -127,7 +127,7 @@ object ConfigExUtil {
         when (mouseControlModeEnum) {
             MouseControlModeEnum.MESSAGE -> {
                 if (oldMouseControlMode === MouseControlModeEnum.DRIVE) {
-                    DriveInitializer().uninstall()
+                    DriverInitializer().uninstall()
                 }
                 InjectStarter().use {
                     it.start()
@@ -136,13 +136,13 @@ object ConfigExUtil {
 
             MouseControlModeEnum.EVENT -> {
                 if (oldMouseControlMode === MouseControlModeEnum.DRIVE) {
-                    DriveInitializer().uninstall()
+                    DriverInitializer().uninstall()
                 }
                 CSystemDll.INSTANCE.uninstallInjectDll(GAME_HWND)
             }
 
             MouseControlModeEnum.DRIVE -> {
-                DriveInitializer().install()
+                DriverInitializer().install()
                 CSystemDll.INSTANCE.uninstallInjectDll(GAME_HWND)
             }
         }

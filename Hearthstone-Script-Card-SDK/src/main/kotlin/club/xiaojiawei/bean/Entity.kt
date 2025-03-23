@@ -23,6 +23,10 @@ abstract class Entity {
     @Volatile
     open var cardId: String = ""
 
+    fun getFormatEntityName(): String {
+        return if (isUnknownEntityName(entityName)) "" else entityName
+    }
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || javaClass != other.javaClass) return false
@@ -35,7 +39,15 @@ abstract class Entity {
     }
 
     companion object {
-        const val UNKNOWN_ENTITY_NAME: String = "UNKNOWN ENTITY"
+        private const val UNKNOWN_ENTITY_NAME: String = "UNKNOWN ENTITY"
+
+        fun isUnknownEntityName(name: String): Boolean {
+            return name.startsWith(UNKNOWN_ENTITY_NAME)
+        }
+
+        fun isNotUnknownEntityName(name: String): Boolean {
+            return !name.startsWith(UNKNOWN_ENTITY_NAME)
+        }
     }
 
     override fun toString(): String {

@@ -8,7 +8,6 @@ import club.xiaojiawei.config.log
 import club.xiaojiawei.data.CARD_WEIGHT_TRIE
 import club.xiaojiawei.enums.CardTypeEnum
 import club.xiaojiawei.status.WAR
-import club.xiaojiawei.bean.War
 import java.util.concurrent.CompletableFuture
 import java.util.function.Function
 import kotlin.math.max
@@ -685,12 +684,12 @@ object DeckStrategyUtil {
         }
     }
 
-    val regex = Regex("造成\\$(\\d+)点伤害")
+    val regex = Regex(".*造成.*伤害.*")
 
     /**
      * 是否为伤害型法术
      */
-    fun isDamageSpell(cardText: String): Boolean {
+    fun isDamageText(cardText: String): Boolean {
         return regex.find(cardText) != null;
     }
 

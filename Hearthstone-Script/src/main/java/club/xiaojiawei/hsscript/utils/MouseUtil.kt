@@ -1,9 +1,12 @@
 package club.xiaojiawei.hsscript.utils
 
 import club.xiaojiawei.enums.ModeEnum
-import club.xiaojiawei.hsscript.bean.isDeckStrategyThread
+import club.xiaojiawei.hsscript.bean.isDiscoverCardThread
+import club.xiaojiawei.hsscript.bean.isOutCardThread
+import club.xiaojiawei.hsscript.bean.single.WarEx
 import club.xiaojiawei.hsscript.dll.CSystemDll
 import club.xiaojiawei.hsscript.enums.ConfigEnum
+import club.xiaojiawei.hsscript.initializer.DRIVER_LOCK
 import club.xiaojiawei.hsscript.listener.WorkListener
 import club.xiaojiawei.hsscript.status.Mode
 import com.sun.jna.platform.win32.WinDef.HWND
@@ -52,9 +55,9 @@ object MouseUtil {
         mouseMode: Int = ConfigExUtil.getMouseControlMode().code
     ) {
         if (!validateEnv(hwnd)) return
-
         if (validatePoint(pos)) {
-            synchronized(MouseUtil::javaClass) {
+            DRIVER_LOCK.lock()
+            try {
                 if (!WorkListener.working) return
 
                 if (prevPoint != pos) {
@@ -71,6 +74,8 @@ object MouseUtil {
                 }
                 CSystemDll.INSTANCE.leftClick(pos.x.toLong(), pos.y.toLong(), hwnd, mouseMode)
                 savePos(pos)
+            } finally {
+                DRIVER_LOCK.unlock()
             }
         }
     }
@@ -87,7 +92,8 @@ object MouseUtil {
         if (!validateEnv(hwnd)) return
 
         if (validatePoint(pos)) {
-            synchronized(MouseUtil::javaClass) {
+            DRIVER_LOCK.lock()
+            try {
                 if (!WorkListener.working && Mode.currMode !== ModeEnum.GAMEPLAY) return
 
                 if (prevPoint != pos) {
@@ -104,18 +110,23 @@ object MouseUtil {
                 }
                 CSystemDll.INSTANCE.rightClick(pos.x.toLong(), pos.y.toLong(), hwnd, mouseMode)
                 savePos(pos)
+            } finally {
+                DRIVER_LOCK.unlock()
             }
         }
     }
-
 
     fun moveMouseByHuman(endPos: Point, hwnd: HWND?) {
         moveMouseByHuman(null, endPos, hwnd)
     }
 
     private fun validateEnv(hwnd: HWND?): Boolean {
+//        选择卡牌时间只让特定线程执行
+        if (WarEx.war.isChooseCardTime && !isDiscoverCardThread()) return false
         hwnd ?: return false
-        return !(isDeckStrategyThread() && Mode.currMode !== ModeEnum.GAMEPLAY || !WorkListener.working)
+        return !(ConfigUtil.getBoolean(ConfigEnum.DISABLE_MOUSE) ||
+                ((isOutCardThread() || isDiscoverCardThread()) && Mode.currMode !== ModeEnum.GAMEPLAY)
+                || !WorkListener.working)
     }
 
     /**
@@ -129,7 +140,8 @@ object MouseUtil {
     ) {
         if (!validateEnv(hwnd)) return
 
-        synchronized(MouseUtil::javaClass) {
+        DRIVER_LOCK.lock()
+        try {
             if (!WorkListener.working) return
 
             val prevPoint = prevPoint
@@ -165,6 +177,8 @@ object MouseUtil {
                     savePos(endPos)
                 }
             }
+        } finally {
+            DRIVER_LOCK.unlock()
         }
     }
 

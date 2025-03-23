@@ -7,10 +7,8 @@ import club.xiaojiawei.hsscript.enums.TagEnum
  * @date 2022/11/29 14:24
  */
 
-class TagChangeEntity : CommonEntity() {
-
-    var tag: TagEnum? = null
-
-    var value: String = ""
-
-}
+class TagChangeEntity(
+    var tag: TagEnum? = null,
+    var value: String = "",
+    var parentBlock: Block? = null,
+) : CommonEntity()

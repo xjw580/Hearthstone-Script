@@ -62,7 +62,7 @@ object DrawnInitCardPhaseStrategy : AbstractPhaseStrategy() {
     }
 
     override fun dealShowEntityThenIsOver(line: String, extraEntity: ExtraEntity): Boolean {
-        if (extraEntity.entityName == Entity.UNKNOWN_ENTITY_NAME) {
+        if (Entity.isUnknownEntityName(extraEntity.entityName)) {
             verifyPlayer(extraEntity.playerId, false)
         }
         return false
@@ -81,7 +81,8 @@ object DrawnInitCardPhaseStrategy : AbstractPhaseStrategy() {
             return false
         }
         war.run {
-            if (card.entityName == Entity.UNKNOWN_ENTITY_NAME || card.entityName == "幸运币") {
+
+            if (Entity.isUnknownEntityName(card.entityName)  || card.entityName == "幸运币") {
                 card.entityName = "幸运币"
                 if (card.cardId.isNotBlank()) {
                     rival.gameId = firstPlayerGameId

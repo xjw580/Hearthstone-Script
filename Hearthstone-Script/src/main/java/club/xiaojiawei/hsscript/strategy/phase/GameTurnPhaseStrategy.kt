@@ -5,6 +5,7 @@ import club.xiaojiawei.config.log
 import club.xiaojiawei.enums.StepEnum
 import club.xiaojiawei.hsscript.bean.Behavior
 import club.xiaojiawei.hsscript.bean.DeckStrategyThread
+import club.xiaojiawei.hsscript.bean.OutCardThread
 import club.xiaojiawei.hsscript.bean.PlayerBehavior
 import club.xiaojiawei.hsscript.bean.log.Block
 import club.xiaojiawei.hsscript.bean.log.TagChangeEntity
@@ -55,7 +56,7 @@ object GameTurnPhaseStrategy : AbstractPhaseStrategy() {
                         meBehavior.behaviors.clear()
                     }
                     // 异步执行出牌策略，以便监听出牌后的卡牌变动
-                    (DeckStrategyThread({
+                    (OutCardThread {
                         (ConfigUtil.getBoolean(ConfigEnum.RANDOM_EMOTION) && war.me.turn == 0).isTrue {
                             GameUtil.sendGreetEmoji()
                             SystemUtil.delayShortMedium()
@@ -68,7 +69,7 @@ object GameTurnPhaseStrategy : AbstractPhaseStrategy() {
                         if (ConfigUtil.getBoolean(ConfigEnum.ONLY_ROBOT)) {
                             checkMeRobot()
                         }
-                    }, "OutCard Thread").also { addTask(it) }).start()
+                    }.also { addTask(it) }).start()
                 } else {
                     log.info { "对方回合" }
                     war.isMyTurn = false
@@ -104,7 +105,7 @@ object GameTurnPhaseStrategy : AbstractPhaseStrategy() {
 
     override fun dealBlockIsOver(line: String, block: Block): Boolean {
         if (ConfigUtil.getBoolean(ConfigEnum.ONLY_ROBOT)) {
-            if (block.blockType == BlockTypeEnum.ATTACK || block.blockType == BlockTypeEnum.PLAY) {
+            if (block.blockType === BlockTypeEnum.ATTACK || block.blockType === BlockTypeEnum.PLAY) {
                 val behavior = Behavior(block.blockType)
                 if (war.currentPlayer == war.me) {
                     meBehavior.behaviors.add(behavior)

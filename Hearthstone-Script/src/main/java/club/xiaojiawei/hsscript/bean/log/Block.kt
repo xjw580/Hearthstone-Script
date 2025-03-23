@@ -6,10 +6,15 @@ import club.xiaojiawei.hsscript.enums.BlockTypeEnum
  * @author 肖嘉威
  * @date 2022/11/30 17:48
  */
-class Block(blockType: BlockTypeEnum, var entity: CommonEntity?) {
+class Block(
+    var blockType: BlockTypeEnum = BlockTypeEnum.UNKNOWN,
+    var entity: CommonEntity? = null,
+    var parentBlock: Block? = null
+) {
 
-    constructor() : this(BlockTypeEnum.UNKNOWN, null)
+    override fun toString(): String {
+        return "Block【blockType=$blockType, entity=$entity】"
+    }
 
-    var blockType: BlockTypeEnum = blockType
 
 }

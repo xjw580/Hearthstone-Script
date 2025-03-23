@@ -20,7 +20,7 @@ abstract class AbstractStarter : ScheduledCloser, Closeable {
 
     private var nextStarter: AbstractStarter? = null
 
-    private var scheduledFuture: ScheduledFuture<*>? = null
+    protected var scheduledFuture: ScheduledFuture<*>? = null
 
     fun start() {
         log.info { "执行【${javaClass.simpleName}】" }
@@ -42,6 +42,7 @@ abstract class AbstractStarter : ScheduledCloser, Closeable {
                 it.cancel(true)
             }
         }
+        scheduledFuture = null
     }
 
     protected fun addTask(taskFuture: ScheduledFuture<*>) {

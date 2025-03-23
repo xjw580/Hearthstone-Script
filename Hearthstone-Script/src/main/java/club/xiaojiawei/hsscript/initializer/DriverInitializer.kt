@@ -13,13 +13,17 @@ import club.xiaojiawei.util.isTrue
 import java.io.BufferedReader
 import java.io.File
 import java.io.InputStreamReader
+import java.util.concurrent.locks.ReentrantLock
 
 /**
  * @author 肖嘉威
  * @date 2023/7/4 11:33
  */
+
+val DRIVER_LOCK = ReentrantLock(true)
+
 @Suppress("DEPRECATION")
-class DriveInitializer : AbstractInitializer() {
+class DriverInitializer : AbstractInitializer() {
 
     private val driveFile = File(MOUSE_DRIVE_PATH)
 
@@ -85,10 +89,13 @@ class DriveInitializer : AbstractInitializer() {
                 log.error { text }
                 SystemUtil.messageError(text)
             }
+        }.isTrue {
+            CSystemDll.safeLoadDriver()
         }
     }
 
     fun uninstall(silent: Boolean = false) {
+        CSystemDll.safeReleaseDriver()
         driveFile.exists().isTrue {
             if (CSystemDll.INSTANCE.isRunAsAdministrator()) {
                 SystemUtil.getExeFilePath(INSTALL_DRIVE_FILE)?.let {

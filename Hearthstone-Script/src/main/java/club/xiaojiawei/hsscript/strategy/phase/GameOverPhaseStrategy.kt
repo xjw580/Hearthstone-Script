@@ -41,6 +41,11 @@ object GameOverPhaseStrategy : AbstractPhaseStrategy() {
         return true
     }
 
+    override fun dealBlockEndIsOver(line: String, block: Block?): Boolean {
+        over()
+        return true
+    }
+
     override fun dealOtherThenIsOver(line: String): Boolean {
         over()
         return true

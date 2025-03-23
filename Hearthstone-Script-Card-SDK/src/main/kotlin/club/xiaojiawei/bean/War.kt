@@ -19,6 +19,12 @@ class War(
 ) : BaseWar(), Cloneable {
 
     /**
+     * 选择卡牌时间
+     */
+    @Volatile
+    var isChooseCardTime = false
+
+    /**
      * 存储当前war中所有的[Card]
      * k:[club.xiaojiawei.bean.Entity.entityId]
      */

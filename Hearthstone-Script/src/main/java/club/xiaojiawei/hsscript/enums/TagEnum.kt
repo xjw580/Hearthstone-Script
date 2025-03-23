@@ -665,6 +665,21 @@ enum class TagEnum(
         ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
             extraEntity.extraCard.card.isLaunchpad = isTrue(value)
         }),
+    HIDE_COST(
+        "隐藏费用",
+        TagChangeHandler { card: Card?, tagChangeEntity: TagChangeEntity, war: War, player: Player?, area: Area? ->
+            card?.isHideCost = isTrue(tagChangeEntity.value)
+            log(player, card, "隐藏费用", tagChangeEntity.value)
+        },
+        ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
+            extraEntity.extraCard.card.isHideCost = isTrue(value)
+        }),
+    IS_NIGHTMARE_BONUS(
+        "黑暗之赐",
+        null,
+        ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
+            extraEntity.extraCard.card.isNightmareBonus = isTrue(value)
+        }),
 
     /*+++++++++++++++++++++++++++++++++++++++++++++++*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
     UNKNOWN(

@@ -9,7 +9,6 @@ import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.utils.ConfigUtil
 import club.xiaojiawei.hsscript.utils.GameUtil
 import club.xiaojiawei.hsscript.utils.SystemUtil
-import club.xiaojiawei.hsscript.utils.go
 import club.xiaojiawei.util.isTrue
 import com.sun.jna.platform.win32.WinDef.HWND
 import java.awt.event.KeyEvent
@@ -50,9 +49,7 @@ class LoginPlatformStarter : AbstractStarter() {
                         }, 1, TimeUnit.SECONDS)
                         return@scheduleWithFixedDelay
                     }
-                    go {
-                        input(loginPlatformHWND)
-                    }
+                    input(loginPlatformHWND)
                 }
             }, 1000, 500, TimeUnit.MILLISECONDS)
         )

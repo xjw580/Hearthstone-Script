@@ -1,7 +1,6 @@
 package club.xiaojiawei.bean.area
 
 import club.xiaojiawei.bean.Card
-import club.xiaojiawei.bean.Entity
 import club.xiaojiawei.bean.MutableCardList
 import club.xiaojiawei.bean.Player
 import club.xiaojiawei.bean.area.Area.Companion.UNKNOWN_AREA
@@ -122,7 +121,7 @@ abstract class Area(
             zoneComment,
             extraMsg,
             card.entityId,
-            (if (card.entityName == Entity.UNKNOWN_ENTITY_NAME) "" else card.entityName),
+            card.getFormatEntityName(),
             card.cardId,
             cards.size
         )

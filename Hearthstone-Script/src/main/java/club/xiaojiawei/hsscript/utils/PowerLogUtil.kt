@@ -2,10 +2,14 @@ package club.xiaojiawei.hsscript.utils
 
 import club.xiaojiawei.bean.Card
 import club.xiaojiawei.bean.Entity
+import club.xiaojiawei.bean.area.SetasideArea
 import club.xiaojiawei.bean.isValid
+import club.xiaojiawei.config.EXTRA_THREAD_POOL
 import club.xiaojiawei.config.log
 import club.xiaojiawei.enums.ZoneEnum
 import club.xiaojiawei.hsscript.bean.CommonCardAction
+import club.xiaojiawei.hsscript.bean.DiscoverCardThread
+import club.xiaojiawei.hsscript.bean.FixedSizeStack
 import club.xiaojiawei.hsscript.bean.log.Block
 import club.xiaojiawei.hsscript.bean.log.CommonEntity
 import club.xiaojiawei.hsscript.bean.log.ExtraEntity
@@ -16,12 +20,18 @@ import club.xiaojiawei.hsscript.core.Core.restart
 import club.xiaojiawei.hsscript.data.*
 import club.xiaojiawei.hsscript.enums.BlockTypeEnum
 import club.xiaojiawei.hsscript.enums.TagEnum
+import club.xiaojiawei.hsscript.initializer.DRIVER_LOCK
+import club.xiaojiawei.hsscript.strategy.AbstractPhaseStrategy
+import club.xiaojiawei.hsscript.strategy.DeckStrategyActuator
 import club.xiaojiawei.hsscript.utils.CardUtil.exchangeAreaOfCard
 import club.xiaojiawei.hsscript.utils.CardUtil.setCardAction
 import club.xiaojiawei.hsscript.utils.CardUtil.updateCardByExtraEntity
 import club.xiaojiawei.status.WAR
+import club.xiaojiawei.util.isTrue
 import java.io.RandomAccessFile
 import java.nio.charset.StandardCharsets
+import java.util.concurrent.Future
+import java.util.concurrent.TimeUnit
 import java.util.function.BiConsumer
 
 /**
@@ -32,6 +42,10 @@ import java.util.function.BiConsumer
 object PowerLogUtil {
 
     private val war = WAR
+
+    private val blockStack: FixedSizeStack<Block> = FixedSizeStack(20)
+
+    private val fullCardStack: FixedSizeStack<Card> = FixedSizeStack(10)
 
     /**
      * 更新entity
@@ -61,14 +75,18 @@ object PowerLogUtil {
     fun dealFullEntity(line: String, accessFile: RandomAccessFile): ExtraEntity {
         val extraEntity: ExtraEntity = parseExtraEntity(line, accessFile, FULL_ENTITY)
         if (war.cardMap[extraEntity.entityId] == null) {
-            val card = Card(CommonCardAction.DEFAULT)
-            updateCardByExtraEntity(extraEntity, card)
-            war.cardMap[extraEntity.entityId] = card
-            setCardAction(card)
-            card.cardIdChangeListener = BiConsumer { oldCardId, newCardId ->
-                setCardAction(card)
+//            生成卡牌
+            val card = Card(CommonCardAction.DEFAULT).apply {
+                fullCardStack.push(this)
+                updateCardByExtraEntity(extraEntity, this)
+                war.cardMap[extraEntity.entityId] = this
+                setCardAction(this)
+                cardIdChangeListener = BiConsumer { oldCardId, newCardId ->
+                    setCardAction(this)
+                }
+                war.maxEntityId = entityId
             }
-            war.maxEntityId = card.entityId
+
             WarEx.getPlayer(extraEntity.playerId).getArea(extraEntity.extraCard.zone)
                 ?.add(card, extraEntity.extraCard.zonePos)
                 ?: let {
@@ -80,11 +98,70 @@ object PowerLogUtil {
                     log.debug { "找不到creator:${card.creator}" }
                 }
             }
+
+            dealTriggerChoose()
         } else {
 //        不退出客户端的情况下断线重连会导致牌库的牌重新在日志中输出
             log.debug { "生成的card重复，将不会生成新Card，疑似掉线重连" }
         }
         return extraEntity
+    }
+
+    private var chooseFuture: Future<*>? = null
+
+    private fun dealTriggerChoose() {
+        if (fullCardStack.size() < 3 && war.isMyTurn) return
+        blockStack.peek()?.let { block ->
+            if (block.blockType !== BlockTypeEnum.POWER && block.blockType !== BlockTypeEnum.UNKNOWN) return
+            val testChooseCard: (Card) -> Boolean = { testCard ->
+                val blockEntity = block.entity
+                testCard.area::class.java === SetasideArea::class.java && testCard.creator.isNotEmpty() && (blockEntity == null || testCard.creator == blockEntity.entityId)
+            }
+
+            var creator: String? = null
+            val chooseCards = mutableListOf<Card>()
+            val cards = fullCardStack.toList()
+            for (i in cards.indices.reversed()) {
+                val chooseCard = cards[i]
+                if (creator == null) {
+                    creator = chooseCard.creator
+                } else if (chooseCard.creator != creator) {
+                    break
+                }
+                if (testChooseCard(chooseCard)) {
+                    chooseCards.addFirst(chooseCard)
+                } else {
+                    break
+                }
+            }
+            chooseCards.removeAll { it.isNightmareBonus }
+            if (chooseCards.isNotEmpty()) {
+                chooseFuture?.cancel(true)
+                chooseFuture = EXTRA_THREAD_POOL.schedule({
+                    WarEx.war.isChooseCardTime = true
+                    log.info { "发现卡牌：${chooseCards}" }
+                    (DiscoverCardThread {
+                        try {
+                            if (chooseCards.size == 1) {
+                                GameUtil.chooseDiscoverCard(1, 3)
+                            } else {
+                                DeckStrategyActuator.discoverChooseCard(chooseCards)
+                            }
+                        } finally {
+//                            让其他线程的鼠标任务不会被抛弃，但是堵塞他们的执行
+                            WarEx.war.isChooseCardTime = false
+                            try {
+                                DRIVER_LOCK.lock()
+                                SystemUtil.delay(2000)
+                            } finally {
+                                DRIVER_LOCK.unlock()
+                            }
+                        }
+                    }.also { AbstractPhaseStrategy.addTask(it) }).start()
+
+                }, 1500, TimeUnit.MILLISECONDS)
+            }
+        }
     }
 
     /**
@@ -132,7 +209,7 @@ object PowerLogUtil {
                 //            只列出可能被修改的属性
                 tagChangeEntity.tag?.tagChangeHandler?.handle(card, tagChangeEntity, war, card.area.player, card.area)
 
-                if (tagChangeEntity.entityName.isNotBlank() && tagChangeEntity.entityName != Entity.UNKNOWN_ENTITY_NAME) {
+                if (tagChangeEntity.entityName.isNotBlank() && Entity.isNotUnknownEntityName(tagChangeEntity.entityName)) {
                     card.entityName = tagChangeEntity.entityName
                 }
             } else {
@@ -149,24 +226,63 @@ object PowerLogUtil {
     }
 
     fun dealBlock(line: String): Block {
-        return parseBlock(line)
+        val block = parseBlock(line)
+        block.parentBlock = blockStack.peek()
+//        formatBlockLog(block)?.let {
+//            log.info { it }
+//        }
+        blockStack.push(block)
+        return block
+    }
+
+    private fun formatBlockLog(block: Block): String? {
+        val entity = block.entity ?: return null
+        val player = WarEx.getPlayer(entity.playerId)
+        player.isValid().isTrue {
+            val typeText: String = when (block.blockType) {
+                BlockTypeEnum.PLAY -> {
+                    "使用卡牌"
+                }
+
+                BlockTypeEnum.POWER -> {
+                    "触发卡牌效果"
+                }
+
+                else -> {
+                    return null
+                }
+            }
+            return String.format(
+                "玩家%s%s【%s】，entityId:%s，entityName:%s，cardId:%s",
+                player.playerId,
+                if (player.gameId.isBlank()) "" else "【${player.gameId}】",
+                typeText,
+                entity.entityId,
+                entity.getFormatEntityName(),
+                entity.cardId,
+            )
+        }
+        return null
+    }
+
+    fun dealBlockEnd(line: String): Block? {
+        return blockStack.pop()
     }
 
     private fun parseBlock(line: String): Block {
         val block = Block()
         val blockTypeIndex = line.indexOf(BLOCK_TYPE)
-        if (blockTypeIndex == -1) {
-            return block
+        if (blockTypeIndex != -1) {
+            val entityNameIndex = line.indexOf(club.xiaojiawei.hsscript.data.ENTITY, blockTypeIndex, false)
+            if (entityNameIndex == -1) {
+                return block
+            }
+            val blockType = line.substring(blockTypeIndex + BLOCK_TYPE.length + 1, entityNameIndex - 1)
+            block.blockType = BlockTypeEnum.fromString(blockType)
+            val commonEntity = CommonEntity()
+            block.entity = commonEntity
+            parseCommonEntity(commonEntity, line)
         }
-        val entityNameIndex = line.indexOf(ENTITY, blockTypeIndex, false)
-        if (entityNameIndex == -1) {
-            return block
-        }
-        val blockType = line.substring(blockTypeIndex + BLOCK_TYPE.length + 1, entityNameIndex - 1)
-        block.blockType = BlockTypeEnum.fromString(blockType)
-        var commonEntity = CommonEntity()
-        block.entity = CommonEntity()
-//        parseCommonEntity(commonEntity, line)
         return block
     }
 
@@ -184,7 +300,8 @@ object PowerLogUtil {
         }
         tagChangeEntity.value = value
         if (index < 100) {
-            tagChangeEntity.entity = iso88591ToUtf8(line.substring(line.indexOf(ENTITY) + 7, tagIndex).trim())
+            tagChangeEntity.entity =
+                iso88591ToUtf8(line.substring(line.indexOf(club.xiaojiawei.hsscript.data.ENTITY) + 7, tagIndex).trim())
         } else {
             parseCommonEntity(tagChangeEntity, line)
         }
@@ -227,7 +344,7 @@ object PowerLogUtil {
         return extraEntity
     }
 
-    private fun parseCommonEntity(commonEntity: CommonEntity, line: String) {
+    private fun parseCommonEntityBack(commonEntity: CommonEntity, line: String) {
         val index = line.lastIndexOf("]")
         val playerIndex = line.lastIndexOf("player", index)
         val cardIdIndex = line.lastIndexOf("cardId", playerIndex)
@@ -258,6 +375,69 @@ object PowerLogUtil {
         }
     }
 
+    private const val ENTITY = "Entity="
+    private const val PRE_ENTITY = "[entity"
+    private const val ENTITY_NAME = "entityName="
+    private const val ID = "id="
+    private const val ZONE = "zone="
+    private const val ZONE_POS = "zonePos="
+    private const val CARD_ID = "cardId="
+    private const val CARD_ID_U = "CardID="
+    private const val PLAYER = "player="
+
+    fun parseCommonEntity(commonEntity: CommonEntity, line: String) {
+        val preEntityIndex = line.indexOf(PRE_ENTITY)
+
+        if (preEntityIndex == -1) {
+            // Entity=GameEntity
+            val startI = line.indexOf(ENTITY) + ENTITY.length
+            for (i in startI until line.length) {
+                if (line[i] == ' ') {
+                    commonEntity.entity = line.substring(startI, i)
+                    return
+                }
+            }
+            // 如果没有空格，直接取到末尾
+            commonEntity.entity = line.substring(startI)
+        } else {
+            // Entity=[entityName=吉安娜的礼物 id=13 zone=HAND zonePos=4 cardId=GIFT_02 player=1]
+            // Entity=[entityName=吉安娜的礼物 id=13 zone=HAND zonePos=4 cardId=GIFT_02 player=1] CardID=CS2_024
+//            [entityName=UNKNOWN ENTITY [cardType=INVALID] id=4 zone=DECK zonePos=0 cardId= player=1]
+            val entityNameIndex = line.indexOf(ENTITY_NAME, preEntityIndex)
+            val idIndex = line.indexOf(ID, entityNameIndex)
+            val zoneIndex = line.indexOf(ZONE, idIndex)
+            val zonePosIndex = line.indexOf(ZONE_POS, zoneIndex)
+            val cardIdIndex = line.indexOf(CARD_ID, zonePosIndex)
+            val playerIndex = line.indexOf(PLAYER, cardIdIndex)
+            val endIndex = line.indexOf(']', playerIndex)
+            val cardIdUIndex = line.indexOf(CARD_ID_U, endIndex)
+
+            // 解析 entityName
+            commonEntity.entityName = iso88591ToUtf8(line.substring(entityNameIndex + ENTITY_NAME.length, idIndex - 1))
+
+            // 解析 id
+            commonEntity.entityId = line.substring(idIndex + ID.length, zoneIndex - 1)
+
+            // 解析 zone
+            commonEntity.zone = ZoneEnum.valueOf(line.substring(zoneIndex + ZONE.length, zonePosIndex - 1))
+
+            // 解析 zonePos
+            commonEntity.zonePos = line.substring(zonePosIndex + ZONE_POS.length, cardIdIndex - 1).toInt()
+
+            // 解析 cardId
+            if (cardIdUIndex != -1) {
+                commonEntity.cardId = line.substring(cardIdUIndex + CARD_ID_U.length)
+            }
+            if (commonEntity.cardId.isEmpty()) {
+                commonEntity.cardId = line.substring(cardIdIndex + CARD_ID.length, playerIndex - 1)
+            }
+
+            // 解析 player
+            commonEntity.playerId = line.substring(playerIndex + PLAYER.length, endIndex)
+        }
+    }
+
+
     fun iso88591ToUtf8(s: String): String {
         return String(s.toByteArray(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8)
     }
@@ -275,4 +455,18 @@ object PowerLogUtil {
         Core.lastActiveTime = System.currentTimeMillis()
         return flag
     }
+}
+
+
+fun main() {
+    val commonEntity = CommonEntity()
+    PowerLogUtil.parseCommonEntity(
+        commonEntity,
+//        "D 18:37:20.8089830 PrintPower() - BLOCK_START BlockType=PLAY Entity=[entityName=吉安娜的礼物 id=13 zone=HAND zonePos=4 cardId=GIFT_02 player=1] EffectCardId=System.Collections.Generic.List`1[System.String] EffectIndex=0 Target=0 SubOption=-1 ",
+//        "BLOCK_START BlockType=TRIGGER Entity=异灵犬#5148 EffectCardId=System.Collections.Generic.List`1[System.String] EffectIndex=-1 Target=0 SubOption=-1 TriggerKeyword=TAG_NOT_SET",
+//        "D 18:37:29.3413958 PrintPower() -     TAG_CHANGE Entity=[entityName=寒冰箭 id=78 zone=SETASIDE zonePos=0 cardId=CS2_024 player=1] tag=LAST_AFFECTED_BY value=13 ",
+        "D 18:37:20.8251425 PrintPower() -     FULL_ENTITY - Updating [entityName=火球术 id=80 zone=SETASIDE zonePos=0 cardId=CORE_CS2_029 player=1] CardID=CORE_CS2_029",
+    )
+
+    println(commonEntity)
 }
