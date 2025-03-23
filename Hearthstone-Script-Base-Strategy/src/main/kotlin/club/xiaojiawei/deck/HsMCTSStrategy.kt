@@ -40,7 +40,7 @@ class HsMCTSStrategy : MCTSDeckStrategy() {
         val calculator = DEFAULT_WAR_SCORE_CALCULATOR.build()
         val start = System.currentTimeMillis()
         return listOf(
-            MCTSArg(start + 30 * 1000, 2, 0.1, 20_000, calculator, true),
+            MCTSArg(start + 30 * 1000, 1, 0.1, 20_000, calculator, true),
             MCTSArg(start + 10 * 1000, 1, 0.5, 10_000, calculator, true)
         )
     }

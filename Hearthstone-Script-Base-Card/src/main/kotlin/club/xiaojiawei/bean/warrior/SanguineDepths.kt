@@ -36,12 +36,14 @@ class SanguineDepths : CardAction.DefaultCardAction() {
                 })
             )
         }
-        war.rival.playArea.cards.forEach { rivalCard ->
+        val rivalCards = war.rival.playArea.cards
+        for (rivalCard in rivalCards) {
             if (rivalCard.canHurt()) {
                 exec.accept(rivalCard)
             }
         }
-        war.me.playArea.cards.forEach { myCard ->
+        val myCards = war.me.playArea.cards
+        for (myCard in myCards) {
             if (myCard.canHurt()) {
                 exec.accept(myCard)
             }

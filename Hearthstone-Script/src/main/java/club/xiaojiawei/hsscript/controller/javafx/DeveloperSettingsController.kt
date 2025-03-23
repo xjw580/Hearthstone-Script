@@ -31,7 +31,7 @@ import java.util.*
 class DeveloperSettingsController : Initializable {
 
     @FXML
-    protected lateinit var disableMouseSwitch: Switch
+    protected lateinit var enableMouseSwitch: Switch
 
     @FXML
     protected lateinit var rootPane: StackPane
@@ -49,17 +49,17 @@ class DeveloperSettingsController : Initializable {
     protected lateinit var strategySwitch: Switch
 
     private fun initValue() {
-        disableMouseSwitch.status = ConfigUtil.getBoolean(ConfigEnum.DISABLE_MOUSE)
+        enableMouseSwitch.status = ConfigUtil.getBoolean(ConfigEnum.ENABLE_MOUSE)
         strategySwitch.status = ConfigUtil.getBoolean(ConfigEnum.STRATEGY)
         fileLogLevelComboBox.value = ConfigExUtil.getFileLogLevel().levelStr.uppercase()
         autoOpenAnalysis.status = ConfigUtil.getBoolean(ConfigEnum.AUTO_OPEN_GAME_ANALYSIS)
     }
 
     private fun addListener() {
-        disableMouseSwitch.statusProperty()
+        enableMouseSwitch.statusProperty()
             .addListener { observable, oldValue, newValue ->
                 ConfigUtil.putBoolean(
-                    ConfigEnum.DISABLE_MOUSE,
+                    ConfigEnum.ENABLE_MOUSE,
                     newValue, true
                 )
             }

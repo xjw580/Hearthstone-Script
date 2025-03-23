@@ -1,6 +1,6 @@
 package club.xiaojiawei.hsscript.utils
 
-import club.xiaojiawei.hsscript.bean.DynamicClassLoader
+import club.xiaojiawei.hsscript.bean.JavaClassLoader
 import club.xiaojiawei.hsscript.bean.KotlinCompilerHelper
 import java.io.File
 
@@ -10,9 +10,10 @@ import java.io.File
  * @date 2025/3/18 16:04
  */
 class DynamicClassManager {
-    private val classLoader = DynamicClassLoader(Thread.currentThread().contextClassLoader)
 
-    private val kotlinCompilerHelper = KotlinCompilerHelper()
+    private val classLoader = JavaClassLoader(Thread.currentThread().contextClassLoader)
+
+    private val kotlinCompilerHelper by lazy { KotlinCompilerHelper() }
 
     /**
      * 加载外部Java文件

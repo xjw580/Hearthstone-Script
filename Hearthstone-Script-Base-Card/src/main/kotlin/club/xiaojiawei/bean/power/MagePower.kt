@@ -4,9 +4,9 @@ import club.xiaojiawei.CardAction
 import club.xiaojiawei.bean.Card
 import club.xiaojiawei.bean.Player
 import club.xiaojiawei.bean.PowerAction
+import club.xiaojiawei.bean.War
 import club.xiaojiawei.bean.abs.PointPower
 import club.xiaojiawei.status.WAR
-import club.xiaojiawei.bean.War
 
 /**
  * 法师技能
@@ -27,15 +27,11 @@ class MagePower : PointPower() {
     override fun generatePowerActions(war: War, player: Player): List<PowerAction> {
         val myTarget = mutableListOf<Card>()
         val rivalTarget = mutableListOf<Card>()
-        war.me.playArea.cards.forEach { card ->
-            myTarget.add(card)
-        }
+        myTarget.addAll(war.me.playArea.cards.reversed())
         war.me.playArea.hero?.let { hero ->
             myTarget.add(hero)
         }
-        war.rival.playArea.cards.forEach { card ->
-            rivalTarget.add(card)
-        }
+        rivalTarget.addAll(war.rival.playArea.cards)
         war.rival.playArea.hero?.let { hero ->
             rivalTarget.add(hero)
         }

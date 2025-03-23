@@ -44,9 +44,10 @@ class Brawl : CardAction.DefaultCardAction() {
                     aliveCard = newMyCards[index]
                 }
 //                按照先下场的顺序依次死亡
-                (newMyCards + newRivalCards).sortedBy { card: Card ->
+                val cards = (newMyCards + newRivalCards).sortedBy { card: Card ->
                     card.numTurnsInPlay
-                }.reversed().forEach { card: Card ->
+                }.reversed()
+                for (card in cards) {
                     if (card.isAlive() && card != aliveCard) {
                         card.damage = card.bloodLimit()
                     }

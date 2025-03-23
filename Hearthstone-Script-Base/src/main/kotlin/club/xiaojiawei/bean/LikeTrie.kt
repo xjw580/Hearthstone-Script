@@ -26,7 +26,7 @@ class LikeTrie<V>() {
     operator fun set(key: String, value: V) {
         var currentNode = root
         val lowercaseKey = key.lowercase()
-        var charKey = lowercaseKey.toCharArray()
+        val charKey = lowercaseKey.toCharArray()
         charKey.forEachIndexed { index, c ->
             currentNode = currentNode.children.getOrPut(c) { TrieNode() }
             if (c == '%') {

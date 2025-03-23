@@ -10,7 +10,6 @@ import club.xiaojiawei.status.WAR
 import club.xiaojiawei.util.isTrue
 import javafx.beans.property.IntegerProperty
 import javafx.beans.property.SimpleIntegerProperty
-import java.util.function.Consumer
 import kotlin.math.min
 
 /**
@@ -111,7 +110,9 @@ object WarEx {
             log.info { "已重置游戏状态" }
         }
         war.cardMap.clear()
-        resetCallbackList.forEach(Consumer { obj: Runnable -> obj.run() })
+        for (runnable in resetCallbackList) {
+            runnable.run()
+        }
         System.gc()
     }
 
@@ -167,7 +168,9 @@ object WarEx {
             aEXP = (min(time.toDouble(), 30.0) * (if (isWin) winExp else lostExp)).toLong()
             log.info { "本局游戏获得经验值：$aEXP" }
             hangingEXP += aEXP.toInt()
-            endCallbackList.forEach(Consumer { obj: Runnable -> obj.run() })
+            for (runnable in endCallbackList) {
+                runnable.run()
+            }
             warCount++
         }
     }

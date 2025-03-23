@@ -12,7 +12,7 @@ import java.net.URLClassLoader
 import java.nio.file.Files
 import javax.tools.ToolProvider
 
-class DynamicClassLoader(parent: ClassLoader) : URLClassLoader(arrayOf<URL>(), parent) {
+class JavaClassLoader(parent: ClassLoader) : URLClassLoader(arrayOf<URL>(), parent) {
 
     /**
      * 加载并编译外部Java文件
@@ -99,4 +99,5 @@ class DynamicClassLoader(parent: ClassLoader) : URLClassLoader(arrayOf<URL>(), p
             addURL(path.toURI().toURL())
         }
     }
+
 }

@@ -200,7 +200,7 @@ class MonteCarloTreeSearch(val maxDepth: Int = MCTS_DEFAULT_DEPTH) {
                 tasks.add(
                     CompletableFuture.runAsync(
                         LRunnable {
-                            rootNodesList.forEach { newRootNode ->
+                            for (newRootNode in rootNodesList.reversed()) {
                                 results.add(tasker.apply(newRootNode))
                             }
                         }, CALC_THREAD_POOL
@@ -229,7 +229,7 @@ class MonteCarloTreeSearch(val maxDepth: Int = MCTS_DEFAULT_DEPTH) {
         if (results.isEmpty()) {
             bestResult = buildBest(rootNode)
         } else {
-            results.forEach { result ->
+            for (result in results) {
                 if (result.isNotEmpty()) {
                     val score = result.last().state.score
                     if (score > maxScore) {

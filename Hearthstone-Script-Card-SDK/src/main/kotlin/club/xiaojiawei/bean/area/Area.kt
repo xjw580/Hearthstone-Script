@@ -36,7 +36,7 @@ abstract class Area(
     val player: Player by lazy { player ?: Player.UNKNOWN_PLAYER }
 
     init {
-        cards.forEach { card ->
+        for (card in cards) {
             addZone(card)
         }
     }

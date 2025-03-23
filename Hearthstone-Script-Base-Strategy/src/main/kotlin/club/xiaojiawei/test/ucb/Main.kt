@@ -40,9 +40,9 @@ fun main() {
 }
 
 fun updateUCB(ucbHandlers: List<UCBHandler>) {
-    ucbHandlers.forEach {
-        it.increaseTurn()
-        it.updateUCB()
+    for (ucbHandler in ucbHandlers) {
+        ucbHandler.increaseTurn()
+        ucbHandler.updateUCB()
     }
 }
 

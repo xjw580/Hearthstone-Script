@@ -124,7 +124,7 @@ object MouseUtil {
 //        选择卡牌时间只让特定线程执行
         if (WarEx.war.isChooseCardTime && !isDiscoverCardThread()) return false
         hwnd ?: return false
-        return !(ConfigUtil.getBoolean(ConfigEnum.DISABLE_MOUSE) ||
+        return !(!ConfigUtil.getBoolean(ConfigEnum.ENABLE_MOUSE) ||
                 ((isOutCardThread() || isDiscoverCardThread()) && Mode.currMode !== ModeEnum.GAMEPLAY)
                 || !WorkListener.working)
     }

@@ -69,9 +69,7 @@ open class WarScoreCalculatorBuilder {
 
     protected open fun calcPlayScore(area: PlayArea): Double {
         var score = 0.0
-        area.cards.forEach { card ->
-            score += calcPlayCardScore(card)
-        }
+        score += area.cards.sumOf { calcPlayCardScore(it) }
         area.hero?.let { hero ->
             score += calcPlayCardScore(hero)
         }

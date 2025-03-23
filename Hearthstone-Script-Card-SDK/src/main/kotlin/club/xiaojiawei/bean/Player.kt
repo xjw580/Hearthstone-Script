@@ -242,7 +242,8 @@ class Player(
 
     private fun cloneArea(sourceArea: Area, targetArea: Area, newWar: War) {
         AreaMapper.INSTANCE.update(sourceArea, targetArea)
-        sourceArea.cards.forEach { card ->
+        val cards = sourceArea.cards
+        for (card in cards) {
             val newCard = card.clone()
             initCloneCard(newCard, targetArea, newWar)
 //            targetArea.add(newCard)

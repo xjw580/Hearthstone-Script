@@ -32,19 +32,20 @@ object CardActionManager {
         return CARD_ACTION_PLUGINS.mapValues { entry ->
             val likeTrie = LikeTrie<Supplier<CardAction>>()
 
-            entry.value.flatMap { pluginWrapper ->
+            val list = entry.value.flatMap { pluginWrapper ->
                 // 添加监听器，当状态变化时重新加载
                 pluginWrapper.addEnabledListener { _: ObservableValue<out Boolean?>?, _: Boolean?, _: Boolean? ->
                     reload()
                 }
                 // 只保留启用的插件实例
                 if (pluginWrapper.isEnabled()) pluginWrapper.spiInstance else emptyList()
-            }.forEach { cardAction ->
+            }
+            for (cardAction in list) {
                 // 将每个 CardAction 生成的 Supplier 添加到 LikeTrie
-                cardAction.getCardId().forEach { cardId ->
+                val idArray = cardAction.getCardId()
+                for (cardId in idArray) {
                     likeTrie[cardId] = Supplier { cardAction.createNewInstance() }
                 }
-
             }
 
             likeTrie

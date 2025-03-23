@@ -18,9 +18,9 @@
         <ScrollPane VBox.vgrow="ALWAYS" styleClass="scroll-pane-item">
             <VBox styleClass="item-v-box">
                 <HBox styleClass="h-box">
-                    <Text text="禁用鼠标"/>
+                    <Text text="启用鼠标"/>
                     <HBox HBox.hgrow="ALWAYS"/>
-                    <Switch fx:id="disableMouseSwitch"/>
+                    <Switch fx:id="enableMouseSwitch"/>
                 </HBox>
                 <HBox styleClass="h-box">
                     <Text text="执行策略"/>

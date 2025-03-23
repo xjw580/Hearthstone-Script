@@ -71,7 +71,7 @@ object DeckStrategyUtil {
                 println(text)
             }
             var deathCount = 0
-            actions.forEach { action ->
+            for (action in actions) {
                 deathCount += if (action.deathCard == null) 0 else 1
                 action.runnable.run()
             }

@@ -308,10 +308,10 @@ object GameUtil {
      * 选择哪张发现牌
      */
     fun chooseDiscoverCard(index: Int, discoverCardSize: Int) {
-        if (discoverCardSize == 3) {
-            getThreeDiscoverCardRect(index).lClick()
+        if (discoverCardSize == 4) {
+            getFourDiscoverCardRect(Math.clamp(index.toLong(), 0, index)).lClick()
         } else {
-            getFourDiscoverCardRect(index).lClick()
+            getThreeDiscoverCardRect(Math.clamp(index.toLong(), 0, 3)).lClick()
         }
     }
 

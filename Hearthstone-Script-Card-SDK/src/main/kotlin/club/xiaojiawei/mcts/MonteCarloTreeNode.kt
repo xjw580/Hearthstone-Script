@@ -57,12 +57,12 @@ class MonteCarloTreeNode(
             val handArea = me.handArea
             val playArea = me.playArea
             result.add(TurnOverAction)
-            handArea.cards.forEach { card ->
+            for (card in handArea.cards) {
                 if (me.usableResource >= card.cost && (!playArea.isFull || card.cardType === CardTypeEnum.HERO || card.cardType === CardTypeEnum.SPELL || card.cardType === CardTypeEnum.WEAPON)) {
                     result.addAll(card.action.generatePlayActions(war, me))
                 }
             }
-            playArea.cards.forEach { card ->
+            for (card in playArea.cards) {
                 if (card.canAttack()) {
                     result.addAll(card.action.generateAttackActions(war, me))
                 } else if (card.canPower()) {
@@ -204,7 +204,8 @@ class MonteCarloTreeNode(
                 inverseWar.me.apply {
                     playArea.hero?.atc = 0
 //                triggerTurnEnd内部可能修改cards，使用副本遍历
-                    playArea.cards.toTypedArray().forEach { card ->
+                    val cardCopy = playArea.cards.toTypedArray()
+                    for (card in cardCopy) {
                         if (card.isAlive()) {
                             card.action.triggerTurnEnd(war)
                         }
@@ -214,18 +215,19 @@ class MonteCarloTreeNode(
                 inverseWar.currentPlayer = inverseWar.me
                 inverseWar.me.apply {
                     //            重置战场疲劳
-                    playArea.cards.forEach { card ->
+                    for (card in playArea.cards) {
                         card.resetExhausted()
                         card.numTurnsInPlay++
                     }
-                    handArea.cards.forEach { card ->
+                    for (card in handArea.cards) {
                         card.numTurnsInHand++
                     }
                     playArea.hero?.resetExhausted()
                     playArea.power?.resetExhausted()
                     playArea.weapon?.resetExhausted()
 //                triggerTurnStart内部可能修改cards，使用副本遍历
-                    playArea.cards.toTypedArray().forEach { card ->
+                    val cardCopy = playArea.cards.toTypedArray()
+                    for (card in cardCopy) {
                         if (card.isAlive()) {
                             card.action.triggerTurnStart(war)
                         }

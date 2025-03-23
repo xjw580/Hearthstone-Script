@@ -3,7 +3,6 @@ package club.xiaojiawei.bean.warrior
 import club.xiaojiawei.CardAction
 import club.xiaojiawei.bean.PlayAction
 import club.xiaojiawei.bean.Player
-import club.xiaojiawei.enums.CardTypeEnum
 import club.xiaojiawei.bean.War
 
 /**
@@ -19,7 +18,8 @@ class Slam : CardAction.DefaultCardAction() {
 
     override fun generatePlayActions(war: War, player: Player): List<PlayAction> {
         val result = mutableListOf<PlayAction>()
-        war.rival.playArea.cards.forEach { rivalCard ->
+        val rivalPlayCards = war.rival.playArea.cards
+        for (rivalCard in rivalPlayCards) {
             if (rivalCard.canHurt() && rivalCard.canBeTargetedByRivalSpells()) {
                 result.add(PlayAction({ newWar ->
                     findSelf(newWar)?.action?.power(rivalCard.action.findSelf(newWar))

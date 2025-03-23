@@ -4,9 +4,7 @@ import club.xiaojiawei.CardAction
 import club.xiaojiawei.bean.Card
 import club.xiaojiawei.bean.PlayAction
 import club.xiaojiawei.bean.Player
-import club.xiaojiawei.enums.CardTypeEnum
 import club.xiaojiawei.bean.War
-import java.util.function.BiConsumer
 
 /**
  * [旋风斩](https://hearthstone.huijiwiki.com/wiki/Card/69556)
@@ -19,6 +17,14 @@ private val cardIds = arrayOf<String>(
 
 class Whirlwind : CardAction.DefaultCardAction() {
 
+    companion object {
+        private val exec: (Card, War) -> Unit = { card, newWar ->
+            if (card.canHurt()) {
+                card.injured(1 + newWar.me.getSpellPower())
+            }
+        }
+    }
+
     override fun generatePlayActions(war: War, player: Player): List<PlayAction> {
         return listOf(
             PlayAction({ newWar ->
@@ -26,17 +32,15 @@ class Whirlwind : CardAction.DefaultCardAction() {
             }, { newWar ->
                 spendSelfCost(newWar)
                 removeSelf(newWar)
-                val exec = BiConsumer<Player, Card> { player, card ->
-                    if (card.canHurt()) {
-                        card.injured(1 + newWar.me.getSpellPower())
-                    }
-                }
+
 //                todo 应该要按随从下场顺序依次受伤
-                newWar.me.playArea.cards.toList().forEach { card ->
-                    exec.accept(newWar.me, card)
+                val myCards = newWar.me.playArea.cards.toList()
+                for (card in myCards.reversed()) {
+                    exec(card, newWar)
                 }
-                newWar.rival.playArea.cards.toList().forEach { card ->
-                    exec.accept(newWar.rival, card)
+                val rivalCards = newWar.rival.playArea.cards.toList()
+                for (card in rivalCards.reversed()) {
+                    exec(card, newWar)
                 }
             })
         )
