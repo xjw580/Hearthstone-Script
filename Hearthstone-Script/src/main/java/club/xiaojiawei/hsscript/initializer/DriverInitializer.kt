@@ -20,8 +20,6 @@ import java.util.concurrent.locks.ReentrantLock
  * @date 2023/7/4 11:33
  */
 
-val DRIVER_LOCK = ReentrantLock(true)
-
 @Suppress("DEPRECATION")
 class DriverInitializer : AbstractInitializer() {
 

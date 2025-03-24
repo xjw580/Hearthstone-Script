@@ -197,6 +197,7 @@ class MainApplication : Application() {
         stage.show()
     }
 
+    @Deprecated("")
     private fun setSystemTray() {
         val isPauseItem = MenuItem("开始")
         isPauseItem.addActionListener(object : AbstractAction() {

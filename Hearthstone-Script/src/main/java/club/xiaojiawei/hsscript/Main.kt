@@ -9,6 +9,7 @@ import ch.qos.logback.core.spi.FilterReply
 import club.xiaojiawei.hsscript.data.SCRIPT_NAME
 import club.xiaojiawei.hsscript.utils.ConfigExUtil
 import club.xiaojiawei.hsscript.utils.WindowUtil
+import com.sun.jna.platform.win32.User32
 import javafx.application.Application
 import org.slf4j.LoggerFactory
 import java.io.File

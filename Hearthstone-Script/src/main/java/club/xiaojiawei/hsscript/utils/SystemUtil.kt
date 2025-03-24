@@ -44,6 +44,7 @@ object SystemUtil {
     /**
      * 系统托盘
      */
+    @Deprecated("")
     private var trayIcon: TrayIcon? = null
 
     fun getProgramIconFile(): File {
@@ -248,6 +249,7 @@ object SystemUtil {
      * 添加托盘
      * @param menuItems
      */
+    @Deprecated("")
     fun addTray(
         mouseClickListener: Consumer<MouseEvent?>?,
         vararg menuItems: MenuItem?
@@ -281,12 +283,13 @@ object SystemUtil {
     /**
      * 移除托盘
      */
+    @Deprecated("")
     fun removeTray() {
         SystemTray.getSystemTray().remove(trayIcon)
     }
 
     /**
-     * 到系统剪切板
+     * 复制到系统剪切板
      * @param content
      */
     fun copyToClipboard(content: String?): Boolean {

@@ -5,6 +5,7 @@ import club.xiaojiawei.hsscript.dll.CSystemDll
 import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.enums.MouseControlModeEnum
 import club.xiaojiawei.hsscript.enums.WindowEnum
+import club.xiaojiawei.hsscript.service.GameTimeoutService
 import club.xiaojiawei.hsscript.status.PauseStatus
 import club.xiaojiawei.hsscript.utils.*
 import club.xiaojiawei.hsscript.utils.SystemUtil.offScreen
@@ -71,7 +72,7 @@ object SystemListener {
                         null,
                         {
                             thread.interrupt()
-                            if (ConfigUtil.getBoolean(ConfigEnum.AUTO_WAKE)){
+                            if (ConfigUtil.getBoolean(ConfigEnum.AUTO_WAKE)) {
                                 CSystemDll.setWakeUpTimer(0)
                             }
                         },

@@ -15,12 +15,12 @@ import club.xiaojiawei.hsscript.bean.log.CommonEntity
 import club.xiaojiawei.hsscript.bean.log.ExtraEntity
 import club.xiaojiawei.hsscript.bean.log.TagChangeEntity
 import club.xiaojiawei.hsscript.bean.single.WarEx
+import club.xiaojiawei.hsscript.config.DRIVER_LOCK
 import club.xiaojiawei.hsscript.core.Core
 import club.xiaojiawei.hsscript.core.Core.restart
 import club.xiaojiawei.hsscript.data.*
 import club.xiaojiawei.hsscript.enums.BlockTypeEnum
 import club.xiaojiawei.hsscript.enums.TagEnum
-import club.xiaojiawei.hsscript.initializer.DRIVER_LOCK
 import club.xiaojiawei.hsscript.strategy.AbstractPhaseStrategy
 import club.xiaojiawei.hsscript.strategy.DeckStrategyActuator
 import club.xiaojiawei.hsscript.utils.CardUtil.exchangeAreaOfCard

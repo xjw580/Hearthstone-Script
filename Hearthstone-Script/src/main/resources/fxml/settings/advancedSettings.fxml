@@ -11,6 +11,7 @@
 <?import javafx.scene.text.*?>
 <?import java.lang.Double?>
 <?import javafx.util.Duration?>
+<?import club.xiaojiawei.hsscript.component.ServiceSwitch?>
 <StackPane xmlns="http://javafx.com/javafx"
            xmlns:fx="http://javafx.com/fxml"
            stylesheets="@../css/settings/advancedSettings.css"
@@ -152,6 +153,30 @@
                                 </Label>
                                 <HBox HBox.hgrow="ALWAYS"/>
                                 <Switch fx:id="autoWake"/>
+                            </HBox>
+                        </VBox>
+                    </TitledPane>
+                </Group>
+                <Group fx:id="servicePane">
+                    <TitledPane fx:id="serviceTitled" text="服务"
+                                styleClass="titled-pane-ui, titled-pane-ui-big, titled-pane-ui-pure, item-titled-pane">
+                        <VBox styleClass="item-v-box">
+                            <HBox styleClass="h-box">
+                                <Text text="检查游戏响应超时"/>
+                                <Label>
+                                    <graphic>
+                                        <HelpIco/>
+                                    </graphic>
+                                    <tooltip>
+                                        <Tooltip text="游戏超过1分钟无响应将重启游戏">
+                                            <showDuration>
+                                                <fx:reference source="tooltipDuration"/>
+                                            </showDuration>
+                                        </Tooltip>
+                                    </tooltip>
+                                </Label>
+                                <HBox HBox.hgrow="ALWAYS" />
+                                <ServiceSwitch config="CHECK_GAME_RESPONSE_TIMEOUT"/>
                             </HBox>
                         </VBox>
                     </TitledPane>

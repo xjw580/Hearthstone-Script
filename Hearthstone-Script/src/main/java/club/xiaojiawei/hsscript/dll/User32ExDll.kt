@@ -26,7 +26,9 @@ interface User32ExDll : Library {
             Native.load("user32", User32ExDll::class.java)
         }
 
-        val SC_MONITORPOWER: Long = 0xF170
+        const val SC_MONITORPOWER: Long = 0xF170
+
+        const val WM_NULL: Int = 0x0000
 
     }
 

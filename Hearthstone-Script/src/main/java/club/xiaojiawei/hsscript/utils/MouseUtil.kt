@@ -4,9 +4,9 @@ import club.xiaojiawei.enums.ModeEnum
 import club.xiaojiawei.hsscript.bean.isDiscoverCardThread
 import club.xiaojiawei.hsscript.bean.isOutCardThread
 import club.xiaojiawei.hsscript.bean.single.WarEx
+import club.xiaojiawei.hsscript.config.DRIVER_LOCK
 import club.xiaojiawei.hsscript.dll.CSystemDll
 import club.xiaojiawei.hsscript.enums.ConfigEnum
-import club.xiaojiawei.hsscript.initializer.DRIVER_LOCK
 import club.xiaojiawei.hsscript.listener.WorkListener
 import club.xiaojiawei.hsscript.status.Mode
 import com.sun.jna.platform.win32.WinDef.HWND

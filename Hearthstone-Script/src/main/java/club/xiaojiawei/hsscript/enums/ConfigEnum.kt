@@ -5,6 +5,8 @@ import club.xiaojiawei.enums.RunModeEnum
 import club.xiaojiawei.hsscript.bean.HotKey
 import club.xiaojiawei.hsscript.bean.WorkDay
 import club.xiaojiawei.hsscript.bean.WorkTime
+import club.xiaojiawei.hsscript.service.GameTimeoutService
+import club.xiaojiawei.hsscript.service.Service
 import com.alibaba.fastjson.JSON
 import com.melloware.jintellitype.JIntellitype
 
@@ -26,6 +28,7 @@ const val DEV_CONFIG_GROUP = "dev"
 enum class ConfigEnum(
     val group: String = "",
     val defaultValue: String = "",
+    val service: Service? = null
 ) {
 
     /**
@@ -192,6 +195,11 @@ enum class ConfigEnum(
     ONLY_ROBOT(group = OTHER_CONFIG_GROUP, defaultValue = false.toString()),
 
     /**
+     * 检查游戏响应超时
+     */
+    CHECK_GAME_RESPONSE_TIMEOUT(group = OTHER_CONFIG_GROUP, defaultValue = true.toString(), service = GameTimeoutService),
+
+    /**
      * 允许发送windows通知
      */
     SEND_NOTICE(group = SYSTEM_CONFIG_GROUP, defaultValue = true.toString()),
@@ -218,6 +226,7 @@ enum class ConfigEnum(
      * 自动关闭显示器
      */
     AUTO_OFF_SCREEN(group = SYSTEM_CONFIG_GROUP, defaultValue = false.toString()),
+
     /**
      * 自动睡眠
      */

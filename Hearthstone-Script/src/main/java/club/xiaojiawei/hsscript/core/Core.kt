@@ -80,12 +80,17 @@ object Core {
     /**
      * 重启脚本
      */
-    fun restart() {
-        CORE_THREAD_POOL.execute {
+    fun restart(sync: Boolean = false) {
+        val exec = {
             PauseStatus.asyncSetPause(true)
             GameUtil.killGame(true)
             log.info { "${GAME_CN_NAME}重启中……" }
             PauseStatus.isPause = false
+        }
+        if (sync) {
+            exec()
+        } else {
+            CORE_THREAD_POOL.execute { exec() }
         }
     }
 
