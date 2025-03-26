@@ -62,7 +62,7 @@
         <ini-version>0.5.4</ini-version>
         <tilesfx-version>21.0.9</tilesfx-version>
 
-        <hs-script-base-deck-version>1.0.0</hs-script-base-deck-version>
+        <hs-script-base-strategy-version>1.0.0</hs-script-base-strategy-version>
         <hs-script-base-card-version>1.0.0</hs-script-base-card-version>
 
         <!--sdk-->
@@ -177,7 +177,7 @@
             <dependency>
                 <groupId>club.xiaojiawei</groupId>
                 <artifactId>hs-script-base-strategy</artifactId>
-                <version>${hs-script-base-deck-version}</version>
+                <version>${hs-script-base-strategy-version}</version>
                 <!--                <scope>provided</scope>-->
             </dependency>
             <dependency>

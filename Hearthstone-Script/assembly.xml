@@ -18,14 +18,14 @@
             <unpack>false</unpack>
             <excludes>
                 <exclude>club.xiaojiawei:hs-script-base-card</exclude>
-                <exclude>club.xiaojiawei:hs-script-base-deck</exclude>
+                <exclude>club.xiaojiawei:hs-script-base-strategy</exclude>
             </excludes>
         </dependencySet>
         <dependencySet>
             <outputDirectory>plugin</outputDirectory>
             <includes>
                 <include>club.xiaojiawei:hs-script-base-card</include>
-                <include>club.xiaojiawei:hs-script-base-deck</include>
+                <include>club.xiaojiawei:hs-script-base-strategy</include>
             </includes>
         </dependencySet>
     </dependencySets>
