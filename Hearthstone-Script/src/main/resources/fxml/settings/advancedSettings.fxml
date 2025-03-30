@@ -176,7 +176,7 @@
                                     </tooltip>
                                 </Label>
                                 <HBox HBox.hgrow="ALWAYS" />
-                                <ServiceSwitch config="CHECK_GAME_RESPONSE_TIMEOUT"/>
+<!--                                <ServiceSwitch config="CHECK_GAME_RESPONSE_TIMEOUT"/>-->
                             </HBox>
                         </VBox>
                     </TitledPane>

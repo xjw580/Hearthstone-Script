@@ -3,6 +3,7 @@ package club.xiaojiawei.hsscript.dll
 import com.sun.jna.Library
 import com.sun.jna.Native
 import com.sun.jna.WString
+import com.sun.jna.platform.win32.User32
 import com.sun.jna.platform.win32.WinDef
 import com.sun.jna.platform.win32.WinDef.POINT
 
@@ -13,8 +14,6 @@ import com.sun.jna.platform.win32.WinDef.POINT
 interface User32ExDll : Library {
 
     fun IsIconic(hwnd: WinDef.HWND?): Boolean
-
-    fun GetCursorPos(point: POINT)
 
     fun ClientToScreen(hWnd: WinDef.HWND?, point: POINT)
 
@@ -32,4 +31,8 @@ interface User32ExDll : Library {
 
     }
 
+}
+
+fun main() {
+    User32.INSTANCE.LockWorkStation()
 }

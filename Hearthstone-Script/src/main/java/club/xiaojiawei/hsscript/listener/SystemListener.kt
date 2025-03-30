@@ -5,12 +5,12 @@ import club.xiaojiawei.hsscript.dll.CSystemDll
 import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.enums.MouseControlModeEnum
 import club.xiaojiawei.hsscript.enums.WindowEnum
-import club.xiaojiawei.hsscript.service.GameTimeoutService
 import club.xiaojiawei.hsscript.status.PauseStatus
 import club.xiaojiawei.hsscript.utils.*
 import club.xiaojiawei.hsscript.utils.SystemUtil.offScreen
 import club.xiaojiawei.util.isFalse
 import club.xiaojiawei.util.isTrue
+import com.sun.jna.platform.win32.User32
 import javafx.stage.Stage
 
 /**
@@ -44,6 +44,7 @@ object SystemListener {
             if (ConfigUtil.getBoolean(ConfigEnum.AUTO_SLEEP)) {
                 text = "${countdown}秒后将睡眠系统"
                 runnable = {
+                    User32.INSTANCE.LockWorkStation()
                     CSystemDll.INSTANCE.sleepSystem()
                 }
             } else if (ConfigUtil.getBoolean(ConfigEnum.AUTO_OFF_SCREEN)) {
