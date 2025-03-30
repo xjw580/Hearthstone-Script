@@ -4,6 +4,8 @@ import club.xiaojiawei.JavaFXUI
 import club.xiaojiawei.hsscript.data.FXML_DIR
 import club.xiaojiawei.hsscript.data.SCRIPT_NAME
 import club.xiaojiawei.hsscript.dll.CSystemDll
+import club.xiaojiawei.hsscript.enums.SCREEN_HEIGHT
+import club.xiaojiawei.hsscript.enums.SCREEN_WIDTH
 import club.xiaojiawei.hsscript.enums.WindowEnum
 import club.xiaojiawei.hsscript.interfaces.StageHook
 import club.xiaojiawei.hsscript.utils.SystemUtil.findHWND
@@ -220,7 +222,7 @@ object WindowUtil {
             stage.setOnHiding {
                 stage.isIconified = false
                 for (entry in STAGE_MAP) {
-                    if (entry.value.owner == stage){
+                    if (entry.value.owner == stage) {
                         entry.value.hide()
                     }
                 }
@@ -231,7 +233,7 @@ object WindowUtil {
             stage.setOnCloseRequest { event ->
                 stage.isIconified = false
                 for (entry in STAGE_MAP) {
-                    if (entry.value.owner == stage){
+                    if (entry.value.owner == stage) {
                         entry.value.hide()
                     }
                 }
@@ -282,13 +284,19 @@ object WindowUtil {
                 stage.height = windowEnum.height
                 stage.minHeight = windowEnum.height
             }
+            if (windowEnum.initXY && windowEnum.x == -1.0 && windowEnum.y == -1.0 && windowEnum.width > 0 && windowEnum.height > 0) {
+                stage.x = (SCREEN_WIDTH - windowEnum.width) / 2.0
+                stage.y = (SCREEN_HEIGHT - windowEnum.height) / 2.0
+            } else {
+                if (windowEnum.x != -1.0) {
+                    stage.x = windowEnum.x
+                }
+                if (windowEnum.y != -1.0) {
+                    stage.y = windowEnum.y
+                }
+            }
 
-            if (windowEnum.x != -1.0) {
-                stage.x = windowEnum.x
-            }
-            if (windowEnum.y != -1.0) {
-                stage.y = windowEnum.y
-            }
+
             stage.isAlwaysOnTop = windowEnum.alwaysOnTop
             stage.initStyle(windowEnum.initStyle)
             if (windowEnum.initStyle === StageStyle.TRANSPARENT) {
@@ -309,7 +317,7 @@ object WindowUtil {
         return STAGE_MAP[windowEnum]
     }
 
-    fun hideLaunchPage(){
+    fun hideLaunchPage() {
         findHWND("ZLaunch Class", null)?.let { launchWindow ->
             CSystemDll.INSTANCE.quitWindow(launchWindow)
         }

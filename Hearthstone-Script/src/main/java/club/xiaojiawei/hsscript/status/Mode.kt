@@ -1,10 +1,14 @@
 package club.xiaojiawei.hsscript.status
 
+import club.xiaojiawei.config.EXTRA_THREAD_POOL
 import club.xiaojiawei.config.log
 import club.xiaojiawei.enums.ModeEnum
+import club.xiaojiawei.hsscript.listener.WorkListener
 import club.xiaojiawei.hsscript.strategy.AbstractModeStrategy
 import club.xiaojiawei.hsscript.utils.go
 import java.util.concurrent.ArrayBlockingQueue
+import java.util.concurrent.Future
+import java.util.concurrent.TimeUnit
 
 /**
  * 游戏当前模式（界面）
@@ -15,12 +19,19 @@ object Mode {
 
     data class ModeStruct(var currMode: ModeEnum? = null, var newMode: ModeEnum? = null)
 
-    private val queue = ArrayBlockingQueue<ModeStruct>(10)
+    private val modeQueue = ArrayBlockingQueue<ModeStruct>(5)
+
+    private var nextModeTimeoutTask: Future<*>? = null
 
     init {
+        WorkListener.workingProperty.addListener { _, oldValue, newValue ->
+            if (!newValue) {
+                stopTask()
+            }
+        }
         go {
             while (true) {
-                val (currMode1, newMode) = queue.take()
+                val (currMode1, newMode) = modeQueue.take()
                 currMode1?.modeStrategy?.afterLeave()
                 AbstractModeStrategy.cancelAllTask()
                 newMode?.modeStrategy?.entering()
@@ -28,11 +39,34 @@ object Mode {
         }
     }
 
+    private fun stopTask(){
+        nextModeTimeoutTask?.let {
+            it.cancel(true)
+            nextModeTimeoutTask = null
+        }
+    }
+
+    @Volatile
+    var nextMode: ModeEnum? = null
+        set(value) {
+            if (value == field) return
+            stopTask()
+            field = value
+            if (value == null) return
+            nextModeTimeoutTask = EXTRA_THREAD_POOL.schedule({
+                if (currMode != value) {
+                    log.warn { "日志长时间未打印已进入${value.comment}，默认已经进入" }
+                    currMode = value
+                }
+            }, 5, TimeUnit.SECONDS)
+        }
+
     @Volatile
     var currMode: ModeEnum? = null
         set(value) {
             if (value === field) return
-            queue.add(ModeStruct(field, value))
+            stopTask()
+            modeQueue.add(ModeStruct(field, value))
             prevMode = field
             field = value
         }

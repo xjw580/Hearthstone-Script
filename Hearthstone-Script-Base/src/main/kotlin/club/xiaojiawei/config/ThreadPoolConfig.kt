@@ -28,7 +28,7 @@ val LISTEN_LOG_THREAD_POOL: ScheduledThreadPoolExecutor by lazy {
 }
 
 val EXTRA_THREAD_POOL: ScheduledThreadPoolExecutor by lazy {
-    ScheduledThreadPoolExecutor(8, object : ThreadFactory {
+    ScheduledThreadPoolExecutor(10, object : ThreadFactory {
         private val num = AtomicInteger(0)
         override fun newThread(r: Runnable): Thread {
             return ReadableThread(r, "ExtraPool Thread-" + num.getAndIncrement())

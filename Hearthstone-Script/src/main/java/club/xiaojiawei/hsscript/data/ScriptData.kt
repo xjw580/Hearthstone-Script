@@ -1,5 +1,6 @@
 package club.xiaojiawei.hsscript.data
 
+import club.xiaojiawei.config.log
 import club.xiaojiawei.hsscript.dll.CSystemDll
 import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.status.PauseStatus
@@ -32,7 +33,9 @@ var GAME_HWND: HWND? = null
             if (!PauseStatus.isPause && ConfigUtil.getBoolean(ConfigEnum.TOP_GAME_WINDOW)) {
                 CSystemDll.INSTANCE.topWindow(value, true)
             }
+
         }
+        log.info { GAME_CN_NAME + "窗口句柄:${value}" }
         field = value
     }
 const val GAME_CN_NAME: String = "炉石传说"

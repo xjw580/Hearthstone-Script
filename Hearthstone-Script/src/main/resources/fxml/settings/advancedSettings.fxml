@@ -176,7 +176,7 @@
                                     </tooltip>
                                 </Label>
                                 <HBox HBox.hgrow="ALWAYS" />
-<!--                                <ServiceSwitch config="CHECK_GAME_RESPONSE_TIMEOUT"/>-->
+                                <ServiceSwitch notificationManager="${notificationManager}" config="CHECK_GAME_RESPONSE_TIMEOUT"/>
                             </HBox>
                         </VBox>
                     </TitledPane>
@@ -243,6 +243,8 @@
                           toggleGroup="$navigationBarToggle" onAction="#scrollBehavior"/>
             <ToggleButton fx:id="systemNavigation" text="系统" styleClass="navigationBar"
                           toggleGroup="$navigationBarToggle" onAction="#scrollSystem"/>
+            <ToggleButton fx:id="serviceNavigation" text="服务" styleClass="navigationBar"
+                          toggleGroup="$navigationBarToggle" onAction="#scrollService"/>
             <ToggleButton fx:id="versionNavigation" text="版本" styleClass="navigationBar"
                           toggleGroup="$navigationBarToggle" onAction="#scrollVersion"/>
         </VBox>

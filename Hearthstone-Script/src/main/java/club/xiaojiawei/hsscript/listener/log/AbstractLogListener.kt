@@ -38,7 +38,7 @@ abstract class AbstractLogListener(
 
     private var logScheduledFuture: ScheduledFuture<*>? = null
 
-    private var nextLogListener: AbstractLogListener? = null
+    var nextLogListener: AbstractLogListener? = null
 
     fun setNextLogListener(nextLogListener: AbstractLogListener): AbstractLogListener {
         return nextLogListener.also { this.nextLogListener = it }

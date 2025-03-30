@@ -14,6 +14,9 @@ private fun formatTitle(title: String): String {
     return "$SCRIPT_NAME-${title}"
 }
 
+var SCREEN_WIDTH = Screen.getPrimary().bounds.width
+var SCREEN_HEIGHT = Screen.getPrimary().bounds.height
+
 enum class WindowEnum(
     val fxmlName: String,
     val title: String = "",
@@ -21,6 +24,7 @@ enum class WindowEnum(
     val height: Double = -1.0,
     val x: Double = -1.0,
     val y: Double = -1.0,
+    val initXY: Boolean = true,
     val cache: Boolean = true,
     val alwaysOnTop: Boolean = false,
     val initStyle: StageStyle = StageStyle.DECORATED,
@@ -55,8 +59,8 @@ enum class WindowEnum(
         SCRIPT_NAME,
         220.0,
         670.0,
-        Screen.getPrimary().bounds.width - 215.0,
-        (Screen.getPrimary().bounds.height - 670.0) / 2,
+        SCREEN_WIDTH - 215.0,
+        (SCREEN_HEIGHT - 670.0) / 2,
         alwaysOnTop = true,
     ),
     CARD_ACTION_EDITOR(""),

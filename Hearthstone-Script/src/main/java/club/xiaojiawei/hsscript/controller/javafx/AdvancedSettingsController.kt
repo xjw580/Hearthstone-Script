@@ -125,20 +125,25 @@ class AdvancedSettingsController : AdvancedSettingsView(), Initializable {
 
     private var forbidSetToggle = false
     private var versionMaxY = 0.0
-    private var behaviorMaxY = 0.0
-    private var systemMaxY = 0.0
     private var versionMinY = 0.0
+    private var behaviorMaxY = 0.0
     private var behaviorMinY = 0.0
+    private var serviceMaxY = 0.0
+    private var serviceMinY = 0.0
+    private var systemMaxY = 0.0
     private var systemMinY = 0.0
 
 
     private fun updateY() {
-        versionMaxY = versionPane.boundsInParent.maxY / (titledRootPane.height - scrollPane.viewportBounds.height)
-        behaviorMaxY = behaviorPane.boundsInParent.maxY / (titledRootPane.height - scrollPane.viewportBounds.height)
-        systemMaxY = systemPane.boundsInParent.maxY / (titledRootPane.height - scrollPane.viewportBounds.height)
-        versionMinY = versionPane.boundsInParent.minY / (titledRootPane.height - scrollPane.viewportBounds.height)
-        behaviorMinY = behaviorPane.boundsInParent.minY / (titledRootPane.height - scrollPane.viewportBounds.height)
-        systemMinY = systemPane.boundsInParent.minY / (titledRootPane.height - scrollPane.viewportBounds.height)
+        val diffH = titledRootPane.height - scrollPane.viewportBounds.height
+        versionMaxY = versionPane.boundsInParent.maxY / diffH
+        versionMinY = versionPane.boundsInParent.minY / diffH
+        behaviorMaxY = behaviorPane.boundsInParent.maxY / diffH
+        behaviorMinY = behaviorPane.boundsInParent.minY / diffH
+        serviceMaxY = servicePane.boundsInParent.maxY / diffH
+        serviceMinY = servicePane.boundsInParent.minY / diffH
+        systemMaxY = systemPane.boundsInParent.maxY / diffH
+        systemMinY = systemPane.boundsInParent.minY / diffH
     }
 
     private fun listen() {
@@ -153,8 +158,10 @@ class AdvancedSettingsController : AdvancedSettingsView(), Initializable {
             val newV = newValue.toDouble()
             val oldV = oldValue.toDouble()
             if (newV - oldV > 0) {
-                if (newV > systemMaxY) {
+                if (newV > serviceMaxY) {
                     navigationBarToggle.selectToggle(versionNavigation)
+                } else if (newV > systemMaxY) {
+                    navigationBarToggle.selectToggle(serviceNavigation)
                 } else if (newV > behaviorMaxY) {
                     navigationBarToggle.selectToggle(systemNavigation)
                 }
@@ -163,6 +170,8 @@ class AdvancedSettingsController : AdvancedSettingsView(), Initializable {
                     navigationBarToggle.selectToggle(behaviorNavigation)
                 } else if (newV <= systemMinY) {
                     navigationBarToggle.selectToggle(systemNavigation)
+                }else if (newV <= serviceMinY) {
+                    navigationBarToggle.selectToggle(serviceNavigation)
                 }
             }
         }
@@ -372,6 +381,11 @@ class AdvancedSettingsController : AdvancedSettingsView(), Initializable {
     }
 
     @FXML
+    protected fun scrollService(actionEvent: ActionEvent) {
+        scrollTo(servicePane)
+    }
+
+    @FXML
     protected fun scrollSystem(actionEvent: ActionEvent) {
         scrollTo(systemPane)
     }
@@ -379,9 +393,9 @@ class AdvancedSettingsController : AdvancedSettingsView(), Initializable {
     @FXML
     protected fun refreshDriver(actionEvent: ActionEvent) {
         val res = CSystemDll.safeRefreshDriver()
-        if (res >= 0){
+        if (res >= 0) {
             notificationManager.showSuccess("刷新驱动成功", 2)
-        }else {
+        } else {
             notificationManager.showError("刷新驱动失败", 2)
         }
     }

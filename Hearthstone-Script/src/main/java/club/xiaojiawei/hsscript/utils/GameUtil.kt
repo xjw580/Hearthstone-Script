@@ -471,9 +471,10 @@ object GameUtil {
     }
 
     fun findGameHWND(): WinDef.HWND? {
-        return SystemUtil.findHWND("UnityWndClass", GAME_CN_NAME)
+        val hwnd = (SystemUtil.findHWND("UnityWndClass", GAME_CN_NAME)
             ?: SystemUtil.findHWND("UnityWndClass", GAME_US_NAME)
-            ?: CSystemDll.INSTANCE.findWindowsByProcessName(GAME_PROGRAM_NAME)
+            ?: CSystemDll.INSTANCE.findWindowsByProcessName(GAME_PROGRAM_NAME))
+        return hwnd
     }
 
     fun findPlatformHWND(): WinDef.HWND? {
@@ -525,9 +526,9 @@ object GameUtil {
                 log.info { "${GAME_CN_NAME}不在运行" }
             }
         }
-        if (sync){
+        if (sync) {
             exec()
-        }else{
+        } else {
             exec.goWithResult()
         }
     }
