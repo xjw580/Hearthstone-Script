@@ -5,8 +5,10 @@ import club.xiaojiawei.enums.RunModeEnum
 import club.xiaojiawei.hsscript.bean.HotKey
 import club.xiaojiawei.hsscript.bean.WorkDay
 import club.xiaojiawei.hsscript.bean.WorkTime
+import club.xiaojiawei.hsscript.data.GAME_HWND
 import club.xiaojiawei.hsscript.service.GameTimeoutService
 import club.xiaojiawei.hsscript.service.Service
+import club.xiaojiawei.hsscript.utils.ConfigUtil
 import com.alibaba.fastjson.JSON
 import com.melloware.jintellitype.JIntellitype
 
@@ -16,36 +18,47 @@ import com.melloware.jintellitype.JIntellitype
  * @date 2023/7/5 11:26
  */
 
-const val PATH_CONFIG_GROUP = "path"
-const val TIME_CONFIG_GROUP = "time"
-const val VERSION_CONFIG_GROUP = "version"
-const val ACTION_CONFIG_GROUP = "action"
+const val INIT_CONFIG_GROUP = "init"
+
 const val PLUGIN_CONFIG_GROUP = "plugin"
 const val OTHER_CONFIG_GROUP = "other"
+
+const val STRATEGY_CONFIG_GROUP = "strategy"
+
+const val BEHAVIOR_CONFIG_GROUP = "behavior"
 const val SYSTEM_CONFIG_GROUP = "system"
-const val DEV_CONFIG_GROUP = "dev"
+const val SERVICE_CONFIG_GROUP = "service"
+const val VERSION_CONFIG_GROUP = "version"
+
+const val DEV_CONFIG_GROUP = "version"
 
 enum class ConfigEnum(
     val group: String = "",
     val defaultValue: String = "",
-    val service: Service? = null
+    val service: Service? = null,
+    val valueChangeCallback: ((String) -> Boolean)? = null,
 ) {
 
     /**
      * 游戏路径
      */
-    GAME_PATH(group = PATH_CONFIG_GROUP, defaultValue = ""),
+    GAME_PATH(group = INIT_CONFIG_GROUP, defaultValue = ""),
 
     /**
      * 战网路径
      */
-    PLATFORM_PATH(group = PATH_CONFIG_GROUP, defaultValue = ""),
+    PLATFORM_PATH(group = INIT_CONFIG_GROUP, defaultValue = ""),
+
+    /**
+     * 选择卡组位
+     */
+    CHOOSE_DECK_POS(group = INIT_CONFIG_GROUP, defaultValue = "1"),
 
     /**
      * 工作日标记
      */
     WORK_DAY(
-        group = TIME_CONFIG_GROUP,
+        group = OTHER_CONFIG_GROUP,
         defaultValue = JSON.toJSONString(
             listOf(
                 WorkDay("every", true)
@@ -57,7 +70,7 @@ enum class ConfigEnum(
      * 工作时间，具体时间段
      */
     WORK_TIME(
-        group = TIME_CONFIG_GROUP, defaultValue = JSON.toJSONString(
+        group = OTHER_CONFIG_GROUP, defaultValue = JSON.toJSONString(
             listOf(
                 WorkTime("00:00", "00:00", true),
             )
@@ -82,47 +95,59 @@ enum class ConfigEnum(
     /**
      * 是否执行策略
      */
-    STRATEGY(group = ACTION_CONFIG_GROUP, defaultValue = true.toString()),
+    STRATEGY(group = DEV_CONFIG_GROUP, defaultValue = true.toString()),
 
     /**
      * 启用鼠标
      */
-    ENABLE_MOUSE(group = ACTION_CONFIG_GROUP, defaultValue = true.toString()),
+    ENABLE_MOUSE(group = DEV_CONFIG_GROUP, defaultValue = true.toString()),
 
     /**
      * 动作间隔/ms
      */
-    MOUSE_ACTION_INTERVAL(group = ACTION_CONFIG_GROUP, defaultValue = "3500"),
+    MOUSE_ACTION_INTERVAL(group = STRATEGY_CONFIG_GROUP, defaultValue = "3500"),
 
     /**
      * 适配畸变模式
      */
-    DISTORTION(group = ACTION_CONFIG_GROUP, defaultValue = true.toString()),
+    DISTORTION(group = STRATEGY_CONFIG_GROUP, defaultValue = true.toString()),
 
     /**
      * 鼠标移动暂停间隔，值越小越慢，最小为1
      */
-    PAUSE_STEP(group = ACTION_CONFIG_GROUP, defaultValue = "7"),
+    PAUSE_STEP(group = STRATEGY_CONFIG_GROUP, defaultValue = "7"),
+
+    /**
+     * 运行后最小化软件
+     */
+    RUNNING_MINIMIZE(group = BEHAVIOR_CONFIG_GROUP, defaultValue = false.toString()),
 
     /**
      * 鼠标控制模式
      */
-    MOUSE_CONTROL_MODE(group = ACTION_CONFIG_GROUP, defaultValue = MouseControlModeEnum.MESSAGE.name),
+    MOUSE_CONTROL_MODE(group = BEHAVIOR_CONFIG_GROUP, defaultValue = MouseControlModeEnum.MESSAGE.name),
 
     /**
      * 置顶游戏窗口
      */
-    TOP_GAME_WINDOW(group = ACTION_CONFIG_GROUP, defaultValue = MOUSE_CONTROL_MODE.defaultValue),
+    TOP_GAME_WINDOW(group = BEHAVIOR_CONFIG_GROUP, defaultValue = MOUSE_CONTROL_MODE.defaultValue),
 
     /**
      * 阻止游戏的反作弊
      */
-    PREVENT_AC(group = ACTION_CONFIG_GROUP, defaultValue = false.toString()),
+    PREVENT_AC(group = BEHAVIOR_CONFIG_GROUP, defaultValue = false.toString()),
 
     /**
-     * 选择卡组位
+     * 限制鼠标范围
      */
-    CHOOSE_DECK_POS(group = ACTION_CONFIG_GROUP, defaultValue = "1"),
+    LIMIT_MOUSE_RANGE(group = BEHAVIOR_CONFIG_GROUP, defaultValue = true.toString(), valueChangeCallback = { newValue ->
+        val value = newValue.toBoolean()
+        GAME_HWND?.let {
+//            todo 通过注入dll执行ClipCursor方法
+        }
+        println("value: $value")
+        true
+    }),
 
     /**
      * 套牌插件禁用列表
@@ -147,27 +172,22 @@ enum class ConfigEnum(
     /**
      * 战网密码
      */
-    PLATFORM_PASSWORD(group = OTHER_CONFIG_GROUP, defaultValue = ""),
+    PLATFORM_PASSWORD(group = INIT_CONFIG_GROUP, defaultValue = ""),
 
     /**
      * 游戏日志大小限制/KB，游戏默认10240
      */
-    GAME_LOG_LIMIT(group = OTHER_CONFIG_GROUP, defaultValue = "51200"),
+    GAME_LOG_LIMIT(group = STRATEGY_CONFIG_GROUP, defaultValue = "51200"),
 
     /**
      * 最长匹配时间/s（超过重新匹配）
      */
-    MATCH_MAXIMUM_TIME(group = OTHER_CONFIG_GROUP, defaultValue = "90"),
+    MATCH_MAXIMUM_TIME(group = STRATEGY_CONFIG_GROUP, defaultValue = "90"),
 
     /**
      * 最长空闲时间/min（超过重启游戏）
      */
-    IDLE_MAXIMUM_TIME(group = OTHER_CONFIG_GROUP, defaultValue = "10"),
-
-    /**
-     * 运行后最小化软件
-     */
-    RUNNING_MINIMIZE(group = OTHER_CONFIG_GROUP, defaultValue = false.toString()),
+    IDLE_MAXIMUM_TIME(group = STRATEGY_CONFIG_GROUP, defaultValue = "10"),
 
     /**
      * 当前版本
@@ -177,27 +197,31 @@ enum class ConfigEnum(
     /**
      * 随机事件
      */
-    RANDOM_EVENT(group = OTHER_CONFIG_GROUP, defaultValue = true.toString()),
+    RANDOM_EVENT(group = STRATEGY_CONFIG_GROUP, defaultValue = true.toString()),
 
     /**
      * 随机表情
      */
-    RANDOM_EMOTION(group = OTHER_CONFIG_GROUP, defaultValue = true.toString()),
+    RANDOM_EMOTION(group = STRATEGY_CONFIG_GROUP, defaultValue = true.toString()),
 
     /**
      * 自动投降
      */
-    AUTO_SURRENDER(group = OTHER_CONFIG_GROUP, defaultValue = "-1"),
+    AUTO_SURRENDER(group = STRATEGY_CONFIG_GROUP, defaultValue = "-1"),
 
     /**
      * 只打人机
      */
-    ONLY_ROBOT(group = OTHER_CONFIG_GROUP, defaultValue = false.toString()),
+    ONLY_ROBOT(group = STRATEGY_CONFIG_GROUP, defaultValue = false.toString()),
 
     /**
      * 检查游戏响应超时
      */
-    CHECK_GAME_RESPONSE_TIMEOUT(group = OTHER_CONFIG_GROUP, defaultValue = true.toString(), service = GameTimeoutService),
+    CHECK_GAME_RESPONSE_TIMEOUT(
+        group = SERVICE_CONFIG_GROUP,
+        defaultValue = true.toString(),
+        service = GameTimeoutService
+    ),
 
     /**
      * 允许发送windows通知
@@ -248,4 +272,5 @@ enum class ConfigEnum(
     AUTO_OPEN_GAME_ANALYSIS(group = DEV_CONFIG_GROUP, defaultValue = false.toString()),
 
     ;
+
 }

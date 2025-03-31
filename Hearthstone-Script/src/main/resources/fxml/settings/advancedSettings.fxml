@@ -12,6 +12,7 @@
 <?import java.lang.Double?>
 <?import javafx.util.Duration?>
 <?import club.xiaojiawei.hsscript.component.ServiceSwitch?>
+<?import club.xiaojiawei.hsscript.component.ConfigSwitch?>
 <StackPane xmlns="http://javafx.com/javafx"
            xmlns:fx="http://javafx.com/fxml"
            stylesheets="@../css/settings/advancedSettings.css"
@@ -72,6 +73,23 @@
                                 </Label>
                                 <HBox HBox.hgrow="ALWAYS"/>
                                 <Switch fx:id="preventAntiCheat"/>
+                            </HBox>
+                            <HBox styleClass="h-box">
+                                <Text text="限制鼠标范围"/>
+                                <Label>
+                                    <graphic>
+                                        <HelpIco/>
+                                    </graphic>
+                                    <tooltip>
+                                        <Tooltip text="游戏获得焦点时，鼠标活动范围将限制在游戏窗口内">
+                                            <showDuration>
+                                                <fx:reference source="tooltipDuration"/>
+                                            </showDuration>
+                                        </Tooltip>
+                                    </tooltip>
+                                </Label>
+                                <HBox HBox.hgrow="ALWAYS"/>
+                                <ConfigSwitch notificationManager="${notificationManager}" config="LIMIT_MOUSE_RANGE"/>
                             </HBox>
                         </VBox>
                     </TitledPane>
