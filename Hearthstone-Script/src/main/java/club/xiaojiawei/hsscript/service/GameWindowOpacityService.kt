@@ -15,8 +15,10 @@ import javafx.beans.value.ChangeListener
  */
 object GameWindowOpacityService : Service<Int>() {
 
-    private val changeListener: ChangeListener<HWND?> = ChangeListener<HWND?> { _, _, newValue ->
-        changeOpacity(ConfigUtil.getInt(ConfigEnum.GAME_WINDOW_OPACITY), newValue)
+    private val changeListener: ChangeListener<HWND?> by lazy {
+        ChangeListener<HWND?> { _, _, newValue ->
+            changeOpacity(ConfigUtil.getInt(ConfigEnum.GAME_WINDOW_OPACITY), newValue)
+        }
     }
 
     override fun execStart(): Boolean {
@@ -39,7 +41,7 @@ object GameWindowOpacityService : Service<Int>() {
     private fun changeOpacity(opacity: Int, gameHWND: HWND? = null) {
         (gameHWND ?: GameUtil.findGameHWND())?.let {
             val windowLong = User32.INSTANCE.GetWindowLong(it, GWL_EXSTYLE)
-            if ((windowLong and WS_EX_LAYERED) == 0){
+            if ((windowLong and WS_EX_LAYERED) == 0) {
                 User32.INSTANCE.SetWindowLong(it, GWL_EXSTYLE, windowLong xor WS_EX_LAYERED)
             }
 

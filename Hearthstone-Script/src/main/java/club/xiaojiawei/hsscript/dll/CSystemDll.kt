@@ -61,6 +61,11 @@ interface CSystemDll : Library {
      */
     fun changeWindow(hwnd: HWND?, disable: Boolean)
 
+    /**
+     * 限制鼠标范围
+     */
+    fun limitMouseRange(hwnd: HWND?, limit: Boolean)
+
     fun isRunAsAdministrator(): Boolean
 
     fun messageBox(hwnd: HWND?, text: String?, title: String?, type: Int)

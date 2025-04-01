@@ -5,7 +5,6 @@ import club.xiaojiawei.enums.RunModeEnum
 import club.xiaojiawei.hsscript.bean.HotKey
 import club.xiaojiawei.hsscript.bean.WorkDay
 import club.xiaojiawei.hsscript.bean.WorkTime
-import club.xiaojiawei.hsscript.data.GAME_HWND
 import club.xiaojiawei.hsscript.service.*
 import com.alibaba.fastjson.JSON
 import com.melloware.jintellitype.JIntellitype
@@ -25,6 +24,7 @@ const val STRATEGY_CONFIG_GROUP = "strategy"
 
 const val BEHAVIOR_CONFIG_GROUP = "behavior"
 const val SYSTEM_CONFIG_GROUP = "system"
+
 //const val SERVICE_CONFIG_GROUP = "service"
 const val VERSION_CONFIG_GROUP = "version"
 
@@ -127,7 +127,11 @@ enum class ConfigEnum(
     /**
      * 置顶游戏窗口
      */
-    TOP_GAME_WINDOW(group = BEHAVIOR_CONFIG_GROUP, defaultValue = MOUSE_CONTROL_MODE.defaultValue, service = TopGameWindowService),
+    TOP_GAME_WINDOW(
+        group = BEHAVIOR_CONFIG_GROUP,
+        defaultValue = MOUSE_CONTROL_MODE.defaultValue,
+        service = TopGameWindowService
+    ),
 
     /**
      * 阻止游戏的反作弊
@@ -137,7 +141,7 @@ enum class ConfigEnum(
     /**
      * 限制鼠标范围
      */
-    LIMIT_MOUSE_RANGE(group = BEHAVIOR_CONFIG_GROUP, defaultValue = true.toString(), ),
+    LIMIT_MOUSE_RANGE(group = BEHAVIOR_CONFIG_GROUP, defaultValue = true.toString(), service = LimitMouseRangeService),
 
     /**
      * 游戏窗口不透明度(0~255)
