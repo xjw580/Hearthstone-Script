@@ -322,6 +322,7 @@ class AdvancedSettingsController : AdvancedSettingsView(), Initializable {
             }
         gameWindowOpacity.textProperty().addListener { observable, oldValue, newValue ->
             ConfigEnum.GAME_WINDOW_OPACITY.service?.let {
+                if (newValue.isNullOrBlank()) return@addListener
                 val res = it.start()
                 (it as Service<Int>).valueChanged(oldValue.toInt(), newValue.toInt())
                 if (res) {

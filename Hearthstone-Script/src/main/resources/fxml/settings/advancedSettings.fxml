@@ -89,13 +89,13 @@
                                 <ConfigSwitch notificationManager="${notificationManager}" config="LIMIT_MOUSE_RANGE"/>
                             </HBox>
                             <HBox styleClass="h-box">
-                                <Text text="游戏窗口透明度"/>
+                                <Text text="游戏窗口不透明度"/>
                                 <Label>
                                     <graphic>
                                         <HelpIco/>
                                     </graphic>
                                     <tooltip>
-                                        <Tooltip text="透明度为0时，鼠标将穿透游戏窗口">
+                                        <Tooltip text="不透明度为0时，鼠标将穿透游戏窗口">
                                             <showDuration>
                                                 <fx:reference source="tooltipDuration"/>
                                             </showDuration>
