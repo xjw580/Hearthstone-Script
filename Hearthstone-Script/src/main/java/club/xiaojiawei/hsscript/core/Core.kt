@@ -68,9 +68,6 @@ object Core {
                     PauseStatus.isPause = true
                 } else if (!PauseStatus.isPause) {
                     WorkListener.working = true
-                    if (ConfigUtil.getBoolean(ConfigEnum.RUNNING_MINIMIZE)) {
-                        WindowUtil.hideAllStage()
-                    }
                     StarterConfig.starter.start()
                 }
             }

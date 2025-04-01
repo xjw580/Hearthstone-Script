@@ -1,18 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import club.xiaojiawei.controls.ico.GiteeIco?>
-<?import club.xiaojiawei.controls.ico.GithubIco?>
-<?import club.xiaojiawei.controls.ico.HelpIco?>
+<?import club.xiaojiawei.controls.ico.*?>
 <?import club.xiaojiawei.controls.*?>
 <?import club.xiaojiawei.factory.NotificationFactory?>
+<?import club.xiaojiawei.hsscript.component.ConfigSwitch?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.Group?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
-<?import java.lang.Double?>
 <?import javafx.util.Duration?>
-<?import club.xiaojiawei.hsscript.component.ServiceSwitch?>
-<?import club.xiaojiawei.hsscript.component.ConfigSwitch?>
+<?import java.lang.Double?>
 <StackPane xmlns="http://javafx.com/javafx"
            xmlns:fx="http://javafx.com/fxml"
            stylesheets="@../css/settings/advancedSettings.css"
@@ -29,13 +26,13 @@
                                 styleClass="titled-pane-ui, titled-pane-ui-big, titled-pane-ui-pure, item-titled-pane">
                         <VBox styleClass="item-v-box">
                             <HBox styleClass="h-box">
-                                <Text text="挂机时最小化"/>
+                                <Text text="工作时最小化"/>
                                 <Label>
                                     <graphic>
                                         <HelpIco/>
                                     </graphic>
                                     <tooltip>
-                                        <Tooltip text="挂机时将关闭软件窗口仅保留托盘，此时只能检测到Java进程">
+                                        <Tooltip text="工作时将关闭软件所有窗口仅保留托盘，此时只能检测到Java进程">
                                             <showDuration>
                                                 <fx:reference source="tooltipDuration"/>
                                             </showDuration>
@@ -43,7 +40,7 @@
                                     </tooltip>
                                 </Label>
                                 <HBox HBox.hgrow="ALWAYS"/>
-                                <Switch fx:id="runningMinimize"/>
+                                <ConfigSwitch fx:id="runningMinimize" notificationManager="${notificationManager}" config="WORKING_MINIMIZE"/>
                             </HBox>
                             <HBox styleClass="h-box">
                                 <Text text="鼠标控制模式"/>
@@ -55,7 +52,7 @@
                             <HBox styleClass="h-box">
                                 <Text text="置顶游戏窗口"/>
                                 <HBox HBox.hgrow="ALWAYS"/>
-                                <Switch fx:id="topGameWindow"/>
+                                <ConfigSwitch fx:id="topGameWindow" notificationManager="${notificationManager}" config="TOP_GAME_WINDOW"/>
                             </HBox>
                             <HBox styleClass="h-box">
                                 <Text text="阻止游戏反作弊（Beta）"/>
@@ -90,6 +87,23 @@
                                 </Label>
                                 <HBox HBox.hgrow="ALWAYS"/>
                                 <ConfigSwitch notificationManager="${notificationManager}" config="LIMIT_MOUSE_RANGE"/>
+                            </HBox>
+                            <HBox styleClass="h-box">
+                                <Text text="游戏窗口透明度"/>
+                                <Label>
+                                    <graphic>
+                                        <HelpIco/>
+                                    </graphic>
+                                    <tooltip>
+                                        <Tooltip text="透明度为0时，鼠标将穿透游戏窗口">
+                                            <showDuration>
+                                                <fx:reference source="tooltipDuration"/>
+                                            </showDuration>
+                                        </Tooltip>
+                                    </tooltip>
+                                </Label>
+                                <HBox HBox.hgrow="ALWAYS" />
+                                <NumberField fx:id="gameWindowOpacity" styleClass="text-field-ui, text-field-ui-small" minValue="0" maxValue="255" prefWidth="80"/>
                             </HBox>
                         </VBox>
                     </TitledPane>
@@ -194,7 +208,7 @@
                                     </tooltip>
                                 </Label>
                                 <HBox HBox.hgrow="ALWAYS" />
-                                <ServiceSwitch notificationManager="${notificationManager}" config="CHECK_GAME_RESPONSE_TIMEOUT"/>
+                                <ConfigSwitch notificationManager="${notificationManager}" config="GAME_TIMEOUT"/>
                             </HBox>
                         </VBox>
                     </TitledPane>

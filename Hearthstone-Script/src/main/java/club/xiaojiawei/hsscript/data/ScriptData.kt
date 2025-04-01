@@ -1,12 +1,12 @@
 package club.xiaojiawei.hsscript.data
 
-import club.xiaojiawei.config.log
-import club.xiaojiawei.hsscript.dll.CSystemDll
 import club.xiaojiawei.hsscript.enums.ConfigEnum
-import club.xiaojiawei.hsscript.status.PauseStatus
 import club.xiaojiawei.hsscript.utils.ConfigUtil
 import com.sun.jna.platform.win32.WinDef
 import com.sun.jna.platform.win32.WinDef.HWND
+import javafx.beans.property.ObjectProperty
+import javafx.beans.property.ReadOnlyObjectProperty
+import javafx.beans.property.ReadOnlyObjectWrapper
 import java.awt.Robot
 import java.awt.Toolkit
 import java.time.ZoneOffset
@@ -24,20 +24,19 @@ val SCREEN_SCALE = Toolkit.getDefaultToolkit().screenResolution / 96.0
  */
 var haveProgramPath = true
 
+private val gameHWNDInner = ReadOnlyObjectWrapper<HWND?>(null)
+
 /**
  * 游戏窗口句柄
  */
-var GAME_HWND: HWND? = null
-    set(value) {
-        value?.let {
-            if (!PauseStatus.isPause && ConfigUtil.getBoolean(ConfigEnum.TOP_GAME_WINDOW)) {
-                CSystemDll.INSTANCE.topWindow(value, true)
-            }
+var GAME_HWND: HWND?
+    set(value) = gameHWNDInner.set(value)
+    get() = gameHWNDInner.get()
 
-        }
-        log.info { GAME_CN_NAME + "窗口句柄:${value}" }
-        field = value
-    }
+fun gameHWNDReadOnlyProperty(): ReadOnlyObjectProperty<HWND?> = gameHWNDInner.readOnlyProperty
+
+fun gameHWNDProperty(): ObjectProperty<HWND?> = gameHWNDInner
+
 const val GAME_CN_NAME: String = "炉石传说"
 const val PLATFORM_CN_NAME: String = "战网"
 const val PLATFORM_LOGIN_CN_NAME: String = "战网登录"

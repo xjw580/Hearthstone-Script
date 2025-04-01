@@ -18,12 +18,9 @@ import javafx.stage.Stage
  * @author 肖嘉威
  * @date 2025/3/7 20:32
  */
-object SystemListener {
+object SystemSleepListener {
 
     val launch: Unit by lazy {
-        ConfigUtil.getBoolean(ConfigEnum.CHECK_GAME_RESPONSE_TIMEOUT).isTrue {
-            ConfigEnum.CHECK_GAME_RESPONSE_TIMEOUT.service?.start()
-        }
         PauseStatus.addListener { _, _, isPause: Boolean ->
             check()
         }

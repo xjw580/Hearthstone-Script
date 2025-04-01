@@ -17,6 +17,7 @@ object InitializerConfig {
             .setNextInitializer(GameLogInitializer())
             .setNextInitializer(PluginInitializer())
             .setNextInitializer(DriverInitializer())
+            .setNextInitializer(ServiceInitializer())
     }
 
 }

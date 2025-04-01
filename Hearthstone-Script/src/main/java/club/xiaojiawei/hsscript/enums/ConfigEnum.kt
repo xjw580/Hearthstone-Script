@@ -6,9 +6,7 @@ import club.xiaojiawei.hsscript.bean.HotKey
 import club.xiaojiawei.hsscript.bean.WorkDay
 import club.xiaojiawei.hsscript.bean.WorkTime
 import club.xiaojiawei.hsscript.data.GAME_HWND
-import club.xiaojiawei.hsscript.service.GameTimeoutService
-import club.xiaojiawei.hsscript.service.Service
-import club.xiaojiawei.hsscript.utils.ConfigUtil
+import club.xiaojiawei.hsscript.service.*
 import com.alibaba.fastjson.JSON
 import com.melloware.jintellitype.JIntellitype
 
@@ -27,7 +25,7 @@ const val STRATEGY_CONFIG_GROUP = "strategy"
 
 const val BEHAVIOR_CONFIG_GROUP = "behavior"
 const val SYSTEM_CONFIG_GROUP = "system"
-const val SERVICE_CONFIG_GROUP = "service"
+//const val SERVICE_CONFIG_GROUP = "service"
 const val VERSION_CONFIG_GROUP = "version"
 
 const val DEV_CONFIG_GROUP = "version"
@@ -35,8 +33,7 @@ const val DEV_CONFIG_GROUP = "version"
 enum class ConfigEnum(
     val group: String = "",
     val defaultValue: String = "",
-    val service: Service? = null,
-    val valueChangeCallback: ((String) -> Boolean)? = null,
+    val service: Service<*>? = null,
 ) {
 
     /**
@@ -118,9 +115,9 @@ enum class ConfigEnum(
     PAUSE_STEP(group = STRATEGY_CONFIG_GROUP, defaultValue = "7"),
 
     /**
-     * 运行后最小化软件
+     * 工作时最小化软件
      */
-    RUNNING_MINIMIZE(group = BEHAVIOR_CONFIG_GROUP, defaultValue = false.toString()),
+    WORKING_MINIMIZE(group = BEHAVIOR_CONFIG_GROUP, defaultValue = false.toString(), service = WorkingMinimizeService),
 
     /**
      * 鼠标控制模式
@@ -130,7 +127,7 @@ enum class ConfigEnum(
     /**
      * 置顶游戏窗口
      */
-    TOP_GAME_WINDOW(group = BEHAVIOR_CONFIG_GROUP, defaultValue = MOUSE_CONTROL_MODE.defaultValue),
+    TOP_GAME_WINDOW(group = BEHAVIOR_CONFIG_GROUP, defaultValue = MOUSE_CONTROL_MODE.defaultValue, service = TopGameWindowService),
 
     /**
      * 阻止游戏的反作弊
@@ -140,14 +137,12 @@ enum class ConfigEnum(
     /**
      * 限制鼠标范围
      */
-    LIMIT_MOUSE_RANGE(group = BEHAVIOR_CONFIG_GROUP, defaultValue = true.toString(), valueChangeCallback = { newValue ->
-        val value = newValue.toBoolean()
-        GAME_HWND?.let {
-//            todo 通过注入dll执行ClipCursor方法
-        }
-        println("value: $value")
-        true
-    }),
+    LIMIT_MOUSE_RANGE(group = BEHAVIOR_CONFIG_GROUP, defaultValue = true.toString(), ),
+
+    /**
+     * 游戏窗口不透明度(0~255)
+     */
+    GAME_WINDOW_OPACITY(group = BEHAVIOR_CONFIG_GROUP, defaultValue = "255", service = GameWindowOpacityService),
 
     /**
      * 套牌插件禁用列表
@@ -217,8 +212,8 @@ enum class ConfigEnum(
     /**
      * 检查游戏响应超时
      */
-    CHECK_GAME_RESPONSE_TIMEOUT(
-        group = SERVICE_CONFIG_GROUP,
+    GAME_TIMEOUT(
+        group = BEHAVIOR_CONFIG_GROUP,
         defaultValue = true.toString(),
         service = GameTimeoutService
     ),

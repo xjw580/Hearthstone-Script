@@ -347,7 +347,7 @@ class MainApplication : Application() {
         GlobalHotkeyListener.launch
         VersionListener.launch
         WorkListener.launch
-        SystemListener.launch
+        SystemSleepListener.launch
         StatisticsListener.launch
     }
 

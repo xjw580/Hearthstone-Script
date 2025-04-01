@@ -53,6 +53,8 @@ object WorkListener {
         cannotWorkLog()
         log.info { "停止工作，准备关闭游戏" }
         GameUtil.killGame()
+        GameUtil.killPlatform()
+        GameUtil.killLoginPlatform()
     }
 
     fun cannotWorkLog() {

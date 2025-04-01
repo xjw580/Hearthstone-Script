@@ -1,7 +1,9 @@
 package club.xiaojiawei.hsscript.controller.javafx.view
 
 import club.xiaojiawei.controls.NotificationManager
+import club.xiaojiawei.controls.NumberField
 import club.xiaojiawei.controls.Switch
+import club.xiaojiawei.hsscript.component.ConfigSwitch
 import club.xiaojiawei.hsscript.enums.MouseControlModeEnum
 import javafx.fxml.FXML
 import javafx.scene.Group
@@ -92,10 +94,13 @@ open class AdvancedSettingsView {
     protected lateinit var autoUpdate: Switch
 
     @FXML
-    protected lateinit var runningMinimize: Switch
+    protected lateinit var runningMinimize: ConfigSwitch
 
     @FXML
-    protected lateinit var topGameWindow: Switch
+    protected lateinit var topGameWindow: ConfigSwitch
+
+    @FXML
+    protected lateinit var gameWindowOpacity: NumberField
 
     @FXML
     protected lateinit var sendNotice: Switch
