@@ -24,12 +24,26 @@ class InjectStarter : AbstractStarter() {
     override fun execStart() {
         val mouseControlMode = ConfigExUtil.getMouseControlMode()
         log.info { "鼠标控制模式：${mouseControlMode.name}" }
-        val preventAC = ConfigUtil.getBoolean(ConfigEnum.PREVENT_AC)
-        log.info { "阻止游戏反作弊：${preventAC}" }
-        if (mouseControlMode === MouseControlModeEnum.MESSAGE || preventAC){
-            if (GAME_HWND == null || !injectCheck()){
+        val acHook = ConfigUtil.getBoolean(ConfigEnum.PREVENT_AC)
+        log.info { "阻止游戏反作弊：${acHook}" }
+        val mouseHook = mouseControlMode === MouseControlModeEnum.MESSAGE
+        val limitMouseRange = ConfigUtil.getBoolean(ConfigEnum.LIMIT_MOUSE_RANGE)
+        if (mouseHook
+            || acHook
+            || limitMouseRange
+        ) {
+            if (GAME_HWND == null || !injectCheck()) {
                 pause()
                 return
+            }
+            if (mouseHook) {
+                CSystemDll.INSTANCE.mouserHook(true)
+            }
+//            if (acHook) {
+//                CSystemDll.INSTANCE.acHook(true)
+//            }
+            if (limitMouseRange) {
+                CSystemDll.INSTANCE.limitMouseRange(true)
             }
         }
         startNextStarter()

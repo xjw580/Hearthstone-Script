@@ -138,12 +138,12 @@ object ConfigExUtil {
                 if (oldMouseControlMode === MouseControlModeEnum.DRIVE) {
                     DriverInitializer().uninstall()
                 }
-                CSystemDll.INSTANCE.uninstallInjectDll(GAME_HWND)
+                CSystemDll.INSTANCE.mouserHook(false)
             }
 
             MouseControlModeEnum.DRIVE -> {
                 DriverInitializer().install()
-                CSystemDll.INSTANCE.uninstallInjectDll(GAME_HWND)
+                CSystemDll.INSTANCE.mouserHook(false)
             }
         }
         ConfigUtil.putString(ConfigEnum.MOUSE_CONTROL_MODE, mouseControlModeEnum.name)

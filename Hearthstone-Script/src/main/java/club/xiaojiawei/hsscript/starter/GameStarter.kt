@@ -117,8 +117,7 @@ class GameStarter : AbstractStarter() {
         go {
             Thread.sleep(3000)
             GameUtil.updateGameRect()
-            CSystemDll.INSTANCE.changeWindow(GAME_HWND, true)
-            CSystemDll.INSTANCE.changeInput(GAME_HWND, true)
+            CSystemDll.INSTANCE.changeWindow(true)
         }
     }
 

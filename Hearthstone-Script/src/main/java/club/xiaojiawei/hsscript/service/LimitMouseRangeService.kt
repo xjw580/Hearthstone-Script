@@ -38,7 +38,7 @@ object LimitMouseRangeService : Service<Boolean>() {
 
     private fun limitMouse(limit: Boolean, gameHWND: HWND? = null) {
         (gameHWND ?: GameUtil.findGameHWND())?.let {
-            CSystemDll.INSTANCE.limitMouseRange(it, limit)
+            CSystemDll.INSTANCE.limitMouseRange(limit)
         }
     }
 

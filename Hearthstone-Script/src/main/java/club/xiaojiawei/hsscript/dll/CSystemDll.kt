@@ -15,6 +15,8 @@ import java.time.format.DateTimeFormatter
  */
 interface CSystemDll : Library {
 
+    /*===================================mouse===================================*/
+
     fun leftClick(x: Long, y: Long, hwnd: HWND?, mouseMode: Int)
 
     fun rightClick(x: Long, y: Long, hwnd: HWND?, mouseMode: Int)
@@ -29,13 +31,21 @@ interface CSystemDll : Library {
         mouseMode: Int,
     )
 
-    fun quitWindow(hwnd: HWND?)
-
-    fun frontWindow(hwnd: HWND?)
-
     fun clickPlatformLoginBtn(loginPlatformHWND: HWND?)
 
     fun sendText(hwnd: HWND?, text: String?, append: Boolean)
+
+    fun refreshDriver(): Int
+
+    fun loadDriver(): Int
+
+    fun releaseDriver(): Int
+
+    /*===================================system===================================*/
+
+    fun quitWindow(hwnd: HWND?)
+
+    fun frontWindow(hwnd: HWND?)
 
     fun topWindow(hwnd: HWND?, isTop: Boolean): Boolean
 
@@ -44,27 +54,6 @@ interface CSystemDll : Library {
     fun moveWindow(hwnd: HWND?, x: Int, y: Int, w: Int, h: Int, ignoreSize: Boolean): Boolean
 
     fun moveWindowForTitle(title: String?, x: Int, y: Int, w: Int, h: Int, ignoreSize: Boolean): Boolean
-
-    fun uninstallInjectDll(hwnd: HWND?)
-
-    /**
-     * 是否禁用输入
-     * @param hwnd
-     * @param disable
-     */
-    fun changeInput(hwnd: HWND?, disable: Boolean)
-
-    /**
-     * 是否禁用窗口调整
-     * @param hwnd
-     * @param disable
-     */
-    fun changeWindow(hwnd: HWND?, disable: Boolean)
-
-    /**
-     * 限制鼠标范围
-     */
-    fun limitMouseRange(hwnd: HWND?, limit: Boolean)
 
     fun isRunAsAdministrator(): Boolean
 
@@ -91,6 +80,19 @@ interface CSystemDll : Library {
 
     fun isProcessRunning(processName: String): Boolean
 
+    /*===================================message===================================*/
+
+    fun changeWindow(disable: Boolean);
+
+    fun uninstall();
+
+    fun mouserHook(enable: Boolean);
+
+    fun acHook(enable: Boolean);
+
+    fun limitMouseRange(enable: Boolean);
+
+    /*===================================tray===================================*/
 
     interface TrayCallback : Callback {
         fun invoke()
@@ -154,11 +156,7 @@ interface CSystemDll : Library {
 
     fun removeSystemTray(): Boolean
 
-    fun refreshDriver(): Int
-
-    fun loadDriver(): Int
-
-    fun releaseDriver(): Int
+    /*ex*/
 
     companion object {
 

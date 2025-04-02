@@ -162,9 +162,7 @@ class MainApplication : Application() {
                 LThread(
                     {
                         CSystemDll.INSTANCE.removeSystemTray()
-                        GameUtil.findGameHWND()?.let {
-                            CSystemDll.INSTANCE.uninstallInjectDll(it)
-                        }
+                        CSystemDll.INSTANCE.uninstall()
                         log.info { "软件已关闭" }
                     },
                     "ShutdownHook Thread"

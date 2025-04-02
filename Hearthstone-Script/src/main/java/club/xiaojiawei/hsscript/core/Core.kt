@@ -30,8 +30,7 @@ object Core {
     val launch: Unit by lazy {
         PauseStatus.addListener { _, _, newValue ->
             newValue.isTrue {
-                CSystemDll.INSTANCE.changeInput(GAME_HWND, false)
-                CSystemDll.INSTANCE.changeWindow(GAME_HWND, false)
+                CSystemDll.INSTANCE.changeWindow(false)
                 WorkListener.working = false
                 Mode.reset()
                 runUI { WindowUtil.getStage(WindowEnum.MAIN)?.show() }
