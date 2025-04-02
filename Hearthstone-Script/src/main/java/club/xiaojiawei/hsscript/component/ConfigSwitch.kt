@@ -21,7 +21,7 @@ open class ConfigSwitch : Switch() {
             field = value
         }
 
-    var notificationManager: NotificationManager<*>? = null
+    var notificationManager: NotificationManager<Any>? = null
 
     init {
         statusProperty().addListener { _, oldValue, newValue ->
@@ -35,39 +35,33 @@ open class ConfigSwitch : Switch() {
         config?.let {
             ConfigUtil.putBoolean(it, newValue)
         }
-        var res = false
+        var res = true
         if (newValue) {
             config?.service?.let { service ->
                 res = service.start()
                 (service as Service<Boolean>).valueChanged(oldValue, newValue)
-                notificationManager?.let { nm ->
-                    runUI {
-                        if (res) {
-                            nm.showInfo("设置成功", 2)
-                        } else {
-                            nm.showInfo("设置失败", 2)
-                        }
-                    }
-                }
             }
         } else {
             config?.service?.let { service ->
                 res = service.stop()
                 (service as Service<Boolean>).valueChanged(oldValue, newValue)
-                notificationManager?.let { nm ->
-                    runUI {
-                        if (res) {
-                            nm.showInfo("设置成功", 2)
-                        } else {
-                            nm.showInfo("设置失败", 2)
-                        }
-                    }
-                }
+
             }
         }
-        if (!res) {
+        if (res) {
+            notificationManager?.let { nm ->
+                runUI {
+                    nm.showInfo("设置成功", 2)
+                }
+            }
+        } else {
             config?.let {
                 ConfigUtil.putBoolean(it, oldValue)
+            }
+            notificationManager?.let { nm ->
+                runUI {
+                    nm.showInfo("设置失败", 2)
+                }
             }
         }
     }

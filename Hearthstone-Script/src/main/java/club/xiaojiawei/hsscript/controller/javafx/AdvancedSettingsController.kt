@@ -8,7 +8,6 @@ import club.xiaojiawei.hsscript.dll.CSystemDll
 import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.enums.MouseControlModeEnum
 import club.xiaojiawei.hsscript.listener.GlobalHotkeyListener
-import club.xiaojiawei.hsscript.listener.SystemSleepListener
 import club.xiaojiawei.hsscript.service.Service
 import club.xiaojiawei.hsscript.utils.ConfigExUtil
 import club.xiaojiawei.hsscript.utils.ConfigExUtil.getExitHotKey
@@ -17,12 +16,8 @@ import club.xiaojiawei.hsscript.utils.ConfigExUtil.storeExitHotKey
 import club.xiaojiawei.hsscript.utils.ConfigExUtil.storeMouseControlMode
 import club.xiaojiawei.hsscript.utils.ConfigExUtil.storePauseHotKey
 import club.xiaojiawei.hsscript.utils.ConfigUtil
-import club.xiaojiawei.hsscript.utils.ConfigUtil.getBoolean
 import club.xiaojiawei.hsscript.utils.ConfigUtil.getString
-import club.xiaojiawei.hsscript.utils.ConfigUtil.putBoolean
 import club.xiaojiawei.hsscript.utils.ConfigUtil.putString
-import club.xiaojiawei.util.isFalse
-import club.xiaojiawei.util.isTrue
 import com.melloware.jintellitype.JIntellitypeConstants
 import javafx.animation.KeyFrame
 import javafx.animation.KeyValue
@@ -57,8 +52,6 @@ class AdvancedSettingsController : AdvancedSettingsView(), Initializable {
         } else {
             githubUpdateSource.isSelected = true
         }
-        updateDev.status = getBoolean(ConfigEnum.UPDATE_DEV)
-        autoUpdate.status = getBoolean(ConfigEnum.AUTO_UPDATE)
         mouseControlModeComboBox.setCellFactory {
             object : ListCell<MouseControlModeEnum?>() {
                 private val ico = HelpIco()
@@ -81,12 +74,6 @@ class AdvancedSettingsController : AdvancedSettingsView(), Initializable {
         val isDrive = mouseControlModeComboBox.value === MouseControlModeEnum.DRIVE
         refreshDriver.isVisible = isDrive
         refreshDriver.isManaged = isDrive
-        preventAntiCheat.status = getBoolean(ConfigEnum.PREVENT_AC)
-        sendNotice.status = getBoolean(ConfigEnum.SEND_NOTICE)
-        useProxy.status = getBoolean(ConfigEnum.USE_PROXY)
-        autoOffScreen.status = getBoolean(ConfigEnum.AUTO_OFF_SCREEN)
-        autoSleep.status = getBoolean(ConfigEnum.AUTO_SLEEP)
-        autoWake.status = getBoolean(ConfigEnum.AUTO_WAKE)
         gameWindowOpacity.text = getString(ConfigEnum.GAME_WINDOW_OPACITY)
 
         val pauseKey = getPauseHotKey()
@@ -180,22 +167,6 @@ class AdvancedSettingsController : AdvancedSettingsView(), Initializable {
         updateSourceToggle.selectedToggleProperty().addListener { _, _, newValue ->
             ConfigUtil.putString(ConfigEnum.UPDATE_SOURCE, (newValue as ToggleButton).text)
         }
-//        监听更新开发版开关
-        updateDev.statusProperty()
-            .addListener { observable, oldValue, newValue ->
-                putBoolean(
-                    ConfigEnum.UPDATE_DEV,
-                    newValue, true
-                )
-            }
-        //        监听自动更新开关
-        autoUpdate.statusProperty()
-            .addListener { observable, oldValue, newValue ->
-                putBoolean(
-                    ConfigEnum.AUTO_UPDATE,
-                    newValue, true
-                )
-            }
         //        监听鼠标模式开关
         mouseControlModeComboBox.valueProperty()
             .addListener { observable, oldValue, newValue ->
@@ -205,27 +176,6 @@ class AdvancedSettingsController : AdvancedSettingsView(), Initializable {
                 refreshDriver.isManaged = isDrive
                 topGameWindow.status =
                     (newValue === MouseControlModeEnum.EVENT || newValue === MouseControlModeEnum.DRIVE)
-            }
-//        监听阻止反作弊开关
-        preventAntiCheat.statusProperty()
-            .addListener { observable, oldValue, newValue ->
-                ConfigExUtil.storePreventAntiCheat(newValue)
-            }
-        //        监听发送通知开关
-        sendNotice.statusProperty()
-            .addListener { observable, oldValue, newValue ->
-                putBoolean(
-                    ConfigEnum.SEND_NOTICE,
-                    newValue, true
-                )
-            }
-        //        监听使用系统代理开关
-        useProxy.statusProperty()
-            .addListener { observable, oldValue, newValue ->
-                putBoolean(
-                    ConfigEnum.USE_PROXY,
-                    newValue, true
-                )
             }
 
         pauseHotKey.onKeyPressed =
@@ -285,39 +235,6 @@ class AdvancedSettingsController : AdvancedSettingsView(), Initializable {
             .addListener { observable, oldValue, newValue ->
                 if (!newValue) {
                     modifier = 0
-                }
-            }
-
-        autoOffScreen.statusProperty()
-            .addListener { observable, oldValue, newValue ->
-                putBoolean(
-                    ConfigEnum.AUTO_OFF_SCREEN,
-                    newValue, true
-                )
-                newValue.isTrue {
-                    SystemSleepListener.check()
-                }
-            }
-        autoSleep.statusProperty()
-            .addListener { observable, oldValue, newValue ->
-                putBoolean(
-                    ConfigEnum.AUTO_SLEEP,
-                    newValue, true
-                )
-                newValue.isTrue {
-                    SystemSleepListener.check()
-                }
-            }
-        autoWake.statusProperty()
-            .addListener { observable, oldValue, newValue ->
-                putBoolean(
-                    ConfigEnum.AUTO_WAKE,
-                    newValue, true
-                )
-                newValue.isTrue {
-                    SystemSleepListener.check()
-                }.isFalse {
-                    CSystemDll.setWakeUpTimer(0)
                 }
             }
         gameWindowOpacity.textProperty().addListener { observable, oldValue, newValue ->

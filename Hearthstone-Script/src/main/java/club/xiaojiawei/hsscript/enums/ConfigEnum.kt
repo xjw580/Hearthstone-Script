@@ -136,7 +136,7 @@ enum class ConfigEnum(
     /**
      * 阻止游戏的反作弊
      */
-    PREVENT_AC(group = BEHAVIOR_CONFIG_GROUP, defaultValue = false.toString()),
+    PREVENT_AC(group = BEHAVIOR_CONFIG_GROUP, defaultValue = false.toString(), service = PreventACService()),
 
     /**
      * 限制鼠标范围
@@ -254,6 +254,11 @@ enum class ConfigEnum(
      * 自动睡眠
      */
     AUTO_SLEEP(group = SYSTEM_CONFIG_GROUP, defaultValue = false.toString()),
+
+    /**
+     * 自动锁屏
+     */
+    AUTO_LOCK_SCREEN(group = SYSTEM_CONFIG_GROUP, defaultValue = false.toString()),
 
     /**
      * 自动唤醒

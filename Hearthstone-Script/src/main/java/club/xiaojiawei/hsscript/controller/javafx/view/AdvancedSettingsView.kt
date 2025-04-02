@@ -2,7 +2,6 @@ package club.xiaojiawei.hsscript.controller.javafx.view
 
 import club.xiaojiawei.controls.NotificationManager
 import club.xiaojiawei.controls.NumberField
-import club.xiaojiawei.controls.Switch
 import club.xiaojiawei.hsscript.component.ConfigSwitch
 import club.xiaojiawei.hsscript.enums.MouseControlModeEnum
 import javafx.fxml.FXML
@@ -16,10 +15,6 @@ import javafx.scene.layout.VBox
  * @date 2025/3/7 16:11
  */
 open class AdvancedSettingsView {
-
-
-    @FXML
-    protected lateinit var preventAntiCheat: Switch
 
     @FXML
     protected lateinit var systemTitled: TitledPane
@@ -88,37 +83,13 @@ open class AdvancedSettingsView {
     protected lateinit var notificationManager: NotificationManager<Any>
 
     @FXML
-    protected lateinit var updateDev: Switch
-
-    @FXML
-    protected lateinit var autoUpdate: Switch
-
-    @FXML
-    protected lateinit var runningMinimize: ConfigSwitch
-
-    @FXML
     protected lateinit var topGameWindow: ConfigSwitch
 
     @FXML
     protected lateinit var gameWindowOpacity: NumberField
 
     @FXML
-    protected lateinit var sendNotice: Switch
-
-    @FXML
-    protected lateinit var useProxy: Switch
-
-    @FXML
     protected lateinit var rootPane: StackPane
-
-    @FXML
-    protected lateinit var autoOffScreen: Switch
-
-    @FXML
-    protected lateinit var autoWake: Switch
-
-    @FXML
-    protected lateinit var autoSleep: Switch
 
     @FXML
     protected lateinit var refreshDriver: Button
