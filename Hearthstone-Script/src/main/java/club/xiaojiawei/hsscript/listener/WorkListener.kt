@@ -42,8 +42,12 @@ object WorkListener {
     val workingProperty = SimpleBooleanProperty(false)
 
     var working: Boolean
-        get() = workingProperty.get()
-        set(value) = workingProperty.set(value)
+        get() {
+            return workingProperty.get()
+        }
+        set(value) {
+            workingProperty.set(value)
+        }
 
     private var enableUpdate = true
 

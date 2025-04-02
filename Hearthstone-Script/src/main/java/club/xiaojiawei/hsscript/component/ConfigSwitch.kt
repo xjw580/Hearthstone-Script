@@ -32,6 +32,9 @@ open class ConfigSwitch : Switch() {
     }
 
     protected open fun statusChangeCallback(oldValue: Boolean, newValue: Boolean) {
+        config?.let {
+            ConfigUtil.putBoolean(it, newValue)
+        }
         var res = false
         if (newValue) {
             config?.service?.let { service ->
@@ -62,9 +65,9 @@ open class ConfigSwitch : Switch() {
                 }
             }
         }
-        if (res) {
+        if (!res) {
             config?.let {
-                ConfigUtil.putBoolean(it, newValue)
+                ConfigUtil.putBoolean(it, oldValue)
             }
         }
     }

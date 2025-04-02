@@ -39,7 +39,7 @@ object Mode {
         }
     }
 
-    private fun stopTask(){
+    private fun stopTask() {
         nextModeTimeoutTask?.let {
             it.cancel(true)
             nextModeTimeoutTask = null
@@ -53,6 +53,7 @@ object Mode {
             stopTask()
             field = value
             if (value == null) return
+            log.info { "准备进入【${value.comment}】" }
             nextModeTimeoutTask = EXTRA_THREAD_POOL.schedule({
                 if (currMode != value) {
                     log.warn { "日志长时间未打印已进入${value.comment}，默认已经进入" }
@@ -77,6 +78,8 @@ object Mode {
     fun reset() {
         currMode?.let {
             currMode = null
+            nextMode = null
+            prevMode = null
             log.info { "已重置模式状态" }
         }
     }

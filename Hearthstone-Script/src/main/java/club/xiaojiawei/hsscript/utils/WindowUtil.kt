@@ -1,6 +1,7 @@
 package club.xiaojiawei.hsscript.utils
 
 import club.xiaojiawei.JavaFXUI
+import club.xiaojiawei.config.log
 import club.xiaojiawei.hsscript.data.FXML_DIR
 import club.xiaojiawei.hsscript.data.SCRIPT_NAME
 import club.xiaojiawei.hsscript.dll.CSystemDll
@@ -220,7 +221,9 @@ object WindowUtil {
                 }
             }
             stage.setOnHiding {
-                stage.isIconified = false
+                kotlin.runCatching {
+                    stage.isIconified = false
+                }.onFailure { log.error { it.message } }
                 for (entry in STAGE_MAP) {
                     if (entry.value.owner == stage) {
                         entry.value.hide()
@@ -231,7 +234,9 @@ object WindowUtil {
                 }
             }
             stage.setOnCloseRequest { event ->
-                stage.isIconified = false
+                kotlin.runCatching {
+                    stage.isIconified = false
+                }.onFailure { log.error { it.message } }
                 for (entry in STAGE_MAP) {
                     if (entry.value.owner == stage) {
                         entry.value.hide()

@@ -78,7 +78,7 @@
                                         <HelpIco/>
                                     </graphic>
                                     <tooltip>
-                                        <Tooltip text="游戏获得焦点时，鼠标活动范围将限制在游戏窗口内">
+                                        <Tooltip text="鼠标活动范围将限制在游戏窗口内">
                                             <showDuration>
                                                 <fx:reference source="tooltipDuration"/>
                                             </showDuration>

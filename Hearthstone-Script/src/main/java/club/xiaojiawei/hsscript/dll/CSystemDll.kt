@@ -92,6 +92,8 @@ interface CSystemDll : Library {
 
     fun limitMouseRange(enable: Boolean);
 
+    fun isConnected(): Boolean
+
     /*===================================tray===================================*/
 
     interface TrayCallback : Callback {
