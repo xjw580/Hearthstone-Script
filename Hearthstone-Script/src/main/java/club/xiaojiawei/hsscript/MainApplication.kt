@@ -7,8 +7,8 @@ import club.xiaojiawei.config.submitExtra
 import club.xiaojiawei.hsscript.bean.CommonCardAction.Companion.DEFAULT
 import club.xiaojiawei.hsscript.bean.Release
 import club.xiaojiawei.hsscript.config.InitializerConfig
-import club.xiaojiawei.hsscript.core.Core
 import club.xiaojiawei.hsscript.consts.*
+import club.xiaojiawei.hsscript.core.Core
 import club.xiaojiawei.hsscript.dll.CSystemDll
 import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.enums.WindowEnum
@@ -161,7 +161,6 @@ class MainApplication : Application() {
             .addShutdownHook(
                 LThread(
                     {
-                        WindowUtil.hideAllStage()
                         CSystemDll.INSTANCE.removeSystemTray()
                         CSystemDll.INSTANCE.uninstall()
                         log.info { "软件已关闭" }
@@ -222,6 +221,7 @@ class MainApplication : Application() {
         val quitItem = MenuItem("退出")
         quitItem.addActionListener(object : AbstractAction() {
             override fun actionPerformed(e: ActionEvent?) {
+                WindowUtil.hideAllStage()
                 shutdown()
             }
         })
@@ -328,10 +328,16 @@ class MainApplication : Application() {
             PauseStatus.addChangeListener { _, _, isPause: Boolean ->
                 if (isPause) {
                     trayItemArr[0].text?.setWideString(0, "开始")
-                    trayItemArr[0].iconPath?.setWideString(0, SystemUtil.getResouceImgFile(TRAY_START_IMG_NAME).absolutePath)
+                    trayItemArr[0].iconPath?.setWideString(
+                        0,
+                        SystemUtil.getResouceImgFile(TRAY_START_IMG_NAME).absolutePath
+                    )
                 } else {
                     trayItemArr[0].text?.setWideString(0, "暂停")
-                    trayItemArr[0].iconPath?.setWideString(0, SystemUtil.getResouceImgFile(TRAY_PAUSE_IMG_NAME).absolutePath)
+                    trayItemArr[0].iconPath?.setWideString(
+                        0,
+                        SystemUtil.getResouceImgFile(TRAY_PAUSE_IMG_NAME).absolutePath
+                    )
                 }
             }
             CSystemDll.INSTANCE.addSystemTray(this).isFalse {

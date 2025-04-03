@@ -4,6 +4,7 @@ import club.xiaojiawei.config.log
 import club.xiaojiawei.hsscript.status.PauseStatus
 import club.xiaojiawei.hsscript.utils.ConfigExUtil
 import club.xiaojiawei.hsscript.utils.SystemUtil
+import club.xiaojiawei.hsscript.utils.WindowUtil
 import com.melloware.jintellitype.HotkeyListener
 import com.melloware.jintellitype.JIntellitype
 import javafx.application.Platform
@@ -63,6 +64,7 @@ object GlobalHotkeyListener : HotkeyListener {
     override fun onHotKey(i: Int) {
         when (i) {
             HOT_KEY_EXIT -> {
+                WindowUtil.hideAllStage()
                 SystemUtil.notice("捕捉到热键，关闭程序")
                 log.info { "捕捉到热键，关闭程序" }
                 unregister()
