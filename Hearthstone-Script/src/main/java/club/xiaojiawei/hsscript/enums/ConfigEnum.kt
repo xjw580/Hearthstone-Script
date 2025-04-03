@@ -136,7 +136,7 @@ enum class ConfigEnum(
     /**
      * 阻止游戏的反作弊
      */
-    PREVENT_AC(group = BEHAVIOR_CONFIG_GROUP, defaultValue = false.toString(), service = PreventACService()),
+    PREVENT_AC(group = BEHAVIOR_CONFIG_GROUP, defaultValue = false.toString(), service = PreventACService),
 
     /**
      * 限制鼠标范围
