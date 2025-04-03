@@ -115,6 +115,7 @@ object WarEx {
             startTime = endTime
         }
         isWin = false
+        inWar = false
         aEXP = 0L
         print.isTrue {
             log.info { "已重置游戏状态" }

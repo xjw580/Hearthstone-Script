@@ -25,7 +25,7 @@ const val STRATEGY_CONFIG_GROUP = "strategy"
 const val BEHAVIOR_CONFIG_GROUP = "behavior"
 const val SYSTEM_CONFIG_GROUP = "system"
 
-//const val SERVICE_CONFIG_GROUP = "service"
+const val SERVICE_CONFIG_GROUP = "service"
 const val VERSION_CONFIG_GROUP = "version"
 
 const val DEV_CONFIG_GROUP = "version"
@@ -222,9 +222,18 @@ enum class ConfigEnum(
      * 检查游戏响应超时(s)
      */
     GAME_TIMEOUT(
-        group = BEHAVIOR_CONFIG_GROUP,
+        group = SERVICE_CONFIG_GROUP,
         defaultValue = "-1",
         service = GameTimeoutService
+    ),
+
+    /**
+     * 检查游戏对局超时(s)
+     */
+    WAR_TIMEOUT(
+        group = SERVICE_CONFIG_GROUP,
+        defaultValue = "-1",
+        service = WarTimeoutService
     ),
 
     /**

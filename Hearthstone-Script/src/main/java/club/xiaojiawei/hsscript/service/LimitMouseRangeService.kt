@@ -12,7 +12,7 @@ import javafx.beans.value.ChangeListener
  * @author 肖嘉威
  * @date 2025/4/1 15:20
  */
-object LimitMouseRangeService : BoolService() {
+object LimitMouseRangeService : Service<Boolean>() {
 
     private val hwndListener: ChangeListener<HWND?> by lazy {
         ChangeListener<HWND?> { _, _, newValue ->
@@ -39,6 +39,10 @@ object LimitMouseRangeService : BoolService() {
         ScriptStatus.gameHWNDProperty().removeListener(hwndListener)
         WorkListener.removeChangeListener(workingListener)
         return true
+    }
+
+    override fun execIntelligentStartStop(value: Boolean?): Boolean {
+        return (value ?: ConfigUtil.getBoolean(ConfigEnum.LIMIT_MOUSE_RANGE))
     }
 
     override fun execValueChanged(oldValue: Boolean, newValue: Boolean) {

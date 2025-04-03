@@ -59,13 +59,13 @@ open class BaseWar {
     var conceded: String = ""
 
     /**
-     * 本局开始时间
+     * 本局开始时间(毫秒)
      */
     @Volatile
     var startTime: Long = 0
 
     /**
-     * 本局结束时间
+     * 本局结束时间(毫秒)
      */
     @Volatile
     var endTime: Long = 0

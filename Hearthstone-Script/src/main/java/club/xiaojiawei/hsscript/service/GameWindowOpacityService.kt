@@ -18,7 +18,7 @@ object GameWindowOpacityService : Service<Int>() {
 
     private val windowChangeListener: ChangeListener<HWND?> by lazy {
         ChangeListener { _, _, newValue ->
-            if (WorkListener.working){
+            if (WorkListener.working) {
                 changeOpacity(ConfigUtil.getInt(ConfigEnum.GAME_WINDOW_OPACITY), newValue)
             }
         }
@@ -46,8 +46,8 @@ object GameWindowOpacityService : Service<Int>() {
         return true
     }
 
-    override fun execIntelligentStartStop(value: Int): Boolean {
-        return value < 255
+    override fun execIntelligentStartStop(value: Int?): Boolean {
+        return (value ?: ConfigUtil.getInt(ConfigEnum.GAME_WINDOW_OPACITY)) < 255
     }
 
     override fun execValueChanged(oldValue: Int, newValue: Int) {

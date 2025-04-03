@@ -10,7 +10,7 @@ class ServiceInitializer : AbstractInitializer() {
 
     override fun exec() {
         for (configEnum in ConfigEnum.values()) {
-            configEnum.service?.start()
+            configEnum.service?.intelligentStartStop()
         }
     }
 

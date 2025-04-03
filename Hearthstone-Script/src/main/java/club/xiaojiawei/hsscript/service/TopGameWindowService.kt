@@ -13,7 +13,7 @@ import javafx.beans.value.ChangeListener
  * @author 肖嘉威
  * @date 2025/4/1 15:20
  */
-object TopGameWindowService : BoolService() {
+object TopGameWindowService : Service<Boolean>() {
 
     private val changeListener: ChangeListener<HWND?> by lazy {
         ChangeListener { _, _, newValue ->
@@ -50,5 +50,9 @@ object TopGameWindowService : BoolService() {
         (hwnd ?: GameUtil.findGameHWND())?.let {
             CSystemDll.INSTANCE.topWindow(it, top)
         }
+    }
+
+    override fun execIntelligentStartStop(value: Boolean?): Boolean {
+        return (value ?: ConfigUtil.getBoolean(ConfigEnum.TOP_GAME_WINDOW))
     }
 }

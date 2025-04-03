@@ -11,11 +11,11 @@ abstract class Service<T> {
     open val isRunning: Boolean
         get() = isRunningInner
 
-    fun intelligentStartStop(value: T): Boolean {
-        if (execIntelligentStartStop(value)) {
-            return start()
+    fun intelligentStartStop(value: T? = null): Boolean {
+        return if (execIntelligentStartStop(value)) {
+            start()
         } else {
-            return stop()
+            stop()
         }
     }
 
@@ -52,7 +52,7 @@ abstract class Service<T> {
 
     protected abstract fun execStop(): Boolean
 
-    protected abstract fun execIntelligentStartStop(value: T): Boolean
+    protected abstract fun execIntelligentStartStop(value: T?): Boolean
 
     protected open fun execValueChanged(oldValue: T, newValue: T) {}
 

@@ -241,6 +241,26 @@
                                                    prefWidth="${fieldWidth}"
                                                    styleClass="text-field-ui, text-field-ui-small"/>
                             </HBox>
+                            <HBox styleClass="h-box">
+                                <Text text="检查游戏对局超时"/>
+                                <Label>
+                                    <graphic>
+                                        <HelpIco/>
+                                    </graphic>
+                                    <tooltip>
+                                        <Tooltip text="游戏对局超过指定时间(秒)将直接投降">
+                                            <showDuration>
+                                                <fx:reference source="tooltipDuration"/>
+                                            </showDuration>
+                                        </Tooltip>
+                                    </tooltip>
+                                </Label>
+                                <HBox HBox.hgrow="ALWAYS"/>
+                                <ConfigNumberField notificationManager="${notificationManager}" config="WAR_TIMEOUT"
+                                                   promptText="秒"
+                                                   prefWidth="${fieldWidth}"
+                                                   styleClass="text-field-ui, text-field-ui-small"/>
+                            </HBox>
                         </VBox>
                     </TitledPane>
                 </Group>

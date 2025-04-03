@@ -74,8 +74,8 @@ object GameTimeoutService : Service<Int>() {
         return true
     }
 
-    override fun execIntelligentStartStop(value: Int): Boolean {
-        return value > 0
+    override fun execIntelligentStartStop(value: Int?): Boolean {
+        return (value ?: ConfigUtil.getInt(ConfigEnum.GAME_TIMEOUT)) > 0
     }
 
 }
