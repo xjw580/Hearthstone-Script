@@ -161,6 +161,7 @@ class MainApplication : Application() {
             .addShutdownHook(
                 LThread(
                     {
+                        WindowUtil.hideAllStage()
                         CSystemDll.INSTANCE.removeSystemTray()
                         CSystemDll.INSTANCE.uninstall()
                         log.info { "软件已关闭" }

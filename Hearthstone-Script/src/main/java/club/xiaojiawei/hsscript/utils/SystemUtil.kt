@@ -348,15 +348,7 @@ object SystemUtil {
     fun shutdown() {
         log.info { "准备关闭软件..." }
         PauseStatus.isPause = true
-        Platform.exit()
-        go {
-            try {
-                Thread.sleep(100)
-            } catch (e: InterruptedException) {
-                log.error(e) { "休眠被中断" }
-            }
-            exitProcess(0)
-        }
+        exitProcess(0)
     }
 
     fun message(text: String, type: Int, hwnd: WinDef.HWND? = null) {

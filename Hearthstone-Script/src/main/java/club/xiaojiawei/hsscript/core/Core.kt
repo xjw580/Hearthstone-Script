@@ -6,7 +6,9 @@ import club.xiaojiawei.hsscript.config.StarterConfig
 import club.xiaojiawei.hsscript.consts.GAME_CN_NAME
 import club.xiaojiawei.hsscript.consts.PLATFORM_CN_NAME
 import club.xiaojiawei.hsscript.dll.CSystemDll
+import club.xiaojiawei.hsscript.enums.MouseControlModeEnum
 import club.xiaojiawei.hsscript.enums.WindowEnum
+import club.xiaojiawei.hsscript.listener.SystemSleepListener
 import club.xiaojiawei.hsscript.listener.WorkListener
 import club.xiaojiawei.hsscript.status.Mode
 import club.xiaojiawei.hsscript.status.PauseStatus
@@ -40,6 +42,15 @@ object Core {
                     WorkListener.cannotWorkLog()
                 }
                 log.info { "当前处于【开始】状态" }
+            }
+        }
+        WorkListener.addChangeListener { _, _, isWorking: Boolean ->
+            if (ConfigExUtil.getMouseControlMode() === MouseControlModeEnum.DRIVE) {
+                isWorking.isTrue {
+                    CSystemDll.safeRefreshDriver()
+                }.isFalse {
+                    CSystemDll.safeReleaseDriver()
+                }
             }
         }
     }
