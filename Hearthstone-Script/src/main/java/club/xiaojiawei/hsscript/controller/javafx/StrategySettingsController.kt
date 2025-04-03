@@ -4,9 +4,9 @@ import club.xiaojiawei.controls.NotificationManager
 import club.xiaojiawei.controls.NumberField
 import club.xiaojiawei.controls.Switch
 import club.xiaojiawei.hsscript.bean.CommonCardAction
-import club.xiaojiawei.hsscript.data.reloadScriptData
 import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.enums.WindowEnum
+import club.xiaojiawei.hsscript.status.ScriptStatus
 import club.xiaojiawei.hsscript.utils.ConfigUtil.getBoolean
 import club.xiaojiawei.hsscript.utils.ConfigUtil.getString
 import club.xiaojiawei.hsscript.utils.ConfigUtil.putBoolean
@@ -49,15 +49,6 @@ class StrategySettingsController : Initializable {
     protected lateinit var notificationManager: NotificationManager<Any>
 
     @FXML
-    protected lateinit var randomEventSwitch: Switch
-
-    @FXML
-    protected lateinit var randomEmotionSwitch: Switch
-
-    @FXML
-    protected lateinit var onlyRobotSwitch: Switch
-
-    @FXML
     protected lateinit var autoSurrenderField: NumberField
 
     override fun initialize(url: URL?, resourceBundle: ResourceBundle?) {
@@ -66,9 +57,6 @@ class StrategySettingsController : Initializable {
         initMatchMaximumTime()
         initIdleMaximumTime()
         initLogLimit()
-        initRandomEvent()
-        initRandomEmotion()
-        initOnlyRobot()
         initAutoSurrender()
 
         listen()
@@ -113,45 +101,6 @@ class StrategySettingsController : Initializable {
         logLimitField.promptText = "默认：" + key.defaultValue
         logLimitField.tooltip = Tooltip("默认：" + key.defaultValue)
         logLimitField.text = getString(key)
-    }
-
-    private fun initRandomEvent() {
-        val key = ConfigEnum.RANDOM_EVENT
-        randomEventSwitch.status = getBoolean(key)
-        randomEventSwitch.statusProperty()
-            .addListener { observable, oldValue, newValue ->
-                putBoolean(
-                    key,
-                    newValue, true
-                )
-                notificationManager.showSuccess("修改成功", 1)
-            }
-    }
-
-    private fun initRandomEmotion() {
-        val key = ConfigEnum.RANDOM_EMOTION
-        randomEmotionSwitch.status = getBoolean(key)
-        randomEmotionSwitch.statusProperty()
-            .addListener { observable, oldValue, newValue ->
-                putBoolean(
-                    key,
-                    newValue, true
-                )
-                notificationManager.showSuccess("修改成功", 1)
-            }
-    }
-
-    private fun initOnlyRobot() {
-        val key = ConfigEnum.ONLY_ROBOT
-        onlyRobotSwitch.status = getBoolean(key)
-        onlyRobotSwitch.statusProperty()
-            .addListener { observable, oldValue, newValue ->
-                putBoolean(
-                    key,
-                    newValue, true
-                )
-                notificationManager.showSuccess("修改成功", 1)
-            }
     }
 
     private fun initAutoSurrender() {
@@ -227,7 +176,7 @@ class StrategySettingsController : Initializable {
 
         store()
         CommonCardAction.reload()
-        reloadScriptData()
+        ScriptStatus.reloadLogSize()
         return true
     }
 }

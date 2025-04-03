@@ -12,12 +12,12 @@ object TaskManager {
     private val taskList: MutableSet<Closable> = mutableSetOf()
 
     val launch: Unit by lazy {
-        PauseStatus.addListener { _, _, isPause ->
+        PauseStatus.addChangeListener { _, _, isPause ->
             if (isPause) {
                 closeAllTasks()
             }
         }
-        WorkListener.workingProperty.addListener { _, _, isWorking ->
+        WorkListener.addChangeListener { _, _, isWorking ->
             if (!PauseStatus.isPause && !isWorking) {
                 closeAllTasks()
             }

@@ -3,16 +3,14 @@ package club.xiaojiawei.hsscript.core
 import club.xiaojiawei.config.CORE_THREAD_POOL
 import club.xiaojiawei.config.log
 import club.xiaojiawei.hsscript.config.StarterConfig
-import club.xiaojiawei.hsscript.data.GAME_CN_NAME
-import club.xiaojiawei.hsscript.data.GAME_HWND
-import club.xiaojiawei.hsscript.data.PLATFORM_CN_NAME
-import club.xiaojiawei.hsscript.data.haveProgramPath
+import club.xiaojiawei.hsscript.consts.GAME_CN_NAME
+import club.xiaojiawei.hsscript.consts.PLATFORM_CN_NAME
 import club.xiaojiawei.hsscript.dll.CSystemDll
-import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.enums.WindowEnum
 import club.xiaojiawei.hsscript.listener.WorkListener
 import club.xiaojiawei.hsscript.status.Mode
 import club.xiaojiawei.hsscript.status.PauseStatus
+import club.xiaojiawei.hsscript.status.ScriptStatus
 import club.xiaojiawei.hsscript.utils.*
 import club.xiaojiawei.util.isFalse
 import club.xiaojiawei.util.isTrue
@@ -28,24 +26,20 @@ object Core {
     var lastActiveTime: Long = 0
 
     val launch: Unit by lazy {
-        PauseStatus.addListener { _, _, newValue ->
+        PauseStatus.addChangeListener { _, _, newValue ->
             newValue.isTrue {
                 CSystemDll.INSTANCE.changeWindow(false)
                 WorkListener.working = false
                 Mode.reset()
                 runUI { WindowUtil.getStage(WindowEnum.MAIN)?.show() }
-                CSystemDll.INSTANCE.topWindow(GAME_HWND, false)
-                log.info { "当前处于【停止】状态" }
+                log.info { "当前处于【暂停】状态" }
             }.isFalse {
                 if (WorkListener.isDuringWorkDate()) {
                     start()
                 } else {
                     WorkListener.cannotWorkLog()
                 }
-                if (ConfigUtil.getBoolean(ConfigEnum.TOP_GAME_WINDOW)) {
-                    CSystemDll.INSTANCE.topWindow(GAME_HWND, true)
-                }
-                log.info { "当前处于【运行】状态" }
+                log.info { "当前处于【开始】状态" }
             }
         }
     }
@@ -61,13 +55,13 @@ object Core {
         CORE_THREAD_POOL.execute {
             synchronized(Core.javaClass) {
                 if (WorkListener.working) return@execute
-                if (!haveProgramPath) {
+                if (ScriptStatus.isValidProgramPath) {
+                    WorkListener.working = true
+                    StarterConfig.starter.start()
+                } else if (!PauseStatus.isPause) {
                     SystemUtil.notice("需要配置" + GAME_CN_NAME + "和" + PLATFORM_CN_NAME + "的路径")
                     WindowUtil.showStage(WindowEnum.SETTINGS, WindowUtil.getStage(WindowEnum.MAIN))
                     PauseStatus.isPause = true
-                } else if (!PauseStatus.isPause) {
-                    WorkListener.working = true
-                    StarterConfig.starter.start()
                 }
             }
         }

@@ -1,7 +1,7 @@
 package club.xiaojiawei.hsscript.bean
 
-import club.xiaojiawei.hsscript.data.GAME_RECT
-import club.xiaojiawei.hsscript.data.GameRationConst
+import club.xiaojiawei.hsscript.consts.GameRationConst
+import club.xiaojiawei.hsscript.status.ScriptStatus.GAME_RECT
 import club.xiaojiawei.hsscript.utils.GameUtil
 import club.xiaojiawei.util.RandomUtil
 import club.xiaojiawei.hsscript.utils.SystemUtil

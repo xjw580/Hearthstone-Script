@@ -1,7 +1,6 @@
 package club.xiaojiawei.hsscript.service
 
 import club.xiaojiawei.hsscript.enums.ConfigEnum
-import club.xiaojiawei.hsscript.listener.WorkListener
 import club.xiaojiawei.hsscript.status.PauseStatus
 import club.xiaojiawei.hsscript.status.ScriptStatus
 import club.xiaojiawei.hsscript.utils.ConfigUtil
@@ -14,13 +13,11 @@ import javafx.beans.value.ChangeListener
  * @author 肖嘉威
  * @date 2025/4/1 15:20
  */
-object GameWindowOpacityService : Service<Int>() {
+object PlatformWindowOpacityService : Service<Int>() {
 
     private val windowChangeListener: ChangeListener<HWND?> by lazy {
-        ChangeListener { _, _, newValue ->
-            if (WorkListener.working){
-                changeOpacity(ConfigUtil.getInt(ConfigEnum.GAME_WINDOW_OPACITY), newValue)
-            }
+        ChangeListener<HWND?> { _, _, newValue ->
+            changeOpacity(ConfigUtil.getInt(ConfigEnum.PLATFORM_WINDOW_OPACITY), newValue)
         }
     }
 
@@ -29,19 +26,19 @@ object GameWindowOpacityService : Service<Int>() {
             if (newValue) {
                 changeOpacity(255)
             } else {
-                changeOpacity(ConfigUtil.getInt(ConfigEnum.GAME_WINDOW_OPACITY))
+                changeOpacity(ConfigUtil.getInt(ConfigEnum.PLATFORM_WINDOW_OPACITY))
             }
         }
     }
 
     override fun execStart(): Boolean {
-        ScriptStatus.gameHWNDProperty().addListener(windowChangeListener)
+        ScriptStatus.platformHWNDProperty().addListener(windowChangeListener)
         PauseStatus.addChangeListener(pauseChangeListener)
         return true
     }
 
     override fun execStop(): Boolean {
-        ScriptStatus.gameHWNDProperty().removeListener(windowChangeListener)
+        ScriptStatus.platformHWNDProperty().removeListener(windowChangeListener)
         PauseStatus.removeChangeListener(pauseChangeListener)
         return true
     }
@@ -55,8 +52,9 @@ object GameWindowOpacityService : Service<Int>() {
     }
 
     private fun changeOpacity(opacity: Int, hwnd: HWND? = null) {
-        (hwnd ?: GameUtil.findGameHWND())?.let {
+        (hwnd ?: GameUtil.findPlatformHWND())?.let {
             SystemUtil.changeWindowOpacity(it, opacity)
         }
     }
+
 }

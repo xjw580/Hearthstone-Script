@@ -13,7 +13,7 @@ import javafx.beans.value.ChangeListener
  * @author 肖嘉威
  * @date 2025/4/1 15:08
  */
-object WorkingMinimizeService : Service<Boolean>() {
+object WorkingMinimizeService : BoolService() {
 
     private val changeListener: ChangeListener<Boolean> by lazy {
         ChangeListener { _, _, working ->
@@ -27,14 +27,14 @@ object WorkingMinimizeService : Service<Boolean>() {
 
     override fun execStart(): Boolean {
         if (ConfigUtil.getBoolean(ConfigEnum.WORKING_MINIMIZE)) {
-            WorkListener.workingProperty.addListener(changeListener)
+            WorkListener.addChangeListener(changeListener)
             return true
         }
         return false
     }
 
     override fun execStop(): Boolean {
-        WorkListener.workingProperty.removeListener(changeListener)
+        WorkListener.removeChangeListener(changeListener)
         return true
     }
 

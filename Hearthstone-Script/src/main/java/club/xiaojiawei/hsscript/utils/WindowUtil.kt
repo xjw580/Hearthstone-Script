@@ -2,8 +2,8 @@ package club.xiaojiawei.hsscript.utils
 
 import club.xiaojiawei.JavaFXUI
 import club.xiaojiawei.config.log
-import club.xiaojiawei.hsscript.data.FXML_DIR
-import club.xiaojiawei.hsscript.data.SCRIPT_NAME
+import club.xiaojiawei.hsscript.consts.FXML_DIR
+import club.xiaojiawei.hsscript.consts.SCRIPT_NAME
 import club.xiaojiawei.hsscript.dll.CSystemDll
 import club.xiaojiawei.hsscript.enums.SCREEN_HEIGHT
 import club.xiaojiawei.hsscript.enums.SCREEN_WIDTH

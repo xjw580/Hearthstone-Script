@@ -1,8 +1,8 @@
 package club.xiaojiawei.hsscript.initializer
 
 import club.xiaojiawei.config.log
-import club.xiaojiawei.hsscript.data.INSTALL_DRIVE_FILE
-import club.xiaojiawei.hsscript.data.MOUSE_DRIVE_PATH
+import club.xiaojiawei.hsscript.consts.INSTALL_DRIVE_FILE
+import club.xiaojiawei.hsscript.consts.MOUSE_DRIVE_PATH
 import club.xiaojiawei.hsscript.dll.CSystemDll
 import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.enums.MouseControlModeEnum
@@ -13,7 +13,6 @@ import club.xiaojiawei.util.isTrue
 import java.io.BufferedReader
 import java.io.File
 import java.io.InputStreamReader
-import java.util.concurrent.locks.ReentrantLock
 
 /**
  * @author 肖嘉威

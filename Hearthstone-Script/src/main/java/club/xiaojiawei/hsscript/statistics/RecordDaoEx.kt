@@ -1,7 +1,7 @@
 package club.xiaojiawei.hsscript.statistics
 
-import club.xiaojiawei.hsscript.data.DATA_DIR
-import club.xiaojiawei.hsscript.data.STATISTICS_DB_NAME
+import club.xiaojiawei.hsscript.consts.DATA_DIR
+import club.xiaojiawei.hsscript.consts.STATISTICS_DB_NAME
 
 /**
  * @author 肖嘉威

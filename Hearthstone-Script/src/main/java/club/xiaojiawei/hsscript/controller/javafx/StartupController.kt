@@ -1,6 +1,6 @@
 package club.xiaojiawei.hsscript.controller.javafx
 
-import club.xiaojiawei.hsscript.data.SCRIPT_NAME
+import club.xiaojiawei.hsscript.consts.SCRIPT_NAME
 import club.xiaojiawei.hsscript.enums.WindowEnum
 import club.xiaojiawei.hsscript.utils.WindowUtil.hideStage
 import javafx.application.Platform

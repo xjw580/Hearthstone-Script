@@ -1,7 +1,7 @@
 package club.xiaojiawei.hsscript.initializer
 
 import club.xiaojiawei.config.log
-import club.xiaojiawei.hsscript.data.GAME_CN_NAME
+import club.xiaojiawei.hsscript.consts.GAME_CN_NAME
 import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.utils.ConfigUtil
 import club.xiaojiawei.hsscript.utils.FileUtil

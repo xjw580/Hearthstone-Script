@@ -2,11 +2,11 @@ package club.xiaojiawei.hsscript.controller.javafx
 
 import club.xiaojiawei.controls.NotificationManager
 import club.xiaojiawei.controls.PasswordTextField
-import club.xiaojiawei.hsscript.data.GAME_CN_NAME
-import club.xiaojiawei.hsscript.data.PLATFORM_CN_NAME
-import club.xiaojiawei.hsscript.data.haveProgramPath
+import club.xiaojiawei.hsscript.consts.GAME_CN_NAME
+import club.xiaojiawei.hsscript.consts.PLATFORM_CN_NAME
 import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.enums.WindowEnum
+import club.xiaojiawei.hsscript.status.ScriptStatus
 import club.xiaojiawei.hsscript.utils.ConfigExUtil.storeGamePath
 import club.xiaojiawei.hsscript.utils.ConfigExUtil.storePlatformPath
 import club.xiaojiawei.hsscript.utils.ConfigUtil.getInt
@@ -14,14 +14,12 @@ import club.xiaojiawei.hsscript.utils.ConfigUtil.getString
 import club.xiaojiawei.hsscript.utils.ConfigUtil.putInt
 import club.xiaojiawei.hsscript.utils.ConfigUtil.putString
 import club.xiaojiawei.hsscript.utils.WindowUtil.hideStage
-import javafx.beans.value.ChangeListener
 import javafx.beans.value.ObservableValue
 import javafx.fxml.FXML
 import javafx.fxml.Initializable
-import javafx.scene.Scene
-import javafx.scene.control.*
+import javafx.scene.control.Button
+import javafx.scene.control.ComboBox
 import javafx.scene.layout.StackPane
-import javafx.scene.layout.VBox
 import javafx.scene.text.Text
 import javafx.stage.DirectoryChooser
 import javafx.stage.FileChooser
@@ -108,7 +106,7 @@ class InitSettingsController : Initializable {
             initValue()
             return false
         }
-        haveProgramPath = true
+        ScriptStatus.isValidProgramPath = true
         return true
     }
 

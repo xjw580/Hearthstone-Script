@@ -1,9 +1,9 @@
 package club.xiaojiawei.hsscript.service
 
-import club.xiaojiawei.hsscript.data.gameHWNDProperty
 import club.xiaojiawei.hsscript.dll.CSystemDll
 import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.listener.WorkListener
+import club.xiaojiawei.hsscript.status.ScriptStatus
 import club.xiaojiawei.hsscript.utils.ConfigUtil
 import com.sun.jna.platform.win32.WinDef.HWND
 import javafx.beans.value.ChangeListener
@@ -12,7 +12,7 @@ import javafx.beans.value.ChangeListener
  * @author 肖嘉威
  * @date 2025/4/1 15:20
  */
-object LimitMouseRangeService : Service<Boolean>() {
+object LimitMouseRangeService : BoolService() {
 
     private val hwndListener: ChangeListener<HWND?> by lazy {
         ChangeListener<HWND?> { _, _, newValue ->
@@ -29,15 +29,15 @@ object LimitMouseRangeService : Service<Boolean>() {
 
     override fun execStart(): Boolean {
         if (ConfigUtil.getBoolean(ConfigEnum.LIMIT_MOUSE_RANGE)) {
-            gameHWNDProperty().addListener(hwndListener)
-            WorkListener.workingProperty.addListener(workingListener)
+            ScriptStatus.gameHWNDProperty().addListener(hwndListener)
+            WorkListener.addChangeListener(workingListener)
         }
         return true
     }
 
     override fun execStop(): Boolean {
-        gameHWNDProperty().removeListener(hwndListener)
-        WorkListener.workingProperty.removeListener(workingListener)
+        ScriptStatus.gameHWNDProperty().removeListener(hwndListener)
+        WorkListener.removeChangeListener(workingListener)
         return true
     }
 
@@ -45,8 +45,4 @@ object LimitMouseRangeService : Service<Boolean>() {
         CSystemDll.INSTANCE.limitMouseRange(newValue)
     }
 
-}
-
-fun main() {
-    CSystemDll.INSTANCE.limitMouseRange(false)
 }

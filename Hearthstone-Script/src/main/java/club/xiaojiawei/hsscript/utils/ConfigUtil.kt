@@ -1,7 +1,7 @@
 package club.xiaojiawei.hsscript.utils
 
 import club.xiaojiawei.config.log
-import club.xiaojiawei.hsscript.data.CONFIG_PATH
+import club.xiaojiawei.hsscript.consts.CONFIG_PATH
 import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.util.isFalse
 import com.alibaba.fastjson.JSON

@@ -5,11 +5,10 @@ import club.xiaojiawei.enums.StepEnum
 import club.xiaojiawei.enums.WarPhaseEnum
 import club.xiaojiawei.hsscript.bean.single.WarEx
 import club.xiaojiawei.hsscript.core.Core
-import club.xiaojiawei.hsscript.data.MAX_LOG_SIZE_B
-import club.xiaojiawei.hsscript.data.MAX_LOG_SIZE_KB
 import club.xiaojiawei.hsscript.initializer.BaseInitializer
 import club.xiaojiawei.hsscript.listener.WorkListener
 import club.xiaojiawei.hsscript.status.PauseStatus
+import club.xiaojiawei.hsscript.status.ScriptStatus
 import club.xiaojiawei.hsscript.strategy.AbstractPhaseStrategy
 import club.xiaojiawei.hsscript.utils.PowerLogUtil
 import club.xiaojiawei.status.WAR
@@ -69,8 +68,8 @@ object PowerLogListener :
         val logFile = logFile
         logFile ?: return false
 
-        if (logFile.length() + RESERVE_SIZE_B >= MAX_LOG_SIZE_B) {
-            log.info { "power.log即将达到" + (MAX_LOG_SIZE_KB) + "KB，准备重启游戏" }
+        if (logFile.length() + RESERVE_SIZE_B >= ScriptStatus.maxLogSizeB) {
+            log.info { "power.log即将达到" + (ScriptStatus.maxLogSizeKB) + "KB，准备重启游戏" }
             Core.restart()
             return false
         }

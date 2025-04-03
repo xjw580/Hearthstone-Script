@@ -3,7 +3,7 @@ package club.xiaojiawei.hsscript.starter
 import club.xiaojiawei.config.EXTRA_THREAD_POOL
 import club.xiaojiawei.config.log
 import club.xiaojiawei.hsscript.config.StarterConfig
-import club.xiaojiawei.hsscript.data.PLATFORM_CN_NAME
+import club.xiaojiawei.hsscript.consts.PLATFORM_CN_NAME
 import club.xiaojiawei.hsscript.dll.CSystemDll
 import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.utils.ConfigUtil

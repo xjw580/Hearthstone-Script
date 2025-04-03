@@ -6,7 +6,7 @@ import club.xiaojiawei.hsscript.utils.ConfigExUtil
  * @author 肖嘉威
  * @date 2025/4/2 23:12
  */
-object PreventACService : Service<Boolean>() {
+object PreventACService : BoolService() {
     override fun execStart(): Boolean {
         return true
     }

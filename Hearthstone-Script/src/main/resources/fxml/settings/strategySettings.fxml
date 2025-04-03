@@ -9,6 +9,7 @@
 <?import javafx.scene.text.Text?>
 <?import java.lang.Double?>
 <?import club.xiaojiawei.controls.Switch?>
+<?import club.xiaojiawei.hsscript.component.ConfigSwitch?>
 <StackPane xmlns="http://javafx.com/javafx"
            xmlns:fx="http://javafx.com/fxml"
            stylesheets="@../css/settings/strategySettings.css"
@@ -93,7 +94,7 @@
                         </tooltip>
                     </Label>
                     <HBox HBox.hgrow="ALWAYS"/>
-                    <Switch fx:id="randomEventSwitch"/>
+                    <ConfigSwitch notificationManager="${notificationManager}" config="RANDOM_EVENT"/>
                 </HBox>
                 <HBox styleClass="h-box">
                     <Text text="随机表情"/>
@@ -106,7 +107,7 @@
                         </tooltip>
                     </Label>
                     <HBox HBox.hgrow="ALWAYS"/>
-                    <Switch fx:id="randomEmotionSwitch"/>
+                    <ConfigSwitch notificationManager="${notificationManager}" config="RANDOM_EMOTION"/>
                 </HBox>
                 <HBox styleClass="h-box">
                     <Text text="只打人机（Beta）"/>
@@ -119,7 +120,7 @@
                         </tooltip>
                     </Label>
                     <HBox HBox.hgrow="ALWAYS"/>
-                    <Switch fx:id="onlyRobotSwitch"/>
+                    <ConfigSwitch notificationManager="${notificationManager}" config="ONLY_ROBOT"/>
                 </HBox>
                 <HBox styleClass="h-box">
                     <Text text="自动投降"/>

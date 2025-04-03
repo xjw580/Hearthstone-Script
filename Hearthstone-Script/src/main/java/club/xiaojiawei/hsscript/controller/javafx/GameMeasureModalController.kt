@@ -1,8 +1,8 @@
 package club.xiaojiawei.hsscript.controller.javafx
 
 import club.xiaojiawei.hsscript.bean.GameRect
-import club.xiaojiawei.hsscript.data.GAME_CN_NAME
-import club.xiaojiawei.hsscript.data.GameRationConst
+import club.xiaojiawei.hsscript.consts.GAME_CN_NAME
+import club.xiaojiawei.hsscript.consts.GameRationConst
 import club.xiaojiawei.hsscript.dll.CSystemDll
 import club.xiaojiawei.hsscript.dll.CSystemDll.Companion.MB_ICONERROR
 import club.xiaojiawei.hsscript.dll.CSystemDll.Companion.MB_TOPMOST

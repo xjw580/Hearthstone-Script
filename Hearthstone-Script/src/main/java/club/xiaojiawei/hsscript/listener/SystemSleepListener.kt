@@ -21,12 +21,7 @@ import javafx.stage.Stage
 object SystemSleepListener {
 
     val launch: Unit by lazy {
-        PauseStatus.addListener { _, _, isPause: Boolean ->
-            go {
-                check()
-            }
-        }
-        WorkListener.workingProperty.addListener { _, _, isWorking: Boolean ->
+        WorkListener.addChangeListener { _, _, isWorking: Boolean ->
             if (ConfigExUtil.getMouseControlMode() === MouseControlModeEnum.DRIVE) {
                 isWorking.isTrue {
                     CSystemDll.safeRefreshDriver()
@@ -50,12 +45,17 @@ object SystemSleepListener {
                 if (ConfigUtil.getBoolean(ConfigEnum.AUTO_SLEEP)) {
                     text = "${countdown}秒后将睡眠系统"
                     runnable = {
-                        User32.INSTANCE.LockWorkStation()
+                        if (ConfigUtil.getBoolean(ConfigEnum.AUTO_LOCK_SCREEN)) {
+                            User32.INSTANCE.LockWorkStation()
+                        }
                         CSystemDll.INSTANCE.sleepSystem()
                     }
                 } else if (ConfigUtil.getBoolean(ConfigEnum.AUTO_OFF_SCREEN)) {
                     text = "${countdown}秒后将关闭显示器"
                     runnable = {
+                        if (ConfigUtil.getBoolean(ConfigEnum.AUTO_LOCK_SCREEN)) {
+                            User32.INSTANCE.LockWorkStation()
+                        }
                         offScreen()
                     }
                 }

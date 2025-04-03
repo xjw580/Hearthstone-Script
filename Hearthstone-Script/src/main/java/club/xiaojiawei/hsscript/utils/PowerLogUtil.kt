@@ -16,11 +16,12 @@ import club.xiaojiawei.hsscript.bean.log.ExtraEntity
 import club.xiaojiawei.hsscript.bean.log.TagChangeEntity
 import club.xiaojiawei.hsscript.bean.single.WarEx
 import club.xiaojiawei.hsscript.config.DRIVER_LOCK
+import club.xiaojiawei.hsscript.consts.*
 import club.xiaojiawei.hsscript.core.Core
 import club.xiaojiawei.hsscript.core.Core.restart
-import club.xiaojiawei.hsscript.data.*
 import club.xiaojiawei.hsscript.enums.BlockTypeEnum
 import club.xiaojiawei.hsscript.enums.TagEnum
+import club.xiaojiawei.hsscript.status.ScriptStatus
 import club.xiaojiawei.hsscript.strategy.AbstractPhaseStrategy
 import club.xiaojiawei.hsscript.strategy.DeckStrategyActuator
 import club.xiaojiawei.hsscript.utils.CardUtil.exchangeAreaOfCard
@@ -273,7 +274,7 @@ object PowerLogUtil {
         val block = Block()
         val blockTypeIndex = line.indexOf(BLOCK_TYPE)
         if (blockTypeIndex != -1) {
-            val entityNameIndex = line.indexOf(club.xiaojiawei.hsscript.data.ENTITY, blockTypeIndex, false)
+            val entityNameIndex = line.indexOf(club.xiaojiawei.hsscript.consts.ENTITY, blockTypeIndex, false)
             if (entityNameIndex == -1) {
                 return block
             }
@@ -301,7 +302,7 @@ object PowerLogUtil {
         tagChangeEntity.value = value
         if (index < 100) {
             tagChangeEntity.entity =
-                iso88591ToUtf8(line.substring(line.indexOf(club.xiaojiawei.hsscript.data.ENTITY) + 7, tagIndex).trim())
+                iso88591ToUtf8(line.substring(line.indexOf(club.xiaojiawei.hsscript.consts.ENTITY) + 7, tagIndex).trim())
         } else {
             parseCommonEntity(tagChangeEntity, line)
         }
@@ -445,7 +446,7 @@ object PowerLogUtil {
     fun isRelevance(l: String): Boolean {
         var flag = false
         if (l.contains("Truncating log")) {
-            val text = "power.log达到" + (MAX_LOG_SIZE_KB) + "KB，游戏停止输出日志，准备重启游戏"
+            val text = "power.log达到" + (ScriptStatus.maxLogSizeKB) + "KB，游戏停止输出日志，准备重启游戏"
             log.info { text }
             SystemUtil.notice(text)
             restart()
@@ -455,18 +456,4 @@ object PowerLogUtil {
         Core.lastActiveTime = System.currentTimeMillis()
         return flag
     }
-}
-
-
-fun main() {
-    val commonEntity = CommonEntity()
-    PowerLogUtil.parseCommonEntity(
-        commonEntity,
-//        "D 18:37:20.8089830 PrintPower() - BLOCK_START BlockType=PLAY Entity=[entityName=吉安娜的礼物 id=13 zone=HAND zonePos=4 cardId=GIFT_02 player=1] EffectCardId=System.Collections.Generic.List`1[System.String] EffectIndex=0 Target=0 SubOption=-1 ",
-//        "BLOCK_START BlockType=TRIGGER Entity=异灵犬#5148 EffectCardId=System.Collections.Generic.List`1[System.String] EffectIndex=-1 Target=0 SubOption=-1 TriggerKeyword=TAG_NOT_SET",
-//        "D 18:37:29.3413958 PrintPower() -     TAG_CHANGE Entity=[entityName=寒冰箭 id=78 zone=SETASIDE zonePos=0 cardId=CS2_024 player=1] tag=LAST_AFFECTED_BY value=13 ",
-        "D 18:37:20.8251425 PrintPower() -     FULL_ENTITY - Updating [entityName=火球术 id=80 zone=SETASIDE zonePos=0 cardId=CORE_CS2_029 player=1] CardID=CORE_CS2_029",
-    )
-
-    println(commonEntity)
 }

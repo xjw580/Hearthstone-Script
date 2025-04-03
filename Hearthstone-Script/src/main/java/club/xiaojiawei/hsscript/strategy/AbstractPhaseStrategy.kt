@@ -6,7 +6,7 @@ import club.xiaojiawei.enums.WarPhaseEnum
 import club.xiaojiawei.hsscript.bean.log.Block
 import club.xiaojiawei.hsscript.bean.log.ExtraEntity
 import club.xiaojiawei.hsscript.bean.log.TagChangeEntity
-import club.xiaojiawei.hsscript.data.*
+import club.xiaojiawei.hsscript.consts.*
 import club.xiaojiawei.hsscript.interfaces.closer.ThreadCloser
 import club.xiaojiawei.hsscript.listener.log.PowerLogListener
 import club.xiaojiawei.hsscript.status.PauseStatus

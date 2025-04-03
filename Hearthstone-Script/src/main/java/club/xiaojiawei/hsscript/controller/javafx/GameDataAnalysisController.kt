@@ -2,7 +2,7 @@ package club.xiaojiawei.hsscript.controller.javafx
 
 import club.xiaojiawei.bean.Card
 import club.xiaojiawei.controls.Switch
-import club.xiaojiawei.hsscript.data.GameRationConst
+import club.xiaojiawei.hsscript.consts.GameRationConst
 import club.xiaojiawei.hsscript.interfaces.StageHook
 import club.xiaojiawei.hsscript.utils.CardLikeTrieUtil.root
 import club.xiaojiawei.hsscript.utils.GameDataAnalysisUtil

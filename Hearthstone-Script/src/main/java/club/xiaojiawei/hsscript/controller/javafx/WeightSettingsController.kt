@@ -4,7 +4,7 @@ import club.xiaojiawei.controls.NotificationManager
 import club.xiaojiawei.controls.TableFilterManagerGroup
 import club.xiaojiawei.hsscript.bean.WeightCard
 import club.xiaojiawei.hsscript.component.CardTableView
-import club.xiaojiawei.hsscript.data.CONFIG_PATH
+import club.xiaojiawei.hsscript.consts.CONFIG_PATH
 import club.xiaojiawei.hsscript.utils.CardUtil
 import club.xiaojiawei.hsscript.utils.CardUtil.getCardWeightCache
 import club.xiaojiawei.hsscript.utils.CardUtil.reloadCardWeight

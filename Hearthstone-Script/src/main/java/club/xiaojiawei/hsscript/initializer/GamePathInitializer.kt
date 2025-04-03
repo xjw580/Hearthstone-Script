@@ -1,9 +1,13 @@
 package club.xiaojiawei.hsscript.initializer
 
 import club.xiaojiawei.config.log
-import club.xiaojiawei.hsscript.data.*
+import club.xiaojiawei.hsscript.consts.GAME_CN_NAME
+import club.xiaojiawei.hsscript.consts.GAME_US_NAME
+import club.xiaojiawei.hsscript.consts.PLATFORM_CN_NAME
+import club.xiaojiawei.hsscript.consts.PLATFORM_US_NAME
 import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.enums.RegCommonNameEnum
+import club.xiaojiawei.hsscript.status.ScriptStatus
 import club.xiaojiawei.hsscript.utils.ConfigExUtil
 import club.xiaojiawei.hsscript.utils.ConfigUtil
 import club.xiaojiawei.hsscript.utils.SystemUtil
@@ -16,7 +20,7 @@ import club.xiaojiawei.hsscript.utils.SystemUtil
 class GamePathInitializer : AbstractInitializer() {
 
     public override fun exec() {
-        haveProgramPath = true
+        var isValidProgramPath = ScriptStatus.isValidProgramPath
 
         val platformInstallLocation: String?
         if (ConfigUtil.getString(ConfigEnum.PLATFORM_PATH).isBlank()) {
@@ -30,7 +34,7 @@ class GamePathInitializer : AbstractInitializer() {
                 RegCommonNameEnum.INSTALL_LOCATION,
                 PLATFORM_US_NAME
             )
-            if (platformInstallLocation != null && platformInstallLocation.isNotBlank()) {
+            if (!platformInstallLocation.isNullOrBlank()) {
                 log.info { String.format("从注册表读取到%s安装路径", PLATFORM_CN_NAME) }
                 if (!ConfigExUtil.storePlatformPath(platformInstallLocation)) {
                     log.warn {
@@ -39,7 +43,7 @@ class GamePathInitializer : AbstractInitializer() {
                             PLATFORM_CN_NAME
                         )
                     }
-                    haveProgramPath = false
+                    isValidProgramPath = false
                 }
             } else {
                 log.warn {
@@ -48,7 +52,7 @@ class GamePathInitializer : AbstractInitializer() {
                         PLATFORM_CN_NAME
                     )
                 }
-                haveProgramPath = false
+                isValidProgramPath = false
             }
         }
 
@@ -61,7 +65,7 @@ class GamePathInitializer : AbstractInitializer() {
                 RegCommonNameEnum.INSTALL_LOCATION,
                 GAME_US_NAME
             )
-            if (gameInstallLocation != null && gameInstallLocation.isNotBlank()) {
+            if (!gameInstallLocation.isNullOrBlank()) {
                 log.info { String.format("从注册表读取到%s安装路径", GAME_CN_NAME) }
                 if (!ConfigExUtil.storeGamePath(gameInstallLocation)) {
                     log.warn {
@@ -70,7 +74,7 @@ class GamePathInitializer : AbstractInitializer() {
                             GAME_CN_NAME
                         )
                     }
-                    haveProgramPath = false
+                    isValidProgramPath = false
                 }
             } else {
                 log.warn {
@@ -79,9 +83,10 @@ class GamePathInitializer : AbstractInitializer() {
                         GAME_CN_NAME
                     )
                 }
-                haveProgramPath = false
+                isValidProgramPath = false
             }
         }
+        ScriptStatus.isValidProgramPath = isValidProgramPath
     }
 
 }

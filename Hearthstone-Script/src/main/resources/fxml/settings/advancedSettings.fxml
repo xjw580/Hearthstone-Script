@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import club.xiaojiawei.controls.ico.*?>
-<?import club.xiaojiawei.controls.*?>
+<?import club.xiaojiawei.controls.NotificationManager?>
+<?import club.xiaojiawei.controls.NumberField?>
 <?import club.xiaojiawei.factory.NotificationFactory?>
-<?import club.xiaojiawei.hsscript.component.ConfigSwitch?>
+<?import club.xiaojiawei.hsscript.component.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.Group?>
 <?import javafx.scene.layout.*?>
@@ -17,6 +18,7 @@
            fx:controller="club.xiaojiawei.hsscript.controller.javafx.AdvancedSettingsController">
     <fx:define>
         <Duration fx:id="tooltipDuration" fx:value="60s"/>
+        <Double fx:id="fieldWidth" fx:value="150"/>
         <NotificationManager fx:id="notificationManager" notificationPos="BOTTOM_CENTER">
             <NotificationFactory showingCloseBtn="false" size="SMALL"/>
         </NotificationManager>
@@ -50,12 +52,14 @@
                                 <HBox HBox.hgrow="ALWAYS"/>
                                 <ComboBox fx:id="mouseControlModeComboBox"
                                           styleClass="combo-box-ui, combo-box-ui-small, combo-box-ui-normal"/>
-                                <Button fx:id="refreshDriver" text="刷新驱动" onAction="#refreshDriver" styleClass="btn-ui, btn-ui-small" visible="false" managed="false"/>
+                                <Button fx:id="refreshDriver" text="刷新驱动" onAction="#refreshDriver"
+                                        styleClass="btn-ui, btn-ui-small" visible="false" managed="false"/>
                             </HBox>
                             <HBox styleClass="h-box">
                                 <Text text="置顶游戏窗口"/>
                                 <HBox HBox.hgrow="ALWAYS"/>
-                                <ConfigSwitch fx:id="topGameWindow" notificationManager="${notificationManager}" config="TOP_GAME_WINDOW"/>
+                                <ConfigSwitch fx:id="topGameWindow" notificationManager="${notificationManager}"
+                                              config="TOP_GAME_WINDOW"/>
                             </HBox>
                             <HBox styleClass="h-box">
                                 <Text text="阻止游戏反作弊（Beta）"/>
@@ -64,7 +68,8 @@
                                         <HelpIco/>
                                     </graphic>
                                     <tooltip>
-                                        <Tooltip text="阻止游戏加载本地反作弊插件，必须用本软件启动游戏才能生效。效果未知，斟酌使用">
+                                        <Tooltip
+                                                text="阻止游戏加载本地反作弊插件，必须用本软件启动游戏才能生效。效果未知，斟酌使用">
                                             <showDuration>
                                                 <fx:reference source="tooltipDuration"/>
                                             </showDuration>
@@ -105,8 +110,9 @@
                                         </Tooltip>
                                     </tooltip>
                                 </Label>
-                                <HBox HBox.hgrow="ALWAYS" />
-                                <NumberField fx:id="gameWindowOpacity" styleClass="text-field-ui, text-field-ui-small" minValue="0" maxValue="255" prefWidth="80"/>
+                                <HBox HBox.hgrow="ALWAYS"/>
+                                <NumberField fx:id="gameWindowOpacity" styleClass="text-field-ui, text-field-ui-small"
+                                             minValue="0" maxValue="255" prefWidth="${fieldWidth}"/>
                             </HBox>
                         </VBox>
                     </TitledPane>
@@ -129,12 +135,14 @@
                                 <Text text="开始/暂停快捷键"/>
                                 <HBox HBox.hgrow="ALWAYS"/>
                                 <TextField fx:id="pauseHotKey" styleClass="text-field-ui, text-field-ui-small"
+                                           prefWidth="${fieldWidth}"
                                            editable="false"/>
                             </HBox>
                             <HBox styleClass="h-box">
                                 <Text text="退出快捷键"/>
                                 <HBox HBox.hgrow="ALWAYS"/>
                                 <TextField fx:id="exitHotKey" styleClass="text-field-ui, text-field-ui-small"
+                                           prefWidth="${fieldWidth}"
                                            editable="false"/>
                             </HBox>
                             <HBox styleClass="h-box">
@@ -220,15 +228,18 @@
                                         <HelpIco/>
                                     </graphic>
                                     <tooltip>
-                                        <Tooltip text="游戏超过1分钟无响应将重启游戏">
+                                        <Tooltip text="游戏超过指定时间(秒)无响应将重启游戏">
                                             <showDuration>
                                                 <fx:reference source="tooltipDuration"/>
                                             </showDuration>
                                         </Tooltip>
                                     </tooltip>
                                 </Label>
-                                <HBox HBox.hgrow="ALWAYS" />
-                                <ConfigSwitch notificationManager="${notificationManager}" config="GAME_TIMEOUT"/>
+                                <HBox HBox.hgrow="ALWAYS"/>
+                                <ConfigNumberField notificationManager="${notificationManager}" config="GAME_TIMEOUT"
+                                                   promptText="秒"
+                                                   prefWidth="${fieldWidth}"
+                                                   styleClass="text-field-ui, text-field-ui-small"/>
                             </HBox>
                         </VBox>
                     </TitledPane>

@@ -7,9 +7,8 @@ import club.xiaojiawei.hsscript.bean.WorkTime
 import club.xiaojiawei.hsscript.bean.single.repository.AbstractRepository
 import club.xiaojiawei.hsscript.bean.single.repository.GiteeRepository
 import club.xiaojiawei.hsscript.bean.single.repository.GithubRepository
-import club.xiaojiawei.hsscript.data.GAME_HWND
-import club.xiaojiawei.hsscript.data.GAME_PROGRAM_NAME
-import club.xiaojiawei.hsscript.data.PLATFORM_PROGRAM_NAME
+import club.xiaojiawei.hsscript.consts.GAME_PROGRAM_NAME
+import club.xiaojiawei.hsscript.consts.PLATFORM_PROGRAM_NAME
 import club.xiaojiawei.hsscript.dll.CSystemDll
 import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.enums.MouseControlModeEnum
@@ -18,6 +17,7 @@ import club.xiaojiawei.hsscript.initializer.DriverInitializer
 import club.xiaojiawei.hsscript.listener.WorkListener
 import club.xiaojiawei.hsscript.starter.InjectStarter
 import club.xiaojiawei.hsscript.status.PauseStatus
+import club.xiaojiawei.hsscript.status.ScriptStatus
 import java.io.File
 import java.io.FileOutputStream
 import java.nio.file.Files
@@ -158,10 +158,10 @@ object ConfigExUtil {
         ConfigUtil.putBoolean(ConfigEnum.TOP_GAME_WINDOW, enabled)
         if (enabled) {
             if (!PauseStatus.isPause) {
-                CSystemDll.INSTANCE.topWindow(GAME_HWND, true)
+                CSystemDll.INSTANCE.topWindow(ScriptStatus.gameHWND, true)
             }
         } else {
-            CSystemDll.INSTANCE.topWindow(GAME_HWND, false)
+            CSystemDll.INSTANCE.topWindow(ScriptStatus.gameHWND, false)
         }
     }
 

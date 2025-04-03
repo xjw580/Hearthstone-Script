@@ -8,7 +8,7 @@ import club.xiaojiawei.hsscript.bean.CommonCardAction.Companion.DEFAULT
 import club.xiaojiawei.hsscript.bean.Release
 import club.xiaojiawei.hsscript.config.InitializerConfig
 import club.xiaojiawei.hsscript.core.Core
-import club.xiaojiawei.hsscript.data.*
+import club.xiaojiawei.hsscript.consts.*
 import club.xiaojiawei.hsscript.dll.CSystemDll
 import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.enums.WindowEnum
@@ -203,7 +203,7 @@ class MainApplication : Application() {
                 PauseStatus.asyncSetPause(!PauseStatus.isPause)
             }
         })
-        PauseStatus.addListener { observableValue: ObservableValue<out Boolean?>?, aBoolean: Boolean?, isPause: Boolean ->
+        PauseStatus.addChangeListener { observableValue: ObservableValue<out Boolean?>?, aBoolean: Boolean?, isPause: Boolean ->
             if (isPause) {
                 isPauseItem.label = "开始"
             } else {
@@ -324,7 +324,7 @@ class MainApplication : Application() {
                     }
                 }
             }
-            PauseStatus.addListener { _, _, isPause: Boolean ->
+            PauseStatus.addChangeListener { _, _, isPause: Boolean ->
                 if (isPause) {
                     trayItemArr[0].text?.setWideString(0, "开始")
                     trayItemArr[0].iconPath?.setWideString(0, SystemUtil.getResouceImgFile(TRAY_START_IMG_NAME).absolutePath)

@@ -5,11 +5,11 @@ import club.xiaojiawei.config.EXTRA_THREAD_POOL
 import club.xiaojiawei.config.LAUNCH_PROGRAM_THREAD_POOL
 import club.xiaojiawei.config.log
 import club.xiaojiawei.hsscript.config.StarterConfig
-import club.xiaojiawei.hsscript.data.GAME_CN_NAME
-import club.xiaojiawei.hsscript.data.GAME_HWND
+import club.xiaojiawei.hsscript.consts.GAME_CN_NAME
 import club.xiaojiawei.hsscript.dll.CSystemDll
 import club.xiaojiawei.hsscript.enums.MouseControlModeEnum
 import club.xiaojiawei.hsscript.status.PauseStatus
+import club.xiaojiawei.hsscript.status.ScriptStatus
 import club.xiaojiawei.hsscript.utils.GameUtil
 import club.xiaojiawei.hsscript.utils.MouseUtil
 import club.xiaojiawei.hsscript.utils.SystemUtil
@@ -112,7 +112,8 @@ class GameStarter : AbstractStarter() {
     }
 
     private fun updateGameMsg(gameHWND: HWND) {
-        GAME_HWND = gameHWND
+        ScriptStatus.gameHWND = gameHWND
+        ScriptStatus.platformHWND = GameUtil.findPlatformHWND()
         GameUtil.updateGameRect()
         go {
             Thread.sleep(3000)

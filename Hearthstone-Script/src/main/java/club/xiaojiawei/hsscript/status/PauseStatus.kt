@@ -48,11 +48,11 @@ object PauseStatus {
         }
     }
 
-    fun addListener(listener: ChangeListener<Boolean>) {
+    fun addChangeListener(listener: ChangeListener<Boolean>) {
         isPauseProperty.addListener(listener)
     }
 
-    fun removeListener(listener: ChangeListener<Boolean>) {
+    fun removeChangeListener(listener: ChangeListener<Boolean>) {
         isPauseProperty.removeListener(listener)
     }
 

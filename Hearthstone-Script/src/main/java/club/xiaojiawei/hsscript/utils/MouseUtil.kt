@@ -89,12 +89,12 @@ object MouseUtil {
         hwnd: HWND?,
         mouseMode: Int = ConfigExUtil.getMouseControlMode().code
     ) {
-        if (!validateEnv(hwnd)) return
+        if (!validateEnv(hwnd) || Mode.currMode !== ModeEnum.GAMEPLAY) return
 
         if (validatePoint(pos)) {
             DRIVER_LOCK.lock()
             try {
-                if (!WorkListener.working && Mode.currMode !== ModeEnum.GAMEPLAY) return
+                if (!WorkListener.working || Mode.currMode !== ModeEnum.GAMEPLAY) return
 
                 if (prevPoint != pos) {
                     CSystemDll.INSTANCE.simulateHumanMoveMouse(
@@ -108,6 +108,7 @@ object MouseUtil {
                     )
                     SystemUtil.delayShort()
                 }
+                println("right click")
                 CSystemDll.INSTANCE.rightClick(pos.x.toLong(), pos.y.toLong(), hwnd, mouseMode)
                 savePos(pos)
             } finally {
@@ -124,9 +125,7 @@ object MouseUtil {
 //        选择卡牌时间只让特定线程执行
         if (WarEx.war.isChooseCardTime && !isDiscoverCardThread()) return false
         hwnd ?: return false
-        return !(!ConfigUtil.getBoolean(ConfigEnum.ENABLE_MOUSE) ||
-                ((isOutCardThread() || isDiscoverCardThread()) && Mode.currMode !== ModeEnum.GAMEPLAY)
-                || !WorkListener.working)
+        return ConfigUtil.getBoolean(ConfigEnum.ENABLE_MOUSE) && WorkListener.working
     }
 
     /**

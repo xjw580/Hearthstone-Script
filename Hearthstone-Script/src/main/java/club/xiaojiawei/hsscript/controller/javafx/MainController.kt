@@ -7,6 +7,7 @@ import club.xiaojiawei.config.log
 import club.xiaojiawei.config.submitExtra
 import club.xiaojiawei.controls.CopyLabel
 import club.xiaojiawei.controls.Modal
+import club.xiaojiawei.controls.NotificationManager
 import club.xiaojiawei.controls.Time
 import club.xiaojiawei.controls.ico.AbstractIco
 import club.xiaojiawei.controls.ico.ClearIco
@@ -251,7 +252,7 @@ class MainController : MainView() {
         }, "Show Log Thread").start()
 
         //        暂停状态监听
-        PauseStatus.addListener { _, _, t1: Boolean ->
+        PauseStatus.addChangeListener { _, _, t1: Boolean ->
             t1.isTrue {
                 pauseToggleGroup.selectToggle(pauseButton)
                 accordion.expandedPane = titledPaneControl
@@ -551,5 +552,9 @@ class MainController : MainView() {
             }
             return timeStr
         }
+    }
+
+    fun getNotificationManagerInstance(): NotificationManager<Any> {
+        return notificationManger
     }
 }

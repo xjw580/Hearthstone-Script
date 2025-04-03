@@ -1,13 +1,13 @@
 package club.xiaojiawei.hsscript.starter
 
 import club.xiaojiawei.config.log
-import club.xiaojiawei.hsscript.data.GAME_HWND
-import club.xiaojiawei.hsscript.data.GAME_US_NAME
-import club.xiaojiawei.hsscript.data.INJECT_UTIL_FILE
-import club.xiaojiawei.hsscript.data.LIB_HS_FILE
+import club.xiaojiawei.hsscript.consts.GAME_US_NAME
+import club.xiaojiawei.hsscript.consts.INJECT_UTIL_FILE
+import club.xiaojiawei.hsscript.consts.LIB_HS_FILE
 import club.xiaojiawei.hsscript.dll.CSystemDll
 import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.enums.MouseControlModeEnum
+import club.xiaojiawei.hsscript.status.ScriptStatus
 import club.xiaojiawei.hsscript.utils.*
 import java.io.IOException
 
@@ -30,7 +30,7 @@ class InjectStarter : AbstractStarter() {
             || acHook
             || limitMouseRange
         ) {
-            if (GAME_HWND == null || !injectCheck()) {
+            if (ScriptStatus.gameHWND == null || !injectCheck()) {
                 pause()
                 return
             }
@@ -48,6 +48,8 @@ class InjectStarter : AbstractStarter() {
                     CSystemDll.INSTANCE.limitMouseRange(true)
                 }
             }
+        } else {
+            log.info { "无需注入" }
         }
         startNextStarter()
     }

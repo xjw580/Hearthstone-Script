@@ -13,7 +13,7 @@ import club.xiaojiawei.hsscript.bean.WeightCard
 import club.xiaojiawei.hsscript.bean.log.ExtraEntity
 import club.xiaojiawei.hsscript.bean.log.TagChangeEntity
 import club.xiaojiawei.hsscript.bean.single.WarEx
-import club.xiaojiawei.hsscript.data.WEIGHT_CONFIG_PATH
+import club.xiaojiawei.hsscript.consts.WEIGHT_CONFIG_PATH
 import club.xiaojiawei.hsscript.status.CardActionManager.CARD_ACTION_MAP
 import club.xiaojiawei.hsscript.status.DeckStrategyManager
 import club.xiaojiawei.mapper.BaseCardMapper

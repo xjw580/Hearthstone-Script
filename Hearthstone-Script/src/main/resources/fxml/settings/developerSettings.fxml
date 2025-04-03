@@ -9,6 +9,7 @@
 <?import club.xiaojiawei.controls.Switch?>
 <?import club.xiaojiawei.controls.ico.HelpIco?>
 <?import javafx.scene.text.Text?>
+<?import club.xiaojiawei.hsscript.component.ConfigSwitch?>
 <StackPane xmlns="http://javafx.com/javafx"
            xmlns:fx="http://javafx.com/fxml"
            stylesheets="@../css/settings/developerSettings.css"
@@ -20,7 +21,7 @@
                 <HBox styleClass="h-box">
                     <Text text="启用鼠标"/>
                     <HBox HBox.hgrow="ALWAYS"/>
-                    <Switch fx:id="enableMouseSwitch"/>
+                    <ConfigSwitch notificationManager="${notificationManager}" config="ENABLE_MOUSE"/>
                 </HBox>
                 <HBox styleClass="h-box">
                     <Text text="执行策略"/>
@@ -33,7 +34,7 @@
                         </tooltip>
                     </Label>
                     <HBox HBox.hgrow="ALWAYS"/>
-                    <Switch fx:id="strategySwitch"/>
+                    <ConfigSwitch notificationManager="${notificationManager}" config="STRATEGY"/>
                 </HBox>
                 <HBox styleClass="h-box">
                     <HBox alignment="CENTER_LEFT">
@@ -63,7 +64,7 @@
                     <HBox HBox.hgrow="ALWAYS"/>
                     <Label text="对局开始自动打开" contentDisplay="RIGHT">
                         <graphic>
-                            <Switch fx:id="autoOpenAnalysis" status="false"/>
+                            <ConfigSwitch notificationManager="${notificationManager}" config="AUTO_OPEN_GAME_ANALYSIS"/>
                         </graphic>
                     </Label>
                 </HBox>

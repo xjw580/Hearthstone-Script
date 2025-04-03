@@ -6,11 +6,12 @@ import club.xiaojiawei.config.log
 import club.xiaojiawei.enums.ModeEnum
 import club.xiaojiawei.hsscript.bean.GameRect
 import club.xiaojiawei.hsscript.bean.single.WarEx
-import club.xiaojiawei.hsscript.data.*
+import club.xiaojiawei.hsscript.consts.*
 import club.xiaojiawei.hsscript.dll.CSystemDll
 import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.status.Mode
 import club.xiaojiawei.hsscript.status.PauseStatus
+import club.xiaojiawei.hsscript.status.ScriptStatus
 import club.xiaojiawei.hsscript.utils.SystemUtil.delay
 import club.xiaojiawei.util.isFalse
 import com.sun.jna.WString
@@ -316,19 +317,19 @@ object GameUtil {
     }
 
     fun leftButtonClick(point: Point) {
-        MouseUtil.leftButtonClick(point, GAME_HWND)
+        MouseUtil.leftButtonClick(point, ScriptStatus.gameHWND)
     }
 
     fun rightButtonClick(point: Point) {
-        MouseUtil.rightButtonClick(point, GAME_HWND)
+        MouseUtil.rightButtonClick(point, ScriptStatus.gameHWND)
     }
 
     fun moveMouse(startPos: Point?, endPos: Point) {
-        MouseUtil.moveMouseByHuman(startPos, endPos, GAME_HWND)
+        MouseUtil.moveMouseByHuman(startPos, endPos, ScriptStatus.gameHWND)
     }
 
     fun moveMouse(endPos: Point) {
-        MouseUtil.moveMouseByHuman(endPos, GAME_HWND)
+        MouseUtil.moveMouseByHuman(endPos, ScriptStatus.gameHWND)
     }
 
 
@@ -399,13 +400,13 @@ object GameUtil {
      * 点击设置按钮
      */
     fun lClickSettings() {
-        val width = GAME_RECT.right - GAME_RECT.left
-        val height = GAME_RECT.bottom - GAME_RECT.top
+        val width = ScriptStatus.GAME_RECT.right - ScriptStatus.GAME_RECT.left
+        val height = ScriptStatus.GAME_RECT.bottom - ScriptStatus.GAME_RECT.top
         leftButtonClick(Point((width - width * 0.0072992700729927).toInt(), (height - height * 0.015625).toInt()))
     }
 
     fun cancelAction() {
-        MouseUtil.rightButtonClick(GAME_HWND)
+        MouseUtil.rightButtonClick(ScriptStatus.gameHWND)
     }
 
     fun lClickCenter() {
@@ -490,10 +491,10 @@ object GameUtil {
      * 更新游戏窗口信息
      */
     fun updateGameRect(updateHWNDCache: Boolean = false) {
-        if (GAME_HWND == null || updateHWNDCache) {
-            GAME_HWND = findGameHWND()
+        if (ScriptStatus.gameHWND == null || updateHWNDCache) {
+            ScriptStatus.gameHWND = findGameHWND()
         }
-        SystemUtil.updateRECT(GAME_HWND, GAME_RECT)
+        SystemUtil.updateRECT(ScriptStatus.gameHWND, ScriptStatus.GAME_RECT)
     }
 
     /**
@@ -504,7 +505,7 @@ object GameUtil {
             if (isAliveOfGame()) {
                 kotlin.runCatching {
                     for (i in 0 until 2) {
-                        CSystemDll.INSTANCE.quitWindow(GAME_HWND)
+                        CSystemDll.INSTANCE.quitWindow(ScriptStatus.gameHWND)
                         delay(2000)
                         if (!isAliveOfGame()) return@runCatching
                     }

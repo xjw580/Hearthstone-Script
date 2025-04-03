@@ -8,7 +8,9 @@ import club.xiaojiawei.enums.RunModeEnum
 import club.xiaojiawei.enums.WarPhaseEnum
 import club.xiaojiawei.status.WAR
 import club.xiaojiawei.util.isTrue
+import javafx.beans.property.BooleanProperty
 import javafx.beans.property.IntegerProperty
+import javafx.beans.property.SimpleBooleanProperty
 import javafx.beans.property.SimpleIntegerProperty
 import kotlin.math.min
 
@@ -33,11 +35,19 @@ object WarEx {
         get() = warCountProperty.get()
         set(value) {
             warCountProperty.set(value)
-            if (value > 0){
+            if (value > 0) {
                 log.info {
                     "已完成第 $value 把游戏"
                 }
             }
+        }
+
+    val inWarProperty: BooleanProperty = SimpleBooleanProperty(false)
+
+    var inWar
+        get() = inWarProperty.get()
+        set(value) {
+            inWarProperty.set(value)
         }
 
     /**
@@ -133,10 +143,12 @@ object WarEx {
             startTime = System.currentTimeMillis()
             currentRunMode = runModeEnum
         }
+        inWar = true
     }
 
     @Synchronized
     fun endWar() {
+        inWar = false
         war.run {
             me.safeRun {
                 isWin = printResult()

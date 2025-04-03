@@ -5,9 +5,9 @@ import club.xiaojiawei.config.DBConfig.DB_NAME
 import club.xiaojiawei.config.log
 import club.xiaojiawei.controls.NotificationManager
 import club.xiaojiawei.controls.Switch
-import club.xiaojiawei.hsscript.data.HS_CARD_UTIL_FILE
-import club.xiaojiawei.hsscript.data.LOG_PATH
-import club.xiaojiawei.hsscript.data.ROOT_PATH
+import club.xiaojiawei.hsscript.consts.HS_CARD_UTIL_FILE
+import club.xiaojiawei.hsscript.consts.LOG_PATH
+import club.xiaojiawei.hsscript.consts.ROOT_PATH
 import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.enums.WindowEnum
 import club.xiaojiawei.hsscript.utils.*
@@ -31,13 +31,7 @@ import java.util.*
 class DeveloperSettingsController : Initializable {
 
     @FXML
-    protected lateinit var enableMouseSwitch: Switch
-
-    @FXML
     protected lateinit var rootPane: StackPane
-
-    @FXML
-    protected lateinit var autoOpenAnalysis: Switch
 
     @FXML
     protected lateinit var notificationManager: NotificationManager<String>
@@ -45,39 +39,11 @@ class DeveloperSettingsController : Initializable {
     @FXML
     protected lateinit var fileLogLevelComboBox: ComboBox<String>
 
-    @FXML
-    protected lateinit var strategySwitch: Switch
-
     private fun initValue() {
-        enableMouseSwitch.status = ConfigUtil.getBoolean(ConfigEnum.ENABLE_MOUSE)
-        strategySwitch.status = ConfigUtil.getBoolean(ConfigEnum.STRATEGY)
         fileLogLevelComboBox.value = ConfigExUtil.getFileLogLevel().levelStr.uppercase()
-        autoOpenAnalysis.status = ConfigUtil.getBoolean(ConfigEnum.AUTO_OPEN_GAME_ANALYSIS)
     }
 
     private fun addListener() {
-        enableMouseSwitch.statusProperty()
-            .addListener { observable, oldValue, newValue ->
-                ConfigUtil.putBoolean(
-                    ConfigEnum.ENABLE_MOUSE,
-                    newValue, true
-                )
-            }
-        //        监听策略开关
-        strategySwitch.statusProperty()
-            .addListener { observable, oldValue, newValue ->
-                ConfigUtil.putBoolean(
-                    ConfigEnum.STRATEGY,
-                    newValue, true
-                )
-            }
-        autoOpenAnalysis.statusProperty()
-            .addListener { observable, oldValue, newValue ->
-                ConfigUtil.putBoolean(
-                    ConfigEnum.AUTO_OPEN_GAME_ANALYSIS,
-                    newValue, true
-                )
-            }
         fileLogLevelComboBox.valueProperty()
             .addListener { observable: ObservableValue<out String>?, oldValue: String?, newValue: String? ->
                 newValue?.let {

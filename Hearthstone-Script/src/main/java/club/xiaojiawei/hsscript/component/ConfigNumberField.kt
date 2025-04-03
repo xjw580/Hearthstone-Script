@@ -1,7 +1,7 @@
 package club.xiaojiawei.hsscript.component
 
 import club.xiaojiawei.controls.NotificationManager
-import club.xiaojiawei.controls.Switch
+import club.xiaojiawei.controls.NumberField
 import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.service.Service
 import club.xiaojiawei.hsscript.utils.ConfigUtil
@@ -12,12 +12,12 @@ import club.xiaojiawei.util.isFalse
  * @author 肖嘉威
  * @date 2025/3/24 17:46
  */
-open class ConfigSwitch : Switch() {
+open class ConfigNumberField : NumberField() {
 
     var config: ConfigEnum? = null
         set(value) {
             value?.let {
-                status = ConfigUtil.getBoolean(it)
+                text = ConfigUtil.getString(it)
             }
             field = value
         }
@@ -27,22 +27,26 @@ open class ConfigSwitch : Switch() {
     private var interceptChange = false
 
     init {
-        statusProperty().addListener { _, oldValue, newValue ->
+        textProperty().addListener { _, oldValue, newValue ->
             config?.let {
                 interceptChange.isFalse {
-                    statusChangeCallback(oldValue, newValue)
+                    val oldValueI = oldValue.toIntOrNull()
+                    val newValueI = newValue.toIntOrNull()
+                    if (oldValueI != null && newValueI != null) {
+                        statusChangeCallback(oldValueI, newValueI)
+                    }
                 }
             }
         }
     }
 
-    protected open fun statusChangeCallback(oldValue: Boolean, newValue: Boolean) {
+    protected open fun statusChangeCallback(oldValue: Int, newValue: Int) {
         config?.let {
-            ConfigUtil.putBoolean(it, newValue)
+            ConfigUtil.putInt(it, newValue)
         }
         var res = true
         config?.service?.let { service ->
-            res = (service as Service<Boolean>).intelligentStartStop(newValue)
+            res = (service as Service<Int>).intelligentStartStop(newValue)
         }
         if (res) {
             notificationManager?.let { nm ->
@@ -52,9 +56,9 @@ open class ConfigSwitch : Switch() {
             }
         } else {
             config?.let {
-                ConfigUtil.putBoolean(it, oldValue)
+                ConfigUtil.putInt(it, oldValue)
                 interceptChange = true
-                status = oldValue
+                text = oldValue.toString()
                 interceptChange = false
             }
             notificationManager?.let { nm ->

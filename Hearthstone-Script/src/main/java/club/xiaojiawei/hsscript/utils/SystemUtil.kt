@@ -2,8 +2,8 @@ package club.xiaojiawei.hsscript.utils
 
 import club.xiaojiawei.bean.LRunnable
 import club.xiaojiawei.config.log
+import club.xiaojiawei.hsscript.consts.*
 import club.xiaojiawei.hsscript.custom.MouseClickListener
-import club.xiaojiawei.hsscript.data.*
 import club.xiaojiawei.hsscript.dll.CSystemDll
 import club.xiaojiawei.hsscript.dll.CSystemDll.Companion.MB_ICONERROR
 import club.xiaojiawei.hsscript.dll.CSystemDll.Companion.MB_ICONINFORMATION
@@ -19,7 +19,7 @@ import club.xiaojiawei.hsscript.status.PauseStatus
 import club.xiaojiawei.util.RandomUtil
 import club.xiaojiawei.util.isTrue
 import com.sun.jna.platform.win32.*
-import com.sun.jna.platform.win32.WinUser.WM_SYSCOMMAND
+import com.sun.jna.platform.win32.WinUser.*
 import javafx.application.Platform
 import java.awt.*
 import java.awt.datatransfer.StringSelection
@@ -40,6 +40,14 @@ import kotlin.system.exitProcess
  */
 @Suppress("unused")
 object SystemUtil {
+
+    /**
+     * 所有鼠标键盘模拟都需要此对象
+     */
+    @Deprecated("")
+    private val ROBOT: Robot by lazy {
+        Robot()
+    }
 
     /**
      * 系统托盘
@@ -429,6 +437,22 @@ object SystemUtil {
     fun offScreen() {
         User32.INSTANCE.GetForegroundWindow()?.let {
             User32.INSTANCE.SendMessage(it, WM_SYSCOMMAND, WinDef.WPARAM(SC_MONITORPOWER), WinDef.LPARAM(2));
+        }
+    }
+
+    fun changeWindowOpacity(hwnd: WinDef.HWND?, opacity: Int) {
+        hwnd?.let {
+            val windowLong = User32.INSTANCE.GetWindowLong(it, GWL_EXSTYLE)
+            if ((windowLong and WS_EX_LAYERED) == 0) {
+                User32.INSTANCE.SetWindowLong(it, GWL_EXSTYLE, windowLong xor WS_EX_LAYERED)
+            }
+
+            User32.INSTANCE.SetLayeredWindowAttributes(
+                it,
+                0,
+                Math.clamp(opacity.toDouble(), 0.0, 255.0).toInt().toByte(),
+                LWA_ALPHA
+            )
         }
     }
 

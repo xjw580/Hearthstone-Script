@@ -149,6 +149,11 @@ enum class ConfigEnum(
     GAME_WINDOW_OPACITY(group = BEHAVIOR_CONFIG_GROUP, defaultValue = "255", service = GameWindowOpacityService),
 
     /**
+     * 战网平台窗口不透明度(0~255)
+     */
+    PLATFORM_WINDOW_OPACITY(group = BEHAVIOR_CONFIG_GROUP, defaultValue = "255", service = PlatformWindowOpacityService),
+
+    /**
      * 套牌插件禁用列表
      */
     DECK_PLUGIN_DISABLED(group = PLUGIN_CONFIG_GROUP, defaultValue = JSON.toJSONString(emptyList<String>())),
@@ -214,11 +219,11 @@ enum class ConfigEnum(
     ONLY_ROBOT(group = STRATEGY_CONFIG_GROUP, defaultValue = false.toString()),
 
     /**
-     * 检查游戏响应超时
+     * 检查游戏响应超时(s)
      */
     GAME_TIMEOUT(
         group = BEHAVIOR_CONFIG_GROUP,
-        defaultValue = true.toString(),
+        defaultValue = "-1",
         service = GameTimeoutService
     ),
 

@@ -1,4 +1,4 @@
-package club.xiaojiawei.hsscript.data
+package club.xiaojiawei.hsscript.consts
 
 import club.xiaojiawei.hsscript.utils.SystemUtil
 import java.io.File
@@ -56,7 +56,7 @@ val HS_CARD_UTIL_FILE = ResourceFile("card-update-util.exe")
  * 图片路径
  */
 val IMG_PATH by lazy {
-    val IMG_DIR = "resources/img"
+    val imgDir = "resources/img"
     val jarDir = File(
         SystemUtil.javaClass.getProtectionDomain()
             .codeSource
@@ -64,10 +64,10 @@ val IMG_PATH by lazy {
             .toURI()
     )
     var imgPath = Path.of(
-        jarDir.path, IMG_DIR
+        jarDir.path, imgDir
     )
     if (!imgPath.exists()) {
-        imgPath = Path.of(jarDir.parentFile.path, IMG_DIR)
+        imgPath = Path.of(jarDir.parentFile.path, imgDir)
     }
     imgPath.toString()
 }
