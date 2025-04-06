@@ -82,7 +82,7 @@ interface CSystemDll : Library {
 
     /*===================================message===================================*/
 
-    fun changeWindow(disable: Boolean);
+    fun changeWindow(gameHWND: HWND?, disable: Boolean);
 
     fun uninstall();
 

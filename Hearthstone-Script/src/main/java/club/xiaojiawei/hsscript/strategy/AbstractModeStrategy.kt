@@ -23,7 +23,9 @@ abstract class AbstractModeStrategy<T> : ModeStrategy<T> {
     override fun entering(t: T?) {
         beforeEnter()
         log.info { "切换到【${Mode.currMode?.comment}】" }
-        afterEnter(t)
+        synchronized(AbstractModeStrategy::class.java) {
+            afterEnter(t)
+        }
     }
 
     override fun afterLeave() {
@@ -32,7 +34,7 @@ abstract class AbstractModeStrategy<T> : ModeStrategy<T> {
 
     protected abstract fun afterEnter(t: T?)
 
-    protected fun beforeEnter() {
+    private fun beforeEnter() {
         cancelAllWantEnterTasks()
     }
 
