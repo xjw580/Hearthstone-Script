@@ -98,19 +98,27 @@ abstract class CardAction(createDefaultAction: Boolean = true) {
             listOf(
                 PlayAction({ newWar ->
                     for ((index, c) in newWar.rival.playArea.cards.withIndex()) {
-                        findSelf(newWar)?.action?.power(false)?.pointTo(index, true)
+                        findSelf(newWar)?.action?.power(false)?.let {
+                            it.pointTo(index, true) ?: delay()
+                        }
                         return@PlayAction
                     }
                     for ((index, c) in newWar.me.playArea.cards.withIndex()) {
-                        findSelf(newWar)?.action?.power(false)?.pointTo(index, true)
+                        findSelf(newWar)?.action?.power(false)?.let {
+                            it.pointTo(index, true) ?: delay()
+                        }
                         return@PlayAction
                     }
-                    newWar.rival.playArea.hero?.let {
-                        findSelf(newWar)?.action?.power(false)?.pointTo(it, true)
+                    newWar.rival.playArea.hero?.let { hero ->
+                        findSelf(newWar)?.action?.power(false)?.let {
+                            it.pointTo(hero, true) ?: delay()
+                        }
                         return@PlayAction
                     }
-                    newWar.me.playArea.hero?.let {
-                        findSelf(newWar)?.action?.power(false)?.pointTo(it, true)
+                    newWar.me.playArea.hero?.let { hero ->
+                        findSelf(newWar)?.action?.power(false)?.let {
+                            it.pointTo(hero, true) ?: delay()
+                        }
                         return@PlayAction
                     }
                     findSelf(newWar)?.action?.power()

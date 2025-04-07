@@ -43,6 +43,7 @@ open class ConfigSwitch : Switch() {
         var res = true
         config?.service?.let { service ->
             res = (service as Service<Boolean>).intelligentStartStop(newValue)
+            service.valueChanged(oldValue, newValue)
         }
         if (res) {
             notificationManager?.let { nm ->

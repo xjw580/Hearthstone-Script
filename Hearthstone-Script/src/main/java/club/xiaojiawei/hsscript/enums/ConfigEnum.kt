@@ -293,6 +293,14 @@ enum class ConfigEnum(
      */
     AUTO_OPEN_GAME_ANALYSIS(group = DEV_CONFIG_GROUP, defaultValue = false.toString()),
 
+    /**
+     * 显示游戏控件位置
+     */
+    DISPLAY_GAME_RECT_POS(
+        group = DEV_CONFIG_GROUP,
+        defaultValue = false.toString(),
+        service = DisplayGameRectPosService
+    ),
     ;
 
 }

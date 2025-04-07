@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import club.xiaojiawei.controls.ico.HelpIco?>
 <?import club.xiaojiawei.controls.NotificationManager?>
 <?import club.xiaojiawei.factory.NotificationFactory?>
+<?import club.xiaojiawei.hsscript.component.ConfigSwitch?>
 <?import javafx.collections.FXCollections?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import java.lang.*?>
-<?import club.xiaojiawei.controls.Switch?>
-<?import club.xiaojiawei.controls.ico.HelpIco?>
 <?import javafx.scene.text.Text?>
-<?import club.xiaojiawei.hsscript.component.ConfigSwitch?>
+<?import java.lang.*?>
 <StackPane xmlns="http://javafx.com/javafx"
            xmlns:fx="http://javafx.com/fxml"
            stylesheets="@../css/settings/developerSettings.css"
@@ -35,6 +34,11 @@
                     </Label>
                     <HBox HBox.hgrow="ALWAYS"/>
                     <ConfigSwitch notificationManager="${notificationManager}" config="STRATEGY"/>
+                </HBox>
+                <HBox styleClass="h-box" visible="false" managed="false">
+                    <Text text="显示游戏控件位置"/>
+                    <HBox HBox.hgrow="ALWAYS"/>
+                    <ConfigSwitch notificationManager="${notificationManager}" config="DISPLAY_GAME_RECT_POS"/>
                 </HBox>
                 <HBox styleClass="h-box">
                     <HBox alignment="CENTER_LEFT">

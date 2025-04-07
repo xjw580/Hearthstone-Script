@@ -10,6 +10,7 @@ import club.xiaojiawei.hsscript.interfaces.StageHook
 import club.xiaojiawei.hsscript.utils.GameUtil
 import club.xiaojiawei.hsscript.utils.SystemUtil
 import club.xiaojiawei.hsscript.utils.go
+import club.xiaojiawei.hsscript.utils.runUI
 import com.sun.jna.platform.win32.User32
 import com.sun.jna.platform.win32.WinDef
 import com.sun.jna.platform.win32.WinDef.HWND
@@ -38,8 +39,7 @@ import kotlin.math.min
  * @author 肖嘉威
  * @date 2025/2/6 13:23
  */
-class GameMeasureModalController : Initializable, StageHook {
-
+class GameWindowModalController : Initializable, StageHook {
 
     @FXML
     protected lateinit var rootPane: AnchorPane
@@ -207,7 +207,7 @@ class GameMeasureModalController : Initializable, StageHook {
             newScene?.let {
                 val exec = Consumer<Window> { newWindow ->
                     GameUtil.findGameHWND()?.let {
-                        CSystemDll.INSTANCE.topWindow(it, true)
+                        CSystemDll.INSTANCE.frontWindow(it)
                     } ?: go {
                         GameUtil.launchPlatformAndGame()
                         SystemUtil.message("${GAME_CN_NAME}不在运行", type = MB_ICONERROR xor MB_TOPMOST)
@@ -292,7 +292,46 @@ class GameMeasureModalController : Initializable, StageHook {
         }.toMutableList()
     }
 
+    fun clearGameRect() {
+        runUI {
+            rootPane.children.clear()
+        }
+    }
+
+    fun gameRectSize(): Int {
+        return rootPane.children.size
+    }
+
+    fun removeFirstGameRect() {
+        runUI {
+            rootPane.children.removeFirst()
+        }
+    }
+
+    fun drawGameRect(gameRect: GameRect) {
+        val usableW = rootPane.width
+        val usableH = rootPane.height
+        val middleH = usableH / 2
+        val middleW = usableW / 2
+        runUI {
+            rootPane.children.add(
+                StackPane().apply {
+                    AnchorPane.setLeftAnchor(this, (gameRect.left * usableW + middleW))
+                    AnchorPane.setTopAnchor(this, (gameRect.top * usableH + middleH))
+                    prefWidth = (gameRect.right - gameRect.left) * usableW
+                    prefHeight = (gameRect.bottom - gameRect.top) * usableH
+                    style = "-fx-border-color:red"
+                }
+            )
+        }
+    }
+
     override fun onHidden() {
         CSystemDll.INSTANCE.topWindow(GameUtil.findGameHWND(), false)
     }
+
+    fun setOpacity(opacity: Double) {
+        rootPane.style = "-fx-background-color: rgba(0,0,0,${opacity})"
+    }
+
 }

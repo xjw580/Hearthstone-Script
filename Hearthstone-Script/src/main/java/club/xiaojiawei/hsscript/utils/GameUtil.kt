@@ -309,8 +309,8 @@ object GameUtil {
      * 选择哪张发现牌
      */
     fun chooseDiscoverCard(index: Int, discoverCardSize: Int) {
-        if (discoverCardSize == 4) {
-            getFourDiscoverCardRect(Math.clamp(index.toLong(), 0, index)).lClick()
+        if (discoverCardSize >= 4) {
+            getFourDiscoverCardRect(Math.clamp(index.toLong(), 0, 4)).lClick()
         } else {
             getThreeDiscoverCardRect(Math.clamp(index.toLong(), 0, 3)).lClick()
         }
@@ -475,6 +475,9 @@ object GameUtil {
         val hwnd = (SystemUtil.findHWND("UnityWndClass", GAME_CN_NAME)
             ?: SystemUtil.findHWND("UnityWndClass", GAME_US_NAME)
             ?: CSystemDll.INSTANCE.findWindowsByProcessName(GAME_PROGRAM_NAME))
+            ?: SystemUtil.findHWND(null, GAME_CN_NAME)
+            ?: SystemUtil.findHWND(null, GAME_US_NAME)
+            ?: SystemUtil.findHWND("UnityWndClass", null)
         return hwnd
     }
 

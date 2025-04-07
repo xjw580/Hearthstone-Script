@@ -30,20 +30,24 @@ class MeasureGameController {
     protected lateinit var rootPane: StackPane
 
     @FXML
-    private fun showGameModal(actionEvent: ActionEvent) {
+    protected fun showGameModal(actionEvent: ActionEvent) {
         val source = actionEvent.source
         source as ToggleButton
         if (source.isSelected) {
-            WindowUtil.showStage(WindowEnum.GAME_MEASURE_MODAL, rootPane.scene.window)
+            WindowUtil.showStage(WindowEnum.GAME_WINDOW_MODAL, rootPane.scene.window)
+            val controller = WindowUtil.getController(WindowEnum.GAME_WINDOW_MODAL)
+            if (controller is GameWindowModalController){
+                controller.setOpacity(0.2)
+            }
         } else {
-            WindowUtil.hideStage(WindowEnum.GAME_MEASURE_MODAL)
+            WindowUtil.hideStage(WindowEnum.GAME_WINDOW_MODAL)
         }
     }
 
     @FXML
-    private fun printResult(actionEvent: ActionEvent) {
-        WindowUtil.getController(WindowEnum.GAME_MEASURE_MODAL)?.let {
-            it as GameMeasureModalController
+    protected fun printResult(actionEvent: ActionEvent) {
+        WindowUtil.getController(WindowEnum.GAME_WINDOW_MODAL)?.let {
+            it as GameWindowModalController
             val builder = StringBuilder()
             for ((index, gameRect) in it.getGameRect().withIndex()) {
                 if (ktStyleSwitch.status) {
@@ -72,7 +76,7 @@ class MeasureGameController {
     }
 
     @FXML
-    fun clearResult(actionEvent: ActionEvent) {
+    protected fun clearResult(actionEvent: ActionEvent) {
         resultArea.text = ""
     }
 

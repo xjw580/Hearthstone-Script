@@ -87,11 +87,16 @@ enum class WindowEnum(
         "measureGame.fxml", formatTitle("游戏控件测量"),
         cache = false, alwaysOnTop = true
     ),
-    GAME_MEASURE_MODAL(
-        "gameMeasureModal.fxml",
+    GAME_WINDOW_MODAL(
+        "gameWindowModal.fxml",
         cache = false, alwaysOnTop = true,
         initStyle = StageStyle.TRANSPARENT,
     ),
+    GAME_WINDOW_CONTROL_MODAL(
+        "gameWindowModal.fxml",
+        cache = false, alwaysOnTop = true,
+        initStyle = StageStyle.TRANSPARENT,
+    )
     ;
 
     companion object {

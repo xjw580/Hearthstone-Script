@@ -1,12 +1,15 @@
 package club.xiaojiawei.hsscript.bean
 
 import club.xiaojiawei.hsscript.consts.GameRationConst
+import club.xiaojiawei.hsscript.controller.javafx.GameWindowModalController
+import club.xiaojiawei.hsscript.enums.WindowEnum
 import club.xiaojiawei.hsscript.status.ScriptStatus.GAME_RECT
 import club.xiaojiawei.hsscript.utils.GameUtil
-import club.xiaojiawei.util.RandomUtil
 import club.xiaojiawei.hsscript.utils.SystemUtil
+import club.xiaojiawei.hsscript.utils.WindowUtil
+import club.xiaojiawei.hsscript.utils.runUI
+import club.xiaojiawei.util.RandomUtil
 import java.awt.Point
-import java.util.ArrayList
 import java.util.function.Consumer
 
 /**
@@ -36,20 +39,36 @@ data class GameRect(val left: Double, val right: Double, val top: Double, val bo
         return this != INVALID
     }
 
+    private fun showControlPos(gameRect: GameRect = this) {
+        WindowUtil.getStage(WindowEnum.GAME_WINDOW_CONTROL_MODAL)?.let {
+            if (it.isShowing) {
+                val controller = WindowUtil.getController(WindowEnum.GAME_WINDOW_CONTROL_MODAL)
+                if (controller is GameWindowModalController) {
+                    runUI {
+                        if (controller.gameRectSize() > 3) {
+                            controller.removeFirstGameRect()
+                        }
+                        controller.drawGameRect(gameRect)
+                    }
+                }
+            }
+        }
+    }
+
     /**
      * @param isCancel 执行前先右键取消
      */
-    @JvmOverloads
     fun lClick(isCancel: Boolean = true) {
         if (isCancel) cancel()
+        showControlPos()
         GameUtil.leftButtonClick(getClickPos())
     }
 
     fun rClick() {
+        showControlPos()
         GameUtil.rightButtonClick(getClickPos())
     }
 
-    @JvmOverloads
     fun lClickMoveLClick(endRect: GameRect?, isCancel: Boolean = true) {
         if (endRect == null) {
             return
@@ -57,10 +76,12 @@ data class GameRect(val left: Double, val right: Double, val top: Double, val bo
         if (isCancel) cancel()
         val startPos = getClickPos()
         val endPos = endRect.getClickPos()
+        showControlPos()
         GameUtil.leftButtonClick(startPos)
         SystemUtil.delay(80, 140)
         GameUtil.moveMouse(startPos, endPos)
         SystemUtil.delay(60, 120)
+        showControlPos(endRect)
         GameUtil.leftButtonClick(endPos)
     }
 
@@ -82,7 +103,7 @@ data class GameRect(val left: Double, val right: Double, val top: Double, val bo
 
     class GameRectAction(private val rect: GameRect) {
 
-        private val runnableList: MutableList<Runnable?> = ArrayList<Runnable?>()
+        private val runnableList: MutableList<Runnable?> = mutableListOf()
 
         private var lastRect: GameRect? = null
 

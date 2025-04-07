@@ -1,7 +1,6 @@
 package club.xiaojiawei.hsscript.service
 
 import club.xiaojiawei.config.log
-import club.xiaojiawei.hsscript.consts.GAME_CN_NAME
 import club.xiaojiawei.hsscript.core.Core
 import club.xiaojiawei.hsscript.dll.User32ExDll
 import club.xiaojiawei.hsscript.enums.ConfigEnum
@@ -49,7 +48,7 @@ object GameTimeoutService : Service<Int>() {
                     if (res.toInt() == 0) {
                         log.warn { "触发游戏响应超时，超过${timeoutSec}秒，准备重启" }
                         Core.restart(true)
-                        SystemUtil.delay(5000)
+                        SystemUtil.delay(15_000)
                     }
                 }
             } catch (e: Exception) {
