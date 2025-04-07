@@ -6,7 +6,6 @@ import club.xiaojiawei.config.log
 import club.xiaojiawei.enums.CardTypeEnum
 import club.xiaojiawei.util.CardUtil
 import club.xiaojiawei.util.isTrue
-import java.util.concurrent.atomic.AtomicInteger
 import java.util.concurrent.atomic.AtomicLong
 import java.util.function.Supplier
 
@@ -73,7 +72,7 @@ abstract class CardAction(createDefaultAction: Boolean = true) {
                         }
                     })
                 )
-            }else{
+            } else {
                 emptyList()
             }
         } ?: emptyList()
@@ -98,6 +97,22 @@ abstract class CardAction(createDefaultAction: Boolean = true) {
             }
             listOf(
                 PlayAction({ newWar ->
+                    for ((index, c) in newWar.rival.playArea.cards.withIndex()) {
+                        findSelf(newWar)?.action?.power(false)?.pointTo(index, true)
+                        return@PlayAction
+                    }
+                    for ((index, c) in newWar.me.playArea.cards.withIndex()) {
+                        findSelf(newWar)?.action?.power(false)?.pointTo(index, true)
+                        return@PlayAction
+                    }
+                    newWar.rival.playArea.hero?.let {
+                        findSelf(newWar)?.action?.power(false)?.pointTo(it, true)
+                        return@PlayAction
+                    }
+                    newWar.me.playArea.hero?.let {
+                        findSelf(newWar)?.action?.power(false)?.pointTo(it, true)
+                        return@PlayAction
+                    }
                     findSelf(newWar)?.action?.power()
                 }, { newWar ->
                     spendSelfCost(newWar)
@@ -439,7 +454,7 @@ abstract class CardAction(createDefaultAction: Boolean = true) {
     fun removeSelf(war: War): Card? {
         val entityId = belongCard?.entityId ?: return null
         return war.cardMap[entityId]?.area?.removeByEntityId(entityId) ?: let {
-            if (errorLogCount.incrementAndGet() <= MAX_ERROR_LOG_COUNT){
+            if (errorLogCount.incrementAndGet() <= MAX_ERROR_LOG_COUNT) {
                 log.warn { "移除卡牌失败,entityId:${entityId},className:${this::class.qualifiedName},action:${this::class.qualifiedName}" }
             }
             null
@@ -452,7 +467,7 @@ abstract class CardAction(createDefaultAction: Boolean = true) {
     fun findSelf(war: War): Card? {
         val entityId = belongCard?.entityId ?: return null
         return war.cardMap[entityId] ?: let {
-            if (errorLogCount.incrementAndGet() <= MAX_ERROR_LOG_COUNT){
+            if (errorLogCount.incrementAndGet() <= MAX_ERROR_LOG_COUNT) {
                 log.warn { "查找卡牌失败,entityId:${entityId},className:${this::class.qualifiedName},action:${this::class.qualifiedName}" }
             }
             null
@@ -468,7 +483,7 @@ abstract class CardAction(createDefaultAction: Boolean = true) {
             card.area.player.usedResources += card.cost
             card
         } ?: let {
-            if (errorLogCount.incrementAndGet() <= MAX_ERROR_LOG_COUNT){
+            if (errorLogCount.incrementAndGet() <= MAX_ERROR_LOG_COUNT) {
                 log.warn { "查找卡牌失败,entityId:${entityId},className:${this::class.qualifiedName},action:${this::class.qualifiedName}" }
             }
             null
