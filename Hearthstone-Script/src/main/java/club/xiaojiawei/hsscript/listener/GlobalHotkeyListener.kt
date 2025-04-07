@@ -64,7 +64,6 @@ object GlobalHotkeyListener : HotkeyListener {
     override fun onHotKey(i: Int) {
         when (i) {
             HOT_KEY_EXIT -> {
-                WindowUtil.hideAllStage()
                 SystemUtil.notice("捕捉到热键，关闭程序")
                 log.info { "捕捉到热键，关闭程序" }
                 unregister()

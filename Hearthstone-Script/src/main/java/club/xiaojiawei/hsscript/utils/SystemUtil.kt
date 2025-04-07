@@ -346,6 +346,7 @@ object SystemUtil {
      * 关闭本软件
      */
     fun shutdown() {
+        WindowUtil.hideAllStage()
         log.info { "准备关闭软件..." }
         PauseStatus.isPause = true
         exitProcess(0)

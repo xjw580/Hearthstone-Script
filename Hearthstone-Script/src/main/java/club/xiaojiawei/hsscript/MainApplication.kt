@@ -221,7 +221,6 @@ class MainApplication : Application() {
         val quitItem = MenuItem("退出")
         quitItem.addActionListener(object : AbstractAction() {
             override fun actionPerformed(e: ActionEvent?) {
-                WindowUtil.hideAllStage()
                 shutdown()
             }
         })
