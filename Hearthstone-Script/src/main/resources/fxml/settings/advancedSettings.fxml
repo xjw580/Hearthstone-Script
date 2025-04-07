@@ -111,8 +111,26 @@
                                     </tooltip>
                                 </Label>
                                 <HBox HBox.hgrow="ALWAYS"/>
-                                <NumberField fx:id="gameWindowOpacity" styleClass="text-field-ui, text-field-ui-small"
-                                             minValue="0" maxValue="255" prefWidth="${fieldWidth}"/>
+                                <ConfigNumberField config="GAME_WINDOW_OPACITY" styleClass="text-field-ui, text-field-ui-small"
+                                                   minValue="0" maxValue="255" prefWidth="${fieldWidth}"/>
+                            </HBox>
+                            <HBox styleClass="h-box">
+                                <Text text="战网窗口不透明度"/>
+                                <Label>
+                                    <graphic>
+                                        <HelpIco/>
+                                    </graphic>
+                                    <tooltip>
+                                        <Tooltip text="不透明度为0时，鼠标将穿透游戏窗口">
+                                            <showDuration>
+                                                <fx:reference source="tooltipDuration"/>
+                                            </showDuration>
+                                        </Tooltip>
+                                    </tooltip>
+                                </Label>
+                                <HBox HBox.hgrow="ALWAYS"/>
+                                <ConfigNumberField config="PLATFORM_WINDOW_OPACITY" styleClass="text-field-ui, text-field-ui-small"
+                                                   minValue="0" maxValue="255" prefWidth="${fieldWidth}"/>
                             </HBox>
                         </VBox>
                     </TitledPane>

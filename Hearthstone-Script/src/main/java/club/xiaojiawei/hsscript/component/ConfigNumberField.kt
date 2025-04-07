@@ -30,9 +30,9 @@ open class ConfigNumberField : NumberField() {
         textProperty().addListener { _, oldValue, newValue ->
             config?.let {
                 interceptChange.isFalse {
-                    val oldValueI = oldValue.toIntOrNull()
                     val newValueI = newValue.toIntOrNull()
-                    if (oldValueI != null && newValueI != null) {
+                    if (newValueI != null) {
+                        val oldValueI = oldValue.toIntOrNull() ?: newValueI
                         statusChangeCallback(oldValueI, newValueI)
                     }
                 }
@@ -47,6 +47,7 @@ open class ConfigNumberField : NumberField() {
         var res = true
         config?.service?.let { service ->
             res = (service as Service<Int>).intelligentStartStop(newValue)
+            service.valueChanged(oldValue, newValue)
         }
         if (res) {
             notificationManager?.let { nm ->

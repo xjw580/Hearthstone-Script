@@ -24,23 +24,23 @@ class CheckWarningStarter : AbstractStarter() {
             it as MainController
             it.getNotificationManagerInstance()
         }
-        val closeTime = 10
+        val closeTime = 10L
         runUI {
             var text = ""
             ConfigUtil.getBoolean(ConfigEnum.ENABLE_MOUSE).isFalse {
                 text = "启用鼠标处于关闭状态！！！"
                 log.warn { text }
-                notificationManager?.showWarn(text, closeTime)
+                notificationManager?.showWarn(text, "", closeTime)
             }
             ConfigUtil.getBoolean(ConfigEnum.STRATEGY).isFalse {
                 text = "执行策略处于关闭状态！！！"
                 log.warn { text }
-                notificationManager?.showWarn(text, closeTime)
+                notificationManager?.showWarn(text, "", closeTime)
             }
             if (ConfigExUtil.getFileLogLevel() === Level.OFF) {
                 text = "日志处于关闭状态！！！"
                 log.warn { text }
-                notificationManager?.showWarn(text, closeTime)
+                notificationManager?.showWarn(text, "", closeTime)
             }
         }
         startNextStarter()

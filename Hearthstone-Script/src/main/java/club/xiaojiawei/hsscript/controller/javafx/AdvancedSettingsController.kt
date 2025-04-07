@@ -74,7 +74,6 @@ class AdvancedSettingsController : AdvancedSettingsView(), Initializable {
         val isDrive = mouseControlModeComboBox.value === MouseControlModeEnum.DRIVE
         refreshDriver.isVisible = isDrive
         refreshDriver.isManaged = isDrive
-        gameWindowOpacity.text = getString(ConfigEnum.GAME_WINDOW_OPACITY)
 
         val pauseKey = getPauseHotKey()
         if (pauseKey != null) {
@@ -237,16 +236,6 @@ class AdvancedSettingsController : AdvancedSettingsView(), Initializable {
                     modifier = 0
                 }
             }
-        gameWindowOpacity.textProperty().addListener { observable, oldValue, newValue ->
-            ConfigEnum.GAME_WINDOW_OPACITY.service?.let {
-                if (newValue.isNullOrBlank()) return@addListener
-                val res = it.start()
-                (it as Service<Int>).valueChanged(oldValue.toInt(), newValue.toInt())
-                if (res) {
-                    putString(ConfigEnum.GAME_WINDOW_OPACITY, newValue)
-                }
-            }
-        }
     }
 
     private var modifier = 0

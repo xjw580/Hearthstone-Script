@@ -28,8 +28,10 @@ object WarTimeoutService : Service<Int>() {
                 while (thread?.isInterrupted == false) {
                     Thread.sleep(1000)
                     if (WarEx.inWar && WorkListener.working && WarEx.war.startTime != 0L) {
-                        if (System.currentTimeMillis() - WarEx.war.startTime > ConfigUtil.getInt(ConfigEnum.WAR_TIMEOUT) * 1000) {
+                        val timeoutSec = ConfigUtil.getInt(ConfigEnum.WAR_TIMEOUT)
+                        if (System.currentTimeMillis() - WarEx.war.startTime > timeoutSec * 1000) {
                             DeckStrategyManager.currentDeckStrategy?.needSurrender = true
+                            log.info { "触发游戏对局超时，超过${timeoutSec}秒，准备投降" }
                         }
                     }
                 }

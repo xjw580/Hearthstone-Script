@@ -47,7 +47,7 @@ object GameTimeoutService : Service<Int>() {
                         WinDef.DWORDByReference()
                     )
                     if (res.toInt() == 0) {
-                        log.warn { GAME_CN_NAME + "超过${timeoutSec}秒无响应，准备重启" }
+                        log.warn { "触发游戏响应超时，超过${timeoutSec}秒，准备重启" }
                         Core.restart(true)
                         SystemUtil.delay(5000)
                     }

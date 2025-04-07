@@ -151,7 +151,11 @@ enum class ConfigEnum(
     /**
      * 战网平台窗口不透明度(0~255)
      */
-    PLATFORM_WINDOW_OPACITY(group = BEHAVIOR_CONFIG_GROUP, defaultValue = "255", service = PlatformWindowOpacityService),
+    PLATFORM_WINDOW_OPACITY(
+        group = BEHAVIOR_CONFIG_GROUP,
+        defaultValue = "255",
+        service = PlatformWindowOpacityService
+    ),
 
     /**
      * 套牌插件禁用列表

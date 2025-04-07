@@ -86,9 +86,6 @@ open class AdvancedSettingsView {
     protected lateinit var topGameWindow: ConfigSwitch
 
     @FXML
-    protected lateinit var gameWindowOpacity: NumberField
-
-    @FXML
     protected lateinit var rootPane: StackPane
 
     @FXML

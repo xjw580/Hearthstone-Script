@@ -108,7 +108,6 @@ object MouseUtil {
                     )
                     SystemUtil.delayShort()
                 }
-                println("right click")
                 CSystemDll.INSTANCE.rightClick(pos.x.toLong(), pos.y.toLong(), hwnd, mouseMode)
                 savePos(pos)
             } finally {

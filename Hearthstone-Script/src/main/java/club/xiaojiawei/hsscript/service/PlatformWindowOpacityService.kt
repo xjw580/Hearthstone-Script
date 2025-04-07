@@ -1,7 +1,7 @@
 package club.xiaojiawei.hsscript.service
 
 import club.xiaojiawei.hsscript.enums.ConfigEnum
-import club.xiaojiawei.hsscript.status.PauseStatus
+import club.xiaojiawei.hsscript.listener.WorkListener
 import club.xiaojiawei.hsscript.status.ScriptStatus
 import club.xiaojiawei.hsscript.utils.ConfigUtil
 import club.xiaojiawei.hsscript.utils.GameUtil
@@ -21,30 +21,31 @@ object PlatformWindowOpacityService : Service<Int>() {
         }
     }
 
-    private val pauseChangeListener: ChangeListener<Boolean> by lazy {
+    private val workingChangeListener: ChangeListener<Boolean> by lazy {
         ChangeListener { _, _, newValue ->
             if (newValue) {
-                changeOpacity(255)
-            } else {
                 changeOpacity(ConfigUtil.getInt(ConfigEnum.PLATFORM_WINDOW_OPACITY))
+            } else {
+//                todo
+//                changeOpacity(255)
             }
         }
     }
 
     override fun execStart(): Boolean {
         ScriptStatus.platformHWNDProperty().addListener(windowChangeListener)
-        PauseStatus.addChangeListener(pauseChangeListener)
+        WorkListener.addChangeListener(workingChangeListener)
         return true
     }
 
     override fun execStop(): Boolean {
         ScriptStatus.platformHWNDProperty().removeListener(windowChangeListener)
-        PauseStatus.removeChangeListener(pauseChangeListener)
+        WorkListener.removeChangeListener(workingChangeListener)
         return true
     }
 
     override fun execIntelligentStartStop(value: Int?): Boolean {
-        return (value ?: ConfigUtil.getInt(ConfigEnum.PLATFORM_WINDOW_OPACITY)) > 255
+        return (value ?: ConfigUtil.getInt(ConfigEnum.PLATFORM_WINDOW_OPACITY)) < 255
     }
 
     override fun execValueChanged(oldValue: Int, newValue: Int) {
