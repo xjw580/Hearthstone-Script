@@ -26,8 +26,7 @@ object PlatformWindowOpacityService : Service<Int>() {
             if (newValue) {
                 changeOpacity(ConfigUtil.getInt(ConfigEnum.PLATFORM_WINDOW_OPACITY))
             } else {
-//                todo
-//                changeOpacity(255)
+                changeOpacity(255)
             }
         }
     }

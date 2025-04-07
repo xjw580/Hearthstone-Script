@@ -28,8 +28,7 @@ object GameWindowOpacityService : Service<Int>() {
             if (newValue) {
                 changeOpacity(ConfigUtil.getInt(ConfigEnum.GAME_WINDOW_OPACITY))
             } else {
-//                todo
-//                changeOpacity(255)
+                changeOpacity(255)
             }
         }
     }
