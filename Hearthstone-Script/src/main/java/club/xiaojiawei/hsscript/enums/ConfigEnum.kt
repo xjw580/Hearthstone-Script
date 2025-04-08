@@ -3,6 +3,7 @@ package club.xiaojiawei.hsscript.enums
 import ch.qos.logback.classic.Level
 import club.xiaojiawei.enums.RunModeEnum
 import club.xiaojiawei.hsscript.bean.HotKey
+import club.xiaojiawei.hsscript.bean.TimeRule
 import club.xiaojiawei.hsscript.bean.WorkDay
 import club.xiaojiawei.hsscript.bean.WorkTime
 import club.xiaojiawei.hsscript.service.*
@@ -19,6 +20,7 @@ const val INIT_CONFIG_GROUP = "init"
 
 const val PLUGIN_CONFIG_GROUP = "plugin"
 const val OTHER_CONFIG_GROUP = "other"
+const val TIME_CONFIG_GROUP = "time"
 
 const val STRATEGY_CONFIG_GROUP = "strategy"
 
@@ -55,7 +57,7 @@ enum class ConfigEnum(
      * 工作日标记
      */
     WORK_DAY(
-        group = OTHER_CONFIG_GROUP,
+        group = TIME_CONFIG_GROUP,
         defaultValue = JSON.toJSONString(
             listOf(
                 WorkDay("every", true)
@@ -67,11 +69,18 @@ enum class ConfigEnum(
      * 工作时间，具体时间段
      */
     WORK_TIME(
-        group = OTHER_CONFIG_GROUP, defaultValue = JSON.toJSONString(
+        group = TIME_CONFIG_GROUP, defaultValue = JSON.toJSONString(
             listOf(
                 WorkTime("00:00", "00:00", true),
             )
         )
+    ),
+
+    /**
+     * 工作时间规则
+     */
+    WORK_TIME_RULE(
+        group = TIME_CONFIG_GROUP
     ),
 
     /**

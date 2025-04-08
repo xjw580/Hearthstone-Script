@@ -94,6 +94,8 @@ interface CSystemDll : Library {
 
     fun isConnected(): Boolean
 
+    fun add(a: Int, b: Int): Int
+
     /*===================================tray===================================*/
 
     interface TrayCallback : Callback {
@@ -244,7 +246,16 @@ interface CSystemDll : Library {
         }
 
         val INSTANCE: CSystemDll by lazy {
-            Native.load("dll/csystem", CSystemDll::class.java)
+//            Native.load("dll/csystem", CSystemDll::class.java)
+            Native.load(
+                "S:\\CLionProjects\\hs-script-lib\\cmake-build-release\\csystem\\csystem.dll",
+                CSystemDll::class.java
+            )
         }
     }
+}
+
+fun main() {
+    println(CSystemDll.INSTANCE.isConnected())
+    println(CSystemDll.INSTANCE.add(10, 20))
 }

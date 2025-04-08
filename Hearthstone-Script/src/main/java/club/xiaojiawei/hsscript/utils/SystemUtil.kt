@@ -16,11 +16,12 @@ import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.enums.RegCommonNameEnum
 import club.xiaojiawei.hsscript.enums.WindowEnum
 import club.xiaojiawei.hsscript.status.PauseStatus
+import club.xiaojiawei.hsscript.utils.SystemUtil.delay
 import club.xiaojiawei.util.RandomUtil
 import club.xiaojiawei.util.isTrue
+import com.sun.jna.WString
 import com.sun.jna.platform.win32.*
 import com.sun.jna.platform.win32.WinUser.*
-import javafx.application.Platform
 import java.awt.*
 import java.awt.datatransfer.StringSelection
 import java.awt.event.KeyEvent
@@ -115,7 +116,10 @@ object SystemUtil {
      * @return
      */
     fun findHWND(className: String? = null, windowTitle: String?): WinDef.HWND? {
-        return User32.INSTANCE.FindWindow(className, windowTitle)
+        return User32ExDll.INSTANCE.FindWindowW(
+            if (className == null) null else WString(className),
+            if (windowTitle == null) null else WString(windowTitle),
+        )
     }
 
     /**

@@ -9,7 +9,7 @@
             xmlns:fx="http://javafx.com/fxml"
             stylesheets="@../css/settings/pluginSettings.css"
             fx:id="rootPane"
-            fx:controller="club.xiaojiawei.hsscript.controller.javafx.PluginSettingsController">
+            fx:controller="club.xiaojiawei.hsscript.controller.javafx.settings.PluginSettingsController">
     <SplitPane dividerPositions="0.25" styleClass="split-pane-line"
                prefHeight="${rootPane.height}" prefWidth="${rootPane.width}">
         <ListView fx:id="pluginListView" minWidth="150" maxWidth="250" styleClass="list-view-ui"/>

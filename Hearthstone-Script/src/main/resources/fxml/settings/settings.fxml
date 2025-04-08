@@ -6,7 +6,7 @@
          xmlns:fx="http://javafx.com/fxml"
          tabClosingPolicy="UNAVAILABLE"
          stylesheets="@../css/tableview.css"
-         fx:controller="club.xiaojiawei.hsscript.controller.javafx.SettingsController"
+         fx:controller="club.xiaojiawei.hsscript.controller.javafx.settings.SettingsController"
          fx:id="rootPane"
          styleClass="tab-pane-ui">
     <Tab fx:id="initTab" text="初始设置"/>

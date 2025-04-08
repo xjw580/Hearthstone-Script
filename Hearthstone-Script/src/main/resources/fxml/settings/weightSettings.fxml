@@ -15,7 +15,7 @@
            xmlns:fx="http://javafx.com/fxml"
            stylesheets="@../css/settings/weightSettings.css"
            fx:id="rootPane"
-           fx:controller="club.xiaojiawei.hsscript.controller.javafx.WeightSettingsController">
+           fx:controller="club.xiaojiawei.hsscript.controller.javafx.settings.WeightSettingsController">
     <fx:define>
         <Double fx:id="colMinWeight" fx:value="25"/>
         <Double fx:id="icoScale" fx:value="0.8"/>

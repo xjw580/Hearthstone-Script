@@ -15,7 +15,7 @@
            xmlns:fx="http://javafx.com/fxml"
            stylesheets="@../css/settings/advancedSettings.css"
            fx:id="rootPane"
-           fx:controller="club.xiaojiawei.hsscript.controller.javafx.AdvancedSettingsController">
+           fx:controller="club.xiaojiawei.hsscript.controller.javafx.settings.AdvancedSettingsController">
     <fx:define>
         <Duration fx:id="tooltipDuration" fx:value="60s"/>
         <Double fx:id="fieldWidth" fx:value="150"/>

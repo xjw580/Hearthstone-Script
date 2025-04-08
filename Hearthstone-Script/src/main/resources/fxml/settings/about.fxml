@@ -15,7 +15,7 @@
            xmlns:fx="http://javafx.com/fxml"
            stylesheets="@../css/settings/about.css"
            fx:id="rootPane"
-           fx:controller="club.xiaojiawei.hsscript.controller.javafx.AboutController">
+           fx:controller="club.xiaojiawei.hsscript.controller.javafx.settings.AboutController">
     <VBox>
         <ScrollPane VBox.vgrow="ALWAYS" styleClass="scroll-pane-item">
             <VBox alignment="CENTER">

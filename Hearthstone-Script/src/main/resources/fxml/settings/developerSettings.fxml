@@ -13,7 +13,7 @@
            xmlns:fx="http://javafx.com/fxml"
            stylesheets="@../css/settings/developerSettings.css"
            fx:id="rootPane"
-           fx:controller="club.xiaojiawei.hsscript.controller.javafx.DeveloperSettingsController">
+           fx:controller="club.xiaojiawei.hsscript.controller.javafx.settings.DeveloperSettingsController">
     <VBox>
         <ScrollPane VBox.vgrow="ALWAYS" styleClass="scroll-pane-item">
             <VBox styleClass="item-v-box">

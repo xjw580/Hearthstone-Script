@@ -144,6 +144,13 @@ class MainApplication : Application() {
     }
 
     override fun start(stage: Stage?) {
+        for (string in PROGRAM_ARGS) {
+            if (string.startsWith("--window=")) {
+                val windowEnum = WindowEnum.fromString(string.split("=")[1]) ?: break
+                showStage(windowEnum)
+                return
+            }
+        }
         preInit()
         InitializerConfig.initializer.init()
         showMainPage()

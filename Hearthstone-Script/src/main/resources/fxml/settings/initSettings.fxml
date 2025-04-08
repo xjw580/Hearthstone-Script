@@ -14,7 +14,7 @@
            xmlns:fx="http://javafx.com/fxml"
            stylesheets="@../css/settings/initSettings.css"
            fx:id="rootPane"
-           fx:controller="club.xiaojiawei.hsscript.controller.javafx.InitSettingsController">
+           fx:controller="club.xiaojiawei.hsscript.controller.javafx.settings.InitSettingsController">
     <VBox>
         <ScrollPane VBox.vgrow="ALWAYS" styleClass="scroll-pane-item">
             <VBox styleClass="item-v-box">

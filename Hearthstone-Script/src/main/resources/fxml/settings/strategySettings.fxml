@@ -14,7 +14,7 @@
            xmlns:fx="http://javafx.com/fxml"
            stylesheets="@../css/settings/strategySettings.css"
            fx:id="rootPane"
-           fx:controller="club.xiaojiawei.hsscript.controller.javafx.StrategySettingsController">
+           fx:controller="club.xiaojiawei.hsscript.controller.javafx.settings.StrategySettingsController">
     <fx:define>
         <Double fx:id="fieldWidth" fx:value="60"/>
     </fx:define>

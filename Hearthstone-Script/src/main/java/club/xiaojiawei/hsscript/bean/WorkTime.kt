@@ -1,5 +1,6 @@
 package club.xiaojiawei.hsscript.bean
 
+import org.jetbrains.kotlin.js.patterns.PatternBuilder.pattern
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 
@@ -8,15 +9,19 @@ import java.time.format.DateTimeFormatter
  * @date 2024/10/11 16:30
  */
 
-private val pattern = DateTimeFormatter.ofPattern("HH:mm")
-
 class WorkTime {
 
     constructor()
 
-    constructor(startTime: String?, endTime: String?, enabled: Boolean) {
+    constructor(startTime: String?, endTime: String?, enabled: Boolean = true) {
         this.startTime = startTime
         this.endTime = endTime
+        this.enabled = enabled
+    }
+
+    constructor(startTime: LocalTime?, endTime: LocalTime?, enabled: Boolean = true) {
+        this.startTime = pattern.format(startTime)
+        this.endTime = pattern.format(endTime)
         this.enabled = enabled
     }
 
@@ -35,5 +40,10 @@ class WorkTime {
     private fun parseTime(timeStr: String?):LocalTime? {
         if (timeStr.isNullOrBlank()) return null
         return LocalTime.from(pattern.parse(timeStr))
+    }
+
+
+    companion object {
+        val pattern = DateTimeFormatter.ofPattern("HH:mm")
     }
 }

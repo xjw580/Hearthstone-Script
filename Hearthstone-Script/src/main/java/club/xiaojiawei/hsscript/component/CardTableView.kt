@@ -2,7 +2,7 @@ package club.xiaojiawei.hsscript.component
 
 import club.xiaojiawei.bean.DBCard
 import club.xiaojiawei.controls.NotificationManager
-import club.xiaojiawei.hsscript.controller.javafx.WeightSettingsController.NoEditTextFieldTableCell
+import club.xiaojiawei.hsscript.bean.tableview.NoEditTextFieldTableCell
 import club.xiaojiawei.util.CardDBUtil
 import javafx.beans.property.SimpleIntegerProperty
 import javafx.fxml.FXML

@@ -63,7 +63,8 @@ enum class WindowEnum(
         (SCREEN_HEIGHT - 670.0) / 2,
         alwaysOnTop = true,
     ),
-    CARD_ACTION_EDITOR(""),
+    TIME_SETTINGS("timeSettings.fxml"),
+    CARD_ACTION_EDITOR("cardActionEditor.fxml"),
     STARTUP(
         "startup.fxml", formatTitle("启动页"),
         558.0, 400.0
