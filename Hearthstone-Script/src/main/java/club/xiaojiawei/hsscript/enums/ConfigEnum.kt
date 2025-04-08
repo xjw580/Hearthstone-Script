@@ -2,10 +2,7 @@ package club.xiaojiawei.hsscript.enums
 
 import ch.qos.logback.classic.Level
 import club.xiaojiawei.enums.RunModeEnum
-import club.xiaojiawei.hsscript.bean.HotKey
-import club.xiaojiawei.hsscript.bean.TimeRule
-import club.xiaojiawei.hsscript.bean.WorkDay
-import club.xiaojiawei.hsscript.bean.WorkTime
+import club.xiaojiawei.hsscript.bean.*
 import club.xiaojiawei.hsscript.service.*
 import com.alibaba.fastjson.JSON
 import com.melloware.jintellitype.JIntellitype
@@ -31,6 +28,13 @@ const val SERVICE_CONFIG_GROUP = "service"
 const val VERSION_CONFIG_GROUP = "version"
 
 const val DEV_CONFIG_GROUP = "version"
+
+private val operations = setOf(
+    TimeOperateEnum.SLEEP_SYSTEM,
+    TimeOperateEnum.LOCK_SCREEN,
+    TimeOperateEnum.CLOSE_GAME,
+    TimeOperateEnum.CLOSE_PLATFORM
+)
 
 enum class ConfigEnum(
     val group: String = "",
@@ -79,8 +83,31 @@ enum class ConfigEnum(
     /**
      * 工作时间规则
      */
-    WORK_TIME_RULE(
-        group = TIME_CONFIG_GROUP
+    WORK_TIME_RULE_SET(
+        group = TIME_CONFIG_GROUP, defaultValue = JSON.toJSONString(
+            listOf(
+                WorkTimeRuleSet(
+                    "预设1", listOf(
+                        WorkTimeRule(
+                            WorkTime("00:00", "08:00", true), operations.toSet()
+                        ),
+                        WorkTimeRule(
+                            WorkTime("12:00", "14:00", true), operations.toSet()
+                        ),
+                    )
+                ),
+                WorkTimeRuleSet(
+                    "预设2", listOf(
+                        WorkTimeRule(
+                            WorkTime("00:00", "07:00", true), operations.toSet()
+                        ),
+                        WorkTimeRule(
+                            WorkTime("20:00", "22:00", true), operations.toSet()
+                        ),
+                    )
+                ),
+            )
+        )
     ),
 
     /**

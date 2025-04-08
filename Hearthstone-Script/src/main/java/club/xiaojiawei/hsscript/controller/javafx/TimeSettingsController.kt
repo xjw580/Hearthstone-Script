@@ -1,12 +1,16 @@
 package club.xiaojiawei.hsscript.controller.javafx
 
 import club.xiaojiawei.controls.Modal
+import club.xiaojiawei.controls.NotificationManager
 import club.xiaojiawei.controls.Time
 import club.xiaojiawei.controls.ico.EditIco
-import club.xiaojiawei.hsscript.bean.TimeRule
-import club.xiaojiawei.hsscript.bean.TimeRuleSet
 import club.xiaojiawei.hsscript.bean.WorkTime
+import club.xiaojiawei.hsscript.bean.WorkTimeRule
+import club.xiaojiawei.hsscript.bean.WorkTimeRuleSet
+import club.xiaojiawei.hsscript.bean.tableview.NumCallback
 import club.xiaojiawei.hsscript.enums.TimeOperateEnum
+import club.xiaojiawei.hsscript.utils.ConfigExUtil
+import club.xiaojiawei.tablecell.TextFieldTableCellUI
 import javafx.event.ActionEvent
 import javafx.event.EventHandler
 import javafx.fxml.FXML
@@ -14,13 +18,14 @@ import javafx.fxml.Initializable
 import javafx.geometry.Insets
 import javafx.geometry.Pos
 import javafx.scene.Cursor
+import javafx.scene.Node
 import javafx.scene.control.*
 import javafx.scene.layout.FlowPane
 import javafx.scene.layout.HBox
 import javafx.scene.layout.Pane
 import javafx.scene.text.Text
+import javafx.util.StringConverter
 import java.net.URL
-import java.time.LocalTime
 import java.util.*
 
 private const val SELECTED_OPERATION_STYLE_CLASS = "label-ui-success"
@@ -31,116 +36,116 @@ private const val SELECTED_OPERATION_STYLE_CLASS = "label-ui-success"
  */
 class TimeSettingsController : Initializable {
 
-//    @FXML
-//    protected lateinit var noCol: TableColumn<TimeRule, Number?>
-
-//    @FXML
-//    protected lateinit var nameCol: TableColumn<TimeRule, String?>
-
-    lateinit var nameSetCol: TableColumn<TimeRuleSet, String?>
-    lateinit var noSetCol: TableColumn<TimeRuleSet, Number?>
-    lateinit var timeRuleSetTable: TableView<TimeRuleSet>
+    @FXML
+    protected lateinit var notificationManager: NotificationManager<Any>
 
     @FXML
-    protected lateinit var selectedTimeRuleTable: TableView<TimeRule>
+    protected lateinit var noSetCol: TableColumn<WorkTimeRuleSet, Number?>
 
     @FXML
-    protected lateinit var selectedTimeCol: TableColumn<TimeRule, WorkTime?>
+    protected lateinit var nameSetCol: TableColumn<WorkTimeRuleSet, String?>
 
     @FXML
-    protected lateinit var selectedAfterOperationCol: TableColumn<TimeRule, Set<TimeOperateEnum>?>
+    protected lateinit var workTimeRuleSetTable: TableView<WorkTimeRuleSet>
 
     @FXML
-    protected lateinit var allTimeRuleTable: TableView<TimeRule>
+    protected lateinit var selectedWorkTimeRuleTable: TableView<WorkTimeRule>
 
     @FXML
-    protected lateinit var allTimeCol: TableColumn<TimeRule, WorkTime?>
+    protected lateinit var selectedTimeCol: TableColumn<WorkTimeRule, WorkTime?>
 
     @FXML
-    protected lateinit var allAfterOperationCol: TableColumn<TimeRule, Set<TimeOperateEnum>?>
+    protected lateinit var selectedAfterOperationCol: TableColumn<WorkTimeRule, Set<TimeOperateEnum>?>
 
     @FXML
-    protected lateinit var rootPane: TabPane
+    protected lateinit var rootPane: Pane
 
     override fun initialize(p0: URL?, p1: ResourceBundle?) {
-        allTimeRuleTable.isEditable = true
-//        noCol.cellValueFactory = NumCallback()
-
-//        nameCol.isEditable = true
-//        nameCol.setCellValueFactory { cellData -> cellData.value.nameProperty() }
-//        nameCol.setCellFactory { p ->
-//            object : TextFieldTableCellUI<TimeRule?, String?>(object : StringConverter<String?>() {
-//                override fun toString(`object`: String?): String? {
-//                    return `object`
-//                }
-//
-//                override fun fromString(string: String?): String? {
-//                    return string
-//                }
-//            }) {
-//                override fun styleClass(): Array<out String?>? {
-//                    return arrayOf("text-field-ui")
-//                }
-//
-//                override fun commitEdit(p0: String?) {
-//                    super.commitEdit(p0)
-//                    storeConfig()
-//                }
-//            }
-//        }
-
-        allTimeCol.setCellValueFactory { cellData -> cellData.value.workTimeProperty() }
-        allTimeCol.setCellFactory { p ->
-            object : TableCell<TimeRule, WorkTime?>() {
-                override fun updateItem(item: WorkTime?, empty: Boolean) {
-                    super.updateItem(item, empty)
-                    if (item == null || empty) {
-                        graphic = null
-                        return
-                    }
-                    graphic = buildTimePane(allTimeRuleTable.items[index])
-                }
-            }
-        }
-
-        allAfterOperationCol.setCellValueFactory { cellData -> cellData.value.operateProperty() }
-        allAfterOperationCol.setCellFactory { p ->
-            object : TableCell<TimeRule, Set<TimeOperateEnum>?>() {
-                override fun updateItem(item: Set<TimeOperateEnum>?, empty: Boolean) {
-                    super.updateItem(item, empty)
-                    if (item == null || empty) {
-                        graphic = null
-                        return
-                    }
-                    graphic = buildOperationPane(allTimeRuleTable.items[index])
-                }
-            }
-        }
-
-        allTimeRuleTable.items.addAll(
-            TimeRule(
-                WorkTime(LocalTime.now(), LocalTime.now().plusMinutes(30)),
-                setOf(TimeOperateEnum.SLEEP_SYSTEM, TimeOperateEnum.LOCK_SCREEN, TimeOperateEnum.CLOSE_GAME)
-            )
-        )
+        initTimeRuleSetTable()
+        initSelectedTimeRuleTable()
     }
 
+    private fun initTimeRuleSetTable() {
+        workTimeRuleSetTable.isEditable = true
+        workTimeRuleSetTable.selectionModel.selectedItemProperty().addListener { _, _, newValue ->
+            selectedWorkTimeRuleTable.items.setAll(newValue.getTimeRules())
+        }
+        noSetCol.cellValueFactory = NumCallback()
+        nameSetCol.isEditable = true
+        nameSetCol.setCellValueFactory { cellData -> cellData.value.nameProperty() }
+        nameSetCol.setCellFactory { p ->
+            object : TextFieldTableCellUI<WorkTimeRuleSet?, String?>(object : StringConverter<String?>() {
+                override fun toString(`object`: String?): String? {
+                    return `object`
+                }
 
-    private fun buildTimePane(item: TimeRule): Pane {
-        return HBox(
+                override fun fromString(string: String?): String? {
+                    return string
+                }
+            }) {
+                override fun cancelEdit() {
+                    super.commitEdit(node.text)
+                }
+
+                override fun commitEdit(p0: String?) {
+                    super.commitEdit(p0)
+                }
+            }
+
+        }
+
+        ConfigExUtil.getWorkTimeRuleSet()?.let {
+            workTimeRuleSetTable.items.addAll(it)
+        }
+    }
+
+    private fun initSelectedTimeRuleTable() {
+        selectedWorkTimeRuleTable.isEditable = true
+
+        selectedTimeCol.setCellValueFactory { cellData -> cellData.value.workTimeProperty() }
+        selectedTimeCol.setCellFactory { p ->
+            ColTableCell { index -> buildTimePane(selectedWorkTimeRuleTable.items[index]) }
+        }
+
+        selectedAfterOperationCol.setCellValueFactory { cellData -> cellData.value.operateProperty() }
+        selectedAfterOperationCol.setCellFactory { p ->
+            ColTableCell { index -> buildOperationPane(selectedWorkTimeRuleTable.items[index]) }
+        }
+    }
+
+    private class ColTableCell<T, S>(var buildGraphic: (Int) -> Node) : TableCell<T, S>() {
+
+        override fun updateItem(item: S?, empty: Boolean) {
+            super.updateItem(item, empty)
+            if (item == null || empty) {
+                graphic = null
+                return
+            }
+            graphic = this.buildGraphic(index)
+        }
+
+    }
+
+    private var timePaneMap = mutableMapOf<WorkTimeRule, Pane>()
+
+    private fun buildTimePane(item: WorkTimeRule): Pane {
+        timePaneMap[item]?.let {
+            return it
+        }
+        val pane = HBox(
             Time().apply {
                 localTime = item.getWorkTime().parseStartTime()
                 readOnlyTimeProperty().addListener { observable, oldValue, newValue ->
+                    newValue ?: return@addListener
                     item.getWorkTime().startTime = WorkTime.pattern.format(newValue)
-                    storeConfig()
                 }
             },
             Text("-"),
             Time().apply {
                 localTime = item.getWorkTime().parseEndTime()
                 readOnlyTimeProperty().addListener { observable, oldValue, newValue ->
+                    newValue ?: return@addListener
                     item.getWorkTime().endTime = WorkTime.pattern.format(newValue)
-                    storeConfig()
                 }
             },
         ).apply {
@@ -148,10 +153,17 @@ class TimeSettingsController : Initializable {
             alignment = Pos.CENTER
             spacing = 3.0
         }
+        timePaneMap[item] = pane
+        return pane
     }
 
-    private fun buildOperationPane(item: TimeRule): Pane {
-        return HBox().apply {
+    private var operationPaneMap = mutableMapOf<WorkTimeRule, Pane>()
+
+    private fun buildOperationPane(item: WorkTimeRule): Pane {
+        operationPaneMap[item]?.let {
+            return it
+        }
+        val pane = HBox().apply {
             children.addAll(item.getOperate().map {
                 Label(it.value).apply {
                     styleClass.addAll("label-ui", "label-ui-small", SELECTED_OPERATION_STYLE_CLASS, "radius-ui")
@@ -159,11 +171,14 @@ class TimeSettingsController : Initializable {
             }.toList())
             children.add(buildOperationEditBtn(item))
             alignment = Pos.CENTER
-            spacing = 10.0
+            spacing = 5.0
         }
+        operationPaneMap[item] = pane
+        return pane
     }
 
-    private fun buildOperationEditBtn(item: TimeRule): Button {
+
+    private fun buildOperationEditBtn(item: WorkTimeRule): Button {
         return Button().apply {
             graphic = EditIco("main-color")
             style =
@@ -176,7 +191,7 @@ class TimeSettingsController : Initializable {
             onAction = EventHandler<ActionEvent> {
                 val content = FlowPane().apply {
                     val selectAllLabel = Label("全选")
-                    val isSelectAll = {
+                    val isSelectAll: () -> Unit = {
                         if (selectedTimeOperateEnums.size == TimeOperateEnum.values().size) {
                             if (!selectAllLabel.styleClass.contains(SELECTED_OPERATION_STYLE_CLASS)) {
                                 selectAllLabel.styleClass.add(SELECTED_OPERATION_STYLE_CLASS)
@@ -229,7 +244,6 @@ class TimeSettingsController : Initializable {
                 }
                 Modal(rootPane, "修改", content, {
                     item.setOperate(selectedTimeOperateEnums)
-                    storeConfig()
                 }, {}).apply {
                     isMaskClosable = true
                 }.show()
@@ -237,12 +251,44 @@ class TimeSettingsController : Initializable {
         }
     }
 
-    private fun storeConfig() {
-        println("storeConfig")
-        for (rule in allTimeRuleTable.items) {
-            println(rule.getWorkTime().startTime + "-" + rule.getWorkTime().endTime)
-            println(rule.getOperate())
+    @FXML
+    protected fun saveConfig() {
+        ConfigExUtil.storeWorkTimeRuleSet(workTimeRuleSetTable.items)
+        notificationManager.showSuccess("保存成功", 2)
+    }
+
+    @FXML
+    protected fun addRulerSet(actionEvent: ActionEvent) {
+        workTimeRuleSetTable.items.add(
+            WorkTimeRuleSet("预设${workTimeRuleSetTable.items.size + 1}")
+        )
+    }
+
+    @FXML
+    protected fun delRulerSet(actionEvent: ActionEvent) {
+        val index = workTimeRuleSetTable.selectionModel.selectedIndex
+        if (index == -1) return
+        workTimeRuleSetTable.items.removeAt(index)
+    }
+
+    @FXML
+    protected fun addRuler(actionEvent: ActionEvent) {
+        val workTimeRuleSet = workTimeRuleSetTable.selectionModel.selectedItem ?: return
+        val workTimeRule = WorkTimeRule().apply {
+            setWorkTime(WorkTime("00:00", "00:00", true))
         }
+        workTimeRuleSet.setTimeRules(workTimeRuleSet.getTimeRules() + workTimeRule)
+        selectedWorkTimeRuleTable.items.add(workTimeRule)
+    }
+
+    @FXML
+    protected fun delRuler(actionEvent: ActionEvent) {
+        val workTimeRule = selectedWorkTimeRuleTable.selectionModel.selectedItem ?: return
+        val workTimeRuleSet = workTimeRuleSetTable.selectionModel.selectedItem ?: return
+        workTimeRuleSet.setTimeRules(workTimeRuleSet.getTimeRules().toMutableList().apply {
+            remove(workTimeRule)
+        })
+        selectedWorkTimeRuleTable.items.remove(workTimeRule)
     }
 
 }

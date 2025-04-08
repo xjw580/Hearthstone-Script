@@ -4,6 +4,7 @@ import ch.qos.logback.classic.Level
 import club.xiaojiawei.hsscript.bean.HotKey
 import club.xiaojiawei.hsscript.bean.WorkDay
 import club.xiaojiawei.hsscript.bean.WorkTime
+import club.xiaojiawei.hsscript.bean.WorkTimeRuleSet
 import club.xiaojiawei.hsscript.bean.single.repository.AbstractRepository
 import club.xiaojiawei.hsscript.bean.single.repository.GiteeRepository
 import club.xiaojiawei.hsscript.bean.single.repository.GithubRepository
@@ -18,6 +19,7 @@ import club.xiaojiawei.hsscript.listener.WorkListener
 import club.xiaojiawei.hsscript.starter.InjectStarter
 import club.xiaojiawei.hsscript.status.PauseStatus
 import club.xiaojiawei.hsscript.status.ScriptStatus
+import com.alibaba.fastjson.JSON
 import java.io.File
 import java.io.FileOutputStream
 import java.nio.file.Files
@@ -122,7 +124,7 @@ object ConfigExUtil {
         fileLogLevel = getFileLogLevel().toInt()
     }
 
-    fun storeMouseControlMode(mouseControlModeEnum: MouseControlModeEnum):Boolean {
+    fun storeMouseControlMode(mouseControlModeEnum: MouseControlModeEnum): Boolean {
         val oldMouseControlMode = getMouseControlMode()
         when (mouseControlModeEnum) {
             MouseControlModeEnum.MESSAGE -> {
@@ -189,6 +191,17 @@ object ConfigExUtil {
             }
             Files.setAttribute(acFile.toPath(), "dos:hidden", true);
         }
+    }
+
+    fun getWorkTimeRuleSet(): MutableList<WorkTimeRuleSet>? {
+        return ConfigUtil.getArray(
+            ConfigEnum.WORK_TIME_RULE_SET,
+            WorkTimeRuleSet::class.java
+        )
+    }
+
+    fun storeWorkTimeRuleSet(workTimeRuleSets: List<WorkTimeRuleSet>) {
+        ConfigUtil.putString(ConfigEnum.WORK_TIME_RULE_SET, JSON.toJSONString(workTimeRuleSets))
     }
 
 }

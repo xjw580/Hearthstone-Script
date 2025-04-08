@@ -33,16 +33,6 @@
     -fx-font-weight: bold;
 }
 
-.split-pane-line *.split-pane-divider {
-    -fx-background-color: white;
-    -fx-border-color: #d3d3d3;
-    -fx-border-width: 0 0 0 1;
-}
-
-.split-pane-line {
-    -fx-background: white
-}
-
 .control-btn {
     -fx-background-color: rgba(128, 128, 128, 0.5)
 }

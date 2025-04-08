@@ -1,6 +1,5 @@
 package club.xiaojiawei.hsscript.bean
 
-import org.jetbrains.kotlin.js.patterns.PatternBuilder.pattern
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 
@@ -13,13 +12,13 @@ class WorkTime {
 
     constructor()
 
-    constructor(startTime: String?, endTime: String?, enabled: Boolean = true) {
+    constructor(startTime: String?, endTime: String?, enabled: Boolean) {
         this.startTime = startTime
         this.endTime = endTime
         this.enabled = enabled
     }
 
-    constructor(startTime: LocalTime?, endTime: LocalTime?, enabled: Boolean = true) {
+    constructor(startTime: LocalTime?, endTime: LocalTime?, enabled: Boolean) {
         this.startTime = pattern.format(startTime)
         this.endTime = pattern.format(endTime)
         this.enabled = enabled

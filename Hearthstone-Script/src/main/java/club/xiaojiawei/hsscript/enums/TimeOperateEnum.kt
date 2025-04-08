@@ -12,6 +12,7 @@ enum class TimeOperateEnum(val value: String) {
     SLEEP_SYSTEM("睡眠"),
     OFF_SCREEN("关闭屏幕"),
     LOCK_SCREEN("锁屏"),
+    SHUTDOWN("关机"),
     CLOSE_GAME("关闭${GAME_CN_NAME}"),
     CLOSE_PLATFORM("关闭${PLATFORM_CN_NAME}"),
     ;

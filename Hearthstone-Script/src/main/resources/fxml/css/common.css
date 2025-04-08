@@ -12,3 +12,13 @@
     -fx-hbar-policy: NEVER;
     -fx-background-insets: 0
 }
+
+.split-pane-line *.split-pane-divider {
+    -fx-background-color: white;
+    -fx-border-color: #d3d3d3;
+    -fx-border-width: 0 0 0 1;
+}
+
+.split-pane-line {
+    -fx-background: white
+}
