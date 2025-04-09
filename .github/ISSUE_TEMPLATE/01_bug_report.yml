@@ -3,6 +3,18 @@ description: 在提出问题前请先参阅QUESTION然后升级到最新客户�
 title: "[Bug]: "
 labels: ["bug"]
 body:
+  - type: dropdown
+    id: "version"
+    attributes:
+      label: "发生Bug的版本"
+      description: "请选择出现问题的软件版本"
+      options:
+        - "请选择..."
+        - "v4.4.x-最新开发版"
+        - "v4.4.0-GA"
+        - "其他版本（请在下方注明）"
+    validations:
+      required: true
   - type: input
     id: "expectation"
     attributes:
