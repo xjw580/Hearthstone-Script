@@ -4,10 +4,8 @@ import club.xiaojiawei.config.log
 import club.xiaojiawei.hsscript.status.PauseStatus
 import club.xiaojiawei.hsscript.utils.ConfigExUtil
 import club.xiaojiawei.hsscript.utils.SystemUtil
-import club.xiaojiawei.hsscript.utils.WindowUtil
 import com.melloware.jintellitype.HotkeyListener
 import com.melloware.jintellitype.JIntellitype
-import javafx.application.Platform
 
 /**
  * 热键监听器
@@ -67,7 +65,7 @@ object GlobalHotkeyListener : HotkeyListener {
                 SystemUtil.notice("捕捉到热键，关闭程序")
                 log.info { "捕捉到热键，关闭程序" }
                 unregister()
-                SystemUtil.shutdown()
+                SystemUtil.shutdownSoft()
             }
 
             HOT_KEY_PAUSE -> {

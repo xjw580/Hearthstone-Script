@@ -157,12 +157,8 @@ class TimeSettingsController : Initializable {
         return pane
     }
 
-    private var operationPaneMap = mutableMapOf<WorkTimeRule, Pane>()
 
     private fun buildOperationPane(item: WorkTimeRule): Pane {
-        operationPaneMap[item]?.let {
-            return it
-        }
         val pane = HBox().apply {
             children.addAll(item.getOperate().map {
                 Label(it.value).apply {
@@ -173,10 +169,8 @@ class TimeSettingsController : Initializable {
             alignment = Pos.CENTER
             spacing = 5.0
         }
-        operationPaneMap[item] = pane
         return pane
     }
-
 
     private fun buildOperationEditBtn(item: WorkTimeRule): Button {
         return Button().apply {

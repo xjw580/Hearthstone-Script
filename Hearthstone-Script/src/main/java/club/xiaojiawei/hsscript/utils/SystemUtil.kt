@@ -261,7 +261,7 @@ object SystemUtil {
      * 添加托盘
      * @param menuItems
      */
-    @Deprecated("")
+    @Deprecated("丑且编码有问题")
     fun addTray(
         mouseClickListener: Consumer<MouseEvent?>?,
         vararg menuItems: MenuItem?
@@ -349,7 +349,7 @@ object SystemUtil {
     /**
      * 关闭本软件
      */
-    fun shutdown() {
+    fun shutdownSoft() {
         WindowUtil.hideAllStage()
         log.info { "准备关闭软件..." }
         PauseStatus.isPause = true
@@ -437,6 +437,11 @@ object SystemUtil {
         }
     }
 
+    /**
+     * 修改指定窗口的透明度
+     * @param hwnd 窗口句柄
+     * @param opacity 不透明度
+     */
     fun changeWindowOpacity(hwnd: WinDef.HWND?, opacity: Int) {
         hwnd?.let {
             val windowLong = User32.INSTANCE.GetWindowLong(it, GWL_EXSTYLE)
@@ -451,6 +456,13 @@ object SystemUtil {
                 LWA_ALPHA
             )
         }
+    }
+
+    /**
+     * 系统关机
+     */
+    fun shutdownSystem() {
+        User32.INSTANCE.ExitWindowsEx(WinDef.UINT((EWX_SHUTDOWN xor EWX_FORCE).toLong()), WinDef.DWORD(0))
     }
 
 }

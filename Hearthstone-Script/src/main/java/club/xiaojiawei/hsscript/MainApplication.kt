@@ -17,7 +17,7 @@ import club.xiaojiawei.hsscript.status.PauseStatus
 import club.xiaojiawei.hsscript.status.TaskManager
 import club.xiaojiawei.hsscript.utils.*
 import club.xiaojiawei.hsscript.utils.SystemUtil.addTray
-import club.xiaojiawei.hsscript.utils.SystemUtil.shutdown
+import club.xiaojiawei.hsscript.utils.SystemUtil.shutdownSoft
 import club.xiaojiawei.hsscript.utils.WindowUtil.buildStage
 import club.xiaojiawei.hsscript.utils.WindowUtil.getStage
 import club.xiaojiawei.hsscript.utils.WindowUtil.showStage
@@ -229,7 +229,7 @@ class MainApplication : Application() {
         val quitItem = MenuItem("退出")
         quitItem.addActionListener(object : AbstractAction() {
             override fun actionPerformed(e: ActionEvent?) {
-                shutdown()
+                shutdownSoft()
             }
         })
 
@@ -328,7 +328,7 @@ class MainApplication : Application() {
                 }
                 callback = object : CSystemDll.TrayCallback {
                     override fun invoke() {
-                        shutdown()
+                        shutdownSoft()
                     }
                 }
             }
