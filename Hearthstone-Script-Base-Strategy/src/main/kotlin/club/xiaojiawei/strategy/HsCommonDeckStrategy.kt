@@ -1,4 +1,4 @@
-package club.xiaojiawei.deck
+package club.xiaojiawei.strategy
 
 import club.xiaojiawei.DeckStrategy
 import club.xiaojiawei.bean.Card

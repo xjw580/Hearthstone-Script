@@ -1,10 +1,10 @@
-package club.xiaojiawei.deck.spetial
+package club.xiaojiawei.strategy.spetial
 
 import club.xiaojiawei.DeckStrategy
 import club.xiaojiawei.bean.Card
 import club.xiaojiawei.bean.Player
 import club.xiaojiawei.bean.isInValid
-import club.xiaojiawei.deck.HsCommonDeckStrategy
+import club.xiaojiawei.strategy.HsCommonDeckStrategy
 import club.xiaojiawei.enums.RunModeEnum
 import club.xiaojiawei.status.WAR
 import club.xiaojiawei.util.DeckStrategyUtil

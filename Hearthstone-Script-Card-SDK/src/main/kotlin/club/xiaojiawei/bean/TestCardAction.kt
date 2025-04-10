@@ -54,4 +54,8 @@ class TestCardAction : CardAction() {
     override fun execLaunch(): Boolean {
         return true
     }
+
+    override fun execTrade(): Boolean {
+        return true
+    }
 }

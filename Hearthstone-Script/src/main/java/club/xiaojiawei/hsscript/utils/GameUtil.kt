@@ -77,6 +77,12 @@ object GameUtil {
      */
     val STARSHIP_CANCEL_LAUNCH_RECT: GameRect = GameRect(-0.1107, -0.0295, 0.3106, 0.4120)
 
+    /**
+     * 交易
+     */
+    val TRADE_RECT = GameRect(0.4253, 0.4736, 0.0171, 0.1634)
+
+
 
     private val FOUR_DISCOVER_RECTS = arrayOf(
         GameRect(-0.3332, -0.1911, -0.1702, 0.1160),

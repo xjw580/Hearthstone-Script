@@ -2,7 +2,10 @@ package club.xiaojiawei.hsscript.enums
 
 import ch.qos.logback.classic.Level
 import club.xiaojiawei.enums.RunModeEnum
-import club.xiaojiawei.hsscript.bean.*
+import club.xiaojiawei.hsscript.bean.HotKey
+import club.xiaojiawei.hsscript.bean.WorkTime
+import club.xiaojiawei.hsscript.bean.WorkTimeRule
+import club.xiaojiawei.hsscript.bean.WorkTimeRuleSet
 import club.xiaojiawei.hsscript.service.*
 import com.alibaba.fastjson.JSON
 import com.melloware.jintellitype.JIntellitype
@@ -28,6 +31,12 @@ const val SERVICE_CONFIG_GROUP = "service"
 const val VERSION_CONFIG_GROUP = "version"
 
 const val DEV_CONFIG_GROUP = "version"
+
+private const val WORK_TIME_RULE_PRESETS_ONE = "presets-one"
+
+private const val WORK_TIME_RULE_PRESETS_EMPTY = ""
+
+private const val WORK_TIME_RULE_PRESETS_TWO = "presets-two"
 
 private val operations = setOf(
     TimeOperateEnum.SLEEP_SYSTEM,
@@ -64,30 +73,60 @@ enum class ConfigEnum(
         group = TIME_CONFIG_GROUP, defaultValue = JSON.toJSONString(
             listOf(
                 WorkTimeRuleSet(
-                    "预设1", listOf(
+                    "预设1",
+                    listOf(
                         WorkTimeRule(
-                            WorkTime("00:00", "08:00"), operations.toSet()
+                            WorkTime("00:00", "23:59"), operations.toSet(), true
                         ),
                         WorkTimeRule(
-                            WorkTime("12:00", "14:00"), operations.toSet()
+                            WorkTime("00:00", "06:30"), operations.toSet(), false
                         ),
-                    )
+                        WorkTimeRule(
+                            WorkTime("12:30", "13:50"), operations.toSet(), false
+                        ),
+                        WorkTimeRule(
+                            WorkTime("20:00", "23:59"), operations.toSet(), false
+                        ),
+                    ),
+                    WORK_TIME_RULE_PRESETS_ONE,
                 ),
                 WorkTimeRuleSet(
-                    "预设2", listOf(
+                    "预设2",
+                    listOf(
                         WorkTimeRule(
-                            WorkTime("00:00", "07:00"), operations.toSet()
+                            WorkTime("00:00", "23:59"), operations.toSet(), true
                         ),
                         WorkTimeRule(
-                            WorkTime("20:00", "22:00"), operations.toSet()
+                            WorkTime("00:00", "08:00"), operations.toSet(), false
                         ),
-                    )
+                        WorkTimeRule(
+                            WorkTime("18:00", "23:59"), operations.toSet(), false
+                        ),
+                    ),
+                    WORK_TIME_RULE_PRESETS_TWO
+                ),
+                WorkTimeRuleSet(
+                    "空",
+                    emptyList(),
+                    WORK_TIME_RULE_PRESETS_EMPTY,
                 ),
             )
         )
     ),
 
-    WORK_TIME_SETTING(group = TIME_CONFIG_GROUP),
+    WORK_TIME_SETTING(
+        group = TIME_CONFIG_GROUP, defaultValue = JSON.toJSONString(
+            arrayOf(
+                WORK_TIME_RULE_PRESETS_ONE,
+                WORK_TIME_RULE_PRESETS_ONE,
+                WORK_TIME_RULE_PRESETS_ONE,
+                WORK_TIME_RULE_PRESETS_ONE,
+                WORK_TIME_RULE_PRESETS_ONE,
+                WORK_TIME_RULE_PRESETS_ONE,
+                WORK_TIME_RULE_PRESETS_ONE,
+            )
+        )
+    ),
 
     /**
      * 更新源

@@ -19,15 +19,16 @@ class WorkTimeRule {
 
     private val enable: BooleanProperty = SimpleBooleanProperty(false)
 
-    constructor() {}
+    constructor()
 
-    constructor(workTime: WorkTime?, operates: Set<TimeOperateEnum>?) {
+    constructor(workTime: WorkTime?, operates: Set<TimeOperateEnum>?, enable: Boolean) {
         workTime?.let {
             this.workTime.set(it)
         }
         operates?.let {
             this.operates.set(it)
         }
+        this.enable.set(enable)
     }
 
     fun getWorkTime(): WorkTime {

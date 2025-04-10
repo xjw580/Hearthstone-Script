@@ -8,6 +8,7 @@ import club.xiaojiawei.enums.CardTypeEnum
 import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.utils.ConfigUtil
 import club.xiaojiawei.hsscript.utils.GameUtil
+import club.xiaojiawei.hsscript.utils.SystemUtil
 import club.xiaojiawei.status.WAR
 import club.xiaojiawei.util.isTrue
 import kotlin.math.min
@@ -258,8 +259,19 @@ class CommonCardAction : CardAction(false) {
         val cardRect = getCardRect(belongCard)
         if (cardRect.isValid()) {
             cardRect.lClick()
-            Thread.sleep(1000)
+            SystemUtil.delayMedium()
             GameUtil.STARSHIP_LAUNCH_RECT.lClick(false)
+            return true
+        }
+        return false
+    }
+
+    override fun execTrade(): Boolean {
+        val cardRect = getCardRect(belongCard)
+        if (cardRect.isValid()) {
+            cardRect.lClick()
+            SystemUtil.delayShortMedium()
+            cardRect.move(GameUtil.TRADE_RECT)
             return true
         }
         return false

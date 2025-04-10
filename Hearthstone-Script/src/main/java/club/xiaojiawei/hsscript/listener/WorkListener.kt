@@ -34,7 +34,7 @@ object WorkListener {
     val launch: Unit by lazy {
         checkVersionTask = EXTRA_THREAD_POOL.scheduleWithFixedDelay(LRunnable {
             checkWork()
-        }, 0, 1000 * 60, TimeUnit.MILLISECONDS)
+        }, 0, 60, TimeUnit.SECONDS)
         log.info { "工作时段监听已启动" }
     }
 
@@ -74,40 +74,40 @@ object WorkListener {
 
     private fun judge() {
         var canWork = false
-        if (!PauseStatus.isPause) {
-            val readOnlyWorkTimeSetting = WorkTimeStatus.readOnlyWorkTimeSetting()
-            val dayIndex = LocalDate.now().dayOfWeek.value - 1
-            if (dayIndex >= readOnlyWorkTimeSetting.size) return
-            val id = readOnlyWorkTimeSetting[dayIndex]
-            WorkTimeStatus.readOnlyWorkTimeRuleSet().toTypedArray().find { it.id == id }?.let {
-                val timeRules = it.getTimeRules().toTypedArray()
-                val nowTime = LocalTime.now()
-                val nowSecondOfDay = nowTime.toSecondOfDay()
+        val readOnlyWorkTimeSetting = WorkTimeStatus.readOnlyWorkTimeSetting()
+        val dayIndex = LocalDate.now().dayOfWeek.value - 1
+        if (dayIndex >= readOnlyWorkTimeSetting.size) return
+        val id = readOnlyWorkTimeSetting[dayIndex]
+        WorkTimeStatus.readOnlyWorkTimeRuleSet().toTypedArray().find { it.id == id }?.let {
+            val timeRules = it.getTimeRules().toTypedArray()
+            val nowTime = LocalTime.now()
+            val nowSecondOfDay = nowTime.toSecondOfDay()
 
-                var minDiffSec: Int = Int.MAX_VALUE
-                var minWorkTimeRule: WorkTimeRule? = null
-                for (rule in timeRules) {
-                    if (!rule.isEnable()) continue
-                    val workTime = rule.getWorkTime()
-                    val startTime = workTime.parseStartTime() ?: continue
-                    val endTime = workTime.parseEndTime() ?: continue
-                    if (nowTime >= startTime && nowTime < endTime) {
-                        canWork = true
-                        break
-                    } else {
-                        val diffSec = nowSecondOfDay - endTime.toSecondOfDay()
-                        if (diffSec > 0 && diffSec < minDiffSec) {
-                            minDiffSec = diffSec
-                            minWorkTimeRule = rule
-                        }
+            var minDiffSec: Int = Int.MAX_VALUE
+            var minWorkTimeRule: WorkTimeRule? = null
+            for (rule in timeRules) {
+                if (!rule.isEnable()) continue
+                val workTime = rule.getWorkTime()
+                val startTime = workTime.parseStartTime() ?: continue
+                val endTime = workTime.parseEndTime() ?: continue
+                if (nowTime in startTime..endTime) {
+                    canWork = true
+                    break
+                } else {
+                    val diffSec = nowSecondOfDay - endTime.toSecondOfDay()
+                    if (diffSec in 1 until minDiffSec) {
+                        minDiffSec = diffSec
+                        minWorkTimeRule = rule
                     }
                 }
+            }
+            if (!PauseStatus.isPause) {
                 if (canWork) {
                     workingProperty.set(true)
                 } else if (prevWorkTimeRule != minWorkTimeRule && !WarEx.inWar) {
                     prevWorkTimeRule = minWorkTimeRule
                     minWorkTimeRule?.getOperate()?.let { operates ->
-                        var alert: AtomicReference<Stage?> = AtomicReference<Stage?>()
+                        val alert: AtomicReference<Stage?> = AtomicReference<Stage?>()
                         val countdownTime = 10
                         val future = go {
                             for (i in 0 until countdownTime) {
@@ -142,8 +142,8 @@ object WorkListener {
                         )
                     }
                 }
-
             }
+
         }
         isDuringWorkDate = canWork
     }
@@ -175,22 +175,20 @@ object WorkListener {
         return sec
     }
 
-    fun getSecondsUntilNextWorkPeriod(workTimeRuleSetId: String, offsetSec: Long): Long {
+    private fun getSecondsUntilNextWorkPeriod(workTimeRuleSetId: String, offsetSec: Long): Long {
         WorkTimeStatus.readOnlyWorkTimeRuleSet().toTypedArray().find { it.id == workTimeRuleSetId }?.let {
             val timeRules = it.getTimeRules().toTypedArray()
             val nowTime = LocalTime.now()
             val nowSecondOfDay = nowTime.toSecondOfDay() - offsetSec
 
             var minDiffSec: Long = Long.MAX_VALUE
-            var minWorkTimeRule: WorkTimeRule? = null
             for (rule in timeRules) {
                 if (!rule.isEnable()) continue
                 val workTime = rule.getWorkTime()
                 val startTime = workTime.parseStartTime() ?: continue
                 val diffSec: Long = startTime.toSecondOfDay() - nowSecondOfDay
-                if (diffSec > 0 && diffSec < minDiffSec) {
+                if (diffSec in 1 until minDiffSec) {
                     minDiffSec = diffSec
-                    minWorkTimeRule = rule
                 }
             }
             return if (minDiffSec == Long.MAX_VALUE) -1L else minDiffSec

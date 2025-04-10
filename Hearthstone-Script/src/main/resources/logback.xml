@@ -39,7 +39,8 @@
     </appender>
 
     <appender name="other" class="club.xiaojiawei.hsscript.appender.ExtraLogAppender"/>
-    <logger name="org.springframework" level="${logLevel}"/>
+    <logger name="org.springframework" level="WARN"/>
+    <logger name="club.xiaojiawei.factory" level="WARN"/>
     <root level="${logLevel}">
         <appender-ref ref="console"/>
         <appender-ref ref="file_async"/>

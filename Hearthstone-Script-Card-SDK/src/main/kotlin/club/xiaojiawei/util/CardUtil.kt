@@ -11,6 +11,9 @@ import club.xiaojiawei.enums.CardTypeEnum
  */
 object CardUtil {
 
+    /**
+     * 处理卡牌的疲劳
+     */
     fun handleCardExhaustedWhenIntoPlayArea(card: Card) {
         if (card.isCharge) {
             card.isExhausted = false
@@ -22,6 +25,9 @@ object CardUtil {
         }
     }
 
+    /**
+     * 获取嘲讽卡牌
+     */
     fun getTauntCards(cards: List<Card>, canBeAttacked: Boolean = true): MutableList<Card> {
         val result = mutableListOf<Card>()
         for (card in cards) {
@@ -32,6 +38,9 @@ object CardUtil {
         return result
     }
 
+    /**
+     * 模拟攻击
+     */
     fun simulateAttack(war: War, myCard: Card, rivalCard: Card) {
         val myPlayArea = myCard.area
         if (myPlayArea !is PlayArea || rivalCard.area !is PlayArea) return

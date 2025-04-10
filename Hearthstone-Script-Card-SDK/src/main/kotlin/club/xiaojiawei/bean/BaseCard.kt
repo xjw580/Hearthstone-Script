@@ -339,6 +339,12 @@ open class BaseCard : Entity() {
     @Volatile
     var isNightmareBonus = false
 
+    /**
+     * 可交易
+     */
+    @Volatile
+    var isTradeable = false
+
 //    override fun toString(): String {
 //        return generateToString(this, true)
 //    }

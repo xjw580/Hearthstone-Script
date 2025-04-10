@@ -122,17 +122,17 @@
                         </Group>
                     </GridPane>
 
-                    <VBox styleClass="workVBox" VBox.vgrow="ALWAYS" alignment="CENTER">
-                        <HBox alignment="CENTER" style="-fx-padding: 5 5 10 5">
+                    <VBox styleClass="workTimeVBox" VBox.vgrow="ALWAYS" alignment="CENTER">
+                        <HBox alignment="CENTER" style="-fx-padding: 5 0 5 0">
                             <Label fx:id="workTimeRuleSetId"/>
                         </HBox>
                         <ScrollPane styleClass="scroll-pane-item" style="-fx-background: #E8E8FF" VBox.vgrow="ALWAYS" fitToHeight="true">
                             <VBox fx:id="workTimePane" spacing="5" alignment="CENTER"/>
                         </ScrollPane>
                         <HBox alignment="CENTER" style="-fx-padding: 5">
-                            <Button styleClass="btn-ui, btn-ui-small" onAction="#editWorkTime">
+                            <Button styleClass="btn-ui, btn-ui-small, btn-ui-normal" onAction="#editWorkTime">
                                 <graphic>
-                                    <EditIco color="main-color"/>
+                                    <EditIco/>
                                 </graphic>
                             </Button>
                         </HBox>

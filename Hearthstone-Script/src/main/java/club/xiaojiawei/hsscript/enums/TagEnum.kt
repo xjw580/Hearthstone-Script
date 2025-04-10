@@ -680,6 +680,12 @@ enum class TagEnum(
         ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
             extraEntity.extraCard.card.isNightmareBonus = isTrue(value)
         }),
+    TRADEABLE(
+        "可交易",
+        null,
+        ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
+            extraEntity.extraCard.card.isTradeable = isTrue(value)
+        }),
 
     /*+++++++++++++++++++++++++++++++++++++++++++++++*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
     UNKNOWN(

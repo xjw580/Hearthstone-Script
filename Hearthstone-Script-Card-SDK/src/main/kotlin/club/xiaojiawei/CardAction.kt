@@ -422,7 +422,7 @@ abstract class CardAction(createDefaultAction: Boolean = true) {
     }
 
     /**
-     * 发射
+     * 发射星舰
      * @return 为null表示执行失败
      */
     fun launch(isPause: Boolean = false): CardAction? {
@@ -432,6 +432,22 @@ abstract class CardAction(createDefaultAction: Boolean = true) {
                 it.area.player.starshipAtc = 0
                 it.area.player.starshipHealth = 0
             }
+            if (isPause) {
+                this.delay()
+            } else {
+                delay(SHORT_PAUSE_TIME)
+            }
+            return this
+        }
+        return null
+    }
+
+    /**
+     * 交易
+     */
+    fun trade(isPause: Boolean = false): CardAction? {
+        if (isStop()) return null
+        if (execTrade()) {
             if (isPause) {
                 this.delay()
             } else {
@@ -524,7 +540,15 @@ abstract class CardAction(createDefaultAction: Boolean = true) {
      */
     protected abstract fun execLClick(): Boolean
 
+    /**
+     * 执行发射星舰
+     */
     protected abstract fun execLaunch(): Boolean
+
+    /**
+     * 执行交易
+     */
+    protected abstract fun execTrade(): Boolean
 
     abstract fun createNewInstance(): CardAction
 
@@ -580,6 +604,9 @@ abstract class CardAction(createDefaultAction: Boolean = true) {
             return commonAction?.execLClick() == true
         }
 
+        override fun execTrade(): Boolean {
+            return commonAction?.execTrade() == true
+        }
     }
 
 }

@@ -1,6 +1,5 @@
 package club.xiaojiawei.hsscript.controller.javafx
 
-import club.xiaojiawei.config.log
 import club.xiaojiawei.controls.Modal
 import club.xiaojiawei.controls.NotificationManager
 import club.xiaojiawei.controls.ProgressModal
@@ -11,14 +10,14 @@ import club.xiaojiawei.hsscript.bean.WorkTimeRule
 import club.xiaojiawei.hsscript.bean.WorkTimeRuleSet
 import club.xiaojiawei.hsscript.bean.tableview.NumCallback
 import club.xiaojiawei.hsscript.enums.TimeOperateEnum
-import club.xiaojiawei.hsscript.enums.WindowEnum
 import club.xiaojiawei.hsscript.interfaces.StageHook
 import club.xiaojiawei.hsscript.status.WorkTimeStatus
+import club.xiaojiawei.hsscript.utils.ConfigExUtil
 import club.xiaojiawei.hsscript.utils.go
 import club.xiaojiawei.hsscript.utils.runUI
 import club.xiaojiawei.tablecell.TextFieldTableCellUI
-import club.xiaojiawei.util.isFalse
 import javafx.beans.property.DoubleProperty
+import javafx.collections.ObservableList
 import javafx.event.ActionEvent
 import javafx.event.EventHandler
 import javafx.fxml.FXML
@@ -36,6 +35,7 @@ import javafx.scene.text.Text
 import javafx.util.StringConverter
 import java.net.URL
 import java.util.*
+import kotlin.collections.set
 
 private const val SELECTED_OPERATION_STYLE_CLASS = "label-ui-success"
 
@@ -110,7 +110,7 @@ class TimeSettingsController : Initializable, StageHook {
 
     private var progress: DoubleProperty? = null
 
-    private var workTimeRuleSet: MutableList<WorkTimeRuleSet>? = null
+    private lateinit var workTimeRuleSet: ObservableList<WorkTimeRuleSet>
 
     private val dateComboBoxList = mutableListOf<ComboBox<WorkTimeRuleSet?>>()
 
@@ -118,30 +118,30 @@ class TimeSettingsController : Initializable, StageHook {
 
     override fun initialize(p0: URL?, p1: ResourceBundle?) {
         progress = progressModal.show()
-        WindowEnum.TIME_SETTINGS.cache.isFalse {
-            log.warn { WindowEnum.TIME_SETTINGS.name + "窗口没有缓存，将会导致内存泄漏" }
-        }
+        workTimeRuleSet = workTimeRuleSetTable.items
+    }
+
+    fun reloadData() {
+        loadWorkTimeRuleSet()
+        updateDateComboBoxItems()
+        loadWorkTimeSetting()
     }
 
     override fun onShowing() {
         super.onShowing()
-        if (isInit) return
+        if (isInit) {
+            reloadData()
+            return
+        }
         isInit = true
         initTimeRuleSetTable()
         initSelectedTimeRuleTable()
         initApplyRulePane()
-        var firstExpandApplyRulePane = false
-        accordion.expandedPaneProperty().addListener { observable, oldValue, newValue ->
-            if (newValue === applyRulePane && !firstExpandApplyRulePane) {
-                firstExpandApplyRulePane = true
-                reloadApplyRulePane()
-                loadWorkTimeSetting()
-            }
-        }
 
         dateComboBoxList.addAll(
             listOf(
                 everyDayComboBox.apply {
+                    items = workTimeRuleSetTable.items
                     valueProperty().addListener { observable, oldValue, newValue ->
                         newValue?.let {
                             isSetAllDate = true
@@ -162,7 +162,7 @@ class TimeSettingsController : Initializable, StageHook {
             )
         )
         go {
-            loadWorkTimeRuleSet()
+            reloadData()
             runUI {
                 if (workTimeRuleSetTable.items.isNotEmpty()) {
                     workTimeRuleSetTable.selectionModel.selectFirst()
@@ -175,6 +175,7 @@ class TimeSettingsController : Initializable, StageHook {
     private var isSetAllDate = false
 
     private fun checkEveryDate(dateComboBox: ComboBox<WorkTimeRuleSet?>) {
+        dateComboBox.items = workTimeRuleSetTable.items
         dateComboBox.valueProperty().addListener { _, _, newValue ->
             if (isSetAllDate) return@addListener
             val ruleTypeSet = mutableSetOf<WorkTimeRuleSet?>()
@@ -213,6 +214,10 @@ class TimeSettingsController : Initializable, StageHook {
     private fun initTimeRuleSetTable() {
         workTimeRuleSetTable.isEditable = true
         workTimeRuleSetTable.selectionModel.selectedItemProperty().addListener { _, _, newValue ->
+            if (newValue == null) {
+                selectedWorkTimeRuleTable.items.clear()
+                return@addListener
+            }
             selectedWorkTimeRuleTable.items.setAll(newValue.getTimeRules())
         }
         noSetCol.cellValueFactory = NumCallback()
@@ -229,46 +234,49 @@ class TimeSettingsController : Initializable, StageHook {
                 }
             }) {
                 override fun cancelEdit() {
+                    if (workTimeRuleSetTable.items[index].id.isEmpty()) {
+                        super.cancelEdit()
+                        notificationManager.showInfo("不允许修改该规则", 2)
+                        return
+                    }
                     super.commitEdit(node.text)
+                    updateDateComboBoxItems()
                 }
 
                 override fun commitEdit(p0: String?) {
+                    if (workTimeRuleSetTable.items[index].id.isEmpty()) {
+                        super.cancelEdit()
+                        notificationManager.showInfo("不允许修改该规则", 2)
+                        return
+                    }
                     super.commitEdit(p0)
+                    updateDateComboBoxItems()
                 }
             }
 
         }
     }
 
-    private fun reloadApplyRulePane() {
-        val rule = workTimeRuleSet?.toMutableList()?.apply { addFirst(WorkTimeRuleSet.NONE) }
+    private fun updateDateComboBoxItems() {
         for (box in dateComboBoxList) {
-            rule?.let {
-                val selectedItem = box.selectionModel.selectedItem
-                box.items.setAll(it)
-                box.value = selectedItem
-            } ?: let {
-                box.items.clear()
-            }
+            val selectedItem = box.selectionModel.selectedItem
+            box.selectionModel.select(null)
+            box.selectionModel.select(selectedItem)
         }
     }
 
     private fun loadWorkTimeRuleSet() {
-        val workTimeRuleSet = WorkTimeStatus.readOnlyWorkTimeRuleSet().toMutableList()
-        this.workTimeRuleSet = workTimeRuleSet
-        workTimeRuleSet.let {
-            workTimeRuleSetTable.items.addAll(it)
-        }
+        val workTimeRuleSet = ConfigExUtil.getWorkTimeRuleSet()
+        val selectedItem = workTimeRuleSetTable.selectionModel.selectedItem
+        this.workTimeRuleSet.setAll(workTimeRuleSet)
+        workTimeRuleSetTable.selectionModel.select(selectedItem)
+        workTimeRuleSetTable.refresh()
     }
 
     private fun loadWorkTimeSetting() {
-        val workTimeSetting = WorkTimeStatus.readOnlyWorkTimeSetting().toTypedArray()
+        val workTimeSetting = ConfigExUtil.getWorkTimeSetting()
         for ((i, id) in workTimeSetting.withIndex()) {
-            if (id == WorkTimeRuleSet.NONE_WORK_TIME_RULE_SET_ID) {
-                dateComboBoxList[i].value = WorkTimeRuleSet.NONE
-            } else {
-                dateComboBoxList[i].value = workTimeRuleSet?.find { it.id == id }
-            }
+            dateComboBoxList[i + 1].selectionModel.select(workTimeRuleSet?.find { it.id == id })
         }
     }
 
@@ -315,10 +323,17 @@ class TimeSettingsController : Initializable, StageHook {
 
     }
 
-    private var timePaneMap = mutableMapOf<WorkTimeRule, Pane>()
+    private var timePaneMap = mutableMapOf<WorkTimeRule, HBox>()
 
-    private fun buildTimePane(item: WorkTimeRule): Pane {
+    private fun buildTimePane(item: WorkTimeRule): HBox {
         timePaneMap[item]?.let {
+            for ((index, node) in it.children.withIndex()) {
+                if (node is Time) {
+                    if (index == 0) {
+                        node.localTime
+                    }
+                }
+            }
             return it
         }
         val startTime = Time()
@@ -326,28 +341,29 @@ class TimeSettingsController : Initializable, StageHook {
         val pane = HBox(
             startTime.apply {
                 localTime = item.getWorkTime().parseStartTime()
-                readOnlyTimeProperty().addListener { observable, oldValue, newValue ->
+                readOnlyTimeProperty().addListener { _, _, newValue ->
                     newValue ?: return@addListener
                     item.getWorkTime().startTime = WorkTime.pattern.format(newValue)
+                    if (newValue > endTime.localTime) {
+                        endTime.localTime = newValue
+                    }
                 }
             },
             Text("-"),
             endTime.apply {
                 localTime = item.getWorkTime().parseEndTime()
-                readOnlyTimeProperty().addListener { observable, oldValue, newValue ->
+                readOnlyTimeProperty().addListener { _, _, newValue ->
                     newValue ?: return@addListener
                     item.getWorkTime().endTime = WorkTime.pattern.format(newValue)
+                    if (newValue < startTime.localTime) {
+                        startTime.localTime = newValue
+                    }
                 }
             },
         ).apply {
             padding = Insets(1.0)
             alignment = Pos.CENTER
             spacing = 3.0
-//            本窗口必须缓存，不然此项监听将导致内存泄漏
-            item.workTimeProperty().addListener { observable, oldValue, newValue ->
-                startTime.time = newValue.startTime
-                endTime.time = newValue.endTime
-            }
         }
         timePaneMap[item] = pane
         return pane
@@ -442,53 +458,52 @@ class TimeSettingsController : Initializable, StageHook {
 
     private fun saveSetRule() {
         WorkTimeStatus.storeWorkTimeRuleSet(workTimeRuleSetTable.items)
-        notificationManager.showSuccess("定义规则保存成功", 2)
-        workTimeRuleSet = workTimeRuleSetTable.items.toMutableList()
-        reloadApplyRulePane()
+        updateDateComboBoxItems()
     }
 
     private fun saveApplyRule() {
-        val workTimeSetting =
-            dateComboBoxList.map { it.value?.id ?: WorkTimeRuleSet.NONE_WORK_TIME_RULE_SET_ID }.toMutableList().apply {
-                removeFirst()
-            }
+        val list = dateComboBoxList.toMutableList().apply { removeFirst() }
+        val workTimeSetting = list.map { it.value?.id ?: "" }
         WorkTimeStatus.storeWorkTimeSetting(workTimeSetting)
-        notificationManager.showSuccess("应用规则保存成功", 2)
+
     }
 
     @FXML
     protected fun save() {
-        if (setRulePane.isExpanded) {
-            saveSetRule()
-        } else if (applyRulePane.isExpanded) {
-            saveApplyRule()
-        } else {
-            saveSetRule()
-            saveApplyRule()
-        }
+        saveSetRule()
+        saveApplyRule()
+        notificationManager.showSuccess("保存成功", 2)
     }
 
     @FXML
     protected fun addRulerSet(actionEvent: ActionEvent) {
+
         workTimeRuleSetTable.items.add(
             WorkTimeRuleSet("预设${workTimeRuleSetTable.items.size + 1}")
         )
+        updateDateComboBoxItems()
     }
 
     @FXML
     protected fun delRulerSet(actionEvent: ActionEvent) {
         val index = workTimeRuleSetTable.selectionModel.selectedIndex
         if (index == -1) return
+        if (workTimeRuleSetTable.selectionModel.selectedItem.id.isEmpty()) {
+            notificationManager.showInfo("不允许删除该规则", 2)
+            return
+        }
         workTimeRuleSetTable.items.removeAt(index)
+        updateDateComboBoxItems()
     }
 
     @FXML
     protected fun addRuler(actionEvent: ActionEvent) {
         val workTimeRuleSet = workTimeRuleSetTable.selectionModel.selectedItem ?: return
-        val workTimeRule = WorkTimeRule().apply {
-            setWorkTime(WorkTime("00:00", "00:00"))
-            setEnable(true)
+        if (workTimeRuleSet.id.isEmpty()) {
+            notificationManager.showInfo("不允许修改该规则", 2)
+            return
         }
+        val workTimeRule = WorkTimeRule(WorkTime("00:00", "23:59"), null, true)
         workTimeRuleSet.setTimeRules(workTimeRuleSet.getTimeRules() + workTimeRule)
         selectedWorkTimeRuleTable.items.add(workTimeRule)
     }

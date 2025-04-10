@@ -180,7 +180,13 @@ object ConfigExUtil {
         return ConfigUtil.getArray(
             ConfigEnum.WORK_TIME_SETTING,
             String::class.java
-        ) ?: mutableListOf()
+        ) ?: let {
+            val res = mutableListOf<String>()
+            for (i in 0 until 7) {
+                res.add("")
+            }
+            return res
+        }
     }
 
     /**

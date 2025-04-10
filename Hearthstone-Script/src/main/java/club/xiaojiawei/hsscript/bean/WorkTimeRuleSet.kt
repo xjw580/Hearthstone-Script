@@ -19,8 +19,12 @@ class WorkTimeRuleSet {
 
     constructor() {}
 
-    constructor(name: String, workTimeRules: List<WorkTimeRule> = emptyList<WorkTimeRule>()) {
-        id = UUID.randomUUID().toString()
+    constructor(
+        name: String,
+        workTimeRules: List<WorkTimeRule> = emptyList<WorkTimeRule>(),
+        id: String = UUID.randomUUID().toString()
+    ) {
+        this.id = id
         this.name.set(name)
         this.workTimeRules.set(workTimeRules)
     }
@@ -57,16 +61,6 @@ class WorkTimeRuleSet {
 
     override fun hashCode(): Int {
         return Objects.hashCode(id)
-    }
-
-    companion object {
-        const val NONE_WORK_TIME_RULE_SET_ID = "none"
-
-        val NONE = WorkTimeRuleSet().apply {
-            id = NONE_WORK_TIME_RULE_SET_ID
-            setName("空")
-        }
-
     }
 
 }
