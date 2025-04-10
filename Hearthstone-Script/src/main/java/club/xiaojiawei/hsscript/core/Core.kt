@@ -36,7 +36,7 @@ object Core {
                 log.info { "当前处于【暂停】状态" }
             }.isFalse {
                 if (WorkListener.canWork()) {
-                    start()
+                    start(WorkListener.working)
                 } else {
                     cannotWorkLog()
                 }
@@ -45,7 +45,7 @@ object Core {
         }
         WorkListener.addChangeListener { _, _, isWorking: Boolean ->
             if (isWorking) {
-                start()
+                start(true)
             }
             if (ConfigExUtil.getMouseControlMode() === MouseControlModeEnum.DRIVE) {
                 isWorking.isTrue {
@@ -66,11 +66,15 @@ object Core {
     /**
      * 启动脚本
      */
-    fun start() {
-        if (WorkListener.working) return
+    fun start(force: Boolean = false) {
+        if (!force){
+            if (WorkListener.working) return
+        }
         CORE_THREAD_POOL.execute {
             synchronized(Core.javaClass) {
-                if (WorkListener.working) return@execute
+                if (!force){
+                    if (WorkListener.working) return@execute
+                }
                 if (ScriptStatus.isValidProgramPath) {
                     WorkListener.working = true
                     StarterConfig.starter.start()

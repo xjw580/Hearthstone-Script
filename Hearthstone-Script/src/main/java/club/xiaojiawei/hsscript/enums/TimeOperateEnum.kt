@@ -20,19 +20,21 @@ enum class TimeOperateEnum(val value: String, val exec: () -> Boolean, val order
     }, order = 5),
     SLEEP_SYSTEM("睡眠", {
         var text = ""
-        var res = false
+        var res = true
 
         do {
             if (!CSystemDll.INSTANCE.checkS3Support()) {
                 text = "不支持S3睡眠，无法设置定时唤醒"
                 log.error { text }
                 SystemUtil.messageError(text)
+                res = false
                 break
             }
             if (!CSystemDll.INSTANCE.enableWakeUpTimer()) {
                 text = "启用'允许唤醒定时器'失败，无法设置定时唤醒"
                 log.error { text }
                 SystemUtil.messageError(text)
+                res = false
                 break
             }
             val time = WorkListener.getSecondsUntilNextWorkPeriod() - 60
@@ -40,6 +42,7 @@ enum class TimeOperateEnum(val value: String, val exec: () -> Boolean, val order
                 text = "设置定时唤醒失败，定时时间:${time}秒"
                 log.error { text }
                 SystemUtil.messageError(text)
+                res = false
                 break
             }
         } while (false)

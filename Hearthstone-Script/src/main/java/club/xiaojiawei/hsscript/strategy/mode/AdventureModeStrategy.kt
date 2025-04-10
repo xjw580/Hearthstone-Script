@@ -46,7 +46,7 @@ object AdventureModeStrategy : AbstractModeStrategy<Any?>() {
     }
 
     override fun afterEnter(t: Any?) {
-        if (WorkListener.working) {
+        if (WorkListener.canWork()) {
             val deckStrategy = DeckStrategyManager.currentDeckStrategy ?: let {
                 SystemUtil.notice("未配置卡组策略")
                 log.warn { "未配置卡组策略" }
@@ -86,6 +86,8 @@ object AdventureModeStrategy : AbstractModeStrategy<Any?>() {
                     }
                 }, 0, 1000, TimeUnit.MILLISECONDS))
             }
+        } else {
+            WorkListener.working = false
         }
     }
 
