@@ -15,6 +15,7 @@ import club.xiaojiawei.hsscript.utils.*
 import javafx.beans.property.DoubleProperty
 import javafx.beans.property.ReadOnlyBooleanProperty
 import javafx.beans.property.ReadOnlyBooleanWrapper
+import javafx.beans.property.SimpleDoubleProperty
 import java.io.BufferedOutputStream
 import java.io.File
 import java.io.FileOutputStream
@@ -77,9 +78,26 @@ object VersionListener {
 
     fun downloadingReadOnlyProperty(): ReadOnlyBooleanProperty = downloadingProperty.readOnlyProperty
 
+    private var updated = false
+
     init {
         currentRelease.tagName = VersionUtil.VERSION
         currentRelease.isPreRelease = VersionTypeEnum.getEnum(currentRelease).isPreview
+        WorkListener.addChangeListener { _, _, newValue ->
+            if (!newValue) {
+                if (!updated && ConfigUtil.getBoolean(ConfigEnum.AUTO_UPDATE) && VersionListener.canUpdate) {
+                    updated = true
+                    val progress = SimpleDoubleProperty()
+                    downloadLatestRelease(false, progress) { path ->
+                        path?.let {
+                            execUpdate(path)
+                        } ?: let {
+                            updated = false
+                        }
+                    }
+                }
+            }
+        }
     }
 
     val launch: Unit by lazy {

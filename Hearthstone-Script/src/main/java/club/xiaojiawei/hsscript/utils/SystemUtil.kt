@@ -461,8 +461,15 @@ object SystemUtil {
     /**
      * 系统关机
      */
-    fun shutdownSystem() {
-        User32.INSTANCE.ExitWindowsEx(WinDef.UINT((EWX_SHUTDOWN xor EWX_FORCE).toLong()), WinDef.DWORD(0))
+    fun shutdownSystem(): Boolean {
+        return User32.INSTANCE.ExitWindowsEx(WinDef.UINT((EWX_SHUTDOWN xor EWX_FORCE).toLong()), WinDef.DWORD(0)).booleanValue()
+    }
+
+    /**
+     * 锁屏
+     */
+    fun lockScreen(): Boolean {
+        return User32.INSTANCE.LockWorkStation().booleanValue()
     }
 
 }

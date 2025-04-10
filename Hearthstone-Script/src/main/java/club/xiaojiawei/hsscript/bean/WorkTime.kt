@@ -12,21 +12,18 @@ class WorkTime {
 
     constructor()
 
-    constructor(startTime: String?, endTime: String?, enabled: Boolean) {
+    constructor(startTime: String?, endTime: String?) {
         this.startTime = startTime
         this.endTime = endTime
-        this.enabled = enabled
     }
 
-    constructor(startTime: LocalTime?, endTime: LocalTime?, enabled: Boolean) {
+    constructor(startTime: LocalTime?, endTime: LocalTime?) {
         this.startTime = pattern.format(startTime)
         this.endTime = pattern.format(endTime)
-        this.enabled = enabled
     }
 
     var startTime: String? = null
     var endTime: String? = null
-    var enabled: Boolean = false
 
     fun parseStartTime(): LocalTime? {
         return parseTime(startTime)
@@ -38,9 +35,8 @@ class WorkTime {
 
     private fun parseTime(timeStr: String?):LocalTime? {
         if (timeStr.isNullOrBlank()) return null
-        return LocalTime.from(pattern.parse(timeStr))
+        return runCatching { LocalTime.from(pattern.parse(timeStr)) }.getOrNull()
     }
-
 
     companion object {
         val pattern = DateTimeFormatter.ofPattern("HH:mm")

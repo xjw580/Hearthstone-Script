@@ -182,10 +182,10 @@ interface CSystemDll : Library {
         fun setWakeUpTimer(seconds: Int): Boolean {
             if (seconds > 0) {
                 log.info {
-                    "设置[${
+                    "将于[${
                         LocalDateTime.now().plusSeconds(seconds.toLong())
                             .format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss"))
-                    }]定时唤醒电脑"
+                    }]唤醒电脑"
                 }
             } else {
                 log.info { "取消定时唤醒电脑" }
@@ -246,11 +246,11 @@ interface CSystemDll : Library {
         }
 
         val INSTANCE: CSystemDll by lazy {
-//            Native.load("dll/csystem", CSystemDll::class.java)
-            Native.load(
-                "S:\\CLionProjects\\hs-script-lib\\cmake-build-release\\csystem\\csystem.dll",
-                CSystemDll::class.java
-            )
+            Native.load("dll/csystem", CSystemDll::class.java)
+//            Native.load(
+//                "S:\\CLionProjects\\hs-script-lib\\cmake-build-release\\csystem\\csystem.dll",
+//                CSystemDll::class.java
+//            )
         }
     }
 }

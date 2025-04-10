@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import club.xiaojiawei.controls.ico.*?>
-<?import club.xiaojiawei.controls.*?>
+<?import club.xiaojiawei.controls.NotificationManager?>
 <?import club.xiaojiawei.factory.NotificationFactory?>
+<?import club.xiaojiawei.hsscript.component.svg.StatisticsIco?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.Group?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 <?import javafx.util.Duration?>
 <?import java.lang.Double?>
-<?import club.xiaojiawei.hsscript.component.svg.StatisticsIco?>
 <StackPane xmlns:fx="http://javafx.com/fxml"
            stylesheets="@css/main.css"
            fx:id="rootPane"
@@ -21,7 +21,7 @@
                expandedPane="$titledPaneControl">
         <panes>
             <TitledPane text="控制" fx:id="titledPaneControl">
-                <VBox alignment="TOP_CENTER" spacing="20" style="-fx-padding: 5 5 0 5">
+                <VBox alignment="TOP_CENTER" spacing="20" style="-fx-padding: 5">
                     <HBox alignment="CENTER" spacing="40">
                         <ToggleButton fx:id="startButton" toggleGroup="$pauseToggleGroup" text="开始" onAction="#start"
                                       styleClass="btn-ui, btn-ui-small, btn-ui-success-3d">
@@ -36,7 +36,8 @@
                                 <StartIco fx:id="startIco"/>
                             </graphic>
                         </ToggleButton>
-                        <ToggleButton fx:id="pauseButton" toggleGroup="$pauseToggleGroup" selected="true" text="暂停" onAction="#pause"
+                        <ToggleButton fx:id="pauseButton" toggleGroup="$pauseToggleGroup" selected="true" text="暂停"
+                                      onAction="#pause"
                                       styleClass="btn-ui, btn-ui-small, btn-ui-error-3d, btnPressed">
                             <tooltip>
                                 <Tooltip text="暂停工作">
@@ -121,53 +122,19 @@
                         </Group>
                     </GridPane>
 
-                    <VBox alignment="CENTER" spacing="15" styleClass="workVBox">
-                        <HBox alignment="CENTER_LEFT" spacing="10">
-                            <Text text="工作天:"/>
-                            <TilePane hgap="20" vgap="5" fx:id="workDay" style="-fx-padding: 0">
-                                <CheckBox styleClass="check-box-ui, check-box-ui-main" text="每天" userData="every"/>
-                                <CheckBox styleClass="check-box-ui, check-box-ui-main" text="周一" userData="mon"/>
-                                <CheckBox styleClass="check-box-ui, check-box-ui-main" text="周二" userData="tue"/>
-                                <CheckBox styleClass="check-box-ui, check-box-ui-main" text="周三" userData="wed"/>
-                                <CheckBox styleClass="check-box-ui, check-box-ui-main" text="周四" userData="thu"/>
-                                <CheckBox styleClass="check-box-ui, check-box-ui-main" text="周五" userData="fri"/>
-                                <CheckBox styleClass="check-box-ui, check-box-ui-main" text="周六" userData="sat"/>
-                                <CheckBox styleClass="check-box-ui, check-box-ui-main" text="周日" userData="sun"/>
-                            </TilePane>
+                    <VBox styleClass="workVBox" VBox.vgrow="ALWAYS" alignment="CENTER">
+                        <HBox alignment="CENTER" style="-fx-padding: 5 5 10 5">
+                            <Label fx:id="workTimeRuleSetId"/>
                         </HBox>
-
-                        <HBox alignment="CENTER_LEFT" spacing="10">
-                            <Text text="工作段:"/>
-                            <VBox spacing="5" fx:id="workTime">
-                                <HBox styleClass="timeHBox">
-                                    <CheckBox styleClass="check-box-ui, check-box-ui-main"/>
-                                    <HBox>
-                                        <Time showIcon="false" size="SMALL" rightAngleBackground="false"/>
-                                        <Text text="-" translateY="3" style="-fx-font-weight: BOLD"/>
-                                        <Time showIcon="false" size="SMALL" rightAngleBackground="false"/>
-                                    </HBox>
-                                </HBox>
-                                <HBox styleClass="timeHBox">
-                                    <CheckBox styleClass="check-box-ui, check-box-ui-main"/>
-                                    <HBox>
-                                        <Time showIcon="false" size="SMALL" rightAngleBackground="false"/>
-                                        <Text text="-" translateY="3" style="-fx-font-weight: BOLD"/>
-                                        <Time showIcon="false" size="SMALL" rightAngleBackground="false"/>
-                                    </HBox>
-                                </HBox>
-                                <HBox styleClass="timeHBox">
-                                    <CheckBox styleClass="check-box-ui, check-box-ui-main"/>
-                                    <HBox>
-                                        <Time showIcon="false" size="SMALL" rightAngleBackground="false"/>
-                                        <Text text="-" translateY="3" style="-fx-font-weight: BOLD"/>
-                                        <Time showIcon="false" size="SMALL" rightAngleBackground="false"/>
-                                    </HBox>
-                                </HBox>
-                            </VBox>
-                        </HBox>
-
-                        <HBox alignment="CENTER" spacing="6">
-                            <Button text="保存" styleClass="btn-ui, btn-ui-small, btn-ui-success" onAction="#saveTime"/>
+                        <ScrollPane styleClass="scroll-pane-item" style="-fx-background: #E8E8FF" VBox.vgrow="ALWAYS" fitToHeight="true">
+                            <VBox fx:id="workTimePane" spacing="5" alignment="CENTER"/>
+                        </ScrollPane>
+                        <HBox alignment="CENTER" style="-fx-padding: 5">
+                            <Button styleClass="btn-ui, btn-ui-small" onAction="#editWorkTime">
+                                <graphic>
+                                    <EditIco color="main-color"/>
+                                </graphic>
+                            </Button>
                         </HBox>
                     </VBox>
 

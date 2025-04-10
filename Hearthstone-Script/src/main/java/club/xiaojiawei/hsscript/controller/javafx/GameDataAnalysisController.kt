@@ -322,16 +322,6 @@ class GameDataAnalysisController : Initializable, StageHook {
         initCardCanvas()
     }
 
-
-    override fun onShown() {
-    }
-
-    override fun onShowing() {
-    }
-
-    override fun onHidden() {
-    }
-
     override fun onHiding() {
         warAnimationTimer?.stop()
         cardAnimationTimer?.stop()

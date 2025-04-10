@@ -141,10 +141,6 @@ class DriverInitializer : AbstractInitializer() {
                     log.error { text }
                     SystemUtil.messageError(text)
                 }
-            } else {
-                val text = "卸载驱动失败，请以管理员权限重新运行"
-                log.error { text }
-                SystemUtil.messageError(text)
             }
         }
     }

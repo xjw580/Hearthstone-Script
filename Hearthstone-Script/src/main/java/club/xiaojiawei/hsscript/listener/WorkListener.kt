@@ -3,22 +3,23 @@ package club.xiaojiawei.hsscript.listener
 import club.xiaojiawei.bean.LRunnable
 import club.xiaojiawei.config.EXTRA_THREAD_POOL
 import club.xiaojiawei.config.log
-import club.xiaojiawei.hsscript.core.Core
-import club.xiaojiawei.hsscript.enums.ConfigEnum
+import club.xiaojiawei.hsscript.bean.WorkTimeRule
+import club.xiaojiawei.hsscript.bean.single.WarEx
+import club.xiaojiawei.hsscript.enums.WindowEnum
 import club.xiaojiawei.hsscript.status.PauseStatus
-import club.xiaojiawei.hsscript.utils.ConfigExUtil
-import club.xiaojiawei.hsscript.utils.ConfigUtil
-import club.xiaojiawei.hsscript.utils.GameUtil
-import club.xiaojiawei.hsscript.utils.SystemUtil
+import club.xiaojiawei.hsscript.status.WorkTimeStatus
+import club.xiaojiawei.hsscript.utils.WindowUtil
+import club.xiaojiawei.hsscript.utils.go
+import club.xiaojiawei.hsscript.utils.runUI
+import club.xiaojiawei.util.isFalse
 import javafx.beans.property.SimpleBooleanProperty
-import javafx.beans.property.SimpleDoubleProperty
 import javafx.beans.value.ChangeListener
+import javafx.stage.Stage
 import java.time.LocalDate
-import java.time.LocalDateTime
 import java.time.LocalTime
-import java.time.ZoneOffset
 import java.util.concurrent.ScheduledFuture
 import java.util.concurrent.TimeUnit
+import java.util.concurrent.atomic.AtomicReference
 
 /**
  * 工作状态
@@ -36,6 +37,8 @@ object WorkListener {
         }, 0, 1000 * 60, TimeUnit.MILLISECONDS)
         log.info { "工作时段监听已启动" }
     }
+
+    var isDuringWorkDate = false
 
     /**
      * 是否处于工作中
@@ -58,130 +61,139 @@ object WorkListener {
         workingProperty.removeListener(listener)
     }
 
-    private var enableUpdate = true
+    fun canWork(): Boolean {
+        return isDuringWorkDate
+    }
 
     @Synchronized
-    fun stopWork() {
-        working = false
-        cannotWorkLog()
-        log.info { "停止工作，准备关闭游戏" }
-        GameUtil.killGame()
-        GameUtil.killPlatform()
-        GameUtil.killLoginPlatform()
-    }
-
-    fun cannotWorkLog() {
-        val context = "现在是下班时间 🌜"
-        SystemUtil.notice(context)
-        log.info { context }
-    }
-
-    fun workLog() {
-        log.info { "现在是上班时间 🌞" }
-    }
-
     fun checkWork() {
-        if (working) return
-        synchronized(workingProperty) {
-            if (working) return
-            if (!PauseStatus.isPause && isDuringWorkDate()) {
-                workLog()
-                Core.start()
-            } else if (enableUpdate && ConfigUtil.getBoolean(ConfigEnum.AUTO_UPDATE) && VersionListener.canUpdate) {
-                enableUpdate = false
-                val progress = SimpleDoubleProperty()
-                VersionListener.downloadLatestRelease(false, progress) { path ->
-                    path?.let {
-                        VersionListener.execUpdate(path)
-                    } ?: let {
-                        enableUpdate = true
-                    }
-                }
-            }
-        }
+        judge()
     }
 
-    private val DEFAULT_TIME = LocalTime.parse("00:00")
+    private var prevWorkTimeRule: WorkTimeRule? = null
 
-    /**
-     * 验证是否在工作时间内
-     *
-     * @return
-     */
-    fun isDuringWorkDate(): Boolean {
-        //        天校验
-        val workDay = ConfigExUtil.getWorkDay()
-        val nowDay = LocalDate.now().getDayOfWeek().value
-        if (workDay.isNotEmpty()) {
-            if (!(workDay[0].enabled || workDay[nowDay].enabled)) {
-                return false
-            }
-        } else {
-            return false
-        }
+    private fun judge() {
+        var canWork = false
+        if (!PauseStatus.isPause) {
+            val readOnlyWorkTimeSetting = WorkTimeStatus.readOnlyWorkTimeSetting()
+            val dayIndex = LocalDate.now().dayOfWeek.value - 1
+            if (dayIndex >= readOnlyWorkTimeSetting.size) return
+            val id = readOnlyWorkTimeSetting[dayIndex]
+            WorkTimeStatus.readOnlyWorkTimeRuleSet().toTypedArray().find { it.id == id }?.let {
+                val timeRules = it.getTimeRules().toTypedArray()
+                val nowTime = LocalTime.now()
+                val nowSecondOfDay = nowTime.toSecondOfDay()
 
-        //        段校验
-        val workTime = ConfigExUtil.getWorkTime().toList()
-        val nowTime: LocalTime = LocalTime.now()
-        for (time in workTime) {
-            if (time.enabled) {
-                val startTime = time.parseStartTime() ?: DEFAULT_TIME
-                val endTime = time.parseEndTime() ?: DEFAULT_TIME
-                if (startTime == endTime) {
-                    return true
-                }
-                if (startTime.isBefore(endTime)) {
-                    // 同一天的情况：startTime < endTime
-                    if (!nowTime.isBefore(startTime) && !nowTime.isAfter(endTime)) {
-                        return true
+                var minDiffSec: Int = Int.MAX_VALUE
+                var minWorkTimeRule: WorkTimeRule? = null
+                for (rule in timeRules) {
+                    if (!rule.isEnable()) continue
+                    val workTime = rule.getWorkTime()
+                    val startTime = workTime.parseStartTime() ?: continue
+                    val endTime = workTime.parseEndTime() ?: continue
+                    if (nowTime >= startTime && nowTime < endTime) {
+                        canWork = true
+                        break
+                    } else {
+                        val diffSec = nowSecondOfDay - endTime.toSecondOfDay()
+                        if (diffSec > 0 && diffSec < minDiffSec) {
+                            minDiffSec = diffSec
+                            minWorkTimeRule = rule
+                        }
                     }
-                } else if (!nowTime.isBefore(startTime) || !nowTime.isAfter(endTime)) {
-                    // 跨天的情况：startTime >= endTime
-                    return true
                 }
+                if (canWork) {
+                    workingProperty.set(true)
+                } else if (prevWorkTimeRule != minWorkTimeRule && !WarEx.inWar) {
+                    prevWorkTimeRule = minWorkTimeRule
+                    minWorkTimeRule?.getOperate()?.let { operates ->
+                        var alert: AtomicReference<Stage?> = AtomicReference<Stage?>()
+                        val countdownTime = 10
+                        val future = go {
+                            for (i in 0 until countdownTime) {
+                                Thread.sleep(1000)
+                            }
+                            runUI {
+                                alert.get()?.hide()
+                            }
+                            for (operate in operates) {
+                                operate.exec().isFalse {
+                                    log.error {
+                                        operate.value + "执行失败"
+                                    }
+                                }
+                            }
+                        }
+                        val operationName = operates.map { it.name }
+                        alert.set(
+                            WindowUtil.createAlert(
+                                "${countdownTime}秒执行${operationName}",
+                                null,
+                                {
+                                    future.cancel(true)
+                                    runUI {
+                                        alert.get()?.hide()
+                                    }
+                                },
+                                null,
+                                WindowUtil.getStage(WindowEnum.MAIN),
+                                "阻止"
+                            )
+                        )
+                    }
+                }
+
             }
         }
-        return false
+        isDuringWorkDate = canWork
     }
 
     /**
      * 获取下一次可工作的时间
      */
     fun getSecondsUntilNextWorkPeriod(): Long {
-        if (isDuringWorkDate()) {
-            return 0L
+        if (working) return -1L
+
+        val readOnlyWorkTimeSetting = WorkTimeStatus.readOnlyWorkTimeSetting()
+        val dayIndex = LocalDate.now().dayOfWeek.value - 1
+        if (dayIndex >= readOnlyWorkTimeSetting.size) return -1L
+
+        var sec = -1L
+        for (i in dayIndex until readOnlyWorkTimeSetting.size) {
+            val id = readOnlyWorkTimeSetting[i]
+            sec = getSecondsUntilNextWorkPeriod(id, (i - dayIndex) * 3600 * 24L)
+            if (sec > 0) break
         }
-        val nowDay = LocalDate.now().getDayOfWeek().value
-        val workDay = ConfigExUtil.getWorkDay()
-        val workTime = ConfigExUtil.getWorkTime().toMutableList()
-        if (workDay[0].enabled) {
-            for (day in workDay) {
-                day.enabled = true
+        if (sec == -1L) {
+            for (i in 0 until dayIndex) {
+                val id = readOnlyWorkTimeSetting[i]
+                sec = getSecondsUntilNextWorkPeriod(id, (i + readOnlyWorkTimeSetting.size - dayIndex) * 3600 * 24L)
+                if (sec > 0) break
             }
         }
-        workDay.removeFirst()
-        val dayList = listOf(nowDay..6, 0 until nowDay)
-        var diffDay = 0L
-        val now = LocalDateTime.now()
-        for (intRange in dayList) {
-            for (d in intRange) {
-                val day = workDay[d]
-                if (day.enabled) {
-                    val usableDate = LocalDateTime.now().plusDays(diffDay)
-                    for (time in workTime) {
-                        if (time.enabled) {
-                            time.parseStartTime()?.let {
-                                val usableDateTime =
-                                    usableDate.withHour(it.hour).withMinute(it.minute).withSecond(it.second)
-                                if (usableDateTime.isAfter(now)) {
-                                    return usableDateTime.toEpochSecond(ZoneOffset.UTC) - now.toEpochSecond(ZoneOffset.UTC)
-                                }
-                            }
-                        }
-                    }
+
+        return sec
+    }
+
+    fun getSecondsUntilNextWorkPeriod(workTimeRuleSetId: String, offsetSec: Long): Long {
+        WorkTimeStatus.readOnlyWorkTimeRuleSet().toTypedArray().find { it.id == workTimeRuleSetId }?.let {
+            val timeRules = it.getTimeRules().toTypedArray()
+            val nowTime = LocalTime.now()
+            val nowSecondOfDay = nowTime.toSecondOfDay() - offsetSec
+
+            var minDiffSec: Long = Long.MAX_VALUE
+            var minWorkTimeRule: WorkTimeRule? = null
+            for (rule in timeRules) {
+                if (!rule.isEnable()) continue
+                val workTime = rule.getWorkTime()
+                val startTime = workTime.parseStartTime() ?: continue
+                val diffSec: Long = startTime.toSecondOfDay() - nowSecondOfDay
+                if (diffSec > 0 && diffSec < minDiffSec) {
+                    minDiffSec = diffSec
+                    minWorkTimeRule = rule
                 }
-                diffDay++
             }
+            return if (minDiffSec == Long.MAX_VALUE) -1L else minDiffSec
         }
         return -1L
     }

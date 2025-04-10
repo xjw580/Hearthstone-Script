@@ -35,15 +35,18 @@ object Core {
                 runUI { WindowUtil.getStage(WindowEnum.MAIN)?.show() }
                 log.info { "当前处于【暂停】状态" }
             }.isFalse {
-                if (WorkListener.isDuringWorkDate()) {
+                if (WorkListener.canWork()) {
                     start()
                 } else {
-                    WorkListener.cannotWorkLog()
+                    cannotWorkLog()
                 }
                 log.info { "当前处于【开始】状态" }
             }
         }
         WorkListener.addChangeListener { _, _, isWorking: Boolean ->
+            if (isWorking) {
+                start()
+            }
             if (ConfigExUtil.getMouseControlMode() === MouseControlModeEnum.DRIVE) {
                 isWorking.isTrue {
                     CSystemDll.safeRefreshDriver()
@@ -54,14 +57,17 @@ object Core {
         }
     }
 
+    private fun cannotWorkLog() {
+        val context = "现在是下班时间 🌜"
+        SystemUtil.notice(context)
+        log.info { context }
+    }
+
     /**
      * 启动脚本
      */
     fun start() {
-        if (WorkListener.working) {
-            log.warn { "正在工作，无法重复工作" }
-            return
-        }
+        if (WorkListener.working) return
         CORE_THREAD_POOL.execute {
             synchronized(Core.javaClass) {
                 if (WorkListener.working) return@execute

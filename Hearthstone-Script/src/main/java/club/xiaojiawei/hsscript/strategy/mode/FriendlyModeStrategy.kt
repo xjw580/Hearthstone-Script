@@ -18,7 +18,7 @@ object FriendlyModeStrategy : AbstractModeStrategy<Any?>() {
     }
 
     override fun afterEnter(t: Any?) {
-        if (WorkListener.isDuringWorkDate()) {
+        if (WorkListener.working) {
             if (!PowerLogListener.checkPowerLogSize()) {
                 return
             }
@@ -31,8 +31,6 @@ object FriendlyModeStrategy : AbstractModeStrategy<Any?>() {
                 log.warn { "未配置卡组策略" }
                 PauseStatus.isPause = true
             }
-        } else {
-            WorkListener.stopWork()
         }
     }
 }

@@ -2,8 +2,6 @@ package club.xiaojiawei.hsscript.utils
 
 import ch.qos.logback.classic.Level
 import club.xiaojiawei.hsscript.bean.HotKey
-import club.xiaojiawei.hsscript.bean.WorkDay
-import club.xiaojiawei.hsscript.bean.WorkTime
 import club.xiaojiawei.hsscript.bean.WorkTimeRuleSet
 import club.xiaojiawei.hsscript.bean.single.repository.AbstractRepository
 import club.xiaojiawei.hsscript.bean.single.repository.GiteeRepository
@@ -15,7 +13,6 @@ import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.enums.MouseControlModeEnum
 import club.xiaojiawei.hsscript.fileLogLevel
 import club.xiaojiawei.hsscript.initializer.DriverInitializer
-import club.xiaojiawei.hsscript.listener.WorkListener
 import club.xiaojiawei.hsscript.starter.InjectStarter
 import club.xiaojiawei.hsscript.status.PauseStatus
 import club.xiaojiawei.hsscript.status.ScriptStatus
@@ -69,34 +66,6 @@ object ConfigExUtil {
 
     fun storePauseHotKey(hotKey: HotKey) {
         ConfigUtil.putObject(ConfigEnum.PAUSE_HOT_KEY, hotKey)
-    }
-
-    fun getWorkDay(): MutableList<WorkDay> {
-        return ConfigUtil.getArray(ConfigEnum.WORK_DAY, WorkDay::class.java) ?: mutableListOf()
-    }
-
-    fun storeWorkDay(workDays: List<WorkDay>) {
-        ConfigUtil.putArray(ConfigEnum.WORK_DAY, workDays)
-        WorkListener.checkWork()
-    }
-
-    fun getWorkTime(): MutableList<WorkTime> {
-        return ConfigUtil.getArray(ConfigEnum.WORK_TIME, WorkTime::class.java) ?: mutableListOf()
-    }
-
-    fun storeWorkTime(workTime: List<WorkTime>) {
-        workTime.forEach { time ->
-            val parseStartTime = time.parseStartTime()
-            val parseEndTime = time.parseEndTime()
-            parseStartTime ?: let {
-                time.startTime = "00:00"
-            }
-            parseEndTime ?: let {
-                time.endTime = "00:00"
-            }
-        }
-        ConfigUtil.putArray(ConfigEnum.WORK_TIME, workTime)
-        WorkListener.checkWork()
     }
 
     fun getDeckPluginDisabled(): MutableList<String> {
@@ -193,15 +162,32 @@ object ConfigExUtil {
         }
     }
 
-    fun getWorkTimeRuleSet(): MutableList<WorkTimeRuleSet>? {
+    fun getWorkTimeRuleSet(): MutableList<WorkTimeRuleSet> {
         return ConfigUtil.getArray(
             ConfigEnum.WORK_TIME_RULE_SET,
             WorkTimeRuleSet::class.java
-        )
+        ) ?: mutableListOf()
     }
 
     fun storeWorkTimeRuleSet(workTimeRuleSets: List<WorkTimeRuleSet>) {
         ConfigUtil.putString(ConfigEnum.WORK_TIME_RULE_SET, JSON.toJSONString(workTimeRuleSets))
+    }
+
+    /**
+     * @return 长度为7的集合，依次记录周一到周日的[WorkTimeRuleSet.id]
+     */
+    fun getWorkTimeSetting(): MutableList<String> {
+        return ConfigUtil.getArray(
+            ConfigEnum.WORK_TIME_SETTING,
+            String::class.java
+        ) ?: mutableListOf()
+    }
+
+    /**
+     * @param workTimeSetting 长度为7的集合，依次记录周一到周日的[WorkTimeRuleSet.id]
+     */
+    fun storeWorkTimeSetting(workTimeSetting: List<String>) {
+        ConfigUtil.putString(ConfigEnum.WORK_TIME_SETTING, JSON.toJSONString(workTimeSetting))
     }
 
 }

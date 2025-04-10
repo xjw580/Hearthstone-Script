@@ -8,26 +8,21 @@ import club.xiaojiawei.config.submitExtra
 import club.xiaojiawei.controls.CopyLabel
 import club.xiaojiawei.controls.Modal
 import club.xiaojiawei.controls.NotificationManager
-import club.xiaojiawei.controls.Time
 import club.xiaojiawei.controls.ico.AbstractIco
 import club.xiaojiawei.controls.ico.ClearIco
 import club.xiaojiawei.enums.RunModeEnum
 import club.xiaojiawei.enums.RunModeEnum.Companion.fromString
 import club.xiaojiawei.hsscript.appender.ExtraLogAppender
-import club.xiaojiawei.hsscript.bean.WorkDay
-import club.xiaojiawei.hsscript.bean.WorkTime
 import club.xiaojiawei.hsscript.bean.single.WarEx
 import club.xiaojiawei.hsscript.bean.single.WarEx.resetStatistics
+import club.xiaojiawei.hsscript.component.WorkTimeItem
 import club.xiaojiawei.hsscript.controller.javafx.view.MainView
 import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.enums.WindowEnum
 import club.xiaojiawei.hsscript.listener.VersionListener
 import club.xiaojiawei.hsscript.status.DeckStrategyManager
 import club.xiaojiawei.hsscript.status.PauseStatus
-import club.xiaojiawei.hsscript.utils.ConfigExUtil.getWorkDay
-import club.xiaojiawei.hsscript.utils.ConfigExUtil.getWorkTime
-import club.xiaojiawei.hsscript.utils.ConfigExUtil.storeWorkDay
-import club.xiaojiawei.hsscript.utils.ConfigExUtil.storeWorkTime
+import club.xiaojiawei.hsscript.status.WorkTimeStatus
 import club.xiaojiawei.hsscript.utils.ConfigUtil.getString
 import club.xiaojiawei.hsscript.utils.ConfigUtil.putString
 import club.xiaojiawei.hsscript.utils.FXUtil
@@ -45,22 +40,18 @@ import javafx.collections.SetChangeListener
 import javafx.event.ActionEvent
 import javafx.event.EventHandler
 import javafx.fxml.FXML
-import javafx.scene.control.CheckBox
 import javafx.scene.control.Label
 import javafx.scene.control.Toggle
 import javafx.scene.control.Tooltip
 import javafx.scene.input.MouseButton
 import javafx.scene.input.MouseEvent
 import javafx.scene.layout.AnchorPane
-import javafx.scene.layout.HBox
 import javafx.scene.layout.VBox
 import javafx.stage.Popup
 import javafx.util.Duration
 import javafx.util.StringConverter
 import java.net.URL
 import java.util.*
-import java.util.stream.Collectors
-import kotlin.math.min
 
 /**
  * @author 肖嘉威
@@ -72,11 +63,13 @@ class MainController : MainView() {
 
     private val runModeMap: MutableMap<RunModeEnum, MutableList<DeckStrategy>> = EnumMap(RunModeEnum::class.java)
 
+    private val workTimeChangeId = "main-ui"
+
     override fun initialize(url: URL?, resourceBundle: ResourceBundle?) {
         versionText.text = "当前版本：" + VersionListener.currentRelease.tagName
         addListener()
         initModeAndDeck()
-        initWorkDate()
+        reloadWorkTime()
     }
 
     /**
@@ -237,6 +230,12 @@ class MainController : MainView() {
 
 
     private fun addListener() {
+        WorkTimeStatus.addWorkTimeSettingListener { list, id ->
+            reloadWorkTime(id)
+        }
+        WorkTimeStatus.addWorkTimeRuleSetListener { list, id ->
+            reloadWorkTime(id)
+        }
         downloadProgress.progressProperty().addListener { _, _, newValue ->
             val progress = newValue.toDouble()
             val downloading = progress > 0.0 && progress < 1.0
@@ -347,31 +346,15 @@ class MainController : MainView() {
         return popup
     }
 
-    /**
-     * 初始化挂机时间
-     */
-    fun initWorkDate() {
-//        初始化挂机天
-        val workDayMap = getWorkDay().stream().collect(Collectors.toMap(WorkDay::day, WorkDay::enabled))
-
-        val workDayChildren = workDay.children
-        for (workDayChild in workDayChildren) {
-            if (workDayChild is CheckBox) {
-                val enable = workDayMap[workDayChild.getUserData().toString()]
-                workDayChild.isSelected = enable != null && enable
-            }
-        }
-        //        初始化挂机段
-        val workTimes: List<WorkTime> = getWorkTime()
-        val length = min(workTimes.size.toDouble(), workDayChildren.size.toDouble()).toInt()
-        val workTimeChildren = workTime.children
-        for (i in 0 until length) {
-            val timeHBox = workTimeChildren[i] as HBox
-            val timeControls = (timeHBox.children[1] as HBox).children
-            val time = workTimes[i]
-            (timeControls[0] as Time).time = time.startTime
-            (timeControls[2] as Time).time = time.endTime
-            (timeHBox.children.first() as CheckBox).isSelected = time.enabled
+    fun reloadWorkTime(changeId: String? = null) {
+        if (changeId == workTimeChangeId) return
+        workTimePane.children.clear()
+        workTimeRuleSetId.text = ""
+        val workTimeRuleSet = WorkTimeStatus.nowWorkTimeRuleSet() ?: return
+        val timeRules = workTimeRuleSet.getTimeRules()
+        workTimeRuleSetId.text = workTimeRuleSet.getName()
+        for (rule in timeRules) {
+            workTimePane.children.add(WorkTimeItem(rule, workTimeChangeId))
         }
     }
 
@@ -425,37 +408,6 @@ class MainController : MainView() {
                 }
             }
         }
-    }
-
-    @FXML
-    protected fun saveTime() {
-//        检查挂机天
-        val workDayChildren = workDay.children
-        val workDays = ArrayList<WorkDay>()
-        for (workDayChild in workDayChildren) {
-            if (workDayChild is CheckBox) {
-                workDays.add(WorkDay(workDayChild.getUserData().toString(), workDayChild.isSelected))
-            }
-        }
-        storeWorkDay(workDays)
-        //        检查挂机段
-        val workTimeChildren = workTime.children
-        val workTimes = ArrayList<WorkTime>()
-        for (workTimeChild in workTimeChildren) {
-            val hBox = workTimeChild as HBox
-            val children = (hBox.children[1] as HBox).children
-            val startTime = children[0] as Time
-            val endTime = children[2] as Time
-            val timeCheckBox = hBox.children[0] as CheckBox
-            startTime.refresh()
-            endTime.refresh()
-            val time = WorkTime(startTime.time, endTime.time, timeCheckBox.isSelected)
-            workTimes.add(time)
-        }
-        storeWorkTime(workTimes)
-
-        initWorkDate()
-        notificationManger.showSuccess("工作时间保存成功", 2)
     }
 
     @FXML
@@ -528,6 +480,11 @@ class MainController : MainView() {
                 }
             }
         }
+    }
+
+    @FXML
+    protected fun editWorkTime() {
+        WindowUtil.showStage(WindowEnum.TIME_SETTINGS)
     }
 
     companion object {

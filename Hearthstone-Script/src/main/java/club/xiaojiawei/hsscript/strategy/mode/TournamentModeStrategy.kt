@@ -73,7 +73,7 @@ object TournamentModeStrategy : AbstractModeStrategy<Any?>() {
     }
 
     override fun afterEnter(t: Any?) {
-        if (WorkListener.isDuringWorkDate()) {
+        if (WorkListener.working) {
             val deckStrategy = DeckStrategyManager.currentDeckStrategy
             if (deckStrategy == null) {
                 SystemUtil.notice("未配置卡组策略")
@@ -107,8 +107,6 @@ object TournamentModeStrategy : AbstractModeStrategy<Any?>() {
                     }
                 }, 0, 200, TimeUnit.MILLISECONDS))
             }
-        } else {
-            WorkListener.stopWork()
         }
     }
 

@@ -58,29 +58,6 @@ enum class ConfigEnum(
     CHOOSE_DECK_POS(group = INIT_CONFIG_GROUP, defaultValue = "1"),
 
     /**
-     * 工作日标记
-     */
-    WORK_DAY(
-        group = TIME_CONFIG_GROUP,
-        defaultValue = JSON.toJSONString(
-            listOf(
-                WorkDay("every", true)
-            )
-        )
-    ),
-
-    /**
-     * 工作时间，具体时间段
-     */
-    WORK_TIME(
-        group = TIME_CONFIG_GROUP, defaultValue = JSON.toJSONString(
-            listOf(
-                WorkTime("00:00", "00:00", true),
-            )
-        )
-    ),
-
-    /**
      * 工作时间规则
      */
     WORK_TIME_RULE_SET(
@@ -89,26 +66,28 @@ enum class ConfigEnum(
                 WorkTimeRuleSet(
                     "预设1", listOf(
                         WorkTimeRule(
-                            WorkTime("00:00", "08:00", true), operations.toSet()
+                            WorkTime("00:00", "08:00"), operations.toSet()
                         ),
                         WorkTimeRule(
-                            WorkTime("12:00", "14:00", true), operations.toSet()
+                            WorkTime("12:00", "14:00"), operations.toSet()
                         ),
                     )
                 ),
                 WorkTimeRuleSet(
                     "预设2", listOf(
                         WorkTimeRule(
-                            WorkTime("00:00", "07:00", true), operations.toSet()
+                            WorkTime("00:00", "07:00"), operations.toSet()
                         ),
                         WorkTimeRule(
-                            WorkTime("20:00", "22:00", true), operations.toSet()
+                            WorkTime("20:00", "22:00"), operations.toSet()
                         ),
                     )
                 ),
             )
         )
     ),
+
+    WORK_TIME_SETTING(group = TIME_CONFIG_GROUP),
 
     /**
      * 更新源

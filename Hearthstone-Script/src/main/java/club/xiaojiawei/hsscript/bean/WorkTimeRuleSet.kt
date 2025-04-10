@@ -12,11 +12,12 @@ class WorkTimeRuleSet {
 
     var id: String = ""
 
-    private val name: ObjectProperty<String> = SimpleObjectProperty<String>()
+    private val name: ObjectProperty<String> = SimpleObjectProperty<String>("")
 
-    private val workTimeRules: ObjectProperty<List<WorkTimeRule>> = SimpleObjectProperty<List<WorkTimeRule>>(emptyList<WorkTimeRule>())
+    private val workTimeRules: ObjectProperty<List<WorkTimeRule>> =
+        SimpleObjectProperty<List<WorkTimeRule>>(emptyList<WorkTimeRule>())
 
-    constructor(){}
+    constructor() {}
 
     constructor(name: String, workTimeRules: List<WorkTimeRule> = emptyList<WorkTimeRule>()) {
         id = UUID.randomUUID().toString()
@@ -47,5 +48,25 @@ class WorkTimeRuleSet {
     fun setTimeRules(workTimeRules: List<WorkTimeRule>) {
         this.workTimeRules.set(workTimeRules)
     }
-//{"id":"92778c9e-8dc3-48cb-ac32-e6743579f1eb","name":"预设","timeRules":[{"operate":["SLEEP_SYSTEM","LOCK_SCREEN","CLOSE_GAME","CLOSE_PLATFORM"],"workTime":{"enabled":true,"endTime":"08:00","startTime":"00:00"}},{"operate":{"$ref":"$.timeRules.operate"},"workTime":{"enabled":true,"endTime":"14:00","startTime":"12:00"}}]}
+
+    override fun equals(o: Any?): Boolean {
+        if (o == null || javaClass != o.javaClass) return false
+        val workTime = o as WorkTimeRuleSet
+        return id == workTime.id
+    }
+
+    override fun hashCode(): Int {
+        return Objects.hashCode(id)
+    }
+
+    companion object {
+        const val NONE_WORK_TIME_RULE_SET_ID = "none"
+
+        val NONE = WorkTimeRuleSet().apply {
+            id = NONE_WORK_TIME_RULE_SET_ID
+            setName("空")
+        }
+
+    }
+
 }

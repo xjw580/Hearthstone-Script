@@ -1,7 +1,9 @@
 package club.xiaojiawei.hsscript.bean
 
 import club.xiaojiawei.hsscript.enums.TimeOperateEnum
+import javafx.beans.property.BooleanProperty
 import javafx.beans.property.ObjectProperty
+import javafx.beans.property.SimpleBooleanProperty
 import javafx.beans.property.SimpleObjectProperty
 
 /**
@@ -14,6 +16,8 @@ class WorkTimeRule {
 
     private val operates: ObjectProperty<Set<TimeOperateEnum>> =
         SimpleObjectProperty<Set<TimeOperateEnum>>(emptySet<TimeOperateEnum>())
+
+    private val enable: BooleanProperty = SimpleBooleanProperty(false)
 
     constructor() {}
 
@@ -48,5 +52,17 @@ class WorkTimeRule {
 
     fun setOperate(operates: Set<TimeOperateEnum>) {
         this.operates.set(operates)
+    }
+
+    fun isEnable(): Boolean {
+        return enable.get()
+    }
+
+    fun enableProperty(): BooleanProperty {
+        return enable
+    }
+
+    fun setEnable(isEnable: Boolean) {
+        this.enable.set(isEnable)
     }
 }

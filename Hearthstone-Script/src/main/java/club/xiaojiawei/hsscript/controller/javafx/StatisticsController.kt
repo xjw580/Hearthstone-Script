@@ -87,8 +87,15 @@ class StatisticsController : Initializable, StageHook {
 
     private var progress: DoubleProperty? = null
 
+    private var isInit = false
+
     override fun initialize(p0: URL?, p1: ResourceBundle?) {
         progress = mainProgressModal.show()
+    }
+
+    override fun onShowing() {
+        if (isInit) return
+        isInit = true
         strategyComboBox.converter = object : StringConverter<StrategyItem>() {
             override fun toString(`object`: StrategyItem?): String {
                 return `object`?.name ?: ""
@@ -98,9 +105,6 @@ class StatisticsController : Initializable, StageHook {
                 return null
             }
         }
-    }
-
-    override fun onShown() {
         startDate.localDate = LocalDate.now()
         endDate.localDate = LocalDate.now()
         startDate.dateProperty().addListener { observable, oldValue, newValue ->

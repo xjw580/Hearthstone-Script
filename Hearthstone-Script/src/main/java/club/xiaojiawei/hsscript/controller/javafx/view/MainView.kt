@@ -10,7 +10,6 @@ import javafx.fxml.FXML
 import javafx.fxml.Initializable
 import javafx.scene.control.*
 import javafx.scene.layout.StackPane
-import javafx.scene.layout.TilePane
 import javafx.scene.layout.VBox
 import javafx.scene.text.Text
 
@@ -84,14 +83,15 @@ abstract class MainView : Initializable {
     protected lateinit var deckStrategyBox: ComboBox<DeckStrategy>
 
     @FXML
-    protected lateinit var workDay: TilePane
-
-    @FXML
-    protected lateinit var workTime: VBox
-
-    @FXML
     protected lateinit var downloadProgress: ProgressBar
 
     @FXML
     protected lateinit var titledPaneControl: TitledPane
+
+    @FXML
+    protected lateinit var workTimePane: VBox
+
+    @FXML
+    protected lateinit var workTimeRuleSetId: Label
+
 }
