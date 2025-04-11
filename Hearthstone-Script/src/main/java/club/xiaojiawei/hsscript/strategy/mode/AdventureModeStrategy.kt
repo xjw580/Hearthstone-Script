@@ -86,9 +86,6 @@ object AdventureModeStrategy : AbstractModeStrategy<Any?>() {
                     }
                 }, 0, 1000, TimeUnit.MILLISECONDS))
             }
-        } else {
-            WorkTimeListener.working = false
-            WorkTimeListener.cannotWorkLog()
         }
     }
 

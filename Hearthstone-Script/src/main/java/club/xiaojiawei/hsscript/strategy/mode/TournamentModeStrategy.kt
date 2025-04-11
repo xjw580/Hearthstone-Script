@@ -107,9 +107,6 @@ object TournamentModeStrategy : AbstractModeStrategy<Any?>() {
                     }
                 }, 0, 200, TimeUnit.MILLISECONDS))
             }
-        }else{
-            WorkTimeListener.working = false
-            WorkTimeListener.cannotWorkLog()
         }
     }
 

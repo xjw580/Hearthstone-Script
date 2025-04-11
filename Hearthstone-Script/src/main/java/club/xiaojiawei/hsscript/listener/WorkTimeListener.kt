@@ -39,7 +39,8 @@ object WorkTimeListener {
         WarEx.inWarProperty.addListener { _, _, newValue ->
             if (!newValue && PauseStatus.isStart) {
                 checkWork()
-                if (canWork()) {
+                if (cannotWork()) {
+                    cannotWorkLog()
                     workingProperty.set(false)
                     execOperate(prevClosestWorkTimeRule)
                 }
@@ -125,6 +126,10 @@ object WorkTimeListener {
 
     fun canWork(): Boolean {
         return isDuringWorkDate
+    }
+
+    fun cannotWork(): Boolean {
+        return !isDuringWorkDate
     }
 
     @Synchronized

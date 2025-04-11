@@ -35,7 +35,7 @@
                     <HBox HBox.hgrow="ALWAYS"/>
                     <ConfigSwitch notificationManager="${notificationManager}" config="STRATEGY"/>
                 </HBox>
-                <HBox styleClass="h-box" visible="false" managed="false">
+                <HBox styleClass="h-box">
                     <Text text="显示游戏控件位置"/>
                     <HBox HBox.hgrow="ALWAYS"/>
                     <ConfigSwitch notificationManager="${notificationManager}" config="DISPLAY_GAME_RECT_POS"/>

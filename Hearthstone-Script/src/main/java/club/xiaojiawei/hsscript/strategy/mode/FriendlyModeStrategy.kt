@@ -31,9 +31,6 @@ object FriendlyModeStrategy : AbstractModeStrategy<Any?>() {
                 log.warn { "未配置卡组策略" }
                 PauseStatus.isPause = true
             }
-        } else {
-            WorkTimeListener.working = false
-            WorkTimeListener.cannotWorkLog()
         }
     }
 }
