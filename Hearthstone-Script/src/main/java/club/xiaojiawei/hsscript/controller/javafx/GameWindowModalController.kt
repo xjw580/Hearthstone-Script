@@ -7,6 +7,7 @@ import club.xiaojiawei.hsscript.dll.CSystemDll
 import club.xiaojiawei.hsscript.dll.CSystemDll.Companion.MB_ICONERROR
 import club.xiaojiawei.hsscript.dll.CSystemDll.Companion.MB_TOPMOST
 import club.xiaojiawei.hsscript.interfaces.StageHook
+import club.xiaojiawei.hsscript.status.ScriptStatus
 import club.xiaojiawei.hsscript.utils.GameUtil
 import club.xiaojiawei.hsscript.utils.SystemUtil
 import club.xiaojiawei.hsscript.utils.go
@@ -206,19 +207,19 @@ class GameWindowModalController : Initializable, StageHook {
         rootPane.sceneProperty().addListener { _, _, newScene ->
             newScene?.let {
                 val exec = Consumer<Window> { newWindow ->
-                    GameUtil.findGameHWND()?.let {
+                    ScriptStatus.gameHWND?.let {
                         CSystemDll.INSTANCE.frontWindow(it)
                     } ?: go {
                         GameUtil.launchPlatformAndGame()
                         SystemUtil.message("${GAME_CN_NAME}不在运行", type = MB_ICONERROR xor MB_TOPMOST)
-                        CSystemDll.INSTANCE.topWindow(GameUtil.findGameHWND(), true)
+                        CSystemDll.INSTANCE.topWindow(ScriptStatus.gameHWND, true)
                     }
                     newWindow.showingProperty().addListener { _, _, isShow ->
                         if (isShow) {
                             updateTask?.cancel(true)
                             updateTask = go {
                                 while (!Thread.interrupted()) {
-                                    GameUtil.findGameHWND()?.let {
+                                    ScriptStatus.gameHWND?.let {
                                         val gameRect = calcGameRect(it)
                                         newWindow.x = gameRect.x
                                         newWindow.y = gameRect.y
@@ -327,7 +328,7 @@ class GameWindowModalController : Initializable, StageHook {
     }
 
     override fun onHidden() {
-        CSystemDll.INSTANCE.topWindow(GameUtil.findGameHWND(), false)
+        CSystemDll.INSTANCE.topWindow(ScriptStatus.gameHWND, false)
     }
 
     fun setOpacity(opacity: Double) {

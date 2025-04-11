@@ -1,7 +1,13 @@
 package club.xiaojiawei.hsscript.status
 
+import club.xiaojiawei.config.log
+import club.xiaojiawei.hsscript.consts.GAME_CN_NAME
+import club.xiaojiawei.hsscript.consts.PLATFORM_CN_NAME
 import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.utils.ConfigUtil
+import club.xiaojiawei.hsscript.utils.GameUtil
+import club.xiaojiawei.hsscript.utils.go
+import com.sun.jna.platform.win32.User32
 import com.sun.jna.platform.win32.WinDef
 import com.sun.jna.platform.win32.WinDef.HWND
 import javafx.beans.property.ObjectProperty
@@ -26,7 +32,19 @@ object ScriptStatus {
      */
     var gameHWND: HWND?
         set(value) = gameHWNDInner.set(value)
-        get() = gameHWNDInner.get()
+        get() {
+            var hWND = gameHWNDInner.get()
+            if (!User32.INSTANCE.IsWindow(hWND)) {
+                if (hWND != null) {
+                    log.info { "${GAME_CN_NAME}窗口句柄已经失效，尝试更新句柄" }
+                }
+                hWND = GameUtil.findGameHWND()
+                go {
+                    gameHWNDInner.set(hWND)
+                }
+            }
+            return hWND
+        }
 
     fun gameHWNDReadOnlyProperty(): ReadOnlyObjectProperty<HWND?> = gameHWNDInner.readOnlyProperty
 
@@ -34,9 +52,22 @@ object ScriptStatus {
 
     private val platformHWNDInner = ReadOnlyObjectWrapper<HWND?>(null)
 
+    /**
+     * 战网窗口句柄
+     */
     var platformHWND: HWND?
         set(value) = platformHWNDInner.set(value)
-        get() = platformHWNDInner.get()
+        get() {
+            var hWND = platformHWNDInner.get()
+            if (hWND != null && !User32.INSTANCE.IsWindow(hWND)) {
+                log.info { "${PLATFORM_CN_NAME}窗口句柄已经失效，尝试更新句柄" }
+                hWND = GameUtil.findPlatformHWND()
+                go {
+                    platformHWNDInner.set(hWND)
+                }
+            }
+            return hWND
+        }
 
     fun platformHWNDReadOnlyProperty(): ReadOnlyObjectProperty<HWND?> = platformHWNDInner.readOnlyProperty
 

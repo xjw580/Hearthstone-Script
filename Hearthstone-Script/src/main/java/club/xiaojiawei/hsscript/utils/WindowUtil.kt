@@ -180,11 +180,12 @@ object WindowUtil {
         }
     }
 
-    fun hideAllStage() {
+    fun hideAllStage(forceAll: Boolean = false) {
         runUI {
-            val stages = STAGE_MAP.map { it.value }.toList()
-            for (stage in stages) {
-                stage.hide()
+            for (entry in STAGE_MAP) {
+                if (forceAll || entry.key !== WindowEnum.GAME_WINDOW_CONTROL_MODAL) {
+                    entry.value.hide()
+                }
             }
         }
     }

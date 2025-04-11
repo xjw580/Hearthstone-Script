@@ -63,6 +63,7 @@ object WorkTimeStatus {
             listener.invoke(workTimeSetting, changeId)
         }
         WorkTimeListener.checkWork()
+        WorkTimeListener.tryWork()
     }
 
     fun storeWorkTimeRuleSet(workTimeRuleSetList: List<WorkTimeRuleSet> = workTimeRuleSet, changeId: String? = null) {
@@ -74,6 +75,7 @@ object WorkTimeStatus {
             listener.invoke(workTimeRuleSet, changeId)
         }
         WorkTimeListener.checkWork()
+        WorkTimeListener.tryWork()
     }
 
 }

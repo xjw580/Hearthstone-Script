@@ -9,7 +9,6 @@ import club.xiaojiawei.hsscript.utils.ConfigUtil
 import club.xiaojiawei.hsscript.utils.GameUtil
 import club.xiaojiawei.util.isFalse
 import club.xiaojiawei.util.isTrue
-import com.sun.jna.WString
 
 /**
  * @author 肖嘉威
@@ -25,12 +24,12 @@ object UpdateGameWindowService : Service<Boolean>() {
     private var thread: Thread? = null
 
     override fun execStart(): Boolean {
-        CSystemDll.INSTANCE.changeWindow(GameUtil.findGameHWND(), false)
+        CSystemDll.INSTANCE.changeWindow(ScriptStatus.gameHWND, false)
         thread = Thread({
             while (true) {
                 try {
                     Thread.sleep(1000)
-                    GameUtil.findGameHWND()?.let {hwnd->
+                    ScriptStatus.gameHWND?.let { hwnd ->
                         User32ExDll.INSTANCE.IsIconic(hwnd).isFalse {
                             GameUtil.updateGameRect(hwnd)
                         }
@@ -56,7 +55,7 @@ object UpdateGameWindowService : Service<Boolean>() {
             }
             thread = null
         }
-        CSystemDll.INSTANCE.changeWindow(GameUtil.findGameHWND(), true)
+        CSystemDll.INSTANCE.changeWindow(ScriptStatus.gameHWND, true)
         return true
     }
 

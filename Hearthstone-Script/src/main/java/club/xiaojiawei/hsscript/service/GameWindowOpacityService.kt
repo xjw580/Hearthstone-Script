@@ -4,7 +4,6 @@ import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.listener.WorkTimeListener
 import club.xiaojiawei.hsscript.status.ScriptStatus
 import club.xiaojiawei.hsscript.utils.ConfigUtil
-import club.xiaojiawei.hsscript.utils.GameUtil
 import club.xiaojiawei.hsscript.utils.SystemUtil
 import com.sun.jna.platform.win32.WinDef.HWND
 import javafx.beans.value.ChangeListener
@@ -18,7 +17,7 @@ object GameWindowOpacityService : Service<Int>() {
     private val windowChangeListener: ChangeListener<HWND?> by lazy {
         ChangeListener { _, _, newValue ->
             if (WorkTimeListener.working) {
-                changeOpacity(ConfigUtil.getInt(ConfigEnum.GAME_WINDOW_OPACITY), newValue)
+                changeOpacity(ConfigUtil.getInt(ConfigEnum.GAME_WINDOW_OPACITY))
             }
         }
     }
@@ -53,8 +52,8 @@ object GameWindowOpacityService : Service<Int>() {
         changeOpacity(newValue)
     }
 
-    private fun changeOpacity(opacity: Int, hwnd: HWND? = null) {
-        (hwnd ?: GameUtil.findGameHWND())?.let {
+    private fun changeOpacity(opacity: Int) {
+        ScriptStatus.gameHWND?.let {
             SystemUtil.changeWindowOpacity(it, opacity)
         }
     }

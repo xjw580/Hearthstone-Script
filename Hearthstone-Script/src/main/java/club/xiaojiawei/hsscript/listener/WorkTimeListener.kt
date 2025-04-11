@@ -35,6 +35,7 @@ object WorkTimeListener {
     val launch: Unit by lazy {
         checkWorkTask = EXTRA_THREAD_POOL.scheduleWithFixedDelay(LRunnable {
             checkWork()
+            tryWork()
         }, 0, 30, TimeUnit.SECONDS)
         WarEx.inWarProperty.addListener { _, _, newValue ->
             if (!newValue && PauseStatus.isStart) {
@@ -132,14 +133,14 @@ object WorkTimeListener {
         return !isDuringWorkDate
     }
 
-    @Synchronized
-    fun checkWork() {
-        judge()
+    fun tryWork() {
+        if (canWork() && PauseStatus.isStart) {
+            workingProperty.set(true)
+        }
     }
 
-    private var prevClosestWorkTimeRule: WorkTimeRule? = null
-
-    private fun judge() {
+    @Synchronized
+    fun checkWork() {
         var canWork = false
         val readOnlyWorkTimeSetting = WorkTimeStatus.readOnlyWorkTimeSetting()
         val dayIndex = LocalDate.now().dayOfWeek.value - 1
@@ -169,12 +170,11 @@ object WorkTimeListener {
                 }
             }
             prevClosestWorkTimeRule = closestWorkTimeRule
-            if (PauseStatus.isStart && canWork) {
-                workingProperty.set(true)
-            }
         }
         isDuringWorkDate = canWork
     }
+
+    private var prevClosestWorkTimeRule: WorkTimeRule? = null
 
     fun cannotWorkLog() {
         val context = "现在是下班时间 🌜"
@@ -229,5 +229,4 @@ object WorkTimeListener {
         }
         return -1L
     }
-
 }

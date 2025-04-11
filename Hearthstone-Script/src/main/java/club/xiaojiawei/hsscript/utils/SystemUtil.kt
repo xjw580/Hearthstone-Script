@@ -125,9 +125,8 @@ object SystemUtil {
     /**
      * 更新窗口信息
      */
-    fun updateRECT(programHWND: WinDef.HWND?, programRECT: WinDef.RECT?) {
-//        如果程序最小化无法获取到准确的窗口信息
-        if (showWindow(programHWND) && !User32.INSTANCE.GetClientRect(programHWND, programRECT)) {
+    fun updateRECT(hwnd: WinDef.HWND?, programRECT: WinDef.RECT?) {
+        if (showWindow(hwnd) && !User32.INSTANCE.GetClientRect(hwnd, programRECT)) {
             log.error { "获取窗口尺寸异常，错误代码：" + Kernel32.INSTANCE.GetLastError() }
         }
     }
@@ -158,34 +157,16 @@ object SystemUtil {
 
     /**
      * 显示窗口
-     * @param programHWND
+     * @param hwnd
      */
-    fun showWindow(programHWND: WinDef.HWND?): Boolean {
-        programHWND ?: return false
-        if (User32ExDll.INSTANCE.IsIconic(programHWND)) {
-            if (!User32.INSTANCE.ShowWindow(programHWND, 9)) {
+    fun showWindow(hwnd: WinDef.HWND?): Boolean {
+        if (hwnd == null || !User32.INSTANCE.IsWindow(hwnd)) return false
+        if (User32ExDll.INSTANCE.IsIconic(hwnd)) {
+            if (!User32.INSTANCE.ShowWindow(hwnd, SW_RESTORE)) {
                 log.error { "显示窗口异常，错误代码：" + Kernel32.INSTANCE.GetLastError() }
                 return false
             }
             delay(200)
-        }
-        return true
-    }
-
-    /**
-     * 前置窗口
-     */
-    fun frontWindow(programHWND: WinDef.HWND?): Boolean {
-        programHWND ?: return false
-//        显示窗口
-        if (!showWindow(programHWND)) {
-            log.error { "显示窗口异常，错误代码：" + Kernel32.INSTANCE.GetLastError() }
-            return false
-        }
-//        前置窗口
-        if (!User32.INSTANCE.SetForegroundWindow(programHWND)) {
-            log.error { "前置窗口异常，错误代码：" + Kernel32.INSTANCE.GetLastError() }
-            return false
         }
         return true
     }
@@ -350,7 +331,7 @@ object SystemUtil {
      * 关闭本软件
      */
     fun shutdownSoft() {
-        WindowUtil.hideAllStage()
+        WindowUtil.hideAllStage(true)
         log.info { "准备关闭软件..." }
         PauseStatus.isPause = true
         exitProcess(0)

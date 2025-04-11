@@ -5,7 +5,6 @@ import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.status.PauseStatus
 import club.xiaojiawei.hsscript.status.ScriptStatus
 import club.xiaojiawei.hsscript.utils.ConfigUtil
-import club.xiaojiawei.hsscript.utils.GameUtil
 import com.sun.jna.platform.win32.WinDef.HWND
 import javafx.beans.value.ChangeListener
 
@@ -17,7 +16,7 @@ object TopGameWindowService : Service<Boolean>() {
 
     private val changeListener: ChangeListener<HWND?> by lazy {
         ChangeListener { _, _, newValue ->
-            changeTop(ConfigUtil.getBoolean(ConfigEnum.TOP_GAME_WINDOW), newValue)
+            changeTop(ConfigUtil.getBoolean(ConfigEnum.TOP_GAME_WINDOW))
         }
     }
 
@@ -46,8 +45,8 @@ object TopGameWindowService : Service<Boolean>() {
         changeTop(newValue)
     }
 
-    private fun changeTop(top: Boolean, hwnd: HWND? = null) {
-        (hwnd ?: GameUtil.findGameHWND())?.let {
+    private fun changeTop(top: Boolean) {
+        ScriptStatus.gameHWND?.let {
             CSystemDll.INSTANCE.topWindow(it, top)
         }
     }

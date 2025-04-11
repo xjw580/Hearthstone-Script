@@ -240,7 +240,7 @@ class MainApplication : Application() {
 //            左键点击
             if (e?.button == 1) {
                 (getStage(WindowEnum.MAIN)?.isShowing ?: false).isTrue {
-                    WindowUtil.hideAllStage()
+                    WindowUtil.hideAllStage(true)
                 }.isFalse {
                     showStage(WindowEnum.MAIN)
                 }

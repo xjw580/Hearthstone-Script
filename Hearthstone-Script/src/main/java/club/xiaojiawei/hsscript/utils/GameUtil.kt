@@ -506,6 +506,7 @@ object GameUtil {
      */
     fun updateGameRect(gameHWND: WinDef.HWND? = ScriptStatus.gameHWND) {
         SystemUtil.updateRECT(gameHWND, ScriptStatus.GAME_RECT)
+//        println("left:${ScriptStatus.GAME_RECT.left}, right:${ScriptStatus.GAME_RECT.right}, top:${ScriptStatus.GAME_RECT.top}, bottom:${ScriptStatus.GAME_RECT.bottom}")
     }
 
     /**

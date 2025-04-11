@@ -11,12 +11,9 @@ import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.enums.MouseControlModeEnum
 import club.xiaojiawei.hsscript.status.PauseStatus
 import club.xiaojiawei.hsscript.status.ScriptStatus
-import club.xiaojiawei.hsscript.utils.ConfigUtil
-import club.xiaojiawei.hsscript.utils.GameUtil
-import club.xiaojiawei.hsscript.utils.MouseUtil
-import club.xiaojiawei.hsscript.utils.SystemUtil
-import club.xiaojiawei.hsscript.utils.go
+import club.xiaojiawei.hsscript.utils.*
 import club.xiaojiawei.util.isFalse
+import com.sun.jna.platform.win32.User32
 import com.sun.jna.platform.win32.WinDef
 import com.sun.jna.platform.win32.WinDef.HWND
 import java.awt.Point
@@ -34,8 +31,9 @@ class GameStarter : AbstractStarter() {
 
     public override fun execStart() {
         log.info { "开始检查$GAME_CN_NAME" }
-        GameUtil.findGameHWND()?.let {
-            next(it)
+        val gameHWND = ScriptStatus.gameHWND
+        if (gameHWND != null && User32.INSTANCE.IsWindow(gameHWND)) {
+            next(gameHWND)
             return
         }
         latestLogDir = GameUtil.getLatestLogDir()
@@ -122,7 +120,7 @@ class GameStarter : AbstractStarter() {
             Thread.sleep(3000)
             GameUtil.updateGameRect()
             ConfigUtil.getBoolean(ConfigEnum.UPDATE_GAME_WINDOW).isFalse {
-                CSystemDll.INSTANCE.changeWindow(ScriptStatus.gameHWND, true)
+                CSystemDll.INSTANCE.changeWindow(gameHWND, true)
             }
         }
     }
