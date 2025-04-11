@@ -39,10 +39,10 @@ private const val WORK_TIME_RULE_PRESETS_EMPTY = ""
 private const val WORK_TIME_RULE_PRESETS_TWO = "presets-two"
 
 private val operations = setOf(
-    TimeOperateEnum.SLEEP_SYSTEM,
-    TimeOperateEnum.LOCK_SCREEN,
-    TimeOperateEnum.CLOSE_GAME,
-    TimeOperateEnum.CLOSE_PLATFORM
+    OperateEnum.SLEEP_SYSTEM,
+    OperateEnum.LOCK_SCREEN,
+    OperateEnum.CLOSE_GAME,
+    OperateEnum.CLOSE_PLATFORM
 )
 
 enum class ConfigEnum(

@@ -5,11 +5,12 @@ import club.xiaojiawei.controls.NotificationManager
 import club.xiaojiawei.controls.ProgressModal
 import club.xiaojiawei.controls.Time
 import club.xiaojiawei.controls.ico.EditIco
+import club.xiaojiawei.controls.ico.HelpIco
 import club.xiaojiawei.hsscript.bean.WorkTime
 import club.xiaojiawei.hsscript.bean.WorkTimeRule
 import club.xiaojiawei.hsscript.bean.WorkTimeRuleSet
 import club.xiaojiawei.hsscript.bean.tableview.NumCallback
-import club.xiaojiawei.hsscript.enums.TimeOperateEnum
+import club.xiaojiawei.hsscript.enums.OperateEnum
 import club.xiaojiawei.hsscript.interfaces.StageHook
 import club.xiaojiawei.hsscript.status.WorkTimeStatus
 import club.xiaojiawei.hsscript.utils.ConfigExUtil
@@ -32,10 +33,10 @@ import javafx.scene.layout.FlowPane
 import javafx.scene.layout.HBox
 import javafx.scene.layout.Pane
 import javafx.scene.text.Text
+import javafx.util.Duration
 import javafx.util.StringConverter
 import java.net.URL
 import java.util.*
-import kotlin.collections.set
 
 private const val SELECTED_OPERATION_STYLE_CLASS = "label-ui-success"
 
@@ -100,7 +101,7 @@ class TimeSettingsController : Initializable, StageHook {
     protected lateinit var selectedTimeCol: TableColumn<WorkTimeRule, WorkTime?>
 
     @FXML
-    protected lateinit var selectedAfterOperationCol: TableColumn<WorkTimeRule, Set<TimeOperateEnum>?>
+    protected lateinit var selectedAfterOperationCol: TableColumn<WorkTimeRule, Set<OperateEnum>?>
 
     @FXML
     protected lateinit var selectedEnableCol: TableColumn<WorkTimeRule, Boolean>
@@ -276,7 +277,7 @@ class TimeSettingsController : Initializable, StageHook {
     private fun loadWorkTimeSetting() {
         val workTimeSetting = ConfigExUtil.getWorkTimeSetting()
         for ((i, id) in workTimeSetting.withIndex()) {
-            dateComboBoxList[i + 1].selectionModel.select(workTimeRuleSet?.find { it.id == id })
+            dateComboBoxList[i + 1].selectionModel.select(workTimeRuleSet.find { it.id == id })
         }
     }
 
@@ -371,9 +372,19 @@ class TimeSettingsController : Initializable, StageHook {
 
     private fun buildOperationPane(item: WorkTimeRule): Pane {
         val pane = HBox().apply {
-            children.addAll(item.getOperate().map {
+            children.addAll(item.getOperate().toMutableList().apply { sortBy { it.order } }.map {
                 Label(it.value).apply {
                     styleClass.addAll("label-ui", "label-ui-small", SELECTED_OPERATION_STYLE_CLASS, "radius-ui")
+                    if (it === OperateEnum.SLEEP_SYSTEM || it === OperateEnum.LOCK_SCREEN) {
+                        contentDisplay = ContentDisplay.RIGHT
+                        graphic = Label().apply graphic@{
+                            this@graphic.graphic = HelpIco()
+                            this@graphic.tooltip =
+                                Tooltip(if (it === OperateEnum.SLEEP_SYSTEM) "在Windows设置中关闭唤醒电脑需要重新登录选项" else "锁屏后无法自动解锁").apply tooltip@{
+                                    showDuration = Duration.seconds(60.0)
+                                }
+                        }
+                    }
                 }
             }.toList())
             children.add(buildOperationEditBtn(item))
@@ -391,13 +402,13 @@ class TimeSettingsController : Initializable, StageHook {
             cursor = Cursor.HAND
 
             val operates = item.getOperate()
-            val selectedTimeOperateEnums = mutableSetOf<TimeOperateEnum>()
+            val selectedOperateEnums = mutableSetOf<OperateEnum>()
 
             onAction = EventHandler<ActionEvent> {
                 val content = FlowPane().apply {
                     val selectAllLabel = Label("全选")
                     val isSelectAll: () -> Unit = {
-                        if (selectedTimeOperateEnums.size == TimeOperateEnum.values().size) {
+                        if (selectedOperateEnums.size == OperateEnum.values().size) {
                             if (!selectAllLabel.styleClass.contains(SELECTED_OPERATION_STYLE_CLASS)) {
                                 selectAllLabel.styleClass.add(SELECTED_OPERATION_STYLE_CLASS)
                             }
@@ -405,36 +416,37 @@ class TimeSettingsController : Initializable, StageHook {
                             selectAllLabel.styleClass.remove(SELECTED_OPERATION_STYLE_CLASS)
                         }
                     }
-                    children.addAll(TimeOperateEnum.values().map { operation ->
-                        Label(operation.value).apply label@{
-                            styleClass.addAll("label-ui", "label-ui-small", "radius-ui")
-                            if (operates.contains(operation)) {
-                                selectedTimeOperateEnums.add(operation)
-                                styleClass.add(SELECTED_OPERATION_STYLE_CLASS)
-                            }
-                            (this@label).onMouseClicked = EventHandler { e ->
-                                if (styleClass.contains(SELECTED_OPERATION_STYLE_CLASS)) {
-                                    selectedTimeOperateEnums.remove(operation)
-                                    styleClass.remove(SELECTED_OPERATION_STYLE_CLASS)
-                                } else {
-                                    selectedTimeOperateEnums.add(operation)
+                    children.addAll(OperateEnum.values().toMutableList().apply { sortBy { it.order } }
+                        .map { operation ->
+                            Label(operation.value).apply label@{
+                                styleClass.addAll("label-ui", "label-ui-small", "radius-ui")
+                                if (operates.contains(operation)) {
+                                    selectedOperateEnums.add(operation)
                                     styleClass.add(SELECTED_OPERATION_STYLE_CLASS)
                                 }
-                                isSelectAll()
+                                (this@label).onMouseClicked = EventHandler { e ->
+                                    if (styleClass.contains(SELECTED_OPERATION_STYLE_CLASS)) {
+                                        selectedOperateEnums.remove(operation)
+                                        styleClass.remove(SELECTED_OPERATION_STYLE_CLASS)
+                                    } else {
+                                        selectedOperateEnums.add(operation)
+                                        styleClass.add(SELECTED_OPERATION_STYLE_CLASS)
+                                    }
+                                    isSelectAll()
+                                }
                             }
-                        }
-                    })
+                        })
                     children.add(selectAllLabel.apply label@{
                         styleClass.addAll("label-ui", "label-ui-small", "radius-ui")
                         isSelectAll()
                         (this@label).onMouseClicked = EventHandler { e ->
                             if (styleClass.contains(SELECTED_OPERATION_STYLE_CLASS)) {
-                                selectedTimeOperateEnums.clear()
+                                selectedOperateEnums.clear()
                                 for (node in children) {
                                     node.styleClass.remove(SELECTED_OPERATION_STYLE_CLASS)
                                 }
                             } else {
-                                selectedTimeOperateEnums.addAll(TimeOperateEnum.values())
+                                selectedOperateEnums.addAll(OperateEnum.values())
                                 for (node in children) {
                                     if (!node.styleClass.contains(SELECTED_OPERATION_STYLE_CLASS)) {
                                         node.styleClass.add(SELECTED_OPERATION_STYLE_CLASS)
@@ -448,7 +460,7 @@ class TimeSettingsController : Initializable, StageHook {
                     vgap = 5.0
                 }
                 Modal(rootPane, "修改", content, {
-                    item.setOperate(selectedTimeOperateEnums)
+                    item.setOperate(selectedOperateEnums)
                 }, {}).apply {
                     isMaskClosable = true
                 }.show()
@@ -503,7 +515,11 @@ class TimeSettingsController : Initializable, StageHook {
             notificationManager.showInfo("不允许修改该规则", 2)
             return
         }
-        val workTimeRule = WorkTimeRule(WorkTime("00:00", "23:59"), null, true)
+        val workTimeRule = WorkTimeRule(
+            WorkTime("00:00", "23:59"),
+            setOf<OperateEnum>(OperateEnum.CLOSE_GAME, OperateEnum.CLOSE_PLATFORM),
+            true
+        )
         workTimeRuleSet.setTimeRules(workTimeRuleSet.getTimeRules() + workTimeRule)
         selectedWorkTimeRuleTable.items.add(workTimeRule)
     }

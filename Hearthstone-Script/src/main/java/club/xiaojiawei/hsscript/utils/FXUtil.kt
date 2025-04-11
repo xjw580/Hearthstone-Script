@@ -1,5 +1,6 @@
 package club.xiaojiawei.hsscript.utils
 
+import club.xiaojiawei.bean.LRunnable
 import club.xiaojiawei.config.VIRTUAL_THREAD_POOL
 import club.xiaojiawei.controls.ico.CopyIco
 import club.xiaojiawei.controls.ico.OKIco
@@ -25,27 +26,23 @@ import java.util.concurrent.Future
  * 虚拟线程中执行
  */
 inline fun go(crossinline block: () -> Unit): Future<*> {
-    return VIRTUAL_THREAD_POOL.submit {
+    return VIRTUAL_THREAD_POOL.submit(LRunnable {
         block()
-    }
+    })
 }
 
 /**
  * 虚拟线程中执行
  */
 fun Runnable.go(): Future<*> {
-    return VIRTUAL_THREAD_POOL.submit {
-        this.run()
-    }
+    return VIRTUAL_THREAD_POOL.submit(LRunnable { this.run() })
 }
 
 /**
  * 虚拟线程中执行
  */
 fun (() -> Any).goWithResult(): Future<*> {
-    return VIRTUAL_THREAD_POOL.submit {
-        this()
-    }
+    return VIRTUAL_THREAD_POOL.submit(LRunnable { this() })
 }
 
 /**
@@ -55,9 +52,7 @@ inline fun runUI(crossinline block: () -> Unit) {
     Platform.isFxApplicationThread().isTrue {
         block()
     }.isFalse {
-        Platform.runLater {
-            block()
-        }
+        Platform.runLater(LRunnable { block() })
     }
 }
 

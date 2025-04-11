@@ -7,6 +7,7 @@ import club.xiaojiawei.hsscript.consts.GAME_CN_NAME
 import club.xiaojiawei.hsscript.consts.PLATFORM_CN_NAME
 import club.xiaojiawei.hsscript.dll.CSystemDll
 import club.xiaojiawei.hsscript.enums.MouseControlModeEnum
+import club.xiaojiawei.hsscript.enums.OperateEnum
 import club.xiaojiawei.hsscript.enums.WindowEnum
 import club.xiaojiawei.hsscript.listener.WorkListener
 import club.xiaojiawei.hsscript.status.Mode
@@ -38,7 +39,23 @@ object Core {
                 if (WorkListener.canWork()) {
                     start(WorkListener.working)
                 } else {
-                    cannotWorkLog()
+                    WorkListener.cannotWorkLog()
+                    runUI {
+                        val alert = WindowUtil.createAlert(
+                            "当前不在工作时间", "是否睡眠系统(下个可用时间会唤醒系统)",
+                            {
+                                OperateEnum.SLEEP_SYSTEM.exec()
+                            }, {},
+                            WindowUtil.getStage(WindowEnum.MAIN)
+                        )
+                        go {
+                            Thread.sleep(5000)
+                            runUI {
+                                alert.hide()
+                            }
+                        }
+                        alert.show()
+                    }
                 }
                 log.info { "当前处于【开始】状态" }
             }
@@ -57,22 +74,17 @@ object Core {
         }
     }
 
-    private fun cannotWorkLog() {
-        val context = "现在是下班时间 🌜"
-        SystemUtil.notice(context)
-        log.info { context }
-    }
 
     /**
      * 启动脚本
      */
     fun start(force: Boolean = false) {
-        if (!force){
+        if (!force) {
             if (WorkListener.working) return
         }
         CORE_THREAD_POOL.execute {
             synchronized(Core.javaClass) {
-                if (!force){
+                if (!force) {
                     if (WorkListener.working) return@execute
                 }
                 if (ScriptStatus.isValidProgramPath) {

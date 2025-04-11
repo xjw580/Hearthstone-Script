@@ -18,7 +18,7 @@ object FriendlyModeStrategy : AbstractModeStrategy<Any?>() {
     }
 
     override fun afterEnter(t: Any?) {
-        if (WorkListener.working) {
+        if (WorkListener.canWork()) {
             if (!PowerLogListener.checkPowerLogSize()) {
                 return
             }
@@ -33,6 +33,7 @@ object FriendlyModeStrategy : AbstractModeStrategy<Any?>() {
             }
         } else {
             WorkListener.working = false
+            WorkListener.cannotWorkLog()
         }
     }
 }

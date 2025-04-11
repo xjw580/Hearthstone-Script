@@ -7,12 +7,13 @@ import club.xiaojiawei.hsscript.dll.CSystemDll
 import club.xiaojiawei.hsscript.listener.WorkListener
 import club.xiaojiawei.hsscript.utils.GameUtil
 import club.xiaojiawei.hsscript.utils.SystemUtil
+import com.sun.org.apache.xalan.internal.lib.ExsltDatetime.time
 
 /**
  * @author 肖嘉威
  * @date 2025/4/8 15:19
  */
-enum class TimeOperateEnum(val value: String, val exec: () -> Boolean, val order: Int = 0) {
+enum class OperateEnum(val value: String, val exec: () -> Boolean, val order: Int = 0) {
 
     OFF_SCREEN("关闭屏幕", {
         SystemUtil.offScreen()
@@ -24,7 +25,7 @@ enum class TimeOperateEnum(val value: String, val exec: () -> Boolean, val order
 
         do {
             if (!CSystemDll.INSTANCE.checkS3Support()) {
-                text = "不支持S3睡眠，无法设置定时唤醒"
+                text = "不支持'S3睡眠'，无法设置定时唤醒"
                 log.error { text }
                 SystemUtil.messageError(text)
                 res = false
@@ -37,14 +38,24 @@ enum class TimeOperateEnum(val value: String, val exec: () -> Boolean, val order
                 res = false
                 break
             }
-            val time = WorkListener.getSecondsUntilNextWorkPeriod() - 60
-            if (!CSystemDll.setWakeUpTimer(time.toInt())) {
-                text = "设置定时唤醒失败，定时时间:${time}秒"
+            val nextWakeUpTime = WorkListener.getSecondsUntilNextWorkPeriod()
+            if (nextWakeUpTime <= 0) {
+                text = "没有可唤醒时间，无法设置定时唤醒"
                 log.error { text }
                 SystemUtil.messageError(text)
                 res = false
                 break
             }
+            val time = nextWakeUpTime - 60
+            if (!CSystemDll.setWakeUpTimer(time.toInt())) {
+                text = "设置定时唤醒失败，定时时间:[${time}]秒"
+                log.error { text }
+                SystemUtil.messageError(text)
+                res = false
+                break
+            }
+            CSystemDll.INSTANCE.sleepSystem()
+            println("sleep")
         } while (false)
 
         res

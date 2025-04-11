@@ -109,6 +109,7 @@ object TournamentModeStrategy : AbstractModeStrategy<Any?>() {
             }
         }else{
             WorkListener.working = false
+            WorkListener.cannotWorkLog()
         }
     }
 

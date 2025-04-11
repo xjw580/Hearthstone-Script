@@ -88,6 +88,7 @@ object AdventureModeStrategy : AbstractModeStrategy<Any?>() {
             }
         } else {
             WorkListener.working = false
+            WorkListener.cannotWorkLog()
         }
     }
 

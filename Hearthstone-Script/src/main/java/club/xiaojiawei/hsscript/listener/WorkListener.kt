@@ -8,6 +8,7 @@ import club.xiaojiawei.hsscript.bean.single.WarEx
 import club.xiaojiawei.hsscript.enums.WindowEnum
 import club.xiaojiawei.hsscript.status.PauseStatus
 import club.xiaojiawei.hsscript.status.WorkTimeStatus
+import club.xiaojiawei.hsscript.utils.SystemUtil
 import club.xiaojiawei.hsscript.utils.WindowUtil
 import club.xiaojiawei.hsscript.utils.go
 import club.xiaojiawei.hsscript.utils.runUI
@@ -125,21 +126,25 @@ object WorkListener {
                             }
                         }
                         val operationName = operates.map { it.name }
-                        alert.set(
-                            WindowUtil.createAlert(
-                                "${countdownTime}秒执行${operationName}",
-                                null,
-                                {
-                                    future.cancel(true)
-                                    runUI {
-                                        alert.get()?.hide()
-                                    }
-                                },
-                                null,
-                                WindowUtil.getStage(WindowEnum.MAIN),
-                                "阻止"
+                        runUI {
+                            alert.set(
+                                WindowUtil.createAlert(
+                                    "${countdownTime}秒执行${operationName}",
+                                    null,
+                                    {
+                                        future.cancel(true)
+                                        runUI {
+                                            alert.get()?.hide()
+                                        }
+                                    },
+                                    null,
+                                    WindowUtil.getStage(WindowEnum.MAIN),
+                                    "阻止"
+                                ).apply {
+                                    show()
+                                }
                             )
-                        )
+                        }
                     }
                 }
             }
@@ -148,11 +153,17 @@ object WorkListener {
         isDuringWorkDate = canWork
     }
 
+    fun cannotWorkLog() {
+        val context = "现在是下班时间 🌜"
+        SystemUtil.notice(context)
+        log.info { context }
+    }
+
     /**
      * 获取下一次可工作的时间
      */
     fun getSecondsUntilNextWorkPeriod(): Long {
-        if (working) return -1L
+        if (working) return 0L
 
         val readOnlyWorkTimeSetting = WorkTimeStatus.readOnlyWorkTimeSetting()
         val dayIndex = LocalDate.now().dayOfWeek.value - 1

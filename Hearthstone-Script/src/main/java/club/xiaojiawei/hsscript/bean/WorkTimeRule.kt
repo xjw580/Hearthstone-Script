@@ -1,6 +1,6 @@
 package club.xiaojiawei.hsscript.bean
 
-import club.xiaojiawei.hsscript.enums.TimeOperateEnum
+import club.xiaojiawei.hsscript.enums.OperateEnum
 import javafx.beans.property.BooleanProperty
 import javafx.beans.property.ObjectProperty
 import javafx.beans.property.SimpleBooleanProperty
@@ -14,14 +14,14 @@ class WorkTimeRule {
 
     private val workTime: ObjectProperty<WorkTime> = SimpleObjectProperty<WorkTime>(WorkTime())
 
-    private val operates: ObjectProperty<Set<TimeOperateEnum>> =
-        SimpleObjectProperty<Set<TimeOperateEnum>>(emptySet<TimeOperateEnum>())
+    private val operates: ObjectProperty<Set<OperateEnum>> =
+        SimpleObjectProperty<Set<OperateEnum>>(emptySet<OperateEnum>())
 
     private val enable: BooleanProperty = SimpleBooleanProperty(false)
 
     constructor()
 
-    constructor(workTime: WorkTime?, operates: Set<TimeOperateEnum>?, enable: Boolean) {
+    constructor(workTime: WorkTime?, operates: Set<OperateEnum>?, enable: Boolean) {
         workTime?.let {
             this.workTime.set(it)
         }
@@ -43,15 +43,15 @@ class WorkTimeRule {
         this.workTime.set(workTime)
     }
 
-    fun getOperate(): Set<TimeOperateEnum> {
+    fun getOperate(): Set<OperateEnum> {
         return operates.get()
     }
 
-    fun operateProperty(): ObjectProperty<Set<TimeOperateEnum>> {
+    fun operateProperty(): ObjectProperty<Set<OperateEnum>> {
         return operates
     }
 
-    fun setOperate(operates: Set<TimeOperateEnum>) {
+    fun setOperate(operates: Set<OperateEnum>) {
         this.operates.set(operates)
     }
 
