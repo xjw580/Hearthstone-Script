@@ -497,11 +497,8 @@ object GameUtil {
     /**
      * 更新游戏窗口信息
      */
-    fun updateGameRect(updateHWNDCache: Boolean = false) {
-        if (ScriptStatus.gameHWND == null || updateHWNDCache) {
-            ScriptStatus.gameHWND = findGameHWND()
-        }
-        SystemUtil.updateRECT(ScriptStatus.gameHWND, ScriptStatus.GAME_RECT)
+    fun updateGameRect(gameHWND: WinDef.HWND? = ScriptStatus.gameHWND) {
+        SystemUtil.updateRECT(gameHWND, ScriptStatus.GAME_RECT)
     }
 
     /**

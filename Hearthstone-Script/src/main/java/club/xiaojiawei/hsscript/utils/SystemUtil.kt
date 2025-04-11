@@ -462,7 +462,8 @@ object SystemUtil {
      * 系统关机
      */
     fun shutdownSystem(): Boolean {
-        return User32.INSTANCE.ExitWindowsEx(WinDef.UINT((EWX_SHUTDOWN xor EWX_FORCE).toLong()), WinDef.DWORD(0)).booleanValue()
+        return User32.INSTANCE.ExitWindowsEx(WinDef.UINT((EWX_SHUTDOWN xor EWX_FORCE).toLong()), WinDef.DWORD(0))
+            .booleanValue()
     }
 
     /**

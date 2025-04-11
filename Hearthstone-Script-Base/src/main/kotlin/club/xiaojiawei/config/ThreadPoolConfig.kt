@@ -37,7 +37,7 @@ val EXTRA_THREAD_POOL: ScheduledThreadPoolExecutor by lazy {
 }
 
 val CORE_THREAD_POOL: ThreadPoolExecutor by lazy {
-    ThreadPoolExecutor(2, 2, 1, TimeUnit.SECONDS, ArrayBlockingQueue(1), object : ThreadFactory {
+    ThreadPoolExecutor(2, 2, 5, TimeUnit.SECONDS, ArrayBlockingQueue(1), object : ThreadFactory {
         private val num = AtomicInteger(0)
         override fun newThread(r: Runnable): Thread {
             return WritableThread(r, "CorePool Thread-" + num.getAndIncrement())

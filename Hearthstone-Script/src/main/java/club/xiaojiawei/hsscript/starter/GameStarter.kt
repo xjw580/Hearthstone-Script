@@ -7,13 +7,16 @@ import club.xiaojiawei.config.log
 import club.xiaojiawei.hsscript.config.StarterConfig
 import club.xiaojiawei.hsscript.consts.GAME_CN_NAME
 import club.xiaojiawei.hsscript.dll.CSystemDll
+import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.enums.MouseControlModeEnum
 import club.xiaojiawei.hsscript.status.PauseStatus
 import club.xiaojiawei.hsscript.status.ScriptStatus
+import club.xiaojiawei.hsscript.utils.ConfigUtil
 import club.xiaojiawei.hsscript.utils.GameUtil
 import club.xiaojiawei.hsscript.utils.MouseUtil
 import club.xiaojiawei.hsscript.utils.SystemUtil
 import club.xiaojiawei.hsscript.utils.go
+import club.xiaojiawei.util.isFalse
 import com.sun.jna.platform.win32.WinDef
 import com.sun.jna.platform.win32.WinDef.HWND
 import java.awt.Point
@@ -118,7 +121,9 @@ class GameStarter : AbstractStarter() {
         go {
             Thread.sleep(3000)
             GameUtil.updateGameRect()
-            CSystemDll.INSTANCE.changeWindow(ScriptStatus.gameHWND, true)
+            ConfigUtil.getBoolean(ConfigEnum.UPDATE_GAME_WINDOW).isFalse {
+                CSystemDll.INSTANCE.changeWindow(ScriptStatus.gameHWND, true)
+            }
         }
     }
 

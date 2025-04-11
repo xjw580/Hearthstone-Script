@@ -163,75 +163,6 @@
                                            prefWidth="${fieldWidth}"
                                            editable="false"/>
                             </HBox>
-                            <HBox styleClass="h-box">
-                                <Text text="自动熄屏"/>
-                                <Label>
-                                    <graphic>
-                                        <HelpIco/>
-                                    </graphic>
-                                    <tooltip>
-                                        <Tooltip
-                                                text="软件处于运行状态但不在工作时间时关闭显示器，因系统而异，不一定能关闭成功">
-                                            <showDuration>
-                                                <fx:reference source="tooltipDuration"/>
-                                            </showDuration>
-                                        </Tooltip>
-                                    </tooltip>
-                                </Label>
-                                <HBox HBox.hgrow="ALWAYS"/>
-                                <ConfigSwitch notificationManager="${notificationManager}" config="AUTO_OFF_SCREEN"/>
-                            </HBox>
-                            <HBox styleClass="h-box">
-                                <Text text="自动睡眠"/>
-                                <Label>
-                                    <graphic>
-                                        <HelpIco/>
-                                    </graphic>
-                                    <tooltip>
-                                        <Tooltip text="软件处于运行状态但不在工作时间时让系统睡眠">
-                                            <showDuration>
-                                                <fx:reference source="tooltipDuration"/>
-                                            </showDuration>
-                                        </Tooltip>
-                                    </tooltip>
-                                </Label>
-                                <HBox HBox.hgrow="ALWAYS"/>
-                                <ConfigSwitch notificationManager="${notificationManager}" config="AUTO_SLEEP"/>
-                            </HBox>
-                            <HBox styleClass="h-box">
-                                <Text text="自动锁屏"/>
-                                <Label>
-                                    <graphic>
-                                        <HelpIco/>
-                                    </graphic>
-                                    <tooltip>
-                                        <Tooltip text="软件处于运行状态但不在工作时间时让系统睡眠">
-                                            <showDuration>
-                                                <fx:reference source="tooltipDuration"/>
-                                            </showDuration>
-                                        </Tooltip>
-                                    </tooltip>
-                                </Label>
-                                <HBox HBox.hgrow="ALWAYS"/>
-                                <ConfigSwitch notificationManager="${notificationManager}" config="AUTO_LOCK_SCREEN"/>
-                            </HBox>
-                            <HBox styleClass="h-box">
-                                <Text text="自动唤醒"/>
-                                <Label>
-                                    <graphic>
-                                        <HelpIco/>
-                                    </graphic>
-                                    <tooltip>
-                                        <Tooltip text="软件处于运行状态且在工作时间时唤醒系统">
-                                            <showDuration>
-                                                <fx:reference source="tooltipDuration"/>
-                                            </showDuration>
-                                        </Tooltip>
-                                    </tooltip>
-                                </Label>
-                                <HBox HBox.hgrow="ALWAYS"/>
-                                <ConfigSwitch notificationManager="${notificationManager}" config="AUTO_WAKE"/>
-                            </HBox>
                         </VBox>
                     </TitledPane>
                 </Group>
@@ -278,6 +209,23 @@
                                                    promptText="秒"
                                                    prefWidth="${fieldWidth}"
                                                    styleClass="text-field-ui, text-field-ui-small"/>
+                            </HBox>
+                            <HBox styleClass="h-box">
+                                <Text text="实时更新游戏窗口信息"/>
+                                <Label>
+                                    <graphic>
+                                        <HelpIco/>
+                                    </graphic>
+                                    <tooltip>
+                                        <Tooltip text="打开此项后软件可以感知到游戏窗口的变化">
+                                            <showDuration>
+                                                <fx:reference source="tooltipDuration"/>
+                                            </showDuration>
+                                        </Tooltip>
+                                    </tooltip>
+                                </Label>
+                                <HBox HBox.hgrow="ALWAYS"/>
+                                <ConfigSwitch notificationManager="${notificationManager}" config="UPDATE_GAME_WINDOW"/>
                             </HBox>
                         </VBox>
                     </TitledPane>

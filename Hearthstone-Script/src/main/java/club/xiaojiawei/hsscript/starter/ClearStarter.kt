@@ -15,9 +15,6 @@ class ClearStarter : AbstractStarter() {
 
     public override fun execStart() {
         Mode.reset()
-        if (ConfigUtil.getBoolean(ConfigEnum.AUTO_WAKE)) {
-            CSystemDll.setWakeUpTimer(0)
-        }
         startNextStarter()
     }
 

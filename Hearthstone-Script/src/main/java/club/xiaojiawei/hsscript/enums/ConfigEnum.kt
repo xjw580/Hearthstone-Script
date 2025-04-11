@@ -39,8 +39,6 @@ private const val WORK_TIME_RULE_PRESETS_EMPTY = ""
 private const val WORK_TIME_RULE_PRESETS_TWO = "presets-two"
 
 private val operations = setOf(
-    OperateEnum.SLEEP_SYSTEM,
-    OperateEnum.LOCK_SCREEN,
     OperateEnum.CLOSE_GAME,
     OperateEnum.CLOSE_PLATFORM
 )
@@ -281,7 +279,7 @@ enum class ConfigEnum(
      */
     GAME_TIMEOUT(
         group = SERVICE_CONFIG_GROUP,
-        defaultValue = "-1",
+        defaultValue = "60",
         service = GameTimeoutService
     ),
 
@@ -292,6 +290,15 @@ enum class ConfigEnum(
         group = SERVICE_CONFIG_GROUP,
         defaultValue = "-1",
         service = WarTimeoutService
+    ),
+
+    /**
+     * 更新游戏窗口信息
+     */
+    UPDATE_GAME_WINDOW(
+        group = SERVICE_CONFIG_GROUP,
+        defaultValue = true.toString(),
+        service = UpdateGameWindowService
     ),
 
     /**
@@ -316,26 +323,6 @@ enum class ConfigEnum(
         group = SYSTEM_CONFIG_GROUP,
         defaultValue = JSON.toJSONString(HotKey(JIntellitype.MOD_CONTROL, 'P'.code))
     ),
-
-    /**
-     * 自动关闭显示器
-     */
-    AUTO_OFF_SCREEN(group = SYSTEM_CONFIG_GROUP, defaultValue = false.toString()),
-
-    /**
-     * 自动睡眠
-     */
-    AUTO_SLEEP(group = SYSTEM_CONFIG_GROUP, defaultValue = false.toString()),
-
-    /**
-     * 自动锁屏
-     */
-    AUTO_LOCK_SCREEN(group = SYSTEM_CONFIG_GROUP, defaultValue = false.toString()),
-
-    /**
-     * 自动唤醒
-     */
-    AUTO_WAKE(group = SYSTEM_CONFIG_GROUP, defaultValue = false.toString()),
 
     /**
      * 文件日志级别
