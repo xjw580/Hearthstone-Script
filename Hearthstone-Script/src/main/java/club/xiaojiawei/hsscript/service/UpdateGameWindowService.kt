@@ -25,14 +25,14 @@ object UpdateGameWindowService : Service<Boolean>() {
     private var thread: Thread? = null
 
     override fun execStart(): Boolean {
-        CSystemDll.INSTANCE.changeWindow(ScriptStatus.gameHWND, false)
+        CSystemDll.INSTANCE.changeWindow(GameUtil.findGameHWND(), false)
         thread = Thread({
             while (true) {
                 try {
                     Thread.sleep(1000)
-                    ScriptStatus.gameHWND?.let {
-                        User32ExDll.INSTANCE.IsIconic(it).isFalse {
-                            GameUtil.updateGameRect()
+                    GameUtil.findGameHWND()?.let {hwnd->
+                        User32ExDll.INSTANCE.IsIconic(hwnd).isFalse {
+                            GameUtil.updateGameRect(hwnd)
                         }
                     }
                 } catch (e: Exception) {
@@ -56,7 +56,7 @@ object UpdateGameWindowService : Service<Boolean>() {
             }
             thread = null
         }
-        CSystemDll.INSTANCE.changeWindow(ScriptStatus.gameHWND, true)
+        CSystemDll.INSTANCE.changeWindow(GameUtil.findGameHWND(), true)
         return true
     }
 
