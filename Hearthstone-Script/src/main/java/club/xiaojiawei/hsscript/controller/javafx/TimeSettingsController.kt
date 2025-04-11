@@ -509,6 +509,16 @@ class TimeSettingsController : Initializable, StageHook {
     }
 
     @FXML
+    protected fun copyRulerSet(actionEvent: ActionEvent) {
+        val selectedItem = workTimeRuleSetTable.selectionModel.selectedItem ?: return
+        val newItem = selectedItem.clone()
+        newItem.reGenerateId()
+        newItem.setName("副本${workTimeRuleSetTable.items.size + 1}")
+        workTimeRuleSetTable.items.add(newItem)
+        workTimeRuleSetTable.selectionModel.selectLast()
+    }
+
+    @FXML
     protected fun addRuler(actionEvent: ActionEvent) {
         val workTimeRuleSet = workTimeRuleSetTable.selectionModel.selectedItem ?: return
         if (workTimeRuleSet.id.isEmpty()) {
@@ -522,6 +532,7 @@ class TimeSettingsController : Initializable, StageHook {
         )
         workTimeRuleSet.setTimeRules(workTimeRuleSet.getTimeRules() + workTimeRule)
         selectedWorkTimeRuleTable.items.add(workTimeRule)
+        selectedWorkTimeRuleTable.selectionModel.selectLast()
     }
 
     @FXML
@@ -532,6 +543,17 @@ class TimeSettingsController : Initializable, StageHook {
             remove(workTimeRule)
         })
         selectedWorkTimeRuleTable.items.remove(workTimeRule)
+    }
+
+
+    @FXML
+    protected fun copyRuler(actionEvent: ActionEvent) {
+        val selectedItem = selectedWorkTimeRuleTable.selectionModel.selectedItem ?: return
+        val selectedRuleSeItem = workTimeRuleSetTable.selectionModel.selectedItem ?: return
+        val newItem = selectedItem.clone()
+        selectedRuleSeItem.setTimeRules(selectedRuleSeItem.getTimeRules() + newItem)
+        selectedWorkTimeRuleTable.items.add(newItem)
+        selectedWorkTimeRuleTable.selectionModel.selectLast()
     }
 
 }

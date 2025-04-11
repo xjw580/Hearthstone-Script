@@ -12,7 +12,10 @@ import club.xiaojiawei.hsscript.core.Core
 import club.xiaojiawei.hsscript.dll.CSystemDll
 import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.enums.WindowEnum
-import club.xiaojiawei.hsscript.listener.*
+import club.xiaojiawei.hsscript.listener.GlobalHotkeyListener
+import club.xiaojiawei.hsscript.listener.StatisticsListener
+import club.xiaojiawei.hsscript.listener.VersionListener
+import club.xiaojiawei.hsscript.listener.WorkTimeListener
 import club.xiaojiawei.hsscript.status.PauseStatus
 import club.xiaojiawei.hsscript.status.TaskManager
 import club.xiaojiawei.hsscript.utils.*
@@ -257,10 +260,11 @@ class MainApplication : Application() {
             iconPath = WString(SystemUtil.getTrayIconFile().absolutePath)
             clickCallback = object : CSystemDll.TrayCallback {
                 override fun invoke() {
-                    (getStage(WindowEnum.MAIN)?.isShowing ?: false).isTrue {
-                        WindowUtil.hideAllStage()
-                    }.isFalse {
+                    val mainStage = getStage(WindowEnum.MAIN)
+                    if (mainStage == null || !mainStage.isShowing || mainStage.isIconified) {
                         showStage(WindowEnum.MAIN)
+                    } else {
+                        WindowUtil.hideAllStage()
                     }
                 }
             }

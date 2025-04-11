@@ -8,7 +8,7 @@ import java.util.*
  * @author 肖嘉威
  * @date 2025/4/8 15:17
  */
-class WorkTimeRuleSet {
+class WorkTimeRuleSet : Cloneable {
 
     var id: String = ""
 
@@ -27,6 +27,10 @@ class WorkTimeRuleSet {
         this.id = id
         this.name.set(name)
         this.workTimeRules.set(workTimeRules)
+    }
+
+    fun reGenerateId() {
+        id = UUID.randomUUID().toString()
     }
 
     fun getName(): String {
@@ -61,6 +65,14 @@ class WorkTimeRuleSet {
 
     override fun hashCode(): Int {
         return Objects.hashCode(id)
+    }
+
+    public override fun clone(): WorkTimeRuleSet {
+        val clone = WorkTimeRuleSet()
+        clone.id = this.id
+        clone.name.set(this.name.get())
+        clone.workTimeRules.set(this.workTimeRules.get().map { it.clone() }.toList())
+        return clone
     }
 
 }

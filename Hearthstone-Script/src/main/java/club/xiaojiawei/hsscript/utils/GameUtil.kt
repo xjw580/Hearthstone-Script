@@ -359,6 +359,11 @@ object GameUtil {
     }
 
     /**
+     * 游戏进度已保存，请重启游戏的按钮
+     */
+    private val RESTART_GAME_RECT = GameRect(-0.0365, 0.0302, 0.0878, 0.1272)
+
+    /**
      * 游戏里投降
      */
     fun surrender() {
@@ -380,10 +385,12 @@ object GameUtil {
                         cancelGameEndTask()
                     } else {
                         END_TURN_RECT.lClick()
-                        delay(100)
+                        SystemUtil.delayTiny()
                         lClickSettings()
-                        delay(500)
+                        SystemUtil.delayShortMedium()
                         SURRENDER_RECT.lClick()
+                        SystemUtil.delayTiny()
+                        RESTART_GAME_RECT.lClick()
                     }
                 },
                 0,

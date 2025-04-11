@@ -10,7 +10,7 @@ import javafx.beans.property.SimpleObjectProperty
  * @author 肖嘉威
  * @date 2025/4/8 15:17
  */
-class WorkTimeRule {
+class WorkTimeRule : Cloneable {
 
     private val workTime: ObjectProperty<WorkTime> = SimpleObjectProperty<WorkTime>(WorkTime())
 
@@ -65,5 +65,13 @@ class WorkTimeRule {
 
     fun setEnable(isEnable: Boolean) {
         this.enable.set(isEnable)
+    }
+
+    public override fun clone(): WorkTimeRule {
+        val clone = WorkTimeRule()
+        clone.workTime.set(this.workTime.get().clone())
+        clone.operates.set(this.operates.get().toSet())
+        clone.enable.set(this.enable.get())
+        return clone
     }
 }

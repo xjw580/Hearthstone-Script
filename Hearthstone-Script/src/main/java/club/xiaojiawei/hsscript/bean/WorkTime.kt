@@ -8,7 +8,7 @@ import java.time.format.DateTimeFormatter
  * @date 2024/10/11 16:30
  */
 
-class WorkTime {
+class WorkTime : Cloneable {
 
     constructor()
 
@@ -33,12 +33,19 @@ class WorkTime {
         return parseTime(endTime)
     }
 
-    private fun parseTime(timeStr: String?):LocalTime? {
+    private fun parseTime(timeStr: String?): LocalTime? {
         if (timeStr.isNullOrBlank()) return null
         return runCatching { LocalTime.from(pattern.parse(timeStr)) }.getOrNull()
     }
 
     companion object {
         val pattern = DateTimeFormatter.ofPattern("HH:mm")
+    }
+
+    public override fun clone(): WorkTime {
+        val clone = WorkTime()
+        clone.startTime = this.startTime
+        clone.endTime = this.endTime
+        return clone
     }
 }

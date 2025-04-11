@@ -1,6 +1,7 @@
 package club.xiaojiawei.hsscript.status
 
 import club.xiaojiawei.hsscript.bean.WorkTimeRuleSet
+import club.xiaojiawei.hsscript.listener.WorkTimeListener
 import club.xiaojiawei.hsscript.utils.ConfigExUtil
 import javafx.beans.property.ReadOnlyListProperty
 import javafx.beans.property.ReadOnlyListWrapper
@@ -61,6 +62,7 @@ object WorkTimeStatus {
         workTimeSettingListeners.toTypedArray().forEach { listener ->
             listener.invoke(workTimeSetting, changeId)
         }
+        WorkTimeListener.checkWork()
     }
 
     fun storeWorkTimeRuleSet(workTimeRuleSetList: List<WorkTimeRuleSet> = workTimeRuleSet, changeId: String? = null) {
@@ -71,6 +73,7 @@ object WorkTimeStatus {
         workTimeRuleSetListeners.toTypedArray().forEach { listener ->
             listener.invoke(workTimeRuleSet, changeId)
         }
+        WorkTimeListener.checkWork()
     }
 
 }

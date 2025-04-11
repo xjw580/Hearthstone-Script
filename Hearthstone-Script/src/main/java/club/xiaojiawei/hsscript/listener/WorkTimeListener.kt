@@ -35,7 +35,7 @@ object WorkTimeListener {
     val launch: Unit by lazy {
         checkWorkTask = EXTRA_THREAD_POOL.scheduleWithFixedDelay(LRunnable {
             checkWork()
-        }, 0, 60, TimeUnit.SECONDS)
+        }, 0, 30, TimeUnit.SECONDS)
         WarEx.inWarProperty.addListener { _, _, newValue ->
             if (!newValue && PauseStatus.isStart) {
                 checkWork()

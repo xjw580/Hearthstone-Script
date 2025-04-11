@@ -51,6 +51,7 @@ import javafx.stage.Popup
 import javafx.util.Duration
 import javafx.util.StringConverter
 import java.net.URL
+import java.time.LocalDate
 import java.util.*
 
 /**
@@ -65,11 +66,22 @@ class MainController : MainView() {
 
     private val workTimeChangeId = "main-ui"
 
+    private val initDate = LocalDate.now()
+
     override fun initialize(url: URL?, resourceBundle: ResourceBundle?) {
         versionText.text = "当前版本：" + VersionListener.currentRelease.tagName
         addListener()
         initModeAndDeck()
         reloadWorkTime()
+        go {
+            while (true) {
+                Thread.sleep(30_000)
+                if (LocalDate.now() > initDate) {
+                    log.info { "新的一天，应用新的工作时间规则" }
+                    reloadWorkTime()
+                }
+            }
+        }
     }
 
     /**
@@ -77,11 +89,11 @@ class MainController : MainView() {
      */
     private fun initModeAndDeck() {
         runModeBox.converter = object : StringConverter<RunModeEnum?>() {
-            override fun toString(runModeEnum: RunModeEnum?): String {
+            override fun toString(runModeEnum: RunModeEnum?): String? {
                 return runModeEnum?.comment ?: ""
             }
 
-            override fun fromString(s: String): RunModeEnum? {
+            override fun fromString(s: String?): RunModeEnum? {
                 return if (s == null || s.isBlank()) null else RunModeEnum.valueOf(s)
             }
         }

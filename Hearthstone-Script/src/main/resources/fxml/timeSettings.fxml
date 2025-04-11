@@ -47,6 +47,11 @@
                                             <ClearIco scaleX="$icoScale" scaleY="$icoScale" color="black"/>
                                         </graphic>
                                     </Button>
+                                    <Button styleClass="btn-ui, btn-ui-small" onAction="#copyRulerSet">
+                                        <graphic>
+                                            <CopyIco scaleX="$icoScale" scaleY="$icoScale" color="black"/>
+                                        </graphic>
+                                    </Button>
                                 </HBox>
                             </VBox>
                             <VBox spacing="5" alignment="CENTER" style="-fx-padding: 15;" minWidth="200">
@@ -71,6 +76,11 @@
                                     <Button styleClass="btn-ui, btn-ui-error, btn-ui-small" onAction="#delRuler">
                                         <graphic>
                                             <ClearIco scaleX="$icoScale" scaleY="$icoScale" color="black"/>
+                                        </graphic>
+                                    </Button>
+                                    <Button styleClass="btn-ui, btn-ui-small" onAction="#copyRuler">
+                                        <graphic>
+                                            <CopyIco scaleX="$icoScale" scaleY="$icoScale" color="black"/>
                                         </graphic>
                                     </Button>
                                 </HBox>
