@@ -36,6 +36,11 @@ object HubModeStrategy : AbstractModeStrategy<Any?>() {
      */
     val CONFIRM_SETTLEMENT_RECT = GameRect(-0.0668, 0.0709, -0.0007, 0.0611);
 
+    /**
+     * 未领取的奖励弹窗关闭按钮
+     */
+    val UNCLAIMED_REWARDS_RECT = GameRect(-0.0433, 0.0449, 0.1855, 0.2378)
+
 
     override fun wantEnter() {
     }
@@ -47,6 +52,8 @@ object HubModeStrategy : AbstractModeStrategy<Any?>() {
             CLOSE_AD1_RECT.lClick()
             SystemUtil.delayShortMedium()
             CLOSE_SETTLEMENT_RECT.lClick()
+            SystemUtil.delayShortMedium()
+            UNCLAIMED_REWARDS_RECT.lClick()
             SystemUtil.delayShortMedium()
         }, 5, 2, TimeUnit.SECONDS))
 

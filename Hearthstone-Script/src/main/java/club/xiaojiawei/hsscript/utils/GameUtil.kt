@@ -82,8 +82,6 @@ object GameUtil {
      */
     val TRADE_RECT = GameRect(0.4253, 0.4736, 0.0171, 0.1634)
 
-
-
     private val FOUR_DISCOVER_RECTS = arrayOf(
         GameRect(-0.3332, -0.1911, -0.1702, 0.1160),
         GameRect(-0.1570, -0.0149, -0.1702, 0.1160),

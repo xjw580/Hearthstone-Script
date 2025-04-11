@@ -17,6 +17,9 @@ import java.util.concurrent.TimeUnit
  */
 object LoginModeStrategy : AbstractModeStrategy<Any?>() {
 
+    /**
+     * 卡牌削弱增强时的弹框关闭按钮
+     */
     val CARD_ADJUSTMENT_CONFIRM_RECT: GameRect = GameRect(-0.0445, 0.0501, 0.2766, 0.3453)
 
     private var stayTime = 0
