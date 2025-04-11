@@ -6,7 +6,7 @@ import club.xiaojiawei.config.log
 import club.xiaojiawei.enums.ModeEnum
 import club.xiaojiawei.enums.RunModeEnum
 import club.xiaojiawei.hsscript.bean.GameRect
-import club.xiaojiawei.hsscript.listener.WorkListener
+import club.xiaojiawei.hsscript.listener.WorkTimeListener
 import club.xiaojiawei.hsscript.listener.log.PowerLogListener
 import club.xiaojiawei.hsscript.status.DeckStrategyManager
 import club.xiaojiawei.hsscript.status.Mode
@@ -46,7 +46,7 @@ object AdventureModeStrategy : AbstractModeStrategy<Any?>() {
     }
 
     override fun afterEnter(t: Any?) {
-        if (WorkListener.canWork()) {
+        if (WorkTimeListener.canWork()) {
             val deckStrategy = DeckStrategyManager.currentDeckStrategy ?: let {
                 SystemUtil.notice("未配置卡组策略")
                 log.warn { "未配置卡组策略" }
@@ -87,8 +87,8 @@ object AdventureModeStrategy : AbstractModeStrategy<Any?>() {
                 }, 0, 1000, TimeUnit.MILLISECONDS))
             }
         } else {
-            WorkListener.working = false
-            WorkListener.cannotWorkLog()
+            WorkTimeListener.working = false
+            WorkTimeListener.cannotWorkLog()
         }
     }
 

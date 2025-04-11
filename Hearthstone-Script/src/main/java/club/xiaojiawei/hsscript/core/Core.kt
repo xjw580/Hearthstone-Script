@@ -9,7 +9,7 @@ import club.xiaojiawei.hsscript.dll.CSystemDll
 import club.xiaojiawei.hsscript.enums.MouseControlModeEnum
 import club.xiaojiawei.hsscript.enums.OperateEnum
 import club.xiaojiawei.hsscript.enums.WindowEnum
-import club.xiaojiawei.hsscript.listener.WorkListener
+import club.xiaojiawei.hsscript.listener.WorkTimeListener
 import club.xiaojiawei.hsscript.status.Mode
 import club.xiaojiawei.hsscript.status.PauseStatus
 import club.xiaojiawei.hsscript.status.ScriptStatus
@@ -34,15 +34,15 @@ object Core {
         PauseStatus.addChangeListener { _, _, newValue ->
             newValue.isTrue {
                 CSystemDll.INSTANCE.changeWindow(ScriptStatus.gameHWND, false)
-                WorkListener.working = false
+                WorkTimeListener.working = false
                 Mode.reset()
                 runUI { WindowUtil.getStage(WindowEnum.MAIN)?.show() }
                 log.info { "当前处于【暂停】状态" }
             }.isFalse {
-                if (WorkListener.canWork()) {
+                if (WorkTimeListener.canWork()) {
                     start()
                 } else {
-                    WorkListener.cannotWorkLog()
+                    WorkTimeListener.cannotWorkLog()
                     runUI {
                         val alert = WindowUtil.createAlert(
                             "当前不在工作时间", "是否睡眠系统(下个可用时间会唤醒系统)",
@@ -63,10 +63,9 @@ object Core {
                 log.info { "当前处于【开始】状态" }
             }
         }
-        WorkListener.addChangeListener { _, _, isWorking: Boolean ->
-            println("working $isWorking")
+        WorkTimeListener.addChangeListener { _, _, isWorking: Boolean ->
             if (isWorking) {
-                start()
+                start(true)
             }
             if (ConfigExUtil.getMouseControlMode() === MouseControlModeEnum.DRIVE) {
                 isWorking.isTrue {
@@ -82,14 +81,14 @@ object Core {
     /**
      * 启动脚本
      */
-    fun start() {
-        if (WorkListener.working || lock.isLocked) return
+    fun start(force: Boolean = false) {
+        if ((!force && WorkTimeListener.working) || lock.isLocked) return
 
         CORE_THREAD_POOL.execute {
             try {
-                if (WorkListener.working || !lock.tryLock()) return@execute
+                if ((!force && WorkTimeListener.working) || !lock.tryLock()) return@execute
                 if (ScriptStatus.isValidProgramPath) {
-                    WorkListener.working = true
+                    WorkTimeListener.working = true
                     StarterConfig.starter.start()
                 } else if (!PauseStatus.isPause) {
                     SystemUtil.notice("需要配置" + GAME_CN_NAME + "和" + PLATFORM_CN_NAME + "的路径")

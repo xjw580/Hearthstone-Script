@@ -1,7 +1,7 @@
 package club.xiaojiawei.hsscript.service
 
 import club.xiaojiawei.hsscript.enums.ConfigEnum
-import club.xiaojiawei.hsscript.listener.WorkListener
+import club.xiaojiawei.hsscript.listener.WorkTimeListener
 import club.xiaojiawei.hsscript.status.ScriptStatus
 import club.xiaojiawei.hsscript.utils.ConfigUtil
 import club.xiaojiawei.hsscript.utils.GameUtil
@@ -33,13 +33,13 @@ object PlatformWindowOpacityService : Service<Int>() {
 
     override fun execStart(): Boolean {
         ScriptStatus.platformHWNDProperty().addListener(windowChangeListener)
-        WorkListener.addChangeListener(workingChangeListener)
+        WorkTimeListener.addChangeListener(workingChangeListener)
         return true
     }
 
     override fun execStop(): Boolean {
         ScriptStatus.platformHWNDProperty().removeListener(windowChangeListener)
-        WorkListener.removeChangeListener(workingChangeListener)
+        WorkTimeListener.removeChangeListener(workingChangeListener)
         return true
     }
 

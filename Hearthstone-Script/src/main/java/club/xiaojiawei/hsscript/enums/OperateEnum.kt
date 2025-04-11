@@ -4,10 +4,9 @@ import club.xiaojiawei.config.log
 import club.xiaojiawei.hsscript.consts.GAME_CN_NAME
 import club.xiaojiawei.hsscript.consts.PLATFORM_CN_NAME
 import club.xiaojiawei.hsscript.dll.CSystemDll
-import club.xiaojiawei.hsscript.listener.WorkListener
+import club.xiaojiawei.hsscript.listener.WorkTimeListener
 import club.xiaojiawei.hsscript.utils.GameUtil
 import club.xiaojiawei.hsscript.utils.SystemUtil
-import com.sun.org.apache.xalan.internal.lib.ExsltDatetime.time
 
 /**
  * @author 肖嘉威
@@ -38,7 +37,7 @@ enum class OperateEnum(val value: String, val exec: () -> Boolean, val order: In
                 res = false
                 break
             }
-            val nextWakeUpTime = WorkListener.getSecondsUntilNextWorkPeriod()
+            val nextWakeUpTime = WorkTimeListener.getSecondsUntilNextWorkPeriod()
             if (nextWakeUpTime <= 0) {
                 text = "没有可唤醒时间，无法设置定时唤醒"
                 log.error { text }

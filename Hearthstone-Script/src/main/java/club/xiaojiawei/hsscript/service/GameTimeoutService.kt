@@ -4,7 +4,7 @@ import club.xiaojiawei.config.log
 import club.xiaojiawei.hsscript.core.Core
 import club.xiaojiawei.hsscript.dll.User32ExDll
 import club.xiaojiawei.hsscript.enums.ConfigEnum
-import club.xiaojiawei.hsscript.listener.WorkListener
+import club.xiaojiawei.hsscript.listener.WorkTimeListener
 import club.xiaojiawei.hsscript.status.ScriptStatus
 import club.xiaojiawei.hsscript.utils.ConfigUtil
 import club.xiaojiawei.hsscript.utils.SystemUtil
@@ -76,7 +76,7 @@ object GameTimeoutService : Service<Int>() {
                 while (thread?.isInterrupted == false) {
                     Thread.sleep(1000)
                     ScriptStatus.gameHWND ?: continue
-                    if (!WorkListener.working) continue
+                    if (!WorkTimeListener.working) continue
                     timeoutCheck1(ConfigUtil.getInt(ConfigEnum.GAME_TIMEOUT))
                 }
             } catch (e: Exception) {

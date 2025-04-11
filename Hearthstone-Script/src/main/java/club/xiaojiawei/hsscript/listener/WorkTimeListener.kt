@@ -28,15 +28,76 @@ import java.util.concurrent.atomic.AtomicReference
  * @author 肖嘉威
  * @date 2023/9/10 22:04
  */
-object WorkListener {
+object WorkTimeListener {
 
-    private var checkVersionTask: ScheduledFuture<*>? = null
+    private var checkWorkTask: ScheduledFuture<*>? = null
 
     val launch: Unit by lazy {
-        checkVersionTask = EXTRA_THREAD_POOL.scheduleWithFixedDelay(LRunnable {
+        checkWorkTask = EXTRA_THREAD_POOL.scheduleWithFixedDelay(LRunnable {
             checkWork()
         }, 0, 60, TimeUnit.SECONDS)
+        WarEx.inWarProperty.addListener { _, _, newValue ->
+            if (!newValue && PauseStatus.isStart) {
+                checkWork()
+                if (canWork()) {
+                    workingProperty.set(false)
+                    execOperate(prevClosestWorkTimeRule)
+                }
+            }
+        }
         log.info { "工作时段监听已启动" }
+    }
+
+    private fun execOperate(workTimeRule: WorkTimeRule?) {
+        val operates = workTimeRule?.getOperate() ?: return
+
+        val alert: AtomicReference<Stage?> = AtomicReference<Stage?>()
+        val countdownTime = 10
+        val future = go {
+            for (i in 0 until countdownTime) {
+                if (PauseStatus.isStart) {
+                    Thread.sleep(1000)
+                } else {
+                    break
+                }
+            }
+            runUI {
+                alert.get()?.hide()
+            }
+            for (operate in operates) {
+                if (PauseStatus.isStart) {
+                    operate.exec().isFalse {
+                        log.error {
+                            operate.value + "执行失败"
+                        }
+                    }
+                } else {
+                    return@go
+                }
+            }
+        }
+        val operationName = operates.map { it.value }
+        val text = "${countdownTime}秒后执行${operationName}"
+        log.info { text }
+        runUI {
+            alert.set(
+                WindowUtil.createAlert(
+                    text,
+                    null,
+                    {
+                        future.cancel(true)
+                        runUI {
+                            alert.get()?.hide()
+                        }
+                    },
+                    null,
+                    WindowUtil.getStage(WindowEnum.MAIN),
+                    "阻止"
+                ).apply {
+                    show()
+                }
+            )
+        }
     }
 
     var isDuringWorkDate = false
@@ -71,7 +132,7 @@ object WorkListener {
         judge()
     }
 
-    private var prevWorkTimeRule: WorkTimeRule? = null
+    private var prevClosestWorkTimeRule: WorkTimeRule? = null
 
     private fun judge() {
         var canWork = false
@@ -85,7 +146,7 @@ object WorkListener {
             val nowSecondOfDay = nowTime.toSecondOfDay()
 
             var minDiffSec: Int = Int.MAX_VALUE
-            var minWorkTimeRule: WorkTimeRule? = null
+            var closestWorkTimeRule: WorkTimeRule? = null
             for (rule in timeRules) {
                 if (!rule.isEnable()) continue
                 val workTime = rule.getWorkTime()
@@ -98,57 +159,14 @@ object WorkListener {
                     val diffSec = nowSecondOfDay - endTime.toSecondOfDay()
                     if (diffSec in 1 until minDiffSec) {
                         minDiffSec = diffSec
-                        minWorkTimeRule = rule
+                        closestWorkTimeRule = rule
                     }
                 }
             }
-            if (!PauseStatus.isPause) {
-                if (canWork) {
-                    workingProperty.set(true)
-                } else if (prevWorkTimeRule != minWorkTimeRule && !WarEx.inWar) {
-                    prevWorkTimeRule = minWorkTimeRule
-                    minWorkTimeRule?.getOperate()?.let { operates ->
-                        val alert: AtomicReference<Stage?> = AtomicReference<Stage?>()
-                        val countdownTime = 10
-                        val future = go {
-                            for (i in 0 until countdownTime) {
-                                Thread.sleep(1000)
-                            }
-                            runUI {
-                                alert.get()?.hide()
-                            }
-                            for (operate in operates) {
-                                operate.exec().isFalse {
-                                    log.error {
-                                        operate.value + "执行失败"
-                                    }
-                                }
-                            }
-                        }
-                        val operationName = operates.map { it.name }
-                        runUI {
-                            alert.set(
-                                WindowUtil.createAlert(
-                                    "${countdownTime}秒执行${operationName}",
-                                    null,
-                                    {
-                                        future.cancel(true)
-                                        runUI {
-                                            alert.get()?.hide()
-                                        }
-                                    },
-                                    null,
-                                    WindowUtil.getStage(WindowEnum.MAIN),
-                                    "阻止"
-                                ).apply {
-                                    show()
-                                }
-                            )
-                        }
-                    }
-                }
+            prevClosestWorkTimeRule = closestWorkTimeRule
+            if (PauseStatus.isStart && canWork) {
+                workingProperty.set(true)
             }
-
         }
         isDuringWorkDate = canWork
     }

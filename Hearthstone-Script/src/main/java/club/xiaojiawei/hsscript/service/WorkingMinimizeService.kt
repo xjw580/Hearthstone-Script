@@ -2,7 +2,7 @@ package club.xiaojiawei.hsscript.service
 
 import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.enums.WindowEnum
-import club.xiaojiawei.hsscript.listener.WorkListener
+import club.xiaojiawei.hsscript.listener.WorkTimeListener
 import club.xiaojiawei.hsscript.utils.ConfigUtil
 import club.xiaojiawei.hsscript.utils.WindowUtil
 import club.xiaojiawei.util.isFalse
@@ -27,14 +27,14 @@ object WorkingMinimizeService : Service<Boolean>() {
 
     override fun execStart(): Boolean {
         if (ConfigUtil.getBoolean(ConfigEnum.WORKING_MINIMIZE)) {
-            WorkListener.addChangeListener(changeListener)
+            WorkTimeListener.addChangeListener(changeListener)
             return true
         }
         return false
     }
 
     override fun execStop(): Boolean {
-        WorkListener.removeChangeListener(changeListener)
+        WorkTimeListener.removeChangeListener(changeListener)
         return true
     }
 

@@ -37,6 +37,9 @@ object PauseStatus {
             isPauseProperty.set(value)
         }
 
+    val isStart
+        get() = !isPauseProperty.get()
+
     fun setPauseReturn(isPaused: Boolean): Boolean {
         isPause = isPaused
         return isPause

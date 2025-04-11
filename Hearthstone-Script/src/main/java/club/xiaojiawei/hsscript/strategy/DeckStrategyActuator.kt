@@ -20,7 +20,7 @@ import club.xiaojiawei.util.isFalse
 import club.xiaojiawei.util.isTrue
 
 /**
- * 卡牌策略抽象类
+ * 卡牌策略执行器
  * @author 肖嘉威
  * @date 2022/11/29 17:29
  */

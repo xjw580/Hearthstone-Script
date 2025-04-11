@@ -358,7 +358,7 @@ class MainApplication : Application() {
         Core.launch
         GlobalHotkeyListener.launch
         VersionListener.launch
-        WorkListener.launch
+        WorkTimeListener.launch
         StatisticsListener.launch
     }
 

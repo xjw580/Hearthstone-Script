@@ -1,7 +1,7 @@
 package club.xiaojiawei.hsscript.status
 
 import club.xiaojiawei.hsscript.interfaces.closer.Closable
-import club.xiaojiawei.hsscript.listener.WorkListener
+import club.xiaojiawei.hsscript.listener.WorkTimeListener
 
 /**
  * @author 肖嘉威
@@ -17,7 +17,7 @@ object TaskManager {
                 closeAllTasks()
             }
         }
-        WorkListener.addChangeListener { _, _, isWorking ->
+        WorkTimeListener.addChangeListener { _, _, isWorking ->
             if (!PauseStatus.isPause && !isWorking) {
                 closeAllTasks()
             }

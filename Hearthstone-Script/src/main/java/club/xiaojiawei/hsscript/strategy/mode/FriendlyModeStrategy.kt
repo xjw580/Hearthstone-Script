@@ -1,7 +1,7 @@
 package club.xiaojiawei.hsscript.strategy.mode
 
 import club.xiaojiawei.config.log
-import club.xiaojiawei.hsscript.listener.WorkListener
+import club.xiaojiawei.hsscript.listener.WorkTimeListener
 import club.xiaojiawei.hsscript.listener.log.PowerLogListener
 import club.xiaojiawei.hsscript.status.DeckStrategyManager
 import club.xiaojiawei.hsscript.status.PauseStatus
@@ -18,7 +18,7 @@ object FriendlyModeStrategy : AbstractModeStrategy<Any?>() {
     }
 
     override fun afterEnter(t: Any?) {
-        if (WorkListener.canWork()) {
+        if (WorkTimeListener.canWork()) {
             if (!PowerLogListener.checkPowerLogSize()) {
                 return
             }
@@ -32,8 +32,8 @@ object FriendlyModeStrategy : AbstractModeStrategy<Any?>() {
                 PauseStatus.isPause = true
             }
         } else {
-            WorkListener.working = false
-            WorkListener.cannotWorkLog()
+            WorkTimeListener.working = false
+            WorkTimeListener.cannotWorkLog()
         }
     }
 }

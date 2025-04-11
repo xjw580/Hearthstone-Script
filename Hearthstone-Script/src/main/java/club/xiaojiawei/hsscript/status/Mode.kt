@@ -3,7 +3,7 @@ package club.xiaojiawei.hsscript.status
 import club.xiaojiawei.config.EXTRA_THREAD_POOL
 import club.xiaojiawei.config.log
 import club.xiaojiawei.enums.ModeEnum
-import club.xiaojiawei.hsscript.listener.WorkListener
+import club.xiaojiawei.hsscript.listener.WorkTimeListener
 import club.xiaojiawei.hsscript.strategy.AbstractModeStrategy
 import club.xiaojiawei.hsscript.utils.go
 import java.util.concurrent.ArrayBlockingQueue
@@ -24,7 +24,7 @@ object Mode {
     private var nextModeTimeoutTask: Future<*>? = null
 
     init {
-        WorkListener.addChangeListener { _, oldValue, newValue ->
+        WorkTimeListener.addChangeListener { _, oldValue, newValue ->
             if (!newValue) {
                 stopTask()
             }

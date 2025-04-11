@@ -3,7 +3,7 @@ package club.xiaojiawei.hsscript.listener.log
 import club.xiaojiawei.config.log
 import club.xiaojiawei.enums.ModeEnum
 import club.xiaojiawei.hsscript.core.Core
-import club.xiaojiawei.hsscript.listener.WorkListener
+import club.xiaojiawei.hsscript.listener.WorkTimeListener
 import club.xiaojiawei.hsscript.status.Mode
 import club.xiaojiawei.hsscript.status.PauseStatus
 import club.xiaojiawei.hsscript.utils.GameUtil
@@ -63,7 +63,7 @@ object ScreenLogListener :
         dealing = true
         innerLogFile?.let {
             var line: String?
-            while (!PauseStatus.isPause && WorkListener.working) {
+            while (!PauseStatus.isPause && WorkTimeListener.working) {
                 line = it.readLine()
                 if (line.isNullOrEmpty()) {
                     break

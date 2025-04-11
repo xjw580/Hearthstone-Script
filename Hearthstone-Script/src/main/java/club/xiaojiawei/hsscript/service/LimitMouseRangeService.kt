@@ -2,7 +2,7 @@ package club.xiaojiawei.hsscript.service
 
 import club.xiaojiawei.hsscript.dll.CSystemDll
 import club.xiaojiawei.hsscript.enums.ConfigEnum
-import club.xiaojiawei.hsscript.listener.WorkListener
+import club.xiaojiawei.hsscript.listener.WorkTimeListener
 import club.xiaojiawei.hsscript.status.ScriptStatus
 import club.xiaojiawei.hsscript.utils.ConfigUtil
 import com.sun.jna.platform.win32.WinDef.HWND
@@ -16,7 +16,7 @@ object LimitMouseRangeService : Service<Boolean>() {
 
     private val hwndListener: ChangeListener<HWND?> by lazy {
         ChangeListener<HWND?> { _, _, newValue ->
-            if (WorkListener.working) {
+            if (WorkTimeListener.working) {
                 CSystemDll.INSTANCE.limitMouseRange(ConfigUtil.getBoolean(ConfigEnum.LIMIT_MOUSE_RANGE))
             }
         }
@@ -30,14 +30,14 @@ object LimitMouseRangeService : Service<Boolean>() {
     override fun execStart(): Boolean {
         if (ConfigUtil.getBoolean(ConfigEnum.LIMIT_MOUSE_RANGE)) {
             ScriptStatus.gameHWNDProperty().addListener(hwndListener)
-            WorkListener.addChangeListener(workingListener)
+            WorkTimeListener.addChangeListener(workingListener)
         }
         return true
     }
 
     override fun execStop(): Boolean {
         ScriptStatus.gameHWNDProperty().removeListener(hwndListener)
-        WorkListener.removeChangeListener(workingListener)
+        WorkTimeListener.removeChangeListener(workingListener)
         return true
     }
 

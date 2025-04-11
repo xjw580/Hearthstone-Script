@@ -3,7 +3,7 @@ package club.xiaojiawei.hsscript.listener.log
 import club.xiaojiawei.config.LISTEN_LOG_THREAD_POOL
 import club.xiaojiawei.config.log
 import club.xiaojiawei.hsscript.interfaces.closer.ScheduledCloser
-import club.xiaojiawei.hsscript.listener.WorkListener
+import club.xiaojiawei.hsscript.listener.WorkTimeListener
 import club.xiaojiawei.hsscript.status.PauseStatus
 import club.xiaojiawei.hsscript.status.TaskManager
 import club.xiaojiawei.util.isFalse
@@ -76,7 +76,7 @@ abstract class AbstractLogListener(
                 return
             }
             logScheduledFuture = LISTEN_LOG_THREAD_POOL.scheduleWithFixedDelay({
-                if (PauseStatus.isPause || !WorkListener.working) {
+                if (PauseStatus.isPause || !WorkTimeListener.working) {
                     stopAll()
                 } else {
                     try {

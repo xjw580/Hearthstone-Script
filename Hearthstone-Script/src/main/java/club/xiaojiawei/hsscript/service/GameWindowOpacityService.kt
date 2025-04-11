@@ -1,7 +1,7 @@
 package club.xiaojiawei.hsscript.service
 
 import club.xiaojiawei.hsscript.enums.ConfigEnum
-import club.xiaojiawei.hsscript.listener.WorkListener
+import club.xiaojiawei.hsscript.listener.WorkTimeListener
 import club.xiaojiawei.hsscript.status.ScriptStatus
 import club.xiaojiawei.hsscript.utils.ConfigUtil
 import club.xiaojiawei.hsscript.utils.GameUtil
@@ -17,7 +17,7 @@ object GameWindowOpacityService : Service<Int>() {
 
     private val windowChangeListener: ChangeListener<HWND?> by lazy {
         ChangeListener { _, _, newValue ->
-            if (WorkListener.working) {
+            if (WorkTimeListener.working) {
                 changeOpacity(ConfigUtil.getInt(ConfigEnum.GAME_WINDOW_OPACITY), newValue)
             }
         }
@@ -35,13 +35,13 @@ object GameWindowOpacityService : Service<Int>() {
 
     override fun execStart(): Boolean {
         ScriptStatus.gameHWNDProperty().addListener(windowChangeListener)
-        WorkListener.addChangeListener(workingChangeListener)
+        WorkTimeListener.addChangeListener(workingChangeListener)
         return true
     }
 
     override fun execStop(): Boolean {
         ScriptStatus.gameHWNDProperty().removeListener(windowChangeListener)
-        WorkListener.removeChangeListener(workingChangeListener)
+        WorkTimeListener.removeChangeListener(workingChangeListener)
         return true
     }
 

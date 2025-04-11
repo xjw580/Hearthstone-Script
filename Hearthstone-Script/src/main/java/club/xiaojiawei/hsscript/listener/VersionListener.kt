@@ -83,7 +83,7 @@ object VersionListener {
     init {
         currentRelease.tagName = VersionUtil.VERSION
         currentRelease.isPreRelease = VersionTypeEnum.getEnum(currentRelease).isPreview
-        WorkListener.addChangeListener { _, _, newValue ->
+        WorkTimeListener.addChangeListener { _, _, newValue ->
             if (!newValue) {
                 if (!updated && ConfigUtil.getBoolean(ConfigEnum.AUTO_UPDATE) && VersionListener.canUpdate) {
                     updated = true

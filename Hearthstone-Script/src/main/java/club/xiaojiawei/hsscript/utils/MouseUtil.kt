@@ -2,12 +2,11 @@ package club.xiaojiawei.hsscript.utils
 
 import club.xiaojiawei.enums.ModeEnum
 import club.xiaojiawei.hsscript.bean.isDiscoverCardThread
-import club.xiaojiawei.hsscript.bean.isOutCardThread
 import club.xiaojiawei.hsscript.bean.single.WarEx
 import club.xiaojiawei.hsscript.config.DRIVER_LOCK
 import club.xiaojiawei.hsscript.dll.CSystemDll
 import club.xiaojiawei.hsscript.enums.ConfigEnum
-import club.xiaojiawei.hsscript.listener.WorkListener
+import club.xiaojiawei.hsscript.listener.WorkTimeListener
 import club.xiaojiawei.hsscript.status.Mode
 import com.sun.jna.platform.win32.WinDef.HWND
 import java.awt.Point
@@ -58,7 +57,7 @@ object MouseUtil {
         if (validatePoint(pos)) {
             DRIVER_LOCK.lock()
             try {
-                if (!WorkListener.working) return
+                if (!WorkTimeListener.working) return
 
                 if (prevPoint != pos) {
                     CSystemDll.INSTANCE.simulateHumanMoveMouse(
@@ -94,7 +93,7 @@ object MouseUtil {
         if (validatePoint(pos)) {
             DRIVER_LOCK.lock()
             try {
-                if (!WorkListener.working || Mode.currMode !== ModeEnum.GAMEPLAY) return
+                if (!WorkTimeListener.working || Mode.currMode !== ModeEnum.GAMEPLAY) return
 
                 if (prevPoint != pos) {
                     CSystemDll.INSTANCE.simulateHumanMoveMouse(
@@ -124,7 +123,7 @@ object MouseUtil {
 //        选择卡牌时间只让特定线程执行
         if (WarEx.war.isChooseCardTime && !isDiscoverCardThread()) return false
         hwnd ?: return false
-        return ConfigUtil.getBoolean(ConfigEnum.ENABLE_MOUSE) && WorkListener.working
+        return ConfigUtil.getBoolean(ConfigEnum.ENABLE_MOUSE) && WorkTimeListener.working
     }
 
     /**
@@ -140,7 +139,7 @@ object MouseUtil {
 
         DRIVER_LOCK.lock()
         try {
-            if (!WorkListener.working) return
+            if (!WorkTimeListener.working) return
 
             val prevPoint = prevPoint
             if (validatePoint(startPos)) {

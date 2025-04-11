@@ -6,7 +6,7 @@ import club.xiaojiawei.enums.WarPhaseEnum
 import club.xiaojiawei.hsscript.bean.single.WarEx
 import club.xiaojiawei.hsscript.core.Core
 import club.xiaojiawei.hsscript.initializer.BaseInitializer
-import club.xiaojiawei.hsscript.listener.WorkListener
+import club.xiaojiawei.hsscript.listener.WorkTimeListener
 import club.xiaojiawei.hsscript.status.PauseStatus
 import club.xiaojiawei.hsscript.status.ScriptStatus
 import club.xiaojiawei.hsscript.strategy.AbstractPhaseStrategy
@@ -35,7 +35,7 @@ object PowerLogListener :
     }
 
     override fun dealNewLog() {
-        while (!PauseStatus.isPause && !AbstractPhaseStrategy.dealing && WorkListener.working) {
+        while (!PauseStatus.isPause && !AbstractPhaseStrategy.dealing && WorkTimeListener.working) {
             innerLogFile?.let {
                 val line = it.readLine()
                 if (line == null) {
@@ -81,7 +81,7 @@ object PowerLogListener :
 //        innerLogFile = RandomAccessFile("S:\\Hearthstone\\Logs\\Hearthstone_2024_12_04_19_06_41\\Power - 副本.log", "r")
         innerLogFile = RandomAccessFile("S:\\Hearthstone\\Logs\\Hearthstone_2024_11_27_17_38_36\\Power.log", "r")
         PauseStatus.isPause = false
-        WorkListener.working = true
+        WorkTimeListener.working = true
         BaseInitializer().init()
         WarEx.reset()
 //        innerLogFile = RandomAccessFile("S:\\Hearthstone\\Logs\\Hearthstone_2024_12_04_19_06_41\\Power.log", "r")

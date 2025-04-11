@@ -5,7 +5,7 @@ import club.xiaojiawei.config.LISTEN_LOG_THREAD_POOL
 import club.xiaojiawei.config.log
 import club.xiaojiawei.hsscript.core.Core
 import club.xiaojiawei.hsscript.enums.ConfigEnum
-import club.xiaojiawei.hsscript.listener.WorkListener
+import club.xiaojiawei.hsscript.listener.WorkTimeListener
 import club.xiaojiawei.hsscript.status.PauseStatus
 import club.xiaojiawei.hsscript.status.TaskManager
 import club.xiaojiawei.hsscript.utils.ConfigUtil
@@ -39,7 +39,7 @@ class ExceptionListenStarter : AbstractStarter() {
         log.info { "开始监听异常情况" }
         Core.lastActiveTime = System.currentTimeMillis()
         errorScheduledFuture = LISTEN_LOG_THREAD_POOL.scheduleWithFixedDelay(LRunnable {
-            if (PauseStatus.isPause || !WorkListener.working) {
+            if (PauseStatus.isPause || !WorkTimeListener.working) {
                 closeListener()
                 return@LRunnable
             }

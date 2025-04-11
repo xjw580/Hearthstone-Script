@@ -3,7 +3,7 @@ package club.xiaojiawei.hsscript.component
 import club.xiaojiawei.controls.Time
 import club.xiaojiawei.hsscript.bean.WorkTime
 import club.xiaojiawei.hsscript.bean.WorkTimeRule
-import club.xiaojiawei.hsscript.listener.WorkListener
+import club.xiaojiawei.hsscript.listener.WorkTimeListener
 import club.xiaojiawei.hsscript.status.WorkTimeStatus
 import javafx.fxml.FXML
 import javafx.fxml.FXMLLoader
@@ -45,7 +45,7 @@ class WorkTimeItem(val workTimeRule: WorkTimeRule, val changeId: String) : HBox(
                 endTime.localTime = newValue
             }
             WorkTimeStatus.storeWorkTimeRuleSet(changeId = changeId)
-            WorkListener.checkWork()
+            WorkTimeListener.checkWork()
         }
 
         endTime.readOnlyTimeProperty().addListener { observable, oldValue, newValue ->
@@ -55,7 +55,7 @@ class WorkTimeItem(val workTimeRule: WorkTimeRule, val changeId: String) : HBox(
                 startTime.localTime = newValue
             }
             WorkTimeStatus.storeWorkTimeRuleSet(changeId = changeId)
-            WorkListener.checkWork()
+            WorkTimeListener.checkWork()
         }
 //        startTime.setInterceptor {
 //            it < endTime.localTime
@@ -67,7 +67,7 @@ class WorkTimeItem(val workTimeRule: WorkTimeRule, val changeId: String) : HBox(
         enableCheckBox.selectedProperty().addListener { observable, oldValue, newValue ->
             workTimeRule.setEnable(newValue)
             WorkTimeStatus.storeWorkTimeRuleSet(changeId = changeId)
-            WorkListener.checkWork()
+            WorkTimeListener.checkWork()
         }
     }
 }
