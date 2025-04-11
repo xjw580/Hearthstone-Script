@@ -195,7 +195,7 @@ enum class ConfigEnum(
     /**
      * 限制鼠标范围
      */
-    LIMIT_MOUSE_RANGE(group = BEHAVIOR_CONFIG_GROUP, defaultValue = true.toString(), service = LimitMouseRangeService),
+    LIMIT_MOUSE_RANGE(group = BEHAVIOR_CONFIG_GROUP, defaultValue = false.toString(), service = LimitMouseRangeService),
 
     /**
      * 游戏窗口不透明度(0~255)

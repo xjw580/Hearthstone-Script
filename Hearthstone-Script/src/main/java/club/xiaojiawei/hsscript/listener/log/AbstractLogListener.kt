@@ -52,43 +52,44 @@ abstract class AbstractLogListener(
         nextLogListener?.listen()
     }
 
-    @Synchronized
     fun listen() {
-        logScheduledFuture?.let {
-            if (!it.isDone) {
-                log.warn { logFileName + "正在被监听，无法再次被监听" }
-                listenNextListener()
-                return
-            }
-        }
-        closeLogFile()
-        val logFile = createLogFile()
-        logFile ?: let {
-            log.error { logFileName + "初始化失败" }
-            return
-        }
-        log.info { "开始监听日志$logFileName" }
-        try {
-            this.innerLogFile = RandomAccessFile(logFile, "r")
-            dealOldLog()
-        } catch (e: Exception) {
-            log.error(e) {}
-            return
-        }
-        logScheduledFuture = LISTEN_LOG_THREAD_POOL.scheduleWithFixedDelay({
-            if (PauseStatus.isPause || !WorkListener.working) {
-                stopAll()
-            } else {
-                try {
-                    dealNewLog()
-                } catch (e: InterruptedException) {
-                    log.warn(e) { logFileName + "监听中断" }
-                } catch (e: Exception) {
-                    log.error(e) { logFileName + "监听发生错误" }
+        synchronized(this){
+            logScheduledFuture?.let {
+                if (!it.isDone) {
+                    log.warn { logFileName + "正在被监听，无法再次被监听" }
+                    listenNextListener()
+                    return
                 }
             }
-        }, listenInitialDelay, listenPeriod, listenTimeUnit)
-        listenNextListener()
+            closeLogFile()
+            val logFile = createLogFile()
+            logFile ?: let {
+                log.error { logFileName + "初始化失败" }
+                return
+            }
+            log.info { "开始监听日志$logFileName" }
+            try {
+                this.innerLogFile = RandomAccessFile(logFile, "r")
+                dealOldLog()
+            } catch (e: Exception) {
+                log.error(e) {}
+                return
+            }
+            logScheduledFuture = LISTEN_LOG_THREAD_POOL.scheduleWithFixedDelay({
+                if (PauseStatus.isPause || !WorkListener.working) {
+                    stopAll()
+                } else {
+                    try {
+                        dealNewLog()
+                    } catch (e: InterruptedException) {
+                        log.warn(e) { logFileName + "监听中断" }
+                    } catch (e: Exception) {
+                        log.error(e) { logFileName + "监听发生错误" }
+                    }
+                }
+            }, listenInitialDelay, listenPeriod, listenTimeUnit)
+            listenNextListener()
+        }
     }
 
     private fun createLogFile(): File? {
@@ -105,17 +106,21 @@ abstract class AbstractLogListener(
     }
 
     private fun closeLogFile() {
-        innerLogFile?.let {
-            it.close()
-            innerLogFile = null
-            logFilePath = null
+        synchronized(this) {
+            innerLogFile?.let {
+                it.close()
+                innerLogFile = null
+                logFilePath = null
+            }
         }
     }
 
     private fun closeLogListener() {
-        logScheduledFuture?.let {
-            it.isDone.isFalse {
-                it.cancel(true)
+        synchronized(this) {
+            logScheduledFuture?.let {
+                it.isDone.isFalse {
+                    it.cancel(true)
+                }
             }
         }
     }

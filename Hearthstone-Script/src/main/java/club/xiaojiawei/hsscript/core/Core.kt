@@ -16,6 +16,7 @@ import club.xiaojiawei.hsscript.status.ScriptStatus
 import club.xiaojiawei.hsscript.utils.*
 import club.xiaojiawei.util.isFalse
 import club.xiaojiawei.util.isTrue
+import java.util.concurrent.locks.ReentrantLock
 
 /**
  * 控制脚本的启动
@@ -27,6 +28,8 @@ object Core {
     @Volatile
     var lastActiveTime: Long = 0
 
+    private val lock = ReentrantLock()
+
     val launch: Unit by lazy {
         PauseStatus.addChangeListener { _, _, newValue ->
             newValue.isTrue {
@@ -37,7 +40,7 @@ object Core {
                 log.info { "当前处于【暂停】状态" }
             }.isFalse {
                 if (WorkListener.canWork()) {
-                    start(WorkListener.working)
+                    start()
                 } else {
                     WorkListener.cannotWorkLog()
                     runUI {
@@ -61,8 +64,9 @@ object Core {
             }
         }
         WorkListener.addChangeListener { _, _, isWorking: Boolean ->
+            println("working $isWorking")
             if (isWorking) {
-                start(true)
+                start()
             }
             if (ConfigExUtil.getMouseControlMode() === MouseControlModeEnum.DRIVE) {
                 isWorking.isTrue {
@@ -78,15 +82,12 @@ object Core {
     /**
      * 启动脚本
      */
-    fun start(force: Boolean = false) {
-        if (!force) {
-            if (WorkListener.working) return
-        }
+    fun start() {
+        if (WorkListener.working || lock.isLocked) return
+
         CORE_THREAD_POOL.execute {
-            synchronized(Core.javaClass) {
-                if (!force) {
-                    if (WorkListener.working) return@execute
-                }
+            try {
+                if (WorkListener.working || !lock.tryLock()) return@execute
                 if (ScriptStatus.isValidProgramPath) {
                     WorkListener.working = true
                     StarterConfig.starter.start()
@@ -95,6 +96,8 @@ object Core {
                     WindowUtil.showStage(WindowEnum.SETTINGS, WindowUtil.getStage(WindowEnum.MAIN))
                     PauseStatus.isPause = true
                 }
+            } finally {
+                lock.unlock()
             }
         }
     }
