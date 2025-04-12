@@ -15,7 +15,6 @@ import java.util.*
  * @date 2023/10/14 12:43
  */
 class VersionMsgController : Initializable {
-
     @FXML
     protected lateinit var versionDescription: TextArea
 
@@ -25,21 +24,29 @@ class VersionMsgController : Initializable {
     @FXML
     protected lateinit var version: Label
 
-    override fun initialize(url: URL?, resourceBundle: ResourceBundle?) {
+    override fun initialize(
+        url: URL?,
+        resourceBundle: ResourceBundle?,
+    ) {
         version.text = VERSION
         //        TODO 版本更新时修改！！！
-        versionDescription.text = """
-                    🚀 新功能
-                    1. 增加游戏响应超时和游戏对局超时服务
-                    2. 增加自动锁屏
-                    3. 允许设置游戏和战网的窗口透明度
-                    4. 增加限制鼠标范围功能
-                    """.trimIndent()
+        versionDescription.text =
+            """
+            🚀 新功能
+            1. 增加更加强大自定义工作时间
+            2. 策略插件sdk适配交易
+            3. 增加实时检测游戏窗口功能
+            4. 增加打脸策略
+            5. 增加自动关闭未领取的奖励窗口
+            
+            🔧 重构与优化
+            1. 策略插件sdk不兼容更改
+            2. 若干优化
+            """.trimIndent()
     }
 
     @FXML
     protected fun closeWindow(actionEvent: ActionEvent) {
         rootPane.scene.window.hide()
     }
-
 }
