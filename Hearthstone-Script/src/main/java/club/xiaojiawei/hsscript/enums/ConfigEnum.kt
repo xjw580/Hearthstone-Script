@@ -38,17 +38,18 @@ private const val WORK_TIME_RULE_PRESETS_EMPTY = ""
 
 private const val WORK_TIME_RULE_PRESETS_TWO = "presets-two"
 
-private val operations = setOf(
-    OperateEnum.CLOSE_GAME,
-    OperateEnum.CLOSE_PLATFORM
-)
+private val operations =
+    setOf(
+        OperateEnum.CLOSE_GAME,
+        OperateEnum.CLOSE_PLATFORM,
+    )
 
 enum class ConfigEnum(
     val group: String = "",
     val defaultValue: String = "",
     val service: Service<*>? = null,
+    val isEnable: Boolean = true,
 ) {
-
     /**
      * 游戏路径
      */
@@ -68,62 +69,80 @@ enum class ConfigEnum(
      * 工作时间规则
      */
     WORK_TIME_RULE_SET(
-        group = TIME_CONFIG_GROUP, defaultValue = JSON.toJSONString(
-            listOf(
-                WorkTimeRuleSet(
-                    "预设1",
-                    listOf(
-                        WorkTimeRule(
-                            WorkTime("00:00", "23:59"), operations.toSet(), true
+        group = TIME_CONFIG_GROUP,
+        defaultValue =
+            JSON.toJSONString(
+                listOf(
+                    WorkTimeRuleSet(
+                        "预设1",
+                        listOf(
+                            WorkTimeRule(
+                                WorkTime("00:00", "23:59"),
+                                operations.toSet(),
+                                true,
+                            ),
+                            WorkTimeRule(
+                                WorkTime("00:00", "06:30"),
+                                operations.toSet(),
+                                false,
+                            ),
+                            WorkTimeRule(
+                                WorkTime("12:30", "13:50"),
+                                operations.toSet(),
+                                false,
+                            ),
+                            WorkTimeRule(
+                                WorkTime("20:00", "23:59"),
+                                operations.toSet(),
+                                false,
+                            ),
                         ),
-                        WorkTimeRule(
-                            WorkTime("00:00", "06:30"), operations.toSet(), false
-                        ),
-                        WorkTimeRule(
-                            WorkTime("12:30", "13:50"), operations.toSet(), false
-                        ),
-                        WorkTimeRule(
-                            WorkTime("20:00", "23:59"), operations.toSet(), false
-                        ),
+                        WORK_TIME_RULE_PRESETS_ONE,
                     ),
-                    WORK_TIME_RULE_PRESETS_ONE,
-                ),
-                WorkTimeRuleSet(
-                    "预设2",
-                    listOf(
-                        WorkTimeRule(
-                            WorkTime("00:00", "23:59"), operations.toSet(), true
+                    WorkTimeRuleSet(
+                        "预设2",
+                        listOf(
+                            WorkTimeRule(
+                                WorkTime("00:00", "23:59"),
+                                operations.toSet(),
+                                true,
+                            ),
+                            WorkTimeRule(
+                                WorkTime("00:00", "08:00"),
+                                operations.toSet(),
+                                false,
+                            ),
+                            WorkTimeRule(
+                                WorkTime("18:00", "23:59"),
+                                operations.toSet(),
+                                false,
+                            ),
                         ),
-                        WorkTimeRule(
-                            WorkTime("00:00", "08:00"), operations.toSet(), false
-                        ),
-                        WorkTimeRule(
-                            WorkTime("18:00", "23:59"), operations.toSet(), false
-                        ),
+                        WORK_TIME_RULE_PRESETS_TWO,
                     ),
-                    WORK_TIME_RULE_PRESETS_TWO
+                    WorkTimeRuleSet(
+                        "空",
+                        emptyList(),
+                        WORK_TIME_RULE_PRESETS_EMPTY,
+                    ),
                 ),
-                WorkTimeRuleSet(
-                    "空",
-                    emptyList(),
-                    WORK_TIME_RULE_PRESETS_EMPTY,
-                ),
-            )
-        )
+            ),
     ),
 
     WORK_TIME_SETTING(
-        group = TIME_CONFIG_GROUP, defaultValue = JSON.toJSONString(
-            arrayOf(
-                WORK_TIME_RULE_PRESETS_ONE,
-                WORK_TIME_RULE_PRESETS_ONE,
-                WORK_TIME_RULE_PRESETS_ONE,
-                WORK_TIME_RULE_PRESETS_ONE,
-                WORK_TIME_RULE_PRESETS_ONE,
-                WORK_TIME_RULE_PRESETS_ONE,
-                WORK_TIME_RULE_PRESETS_ONE,
-            )
-        )
+        group = TIME_CONFIG_GROUP,
+        defaultValue =
+            JSON.toJSONString(
+                arrayOf(
+                    WORK_TIME_RULE_PRESETS_ONE,
+                    WORK_TIME_RULE_PRESETS_ONE,
+                    WORK_TIME_RULE_PRESETS_ONE,
+                    WORK_TIME_RULE_PRESETS_ONE,
+                    WORK_TIME_RULE_PRESETS_ONE,
+                    WORK_TIME_RULE_PRESETS_ONE,
+                    WORK_TIME_RULE_PRESETS_ONE,
+                ),
+            ),
     ),
 
     /**
@@ -182,7 +201,7 @@ enum class ConfigEnum(
     TOP_GAME_WINDOW(
         group = BEHAVIOR_CONFIG_GROUP,
         defaultValue = MOUSE_CONTROL_MODE.defaultValue,
-        service = TopGameWindowService
+        service = TopGameWindowService,
     ),
 
     /**
@@ -206,7 +225,7 @@ enum class ConfigEnum(
     PLATFORM_WINDOW_OPACITY(
         group = BEHAVIOR_CONFIG_GROUP,
         defaultValue = "255",
-        service = PlatformWindowOpacityService
+        service = PlatformWindowOpacityService,
     ),
 
     /**
@@ -280,7 +299,7 @@ enum class ConfigEnum(
     GAME_TIMEOUT(
         group = SERVICE_CONFIG_GROUP,
         defaultValue = "60",
-        service = GameTimeoutService
+        service = GameTimeoutService,
     ),
 
     /**
@@ -289,7 +308,7 @@ enum class ConfigEnum(
     WAR_TIMEOUT(
         group = SERVICE_CONFIG_GROUP,
         defaultValue = "-1",
-        service = WarTimeoutService
+        service = WarTimeoutService,
     ),
 
     /**
@@ -298,7 +317,7 @@ enum class ConfigEnum(
     UPDATE_GAME_WINDOW(
         group = SERVICE_CONFIG_GROUP,
         defaultValue = true.toString(),
-        service = UpdateGameWindowService
+        service = UpdateGameWindowService,
     ),
 
     /**
@@ -321,7 +340,7 @@ enum class ConfigEnum(
      */
     PAUSE_HOT_KEY(
         group = SYSTEM_CONFIG_GROUP,
-        defaultValue = JSON.toJSONString(HotKey(JIntellitype.MOD_CONTROL, 'P'.code))
+        defaultValue = JSON.toJSONString(HotKey(JIntellitype.MOD_CONTROL, 'P'.code)),
     ),
 
     /**
@@ -340,8 +359,7 @@ enum class ConfigEnum(
     DISPLAY_GAME_RECT_POS(
         group = DEV_CONFIG_GROUP,
         defaultValue = false.toString(),
-        service = DisplayGameRectPosService
+        service = DisplayGameRectPosService,
+        isEnable = false,
     ),
-    ;
-
 }

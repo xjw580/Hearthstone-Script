@@ -12,13 +12,16 @@ import java.util.function.BiConsumer
  * @date 2022/11/27 14:56
  */
 
+@Suppress("ktlint:standard:no-consecutive-comments")
 /**
  * 发射按钮卡牌的id
  */
 private const val LAUNCH_CARD_ID = "GDB_905"
 
-class Card(var action: CardAction) : BaseCard(), Cloneable {
-
+class Card(
+    var action: CardAction,
+) : BaseCard(),
+    Cloneable {
     val child: MutableList<Card> by lazy { mutableListOf() }
 
     /**
@@ -89,114 +92,107 @@ class Card(var action: CardAction) : BaseCard(), Cloneable {
     /**
      * 能受到伤害
      */
-    fun canHurt(): Boolean {
-        return (cardType === CardTypeEnum.MINION || cardType === CardTypeEnum.HERO) && !(isDead() || isImmune || isDormantAwakenConditionEnchant)
-    }
+    fun canHurt(): Boolean =
+        (cardType === CardTypeEnum.MINION || cardType === CardTypeEnum.HERO) &&
+            !(isDead() || isImmune || isDormantAwakenConditionEnchant)
 
     /**
      * 判断卡牌是否类似，同一张牌所属扩展包不同，[cardId]也不相同
      */
-    fun cardSame(baseCard: BaseCard): Boolean {
-        return cardSame(baseCard.cardId)
-    }
+    fun cardSame(baseCard: BaseCard): Boolean = cardSame(baseCard.cardId)
 
-    fun cardSame(cardId: String): Boolean {
-        return this.cardId.contains(cardId)
-    }
+    fun cardSame(cardId: String): Boolean = this.cardId.contains(cardId)
 
     /**
      * 判断卡牌是否相同，指的是[cardId]相同
      */
-    fun cardEquals(baseCard: BaseCard): Boolean {
-        return cardEquals(baseCard.cardId)
-    }
+    fun cardEquals(baseCard: BaseCard): Boolean = cardEquals(baseCard.cardId)
 
-    fun cardEquals(cardId: String): Boolean {
-        return this.cardId == cardId
-    }
+    fun cardEquals(cardId: String): Boolean = this.cardId == cardId
 
     /**
      * 能被敌方法术指向
-     * 适用的卡牌类型：[club.xiaojiawei.enums.CardTypeEnum.MINION],[club.xiaojiawei.enums.CardTypeEnum.HERO]
+     * 适用的卡牌类型：[club.xiaojiawei.enums.CardTypeEnum.MINION], [club.xiaojiawei.enums.CardTypeEnum.HERO]
      */
-    fun canBeTargetedByRivalSpells(): Boolean {
-        return !(isElusive || isCantBeTargetedBySpells || !canBeTargetedByRival())
-    }
+    fun canBeTargetedByRivalSpells(): Boolean = !(isElusive || isCantBeTargetedBySpells || !canBeTargetedByRival())
 
     /**
      * 能被我方法术指向
-     * 适用的卡牌类型：[club.xiaojiawei.enums.CardTypeEnum.MINION],[club.xiaojiawei.enums.CardTypeEnum.HERO]
+     * 适用的卡牌类型：[club.xiaojiawei.enums.CardTypeEnum.MINION], [club.xiaojiawei.enums.CardTypeEnum.HERO]
      */
-    fun canBeTargetedByMySpells(): Boolean {
-        return !(isElusive || isCantBeTargetedBySpells || !canBeTargetedByMe())
-    }
+    fun canBeTargetedByMySpells(): Boolean = !(isElusive || isCantBeTargetedBySpells || !canBeTargetedByMe())
 
     /**
      * 能被敌方英雄技能指向
-     * 适用的卡牌类型：[club.xiaojiawei.enums.CardTypeEnum.MINION],[club.xiaojiawei.enums.CardTypeEnum.HERO]
+     * 适用的卡牌类型：[club.xiaojiawei.enums.CardTypeEnum.MINION], [club.xiaojiawei.enums.CardTypeEnum.HERO]
      */
-    fun canBeTargetedByRivalHeroPowers(): Boolean {
-        return canBeTargetedByRivalSpells()
-    }
+    fun canBeTargetedByRivalHeroPowers(): Boolean = canBeTargetedByRivalSpells()
 
     /**
      * 能被我方英雄技能指向
-     * 适用的卡牌类型：[club.xiaojiawei.enums.CardTypeEnum.MINION],[club.xiaojiawei.enums.CardTypeEnum.HERO]
+     * 适用的卡牌类型：[club.xiaojiawei.enums.CardTypeEnum.MINION], [club.xiaojiawei.enums.CardTypeEnum.HERO]
      */
-    fun canBeTargetedByMyHeroPowers(): Boolean {
-        return canBeTargetedByMySpells()
-    }
+    fun canBeTargetedByMyHeroPowers(): Boolean = canBeTargetedByMySpells()
 
     /**
      * 能被敌方指向
-     * 适用的卡牌类型：[club.xiaojiawei.enums.CardTypeEnum.MINION],[club.xiaojiawei.enums.CardTypeEnum.HERO]
+     * 适用的卡牌类型：[club.xiaojiawei.enums.CardTypeEnum.MINION], [club.xiaojiawei.enums.CardTypeEnum.HERO]
      */
-    fun canBeTargetedByRival(): Boolean {
-        return !(isStealth || isImmune || isDormantAwakenConditionEnchant || isUntouchable)
-    }
+    fun canBeTargetedByRival(): Boolean = !(isStealth || isImmune || isDormantAwakenConditionEnchant || isUntouchable)
 
     /**
      * 能被我方指向
-     * 适用的卡牌类型：[club.xiaojiawei.enums.CardTypeEnum.MINION],[club.xiaojiawei.enums.CardTypeEnum.HERO]
+     * 适用的卡牌类型：[club.xiaojiawei.enums.CardTypeEnum.MINION], [club.xiaojiawei.enums.CardTypeEnum.HERO]
      */
-    fun canBeTargetedByMe(): Boolean {
-        return (cardType === CardTypeEnum.MINION || cardType === CardTypeEnum.HERO) && !(isImmune || isDormantAwakenConditionEnchant || isUntouchable)
-    }
+    fun canBeTargetedByMe(): Boolean =
+        (cardType === CardTypeEnum.MINION || cardType === CardTypeEnum.HERO) &&
+            !(isImmune || isDormantAwakenConditionEnchant || isUntouchable)
 
     /**
      * 能被攻击
-     * 适用的卡牌类型：[club.xiaojiawei.enums.CardTypeEnum.MINION],[club.xiaojiawei.enums.CardTypeEnum.HERO]
+     * 适用的卡牌类型：[club.xiaojiawei.enums.CardTypeEnum.MINION], [club.xiaojiawei.enums.CardTypeEnum.HERO]
      */
-    fun canBeAttacked(): Boolean {
-        return (cardType === CardTypeEnum.MINION || cardType === CardTypeEnum.HERO) && canBeTargetedByRival()
-    }
+    fun canBeAttacked(): Boolean = (cardType === CardTypeEnum.MINION || cardType === CardTypeEnum.HERO) && canBeTargetedByRival()
 
     /**
      * 能攻击
-     * 适用的卡牌类型：[club.xiaojiawei.enums.CardTypeEnum.MINION],[club.xiaojiawei.enums.CardTypeEnum.HERO]
+     * 适用的卡牌类型：[club.xiaojiawei.enums.CardTypeEnum.MINION], [club.xiaojiawei.enums.CardTypeEnum.HERO]
      * 对于地标和技能，参见[club.xiaojiawei.bean.Card.canPower]
      */
-    fun canAttack(ignoreExhausted: Boolean = false, ignoreAtc: Boolean = false): Boolean {
-        return getAttackTarget(ignoreExhausted, ignoreAtc) !== TargetEnum.NONE
-    }
+    fun canAttack(
+        ignoreExhausted: Boolean = false,
+        ignoreAtc: Boolean = false,
+    ): Boolean = getAttackTarget(ignoreExhausted, ignoreAtc) !== TargetEnum.NONE
 
     /**
      * 无法攻击
-     * 适用的卡牌类型：[club.xiaojiawei.enums.CardTypeEnum.MINION],[club.xiaojiawei.enums.CardTypeEnum.HERO]
+     * 适用的卡牌类型：[club.xiaojiawei.enums.CardTypeEnum.MINION], [club.xiaojiawei.enums.CardTypeEnum.HERO]
      * 对于地标和技能，参见[club.xiaojiawei.bean.Card.canPower]
      */
-    fun cantAttack(ignoreExhausted: Boolean = false, ignoreAtc: Boolean = false): Boolean {
-        return getAttackTarget(ignoreExhausted, ignoreAtc) === TargetEnum.NONE
-    }
+    fun cannotAttack(
+        ignoreExhausted: Boolean = false,
+        ignoreAtc: Boolean = false,
+    ): Boolean = getAttackTarget(ignoreExhausted, ignoreAtc) === TargetEnum.NONE
 
     /**
      * 获取能攻击的目标
      * 比如刚下场的突袭随从只能解场，此时返回[club.xiaojiawei.enums.TargetEnum.MINION]
      */
-    private fun getAttackTarget(ignoreExhausted: Boolean = false, ignoreAtc: Boolean = false): TargetEnum {
+    private fun getAttackTarget(
+        ignoreExhausted: Boolean = false,
+        ignoreAtc: Boolean = false,
+    ): TargetEnum {
         if (!(cardType === CardTypeEnum.MINION || cardType === CardTypeEnum.HERO) && isAlive()) return TargetEnum.NONE
 
-        if ((isExhausted && !ignoreExhausted) || isUntouchable || isCantAttack || isFrozen || isDormantAwakenConditionEnchant || (!ignoreAtc && atc <= 0)) return TargetEnum.NONE
+        if ((isExhausted && !ignoreExhausted) ||
+            isUntouchable ||
+            isCantAttack ||
+            isFrozen ||
+            isDormantAwakenConditionEnchant ||
+            (!ignoreAtc && atc <= 0)
+        ) {
+            return TargetEnum.NONE
+        }
 
         if (isAttackableByRush) return TargetEnum.MINION
 
@@ -205,52 +201,41 @@ class Card(var action: CardAction) : BaseCard(), Cloneable {
 
     /**
      * 能使用/激活
-     * 适用的卡牌类型：[club.xiaojiawei.enums.CardTypeEnum.LOCATION],[club.xiaojiawei.enums.CardTypeEnum.HERO_POWER],[club.xiaojiawei.enums.CardTypeEnum.MINION]中的星舰
+     * 适用的卡牌类型：[club.xiaojiawei.enums.CardTypeEnum.LOCATION], [club.xiaojiawei.enums.CardTypeEnum.HERO_POWER], [club.xiaojiawei.enums.CardTypeEnum.MINION]中的星舰
      */
-    fun canPower(): Boolean {
-        return (cardType === CardTypeEnum.LOCATION && !isLocationActionCooldown && !isExhausted && isAlive()) ||
-                (cardType === CardTypeEnum.HERO_POWER && !isExhausted) ||
-                (cardType === CardTypeEnum.MINION && isLaunchpad)
-    }
+    fun canPower(): Boolean =
+        (cardType === CardTypeEnum.LOCATION && !isLocationActionCooldown && !isExhausted && isAlive()) ||
+            (cardType === CardTypeEnum.HERO_POWER && !isExhausted) ||
+            (cardType === CardTypeEnum.MINION && isLaunchpad)
 
     /**
      * 是否受伤
-     * 适用的卡牌类型：[club.xiaojiawei.enums.CardTypeEnum.MINION],[club.xiaojiawei.enums.CardTypeEnum.HERO],[club.xiaojiawei.enums.CardTypeEnum.WEAPON],[club.xiaojiawei.enums.CardTypeEnum.LOCATION]
+     * 适用的卡牌类型：[club.xiaojiawei.enums.CardTypeEnum.MINION], [club.xiaojiawei.enums.CardTypeEnum.HERO], [club.xiaojiawei.enums.CardTypeEnum.WEAPON], [club.xiaojiawei.enums.CardTypeEnum.LOCATION]
      */
-    fun isInjured(): Boolean {
-        return damage > armor
-    }
+    fun isInjured(): Boolean = damage > armor
 
     /**
      * 是不是魔免
      */
-    fun isImmunityMagic(): Boolean {
-        return (isCantBeTargetedByHeroPowers && isCantBeTargetedBySpells) || isElusive
-    }
+    fun isImmunityMagic(): Boolean = (isCantBeTargetedByHeroPowers && isCantBeTargetedBySpells) || isElusive
 
     /**
      * 获取血量（就是你在游戏中看到的血量）
-     * 适用的卡牌类型：[club.xiaojiawei.enums.CardTypeEnum.MINION],[club.xiaojiawei.enums.CardTypeEnum.HERO],[club.xiaojiawei.enums.CardTypeEnum.WEAPON],[club.xiaojiawei.enums.CardTypeEnum.LOCATION]
+     * 适用的卡牌类型：[club.xiaojiawei.enums.CardTypeEnum.MINION], [club.xiaojiawei.enums.CardTypeEnum.HERO], [club.xiaojiawei.enums.CardTypeEnum.WEAPON], [club.xiaojiawei.enums.CardTypeEnum.LOCATION]
      */
-    fun blood(): Int {
-        return bloodLimit() - damage
-    }
+    fun blood(): Int = bloodLimit() - damage
 
     /**
      * 判断是否存活
-     * 适用的卡牌类型：[club.xiaojiawei.enums.CardTypeEnum.MINION],[club.xiaojiawei.enums.CardTypeEnum.HERO],[club.xiaojiawei.enums.CardTypeEnum.WEAPON],[club.xiaojiawei.enums.CardTypeEnum.LOCATION]
+     * 适用的卡牌类型：[club.xiaojiawei.enums.CardTypeEnum.MINION], [club.xiaojiawei.enums.CardTypeEnum.HERO], [club.xiaojiawei.enums.CardTypeEnum.WEAPON], [club.xiaojiawei.enums.CardTypeEnum.LOCATION]
      */
-    fun isAlive(): Boolean {
-        return blood() > 0
-    }
+    fun isAlive(): Boolean = blood() > 0
 
     /**
      * 判断是否死亡
-     * 适用的卡牌类型：[club.xiaojiawei.enums.CardTypeEnum.MINION],[club.xiaojiawei.enums.CardTypeEnum.HERO],[club.xiaojiawei.enums.CardTypeEnum.WEAPON],[club.xiaojiawei.enums.CardTypeEnum.LOCATION]
+     * 适用的卡牌类型：[club.xiaojiawei.enums.CardTypeEnum.MINION], [club.xiaojiawei.enums.CardTypeEnum.HERO], [club.xiaojiawei.enums.CardTypeEnum.WEAPON], [club.xiaojiawei.enums.CardTypeEnum.LOCATION]
      */
-    fun isDead(): Boolean {
-        return blood() <= 0
-    }
+    fun isDead(): Boolean = blood() <= 0
 
     /**
      * 获取发射星舰所需费用
@@ -293,9 +278,7 @@ class Card(var action: CardAction) : BaseCard(), Cloneable {
 
     /**
      * 获取血量上限
-     * 适用的卡牌类型：[club.xiaojiawei.enums.CardTypeEnum.MINION],[club.xiaojiawei.enums.CardTypeEnum.HERO],[club.xiaojiawei.enums.CardTypeEnum.WEAPON],[club.xiaojiawei.enums.CardTypeEnum.LOCATION]
+     * 适用的卡牌类型：[club.xiaojiawei.enums.CardTypeEnum.MINION], [club.xiaojiawei.enums.CardTypeEnum.HERO], [club.xiaojiawei.enums.CardTypeEnum.WEAPON], [club.xiaojiawei.enums.CardTypeEnum.LOCATION]
      */
-    fun bloodLimit(): Int {
-        return (if (cardType === CardTypeEnum.WEAPON) durability else health) + armor
-    }
+    fun bloodLimit(): Int = (if (cardType === CardTypeEnum.WEAPON) durability else health) + armor
 }

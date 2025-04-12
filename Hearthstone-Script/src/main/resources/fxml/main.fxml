@@ -21,7 +21,7 @@
                expandedPane="$titledPaneControl">
         <panes>
             <TitledPane text="控制" fx:id="titledPaneControl">
-                <VBox alignment="TOP_CENTER" spacing="20" style="-fx-padding: 5">
+                <VBox alignment="TOP_CENTER" spacing="20" style="-fx-padding: 5 5 10 5">
                     <HBox alignment="CENTER" spacing="40">
                         <ToggleButton fx:id="startButton" toggleGroup="$pauseToggleGroup" text="开始" onAction="#start"
                                       styleClass="btn-ui, btn-ui-small, btn-ui-success-3d">

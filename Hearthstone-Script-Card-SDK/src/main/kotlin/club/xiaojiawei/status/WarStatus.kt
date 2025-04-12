@@ -11,4 +11,5 @@ import club.xiaojiawei.bean.War
 /**
  * 全局war
  */
+@Suppress("ktlint:standard:no-consecutive-comments")
 val WAR: War = War(true)

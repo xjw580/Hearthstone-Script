@@ -18,7 +18,6 @@ import java.time.LocalDateTime
  * @date 2025/3/14 0:17
  */
 
-
 /**
  * Record实体类，对应records表
  */
@@ -30,14 +29,15 @@ data class Record(
     val result: Boolean? = null,
     val experience: Int? = null,
     val startTime: LocalDateTime? = null,
-    val endTime: LocalDateTime? = null
+    val endTime: LocalDateTime? = null,
 )
 
 /**
  * records表的数据访问对象 - 仅使用JdbcTemplate
  */
-class RecordDao(dbPath: String) {
-
+class RecordDao(
+    dbPath: String,
+) {
     private val jdbcTemplate: JdbcTemplate
 
     init {
@@ -110,18 +110,19 @@ class RecordDao(dbPath: String) {
     /**
      * 将ResultSet行映射到Record对象
      */
-    private val recordMapper = RowMapper { rs: ResultSet, _: Int ->
-        Record(
-            id = rs.getInt("id"),
-            strategyId = rs.getString("strategy_id"),
-            strategyName = rs.getString("strategy_name"),
-            runMode = RunModeEnum.fromString(rs.getString("run_mode")),
-            result = rs.getBoolean("result"),
-            experience = rs.getInt("experience"),
-            startTime = Instant.ofEpochSecond(rs.getLong("start_time")).atZone(ZONE_OFFSET).toLocalDateTime(),
-            endTime = Instant.ofEpochSecond(rs.getLong("end_time")).atZone(ZONE_OFFSET).toLocalDateTime()
-        )
-    }
+    private val recordMapper =
+        RowMapper { rs: ResultSet, _: Int ->
+            Record(
+                id = rs.getInt("id"),
+                strategyId = rs.getString("strategy_id"),
+                strategyName = rs.getString("strategy_name"),
+                runMode = RunModeEnum.fromString(rs.getString("run_mode")),
+                result = rs.getBoolean("result"),
+                experience = rs.getInt("experience"),
+                startTime = Instant.ofEpochSecond(rs.getLong("start_time")).atZone(ZONE_OFFSET).toLocalDateTime(),
+                endTime = Instant.ofEpochSecond(rs.getLong("end_time")).atZone(ZONE_OFFSET).toLocalDateTime(),
+            )
+        }
 
     /**
      * 插入新记录
@@ -152,49 +153,43 @@ class RecordDao(dbPath: String) {
      * @param record 要更新的记录
      * @return 受影响的行数
      */
-    fun update(record: Record): Int {
-        return jdbcTemplate.update(
+    fun update(record: Record): Int =
+        jdbcTemplate.update(
             SQL_UPDATE,
             record.strategyId,
             record.strategyName,
-            record.runMode,  // 使用runMode代替mode
+            record.runMode, // 使用runMode代替mode
             record.result,
             record.experience,
             record.startTime?.toEpochSecond(ZONE_OFFSET) ?: 0,
             record.endTime?.toEpochSecond(ZONE_OFFSET) ?: 0,
-            record.id
+            record.id,
         )
-    }
 
     /**
      * 通过ID删除记录
      * @param id 要删除的记录ID
      * @return 受影响的行数
      */
-    fun deleteById(id: Int): Int {
-        return jdbcTemplate.update(SQL_DELETE, id)
-    }
+    fun deleteById(id: Int): Int = jdbcTemplate.update(SQL_DELETE, id)
 
     /**
      * 通过ID查找记录
      * @param id 要查找的记录ID
      * @return 找到的记录或null
      */
-    fun findById(id: Int): Record? {
-        return try {
+    fun findById(id: Int): Record? =
+        try {
             jdbcTemplate.queryForObject(SQL_FIND_BY_ID, recordMapper, id)
         } catch (e: Exception) {
             null
         }
-    }
 
     /**
      * 查找所有记录
      * @return 所有记录列表
      */
-    fun findAll(): List<Record> {
-        return jdbcTemplate.query(SQL_FIND_ALL, recordMapper)
-    }
+    fun findAll(): List<Record> = jdbcTemplate.query(SQL_FIND_ALL, recordMapper)
 
     /**
      * 根据提供的记录的非空字段查询记录
@@ -221,7 +216,8 @@ class RecordDao(dbPath: String) {
                 params.add(it)
             }
 
-            record.runMode?.let {  // 使用runMode代替mode
+            record.runMode?.let {
+                // 使用runMode代替mode
                 conditions.add("run_mode = ?")
                 params.add(it)
             }
@@ -247,7 +243,6 @@ class RecordDao(dbPath: String) {
                 conditions.add("end_time < ?")
                 params.add(endTimestamp)
             }
-
         }
 
         var sql = SQL_FIND_ALL
@@ -264,13 +259,16 @@ class RecordDao(dbPath: String) {
      * @param endDate
      * @return 匹配的记录列表
      */
-    fun queryByDateRange(startDate: LocalDateTime, endDate: LocalDateTime): List<Record> {
+    fun queryByDateRange(
+        startDate: LocalDateTime,
+        endDate: LocalDateTime,
+    ): List<Record> {
         val sql = "$SQL_FIND_ALL WHERE end_time >= ? AND end_time < ?"
         return jdbcTemplate.query(
             sql,
             recordMapper,
             startDate.atZone(ZONE_OFFSET).toEpochSecond(),
-            endDate.atZone(ZONE_OFFSET).toEpochSecond()
+            endDate.atZone(ZONE_OFFSET).toEpochSecond(),
         )
     }
 
@@ -280,7 +278,10 @@ class RecordDao(dbPath: String) {
      * @param result 结果（例如"成功"或"失败"）
      * @return 匹配的记录列表
      */
-    fun findByStrategyAndResult(strategyId: Int, result: String): List<Record> {
+    fun findByStrategyAndResult(
+        strategyId: Int,
+        result: String,
+    ): List<Record> {
         val sql = "$SQL_FIND_ALL WHERE strategy_id = ? AND result = ?"
         return jdbcTemplate.query(sql, recordMapper, strategyId, result)
     }

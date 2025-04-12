@@ -5,19 +5,17 @@ package club.xiaojiawei.hsscript.service
  * @date 2025/3/24 17:20
  */
 abstract class Service<T> {
-
     private var isRunningInner = false
 
     open val isRunning: Boolean
         get() = isRunningInner
 
-    fun intelligentStartStop(value: T? = null): Boolean {
-        return if (execIntelligentStartStop(value)) {
+    fun intelligentStartStop(value: T? = null): Boolean =
+        if (execIntelligentStartStop(value)) {
             start()
         } else {
             stop()
         }
-    }
 
     fun start(): Boolean {
         synchronized(this) {
@@ -35,7 +33,10 @@ abstract class Service<T> {
         }
     }
 
-    fun valueChanged(oldValue: T, newValue: T) {
+    fun valueChanged(
+        oldValue: T,
+        newValue: T,
+    ) {
         synchronized(this) {
             execValueChanged(oldValue, newValue)
         }
@@ -54,6 +55,8 @@ abstract class Service<T> {
 
     protected abstract fun execIntelligentStartStop(value: T?): Boolean
 
-    protected open fun execValueChanged(oldValue: T, newValue: T) {}
-
+    protected open fun execValueChanged(
+        oldValue: T,
+        newValue: T,
+    ) {}
 }

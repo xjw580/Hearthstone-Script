@@ -10,9 +10,7 @@ import javafx.stage.StageStyle
  * @date 2023/10/1 10:37
  */
 
-private fun formatTitle(title: String): String {
-    return "$SCRIPT_NAME-${title}"
-}
+private fun formatTitle(title: String): String = "$SCRIPT_NAME-$title"
 
 var SCREEN_WIDTH = Screen.getPrimary().bounds.width
 var SCREEN_HEIGHT = Screen.getPrimary().bounds.height
@@ -30,74 +28,86 @@ enum class WindowEnum(
     val initStyle: StageStyle = StageStyle.DECORATED,
 ) {
     SETTINGS(
-        "settings/settings.fxml", formatTitle("设置"),
-        width = 650.0, height = 450.0,
+        "settings/settings.fxml",
+        formatTitle("设置"),
+        width = 650.0,
+        height = 450.0,
     ),
     INIT_SETTINGS(
-        "settings/initSettings.fxml"
+        "settings/initSettings.fxml",
     ),
     ADVANCED_SETTINGS(
-        "settings/advancedSettings.fxml"
+        "settings/advancedSettings.fxml",
     ),
     PLUGIN_SETTINGS(
-        "settings/pluginSettings.fxml"
+        "settings/pluginSettings.fxml",
     ),
     STRATEGY_SETTINGS(
-        "settings/strategySettings.fxml"
+        "settings/strategySettings.fxml",
     ),
     WEIGHT_SETTINGS(
-        "settings/weightSettings.fxml"
+        "settings/weightSettings.fxml",
     ),
     DEVELOPER_SETTINGS(
-        "settings/developerSettings.fxml"
+        "settings/developerSettings.fxml",
     ),
     ABOUT(
-        "settings/about.fxml"
+        "settings/about.fxml",
     ),
     MAIN(
         "main.fxml",
         SCRIPT_NAME,
         215.0,
-        585.0,
+        590.0,
         SCREEN_WIDTH - 210.0,
-        (SCREEN_HEIGHT - 585.0) / 2,
+        (SCREEN_HEIGHT - 590.0) / 2,
         alwaysOnTop = true,
     ),
     TIME_SETTINGS("timeSettings.fxml", formatTitle("工作时间设置")),
     CARD_ACTION_EDITOR("cardActionEditor.fxml"),
     STARTUP(
-        "startup.fxml", formatTitle("启动页"),
-        558.0, 400.0
+        "startup.fxml",
+        formatTitle("启动页"),
+        558.0,
+        400.0,
     ),
     VERSION_MSG(
-        "versionMsg.fxml", formatTitle("版本说明"),
+        "versionMsg.fxml",
+        formatTitle("版本说明"),
         width = 550.0,
         cache = false,
     ),
     STATISTICS(
-        "statistics.fxml", formatTitle("数据统计"),
+        "statistics.fxml",
+        formatTitle("数据统计"),
         cache = false,
     ),
     GAME_DATA_ANALYSIS(
-        "gameDataAnalysis.fxml", formatTitle("游戏数据分析"),
-        x = 0.0, y = 0.0,
+        "gameDataAnalysis.fxml",
+        formatTitle("游戏数据分析"),
+        x = 0.0,
+        y = 0.0,
         cache = false,
-        alwaysOnTop = true
+        alwaysOnTop = true,
     ),
     MEASURE_GAME(
-        "measureGame.fxml", formatTitle("游戏控件测量"),
-        cache = false, alwaysOnTop = true
+        "measureGame.fxml",
+        formatTitle("游戏控件测量"),
+        cache = false,
+        alwaysOnTop = true,
     ),
     GAME_WINDOW_MODAL(
         "gameWindowModal.fxml",
-        cache = false, alwaysOnTop = true,
+        cache = false,
+        alwaysOnTop = true,
         initStyle = StageStyle.TRANSPARENT,
     ),
     GAME_WINDOW_CONTROL_MODAL(
         "gameWindowModal.fxml",
-        cache = false, alwaysOnTop = true,
+        cache = false,
+        alwaysOnTop = true,
         initStyle = StageStyle.TRANSPARENT,
-    )
+    ),
     ;
 
     companion object {

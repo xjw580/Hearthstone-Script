@@ -8,27 +8,16 @@ import club.xiaojiawei.enums.RunModeEnum
  * @author 肖嘉威
  * @date 2024/10/14 16:31
  */
-class HsSurrenderDeckStrategy: DeckStrategy() {
+class HsSurrenderDeckStrategy : DeckStrategy() {
+    override fun name(): String = "秒投策略"
 
-    override fun name(): String {
-        return "秒投策略"
-    }
+    override fun description(): String = "开局秒投"
 
-    override fun description(): String {
-        return "开局秒投"
-    }
+    override fun getRunMode(): Array<RunModeEnum> = arrayOf(RunModeEnum.WILD, RunModeEnum.STANDARD, RunModeEnum.CASUAL)
 
-    override fun getRunMode(): Array<RunModeEnum> {
-        return arrayOf(RunModeEnum.WILD, RunModeEnum.STANDARD, RunModeEnum.CASUAL)
-    }
+    override fun deckCode(): String = ""
 
-    override fun deckCode(): String {
-        return ""
-    }
-
-    override fun id(): String {
-        return "e71234fa-base-deck-97e9-surrender"
-    }
+    override fun id(): String = "e71234fa-2-base-deck-97e9-surrender"
 
     override fun reset() {
         super.reset()
@@ -41,7 +30,5 @@ class HsSurrenderDeckStrategy: DeckStrategy() {
     override fun executeOutCard() {
     }
 
-    override fun executeDiscoverChooseCard(vararg cards: Card): Int {
-        return 0
-    }
+    override fun executeDiscoverChooseCard(vararg cards: Card): Int = 0
 }

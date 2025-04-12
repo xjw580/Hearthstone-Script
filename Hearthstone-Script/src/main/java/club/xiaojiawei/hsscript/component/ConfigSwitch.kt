@@ -13,9 +13,9 @@ import club.xiaojiawei.util.isFalse
  * @date 2025/3/24 17:46
  */
 open class ConfigSwitch : Switch() {
-
     var config: ConfigEnum? = null
         set(value) {
+            isDisable = value?.isEnable != true
             value?.let {
                 status = ConfigUtil.getBoolean(it)
             }
@@ -36,7 +36,10 @@ open class ConfigSwitch : Switch() {
         }
     }
 
-    protected open fun statusChangeCallback(oldValue: Boolean, newValue: Boolean) {
+    protected open fun statusChangeCallback(
+        oldValue: Boolean,
+        newValue: Boolean,
+    ) {
         config?.let {
             ConfigUtil.putBoolean(it, newValue)
         }
@@ -65,5 +68,4 @@ open class ConfigSwitch : Switch() {
             }
         }
     }
-
 }

@@ -14,22 +14,22 @@ import club.xiaojiawei.status.WAR
  * @date 2025/1/22 17:04
  */
 abstract class MCTSDeckStrategy : DeckStrategy() {
-
-    final override fun executeOutCard() {
+    override fun executeOutCard() {
         val war = WAR
         val mctsArgList = executeMCTSOutCard(war)
         val monteCarloTreeSearch = MonteCarloTreeSearch()
         var execTime = 0L
         for ((index, mctsArg) in mctsArgList.withIndex()) {
             val start = System.currentTimeMillis()
-            val arg = MCTSArg(
-                mctsArg.endMillisTime + execTime,
-                mctsArg.turnCount,
-                mctsArg.turnFactor,
-                mctsArg.countPerTurn,
-                mctsArg.scoreCalculator,
-                mctsArg.enableMultiThread
-            )
+            val arg =
+                MCTSArg(
+                    mctsArg.endMillisTime + execTime,
+                    mctsArg.turnCount,
+                    mctsArg.turnFactor,
+                    mctsArg.countPerTurn,
+                    mctsArg.scoreCalculator,
+                    mctsArg.enableMultiThread,
+                )
             val bestNodes = monteCarloTreeSearch.searchBestNode(war, arg).filter { it.applyAction !is EmptyAction }
             execTime += (System.currentTimeMillis() - start)
             log.info { "思考耗时：${execTime}ms，执行动作数：${bestNodes.size}" }
@@ -48,5 +48,4 @@ abstract class MCTSDeckStrategy : DeckStrategy() {
      * @return mcts算法参数，返回几个参数就执行几次
      */
     abstract fun executeMCTSOutCard(war: War): List<MCTSArg>
-
 }

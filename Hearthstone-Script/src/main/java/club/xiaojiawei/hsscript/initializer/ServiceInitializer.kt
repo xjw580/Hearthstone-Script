@@ -7,11 +7,11 @@ import club.xiaojiawei.hsscript.enums.ConfigEnum
  * @date 2025/4/1 17:20
  */
 class ServiceInitializer : AbstractInitializer() {
-
     override fun exec() {
         for (configEnum in ConfigEnum.values()) {
-            configEnum.service?.intelligentStartStop()
+            if (configEnum.isEnable) {
+                configEnum.service?.intelligentStartStop()
+            }
         }
     }
-
 }

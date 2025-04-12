@@ -32,73 +32,95 @@ private const val ISDIVINESHIELD_VALUE = 0.5 * BASIC_RATIO
 val DEFAULT_WAR_SCORE_CALCULATOR by lazy { WarScoreCalculatorBuilder() }
 
 open class WarScoreCalculatorBuilder {
-
-    fun build(): ScoreCalculator {
-        return ScoreCalculator { war ->
-            calcPlayerScore(war.me) - calcPlayerScore(war.rival)
+    fun build(): ScoreCalculator =
+        ScoreCalculator { war ->
+            calcPlayerScore(war.me, true) - calcPlayerScore(war.rival, false)
         }
-    }
 
-    protected open fun calcPlayerScore(player: Player): Double {
-        return calcHandScore(player.handArea) + calcPlayScore(player.playArea) +
-                calcDeckScore(player.deckArea) + calcSecretScore(player.secretArea) + calcResourcesScore(player)
-    }
+    protected open fun calcPlayerScore(
+        player: Player,
+        isMe: Boolean,
+    ): Double =
+        calcHandScore(player.handArea, isMe) + calcPlayScore(player.playArea, isMe) +
+            calcDeckScore(player.deckArea, isMe) + calcSecretScore(player.secretArea, isMe) +
+            calcResourcesScore(
+                player,
+                isMe,
+            )
 
-    protected open fun calcResourcesScore(player: Player): Double {
-        return (player.tempResources + player.resources) * RESOURCES_VALUE + player.usedResources * USED_RESOURCES_VALUE
-    }
+    protected open fun calcResourcesScore(
+        player: Player,
+        isMe: Boolean,
+    ): Double = (player.tempResources + player.resources) * RESOURCES_VALUE + player.usedResources * USED_RESOURCES_VALUE
 
-    protected open fun calcSecretScore(area: SecretArea): Double {
-        return area.cards.sumOf { card -> card.cost }.toDouble()
-    }
+    protected open fun calcSecretScore(
+        area: SecretArea,
+        isMe: Boolean,
+    ): Double = area.cards.sumOf { card -> card.cost }.toDouble()
 
-    protected open fun calcDeckScore(area: DeckArea): Double {
+    protected open fun calcDeckScore(
+        area: DeckArea,
+        isMe: Boolean,
+    ): Double {
 //        通过对数计算牌库得分，牌库数量较多时加牌对分数影响不大，但数量较低时加牌对分数影响较大
         return log(area.cardSize() + 1.0, 2.0) * 10.0
     }
 
-    protected open fun calcHandScore(area: HandArea): Double {
-        return area.cards.sumOf { card ->
+    protected open fun calcHandScore(
+        area: HandArea,
+        isMe: Boolean,
+    ): Double =
+        area.cards.sumOf { card ->
             if (card.cardType === CardTypeEnum.SPELL) {
                 (card.cost shl 1).toDouble()
             } else {
-                calcPlayCardScore(card) * 0.4
+                calcPlayCardScore(card, isMe) * 0.4
             }
         }
-    }
 
-    protected open fun calcPlayScore(area: PlayArea): Double {
+    protected open fun calcPlayScore(
+        area: PlayArea,
+        isMe: Boolean,
+    ): Double {
         var score = 0.0
-        score += area.cards.sumOf { calcPlayCardScore(it) }
+        score += area.cards.sumOf { calcPlayCardScore(it, isMe) }
         area.hero?.let { hero ->
-            score += calcPlayCardScore(hero)
+            score += calcPlayCardScore(hero, isMe)
         }
         area.weapon?.let { weapon ->
-            score += calcPlayCardScore(weapon) * 0.6
+            score += calcPlayCardScore(weapon, isMe) * 0.6
         }
         return score
     }
 
-    protected open fun calcPlayCardScore(card: Card): Double {
+    protected open fun calcPlayCardScore(
+        card: Card,
+        isMe: Boolean,
+    ): Double {
         if (card.isAlive()) {
             val cardRatio = CARD_WEIGHT_TRIE[card.cardId]?.weight ?: 1.0
             val atc = max(card.atc, 0).toDouble()
             val blood = max(card.blood(), 0)
-            val ration: Double = if (blood == 0) {
-                if (card.cardType === CardTypeEnum.HERO) {
-                    BASIC_RATIO
+            val ration: Double =
+                if (blood == 0) {
+                    if (card.cardType === CardTypeEnum.HERO) {
+                        BASIC_RATIO
+                    } else {
+                        1.0
+                    }
                 } else {
-                    1.0
+                    BASIC_RATIO
                 }
-            } else {
-                BASIC_RATIO
-            }
             val basicScore =
-                atc * ration + blood * (if (card.cardType === CardTypeEnum.HERO) {
-                    0.5
-                } else if (card.cardType === CardTypeEnum.LOCATION) {
-                    card.cost / card.bloodLimit().toDouble()
-                } else 1.0)
+                atc * ration + blood * (
+                    if (card.cardType === CardTypeEnum.HERO) {
+                        0.5
+                    } else if (card.cardType === CardTypeEnum.LOCATION) {
+                        card.cost / card.bloodLimit().toDouble()
+                    } else {
+                        1.0
+                    }
+                )
             val heroScore = if (card.cardType === CardTypeEnum.HERO) Int.MAX_VALUE.toDouble() else 0.0
             var totalScore: Double = basicScore + heroScore
             if (card.isDeathRattle) {
@@ -139,5 +161,4 @@ open class WarScoreCalculatorBuilder {
         }
         return 0.0
     }
-
 }

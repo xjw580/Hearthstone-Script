@@ -37,7 +37,6 @@ import java.util.stream.Stream
  * @date 2023/9/10 15:07
  */
 class PluginSettingsController : Initializable {
-
     @FXML
     protected lateinit var pluginTabPane: TabPane
 
@@ -95,7 +94,10 @@ class PluginSettingsController : Initializable {
     @FXML
     protected lateinit var pluginListView: ListView<PluginItem>
 
-    override fun initialize(url: URL?, resourceBundle: ResourceBundle?) {
+    override fun initialize(
+        url: URL?,
+        resourceBundle: ResourceBundle?,
+    ) {
         initValue()
         listen()
     }
@@ -105,11 +107,16 @@ class PluginSettingsController : Initializable {
         val pluginItems = pluginListView.items
         EXTRA_THREAD_POOL.submit {
             runCatching {
-                Stream.concat(
-                    DECK_STRATEGY_PLUGINS.values.stream()
-                        .flatMap { obj: List<PluginWrapper<DeckStrategy>> -> obj.stream() },
-                    CARD_ACTION_PLUGINS.values.stream().flatMap { obj: List<PluginWrapper<CardAction>> -> obj.stream() }
-                ).map { PluginItem(it, notificationManager) }.toList()
+                Stream
+                    .concat(
+                        DECK_STRATEGY_PLUGINS.values
+                            .stream()
+                            .flatMap { obj: List<PluginWrapper<DeckStrategy>> -> obj.stream() },
+                        CARD_ACTION_PLUGINS.values
+                            .stream()
+                            .flatMap { obj: List<PluginWrapper<CardAction>> -> obj.stream() },
+                    ).map { PluginItem(it, notificationManager) }
+                    .toList()
             }.onSuccess { plugins ->
                 runUI {
                     pluginItems.addAll(plugins)
@@ -125,7 +132,8 @@ class PluginSettingsController : Initializable {
     }
 
     private fun listen() {
-        pluginListView.selectionModel.selectedItemProperty()
+        pluginListView.selectionModel
+            .selectedItemProperty()
             .addListener { _, _, newPluginItem: PluginItem? ->
                 pluginInfo.isVisible = newPluginItem != null
                 if (newPluginItem != null) {
@@ -188,15 +196,16 @@ class PluginSettingsController : Initializable {
                 val progress = deckStrategyRootProgressModal.show()
                 EXTRA_THREAD_POOL.submit {
                     runCatching {
-                        val pluginDeckStrategyItems = mutableSetOf<PluginDeckStrategyItem>()
-                        for (deckStrategy in spiInstance) {
-                            deckStrategy as DeckStrategy
+                        val pluginDeckStrategyItems = mutableListOf<PluginDeckStrategyItem>()
+                        val deckStrategyList =
+                            (spiInstance as List<DeckStrategy>).sortedBy {
+                                it.id()
+                            }
+                        for (deckStrategy in deckStrategyList) {
                             pluginDeckStrategyItems.add(
                                 PluginDeckStrategyItem().apply {
-                                    name.text = deckStrategy.name()
-                                    description.text = deckStrategy.description()
                                     this.deckStrategy = deckStrategy
-                                }
+                                },
                             )
                         }
                         pluginDeckStrategyItems
@@ -216,7 +225,6 @@ class PluginSettingsController : Initializable {
             }
         }
     }
-
 
     fun apply(actionEvent: ActionEvent?) {
     }

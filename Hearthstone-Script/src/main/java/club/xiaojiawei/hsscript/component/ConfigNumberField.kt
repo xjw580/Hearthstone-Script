@@ -13,9 +13,10 @@ import club.xiaojiawei.util.isFalse
  * @date 2025/3/24 17:46
  */
 open class ConfigNumberField : NumberField() {
-
     var config: ConfigEnum? = null
         set(value) {
+            isDisable = value?.isEnable != true
+            isEditable = value?.isEnable == true
             value?.let {
                 text = ConfigUtil.getString(it)
             }
@@ -40,7 +41,10 @@ open class ConfigNumberField : NumberField() {
         }
     }
 
-    protected open fun statusChangeCallback(oldValue: Int, newValue: Int) {
+    protected open fun statusChangeCallback(
+        oldValue: Int,
+        newValue: Int,
+    ) {
         config?.let {
             ConfigUtil.putInt(it, newValue)
         }
@@ -69,5 +73,4 @@ open class ConfigNumberField : NumberField() {
             }
         }
     }
-
 }

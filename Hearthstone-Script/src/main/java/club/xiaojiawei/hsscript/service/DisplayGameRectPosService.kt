@@ -14,17 +14,16 @@ import javafx.beans.value.ChangeListener
  * @date 2025/3/24 17:21
  */
 object DisplayGameRectPosService : Service<Boolean>() {
-
     private val hwndListener: ChangeListener<HWND?> by lazy {
         ChangeListener<HWND?> { _, _, newValue ->
             show()
         }
     }
 
-    private fun show(){
+    private fun show() {
         WindowUtil.showStage(WindowEnum.GAME_WINDOW_CONTROL_MODAL)
         val controller = WindowUtil.getController(WindowEnum.GAME_WINDOW_CONTROL_MODAL)
-        if (controller is GameWindowModalController){
+        if (controller is GameWindowModalController) {
             controller.setOpacity(0.0)
         }
     }
@@ -39,8 +38,5 @@ object DisplayGameRectPosService : Service<Boolean>() {
         return true
     }
 
-    override fun execIntelligentStartStop(value: Boolean?): Boolean {
-        return ConfigUtil.getBoolean(ConfigEnum.DISPLAY_GAME_RECT_POS)
-    }
-
+    override fun execIntelligentStartStop(value: Boolean?): Boolean = ConfigUtil.getBoolean(ConfigEnum.DISPLAY_GAME_RECT_POS)
 }

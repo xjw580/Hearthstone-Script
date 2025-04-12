@@ -11,13 +11,12 @@ import club.xiaojiawei.hsscript.utils.GameUtil
  * @date 2023/9/20 17:22
  */
 class LogListenStarter : AbstractStarter() {
-
     override fun execStart() {
         val latestLogDir = GameUtil.getLatestLogDir()
         latestLogDir?.let {
             AbstractLogListener.logPath = it
             log.info { "游戏日志目录读取成功：" + it.absolutePath }
-            Thread.ofVirtual().name(Thread.currentThread().name.replace("Thread", "VThread")).start{
+            Thread.ofVirtual().name(Thread.currentThread().name.replace("Thread", "VThread")).start {
                 LogListenerConfig.logListener.listen()
             }
             startNextStarter()
@@ -25,5 +24,4 @@ class LogListenStarter : AbstractStarter() {
             log.error { "游戏日志目录读取失败" }
         }
     }
-
 }

@@ -23,7 +23,6 @@ import java.util.concurrent.TimeUnit
  * @date 2022/11/25 12:41
  */
 object AdventureModeStrategy : AbstractModeStrategy<Any?>() {
-
     val CHOOSE_RECT: GameRect = GameRect(0.2467, 0.3441, 0.2778, 0.3772)
     val PRACTICE_RECT: GameRect = GameRect(0.1655, 0.4198, -0.4079, -0.3187)
     val START_RECT: GameRect = GameRect(0.2564, 0.3452, 0.2690, 0.3728)
@@ -31,32 +30,46 @@ object AdventureModeStrategy : AbstractModeStrategy<Any?>() {
     val PREV_DECK_PAGE: GameRect = GameRect(-0.4743, -0.4498, -0.0414, 0.0033)
 
     override fun wantEnter() {
-        addWantEnterTask(EXTRA_THREAD_POOL.scheduleWithFixedDelay(LRunnable {
-            if (PauseStatus.isPause) {
-                cancelAllWantEnterTasks()
-            } else if (Mode.currMode == ModeEnum.HUB) {
-                cancelAllWantEnterTasks()
-                ModeEnum.GAME_MODE.modeStrategy?.wantEnter()
-            } else if (Mode.currMode == ModeEnum.GAME_MODE) {
-                GameModeModeStrategy.enterAdventureMode()
-            } else {
-                cancelAllWantEnterTasks()
-            }
-        }, DELAY_TIME, INTERVAL_TIME, TimeUnit.MILLISECONDS))
+        addWantEnterTask(
+            EXTRA_THREAD_POOL.scheduleWithFixedDelay(
+                LRunnable {
+                    if (PauseStatus.isPause) {
+                        cancelAllWantEnterTasks()
+                    } else if (Mode.currMode == ModeEnum.HUB) {
+                        cancelAllWantEnterTasks()
+                        ModeEnum.GAME_MODE.modeStrategy?.wantEnter()
+                    } else if (Mode.currMode == ModeEnum.GAME_MODE) {
+                        GameModeModeStrategy.enterAdventureMode()
+                    } else {
+                        cancelAllWantEnterTasks()
+                    }
+                },
+                DELAY_TIME,
+                INTERVAL_TIME,
+                TimeUnit.MILLISECONDS,
+            ),
+        )
     }
 
     override fun afterEnter(t: Any?) {
         if (WorkTimeListener.canWork()) {
-            val deckStrategy = DeckStrategyManager.currentDeckStrategy ?: let {
-                SystemUtil.notice("未配置卡组策略")
-                log.warn { "未配置卡组策略" }
-                PauseStatus.isPause = true
-                return
-            }
+            val deckStrategy =
+                DeckStrategyManager.currentDeckStrategy ?: let {
+                    SystemUtil.notice("未配置卡组策略")
+                    log.warn { "未配置卡组策略" }
+                    PauseStatus.isPause = true
+                    return
+                }
             var runModeEnum: RunModeEnum
-            if (((deckStrategy.runModes[0].also {
-                    runModeEnum = it
-                }) == RunModeEnum.PRACTICE) && runModeEnum.isEnable) {
+            if ((
+                    (
+                        deckStrategy.runModes[0].also {
+                            runModeEnum = it
+                        }
+                    ) == RunModeEnum.PRACTICE
+                ) &&
+                runModeEnum.isEnable
+            ) {
                 if (!PowerLogListener.checkPowerLogSize()) {
                     return
                 }
@@ -76,17 +89,23 @@ object AdventureModeStrategy : AbstractModeStrategy<Any?>() {
                 START_RECT.lClick()
             } else {
 //            退出该界面
-                addEnteredTask(EXTRA_THREAD_POOL.scheduleWithFixedDelay(LRunnable {
-                    if (PauseStatus.isPause) {
-                        cancelAllEnteredTasks()
-                    } else if (Mode.currMode === ModeEnum.ADVENTURE) {
-                        BACK_RECT.lClick()
-                    } else {
-                        cancelAllEnteredTasks()
-                    }
-                }, 0, 1000, TimeUnit.MILLISECONDS))
+                addEnteredTask(
+                    EXTRA_THREAD_POOL.scheduleWithFixedDelay(
+                        LRunnable {
+                            if (PauseStatus.isPause) {
+                                cancelAllEnteredTasks()
+                            } else if (Mode.currMode === ModeEnum.ADVENTURE) {
+                                BACK_RECT.lClick()
+                            } else {
+                                cancelAllEnteredTasks()
+                            }
+                        },
+                        0,
+                        1000,
+                        TimeUnit.MILLISECONDS,
+                    ),
+                )
             }
         }
     }
-
 }

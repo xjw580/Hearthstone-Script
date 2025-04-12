@@ -1,6 +1,7 @@
 package club.xiaojiawei
 
 import club.xiaojiawei.bean.*
+import club.xiaojiawei.bean.area.HandArea
 import club.xiaojiawei.bean.area.isValid
 import club.xiaojiawei.config.log
 import club.xiaojiawei.enums.CardTypeEnum
@@ -18,8 +19,9 @@ private const val MAX_ERROR_LOG_COUNT = 100L
 
 private val errorLogCount = AtomicLong()
 
-abstract class CardAction(createDefaultAction: Boolean = true) {
-
+abstract class CardAction(
+    createDefaultAction: Boolean = true,
+) {
     protected var depth = 0
 
     /**
@@ -52,8 +54,11 @@ abstract class CardAction(createDefaultAction: Boolean = true) {
      * @param war 此卡牌所处的战局，注意：生成的[Action]中应使用[Action]内部传递的war，而不是此处的war
      * @param player 此卡牌所处的玩家
      */
-    open fun generatePowerActions(war: War, player: Player): List<PowerAction> {
-        return belongCard?.let { card: Card ->
+    open fun generatePowerActions(
+        war: War,
+        player: Player,
+    ): List<PowerAction> =
+        belongCard?.let { card: Card ->
             if (card.isLaunchpad && player.usableResource >= card.launchCost()) {
                 listOf(
                     PowerAction({ newWar ->
@@ -70,13 +75,12 @@ abstract class CardAction(createDefaultAction: Boolean = true) {
                             card.area.player.starshipAtc = 0
                             card.area.player.starshipHealth = 0
                         }
-                    })
+                    }),
                 )
             } else {
                 emptyList()
             }
         } ?: emptyList()
-    }
 
     /**
      * [belongCard]从手牌中打出的所有可能动作（包含战吼效果）
@@ -84,11 +88,14 @@ abstract class CardAction(createDefaultAction: Boolean = true) {
      * @param war 此卡牌所处的战局，注意：生成的[Action]中应使用[Action]内部传递的war，而不是此处的war
      * @param player 此卡牌所处的玩家
      */
-    open fun generatePlayActions(war: War, player: Player): List<PlayAction> {
+    open fun generatePlayActions(
+        war: War,
+        player: Player,
+    ): List<PlayAction> {
         return belongCard?.let { card ->
             val entityId = card.entityId
             if (entityId.isBlank()) {
-                log.warn { "entityId为空，belongCard：${belongCard}" }
+                log.warn { "entityId为空，belongCard：$belongCard" }
                 return emptyList()
             }
 //            由于不知道法术的效果，所以不生成action
@@ -97,13 +104,15 @@ abstract class CardAction(createDefaultAction: Boolean = true) {
             }
             listOf(
                 PlayAction({ newWar ->
-                    for ((index, c) in newWar.rival.playArea.cards.withIndex()) {
+                    for ((index, c) in newWar.rival.playArea.cards
+                        .withIndex()) {
                         findSelf(newWar)?.action?.power(false)?.let {
                             it.pointTo(index, true) ?: delay()
                         }
                         return@PlayAction
                     }
-                    for ((index, c) in newWar.me.playArea.cards.withIndex()) {
+                    for ((index, c) in newWar.me.playArea.cards
+                        .withIndex()) {
                         findSelf(newWar)?.action?.power(false)?.let {
                             it.pointTo(index, true) ?: delay()
                         }
@@ -129,7 +138,7 @@ abstract class CardAction(createDefaultAction: Boolean = true) {
                         CardUtil.handleCardExhaustedWhenIntoPlayArea(card)
                         me.playArea.safeAdd(card)
                     }
-                })
+                }),
             )
         } ?: emptyList()
     }
@@ -140,11 +149,14 @@ abstract class CardAction(createDefaultAction: Boolean = true) {
      * @param war 此卡牌所处的战局，注意：生成的[Action]中应使用[Action]内部传递的war，而不是此处的war
      * @param player 此卡牌所处的玩家
      */
-    open fun generateAttackActions(war: War, player: Player): List<AttackAction> {
+    open fun generateAttackActions(
+        war: War,
+        player: Player,
+    ): List<AttackAction> {
         return belongCard?.let { card ->
             val entityId = card.entityId
             if (entityId.isBlank()) {
-                log.warn { "entityId为空，belongCard：${belongCard}" }
+                log.warn { "entityId为空，belongCard：$belongCard" }
                 return emptyList()
             }
             val result = mutableListOf<AttackAction>()
@@ -165,7 +177,7 @@ abstract class CardAction(createDefaultAction: Boolean = true) {
                                     CardUtil.simulateAttack(newWar, myCard, rivalCard)
                                 }
                             }
-                        })
+                        }),
                     )
                 }
             }
@@ -182,7 +194,7 @@ abstract class CardAction(createDefaultAction: Boolean = true) {
                                         CardUtil.simulateAttack(newWar, myCard, rivalHero)
                                     }
                                 }
-                            })
+                            }),
                         )
                     }
                 }
@@ -243,16 +255,17 @@ abstract class CardAction(createDefaultAction: Boolean = true) {
             val area = card.area
             if (area.isValid()) {
                 val index = area.indexOfCard(card)
-                val newCard = card.clone().apply {
-                    damage = health - 1
-                    armor = 0
-                    isExhausted = true
-                    isReborn = false
-                }
+                val newCard =
+                    card.clone().apply {
+                        damage = health - 1
+                        armor = 0
+                        isExhausted = true
+                        isReborn = false
+                    }
                 if (index < 0) {
                     if (area.isFull) return
                     war.addCard(newCard, card.area.player.playArea)
-                } else {//说明原卡牌还未从area中移除
+                } else { // 说明原卡牌还未从area中移除
                     if (area.cardSize() > area.maxSize) return
 //                添加至原卡牌位置的右侧
                     war.addCard(newCard, card.area.player.playArea, index + 2)
@@ -260,7 +273,6 @@ abstract class CardAction(createDefaultAction: Boolean = true) {
             }
         }
     }
-
 
     /**
      * 使用卡牌
@@ -282,10 +294,29 @@ abstract class CardAction(createDefaultAction: Boolean = true) {
     }
 
     /**
+     * 安全的使用卡牌
+     * @return 为null表示执行失败
+     */
+    fun safePower(isPause: Boolean = true): CardAction? {
+        val card = belongCard ?: return null
+        if (card.area.player.usableResource >= card.cost) {
+            if (card.area::class.java === HandArea::class.java) {
+                return power(isPause)
+            } else if (card.canPower()) {
+                return power(isPause)
+            }
+        }
+        return null
+    }
+
+    /**
      * 使用卡牌至指定card
      * @return 为null表示执行失败
      */
-    fun power(card: Card?, isPause: Boolean = true): CardAction? {
+    fun power(
+        card: Card?,
+        isPause: Boolean = true,
+    ): CardAction? {
         if (isStop()) return null
         return card?.let {
             val result = execPower(it)
@@ -307,7 +338,10 @@ abstract class CardAction(createDefaultAction: Boolean = true) {
      * 使用卡牌至指定下标
      * @return 为null表示执行失败
      */
-    fun power(index: Int, isPause: Boolean = true): CardAction? {
+    fun power(
+        index: Int,
+        isPause: Boolean = true,
+    ): CardAction? {
         if (isStop()) return null
         val result = execPower(index)
         if (result) {
@@ -326,7 +360,10 @@ abstract class CardAction(createDefaultAction: Boolean = true) {
      * 攻击指定card
      * @return 为null表示执行失败
      */
-    fun attack(card: Card?, isPause: Boolean = true): CardAction? {
+    fun attack(
+        card: Card?,
+        isPause: Boolean = true,
+    ): CardAction? {
         if (isStop()) return null
         return card?.let {
             val result = execAttack(it)
@@ -369,7 +406,11 @@ abstract class CardAction(createDefaultAction: Boolean = true) {
      * @return 为null表示执行失败
      * @param click 是否左击
      */
-    fun pointTo(card: Card?, click: Boolean = true, isPause: Boolean = true): CardAction? {
+    fun pointTo(
+        card: Card?,
+        click: Boolean = true,
+        isPause: Boolean = true,
+    ): CardAction? {
         if (isStop()) return null
         return card?.let {
             val result = execPointTo(card, click)
@@ -390,7 +431,11 @@ abstract class CardAction(createDefaultAction: Boolean = true) {
      * @param click 是否左击
      * @return 为null表示执行失败
      */
-    fun pointTo(index: Int, click: Boolean = true, isPause: Boolean = true): CardAction? {
+    fun pointTo(
+        index: Int,
+        click: Boolean = true,
+        isPause: Boolean = true,
+    ): CardAction? {
         if (isStop() || index == -1) return null
         val result = execPointTo(index, click)
         if (result) {
@@ -468,9 +513,7 @@ abstract class CardAction(createDefaultAction: Boolean = true) {
         Thread.sleep(time.toLong())
     }
 
-    private fun isStop(): Boolean {
-        return Thread.currentThread().isInterrupted
-    }
+    private fun isStop(): Boolean = Thread.currentThread().isInterrupted
 
     /**
      * 移除与[belongCard]相同的卡牌
@@ -479,7 +522,7 @@ abstract class CardAction(createDefaultAction: Boolean = true) {
         val entityId = belongCard?.entityId ?: return null
         return war.cardMap[entityId]?.area?.removeByEntityId(entityId) ?: let {
             if (errorLogCount.incrementAndGet() <= MAX_ERROR_LOG_COUNT) {
-                log.warn { "移除卡牌失败,entityId:${entityId},className:${this::class.qualifiedName},action:${this::class.qualifiedName}" }
+                log.warn { "移除卡牌失败,entityId:$entityId,className:${this::class.qualifiedName},action:${this::class.qualifiedName}" }
             }
             null
         }
@@ -492,7 +535,7 @@ abstract class CardAction(createDefaultAction: Boolean = true) {
         val entityId = belongCard?.entityId ?: return null
         return war.cardMap[entityId] ?: let {
             if (errorLogCount.incrementAndGet() <= MAX_ERROR_LOG_COUNT) {
-                log.warn { "查找卡牌失败,entityId:${entityId},className:${this::class.qualifiedName},action:${this::class.qualifiedName}" }
+                log.warn { "查找卡牌失败,entityId:$entityId,className:${this::class.qualifiedName},action:${this::class.qualifiedName}" }
             }
             null
         }
@@ -508,7 +551,7 @@ abstract class CardAction(createDefaultAction: Boolean = true) {
             card
         } ?: let {
             if (errorLogCount.incrementAndGet() <= MAX_ERROR_LOG_COUNT) {
-                log.warn { "查找卡牌失败,entityId:${entityId},className:${this::class.qualifiedName},action:${this::class.qualifiedName}" }
+                log.warn { "查找卡牌失败,entityId:$entityId,className:${this::class.qualifiedName},action:${this::class.qualifiedName}" }
             }
             null
         }
@@ -528,12 +571,18 @@ abstract class CardAction(createDefaultAction: Boolean = true) {
      * 移向card，然后左击
      * @param click 是否左击
      */
-    protected abstract fun execPointTo(card: Card, click: Boolean): Boolean
+    protected abstract fun execPointTo(
+        card: Card,
+        click: Boolean,
+    ): Boolean
 
     /**
      * 移向我方战场指定下标处，然后左击（优先使用此方法代替execPointTo(card: Card)）
      */
-    protected abstract fun execPointTo(index: Int, click: Boolean): Boolean
+    protected abstract fun execPointTo(
+        index: Int,
+        click: Boolean,
+    ): Boolean
 
     /**
      * 左键点击
@@ -566,47 +615,30 @@ abstract class CardAction(createDefaultAction: Boolean = true) {
     }
 
     abstract class DefaultCardAction : CardAction() {
+        override fun execPower(): Boolean = commonAction?.execPower() == true
 
+        override fun execPower(card: Card): Boolean = commonAction?.execPower(card) == true
 
-        override fun execPower(): Boolean {
-            return commonAction?.execPower() == true
-        }
+        override fun execPower(index: Int): Boolean = commonAction?.execPower(index) == true
 
-        override fun execPower(card: Card): Boolean {
-            return commonAction?.execPower(card) == true
-        }
+        override fun execAttack(card: Card): Boolean = commonAction?.execAttack(card) == true
 
-        override fun execPower(index: Int): Boolean {
-            return commonAction?.execPower(index) == true
-        }
+        override fun execAttackHero(): Boolean = commonAction?.execAttackHero() == true
 
-        override fun execAttack(card: Card): Boolean {
-            return commonAction?.execAttack(card) == true
-        }
+        override fun execPointTo(
+            card: Card,
+            click: Boolean,
+        ): Boolean = commonAction?.execPointTo(card, click) == true
 
-        override fun execAttackHero(): Boolean {
-            return commonAction?.execAttackHero() == true
-        }
+        override fun execPointTo(
+            index: Int,
+            click: Boolean,
+        ): Boolean = commonAction?.execPointTo(index, click) == true
 
-        override fun execPointTo(card: Card, click: Boolean): Boolean {
-            return commonAction?.execPointTo(card, click) == true
-        }
+        override fun execLClick(): Boolean = commonAction?.execLClick() == true
 
-        override fun execPointTo(index: Int, click: Boolean): Boolean {
-            return commonAction?.execPointTo(index, click) == true
-        }
+        override fun execLaunch(): Boolean = commonAction?.execLClick() == true
 
-        override fun execLClick(): Boolean {
-            return commonAction?.execLClick() == true
-        }
-
-        override fun execLaunch(): Boolean {
-            return commonAction?.execLClick() == true
-        }
-
-        override fun execTrade(): Boolean {
-            return commonAction?.execTrade() == true
-        }
+        override fun execTrade(): Boolean = commonAction?.execTrade() == true
     }
-
 }

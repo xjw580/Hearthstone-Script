@@ -59,7 +59,6 @@ import java.util.*
  * @date 2023/2/21 12:33
  */
 class MainController : MainView() {
-
     private var isNotHoverLog = true
 
     private val runModeMap: MutableMap<RunModeEnum, MutableList<DeckStrategy>> = EnumMap(RunModeEnum::class.java)
@@ -68,7 +67,10 @@ class MainController : MainView() {
 
     private val initDate = LocalDate.now()
 
-    override fun initialize(url: URL?, resourceBundle: ResourceBundle?) {
+    override fun initialize(
+        url: URL?,
+        resourceBundle: ResourceBundle?,
+    ) {
         versionText.text = "当前版本：" + VersionListener.currentRelease.tagName
         addListener()
         initModeAndDeck()
@@ -88,33 +90,28 @@ class MainController : MainView() {
      * 初始化模式和卡组
      */
     private fun initModeAndDeck() {
-        runModeBox.converter = object : StringConverter<RunModeEnum?>() {
-            override fun toString(runModeEnum: RunModeEnum?): String? {
-                return runModeEnum?.comment ?: ""
-            }
+        runModeBox.converter =
+            object : StringConverter<RunModeEnum?>() {
+                override fun toString(runModeEnum: RunModeEnum?): String? = runModeEnum?.comment ?: ""
 
-            override fun fromString(s: String?): RunModeEnum? {
-                return if (s == null || s.isBlank()) null else RunModeEnum.valueOf(s)
+                override fun fromString(s: String?): RunModeEnum? = if (s == null || s.isBlank()) null else RunModeEnum.valueOf(s)
             }
-        }
-        deckStrategyBox.converter = object : StringConverter<DeckStrategy?>() {
-            override fun toString(deckStrategy: DeckStrategy?): String {
-                return deckStrategy?.name() ?: ""
-            }
+        deckStrategyBox.converter =
+            object : StringConverter<DeckStrategy?>() {
+                override fun toString(deckStrategy: DeckStrategy?): String = deckStrategy?.name() ?: ""
 
-            override fun fromString(s: String): DeckStrategy? {
-                return null
+                override fun fromString(s: String): DeckStrategy? = null
             }
-        }
 
         reloadRunMode()
 
         //        模式更改监听
-        runModeBox.selectionModel.selectedItemProperty()
+        runModeBox.selectionModel
+            .selectedItemProperty()
             .addListener { observable: ObservableValue<out RunModeEnum?>?, oldValue: RunModeEnum?, newValue: RunModeEnum? ->
                 val deckStrategies = if (newValue == null) null else runModeMap[newValue]
                 deckStrategies?.let {
-                    deckStrategyBox.items.setAll(deckStrategies)
+                    deckStrategyBox.items.setAll(deckStrategies.sortedBy { it.id() })
                 } ?: let {
                     deckStrategyBox.items.clear()
                 }
@@ -122,7 +119,8 @@ class MainController : MainView() {
             }
 
         //        卡组更改监听
-        deckStrategyBox.selectionModel.selectedItemProperty()
+        deckStrategyBox.selectionModel
+            .selectedItemProperty()
             .addListener { observable: ObservableValue<out DeckStrategy?>?, oldValue: DeckStrategy?, newValue: DeckStrategy? ->
                 if (newValue == null) {
                     runModeMap[runModeBox.selectionModel.selectedItem]?.find { it == oldValue }?.let {
@@ -145,23 +143,26 @@ class MainController : MainView() {
 
         val defaultDeckId = getString(ConfigEnum.DEFAULT_DECK_STRATEGY)
         val defaultRunModeEnum = fromString(getString(ConfigEnum.DEFAULT_RUN_MODE))
-        val defaultDeck = DeckStrategyManager.deckStrategies
-            .stream()
-            .filter { deckStrategy: DeckStrategy ->
-                defaultDeckId == deckStrategy.id()
-                        && deckStrategy.runModes.size > 0 &&
-                        (defaultRunModeEnum == null
-                                ||
-                                Arrays.stream(deckStrategy.runModes)
-                                    .anyMatch { runModeEnum: RunModeEnum -> runModeEnum == defaultRunModeEnum })
-            }
-            .findFirst()
+        val defaultDeck =
+            DeckStrategyManager.deckStrategies
+                .stream()
+                .filter { deckStrategy: DeckStrategy ->
+                    defaultDeckId == deckStrategy.id() &&
+                        deckStrategy.runModes.size > 0 &&
+                        (
+                            defaultRunModeEnum == null ||
+                                Arrays
+                                    .stream(deckStrategy.runModes)
+                                    .anyMatch { runModeEnum: RunModeEnum -> runModeEnum == defaultRunModeEnum }
+                        )
+                }.findFirst()
         if (defaultDeck.isPresent) {
             val deckStrategy = defaultDeck.get()
             deckStrategy.runModes
-            runModeBox.value = Objects.requireNonNullElseGet(
-                defaultRunModeEnum
-            ) { deckStrategy.runModes[0] }
+            runModeBox.value =
+                Objects.requireNonNullElseGet(
+                    defaultRunModeEnum,
+                ) { deckStrategy.runModes[0] }
             deckStrategyBox.value = deckStrategy
             val deckCode = deckStrategy.deckCode()
             if (!deckCode.isEmpty()) {
@@ -170,7 +171,11 @@ class MainController : MainView() {
             }
         }
 
-        DeckStrategyManager.currentDeckStrategyProperty.addListener { observableValue: ObservableValue<out DeckStrategy?>?, deck: DeckStrategy?, t1: DeckStrategy? ->
+        DeckStrategyManager.currentDeckStrategyProperty.addListener {
+            observableValue: ObservableValue<out DeckStrategy?>?,
+            deck: DeckStrategy?,
+            t1: DeckStrategy?,
+            ->
             if (t1 != null) {
                 t1.runModes
                 runModeBox.value = t1.runModes[0]
@@ -214,7 +219,7 @@ class MainController : MainView() {
                 list.add(anchorPane)
                 return@runUI
             }
-            /*为日志上颜色*/
+            // 为日志上颜色
             if (event.throwableProxy == null && levelInt <= Level.INFO_INT) {
                 label.text = message
             } else if (levelInt <= Level.WARN_INT) {
@@ -240,7 +245,6 @@ class MainController : MainView() {
         return anchorPane
     }
 
-
     private fun addListener() {
         WorkTimeStatus.addWorkTimeSettingListener { list, id ->
             reloadWorkTime(id)
@@ -264,28 +268,33 @@ class MainController : MainView() {
 
         //        暂停状态监听
         PauseStatus.addChangeListener { _, _, t1: Boolean ->
-            t1.isTrue {
-                pauseToggleGroup.selectToggle(pauseButton)
-                accordion.expandedPane = titledPaneControl
-            }.isFalse {
-                pauseToggleGroup.selectToggle(startButton)
-                accordion.expandedPane = titledPaneLog
-            }
+            t1
+                .isTrue {
+                    pauseToggleGroup.selectToggle(pauseButton)
+                    accordion.expandedPane = titledPaneControl
+                }.isFalse {
+                    pauseToggleGroup.selectToggle(startButton)
+                    accordion.expandedPane = titledPaneLog
+                }
         }
 
         //        游戏局数监听
         WarEx.warCountProperty.addListener { _, number: Number?, t1: Number ->
             gameCount.text = WarEx.warCount.toString()
-            winningPercentage.text = (String.format(
-                "%.1f",
-                WarEx.winCount.toDouble() / WarEx.warCount * 100.0
-            ) + "%")
+            winningPercentage.text = (
+                String.format(
+                    "%.1f",
+                    WarEx.winCount.toDouble() / WarEx.warCount * 100.0,
+                ) + "%"
+            )
             gameTime.text = formatTime(WarEx.hangingTime)
             exp.text = WarEx.hangingEXP.toString()
         }
-        DeckStrategyManager.deckStrategies.addListener(SetChangeListener { observable: SetChangeListener.Change<out DeckStrategy?>? ->
-            reloadRunMode()
-        } as SetChangeListener<in DeckStrategy?>)
+        DeckStrategyManager.deckStrategies.addListener(
+            SetChangeListener { observable: SetChangeListener.Change<out DeckStrategy?>? ->
+                reloadRunMode()
+            } as SetChangeListener<in DeckStrategy?>,
+        )
         //        是否在下载中监听
         VersionListener.downloadingReadOnlyProperty().addListener { observable, oldValue, newValue ->
             Platform.runLater {
@@ -293,7 +302,8 @@ class MainController : MainView() {
             }
         }
         //        监听日志自动滑到底部
-        logVBox.heightProperty()
+        logVBox
+            .heightProperty()
             .addListener { observable: ObservableValue<out Number>, oldValue: Number, newValue: Number ->
                 if (isNotHoverLog) {
                     logScrollPane.vvalue = logScrollPane.vmax
@@ -308,7 +318,8 @@ class MainController : MainView() {
             }
         }
         val btnPressedStyleClass = "btnPressed"
-        pauseToggleGroup.selectedToggleProperty()
+        pauseToggleGroup
+            .selectedToggleProperty()
             .addListener { _, toggle: Toggle?, t1: Toggle? ->
                 if (t1 == null) {
                     if (toggle != null) {
@@ -345,12 +356,13 @@ class MainController : MainView() {
         label.graphic = ClearIco()
         label.styleClass.addAll("bg-hover-ui", "radius-ui")
 
-        val vBox: VBox = object : VBox(label) {
-            init {
-                style =
-                    "-fx-effect: dropshadow(gaussian, rgba(128, 128, 128, 0.67), 10, 0, 3, 3);-fx-padding: 5 3 5 3;-fx-background-color: white"
+        val vBox: VBox =
+            object : VBox(label) {
+                init {
+                    style =
+                        "-fx-effect: dropshadow(gaussian, rgba(128, 128, 128, 0.67), 10, 0, 3, 3);-fx-padding: 5 3 5 3;-fx-background-color: white"
+                }
             }
-        }
         vBox.styleClass.add("radius-ui")
 
         popup.isAutoHide = true
@@ -397,25 +409,28 @@ class MainController : MainView() {
             val release = VersionListener.latestRelease ?: return
 
             VersionListener.downloadLatestRelease(
-                false, downloadProgress.progressProperty()
+                false,
+                downloadProgress.progressProperty(),
             ) { path: String? ->
                 if (path == null) {
                     runUI {
-                        WindowUtil.createAlert(
-                            String.format("新版本<%s>下载失败", release.tagName),
-                            "",
-                            rootPane.scene.window
-                        ).show()
+                        WindowUtil
+                            .createAlert(
+                                String.format("新版本<%s>下载失败", release.tagName),
+                                "",
+                                rootPane.scene.window,
+                            ).show()
                     }
                 } else {
                     runUI {
-                        WindowUtil.createAlert(
-                            "新版本[" + release.tagName + "]下载完毕",
-                            "现在更新？",
-                            { event: ActionEvent? -> VersionListener.execUpdate(path) },
-                            null,
-                            rootPane.scene.window
-                        ).show()
+                        WindowUtil
+                            .createAlert(
+                                "新版本[" + release.tagName + "]下载完毕",
+                                "现在更新？",
+                                { event: ActionEvent? -> VersionListener.execUpdate(path) },
+                                null,
+                                rootPane.scene.window,
+                            ).show()
                     }
                 }
             }
@@ -425,19 +440,23 @@ class MainController : MainView() {
     @FXML
     protected fun resetStatistics(event: MouseEvent) {
         if (event.button != MouseButton.PRIMARY) return
-        val modal = Modal(
-            rootPane, null, "重置统计数据？",
-            Runnable {
-                Platform.runLater {
-                    resetStatistics()
-                    gameCount.text = "0"
-                    winningPercentage.text = "?"
-                    gameTime.text = "0"
-                    exp.text = "0"
-                    notificationManger.showSuccess("统计数据已重置", 2)
-                }
-            },
-            Runnable {})
+        val modal =
+            Modal(
+                rootPane,
+                null,
+                "重置统计数据？",
+                Runnable {
+                    Platform.runLater {
+                        resetStatistics()
+                        gameCount.text = "0"
+                        winningPercentage.text = "?"
+                        gameTime.text = "0"
+                        exp.text = "0"
+                        notificationManger.showSuccess("统计数据已重置", 2)
+                    }
+                },
+                Runnable {},
+            )
         modal.isMaskClosable = true
         modal.show()
     }
@@ -500,30 +519,28 @@ class MainController : MainView() {
     }
 
     companion object {
-
         private fun formatTime(time: Int): String {
-            val timeStr = if (time == 0) {
-                String.format("%d", time)
-            } else if (time < 60) {
-                String.format("%dm", time)
-            } else if (time < 1440) {
-                if (time % 60 == 0) {
-                    String.format("%dh", time / 60)
+            val timeStr =
+                if (time == 0) {
+                    String.format("%d", time)
+                } else if (time < 60) {
+                    String.format("%dm", time)
+                } else if (time < 1440) {
+                    if (time % 60 == 0) {
+                        String.format("%dh", time / 60)
+                    } else {
+                        String.format("%dh%dm", time / 60, time % 60)
+                    }
                 } else {
-                    String.format("%dh%dm", time / 60, time % 60)
+                    if (time % 1440 == 0) {
+                        String.format("%dd", time / 1440)
+                    } else {
+                        String.format("%dd%dh", time / 1440, time % 1440 / 60)
+                    }
                 }
-            } else {
-                if (time % 1440 == 0) {
-                    String.format("%dd", time / 1440)
-                } else {
-                    String.format("%dd%dh", time / 1440, time % 1440 / 60)
-                }
-            }
             return timeStr
         }
     }
 
-    fun getNotificationManagerInstance(): NotificationManager<Any> {
-        return notificationManger
-    }
+    fun getNotificationManagerInstance(): NotificationManager<Any> = notificationManger
 }

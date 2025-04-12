@@ -18,28 +18,22 @@ import club.xiaojiawei.util.isTrue
  * @date 2024/10/17 17:58
  */
 class HsRadicalDeckStrategy : DeckStrategy() {
-
     private val commonDeckStrategy = HsCommonDeckStrategy()
 
-    override fun name(): String {
-        return "激进策略"
-    }
+    override fun name(): String = "激进策略"
 
-    override fun description(): String {
-        return "会在基础策略的基础上使用战吼，法术，地标牌（依旧不识别战吼或法术）。参考权重设置"
-    }
+    override fun description(): String = "会在基础策略的基础上使用战吼，法术，地标牌（依旧不识别战吼或法术）"
 
-    override fun getRunMode(): Array<RunModeEnum> {
-        return arrayOf(RunModeEnum.CASUAL, RunModeEnum.STANDARD, RunModeEnum.WILD, RunModeEnum.PRACTICE)
-    }
+    override fun getRunMode(): Array<RunModeEnum> =
+        arrayOf(RunModeEnum.CASUAL, RunModeEnum.STANDARD, RunModeEnum.WILD, RunModeEnum.PRACTICE)
 
-    override fun deckCode(): String {
-        return ""
-    }
+    override fun deckCode(): String = ""
 
-    override fun id(): String {
-        return "e71234fa-radical-deck-97e9-1f4e126cd33b"
-    }
+    override fun id(): String = "e71234fa-1-radical-deck-97e9-1f4e126cd33b"
+
+    override fun referWeight(): Boolean = true
+
+    override fun referPowerWeight(): Boolean = true
 
     override fun executeChangeCard(cards: HashSet<Card>) {
         commonDeckStrategy.executeChangeCard(cards)
@@ -80,19 +74,20 @@ class HsRadicalDeckStrategy : DeckStrategy() {
                             }
                         } else {
                             if (me.playArea.isFull) break
-                            card.isBattlecry.isTrue {
-                                me.playArea.cards.find { card -> card.cardType === CardTypeEnum.MINION }?.let {
-                                    if (card.action.executedPower) {
-                                        card.action.power(it, false)?.pointTo(it)
-                                    } else {
-                                        card.action.power(it)
+                            card.isBattlecry
+                                .isTrue {
+                                    me.playArea.cards.find { card -> card.cardType === CardTypeEnum.MINION }?.let {
+                                        if (card.action.executedPower) {
+                                            card.action.power(it, false)?.pointTo(it)
+                                        } else {
+                                            card.action.power(it)
+                                        }
+                                    } ?: let {
+                                        card.action.power()
                                     }
-                                } ?: let {
+                                }.isFalse {
                                     card.action.power()
                                 }
-                            }.isFalse {
-                                card.action.power()
-                            }
                         }
                     }
                 }
@@ -103,8 +98,5 @@ class HsRadicalDeckStrategy : DeckStrategy() {
         }
     }
 
-    override fun executeDiscoverChooseCard(vararg cards: Card): Int {
-        return commonDeckStrategy.executeDiscoverChooseCard(*cards)
-    }
-
+    override fun executeDiscoverChooseCard(vararg cards: Card): Int = commonDeckStrategy.executeDiscoverChooseCard(*cards)
 }

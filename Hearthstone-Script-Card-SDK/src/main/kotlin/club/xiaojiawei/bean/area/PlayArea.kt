@@ -11,8 +11,10 @@ import club.xiaojiawei.util.isTrue
  * @author 肖嘉威
  * @date 2022/11/27 15:02
  */
-class PlayArea(allowLog: Boolean = false, player: Player) : Area(allowLog = allowLog, maxSize = 7, player = player) {
-
+class PlayArea(
+    allowLog: Boolean = false,
+    player: Player,
+) : Area(allowLog = allowLog, maxSize = 7, player = player) {
     @Volatile
     var hero: Card? = null
 
@@ -31,7 +33,10 @@ class PlayArea(allowLog: Boolean = false, player: Player) : Area(allowLog = allo
     @Volatile
     var weaponHide: Card? = null
 
-    private fun addZoneAndLog(name: String, card: Card) {
+    private fun addZoneAndLog(
+        name: String,
+        card: Card,
+    ) {
         addZone(card)
 
         allowLog.isTrue {
@@ -42,12 +47,14 @@ class PlayArea(allowLog: Boolean = false, player: Player) : Area(allowLog = allo
     /**
      * 获取当前法强
      */
-    fun getSpellPower(): Int {
-        return cards.sumOf { card -> card.spellPower } +
-                (hero?.spellPower ?: 0) + (power?.spellPower ?: 0) + (weapon?.spellPower ?: 0)
-    }
+    fun getSpellPower(): Int =
+        cards.sumOf { card -> card.spellPower } +
+            (hero?.spellPower ?: 0) + (power?.spellPower ?: 0) + (weapon?.spellPower ?: 0)
 
-    override fun add(card: Card?, pos: Int): Boolean {
+    override fun add(
+        card: Card?,
+        pos: Int,
+    ): Boolean {
         var result = true
         if (card == null) {
             result = false
@@ -89,7 +96,6 @@ class PlayArea(allowLog: Boolean = false, player: Player) : Area(allowLog = allo
         return card
     }
 
-
     override fun removeByEntityId(entityId: String): Card? {
         var card = super.removeByEntityId(entityId)
         if (card == null) {
@@ -126,6 +132,4 @@ class PlayArea(allowLog: Boolean = false, player: Player) : Area(allowLog = allo
         }
         return removeCard
     }
-
-
 }

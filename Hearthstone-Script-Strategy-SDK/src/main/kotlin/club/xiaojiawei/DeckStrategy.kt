@@ -9,7 +9,6 @@ import java.util.*
  * @date 2024/9/9 0:33
  */
 abstract class DeckStrategy {
-
     var pluginId: String = ""
 
     val runModes: Array<RunModeEnum> by lazy { getRunMode() }
@@ -22,7 +21,7 @@ abstract class DeckStrategy {
     /**
      * 每局游戏开始时调用此方法
      */
-    open fun reset(){
+    open fun reset() {
         needSurrender = false
     }
 
@@ -56,6 +55,16 @@ abstract class DeckStrategy {
     abstract fun id(): String
 
     /**
+     * 参考权重
+     */
+    open fun referWeight(): Boolean = false
+
+    /**
+     * 参考使用权重
+     */
+    open fun referPowerWeight(): Boolean = false
+
+    /**
      * 执行换牌策略
      * @param cards 需要换掉的牌直接从集合中删除
      */
@@ -69,7 +78,7 @@ abstract class DeckStrategy {
     /**
      * 执行发现选牌
      * @param cards 发现的牌
-     * @return 返回范围 [0,数组长度)
+     * @return 需要选择的牌的下标，下标范围 [0,数组长度)
      */
     abstract fun executeDiscoverChooseCard(vararg cards: Card): Int
 
@@ -80,7 +89,5 @@ abstract class DeckStrategy {
         return id() == that.id()
     }
 
-    override fun hashCode(): Int {
-        return Objects.hashCode(id())
-    }
+    override fun hashCode(): Int = Objects.hashCode(id())
 }
