@@ -24,7 +24,6 @@ import java.util.concurrent.locks.ReentrantLock
  * @date 2023/7/5 13:15
  */
 object Core {
-
     @Volatile
     var lastActiveTime: Long = 0
 
@@ -32,52 +31,56 @@ object Core {
 
     val launch: Unit by lazy {
         PauseStatus.addChangeListener { _, _, newValue ->
-            newValue.isTrue {
-                CSystemDll.INSTANCE.changeWindow(ScriptStatus.gameHWND, false)
-                WorkTimeListener.working = false
-                Mode.reset()
-                runUI { WindowUtil.getStage(WindowEnum.MAIN)?.show() }
-                log.info { "当前处于【暂停】状态" }
-            }.isFalse {
-                WorkTimeListener.checkWork()
-                if (WorkTimeListener.canWork()) {
-                    start()
-                } else {
-                    WorkTimeListener.cannotWorkLog()
-                    runUI {
-                        val alert = WindowUtil.createAlert(
-                            "当前不在工作时间", "是否睡眠系统(下个可用时间会唤醒系统)",
-                            {
-                                OperateEnum.SLEEP_SYSTEM.exec()
-                            }, {},
-                            WindowUtil.getStage(WindowEnum.MAIN)
-                        )
-                        go {
-                            Thread.sleep(5000)
-                            runUI {
-                                alert.hide()
+            newValue
+                .isTrue {
+                    CSystemDll.INSTANCE.changeWindow(ScriptStatus.gameHWND, false)
+                    WorkTimeListener.working = false
+                    Mode.reset()
+                    runUI { WindowUtil.getStage(WindowEnum.MAIN)?.show() }
+                    log.info { "当前处于【暂停】状态" }
+                }.isFalse {
+                    WorkTimeListener.checkWork()
+                    if (WorkTimeListener.canWork()) {
+                        start()
+                    } else {
+                        WorkTimeListener.cannotWorkLog()
+                        runUI {
+                            val alert =
+                                WindowUtil.createAlert(
+                                    "当前不在工作时间",
+                                    "是否睡眠系统(下个可用时间会唤醒系统)",
+                                    {
+                                        OperateEnum.SLEEP_SYSTEM.exec()
+                                    },
+                                    {},
+                                    WindowUtil.getStage(WindowEnum.MAIN),
+                                )
+                            go {
+                                Thread.sleep(5000)
+                                runUI {
+                                    alert.hide()
+                                }
                             }
+                            alert.show()
                         }
-                        alert.show()
                     }
+                    log.info { "当前处于【开始】状态" }
                 }
-                log.info { "当前处于【开始】状态" }
-            }
         }
         WorkTimeListener.addChangeListener { _, _, isWorking: Boolean ->
             if (isWorking) {
                 start(true)
             }
             if (ConfigExUtil.getMouseControlMode() === MouseControlModeEnum.DRIVE) {
-                isWorking.isTrue {
-                    CSystemDll.safeRefreshDriver()
-                }.isFalse {
-                    CSystemDll.safeReleaseDriver()
-                }
+                isWorking
+                    .isTrue {
+                        CSystemDll.safeRefreshDriver()
+                    }.isFalse {
+                        CSystemDll.safeReleaseDriver()
+                    }
             }
         }
     }
-
 
     /**
      * 启动脚本
@@ -118,5 +121,4 @@ object Core {
             CORE_THREAD_POOL.execute { exec() }
         }
     }
-
 }

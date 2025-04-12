@@ -41,7 +41,6 @@ import kotlin.system.exitProcess
  */
 @Suppress("unused")
 object SystemUtil {
-
     /**
      * 所有鼠标键盘模拟都需要此对象
      */
@@ -56,57 +55,64 @@ object SystemUtil {
     @Deprecated("")
     private var trayIcon: TrayIcon? = null
 
-    fun getProgramIconFile(): File {
-        return Path.of(IMG_PATH, MAIN_IMG_NAME).toFile()
-    }
+    fun getProgramIconFile(): File = Path.of(IMG_PATH, MAIN_IMG_NAME).toFile()
 
-    fun getTrayIconFile(): File {
-        return getResouceImgFile(TRAY_IMG_NAME)
-    }
+    fun getTrayIconFile(): File = getResouceImgFile(TRAY_IMG_NAME)
 
-    fun getResouceImgFile(name: String): File {
-        return Path.of(IMG_PATH, name).toFile()
-    }
+    fun getResouceImgFile(name: String): File = Path.of(IMG_PATH, name).toFile()
 
     /**
      * 调用系统通知
      * @param content
      * @param title
      */
-    fun notice(content: String, title: String = "", btnText: String = "", btnURL: String = "") {
+    fun notice(
+        content: String,
+        title: String = "",
+        btnText: String = "",
+        btnURL: String = "",
+    ) {
         ConfigUtil.getBoolean(ConfigEnum.SEND_NOTICE).isTrue {
-            Thread.ofVirtual().name("Notice VThread").start(LRunnable {
+            Thread.ofVirtual().name("Notice VThread").start(
+                LRunnable {
 //        trayIcon.displayMessage(title, content, TrayIcon.MessageType.NONE);
-                val appIDBytes: ByteArray = SCRIPT_NAME.toByteArray(StandardCharsets.UTF_8)
-                val titleBytes = title.toByteArray(StandardCharsets.UTF_8)
-                val msgBytes = content.toByteArray(StandardCharsets.UTF_8)
+                    val appIDBytes: ByteArray = SCRIPT_NAME.toByteArray(StandardCharsets.UTF_8)
+                    val titleBytes = title.toByteArray(StandardCharsets.UTF_8)
+                    val msgBytes = content.toByteArray(StandardCharsets.UTF_8)
 
-                val jarPath = File(
-                    SystemUtil.javaClass.getProtectionDomain()
-                        .codeSource
-                        .location
-                        .toURI()
-                )
+                    val jarPath =
+                        File(
+                            SystemUtil.javaClass
+                                .getProtectionDomain()
+                                .codeSource
+                                .location
+                                .toURI(),
+                        )
 
-                val icoPathBytes: ByteArray =
-                    getProgramIconFile().toPath().normalize().toString().toByteArray(StandardCharsets.UTF_8)
-                val btnTextBytes = btnText.toByteArray(StandardCharsets.UTF_8)
-                val btnURLBytes = btnURL.toByteArray(StandardCharsets.UTF_8)
-                GSystemDll.INSTANCE.notice(
-                    appIDBytes,
-                    titleBytes,
-                    msgBytes,
-                    icoPathBytes,
-                    btnTextBytes,
-                    btnURLBytes,
-                    appIDBytes.size,
-                    titleBytes.size,
-                    msgBytes.size,
-                    icoPathBytes.size,
-                    btnTextBytes.size,
-                    btnURLBytes.size
-                )
-            })
+                    val icoPathBytes: ByteArray =
+                        getProgramIconFile()
+                            .toPath()
+                            .normalize()
+                            .toString()
+                            .toByteArray(StandardCharsets.UTF_8)
+                    val btnTextBytes = btnText.toByteArray(StandardCharsets.UTF_8)
+                    val btnURLBytes = btnURL.toByteArray(StandardCharsets.UTF_8)
+                    GSystemDll.INSTANCE.notice(
+                        appIDBytes,
+                        titleBytes,
+                        msgBytes,
+                        icoPathBytes,
+                        btnTextBytes,
+                        btnURLBytes,
+                        appIDBytes.size,
+                        titleBytes.size,
+                        msgBytes.size,
+                        icoPathBytes.size,
+                        btnTextBytes.size,
+                        btnURLBytes.size,
+                    )
+                },
+            )
         }
     }
 
@@ -115,17 +121,22 @@ object SystemUtil {
      * @param windowTitle
      * @return
      */
-    fun findHWND(className: String? = null, windowTitle: String?): WinDef.HWND? {
-        return User32ExDll.INSTANCE.FindWindowW(
+    fun findHWND(
+        className: String? = null,
+        windowTitle: String?,
+    ): WinDef.HWND? =
+        User32ExDll.INSTANCE.FindWindowW(
             if (className == null) null else WString(className),
             if (windowTitle == null) null else WString(windowTitle),
         )
-    }
 
     /**
      * 更新窗口信息
      */
-    fun updateRECT(hwnd: WinDef.HWND?, programRECT: WinDef.RECT?) {
+    fun updateRECT(
+        hwnd: WinDef.HWND?,
+        programRECT: WinDef.RECT?,
+    ) {
         if (showWindow(hwnd) && !User32.INSTANCE.GetClientRect(hwnd, programRECT)) {
             log.error { "获取窗口尺寸异常，错误代码：" + Kernel32.INSTANCE.GetLastError() }
         }
@@ -171,7 +182,6 @@ object SystemUtil {
         return true
     }
 
-
     /**
      * 通过浏览器打开链接
      * @param url
@@ -192,7 +202,10 @@ object SystemUtil {
         Thread.sleep(delay.toLong())
     }
 
-    fun delay(minDelay: Int, maxDelay: Int) {
+    fun delay(
+        minDelay: Int,
+        maxDelay: Int,
+    ) {
         delay(RandomUtil.getRandom(minDelay, maxDelay))
     }
 
@@ -245,7 +258,7 @@ object SystemUtil {
     @Deprecated("丑且编码有问题")
     fun addTray(
         mouseClickListener: Consumer<MouseEvent?>?,
-        vararg menuItems: MenuItem?
+        vararg menuItems: MenuItem?,
     ) {
         if (trayIcon != null) {
             return
@@ -298,7 +311,7 @@ object SystemUtil {
      */
     fun registryGetStringValueForUserProgram(
         regCommonNameEnum: RegCommonNameEnum?,
-        userProgramName: String
+        userProgramName: String,
     ): String? {
         if (regCommonNameEnum == null) {
             return null
@@ -310,21 +323,22 @@ object SystemUtil {
                 "SOFTWARE\\Wow6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\$userProgramName".also {
                     path = it
                 },
-                regCommonNameEnum.value
-            )
-            &&
+                regCommonNameEnum.value,
+            ) &&
             !Advapi32Util.registryValueExists(
                 WinReg.HKEY_LOCAL_MACHINE,
                 "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\$userProgramName".also { path = it },
-                regCommonNameEnum.value
+                regCommonNameEnum.value,
             )
         ) {
             null
-        } else Advapi32Util.registryGetStringValue(
-            WinReg.HKEY_LOCAL_MACHINE,
-            path,
-            regCommonNameEnum.value
-        )
+        } else {
+            Advapi32Util.registryGetStringValue(
+                WinReg.HKEY_LOCAL_MACHINE,
+                path,
+                regCommonNameEnum.value,
+            )
+        }
     }
 
     /**
@@ -337,53 +351,74 @@ object SystemUtil {
         exitProcess(0)
     }
 
-    fun message(text: String, type: Int, hwnd: WinDef.HWND? = null) {
+    fun message(
+        text: String,
+        type: Int,
+        hwnd: WinDef.HWND? = null,
+    ) {
         go {
-            CSystemDll.INSTANCE.messageBox(hwnd ?: let {
-                WindowUtil.getStage(WindowEnum.MAIN)?.let {
-                    User32.INSTANCE.FindWindow(null, it.title)
-                }
-            }, text, SCRIPT_NAME, type xor MB_TOPMOST)
+            CSystemDll.INSTANCE.messageBox(
+                hwnd ?: let {
+                    WindowUtil.getStage(WindowEnum.MAIN)?.let {
+                        User32.INSTANCE.FindWindow(null, it.title)
+                    }
+                },
+                text,
+                SCRIPT_NAME,
+                type xor MB_TOPMOST,
+            )
         }
     }
 
-    fun messageInfoOk(text: String, type: Int = MB_OK xor MB_ICONINFORMATION, hwnd: WinDef.HWND? = null) {
+    fun messageInfoOk(
+        text: String,
+        type: Int = MB_OK xor MB_ICONINFORMATION,
+        hwnd: WinDef.HWND? = null,
+    ) {
         message(text, type, hwnd)
     }
 
-    fun messageOk(text: String, type: Int = MB_OK, hwnd: WinDef.HWND? = null) {
+    fun messageOk(
+        text: String,
+        type: Int = MB_OK,
+        hwnd: WinDef.HWND? = null,
+    ) {
         message(text, type, hwnd)
     }
 
-    fun messageError(text: String, type: Int = MB_ICONERROR, hwnd: WinDef.HWND? = null) {
+    fun messageError(
+        text: String,
+        type: Int = MB_ICONERROR,
+        hwnd: WinDef.HWND? = null,
+    ) {
         message(text, type, hwnd)
     }
 
     /**
      * 获取软件的dll文件路径
      */
-    fun getDllFilePath(file: ResourceFile): File? {
-        return if (Objects.requireNonNull(javaClass.getResource(""))
+    fun getDllFilePath(file: ResourceFile): File? =
+        if (Objects
+                .requireNonNull(javaClass.getResource(""))
                 .protocol == "jar"
         ) {
             Path.of(DLL_PATH, file.name).toFile()
         } else {
             loadResource("dll/${file.name}")
         }
-    }
 
     /**
      * 获取软件的exe文件路径
      */
-    fun getExeFilePath(file: ResourceFile): File? {
-        return if (Objects.requireNonNull(javaClass.getResource(""))
+    fun getExeFilePath(file: ResourceFile): File? =
+        if (Objects
+                .requireNonNull(javaClass.getResource(""))
                 .protocol == "jar"
         ) {
             Path.of(ROOT_PATH, file.name).toFile()
         } else {
             loadResource("exe/${file.name}")
         }
-    }
 
     private fun loadResource(path: String): File? {
         var file: File? = null
@@ -396,7 +431,7 @@ object SystemUtil {
                 }
             }
         } ?: let {
-            log.error { "未找到${path}" }
+            log.error { "未找到$path" }
         }
         return file
     }
@@ -414,7 +449,7 @@ object SystemUtil {
      */
     fun offScreen() {
         User32.INSTANCE.GetForegroundWindow()?.let {
-            User32.INSTANCE.SendMessage(it, WM_SYSCOMMAND, WinDef.WPARAM(SC_MONITORPOWER), WinDef.LPARAM(2));
+            User32.INSTANCE.SendMessage(it, WM_SYSCOMMAND, WinDef.WPARAM(SC_MONITORPOWER), WinDef.LPARAM(2))
         }
     }
 
@@ -423,7 +458,10 @@ object SystemUtil {
      * @param hwnd 窗口句柄
      * @param opacity 不透明度
      */
-    fun changeWindowOpacity(hwnd: WinDef.HWND?, opacity: Int) {
+    fun changeWindowOpacity(
+        hwnd: WinDef.HWND?,
+        opacity: Int,
+    ) {
         hwnd?.let {
             val windowLong = User32.INSTANCE.GetWindowLong(it, GWL_EXSTYLE)
             if ((windowLong and WS_EX_LAYERED) == 0) {
@@ -434,7 +472,7 @@ object SystemUtil {
                 it,
                 0,
                 Math.clamp(opacity.toDouble(), 0.0, 255.0).toInt().toByte(),
-                LWA_ALPHA
+                LWA_ALPHA,
             )
         }
     }
@@ -442,16 +480,13 @@ object SystemUtil {
     /**
      * 系统关机
      */
-    fun shutdownSystem(): Boolean {
-        return User32.INSTANCE.ExitWindowsEx(WinDef.UINT((EWX_SHUTDOWN xor EWX_FORCE).toLong()), WinDef.DWORD(0))
+    fun shutdownSystem(): Boolean =
+        User32.INSTANCE
+            .ExitWindowsEx(WinDef.UINT((EWX_SHUTDOWN xor EWX_FORCE).toLong()), WinDef.DWORD(0))
             .booleanValue()
-    }
 
     /**
      * 锁屏
      */
-    fun lockScreen(): Boolean {
-        return User32.INSTANCE.LockWorkStation().booleanValue()
-    }
-
+    fun lockScreen(): Boolean = User32.INSTANCE.LockWorkStation().booleanValue()
 }

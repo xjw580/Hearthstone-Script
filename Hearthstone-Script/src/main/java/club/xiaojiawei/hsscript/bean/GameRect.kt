@@ -16,8 +16,12 @@ import java.util.function.Consumer
  * @author 肖嘉威 xjw580@qq.com
  * @date 2024/8/28 15:15
  */
-data class GameRect(val left: Double, val right: Double, val top: Double, val bottom: Double) {
-
+data class GameRect(
+    val left: Double,
+    val right: Double,
+    val top: Double,
+    val bottom: Double,
+) {
     fun getClickPos(): Point {
         val realH: Int = GAME_RECT.bottom - GAME_RECT.top
         val usableH = realH
@@ -35,9 +39,7 @@ data class GameRect(val left: Double, val right: Double, val top: Double, val bo
         SystemUtil.delayTiny()
     }
 
-    fun isValid(): Boolean {
-        return this != INVALID
-    }
+    fun isValid(): Boolean = this != INVALID
 
     private fun showControlPos(gameRect: GameRect = this) {
         WindowUtil.getStage(WindowEnum.GAME_WINDOW_CONTROL_MODAL)?.let {
@@ -69,7 +71,10 @@ data class GameRect(val left: Double, val right: Double, val top: Double, val bo
         GameUtil.rightButtonClick(getClickPos())
     }
 
-    fun lClickMoveLClick(endRect: GameRect?, isCancel: Boolean = true) {
+    fun lClickMoveLClick(
+        endRect: GameRect?,
+        isCancel: Boolean = true,
+    ) {
         if (endRect == null) {
             return
         }
@@ -97,12 +102,11 @@ data class GameRect(val left: Double, val right: Double, val top: Double, val bo
         }
     }
 
-    fun buildAction(): GameRectAction {
-        return GameRectAction(this)
-    }
+    fun buildAction(): GameRectAction = GameRectAction(this)
 
-    class GameRectAction(private val rect: GameRect) {
-
+    class GameRectAction(
+        private val rect: GameRect,
+    ) {
         private val runnableList: MutableList<Runnable?> = mutableListOf()
 
         private var lastRect: GameRect? = null
@@ -124,16 +128,18 @@ data class GameRect(val left: Double, val right: Double, val top: Double, val bo
         }
 
         fun lClick(rect: GameRect?): GameRectAction {
-            runnableList.add(Runnable {
-                if (rect == null) {
-                    if (lastRect != null) {
-                        lastRect!!.lClick()
+            runnableList.add(
+                Runnable {
+                    if (rect == null) {
+                        if (lastRect != null) {
+                            lastRect!!.lClick()
+                        }
+                    } else {
+                        rect.lClick()
+                        lastRect = rect
                     }
-                } else {
-                    rect.lClick()
-                    lastRect = rect
-                }
-            })
+                },
+            )
             return this
         }
 
@@ -143,16 +149,18 @@ data class GameRect(val left: Double, val right: Double, val top: Double, val bo
         }
 
         fun rClick(rect: GameRect?): GameRectAction {
-            runnableList.add(Runnable {
-                if (rect == null) {
-                    if (lastRect != null) {
-                        lastRect!!.rClick()
+            runnableList.add(
+                Runnable {
+                    if (rect == null) {
+                        if (lastRect != null) {
+                            lastRect!!.rClick()
+                        }
+                    } else {
+                        rect.rClick()
+                        lastRect = rect
                     }
-                } else {
-                    rect.rClick()
-                    lastRect = rect
-                }
-            })
+                },
+            )
             return this
         }
 
@@ -170,5 +178,4 @@ data class GameRect(val left: Double, val right: Double, val top: Double, val bo
     companion object {
         val INVALID: GameRect = GameRect(0.0, 0.0, 0.0, 0.0)
     }
-
 }

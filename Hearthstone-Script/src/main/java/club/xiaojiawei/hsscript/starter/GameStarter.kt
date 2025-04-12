@@ -26,7 +26,6 @@ import java.util.concurrent.TimeUnit
  * @date 2023/7/5 14:38
  */
 class GameStarter : AbstractStarter() {
-
     private var latestLogDir: File? = null
 
     public override fun execStart() {
@@ -41,44 +40,49 @@ class GameStarter : AbstractStarter() {
         var firstLogLaunch = true
         var firstLogSecondaryLaunch = true
         addTask(
-            LAUNCH_PROGRAM_THREAD_POOL.scheduleWithFixedDelay(LRunnable {
-                val diffTime = System.currentTimeMillis() - startTime
-                if (diffTime > 20_000) {
-                    log.warn { "启动${GAME_CN_NAME}失败次数过多，重新执行启动器链" }
-                    stopTask()
-                    startTime = System.currentTimeMillis()
-                    EXTRA_THREAD_POOL.schedule({
-                        GameUtil.killGame(true)
-                        GameUtil.killLoginPlatform()
-                        GameUtil.killPlatform()
-                        StarterConfig.starter.start()
-                    }, 1, TimeUnit.SECONDS)
-                    return@LRunnable
-                } else if (diffTime > 5_000) {
-                    if (firstLogSecondaryLaunch) {
-                        firstLogSecondaryLaunch = false
-                        log.info { "更改${GAME_CN_NAME}启动方式" }
-                    }
-                    GameUtil.launchPlatformAndGame()
-                }
-                if (GameUtil.isAliveOfGame()) {
-//                    游戏刚启动时可能找不到窗口句柄
-                    GameUtil.findGameHWND()?.let {
-                        next(it)
-                    } ?: let {
-                        if (diffTime > 5_000) {
-                            log.info { "${GAME_CN_NAME}已在运行，但未找到对应窗口句柄" }
-                            return@LRunnable
+            LAUNCH_PROGRAM_THREAD_POOL.scheduleWithFixedDelay(
+                LRunnable {
+                    val diffTime = System.currentTimeMillis() - startTime
+                    if (diffTime > 20_000) {
+                        log.warn { "启动${GAME_CN_NAME}失败次数过多，重新执行启动器链" }
+                        stopTask()
+                        startTime = System.currentTimeMillis()
+                        EXTRA_THREAD_POOL.schedule({
+                            GameUtil.killGame(true)
+                            GameUtil.killLoginPlatform()
+                            GameUtil.killPlatform()
+                            StarterConfig.starter.start()
+                        }, 1, TimeUnit.SECONDS)
+                        return@LRunnable
+                    } else if (diffTime > 5_000) {
+                        if (firstLogSecondaryLaunch) {
+                            firstLogSecondaryLaunch = false
+                            log.info { "更改${GAME_CN_NAME}启动方式" }
                         }
+                        GameUtil.launchPlatformAndGame()
                     }
-                } else {
-                    if (firstLogLaunch) {
-                        firstLogLaunch = false
-                        log.info { "正在启动$GAME_CN_NAME" }
+                    if (GameUtil.isAliveOfGame()) {
+//                    游戏刚启动时可能找不到窗口句柄
+                        GameUtil.findGameHWND()?.let {
+                            next(it)
+                        } ?: let {
+                            if (diffTime > 5_000) {
+                                log.info { "${GAME_CN_NAME}已在运行，但未找到对应窗口句柄" }
+                                return@LRunnable
+                            }
+                        }
+                    } else {
+                        if (firstLogLaunch) {
+                            firstLogLaunch = false
+                            log.info { "正在启动$GAME_CN_NAME" }
+                        }
+                        launchGameBySendMessage()
                     }
-                    launchGameBySendMessage()
-                }
-            }, 100, 500, TimeUnit.MILLISECONDS)
+                },
+                100,
+                500,
+                TimeUnit.MILLISECONDS,
+            ),
         )
     }
 
@@ -89,7 +93,7 @@ class GameStarter : AbstractStarter() {
         MouseUtil.leftButtonClick(
             Point(145, rect.bottom - rect.top - 150),
             platformHWND,
-            MouseControlModeEnum.MESSAGE.code
+            MouseControlModeEnum.MESSAGE.code,
         )
     }
 
@@ -124,5 +128,4 @@ class GameStarter : AbstractStarter() {
             }
         }
     }
-
 }

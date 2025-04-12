@@ -22,7 +22,6 @@ import java.util.concurrent.TimeUnit
  * @date 2025/3/24 17:21
  */
 object GameTimeoutService : Service<Int>() {
-
     override val isRunning: Boolean
         get() {
             return thread?.isAlive == true
@@ -37,7 +36,7 @@ object GameTimeoutService : Service<Int>() {
                 ScriptStatus.gameHWND,
                 User32ExDll.WM_NULL,
                 WinDef.WPARAM(),
-                WinDef.LPARAM()
+                WinDef.LPARAM(),
             )
             countDownLatch.countDown()
         }
@@ -53,15 +52,16 @@ object GameTimeoutService : Service<Int>() {
     }
 
     private fun timeoutCheck2(timeoutSec: Int) {
-        val res = User32.INSTANCE.SendMessageTimeout(
-            ScriptStatus.gameHWND,
-            User32ExDll.WM_NULL,
-            WinDef.WPARAM(),
-            WinDef.LPARAM(),
-            SMTO_ABORTIFHUNG xor SMTO_BLOCK,
-            timeoutSec * 1000,
-            WinDef.DWORDByReference()
-        )
+        val res =
+            User32.INSTANCE.SendMessageTimeout(
+                ScriptStatus.gameHWND,
+                User32ExDll.WM_NULL,
+                WinDef.WPARAM(),
+                WinDef.LPARAM(),
+                SMTO_ABORTIFHUNG xor SMTO_BLOCK,
+                timeoutSec * 1000,
+                WinDef.DWORDByReference(),
+            )
         if (res.toInt() == 0) {
             log.warn { "触发游戏响应超时，超过${timeoutSec}秒，准备重启" }
             Core.restart(true)
@@ -69,25 +69,25 @@ object GameTimeoutService : Service<Int>() {
         }
     }
 
-
     override fun execStart(): Boolean {
-        thread = Thread {
-            try {
-                while (thread?.isInterrupted == false) {
-                    Thread.sleep(1000)
-                    ScriptStatus.gameHWND ?: continue
-                    if (!WorkTimeListener.working) continue
-                    timeoutCheck1(ConfigUtil.getInt(ConfigEnum.GAME_TIMEOUT))
+        thread =
+            Thread {
+                try {
+                    while (thread?.isInterrupted == false) {
+                        Thread.sleep(1000)
+                        ScriptStatus.gameHWND ?: continue
+                        if (!WorkTimeListener.working) continue
+                        timeoutCheck1(ConfigUtil.getInt(ConfigEnum.GAME_TIMEOUT))
+                    }
+                } catch (e: Exception) {
+                    if (e !is InterruptedException) {
+                        log.error(e) { "" }
+                    }
                 }
-            } catch (e: Exception) {
-                if (e !is InterruptedException) {
-                    log.error(e) { "" }
-                }
+            }.apply {
+                name = "GameTimeout Thread"
+                start()
             }
-        }.apply {
-            name = "GameTimeout Thread"
-            start()
-        }
         return true
     }
 
@@ -101,8 +101,5 @@ object GameTimeoutService : Service<Int>() {
         return true
     }
 
-    override fun execIntelligentStartStop(value: Int?): Boolean {
-        return (value ?: ConfigUtil.getInt(ConfigEnum.GAME_TIMEOUT)) > 0
-    }
-
+    override fun execIntelligentStartStop(value: Int?): Boolean = (value ?: ConfigUtil.getInt(ConfigEnum.GAME_TIMEOUT)) > 0
 }

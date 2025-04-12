@@ -15,7 +15,6 @@ import club.xiaojiawei.util.isTrue
  * @date 2025/3/24 17:21
  */
 object UpdateGameWindowService : Service<Boolean>() {
-
     override val isRunning: Boolean
         get() {
             return thread?.isAlive == true
@@ -25,26 +24,25 @@ object UpdateGameWindowService : Service<Boolean>() {
 
     override fun execStart(): Boolean {
         CSystemDll.INSTANCE.changeWindow(ScriptStatus.gameHWND, false)
-        thread = Thread({
-            while (true) {
-                try {
-                    Thread.sleep(1000)
-                    ScriptStatus.gameHWND?.let { hwnd ->
-                        User32ExDll.INSTANCE.IsIconic(hwnd).isFalse {
-                            GameUtil.updateGameRect(hwnd)
+        thread =
+            Thread({
+                while (true) {
+                    try {
+                        Thread.sleep(1000)
+                        ScriptStatus.gameHWND?.let { hwnd ->
+                            User32ExDll.INSTANCE.IsIconic(hwnd).isFalse {
+                                GameUtil.updateGameRect(hwnd)
+                            }
+                        }
+                    } catch (e: Exception) {
+                        if (e !is InterruptedException) {
+                            log.error(e) { "" }
                         }
                     }
-                } catch (e: Exception) {
-                    if (e !is InterruptedException) {
-                        log.error(e) { "" }
-                    }
                 }
+            }, "Update GameWindow Thread").apply {
+                start()
             }
-
-
-        }, "Update GameWindow Thread").apply {
-            start()
-        }
         return true
     }
 
@@ -59,8 +57,5 @@ object UpdateGameWindowService : Service<Boolean>() {
         return true
     }
 
-    override fun execIntelligentStartStop(value: Boolean?): Boolean {
-        return ConfigUtil.getBoolean(ConfigEnum.UPDATE_GAME_WINDOW)
-    }
-
+    override fun execIntelligentStartStop(value: Boolean?): Boolean = ConfigUtil.getBoolean(ConfigEnum.UPDATE_GAME_WINDOW)
 }

@@ -29,14 +29,19 @@ import java.util.concurrent.atomic.AtomicReference
  * @date 2023/9/10 22:04
  */
 object WorkTimeListener {
-
     private var checkWorkTask: ScheduledFuture<*>? = null
 
     val launch: Unit by lazy {
-        checkWorkTask = EXTRA_THREAD_POOL.scheduleWithFixedDelay(LRunnable {
-            checkWork()
-            tryWork()
-        }, 0, 30, TimeUnit.SECONDS)
+        checkWorkTask =
+            EXTRA_THREAD_POOL.scheduleWithFixedDelay(
+                LRunnable {
+                    checkWork()
+                    tryWork()
+                },
+                0,
+                30,
+                TimeUnit.SECONDS,
+            )
         WarEx.inWarProperty.addListener { _, _, newValue ->
             if (!newValue && PauseStatus.isStart) {
                 checkWork()
@@ -55,49 +60,51 @@ object WorkTimeListener {
 
         val alert: AtomicReference<Stage?> = AtomicReference<Stage?>()
         val countdownTime = 10
-        val future = go {
-            for (i in 0 until countdownTime) {
-                if (PauseStatus.isStart) {
-                    Thread.sleep(1000)
-                } else {
-                    break
-                }
-            }
-            runUI {
-                alert.get()?.hide()
-            }
-            for (operate in operates) {
-                if (PauseStatus.isStart) {
-                    operate.exec().isFalse {
-                        log.error {
-                            operate.value + "执行失败"
-                        }
+        val future =
+            go {
+                for (i in 0 until countdownTime) {
+                    if (PauseStatus.isStart) {
+                        Thread.sleep(1000)
+                    } else {
+                        break
                     }
-                } else {
-                    return@go
+                }
+                runUI {
+                    alert.get()?.hide()
+                }
+                for (operate in operates) {
+                    if (PauseStatus.isStart) {
+                        operate.exec().isFalse {
+                            log.error {
+                                operate.value + "执行失败"
+                            }
+                        }
+                    } else {
+                        return@go
+                    }
                 }
             }
-        }
         val operationName = operates.map { it.value }
-        val text = "${countdownTime}秒后执行${operationName}"
+        val text = "${countdownTime}秒后执行$operationName"
         log.info { text }
         runUI {
             alert.set(
-                WindowUtil.createAlert(
-                    text,
-                    null,
-                    {
-                        future.cancel(true)
-                        runUI {
-                            alert.get()?.hide()
-                        }
+                WindowUtil
+                    .createAlert(
+                        text,
+                        null,
+                        {
+                            future.cancel(true)
+                            runUI {
+                                alert.get()?.hide()
+                            }
+                        },
+                        null,
+                        WindowUtil.getStage(WindowEnum.MAIN),
+                        "阻止",
+                    ).apply {
+                        show()
                     },
-                    null,
-                    WindowUtil.getStage(WindowEnum.MAIN),
-                    "阻止"
-                ).apply {
-                    show()
-                }
             )
         }
     }
@@ -125,13 +132,9 @@ object WorkTimeListener {
         workingProperty.removeListener(listener)
     }
 
-    fun canWork(): Boolean {
-        return isDuringWorkDate
-    }
+    fun canWork(): Boolean = isDuringWorkDate
 
-    fun cannotWork(): Boolean {
-        return !isDuringWorkDate
-    }
+    fun cannotWork(): Boolean = !isDuringWorkDate
 
     fun tryWork() {
         if (canWork() && PauseStatus.isStart) {
@@ -209,7 +212,10 @@ object WorkTimeListener {
         return sec
     }
 
-    private fun getSecondsUntilNextWorkPeriod(workTimeRuleSetId: String, offsetSec: Long): Long {
+    private fun getSecondsUntilNextWorkPeriod(
+        workTimeRuleSetId: String,
+        offsetSec: Long,
+    ): Long {
         WorkTimeStatus.readOnlyWorkTimeRuleSet().toTypedArray().find { it.id == workTimeRuleSetId }?.let {
             val timeRules = it.getTimeRules().toTypedArray()
             val nowTime = LocalTime.now()

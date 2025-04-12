@@ -13,7 +13,6 @@ import java.time.LocalDate
  * @date 2025/4/10 13:11
  */
 object WorkTimeStatus {
-
     private val workTimeSettingListeners = mutableListOf<(List<String>, String?) -> Unit>()
 
     private val workTimeRuleSetListeners = mutableListOf<(List<WorkTimeRuleSet>, String?) -> Unit>()
@@ -26,17 +25,11 @@ object WorkTimeStatus {
         ReadOnlyListWrapper<WorkTimeRuleSet>(FXCollections.observableArrayList<WorkTimeRuleSet>(ConfigExUtil.getWorkTimeRuleSet()))
     }
 
-    fun readOnlyWorkTimeSetting(): ReadOnlyListProperty<String> {
-        return workTimeSetting.readOnlyProperty
-    }
+    fun readOnlyWorkTimeSetting(): ReadOnlyListProperty<String> = workTimeSetting.readOnlyProperty
 
-    fun readOnlyWorkTimeRuleSet(): ReadOnlyListProperty<WorkTimeRuleSet> {
-        return workTimeRuleSet.readOnlyProperty
-    }
+    fun readOnlyWorkTimeRuleSet(): ReadOnlyListProperty<WorkTimeRuleSet> = workTimeRuleSet.readOnlyProperty
 
-    fun nowWorkTimeRuleSet(): WorkTimeRuleSet? {
-        return workTimeRuleSet.find { it.id == workTimeSetting[LocalDate.now().dayOfWeek.value - 1] }
-    }
+    fun nowWorkTimeRuleSet(): WorkTimeRuleSet? = workTimeRuleSet.find { it.id == workTimeSetting[LocalDate.now().dayOfWeek.value - 1] }
 
     fun addWorkTimeSettingListener(listener: (List<String>, String?) -> Unit) {
         workTimeSettingListeners.add(listener)
@@ -54,7 +47,10 @@ object WorkTimeStatus {
         workTimeRuleSetListeners.remove(listener)
     }
 
-    fun storeWorkTimeSetting(workTimeSettingList: List<String> = workTimeSetting, changeId: String? = null) {
+    fun storeWorkTimeSetting(
+        workTimeSettingList: List<String> = workTimeSetting,
+        changeId: String? = null,
+    ) {
         ConfigExUtil.storeWorkTimeSetting(workTimeSettingList)
         if (workTimeSettingList !== workTimeSetting) {
             workTimeSetting.setAll(workTimeSettingList)
@@ -66,7 +62,10 @@ object WorkTimeStatus {
         WorkTimeListener.tryWork()
     }
 
-    fun storeWorkTimeRuleSet(workTimeRuleSetList: List<WorkTimeRuleSet> = workTimeRuleSet, changeId: String? = null) {
+    fun storeWorkTimeRuleSet(
+        workTimeRuleSetList: List<WorkTimeRuleSet> = workTimeRuleSet,
+        changeId: String? = null,
+    ) {
         ConfigExUtil.storeWorkTimeRuleSet(workTimeRuleSetList)
         if (workTimeRuleSetList !== workTimeRuleSet) {
             workTimeRuleSet.setAll(workTimeRuleSetList)
@@ -77,5 +76,4 @@ object WorkTimeStatus {
         WorkTimeListener.checkWork()
         WorkTimeListener.tryWork()
     }
-
 }

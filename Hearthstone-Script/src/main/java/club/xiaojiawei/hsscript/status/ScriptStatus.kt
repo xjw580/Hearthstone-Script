@@ -19,7 +19,6 @@ import javafx.beans.property.ReadOnlyObjectWrapper
  * @date 2025/4/3 14:25
  */
 object ScriptStatus {
-
     /**
      * 是否设置了炉石和战网的路径
      */
@@ -86,5 +85,4 @@ object ScriptStatus {
         maxLogSizeKB = ConfigUtil.getInt(ConfigEnum.GAME_LOG_LIMIT)
         maxLogSizeB = maxLogSizeKB * 1024
     }
-
 }

@@ -28,11 +28,9 @@ import java.util.concurrent.TimeUnit
  * @date 2022/11/25 12:39
  */
 object TournamentModeStrategy : AbstractModeStrategy<Any?>() {
-
     val START_RECT: GameRect = GameRect(0.2586, 0.3459, 0.2706, 0.3794)
 
     val ERROR_RECT: GameRect = GameRect(-0.0397, 0.0325, 0.0856, 0.1249)
-
 
     val CHANGE_MODE_RECT: GameRect = GameRect(0.2868, 0.3256, -0.4672, -0.4279)
 
@@ -58,18 +56,25 @@ object TournamentModeStrategy : AbstractModeStrategy<Any?>() {
     val CANCEL_RECT: GameRect = GameRect(-0.0251, 0.0530, 0.3203, 0.3802)
 
     override fun wantEnter() {
-        addWantEnterTask(EXTRA_THREAD_POOL.scheduleWithFixedDelay(LRunnable {
-            if (PauseStatus.isPause) {
-                cancelAllWantEnterTasks()
-            } else if (Mode.currMode == ModeEnum.HUB) {
-                TOURNAMENT_MODE_RECT.lClick()
-            } else if (Mode.currMode == ModeEnum.GAME_MODE) {
-                cancelAllWantEnterTasks()
-                BACK_RECT.lClick()
-            } else {
-                cancelAllWantEnterTasks()
-            }
-        }, DELAY_TIME.toLong(), INTERVAL_TIME.toLong(), TimeUnit.MILLISECONDS))
+        addWantEnterTask(
+            EXTRA_THREAD_POOL.scheduleWithFixedDelay(
+                LRunnable {
+                    if (PauseStatus.isPause) {
+                        cancelAllWantEnterTasks()
+                    } else if (Mode.currMode == ModeEnum.HUB) {
+                        TOURNAMENT_MODE_RECT.lClick()
+                    } else if (Mode.currMode == ModeEnum.GAME_MODE) {
+                        cancelAllWantEnterTasks()
+                        BACK_RECT.lClick()
+                    } else {
+                        cancelAllWantEnterTasks()
+                    }
+                },
+                DELAY_TIME.toLong(),
+                INTERVAL_TIME.toLong(),
+                TimeUnit.MILLISECONDS,
+            ),
+        )
     }
 
     override fun afterEnter(t: Any?) {
@@ -82,9 +87,18 @@ object TournamentModeStrategy : AbstractModeStrategy<Any?>() {
                 return
             }
             var runModeEnum: RunModeEnum
-            if (((deckStrategy.runModes[0].also {
-                    runModeEnum = it
-                }) == RunModeEnum.CASUAL || runModeEnum === RunModeEnum.CLASSIC || runModeEnum === RunModeEnum.WILD || runModeEnum === RunModeEnum.STANDARD) && runModeEnum.isEnable) {
+            if ((
+                    (
+                        deckStrategy.runModes[0].also {
+                            runModeEnum = it
+                        }
+                    ) == RunModeEnum.CASUAL ||
+                        runModeEnum === RunModeEnum.CLASSIC ||
+                        runModeEnum === RunModeEnum.WILD ||
+                        runModeEnum === RunModeEnum.STANDARD
+                ) &&
+                runModeEnum.isEnable
+            ) {
                 if (!PowerLogListener.checkPowerLogSize()) {
                     return
                 }
@@ -97,15 +111,22 @@ object TournamentModeStrategy : AbstractModeStrategy<Any?>() {
                 SystemUtil.delayShort()
                 startMatching()
             } else {
-                addEnteredTask(EXTRA_THREAD_POOL.scheduleWithFixedDelay(LRunnable {
-                    if (PauseStatus.isPause) {
-                        cancelAllEnteredTasks()
-                    } else if (Mode.currMode === ModeEnum.TOURNAMENT) {
-                        BACK_RECT.lClick()
-                    } else {
-                        cancelAllEnteredTasks()
-                    }
-                }, 0, 200, TimeUnit.MILLISECONDS))
+                addEnteredTask(
+                    EXTRA_THREAD_POOL.scheduleWithFixedDelay(
+                        LRunnable {
+                            if (PauseStatus.isPause) {
+                                cancelAllEnteredTasks()
+                            } else if (Mode.currMode === ModeEnum.TOURNAMENT) {
+                                BACK_RECT.lClick()
+                            } else {
+                                cancelAllEnteredTasks()
+                            }
+                        },
+                        0,
+                        200,
+                        TimeUnit.MILLISECONDS,
+                    ),
+                )
             }
         }
     }
@@ -176,22 +197,27 @@ object TournamentModeStrategy : AbstractModeStrategy<Any?>() {
      */
     private fun generateTimer() {
         cancelAllEnteredTasks()
-        addEnteredTask(EXTRA_THREAD_POOL.schedule(LRunnable {
-            if (PauseStatus.isPause || Thread.currentThread().isInterrupted || Mode.currMode === ModeEnum.GAMEPLAY) {
-                cancelAllEnteredTasks()
-            } else {
-                log.info { "匹配失败，再次匹配中" }
-                SystemUtil.notice("匹配失败，再次匹配中")
+        addEnteredTask(
+            EXTRA_THREAD_POOL.schedule(
+                LRunnable {
+                    if (PauseStatus.isPause || Thread.currentThread().isInterrupted || Mode.currMode === ModeEnum.GAMEPLAY) {
+                        cancelAllEnteredTasks()
+                    } else {
+                        log.info { "匹配失败，再次匹配中" }
+                        SystemUtil.notice("匹配失败，再次匹配中")
 //                点击取消匹配按钮
-                CANCEL_RECT.lClick()
-                SystemUtil.delayLong()
+                        CANCEL_RECT.lClick()
+                        SystemUtil.delayLong()
 //                点击错误按钮
-                ERROR_RECT.lClick()
-                SystemUtil.delayShort()
-                reconnect()
-                afterEnter(null)
-            }
-        }, ConfigUtil.getLong(ConfigEnum.MATCH_MAXIMUM_TIME), TimeUnit.SECONDS))
+                        ERROR_RECT.lClick()
+                        SystemUtil.delayShort()
+                        reconnect()
+                        afterEnter(null)
+                    }
+                },
+                ConfigUtil.getLong(ConfigEnum.MATCH_MAXIMUM_TIME),
+                TimeUnit.SECONDS,
+            ),
+        )
     }
-
 }

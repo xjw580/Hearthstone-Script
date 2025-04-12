@@ -17,7 +17,6 @@ import java.awt.Point
  * @date 2022/11/24 11:18
  */
 object MouseUtil {
-
     private val mouseMovePauseStep: Int
         get() {
             return ConfigUtil.getInt(ConfigEnum.PAUSE_STEP)
@@ -25,11 +24,10 @@ object MouseUtil {
 
     private val prevPoint = Point(0, 0)
 
-    private fun validatePoint(point: Point?): Boolean {
-        return point?.let {
+    private fun validatePoint(point: Point?): Boolean =
+        point?.let {
             it.x != -1 && it.y != -1
         } == true
-    }
 
     private fun savePos(pos: Point) {
         prevPoint.x = pos.x
@@ -40,9 +38,12 @@ object MouseUtil {
      * 计算斜率
      * @return double 斜率
      */
-    private fun calcK(startX: Int, startY: Int, endX: Int, endY: Int): Double {
-        return (startY - endY).toDouble() / (startX - endX)
-    }
+    private fun calcK(
+        startX: Int,
+        startY: Int,
+        endX: Int,
+        endY: Int,
+    ): Double = (startY - endY).toDouble() / (startX - endX)
 
     fun leftButtonClick(hwnd: HWND?) {
         leftButtonClick(prevPoint, hwnd)
@@ -51,7 +52,7 @@ object MouseUtil {
     fun leftButtonClick(
         pos: Point,
         hwnd: HWND?,
-        mouseMode: Int = ConfigExUtil.getMouseControlMode().code
+        mouseMode: Int = ConfigExUtil.getMouseControlMode().code,
     ) {
         if (!validateEnv(hwnd)) return
         if (validatePoint(pos)) {
@@ -67,7 +68,7 @@ object MouseUtil {
                         pos.y,
                         hwnd,
                         mouseMovePauseStep,
-                        mouseMode
+                        mouseMode,
                     )
                     SystemUtil.delayShort()
                 }
@@ -86,7 +87,7 @@ object MouseUtil {
     fun rightButtonClick(
         pos: Point,
         hwnd: HWND?,
-        mouseMode: Int = ConfigExUtil.getMouseControlMode().code
+        mouseMode: Int = ConfigExUtil.getMouseControlMode().code,
     ) {
         if (!validateEnv(hwnd) || Mode.currMode !== ModeEnum.GAMEPLAY) return
 
@@ -103,7 +104,7 @@ object MouseUtil {
                         pos.y,
                         hwnd,
                         mouseMovePauseStep,
-                        mouseMode
+                        mouseMode,
                     )
                     SystemUtil.delayShort()
                 }
@@ -115,7 +116,10 @@ object MouseUtil {
         }
     }
 
-    fun moveMouseByHuman(endPos: Point, hwnd: HWND?) {
+    fun moveMouseByHuman(
+        endPos: Point,
+        hwnd: HWND?,
+    ) {
         moveMouseByHuman(null, endPos, hwnd)
     }
 
@@ -133,7 +137,7 @@ object MouseUtil {
         startPos: Point?,
         endPos: Point,
         hwnd: HWND?,
-        mouseMode: Int = ConfigExUtil.getMouseControlMode().code
+        mouseMode: Int = ConfigExUtil.getMouseControlMode().code,
     ) {
         if (!validateEnv(hwnd)) return
 
@@ -155,7 +159,7 @@ object MouseUtil {
                             endPos.y,
                             hwnd,
                             mouseMovePauseStep,
-                            mouseMode
+                            mouseMode,
                         )
                         savePos(endPos)
                     }
@@ -169,7 +173,7 @@ object MouseUtil {
                         endPos.y,
                         hwnd,
                         mouseMovePauseStep,
-                        mouseMode
+                        mouseMode,
                     )
                     savePos(endPos)
                 }
@@ -178,5 +182,4 @@ object MouseUtil {
             DRIVER_LOCK.unlock()
         }
     }
-
 }

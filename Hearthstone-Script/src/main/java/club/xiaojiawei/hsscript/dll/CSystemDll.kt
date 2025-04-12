@@ -14,12 +14,21 @@ import java.time.format.DateTimeFormatter
  * @date 2023/9/16 17:34
  */
 interface CSystemDll : Library {
+    // ===================================mouse===================================
 
-    /*===================================mouse===================================*/
+    fun leftClick(
+        x: Long,
+        y: Long,
+        hwnd: HWND?,
+        mouseMode: Int,
+    )
 
-    fun leftClick(x: Long, y: Long, hwnd: HWND?, mouseMode: Int)
-
-    fun rightClick(x: Long, y: Long, hwnd: HWND?, mouseMode: Int)
+    fun rightClick(
+        x: Long,
+        y: Long,
+        hwnd: HWND?,
+        mouseMode: Int,
+    )
 
     fun simulateHumanMoveMouse(
         startX: Int,
@@ -33,7 +42,11 @@ interface CSystemDll : Library {
 
     fun clickPlatformLoginBtn(loginPlatformHWND: HWND?)
 
-    fun sendText(hwnd: HWND?, text: String?, append: Boolean)
+    fun sendText(
+        hwnd: HWND?,
+        text: String?,
+        append: Boolean,
+    )
 
     fun refreshDriver(): Int
 
@@ -41,29 +54,57 @@ interface CSystemDll : Library {
 
     fun releaseDriver(): Int
 
-    /*===================================system===================================*/
+    // ===================================system===================================
 
     fun quitWindow(hwnd: HWND?)
 
     fun frontWindow(hwnd: HWND?)
 
-    fun topWindow(hwnd: HWND?, isTop: Boolean): Boolean
+    fun topWindow(
+        hwnd: HWND?,
+        isTop: Boolean,
+    ): Boolean
 
-    fun topWindowForTitle(title: String?, isTop: Boolean): Boolean
+    fun topWindowForTitle(
+        title: String?,
+        isTop: Boolean,
+    ): Boolean
 
-    fun moveWindow(hwnd: HWND?, x: Int, y: Int, w: Int, h: Int, ignoreSize: Boolean): Boolean
+    fun moveWindow(
+        hwnd: HWND?,
+        x: Int,
+        y: Int,
+        w: Int,
+        h: Int,
+        ignoreSize: Boolean,
+    ): Boolean
 
-    fun moveWindowForTitle(title: String?, x: Int, y: Int, w: Int, h: Int, ignoreSize: Boolean): Boolean
+    fun moveWindowForTitle(
+        title: String?,
+        x: Int,
+        y: Int,
+        w: Int,
+        h: Int,
+        ignoreSize: Boolean,
+    ): Boolean
 
     fun isRunAsAdministrator(): Boolean
 
-    fun messageBox(hwnd: HWND?, text: String?, title: String?, type: Int)
+    fun messageBox(
+        hwnd: HWND?,
+        text: String?,
+        title: String?,
+        type: Int,
+    )
 
     fun findWindowsByProcessName(processName: String?): HWND?
 
     fun findProcessId(processName: String?): Long
 
-    fun getWindowsProxy(proxyUrl: Pointer, length: Int)
+    fun getWindowsProxy(
+        proxyUrl: Pointer,
+        length: Int,
+    )
 
     fun checkS3Support(): Boolean
 
@@ -80,21 +121,24 @@ interface CSystemDll : Library {
 
     fun isProcessRunning(processName: String): Boolean
 
-    /*===================================message===================================*/
+    // ===================================message===================================
 
-    fun changeWindow(gameHWND: HWND?, disable: Boolean);
+    fun changeWindow(
+        gameHWND: HWND?,
+        disable: Boolean,
+    )
 
-    fun uninstall();
+    fun uninstall()
 
-    fun mouserHook(enable: Boolean);
+    fun mouserHook(enable: Boolean)
 
-    fun acHook(enable: Boolean);
+    fun acHook(enable: Boolean)
 
-    fun limitMouseRange(enable: Boolean);
+    fun limitMouseRange(enable: Boolean)
 
     fun isConnected(): Boolean
 
-    /*===================================tray===================================*/
+    // ===================================tray===================================
 
     interface TrayCallback : Callback {
         fun invoke()
@@ -124,10 +168,14 @@ interface CSystemDll : Library {
         var callback: TrayCallback? = null
 
         // 嵌套类用于指针访问
-        class Reference : TrayItem(), ByReference
-        class Value : TrayItem(), ByValue
-    }
+        class Reference :
+            TrayItem(),
+            ByReference
 
+        class Value :
+            TrayItem(),
+            ByValue
+    }
 
     @Structure.FieldOrder("text", "iconPath", "trayItem", "itemCount", "clickCallback")
     open class TrayMenu : Structure() {
@@ -150,18 +198,22 @@ interface CSystemDll : Library {
         var clickCallback: TrayCallback? = null
 
         // 嵌套类用于指针访问
-        class Reference : TrayMenu(), ByReference
-        class Value : TrayMenu(), ByValue
+        class Reference :
+            TrayMenu(),
+            ByReference
+
+        class Value :
+            TrayMenu(),
+            ByValue
     }
 
     fun addSystemTray(trayMenu: TrayMenu.Reference?): Boolean
 
     fun removeSystemTray(): Boolean
 
-    /*ex*/
+    // ex
 
     companion object {
-
         const val MB_ICONERROR: Int = 0x00000010
 
         const val MB_TOPMOST: Int = 0x00040000
@@ -224,7 +276,6 @@ interface CSystemDll : Library {
                 DRIVER_LOCK.unlock()
             }
         }
-
 
         fun safeReleaseDriver(): Int {
             DRIVER_LOCK.lock()

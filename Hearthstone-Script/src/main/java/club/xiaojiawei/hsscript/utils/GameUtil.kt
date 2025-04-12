@@ -23,12 +23,11 @@ import java.awt.Point
 import java.io.File
 import java.io.IOException
 import java.nio.file.Path
-import java.util.*
+import java.util.Arrays
 import java.util.concurrent.ScheduledFuture
 import java.util.concurrent.TimeUnit
 import kotlin.math.max
 import kotlin.math.min
-
 
 /**
  * 游戏工具类
@@ -36,7 +35,6 @@ import kotlin.math.min
  * @date 2022/11/27 1:42
  */
 object GameUtil {
-
     private val GAME_CLASS_NAME_W = WString("UnityWndClass")
 
     val CENTER_RECT: GameRect = GameRect(-0.1, 0.1, 0.1, -0.1)
@@ -82,151 +80,157 @@ object GameUtil {
      */
     val TRADE_RECT = GameRect(0.4253, 0.4736, 0.0171, 0.1634)
 
-    private val FOUR_DISCOVER_RECTS = arrayOf(
-        GameRect(-0.3332, -0.1911, -0.1702, 0.1160),
-        GameRect(-0.1570, -0.0149, -0.1702, 0.1160),
-        GameRect(0.0182, 0.1603, -0.1702, 0.1160),
-        GameRect(0.1934, 0.3355, -0.1702, 0.1160),
-    )
+    private val FOUR_DISCOVER_RECTS =
+        arrayOf(
+            GameRect(-0.3332, -0.1911, -0.1702, 0.1160),
+            GameRect(-0.1570, -0.0149, -0.1702, 0.1160),
+            GameRect(0.0182, 0.1603, -0.1702, 0.1160),
+            GameRect(0.1934, 0.3355, -0.1702, 0.1160),
+        )
 
-    private val THREE_DISCOVER_RECTS = arrayOf(
-        GameRect(-0.3037, -0.1595, -0.1702, 0.1160),
-        GameRect(-0.0666, 0.0741, -0.1702, 0.1160),
-        GameRect(0.1656, 0.3106, -0.1702, 0.1160),
-    )
+    private val THREE_DISCOVER_RECTS =
+        arrayOf(
+            GameRect(-0.3037, -0.1595, -0.1702, 0.1160),
+            GameRect(-0.0666, 0.0741, -0.1702, 0.1160),
+            GameRect(0.1656, 0.3106, -0.1702, 0.1160),
+        )
 
-    private val MY_HAND_DECK_RECTS = arrayOf(
+    private val MY_HAND_DECK_RECTS =
         arrayOf(
-            GameRect(-0.0693, 0.0136, 0.3675, 0.5000),
-        ),
-        arrayOf(
-            GameRect(-0.1149, -0.0316, 0.3675, 0.5000),
-            GameRect(-0.0242, 0.0590, 0.3675, 0.5000),
-        ),
-        arrayOf(
-            GameRect(-0.1599, -0.0767, 0.3675, 0.5000),
-            GameRect(-0.0693, 0.0140, 0.3675, 0.5000),
-            GameRect(0.0214, 0.1047, 0.3675, 0.5000),
-        ),
-        arrayOf(
-            GameRect(-0.1930, -0.1307, 0.3855, 0.5000),
-            GameRect(-0.1092, -0.0347, 0.3742, 0.5000),
-            GameRect(-0.0208, 0.0507, 0.3814, 0.4995),
-            GameRect(0.0744, 0.1425, 0.4158, 0.5000),
-        ),
-        arrayOf(
-            GameRect(-0.2034, -0.1471, 0.4116, 0.5000),
-            GameRect(-0.1338, -0.0704, 0.3888, 0.5000),
-            GameRect(-0.0704, -0.0071, 0.3698, 0.5000),
-            GameRect(0.0077, 0.0604, 0.3935, 0.5000),
-            GameRect(0.0858, 0.1456, 0.4144, 0.5000),
-        ),
-        arrayOf(
-            GameRect(-0.2115, -0.1672, 0.4144, 0.5000),
-            GameRect(-0.1514, -0.1028, 0.3964, 0.5000),
-            GameRect(-0.0975, -0.0448, 0.3755, 0.5000),
-            GameRect(-0.0384, 0.0087, 0.3755, 0.5000),
-            GameRect(0.0270, 0.0671, 0.3812, 0.4990),
-            GameRect(0.0903, 0.1579, 0.4240, 0.5000),
-        ),
-        arrayOf(
-            GameRect(-0.2179, -0.1799, 0.4192, 0.5000),
-            GameRect(-0.1640, -0.1232, 0.4040, 0.5000),
-            GameRect(-0.1155, -0.0690, 0.3869, 0.5000),
-            GameRect(-0.0712, -0.0233, 0.3717, 0.5000),
-            GameRect(-0.0152, 0.0235, 0.3755, 0.5000),
-            GameRect(0.0418, 0.0727, 0.3821, 0.5000),
-            GameRect(0.0956, 0.1617, 0.4211, 0.5000),
-        ),
-        arrayOf(
-            GameRect(-0.2210, -0.1901, 0.4259, 0.5000),
-            GameRect(-0.1746, -0.1394, 0.4125, 0.5000),
-            GameRect(-0.1324, -0.0916, 0.3973, 0.5000),
-            GameRect(-0.0912, -0.0490, 0.3745, 0.5000),
-            GameRect(-0.0469, -0.0103, 0.3688, 0.5000),
-            GameRect(0.0038, 0.0326, 0.3745, 0.5000),
-            GameRect(0.0534, 0.0759, 0.4040, 0.5000),
-            GameRect(0.1030, 0.1536, 0.4163, 0.4990),
-        ),
-        arrayOf(
-            GameRect(-0.2274, -0.1964, 0.4335, 0.5000),
-            GameRect(-0.1820, -0.1496, 0.4335, 0.5000),
-            GameRect(-0.1429, -0.1099, 0.4059, 0.5000),
-            GameRect(-0.1060, -0.0687, 0.3888, 0.5000),
-            GameRect(-0.0712, -0.0346, 0.3698, 0.5000),
-            GameRect(-0.0268, 0.0034, 0.3745, 0.5000),
-            GameRect(0.0186, 0.0502, 0.3764, 0.4563),
-            GameRect(0.0639, 0.0942, 0.3878, 0.4610),
-            GameRect(0.1083, 0.1653, 0.4125, 0.5000),
-        ),
-        arrayOf(
-            GameRect(-0.2305, -0.2024, 0.4401, 0.5000),
-            GameRect(-0.1894, -0.1598, 0.4401, 0.5000),
-            GameRect(-0.1524, -0.1250, 0.4097, 0.5000),
-            GameRect(-0.1176, -0.0859, 0.3964, 0.5000),
-            GameRect(-0.0859, -0.0522, 0.3726, 0.5000),
-            GameRect(-0.0511, -0.0208, 0.3726, 0.5000),
-            GameRect(-0.0089, 0.0207, 0.3740, 0.4501),
-            GameRect(0.0302, 0.0583, 0.3783, 0.4515),
-            GameRect(0.0692, 0.0974, 0.3926, 0.4610),
-            GameRect(0.1093, 0.1677, 0.4163, 0.5000),
-        ),
-    )
+            arrayOf(
+                GameRect(-0.0693, 0.0136, 0.3675, 0.5000),
+            ),
+            arrayOf(
+                GameRect(-0.1149, -0.0316, 0.3675, 0.5000),
+                GameRect(-0.0242, 0.0590, 0.3675, 0.5000),
+            ),
+            arrayOf(
+                GameRect(-0.1599, -0.0767, 0.3675, 0.5000),
+                GameRect(-0.0693, 0.0140, 0.3675, 0.5000),
+                GameRect(0.0214, 0.1047, 0.3675, 0.5000),
+            ),
+            arrayOf(
+                GameRect(-0.1930, -0.1307, 0.3855, 0.5000),
+                GameRect(-0.1092, -0.0347, 0.3742, 0.5000),
+                GameRect(-0.0208, 0.0507, 0.3814, 0.4995),
+                GameRect(0.0744, 0.1425, 0.4158, 0.5000),
+            ),
+            arrayOf(
+                GameRect(-0.2034, -0.1471, 0.4116, 0.5000),
+                GameRect(-0.1338, -0.0704, 0.3888, 0.5000),
+                GameRect(-0.0704, -0.0071, 0.3698, 0.5000),
+                GameRect(0.0077, 0.0604, 0.3935, 0.5000),
+                GameRect(0.0858, 0.1456, 0.4144, 0.5000),
+            ),
+            arrayOf(
+                GameRect(-0.2115, -0.1672, 0.4144, 0.5000),
+                GameRect(-0.1514, -0.1028, 0.3964, 0.5000),
+                GameRect(-0.0975, -0.0448, 0.3755, 0.5000),
+                GameRect(-0.0384, 0.0087, 0.3755, 0.5000),
+                GameRect(0.0270, 0.0671, 0.3812, 0.4990),
+                GameRect(0.0903, 0.1579, 0.4240, 0.5000),
+            ),
+            arrayOf(
+                GameRect(-0.2179, -0.1799, 0.4192, 0.5000),
+                GameRect(-0.1640, -0.1232, 0.4040, 0.5000),
+                GameRect(-0.1155, -0.0690, 0.3869, 0.5000),
+                GameRect(-0.0712, -0.0233, 0.3717, 0.5000),
+                GameRect(-0.0152, 0.0235, 0.3755, 0.5000),
+                GameRect(0.0418, 0.0727, 0.3821, 0.5000),
+                GameRect(0.0956, 0.1617, 0.4211, 0.5000),
+            ),
+            arrayOf(
+                GameRect(-0.2210, -0.1901, 0.4259, 0.5000),
+                GameRect(-0.1746, -0.1394, 0.4125, 0.5000),
+                GameRect(-0.1324, -0.0916, 0.3973, 0.5000),
+                GameRect(-0.0912, -0.0490, 0.3745, 0.5000),
+                GameRect(-0.0469, -0.0103, 0.3688, 0.5000),
+                GameRect(0.0038, 0.0326, 0.3745, 0.5000),
+                GameRect(0.0534, 0.0759, 0.4040, 0.5000),
+                GameRect(0.1030, 0.1536, 0.4163, 0.4990),
+            ),
+            arrayOf(
+                GameRect(-0.2274, -0.1964, 0.4335, 0.5000),
+                GameRect(-0.1820, -0.1496, 0.4335, 0.5000),
+                GameRect(-0.1429, -0.1099, 0.4059, 0.5000),
+                GameRect(-0.1060, -0.0687, 0.3888, 0.5000),
+                GameRect(-0.0712, -0.0346, 0.3698, 0.5000),
+                GameRect(-0.0268, 0.0034, 0.3745, 0.5000),
+                GameRect(0.0186, 0.0502, 0.3764, 0.4563),
+                GameRect(0.0639, 0.0942, 0.3878, 0.4610),
+                GameRect(0.1083, 0.1653, 0.4125, 0.5000),
+            ),
+            arrayOf(
+                GameRect(-0.2305, -0.2024, 0.4401, 0.5000),
+                GameRect(-0.1894, -0.1598, 0.4401, 0.5000),
+                GameRect(-0.1524, -0.1250, 0.4097, 0.5000),
+                GameRect(-0.1176, -0.0859, 0.3964, 0.5000),
+                GameRect(-0.0859, -0.0522, 0.3726, 0.5000),
+                GameRect(-0.0511, -0.0208, 0.3726, 0.5000),
+                GameRect(-0.0089, 0.0207, 0.3740, 0.4501),
+                GameRect(0.0302, 0.0583, 0.3783, 0.4515),
+                GameRect(0.0692, 0.0974, 0.3926, 0.4610),
+                GameRect(0.1093, 0.1677, 0.4163, 0.5000),
+            ),
+        )
 
-    private val MY_PLAY_DECK_RECTS = arrayOf<Array<GameRect>>(
-        //            偶数
-        arrayOf(
-            GameRect(-0.2689, -0.2111, -0.0033, 0.1050),
-            GameRect(-0.1731, -0.1153, -0.0033, 0.1050),
-            GameRect(-0.0773, -0.0195, -0.0033, 0.1050),
-            GameRect(0.0195, 0.0773, -0.0033, 0.1050),
-            GameRect(0.1153, 0.1731, -0.0033, 0.1050),
-            GameRect(0.2111, 0.2689, -0.0033, 0.1050),
-        ),  //            奇数
-        arrayOf(
-            GameRect(-0.3156, -0.2578, -0.0041, 0.1043),
-            GameRect(-0.2204, -0.1626, -0.0041, 0.1043),
-            GameRect(-0.1257, -0.0691, -0.0041, 0.1043),
-            GameRect(-0.0299, 0.0267, -0.0041, 0.1043),
-            GameRect(0.0691, 0.1257, -0.0041, 0.1043),
-            GameRect(0.1626, 0.2204, -0.0041, 0.1043),
-            GameRect(0.2578, 0.3156, -0.0041, 0.1043),
-        ),
-    )
+    private val MY_PLAY_DECK_RECTS =
+        arrayOf<Array<GameRect>>(
+            //            偶数
+            arrayOf(
+                GameRect(-0.2689, -0.2111, -0.0033, 0.1050),
+                GameRect(-0.1731, -0.1153, -0.0033, 0.1050),
+                GameRect(-0.0773, -0.0195, -0.0033, 0.1050),
+                GameRect(0.0195, 0.0773, -0.0033, 0.1050),
+                GameRect(0.1153, 0.1731, -0.0033, 0.1050),
+                GameRect(0.2111, 0.2689, -0.0033, 0.1050),
+            ), //            奇数
+            arrayOf(
+                GameRect(-0.3156, -0.2578, -0.0041, 0.1043),
+                GameRect(-0.2204, -0.1626, -0.0041, 0.1043),
+                GameRect(-0.1257, -0.0691, -0.0041, 0.1043),
+                GameRect(-0.0299, 0.0267, -0.0041, 0.1043),
+                GameRect(0.0691, 0.1257, -0.0041, 0.1043),
+                GameRect(0.1626, 0.2204, -0.0041, 0.1043),
+                GameRect(0.2578, 0.3156, -0.0041, 0.1043),
+            ),
+        )
 
-    private val RIVAL_PLAY_DECK_RECTS = arrayOf<Array<GameRect>>(
-        //            偶数
-        arrayOf(
-            GameRect(-0.2689, -0.2111, -0.1730, -0.0716),
-            GameRect(-0.1731, -0.1153, -0.1730, -0.0716),
-            GameRect(-0.0773, -0.0195, -0.1730, -0.0716),
-            GameRect(0.0195, 0.0773, -0.1730, -0.0716),
-            GameRect(0.1153, 0.1731, -0.1730, -0.0716),
-            GameRect(0.2111, 0.2689, -0.1730, -0.0716),
-        ),
-        //            奇数
-        arrayOf(
-            GameRect(-0.3156, -0.2578, -0.1730, -0.0716),
-            GameRect(-0.2204, -0.1626, -0.1730, -0.0716),
-            GameRect(-0.1257, -0.0691, -0.1730, -0.0716),
-            GameRect(-0.0299, 0.0267, -0.1730, -0.0716),
-            GameRect(0.0691, 0.1257, -0.1730, -0.0716),
-            GameRect(0.1626, 0.2204, -0.1730, -0.0716),
-            GameRect(0.2578, 0.3156, -0.1730, -0.0716),
-        ),
-    )
+    private val RIVAL_PLAY_DECK_RECTS =
+        arrayOf<Array<GameRect>>(
+            //            偶数
+            arrayOf(
+                GameRect(-0.2689, -0.2111, -0.1730, -0.0716),
+                GameRect(-0.1731, -0.1153, -0.1730, -0.0716),
+                GameRect(-0.0773, -0.0195, -0.1730, -0.0716),
+                GameRect(0.0195, 0.0773, -0.1730, -0.0716),
+                GameRect(0.1153, 0.1731, -0.1730, -0.0716),
+                GameRect(0.2111, 0.2689, -0.1730, -0.0716),
+            ),
+            //            奇数
+            arrayOf(
+                GameRect(-0.3156, -0.2578, -0.1730, -0.0716),
+                GameRect(-0.2204, -0.1626, -0.1730, -0.0716),
+                GameRect(-0.1257, -0.0691, -0.1730, -0.0716),
+                GameRect(-0.0299, 0.0267, -0.1730, -0.0716),
+                GameRect(0.0691, 0.1257, -0.1730, -0.0716),
+                GameRect(0.1626, 0.2204, -0.1730, -0.0716),
+                GameRect(0.2578, 0.3156, -0.1730, -0.0716),
+            ),
+        )
 
-    private val DECK_POS_RECTS = arrayOf(
-        GameRect(-0.4108, -0.2487, -0.2782, -0.2019),
-        GameRect(-0.2368, -0.0833, -0.2782, -0.2019),
-        GameRect(-0.0672, 0.0863, -0.2782, -0.2019),
-        GameRect(-0.4034, -0.2498, -0.0699, 0.0065),
-        GameRect(-0.2368, -0.0833, -0.0699, 0.0065),
-        GameRect(-0.0672, 0.0863, -0.0699, 0.0065),
-        GameRect(-0.4003, -0.2468, 0.1384, 0.2148),
-        GameRect(-0.2337, -0.0802, 0.1384, 0.2148),
-        GameRect(-0.0672, 0.0863, 0.1384, 0.2148),
-    )
+    private val DECK_POS_RECTS =
+        arrayOf(
+            GameRect(-0.4108, -0.2487, -0.2782, -0.2019),
+            GameRect(-0.2368, -0.0833, -0.2782, -0.2019),
+            GameRect(-0.0672, 0.0863, -0.2782, -0.2019),
+            GameRect(-0.4034, -0.2498, -0.0699, 0.0065),
+            GameRect(-0.2368, -0.0833, -0.0699, 0.0065),
+            GameRect(-0.0672, 0.0863, -0.0699, 0.0065),
+            GameRect(-0.4003, -0.2468, 0.1384, 0.2148),
+            GameRect(-0.2337, -0.0802, 0.1384, 0.2148),
+            GameRect(-0.0672, 0.0863, 0.1384, 0.2148),
+        )
 
     private var gameEndTasks: MutableList<ScheduledFuture<*>> = mutableListOf()
 
@@ -263,7 +267,6 @@ object GameUtil {
         SystemUtil.delayShortMedium()
     }
 
-
     fun getThreeDiscoverCardRect(index: Int): GameRect {
         if (index < 0 || index > THREE_DISCOVER_RECTS.size - 1) {
             return GameRect.INVALID
@@ -283,22 +286,31 @@ object GameUtil {
         DECK_POS_RECTS[deckPos - 1].lClick()
     }
 
-    fun getMyHandCardRect(index: Int, size: Int): GameRect {
+    fun getMyHandCardRect(
+        index: Int,
+        size: Int,
+    ): GameRect {
         if (index < 0 || index > size - 1 || size > MY_HAND_DECK_RECTS.size) {
             return GameRect.INVALID
         }
         return MY_HAND_DECK_RECTS[size - 1][index]
     }
 
-    fun getMyPlayCardRect(index: Int, size: Int): GameRect {
-        return getPlayCardRect(index, size, MY_PLAY_DECK_RECTS)
-    }
+    fun getMyPlayCardRect(
+        index: Int,
+        size: Int,
+    ): GameRect = getPlayCardRect(index, size, MY_PLAY_DECK_RECTS)
 
-    fun getRivalPlayCardRect(index: Int, size: Int): GameRect {
-        return getPlayCardRect(index, size, RIVAL_PLAY_DECK_RECTS)
-    }
+    fun getRivalPlayCardRect(
+        index: Int,
+        size: Int,
+    ): GameRect = getPlayCardRect(index, size, RIVAL_PLAY_DECK_RECTS)
 
-    private fun getPlayCardRect(index: Int, size: Int, gameRects: Array<Array<GameRect>>): GameRect {
+    private fun getPlayCardRect(
+        index: Int,
+        size: Int,
+        gameRects: Array<Array<GameRect>>,
+    ): GameRect {
         var i = index
         var s = size
         s = max(s, 0)
@@ -312,7 +324,10 @@ object GameUtil {
     /**
      * 选择哪张发现牌
      */
-    fun chooseDiscoverCard(index: Int, discoverCardSize: Int) {
+    fun chooseDiscoverCard(
+        index: Int,
+        discoverCardSize: Int,
+    ) {
         if (discoverCardSize >= 4) {
             getFourDiscoverCardRect(Math.clamp(index.toLong(), 0, 4)).lClick()
         } else {
@@ -328,14 +343,16 @@ object GameUtil {
         MouseUtil.rightButtonClick(point, ScriptStatus.gameHWND)
     }
 
-    fun moveMouse(startPos: Point?, endPos: Point) {
+    fun moveMouse(
+        startPos: Point?,
+        endPos: Point,
+    ) {
         MouseUtil.moveMouseByHuman(startPos, endPos, ScriptStatus.gameHWND)
     }
 
     fun moveMouse(endPos: Point) {
         MouseUtil.moveMouseByHuman(endPos, ScriptStatus.gameHWND)
     }
-
 
     /**
      * 如果战网不在运行则相当于启动战网，如果战网已经运行则为启动炉石
@@ -395,8 +412,8 @@ object GameUtil {
                 },
                 0,
                 500,
-                TimeUnit.MILLISECONDS
-            )
+                TimeUnit.MILLISECONDS,
+            ),
         )
     }
 
@@ -456,8 +473,8 @@ object GameUtil {
                     },
                     1000,
                     1000,
-                    TimeUnit.MILLISECONDS
-                )
+                    TimeUnit.MILLISECONDS,
+                ),
             )
         } else {
             (0 until 3).forEach {
@@ -474,32 +491,28 @@ object GameUtil {
         }
     }
 
-    fun isAliveOfGame(): Boolean {
-        return CSystemDll.INSTANCE.isProcessRunning(GAME_PROGRAM_NAME)
-    }
+    fun isAliveOfGame(): Boolean = CSystemDll.INSTANCE.isProcessRunning(GAME_PROGRAM_NAME)
 
-    fun isAliveOfPlatform(): Boolean {
-        return CSystemDll.INSTANCE.isProcessRunning(PLATFORM_PROGRAM_NAME)
-    }
+    fun isAliveOfPlatform(): Boolean = CSystemDll.INSTANCE.isProcessRunning(PLATFORM_PROGRAM_NAME)
 
     fun findGameHWND(): WinDef.HWND? {
-        val hwnd = (SystemUtil.findHWND("UnityWndClass", GAME_CN_NAME)
-            ?: SystemUtil.findHWND("UnityWndClass", GAME_US_NAME)
-            ?: CSystemDll.INSTANCE.findWindowsByProcessName(GAME_PROGRAM_NAME))
-            ?: SystemUtil.findHWND(null, GAME_CN_NAME)
-            ?: SystemUtil.findHWND(null, GAME_US_NAME)
-            ?: SystemUtil.findHWND("UnityWndClass", null)
+        val hwnd =
+            (
+                SystemUtil.findHWND("UnityWndClass", GAME_CN_NAME)
+                    ?: SystemUtil.findHWND("UnityWndClass", GAME_US_NAME)
+                    ?: CSystemDll.INSTANCE.findWindowsByProcessName(GAME_PROGRAM_NAME)
+            )
+                ?: SystemUtil.findHWND(null, GAME_CN_NAME)
+                ?: SystemUtil.findHWND(null, GAME_US_NAME)
+                ?: SystemUtil.findHWND("UnityWndClass", null)
         return hwnd
     }
 
-    fun findPlatformHWND(): WinDef.HWND? {
-        return SystemUtil.findHWND("Chrome_WidgetWin_0", PLATFORM_CN_NAME)
+    fun findPlatformHWND(): WinDef.HWND? =
+        SystemUtil.findHWND("Chrome_WidgetWin_0", PLATFORM_CN_NAME)
             ?: let { SystemUtil.findHWND("Chrome_WidgetWin_0", PLATFORM_US_NAME) }
-    }
 
-    fun findLoginPlatformHWND(): WinDef.HWND? {
-        return SystemUtil.findHWND("Qt5151QWindowIcon", PLATFORM_LOGIN_CN_NAME)
-    }
+    fun findLoginPlatformHWND(): WinDef.HWND? = SystemUtil.findHWND("Qt5151QWindowIcon", PLATFORM_LOGIN_CN_NAME)
 
     /**
      * 更新游戏窗口信息
@@ -515,26 +528,27 @@ object GameUtil {
     fun killGame(sync: Boolean = false) {
         val exec = {
             if (isAliveOfGame()) {
-                kotlin.runCatching {
-                    for (i in 0 until 2) {
-                        CSystemDll.INSTANCE.quitWindow(ScriptStatus.gameHWND)
-                        delay(2000)
-                        if (!isAliveOfGame()) return@runCatching
+                kotlin
+                    .runCatching {
+                        for (i in 0 until 2) {
+                            CSystemDll.INSTANCE.quitWindow(ScriptStatus.gameHWND)
+                            delay(2000)
+                            if (!isAliveOfGame()) return@runCatching
+                        }
+                        for (i in 0 until 2) {
+                            CSystemDll.INSTANCE.killProcessByName(GAME_PROGRAM_NAME)
+                            delay(2000)
+                            if (!isAliveOfGame()) return@runCatching
+                        }
+                    }.onSuccess {
+                        if (isAliveOfGame()) {
+                            log.error { "${GAME_CN_NAME}关闭失败" }
+                        } else {
+                            log.info { "${GAME_CN_NAME}已关闭" }
+                        }
+                    }.onFailure {
+                        log.error(it) { "关闭${GAME_CN_NAME}异常" }
                     }
-                    for (i in 0 until 2) {
-                        CSystemDll.INSTANCE.killProcessByName(GAME_PROGRAM_NAME)
-                        delay(2000)
-                        if (!isAliveOfGame()) return@runCatching
-                    }
-                }.onSuccess {
-                    if (isAliveOfGame()) {
-                        log.error { "${GAME_CN_NAME}关闭失败" }
-                    } else {
-                        log.info { "${GAME_CN_NAME}已关闭" }
-                    }
-                }.onFailure {
-                    log.error(it) { "关闭${GAME_CN_NAME}异常" }
-                }
             } else {
                 log.info { "${GAME_CN_NAME}不在运行" }
             }
@@ -588,5 +602,4 @@ object GameUtil {
         }
         return null
     }
-
 }
