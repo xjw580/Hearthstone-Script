@@ -40,8 +40,8 @@ body:
   - type: textarea
     id: "log"
     attributes:
-      label: "日志信息(日志不长时可以直接粘贴日志文本或者日志截图，日志较长需以附加文件的方式)"
-      description: "位置在软件当前目录下的log"
+      label: "日志信息"
+      description: "位置在软件当前目录下的log，日志不长时可以直接粘贴日志文本或者日志截图，日志较长需以附加文件的方式"
       placeholder: 在日志开始和结束位置粘贴冒号后的内容：```
     validations:
       required: true
