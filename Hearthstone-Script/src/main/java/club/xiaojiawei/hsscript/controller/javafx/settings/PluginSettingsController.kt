@@ -2,7 +2,7 @@ package club.xiaojiawei.hsscript.controller.javafx.settings
 
 import club.xiaojiawei.CardAction
 import club.xiaojiawei.CardPlugin
-import club.xiaojiawei.DeckPlugin
+import club.xiaojiawei.StrategyPlugin
 import club.xiaojiawei.DeckStrategy
 import club.xiaojiawei.bean.DBCard
 import club.xiaojiawei.bean.PluginWrapper
@@ -191,7 +191,7 @@ class PluginSettingsController : Initializable {
                 }
             }
 
-            is DeckPlugin -> {
+            is StrategyPlugin -> {
                 pluginTabPane.tabs.addLast(deckTab)
                 val progress = deckStrategyRootProgressModal.show()
                 EXTRA_THREAD_POOL.submit {

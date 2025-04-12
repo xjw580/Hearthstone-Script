@@ -56,7 +56,7 @@ object PluginManager {
     private fun loadDeckPlugin() {
         DeckStrategyManager
         loadDeck.set(false)
-        loadPlugin(DeckStrategy::class.java, DeckPlugin::class.java, DECK_STRATEGY_PLUGINS)
+        loadPlugin(DeckStrategy::class.java, StrategyPlugin::class.java, DECK_STRATEGY_PLUGINS)
         loadDeck.set(true)
     }
 

@@ -13,7 +13,10 @@
         <HBox>
             <Text fx:id="name" styleClass="main-info"/>
             <HBox HBox.hgrow="ALWAYS"/>
-            <Label fx:id="type" styleClass="label-ui, label-ui-small" style="-fx-font-size: 11;-fx-padding: 1 2 1 2!important;"/>
+            <HBox spacing="5">
+                <Label fx:id="type" styleClass="label-ui, label-ui-small" style="-fx-font-size: 11;-fx-padding: 1 2 1 2!important;"/>
+                <Label fx:id="sdkVersion" styleClass="label-ui, label-ui-small" style="-fx-font-size: 11;-fx-padding: 1 2 1 2!important;"/>
+            </HBox>
         </HBox>
         <HBox spacing="10">
             <Text fx:id="author" styleClass="secondary-info"/>
