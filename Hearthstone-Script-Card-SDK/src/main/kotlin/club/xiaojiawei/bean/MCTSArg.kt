@@ -34,5 +34,4 @@ data class MCTSArg(
      * 开启多线程计算
      */
     val enableMultiThread: Boolean,
-
-    )
+)
