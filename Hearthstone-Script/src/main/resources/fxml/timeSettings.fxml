@@ -15,7 +15,8 @@
            stylesheets="@css/tableview.css, @css/timeSettings.css"
            prefHeight="600.0" prefWidth="950.0">
     <VBox>
-        <ScrollPane fitToHeight="true" fitToWidth="true" VBox.vgrow="ALWAYS"  styleClass="scroll-pane-item" style="-fx-background: white;">
+        <ScrollPane fitToHeight="true" fitToWidth="true" VBox.vgrow="ALWAYS" styleClass="scroll-pane-item"
+                    style="-fx-background: white;">
             <Accordion fx:id="accordion" styleClass="accordion-ui, accordion-ui-big, accordion-ui-pure" minHeight="400"
                        expandedPane="$setRulePane">
                 <panes>
@@ -63,7 +64,8 @@
                                     <columns>
                                         <TableColumn fx:id="selectedTimeCol" text="时间" minWidth="170" maxWidth="170"
                                                      sortable="false"/>
-                                        <TableColumn fx:id="selectedAfterOperationCol" text="完成后执行" sortable="false"/>
+                                        <TableColumn fx:id="selectedAfterOperationCol" text="完成后执行"
+                                                     sortable="false"/>
                                         <TableColumn fx:id="selectedEnableCol" text="启用" maxWidth="40" minWidth="40"/>
                                     </columns>
                                 </TableView>
@@ -123,14 +125,22 @@
                             <fx:define>
                                 <Double fx:id="dateComboBoxWidth" fx:value="150"/>
                             </fx:define>
-                            <ComboBox fx:id="everyDayComboBox" GridPane.rowIndex="0" GridPane.columnIndex="2" styleClass="combo-box-ui, combo-box-ui-normal" minWidth="$dateComboBoxWidth"/>
-                            <ComboBox fx:id="monComboBox" GridPane.rowIndex="1" GridPane.columnIndex="2" styleClass="combo-box-ui, combo-box-ui-normal" minWidth="$dateComboBoxWidth"/>
-                            <ComboBox fx:id="tueComboBox" GridPane.rowIndex="2" GridPane.columnIndex="2" styleClass="combo-box-ui, combo-box-ui-normal" minWidth="$dateComboBoxWidth"/>
-                            <ComboBox fx:id="wedComboBox" GridPane.rowIndex="3" GridPane.columnIndex="2" styleClass="combo-box-ui, combo-box-ui-normal" minWidth="$dateComboBoxWidth"/>
-                            <ComboBox fx:id="thuComboBox" GridPane.rowIndex="4" GridPane.columnIndex="2" styleClass="combo-box-ui, combo-box-ui-normal" minWidth="$dateComboBoxWidth"/>
-                            <ComboBox fx:id="friComboBox" GridPane.rowIndex="5" GridPane.columnIndex="2" styleClass="combo-box-ui, combo-box-ui-normal" minWidth="$dateComboBoxWidth"/>
-                            <ComboBox fx:id="satComboBox" GridPane.rowIndex="6" GridPane.columnIndex="2" styleClass="combo-box-ui, combo-box-ui-normal" minWidth="$dateComboBoxWidth"/>
-                            <ComboBox fx:id="sunComboBox" GridPane.rowIndex="7" GridPane.columnIndex="2" styleClass="combo-box-ui, combo-box-ui-normal" minWidth="$dateComboBoxWidth"/>
+                            <ComboBox fx:id="everyDayComboBox" GridPane.rowIndex="0" GridPane.columnIndex="2"
+                                      styleClass="combo-box-ui, combo-box-ui-normal" minWidth="$dateComboBoxWidth"/>
+                            <ComboBox fx:id="monComboBox" GridPane.rowIndex="1" GridPane.columnIndex="2"
+                                      styleClass="combo-box-ui, combo-box-ui-normal" minWidth="$dateComboBoxWidth"/>
+                            <ComboBox fx:id="tueComboBox" GridPane.rowIndex="2" GridPane.columnIndex="2"
+                                      styleClass="combo-box-ui, combo-box-ui-normal" minWidth="$dateComboBoxWidth"/>
+                            <ComboBox fx:id="wedComboBox" GridPane.rowIndex="3" GridPane.columnIndex="2"
+                                      styleClass="combo-box-ui, combo-box-ui-normal" minWidth="$dateComboBoxWidth"/>
+                            <ComboBox fx:id="thuComboBox" GridPane.rowIndex="4" GridPane.columnIndex="2"
+                                      styleClass="combo-box-ui, combo-box-ui-normal" minWidth="$dateComboBoxWidth"/>
+                            <ComboBox fx:id="friComboBox" GridPane.rowIndex="5" GridPane.columnIndex="2"
+                                      styleClass="combo-box-ui, combo-box-ui-normal" minWidth="$dateComboBoxWidth"/>
+                            <ComboBox fx:id="satComboBox" GridPane.rowIndex="6" GridPane.columnIndex="2"
+                                      styleClass="combo-box-ui, combo-box-ui-normal" minWidth="$dateComboBoxWidth"/>
+                            <ComboBox fx:id="sunComboBox" GridPane.rowIndex="7" GridPane.columnIndex="2"
+                                      styleClass="combo-box-ui, combo-box-ui-normal" minWidth="$dateComboBoxWidth"/>
                         </GridPane>
                     </TitledPane>
                 </panes>

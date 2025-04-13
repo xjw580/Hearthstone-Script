@@ -14,4 +14,12 @@ class ServiceInitializer : AbstractInitializer() {
             }
         }
     }
+
+    fun stop() {
+        for (configEnum in ConfigEnum.values()) {
+            if (configEnum.isEnable) {
+                configEnum.service?.stop()
+            }
+        }
+    }
 }

@@ -123,9 +123,9 @@ interface CSystemDll : Library {
 
     // ===================================message===================================
 
-    fun changeWindow(
+    fun limitWindowResize(
         gameHWND: HWND?,
-        disable: Boolean,
+        enable: Boolean,
     )
 
     fun uninstall()

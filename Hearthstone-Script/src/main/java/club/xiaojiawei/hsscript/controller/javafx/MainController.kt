@@ -20,6 +20,7 @@ import club.xiaojiawei.hsscript.controller.javafx.view.MainView
 import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.enums.WindowEnum
 import club.xiaojiawei.hsscript.listener.VersionListener
+import club.xiaojiawei.hsscript.listener.WorkTimeListener
 import club.xiaojiawei.hsscript.status.DeckStrategyManager
 import club.xiaojiawei.hsscript.status.PauseStatus
 import club.xiaojiawei.hsscript.status.WorkTimeStatus
@@ -268,14 +269,19 @@ class MainController : MainView() {
 
         //        暂停状态监听
         PauseStatus.addChangeListener { _, _, t1: Boolean ->
-            t1
-                .isTrue {
-                    pauseToggleGroup.selectToggle(pauseButton)
-                    accordion.expandedPane = titledPaneControl
-                }.isFalse {
-                    pauseToggleGroup.selectToggle(startButton)
-                    accordion.expandedPane = titledPaneLog
-                }
+            if (t1) {
+                pauseToggleGroup.selectToggle(pauseButton)
+            } else {
+                pauseToggleGroup.selectToggle(startButton)
+            }
+        }
+//        工作状态监听
+        WorkTimeListener.addChangeListener { _, _, t1: Boolean ->
+            if (t1) {
+                accordion.expandedPane = titledPaneLog
+            } else {
+                accordion.expandedPane = titledPaneControl
+            }
         }
 
         //        游戏局数监听

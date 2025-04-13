@@ -35,24 +35,32 @@ import java.io.IOException
  * @date 2023/2/10 19:42
  */
 object WindowUtil {
-
     private const val CONTROLLER_KEY = "controller"
 
     private val STAGE_MAP: MutableMap<WindowEnum, Stage> = mutableMapOf()
 
     private fun addIcon(stage: Stage) {
-        stage.icons.add(Image(SystemUtil.getProgramIconFile().toURI().toURL().toExternalForm()))
+        stage.icons.add(
+            Image(
+                SystemUtil
+                    .getProgramIconFile()
+                    .toURI()
+                    .toURL()
+                    .toExternalForm(),
+            ),
+        )
     }
 
     fun createMenuPopup(vararg labels: Label?): Popup {
         val popup = Popup()
 
-        val vBox: VBox = object : VBox() {
-            init {
-                style =
-                    "-fx-effect: dropshadow(gaussian, rgba(128, 128, 128, 0.67), 10, 0, 3, 3);-fx-padding: 5 3 5 3;-fx-background-color: white"
+        val vBox: VBox =
+            object : VBox() {
+                init {
+                    style =
+                        "-fx-effect: dropshadow(gaussian, rgba(128, 128, 128, 0.67), 10, 0, 3, 3);-fx-padding: 5 3 5 3;-fx-background-color: white"
+                }
             }
-        }
         vBox.styleClass.add("radius-ui")
 
         popup.isAutoHide = true
@@ -77,84 +85,104 @@ object WindowUtil {
         okText: String = "确认",
         cancelText: String = "取消",
     ): Stage {
-        val stage = Stage().apply {
-            title = SCRIPT_NAME
-            isMaximized = false
-            isResizable = false
-            initModality(Modality.APPLICATION_MODAL)
-            initOwner(window)
-            onCloseRequest = EventHandler {
-                cancelHandler?.handle(null)
+        val stage =
+            Stage().apply {
+                title = SCRIPT_NAME
+                isMaximized = false
+                isResizable = false
+                initModality(Modality.APPLICATION_MODAL)
+                initOwner(window)
+                onCloseRequest =
+                    EventHandler {
+                        cancelHandler?.handle(null)
+                    }
             }
-        }
         addIcon(stage)
 
-        val okBtn = Button(okText).apply {
-            styleClass.addAll("btn-ui", "btn-ui-success")
-            onAction = EventHandler { actionEvent: ActionEvent? ->
-                stage.hide()
-                okHandler?.handle(actionEvent)
+        val okBtn =
+            Button(okText).apply {
+                styleClass.addAll("btn-ui", "btn-ui-success")
+                onAction =
+                    EventHandler { actionEvent: ActionEvent? ->
+                        stage.hide()
+                        okHandler?.handle(actionEvent)
+                    }
             }
-        }
-        val cancelBtn: Button? = cancelHandler?.let {
-            Button(cancelText).apply {
-                styleClass.addAll("btn-ui")
-                onAction = EventHandler { actionEvent: ActionEvent? ->
-                    stage.hide()
-                    cancelHandler.handle(actionEvent)
+        val cancelBtn: Button? =
+            cancelHandler?.let {
+                Button(cancelText).apply {
+                    styleClass.addAll("btn-ui")
+                    onAction =
+                        EventHandler { actionEvent: ActionEvent? ->
+                            stage.hide()
+                            cancelHandler.handle(actionEvent)
+                        }
                 }
             }
-        }
-        val head: HBox? = headerText?.let {
-            HBox(Label(it).apply {
-                style = "-fx-wrap-text: true"
-            }).apply {
-                alignment = Pos.CENTER_LEFT
-                style = "-fx-padding: 15;-fx-font-weight: bold"
+        val head: HBox? =
+            headerText?.let {
+                HBox(
+                    Label(it).apply {
+                        style = "-fx-wrap-text: true"
+                    },
+                ).apply {
+                    alignment = Pos.CENTER_LEFT
+                    style = "-fx-padding: 15;-fx-font-weight: bold"
+                }
             }
-        }
-        val center: HBox? = contentText?.let {
-            HBox(Label(it).apply {
-                style = "-fx-wrap-text: true"
-            }).apply {
-                alignment = Pos.CENTER_LEFT
-                style = "-fx-padding: 10 30 10 30;-fx-font-size: 14"
+        val center: HBox? =
+            contentText?.let {
+                HBox(
+                    Label(it).apply {
+                        style = "-fx-wrap-text: true"
+                    },
+                ).apply {
+                    alignment = Pos.CENTER_LEFT
+                    style = "-fx-padding: 10 30 10 30;-fx-font-size: 14"
+                }
             }
-        }
-        val bottom = HBox(okBtn).apply {
-            cancelBtn?.let {
-                children.add(it)
+        val bottom =
+            HBox(okBtn).apply {
+                cancelBtn?.let {
+                    children.add(it)
+                }
+                alignment = Pos.CENTER_RIGHT
+                style = "-fx-padding: 10;-fx-spacing: 20"
             }
-            alignment = Pos.CENTER_RIGHT
-            style = "-fx-padding: 10;-fx-spacing: 20"
-        }
-        val scene = Scene(VBox().apply {
-            head?.let {
-                children.add(it)
+        val scene =
+            Scene(
+                VBox().apply {
+                    head?.let {
+                        children.add(it)
+                    }
+                    center?.let {
+                        children.add(it)
+                    }
+                    children.add(bottom)
+                },
+                400.0,
+                -1.0,
+            ).apply {
+                fill = Paint.valueOf("#FFFFFF00")
             }
-            center?.let {
-                children.add(it)
-            }
-            children.add(bottom)
-        }, 400.0, -1.0).apply {
-            fill = Paint.valueOf("#FFFFFF00")
-        }
         JavaFXUI.addjavafxUIStylesheet(scene)
         stage.scene = scene
 
         return stage
     }
 
-    fun createAlert(headerText: String?, contentText: String?, window: Window?): Stage {
-        return createAlert(headerText, contentText, null, null, window)
-    }
+    fun createAlert(
+        headerText: String?,
+        contentText: String?,
+        window: Window?,
+    ): Stage = createAlert(headerText, contentText, null, null, window)
 
-    fun findWindow(windowEnum: WindowEnum): HWND? {
-        return findHWND(null, windowEnum.title)
-    }
+    fun findWindow(windowEnum: WindowEnum): HWND? = findHWND(null, windowEnum.title)
 
-
-    fun showStage(windowEnum: WindowEnum, owner: Window? = null) {
+    fun showStage(
+        windowEnum: WindowEnum,
+        owner: Window? = null,
+    ) {
         runUI {
             (getStage(windowEnum) ?: buildStage(windowEnum, owner)).run {
                 if (this.owner == null && owner != null) {
@@ -190,17 +218,21 @@ object WindowUtil {
         }
     }
 
-    fun getController(windowEnum: WindowEnum): Any? {
-        return getStage(windowEnum)?.let {
+    fun getController(windowEnum: WindowEnum): Any? =
+        getStage(windowEnum)?.let {
             it.properties[CONTROLLER_KEY]
         }
-    }
 
-    fun buildStage(windowEnum: WindowEnum, owner: Window? = null): Stage {
-        return buildStage(windowEnum, true, owner)
-    }
+    fun buildStage(
+        windowEnum: WindowEnum,
+        owner: Window? = null,
+    ): Stage = buildStage(windowEnum, true, owner)
 
-    fun buildStage(windowEnum: WindowEnum, createStage: Boolean, owner: Window? = null): Stage {
+    fun buildStage(
+        windowEnum: WindowEnum,
+        createStage: Boolean,
+        owner: Window? = null,
+    ): Stage {
         if (!Platform.isFxApplicationThread()) throw RuntimeException("禁止在非ui线程中创建窗口")
         var stage = STAGE_MAP[windowEnum]
         if (stage == null || createStage) {
@@ -222,9 +254,10 @@ object WindowUtil {
                 }
             }
             stage.setOnHiding {
-                kotlin.runCatching {
-                    stage.isIconified = false
-                }.onFailure { log.error { it.message } }
+                kotlin
+                    .runCatching {
+                        stage.isIconified = false
+                    }.onFailure { log.error { it.message } }
                 for (entry in STAGE_MAP) {
                     if (entry.value.owner == stage) {
                         entry.value.hide()
@@ -235,9 +268,10 @@ object WindowUtil {
                 }
             }
             stage.setOnCloseRequest { event ->
-                kotlin.runCatching {
-                    stage.isIconified = false
-                }.onFailure { log.error { it.message } }
+                kotlin
+                    .runCatching {
+                        stage.isIconified = false
+                    }.onFailure { log.error { it.message } }
                 for (entry in STAGE_MAP) {
                     if (entry.value.owner == stage) {
                         entry.value.hide()
@@ -302,14 +336,13 @@ object WindowUtil {
                 }
             }
 
-
             stage.isAlwaysOnTop = windowEnum.alwaysOnTop
             stage.initStyle(windowEnum.initStyle)
             if (windowEnum.initStyle === StageStyle.TRANSPARENT) {
                 scene.fill = null
             }
         } catch (e: IOException) {
-            throw RuntimeException("创建[${windowEnum}]窗口异常", e)
+            throw RuntimeException("创建[$windowEnum]窗口异常", e)
         }
         return stage
     }
@@ -319,9 +352,7 @@ object WindowUtil {
      * @param windowEnum
      * @return
      */
-    fun getStage(windowEnum: WindowEnum): Stage? {
-        return STAGE_MAP[windowEnum]
-    }
+    fun getStage(windowEnum: WindowEnum): Stage? = STAGE_MAP[windowEnum]
 
     fun hideLaunchPage() {
         findHWND("ZLaunch Class", null)?.let { launchWindow ->

@@ -23,7 +23,7 @@ import java.awt.Point
 import java.io.File
 import java.io.IOException
 import java.nio.file.Path
-import java.util.Arrays
+import java.util.*
 import java.util.concurrent.ScheduledFuture
 import java.util.concurrent.TimeUnit
 import kotlin.math.max
@@ -526,6 +526,8 @@ object GameUtil {
      * 通过此方式停止的游戏，screen.log监听器可能无法监测到游戏被关闭
      */
     fun killGame(sync: Boolean = false) {
+//        todo del
+        println("killGame")
         val exec = {
             if (isAliveOfGame()) {
                 kotlin

@@ -14,23 +14,20 @@ import javafx.beans.value.ChangeListener
  * @date 2025/4/1 15:08
  */
 object WorkingMinimizeService : Service<Boolean>() {
-
     private val changeListener: ChangeListener<Boolean> by lazy {
         ChangeListener { _, _, working ->
-            working.isTrue {
-                WindowUtil.hideAllStage()
-            }.isFalse {
-                WindowUtil.showStage(WindowEnum.MAIN)
-            }
+            working
+                .isTrue {
+                    WindowUtil.hideAllStage()
+                }.isFalse {
+                    WindowUtil.showStage(WindowEnum.MAIN)
+                }
         }
     }
 
     override fun execStart(): Boolean {
-        if (ConfigUtil.getBoolean(ConfigEnum.WORKING_MINIMIZE)) {
-            WorkTimeListener.addChangeListener(changeListener)
-            return true
-        }
-        return false
+        WorkTimeListener.addChangeListener(changeListener)
+        return true
     }
 
     override fun execStop(): Boolean {
@@ -38,8 +35,5 @@ object WorkingMinimizeService : Service<Boolean>() {
         return true
     }
 
-    override fun execIntelligentStartStop(value: Boolean?): Boolean {
-        return (value ?: ConfigUtil.getBoolean(ConfigEnum.WORKING_MINIMIZE))
-    }
-
+    override fun execIntelligentStartStop(value: Boolean?): Boolean = (value ?: ConfigUtil.getBoolean(ConfigEnum.WORKING_MINIMIZE))
 }

@@ -204,6 +204,11 @@
             <!--javafx-->
             <dependency>
                 <groupId>org.openjfx</groupId>
+                <artifactId>javafx-swing</artifactId>
+                <version>${javafx-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.openjfx</groupId>
                 <artifactId>javafx-controls</artifactId>
                 <version>${javafx-version}</version>
             </dependency>
@@ -221,6 +226,12 @@
                 <groupId>org.openjfx</groupId>
                 <artifactId>javafx-graphics</artifactId>
                 <version>${javafx-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.openjfx</groupId>
+                <artifactId>javafx-swing</artifactId>
+                <version>${javafx-version}</version>
+                <classifier>win</classifier>
             </dependency>
             <dependency>
                 <groupId>org.openjfx</groupId>

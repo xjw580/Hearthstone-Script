@@ -48,6 +48,7 @@ object GameTimeoutService : Service<Int>() {
                 SystemUtil.delay(15_000)
             }
         } catch (e: Exception) {
+            log.error(e) { "" }
         }
     }
 

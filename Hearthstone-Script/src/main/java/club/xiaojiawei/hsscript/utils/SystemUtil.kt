@@ -15,6 +15,7 @@ import club.xiaojiawei.hsscript.dll.User32ExDll.Companion.SC_MONITORPOWER
 import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.enums.RegCommonNameEnum
 import club.xiaojiawei.hsscript.enums.WindowEnum
+import club.xiaojiawei.hsscript.initializer.ServiceInitializer
 import club.xiaojiawei.hsscript.status.PauseStatus
 import club.xiaojiawei.hsscript.utils.SystemUtil.delay
 import club.xiaojiawei.util.RandomUtil
@@ -71,23 +72,14 @@ object SystemUtil {
         title: String = "",
         btnText: String = "",
         btnURL: String = "",
+        forceNotify: Boolean = false,
     ) {
-        ConfigUtil.getBoolean(ConfigEnum.SEND_NOTICE).isTrue {
+        (ConfigUtil.getBoolean(ConfigEnum.SEND_NOTICE) || forceNotify).isTrue {
             Thread.ofVirtual().name("Notice VThread").start(
                 LRunnable {
-//        trayIcon.displayMessage(title, content, TrayIcon.MessageType.NONE);
                     val appIDBytes: ByteArray = SCRIPT_NAME.toByteArray(StandardCharsets.UTF_8)
                     val titleBytes = title.toByteArray(StandardCharsets.UTF_8)
                     val msgBytes = content.toByteArray(StandardCharsets.UTF_8)
-
-                    val jarPath =
-                        File(
-                            SystemUtil.javaClass
-                                .getProtectionDomain()
-                                .codeSource
-                                .location
-                                .toURI(),
-                        )
 
                     val icoPathBytes: ByteArray =
                         getProgramIconFile()
@@ -345,9 +337,16 @@ object SystemUtil {
      * 关闭本软件
      */
     fun shutdownSoft() {
-        WindowUtil.hideAllStage(true)
+        runCatching {
+            WindowUtil.hideAllStage(true)
+        }
         log.info { "准备关闭软件..." }
-        PauseStatus.isPause = true
+        runCatching {
+            PauseStatus.isPause = true
+        }
+        runCatching {
+            ServiceInitializer().stop()
+        }
         exitProcess(0)
     }
 
@@ -462,14 +461,14 @@ object SystemUtil {
         hwnd: WinDef.HWND?,
         opacity: Int,
     ) {
-        hwnd?.let {
-            val windowLong = User32.INSTANCE.GetWindowLong(it, GWL_EXSTYLE)
+        if (User32.INSTANCE.IsWindow(hwnd)) {
+            val windowLong = User32.INSTANCE.GetWindowLong(hwnd, GWL_EXSTYLE)
             if ((windowLong and WS_EX_LAYERED) == 0) {
-                User32.INSTANCE.SetWindowLong(it, GWL_EXSTYLE, windowLong xor WS_EX_LAYERED)
+                User32.INSTANCE.SetWindowLong(hwnd, GWL_EXSTYLE, windowLong xor WS_EX_LAYERED)
             }
 
             User32.INSTANCE.SetLayeredWindowAttributes(
-                it,
+                hwnd,
                 0,
                 Math.clamp(opacity.toDouble(), 0.0, 255.0).toInt().toByte(),
                 LWA_ALPHA,

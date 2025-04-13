@@ -14,10 +14,11 @@ import javafx.beans.value.ChangeListener
  * @date 2025/4/1 15:20
  */
 object PlatformWindowOpacityService : Service<Int>() {
-
     private val windowChangeListener: ChangeListener<HWND?> by lazy {
         ChangeListener<HWND?> { _, _, newValue ->
-            changeOpacity(ConfigUtil.getInt(ConfigEnum.PLATFORM_WINDOW_OPACITY), newValue)
+            if (WorkTimeListener.working) {
+                changeOpacity(ConfigUtil.getInt(ConfigEnum.PLATFORM_WINDOW_OPACITY))
+            }
         }
     }
 
@@ -32,6 +33,9 @@ object PlatformWindowOpacityService : Service<Int>() {
     }
 
     override fun execStart(): Boolean {
+        if (WorkTimeListener.working) {
+            changeOpacity(ConfigUtil.getInt(ConfigEnum.PLATFORM_WINDOW_OPACITY))
+        }
         ScriptStatus.platformHWNDProperty().addListener(windowChangeListener)
         WorkTimeListener.addChangeListener(workingChangeListener)
         return true
@@ -40,21 +44,20 @@ object PlatformWindowOpacityService : Service<Int>() {
     override fun execStop(): Boolean {
         ScriptStatus.platformHWNDProperty().removeListener(windowChangeListener)
         WorkTimeListener.removeChangeListener(workingChangeListener)
+        changeOpacity(ConfigEnum.PLATFORM_WINDOW_OPACITY.defaultValue.toInt())
         return true
     }
 
-    override fun execIntelligentStartStop(value: Int?): Boolean {
-        return (value ?: ConfigUtil.getInt(ConfigEnum.PLATFORM_WINDOW_OPACITY)) < 255
-    }
+    override fun execIntelligentStartStop(value: Int?): Boolean = (value ?: ConfigUtil.getInt(ConfigEnum.PLATFORM_WINDOW_OPACITY)) < 255
 
-    override fun execValueChanged(oldValue: Int, newValue: Int) {
+    override fun execValueChanged(
+        oldValue: Int,
+        newValue: Int,
+    ) {
         changeOpacity(newValue)
     }
 
-    private fun changeOpacity(opacity: Int, hwnd: HWND? = null) {
-        (hwnd ?: GameUtil.findPlatformHWND())?.let {
-            SystemUtil.changeWindowOpacity(it, opacity)
-        }
+    private fun changeOpacity(opacity: Int) {
+        SystemUtil.changeWindowOpacity(GameUtil.findPlatformHWND(), opacity)
     }
-
 }

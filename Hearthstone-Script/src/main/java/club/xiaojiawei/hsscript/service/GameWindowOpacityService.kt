@@ -13,7 +13,6 @@ import javafx.beans.value.ChangeListener
  * @date 2025/4/1 15:20
  */
 object GameWindowOpacityService : Service<Int>() {
-
     private val windowChangeListener: ChangeListener<HWND?> by lazy {
         ChangeListener { _, _, newValue ->
             if (WorkTimeListener.working) {
@@ -33,6 +32,9 @@ object GameWindowOpacityService : Service<Int>() {
     }
 
     override fun execStart(): Boolean {
+        if (WorkTimeListener.working) {
+            changeOpacity(ConfigUtil.getInt(ConfigEnum.GAME_WINDOW_OPACITY))
+        }
         ScriptStatus.gameHWNDProperty().addListener(windowChangeListener)
         WorkTimeListener.addChangeListener(workingChangeListener)
         return true
@@ -41,20 +43,20 @@ object GameWindowOpacityService : Service<Int>() {
     override fun execStop(): Boolean {
         ScriptStatus.gameHWNDProperty().removeListener(windowChangeListener)
         WorkTimeListener.removeChangeListener(workingChangeListener)
+        changeOpacity(ConfigEnum.GAME_WINDOW_OPACITY.defaultValue.toInt())
         return true
     }
 
-    override fun execIntelligentStartStop(value: Int?): Boolean {
-        return (value ?: ConfigUtil.getInt(ConfigEnum.GAME_WINDOW_OPACITY)) < 255
-    }
+    override fun execIntelligentStartStop(value: Int?): Boolean = (value ?: ConfigUtil.getInt(ConfigEnum.GAME_WINDOW_OPACITY)) < 255
 
-    override fun execValueChanged(oldValue: Int, newValue: Int) {
+    override fun execValueChanged(
+        oldValue: Int,
+        newValue: Int,
+    ) {
         changeOpacity(newValue)
     }
 
     private fun changeOpacity(opacity: Int) {
-        ScriptStatus.gameHWND?.let {
-            SystemUtil.changeWindowOpacity(it, opacity)
-        }
+        SystemUtil.changeWindowOpacity(ScriptStatus.gameHWND, opacity)
     }
 }

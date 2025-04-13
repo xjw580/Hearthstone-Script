@@ -17,7 +17,6 @@ import java.io.IOException
  * @date 2023/7/5 14:38
  */
 class InjectStarter : AbstractStarter() {
-
     override fun execStart() {
         val mouseControlMode = ConfigExUtil.getMouseControlMode()
         val acHook = ConfigUtil.getBoolean(ConfigEnum.PREVENT_AC)
@@ -25,10 +24,10 @@ class InjectStarter : AbstractStarter() {
         val limitMouseRange = ConfigUtil.getBoolean(ConfigEnum.LIMIT_MOUSE_RANGE)
 
         log.info { "鼠标控制模式：${mouseControlMode.name}" }
-        log.info { "阻止游戏反作弊：${acHook}" }
-        if (mouseHook
-            || acHook
-            || limitMouseRange
+        log.info { "阻止游戏反作弊：$acHook" }
+        if (mouseHook ||
+            acHook ||
+            limitMouseRange
         ) {
             if (ScriptStatus.gameHWND == null || !injectCheck()) {
                 pause()
@@ -60,14 +59,17 @@ class InjectStarter : AbstractStarter() {
         return execInject(injectFile.absolutePath, dllFile.absolutePath)
     }
 
-    private fun execInject(injectUtilPath: String, dllPath: String): Boolean {
+    private fun execInject(
+        injectUtilPath: String,
+        dllPath: String,
+    ): Boolean {
         try {
             val result = CMDUtil.exec(arrayOf(injectUtilPath, "$GAME_US_NAME.exe", dllPath))
             if (result.contains("completed")) {
                 log.info { "注入成功" }
                 return true
             } else {
-                log.error { "注入失败：${result}" }
+                log.error { "注入失败：$result" }
                 if (!CSystemDll.INSTANCE.isRunAsAdministrator()) {
                     log.error { "请以管理员运行本软件" }
                     SystemUtil.messageError("请以管理员运行本软件")

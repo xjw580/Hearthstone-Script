@@ -4,11 +4,13 @@ import club.xiaojiawei.config.log
 import club.xiaojiawei.hsscript.dll.CSystemDll
 import club.xiaojiawei.hsscript.dll.User32ExDll
 import club.xiaojiawei.hsscript.enums.ConfigEnum
+import club.xiaojiawei.hsscript.listener.WorkTimeListener
 import club.xiaojiawei.hsscript.status.ScriptStatus
 import club.xiaojiawei.hsscript.utils.ConfigUtil
 import club.xiaojiawei.hsscript.utils.GameUtil
-import club.xiaojiawei.util.isFalse
 import club.xiaojiawei.util.isTrue
+import com.sun.jna.platform.win32.User32
+import javafx.beans.value.ChangeListener
 
 /**
  * @author 肖嘉威
@@ -22,15 +24,22 @@ object UpdateGameWindowService : Service<Boolean>() {
 
     private var thread: Thread? = null
 
+    private val changeListener: ChangeListener<Boolean> by lazy {
+        ChangeListener { _, _, working ->
+            CSystemDll.INSTANCE.limitWindowResize(ScriptStatus.gameHWND, working)
+        }
+    }
+
     override fun execStart(): Boolean {
-        CSystemDll.INSTANCE.changeWindow(ScriptStatus.gameHWND, false)
+        WorkTimeListener.addChangeListener(changeListener)
         thread =
             Thread({
-                while (true) {
+                while (thread?.isInterrupted == false) {
                     try {
                         Thread.sleep(1000)
-                        ScriptStatus.gameHWND?.let { hwnd ->
-                            User32ExDll.INSTANCE.IsIconic(hwnd).isFalse {
+                        if (WorkTimeListener.working) {
+                            val hwnd = ScriptStatus.gameHWND
+                            if (User32.INSTANCE.IsWindow(hwnd) && !User32ExDll.INSTANCE.IsIconic(hwnd)) {
                                 GameUtil.updateGameRect(hwnd)
                             }
                         }
@@ -47,13 +56,14 @@ object UpdateGameWindowService : Service<Boolean>() {
     }
 
     override fun execStop(): Boolean {
+        WorkTimeListener.removeChangeListener(changeListener)
+        CSystemDll.INSTANCE.limitWindowResize(ScriptStatus.gameHWND, false)
         thread?.let {
             it.isAlive.isTrue {
                 it.interrupt()
             }
             thread = null
         }
-        CSystemDll.INSTANCE.changeWindow(ScriptStatus.gameHWND, true)
         return true
     }
 
