@@ -27,7 +27,6 @@ import java.nio.file.Path
  * @date 2024/10/2 13:19
  */
 object ConfigExUtil {
-
     fun storeGamePath(gameInstallPath: String?): Boolean {
         gameInstallPath ?: return false
 
@@ -40,11 +39,12 @@ object ConfigExUtil {
 
     fun storePlatformPath(platformInstallPath: String?): Boolean {
         platformInstallPath ?: return false
-        val programAbsolutePath = if (platformInstallPath.endsWith(".exe")) {
-            platformInstallPath
-        } else {
-            platformInstallPath + File.separator + PLATFORM_PROGRAM_NAME
-        }
+        val programAbsolutePath =
+            if (platformInstallPath.endsWith(".exe")) {
+                platformInstallPath
+            } else {
+                platformInstallPath + File.separator + PLATFORM_PROGRAM_NAME
+            }
         if (File(programAbsolutePath).exists()) {
             ConfigUtil.putString(ConfigEnum.PLATFORM_PATH, programAbsolutePath)
             return true
@@ -52,41 +52,33 @@ object ConfigExUtil {
         return false
     }
 
-    fun getExitHotKey(): HotKey? {
-        return ConfigUtil.getObject(ConfigEnum.EXIT_HOT_KEY, HotKey::class.java)
-    }
+    fun getExitHotKey(): HotKey? = ConfigUtil.getObject(ConfigEnum.EXIT_HOT_KEY, HotKey::class.java)
 
     fun storeExitHotKey(hotKey: HotKey) {
         ConfigUtil.putObject(ConfigEnum.EXIT_HOT_KEY, hotKey)
     }
 
-    fun getPauseHotKey(): HotKey? {
-        return ConfigUtil.getObject(ConfigEnum.PAUSE_HOT_KEY, HotKey::class.java)
-    }
+    fun getPauseHotKey(): HotKey? = ConfigUtil.getObject(ConfigEnum.PAUSE_HOT_KEY, HotKey::class.java)
 
     fun storePauseHotKey(hotKey: HotKey) {
         ConfigUtil.putObject(ConfigEnum.PAUSE_HOT_KEY, hotKey)
     }
 
-    fun getDeckPluginDisabled(): MutableList<String> {
-        return ConfigUtil.getArray(ConfigEnum.DECK_PLUGIN_DISABLED, String::class.java) ?: mutableListOf()
-    }
+    fun getDeckPluginDisabled(): MutableList<String> =
+        ConfigUtil.getArray(ConfigEnum.DECK_PLUGIN_DISABLED, String::class.java) ?: mutableListOf()
 
     fun storeDeckPluginDisabled(disabledList: List<String>) {
         ConfigUtil.putArray(ConfigEnum.DECK_PLUGIN_DISABLED, disabledList)
     }
 
-    fun getCardPluginDisabled(): MutableList<String> {
-        return ConfigUtil.getArray(ConfigEnum.CARD_PLUGIN_DISABLED, String::class.java) ?: mutableListOf()
-    }
+    fun getCardPluginDisabled(): MutableList<String> =
+        ConfigUtil.getArray(ConfigEnum.CARD_PLUGIN_DISABLED, String::class.java) ?: mutableListOf()
 
     fun storeCardPluginDisabled(disabledList: List<String>) {
         ConfigUtil.putArray(ConfigEnum.CARD_PLUGIN_DISABLED, disabledList)
     }
 
-    fun getFileLogLevel(): Level {
-        return Level.toLevel(ConfigUtil.getString(ConfigEnum.FILE_LOG_LEVEL))
-    }
+    fun getFileLogLevel(): Level = Level.toLevel(ConfigUtil.getString(ConfigEnum.FILE_LOG_LEVEL))
 
     fun storeFileLogLevel(level: String) {
         ConfigUtil.putString(ConfigEnum.FILE_LOG_LEVEL, level)
@@ -121,9 +113,7 @@ object ConfigExUtil {
         return true
     }
 
-    fun getMouseControlMode(): MouseControlModeEnum {
-        return MouseControlModeEnum.fromString(ConfigUtil.getString(ConfigEnum.MOUSE_CONTROL_MODE))
-    }
+    fun getMouseControlMode(): MouseControlModeEnum = MouseControlModeEnum.fromString(ConfigUtil.getString(ConfigEnum.MOUSE_CONTROL_MODE))
 
     fun storeTopGameWindow(enabled: Boolean) {
         ConfigUtil.putBoolean(ConfigEnum.TOP_GAME_WINDOW, enabled)
@@ -141,7 +131,10 @@ object ConfigExUtil {
         if (updateSource.isBlank()) {
             return listOf(GiteeRepository, GithubRepository)
         }
-        if (GiteeRepository::class.java.simpleName.lowercase().startsWith(updateSource)) {
+        if (GiteeRepository::class.java.simpleName
+                .lowercase()
+                .startsWith(updateSource)
+        ) {
             return listOf(GiteeRepository, GithubRepository)
         }
         return listOf(GithubRepository, GiteeRepository)
@@ -158,16 +151,15 @@ object ConfigExUtil {
             FileOutputStream(acFile).use {
                 it.write(status.toString().toByteArray())
             }
-            Files.setAttribute(acFile.toPath(), "dos:hidden", true);
+            Files.setAttribute(acFile.toPath(), "dos:hidden", true)
         }
     }
 
-    fun getWorkTimeRuleSet(): MutableList<WorkTimeRuleSet> {
-        return ConfigUtil.getArray(
+    fun getWorkTimeRuleSet(): MutableList<WorkTimeRuleSet> =
+        ConfigUtil.getArray(
             ConfigEnum.WORK_TIME_RULE_SET,
-            WorkTimeRuleSet::class.java
+            WorkTimeRuleSet::class.java,
         ) ?: mutableListOf()
-    }
 
     fun storeWorkTimeRuleSet(workTimeRuleSets: List<WorkTimeRuleSet>) {
         ConfigUtil.putString(ConfigEnum.WORK_TIME_RULE_SET, JSON.toJSONString(workTimeRuleSets))
@@ -179,7 +171,7 @@ object ConfigExUtil {
     fun getWorkTimeSetting(): MutableList<String> {
         return ConfigUtil.getArray(
             ConfigEnum.WORK_TIME_SETTING,
-            String::class.java
+            String::class.java,
         ) ?: let {
             val res = mutableListOf<String>()
             for (i in 0 until 7) {
@@ -195,5 +187,4 @@ object ConfigExUtil {
     fun storeWorkTimeSetting(workTimeSetting: List<String>) {
         ConfigUtil.putString(ConfigEnum.WORK_TIME_SETTING, JSON.toJSONString(workTimeSetting))
     }
-
 }

@@ -11,7 +11,6 @@ import kotlin.math.min
  * @date 2023/9/16 20:05
  */
 class Release : Comparable<Release> {
-
     @JsonProperty("tag_name")
     var tagName: String = ""
 
@@ -35,17 +34,19 @@ class Release : Comparable<Release> {
         return compareVersion(version1, version2)
     }
 
-    override fun toString(): String {
-        return "Release{" +
-                "tagName='$tagName', " +
-                "preRelease=$isPreRelease, " +
-                "name='$name', " +
-                "body='${body?.let { "\n$it".trimIndent() } ?: "null"}'" +
-                "}"
-    }
+    override fun toString(): String =
+        "Release{" +
+            "tagName='$tagName', " +
+            "preRelease=$isPreRelease, " +
+            "name='$name', " +
+            "body='${body?.let { "\n$it".trimIndent() } ?: "null"}'" +
+            "}"
 
     companion object {
-        fun compareVersion(version1: String, version2: String): Int {
+        fun compareVersion(
+            version1: String,
+            version2: String,
+        ): Int {
             val regex = "\\d+(\\.\\d+)*"
             val pattern = Pattern.compile(regex)
             val matcher1 = pattern.matcher(version1)
@@ -56,8 +57,18 @@ class Release : Comparable<Release> {
                 log.warn { String.format("版本号有误，version1：%s，version2：%s", version1, version2) }
                 return Int.MAX_VALUE
             }
-            val v1 = matcher1.group().split("\\.".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-            val v2 = matcher2.group().split("\\.".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+            val v1 =
+                matcher1
+                    .group()
+                    .split("\\.".toRegex())
+                    .dropLastWhile { it.isEmpty() }
+                    .toTypedArray()
+            val v2 =
+                matcher2
+                    .group()
+                    .split("\\.".toRegex())
+                    .dropLastWhile { it.isEmpty() }
+                    .toTypedArray()
             val minLength = min(v1.size.toDouble(), v2.size.toDouble()).toInt()
             var result = 0
             for (i in 0 until minLength) {

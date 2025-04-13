@@ -33,7 +33,7 @@ object Core {
         PauseStatus.addChangeListener { _, _, newValue ->
             newValue
                 .isTrue {
-                    CSystemDll.INSTANCE.changeWindow(ScriptStatus.gameHWND, false)
+                    CSystemDll.INSTANCE.limitWindowResize(ScriptStatus.gameHWND, false)
                     WorkTimeListener.working = false
                     Mode.reset()
                     runUI { WindowUtil.getStage(WindowEnum.MAIN)?.show() }
@@ -56,7 +56,7 @@ object Core {
                                     WindowUtil.getStage(WindowEnum.MAIN),
                                 )
                             go {
-                                Thread.sleep(5000)
+                                Thread.sleep(10_000)
                                 runUI {
                                     alert.hide()
                                 }

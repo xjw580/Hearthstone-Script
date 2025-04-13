@@ -58,8 +58,10 @@ object ScriptStatus {
         set(value) = platformHWNDInner.set(value)
         get() {
             var hWND = platformHWNDInner.get()
-            if (hWND != null && !User32.INSTANCE.IsWindow(hWND)) {
-                log.info { "${PLATFORM_CN_NAME}窗口句柄已经失效，尝试更新句柄" }
+            if (!User32.INSTANCE.IsWindow(hWND)) {
+                if (hWND != null) {
+                    log.info { "${PLATFORM_CN_NAME}窗口句柄已经失效，尝试更新句柄" }
+                }
                 hWND = GameUtil.findPlatformHWND()
                 go {
                     platformHWNDInner.set(hWND)

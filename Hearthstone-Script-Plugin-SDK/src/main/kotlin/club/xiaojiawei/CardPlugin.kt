@@ -7,7 +7,6 @@ import club.xiaojiawei.config.PluginScope
  * @date 2024/9/22 19:18
  */
 interface CardPlugin : Plugin {
-
     /**
      * 对哪些插件可见
      * @return 插件id数组
@@ -18,4 +17,7 @@ interface CardPlugin : Plugin {
         return PluginScope.PROTECTED
     }
 
+    companion object {
+        const val MINIMUM_COMPATIBLE_VERSION = "4.4.0-GA"
+    }
 }

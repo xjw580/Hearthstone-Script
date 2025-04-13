@@ -10,6 +10,7 @@ import club.xiaojiawei.hsscript.bean.WorkTime
 import club.xiaojiawei.hsscript.bean.WorkTimeRule
 import club.xiaojiawei.hsscript.bean.WorkTimeRuleSet
 import club.xiaojiawei.hsscript.bean.tableview.NumCallback
+import club.xiaojiawei.hsscript.bean.tableview.TableDragCallback
 import club.xiaojiawei.hsscript.enums.OperateEnum
 import club.xiaojiawei.hsscript.interfaces.StageHook
 import club.xiaojiawei.hsscript.status.WorkTimeStatus
@@ -44,8 +45,9 @@ private const val SELECTED_OPERATION_STYLE_CLASS = "label-ui-success"
  * @author 肖嘉威
  * @date 2025/4/8 12:18
  */
-class TimeSettingsController : Initializable, StageHook {
-
+class TimeSettingsController :
+    Initializable,
+    StageHook {
     @FXML
     protected lateinit var accordion: Accordion
 
@@ -117,7 +119,10 @@ class TimeSettingsController : Initializable, StageHook {
 
     private var isInit = false
 
-    override fun initialize(p0: URL?, p1: ResourceBundle?) {
+    override fun initialize(
+        p0: URL?,
+        p1: ResourceBundle?,
+    ) {
         progress = progressModal.show()
         workTimeRuleSet = workTimeRuleSetTable.items
     }
@@ -134,6 +139,15 @@ class TimeSettingsController : Initializable, StageHook {
             reloadData()
             return
         }
+        workTimeRuleSetTable.rowFactory = TableDragCallback<WorkTimeRuleSet, WorkTimeRuleSet>()
+        selectedWorkTimeRuleTable.rowFactory =
+            object : TableDragCallback<WorkTimeRule, WorkTimeRule>() {
+                override fun dragged() {
+                    super.dragged()
+                    val workTimeRuleSet = workTimeRuleSetTable.selectionModel.selectedItem ?: return
+                    workTimeRuleSet.setTimeRules(selectedWorkTimeRuleTable.items)
+                }
+            }
         isInit = true
         initTimeRuleSetTable()
         initSelectedTimeRuleTable()
@@ -160,7 +174,7 @@ class TimeSettingsController : Initializable, StageHook {
                 friComboBox.apply { checkEveryDate(this) },
                 satComboBox.apply { checkEveryDate(this) },
                 sunComboBox.apply { checkEveryDate(this) },
-            )
+            ),
         )
         go {
             reloadData()
@@ -192,16 +206,12 @@ class TimeSettingsController : Initializable, StageHook {
     }
 
     private fun initApplyRulePane() {
-        val converter = object : StringConverter<WorkTimeRuleSet?>() {
-            override fun toString(p0: WorkTimeRuleSet?): String? {
-                return p0?.getName()
-            }
+        val converter =
+            object : StringConverter<WorkTimeRuleSet?>() {
+                override fun toString(p0: WorkTimeRuleSet?): String? = p0?.getName()
 
-            override fun fromString(p0: String?): WorkTimeRuleSet? {
-                return null
+                override fun fromString(p0: String?): WorkTimeRuleSet? = null
             }
-
-        }
         everyDayComboBox.converter = converter
         monComboBox.converter = converter
         tueComboBox.converter = converter
@@ -225,15 +235,13 @@ class TimeSettingsController : Initializable, StageHook {
         nameSetCol.isEditable = true
         nameSetCol.setCellValueFactory { cellData -> cellData.value.nameProperty() }
         nameSetCol.setCellFactory { p ->
-            object : TextFieldTableCellUI<WorkTimeRuleSet?, String?>(object : StringConverter<String?>() {
-                override fun toString(`object`: String?): String? {
-                    return `object`
-                }
+            object : TextFieldTableCellUI<WorkTimeRuleSet?, String?>(
+                object : StringConverter<String?>() {
+                    override fun toString(`object`: String?): String? = `object`
 
-                override fun fromString(string: String?): String? {
-                    return string
-                }
-            }) {
+                    override fun fromString(string: String?): String? = string
+                },
+            ) {
                 override fun cancelEdit() {
                     if (workTimeRuleSetTable.items[index].id.isEmpty()) {
                         super.cancelEdit()
@@ -254,7 +262,6 @@ class TimeSettingsController : Initializable, StageHook {
                     updateDateComboBoxItems()
                 }
             }
-
         }
     }
 
@@ -297,7 +304,10 @@ class TimeSettingsController : Initializable, StageHook {
         selectedEnableCol.setCellValueFactory { cellData -> cellData.value.enableProperty() }
         selectedEnableCol.setCellFactory { p ->
             object : CheckBoxTableCell<WorkTimeRule, Boolean>() {
-                override fun updateItem(item: Boolean?, empty: Boolean) {
+                override fun updateItem(
+                    item: Boolean?,
+                    empty: Boolean,
+                ) {
                     super.updateItem(item, empty)
                     graphic?.let {
                         val styleClass = "check-box-ui"
@@ -311,9 +321,13 @@ class TimeSettingsController : Initializable, StageHook {
         }
     }
 
-    private class ColTableCell<T, S>(var buildGraphic: (Int) -> Node) : TableCell<T, S>() {
-
-        override fun updateItem(item: S?, empty: Boolean) {
+    private class ColTableCell<T, S>(
+        var buildGraphic: (Int) -> Node,
+    ) : TableCell<T, S>() {
+        override fun updateItem(
+            item: S?,
+            empty: Boolean,
+        ) {
             super.updateItem(item, empty)
             if (item == null || empty) {
                 graphic = null
@@ -321,7 +335,6 @@ class TimeSettingsController : Initializable, StageHook {
             }
             graphic = this.buildGraphic(index)
         }
-
     }
 
     private var timePaneMap = mutableMapOf<WorkTimeRule, HBox>()
@@ -339,63 +352,85 @@ class TimeSettingsController : Initializable, StageHook {
         }
         val startTime = Time()
         val endTime = Time()
-        val pane = HBox(
-            startTime.apply {
-                localTime = item.getWorkTime().parseStartTime()
-                readOnlyTimeProperty().addListener { _, _, newValue ->
-                    newValue ?: return@addListener
-                    item.getWorkTime().startTime = WorkTime.pattern.format(newValue)
-                    if (newValue > endTime.localTime) {
-                        endTime.localTime = newValue
+        val pane =
+            HBox(
+                startTime.apply {
+                    localTime = item.getWorkTime().parseStartTime()
+                    readOnlyTimeProperty().addListener { _, _, newValue ->
+                        newValue ?: return@addListener
+                        item.getWorkTime().startTime = WorkTime.pattern.format(newValue)
+                        if (newValue > endTime.localTime) {
+                            endTime.localTime = newValue
+                        }
                     }
-                }
-            },
-            Text("-"),
-            endTime.apply {
-                localTime = item.getWorkTime().parseEndTime()
-                readOnlyTimeProperty().addListener { _, _, newValue ->
-                    newValue ?: return@addListener
-                    item.getWorkTime().endTime = WorkTime.pattern.format(newValue)
-                    if (newValue < startTime.localTime) {
-                        startTime.localTime = newValue
+                },
+                Text("-"),
+                endTime.apply {
+                    localTime = item.getWorkTime().parseEndTime()
+                    readOnlyTimeProperty().addListener { _, _, newValue ->
+                        newValue ?: return@addListener
+                        item.getWorkTime().endTime = WorkTime.pattern.format(newValue)
+                        if (newValue < startTime.localTime) {
+                            startTime.localTime = newValue
+                        }
                     }
-                }
-            },
-        ).apply {
-            padding = Insets(1.0)
-            alignment = Pos.CENTER
-            spacing = 3.0
-        }
+                },
+            ).apply {
+                padding = Insets(1.0)
+                alignment = Pos.CENTER
+                spacing = 3.0
+            }
         timePaneMap[item] = pane
         return pane
     }
 
     private fun buildOperationPane(item: WorkTimeRule): Pane {
-        val pane = HBox().apply {
-            children.addAll(item.getOperate().toMutableList().apply { sortBy { it.order } }.map {
-                Label(it.value).apply {
-                    styleClass.addAll("label-ui", "label-ui-small", SELECTED_OPERATION_STYLE_CLASS, "radius-ui")
-                    if (it === OperateEnum.SLEEP_SYSTEM || it === OperateEnum.LOCK_SCREEN) {
-                        contentDisplay = ContentDisplay.RIGHT
-                        graphic = Label().apply graphic@{
-                            this@graphic.graphic = HelpIco()
-                            this@graphic.tooltip =
-                                Tooltip(if (it === OperateEnum.SLEEP_SYSTEM) "在Windows设置中关闭唤醒电脑需要重新登录选项" else "锁屏后无法自动解锁").apply tooltip@{
-                                    showDuration = Duration.seconds(60.0)
+        val pane =
+            HBox().apply {
+                children.addAll(
+                    item
+                        .getOperate()
+                        .toMutableList()
+                        .apply { sortBy { it.order } }
+                        .map {
+                            Label(it.value).apply {
+                                styleClass.addAll(
+                                    "label-ui",
+                                    "label-ui-small",
+                                    SELECTED_OPERATION_STYLE_CLASS,
+                                    "radius-ui",
+                                )
+                                if (it === OperateEnum.SLEEP_SYSTEM || it === OperateEnum.LOCK_SCREEN) {
+                                    contentDisplay = ContentDisplay.RIGHT
+                                    graphic =
+                                        Label().apply graphic@{
+                                            this@graphic.graphic = HelpIco()
+                                            this@graphic.tooltip =
+                                                Tooltip(
+                                                    if (it ===
+                                                        OperateEnum.SLEEP_SYSTEM
+                                                    ) {
+                                                        "在Windows设置中关闭唤醒电脑需要重新登录选项"
+                                                    } else {
+                                                        "锁屏后无法自动解锁"
+                                                    },
+                                                ).apply tooltip@{
+                                                    showDuration = Duration.seconds(60.0)
+                                                }
+                                        }
                                 }
-                        }
-                    }
-                }
-            }.toList())
-            children.add(buildOperationEditBtn(item))
-            alignment = Pos.CENTER
-            spacing = 5.0
-        }
+                            }
+                        }.toList(),
+                )
+                children.add(buildOperationEditBtn(item))
+                alignment = Pos.CENTER
+                spacing = 5.0
+            }
         return pane
     }
 
-    private fun buildOperationEditBtn(item: WorkTimeRule): Button {
-        return Button().apply {
+    private fun buildOperationEditBtn(item: WorkTimeRule): Button =
+        Button().apply {
             graphic = EditIco("main-color")
             style =
                 "-fx-border-radius:10;-fx-background-color: transparent;-fx-border-width: 1;-fx-border-color:gray;-fx-background-insets: 0"
@@ -404,69 +439,80 @@ class TimeSettingsController : Initializable, StageHook {
             val operates = item.getOperate()
             val selectedOperateEnums = mutableSetOf<OperateEnum>()
 
-            onAction = EventHandler<ActionEvent> {
-                val content = FlowPane().apply {
-                    val selectAllLabel = Label("全选")
-                    val isSelectAll: () -> Unit = {
-                        if (selectedOperateEnums.size == OperateEnum.values().size) {
-                            if (!selectAllLabel.styleClass.contains(SELECTED_OPERATION_STYLE_CLASS)) {
-                                selectAllLabel.styleClass.add(SELECTED_OPERATION_STYLE_CLASS)
-                            }
-                        } else {
-                            selectAllLabel.styleClass.remove(SELECTED_OPERATION_STYLE_CLASS)
-                        }
-                    }
-                    children.addAll(OperateEnum.values().toMutableList().apply { sortBy { it.order } }
-                        .map { operation ->
-                            Label(operation.value).apply label@{
-                                styleClass.addAll("label-ui", "label-ui-small", "radius-ui")
-                                if (operates.contains(operation)) {
-                                    selectedOperateEnums.add(operation)
-                                    styleClass.add(SELECTED_OPERATION_STYLE_CLASS)
-                                }
-                                (this@label).onMouseClicked = EventHandler { e ->
-                                    if (styleClass.contains(SELECTED_OPERATION_STYLE_CLASS)) {
-                                        selectedOperateEnums.remove(operation)
-                                        styleClass.remove(SELECTED_OPERATION_STYLE_CLASS)
-                                    } else {
-                                        selectedOperateEnums.add(operation)
-                                        styleClass.add(SELECTED_OPERATION_STYLE_CLASS)
+            onAction =
+                EventHandler<ActionEvent> {
+                    val content =
+                        FlowPane().apply {
+                            val selectAllLabel = Label("全选")
+                            val isSelectAll: () -> Unit = {
+                                if (selectedOperateEnums.size == OperateEnum.values().size) {
+                                    if (!selectAllLabel.styleClass.contains(SELECTED_OPERATION_STYLE_CLASS)) {
+                                        selectAllLabel.styleClass.add(SELECTED_OPERATION_STYLE_CLASS)
                                     }
+                                } else {
+                                    selectAllLabel.styleClass.remove(SELECTED_OPERATION_STYLE_CLASS)
+                                }
+                            }
+                            children.addAll(
+                                OperateEnum
+                                    .values()
+                                    .toMutableList()
+                                    .apply { sortBy { it.order } }
+                                    .map { operation ->
+                                        Label(operation.value).apply label@{
+                                            styleClass.addAll("label-ui", "label-ui-small", "radius-ui")
+                                            if (operates.contains(operation)) {
+                                                selectedOperateEnums.add(operation)
+                                                styleClass.add(SELECTED_OPERATION_STYLE_CLASS)
+                                            }
+                                            (this@label).onMouseClicked =
+                                                EventHandler { e ->
+                                                    if (styleClass.contains(SELECTED_OPERATION_STYLE_CLASS)) {
+                                                        selectedOperateEnums.remove(operation)
+                                                        styleClass.remove(SELECTED_OPERATION_STYLE_CLASS)
+                                                    } else {
+                                                        selectedOperateEnums.add(operation)
+                                                        styleClass.add(SELECTED_OPERATION_STYLE_CLASS)
+                                                    }
+                                                    isSelectAll()
+                                                }
+                                        }
+                                    },
+                            )
+                            children.add(
+                                selectAllLabel.apply label@{
+                                    styleClass.addAll("label-ui", "label-ui-small", "radius-ui")
                                     isSelectAll()
-                                }
-                            }
-                        })
-                    children.add(selectAllLabel.apply label@{
-                        styleClass.addAll("label-ui", "label-ui-small", "radius-ui")
-                        isSelectAll()
-                        (this@label).onMouseClicked = EventHandler { e ->
-                            if (styleClass.contains(SELECTED_OPERATION_STYLE_CLASS)) {
-                                selectedOperateEnums.clear()
-                                for (node in children) {
-                                    node.styleClass.remove(SELECTED_OPERATION_STYLE_CLASS)
-                                }
-                            } else {
-                                selectedOperateEnums.addAll(OperateEnum.values())
-                                for (node in children) {
-                                    if (!node.styleClass.contains(SELECTED_OPERATION_STYLE_CLASS)) {
-                                        node.styleClass.add(SELECTED_OPERATION_STYLE_CLASS)
-                                    }
-                                }
-                            }
+                                    (this@label).onMouseClicked =
+                                        EventHandler { e ->
+                                            if (styleClass.contains(SELECTED_OPERATION_STYLE_CLASS)) {
+                                                selectedOperateEnums.clear()
+                                                for (node in children) {
+                                                    node.styleClass.remove(SELECTED_OPERATION_STYLE_CLASS)
+                                                }
+                                            } else {
+                                                selectedOperateEnums.addAll(OperateEnum.values())
+                                                for (node in children) {
+                                                    if (!node.styleClass.contains(SELECTED_OPERATION_STYLE_CLASS)) {
+                                                        node.styleClass.add(SELECTED_OPERATION_STYLE_CLASS)
+                                                    }
+                                                }
+                                            }
+                                        }
+                                },
+                            )
+                            cursor = Cursor.HAND
+                            hgap = 5.0
+                            vgap = 5.0
                         }
-                    })
-                    cursor = Cursor.HAND
-                    hgap = 5.0
-                    vgap = 5.0
+                    Modal(rootPane, "修改", content, {
+                        item.setOperate(selectedOperateEnums)
+                    }, {})
+                        .apply {
+                            isMaskClosable = true
+                        }.show()
                 }
-                Modal(rootPane, "修改", content, {
-                    item.setOperate(selectedOperateEnums)
-                }, {}).apply {
-                    isMaskClosable = true
-                }.show()
-            }
         }
-    }
 
     private fun saveSetRule() {
         WorkTimeStatus.storeWorkTimeRuleSet(workTimeRuleSetTable.items)
@@ -477,7 +523,6 @@ class TimeSettingsController : Initializable, StageHook {
         val list = dateComboBoxList.toMutableList().apply { removeFirst() }
         val workTimeSetting = list.map { it.value?.id ?: "" }
         WorkTimeStatus.storeWorkTimeSetting(workTimeSetting)
-
     }
 
     @FXML
@@ -489,9 +534,8 @@ class TimeSettingsController : Initializable, StageHook {
 
     @FXML
     protected fun addRulerSet(actionEvent: ActionEvent) {
-
         workTimeRuleSetTable.items.add(
-            WorkTimeRuleSet("预设${workTimeRuleSetTable.items.size + 1}")
+            WorkTimeRuleSet("预设${workTimeRuleSetTable.items.size + 1}"),
         )
         updateDateComboBoxItems()
     }
@@ -500,7 +544,9 @@ class TimeSettingsController : Initializable, StageHook {
     protected fun delRulerSet(actionEvent: ActionEvent) {
         val index = workTimeRuleSetTable.selectionModel.selectedIndex
         if (index == -1) return
-        if (workTimeRuleSetTable.selectionModel.selectedItem.id.isEmpty()) {
+        if (workTimeRuleSetTable.selectionModel.selectedItem.id
+                .isEmpty()
+        ) {
             notificationManager.showInfo("不允许删除该规则", 2)
             return
         }
@@ -525,11 +571,12 @@ class TimeSettingsController : Initializable, StageHook {
             notificationManager.showInfo("不允许修改该规则", 2)
             return
         }
-        val workTimeRule = WorkTimeRule(
-            WorkTime("00:00", "23:59"),
-            setOf<OperateEnum>(OperateEnum.CLOSE_GAME, OperateEnum.CLOSE_PLATFORM),
-            true
-        )
+        val workTimeRule =
+            WorkTimeRule(
+                WorkTime("00:00", "23:59"),
+                setOf<OperateEnum>(OperateEnum.CLOSE_GAME, OperateEnum.CLOSE_PLATFORM),
+                true,
+            )
         workTimeRuleSet.setTimeRules(workTimeRuleSet.getTimeRules() + workTimeRule)
         selectedWorkTimeRuleTable.items.add(workTimeRule)
         selectedWorkTimeRuleTable.selectionModel.selectLast()
@@ -539,12 +586,13 @@ class TimeSettingsController : Initializable, StageHook {
     protected fun delRuler(actionEvent: ActionEvent) {
         val workTimeRule = selectedWorkTimeRuleTable.selectionModel.selectedItem ?: return
         val workTimeRuleSet = workTimeRuleSetTable.selectionModel.selectedItem ?: return
-        workTimeRuleSet.setTimeRules(workTimeRuleSet.getTimeRules().toMutableList().apply {
-            remove(workTimeRule)
-        })
+        workTimeRuleSet.setTimeRules(
+            workTimeRuleSet.getTimeRules().toMutableList().apply {
+                remove(workTimeRule)
+            },
+        )
         selectedWorkTimeRuleTable.items.remove(workTimeRule)
     }
-
 
     @FXML
     protected fun copyRuler(actionEvent: ActionEvent) {
@@ -555,5 +603,4 @@ class TimeSettingsController : Initializable, StageHook {
         selectedWorkTimeRuleTable.items.add(newItem)
         selectedWorkTimeRuleTable.selectionModel.selectLast()
     }
-
 }

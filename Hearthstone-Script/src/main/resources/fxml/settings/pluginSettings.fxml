@@ -10,9 +10,9 @@
             stylesheets="@../css/settings/pluginSettings.css"
             fx:id="rootPane"
             fx:controller="club.xiaojiawei.hsscript.controller.javafx.settings.PluginSettingsController">
-    <SplitPane dividerPositions="0.25" styleClass="split-pane-line"
+    <SplitPane dividerPositions="0.36" styleClass="split-pane-line"
                prefHeight="${rootPane.height}" prefWidth="${rootPane.width}">
-        <ListView fx:id="pluginListView" minWidth="150" maxWidth="250" styleClass="list-view-ui"/>
+        <ListView fx:id="pluginListView" minWidth="200" maxWidth="330" styleClass="list-view-ui"/>
         <VBox fx:id="pluginInfo" style="-fx-background-color: white;" visible="false">
             <VBox spacing="3" style="-fx-padding: 5">
                 <CopyLabel fx:id="pluginName" notificationManager="${notificationManager}"

@@ -13,7 +13,6 @@ import javafx.beans.value.ChangeListener
  * @date 2025/4/1 15:20
  */
 object LimitMouseRangeService : Service<Boolean>() {
-
     private val hwndListener: ChangeListener<HWND?> by lazy {
         ChangeListener<HWND?> { _, _, newValue ->
             if (WorkTimeListener.working) {
@@ -28,25 +27,27 @@ object LimitMouseRangeService : Service<Boolean>() {
     }
 
     override fun execStart(): Boolean {
-        if (ConfigUtil.getBoolean(ConfigEnum.LIMIT_MOUSE_RANGE)) {
-            ScriptStatus.gameHWNDProperty().addListener(hwndListener)
-            WorkTimeListener.addChangeListener(workingListener)
+        if (WorkTimeListener.working) {
+            CSystemDll.INSTANCE.limitMouseRange(true)
         }
+        ScriptStatus.gameHWNDProperty().addListener(hwndListener)
+        WorkTimeListener.addChangeListener(workingListener)
         return true
     }
 
     override fun execStop(): Boolean {
         ScriptStatus.gameHWNDProperty().removeListener(hwndListener)
         WorkTimeListener.removeChangeListener(workingListener)
+        CSystemDll.INSTANCE.limitMouseRange(false)
         return true
     }
 
-    override fun execIntelligentStartStop(value: Boolean?): Boolean {
-        return (value ?: ConfigUtil.getBoolean(ConfigEnum.LIMIT_MOUSE_RANGE))
-    }
+    override fun execIntelligentStartStop(value: Boolean?): Boolean = (value ?: ConfigUtil.getBoolean(ConfigEnum.LIMIT_MOUSE_RANGE))
 
-    override fun execValueChanged(oldValue: Boolean, newValue: Boolean) {
+    override fun execValueChanged(
+        oldValue: Boolean,
+        newValue: Boolean,
+    ) {
         CSystemDll.INSTANCE.limitMouseRange(newValue)
     }
-
 }

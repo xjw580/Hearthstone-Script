@@ -13,51 +13,43 @@ import javafx.scene.layout.VBox
  * @date 2024/9/8 14:57
  */
 class HsBaseCardPlugin : CardPlugin {
+    override fun version(): String = "1.0.0"
 
-    override fun version(): String {
-        return "1.0.0"
-    }
-
-    override fun author(): String {
-        return "XiaoJiawei"
-    }
+    override fun author(): String = "XiaoJiawei"
 
     override fun graphicDescription(): Pane? {
         val deckCode = "AAECAQcC4+YG5eYGDp6fBJ+fBLSfBIagBIigBImgBI7UBJDUBJzUBJ/UBKPUBLT4BbX4Bd3zBgAA"
-        val vBox = VBox().apply {
-            spacing = 5.0
-            children.addAll(
-                Label("包含以下卡组中卡牌的适配：(点击卡组代码复制)"),
-                Label("沙包战：").apply {
-                    contentDisplay = ContentDisplay.RIGHT
-                    graphic = Label(deckCode).apply {
-                        cursor = Cursor.HAND
-                    }
-                    onMouseClicked = EventHandler {
-                        SystemUtil.pasteTextToClipboard(deckCode)
-                    }
-                },
-            )
-        }
+        val vBox =
+            VBox().apply {
+                spacing = 5.0
+                children.addAll(
+                    Label("包含以下卡组中卡牌的适配：(点击卡组代码复制)"),
+                    Label("沙包战：").apply {
+                        contentDisplay = ContentDisplay.RIGHT
+                        graphic =
+                            Label(deckCode).apply {
+                                cursor = Cursor.HAND
+                            }
+                        onMouseClicked =
+                            EventHandler {
+                                SystemUtil.pasteTextToClipboard(deckCode)
+                            }
+                    },
+                )
+            }
         return vBox
     }
 
-    override fun description(): String {
-        return """
-            捆绑。包含对基础英雄技能的适配
+    override fun description(): String =
+        """
+        捆绑。包含对基础英雄技能的适配
         """.trimIndent()
-    }
 
-    override fun id(): String {
-        return "xjw-base-plugin"
-    }
+    override fun id(): String = "xjw-base-plugin"
 
-    override fun name(): String {
-        return "基础"
-    }
+    override fun name(): String = "基础"
 
-    override fun homeUrl(): String {
-        return "https://github.com/xjw580/Hearthstone-Script"
-    }
+    override fun homeUrl(): String = "https://github.com/xjw580/Hearthstone-Script"
 
+    override fun sdkVersion(): String = "4.4.6-DEV"
 }

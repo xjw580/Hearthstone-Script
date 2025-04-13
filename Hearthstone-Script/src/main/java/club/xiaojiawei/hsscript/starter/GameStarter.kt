@@ -124,7 +124,7 @@ class GameStarter : AbstractStarter() {
             Thread.sleep(3000)
             GameUtil.updateGameRect()
             ConfigUtil.getBoolean(ConfigEnum.UPDATE_GAME_WINDOW).isFalse {
-                CSystemDll.INSTANCE.changeWindow(gameHWND, true)
+                CSystemDll.INSTANCE.limitWindowResize(gameHWND, true)
             }
         }
     }

@@ -9,7 +9,6 @@ import java.util.*
  * @date 2025/4/8 15:17
  */
 class WorkTimeRuleSet : Cloneable {
-
     var id: String = ""
 
     private val name: ObjectProperty<String> = SimpleObjectProperty<String>("")
@@ -22,7 +21,7 @@ class WorkTimeRuleSet : Cloneable {
     constructor(
         name: String,
         workTimeRules: List<WorkTimeRule> = emptyList<WorkTimeRule>(),
-        id: String = UUID.randomUUID().toString()
+        id: String = UUID.randomUUID().toString(),
     ) {
         this.id = id
         this.name.set(name)
@@ -33,25 +32,17 @@ class WorkTimeRuleSet : Cloneable {
         id = UUID.randomUUID().toString()
     }
 
-    fun getName(): String {
-        return name.get()
-    }
+    fun getName(): String = name.get()
 
-    fun nameProperty(): ObjectProperty<String> {
-        return name
-    }
+    fun nameProperty(): ObjectProperty<String> = name
 
     fun setName(name: String) {
         this.name.set(name)
     }
 
-    fun getTimeRules(): List<WorkTimeRule> {
-        return workTimeRules.get()
-    }
+    fun getTimeRules(): List<WorkTimeRule> = workTimeRules.get()
 
-    fun timeRulesProperty(): ObjectProperty<String> {
-        return name
-    }
+    fun timeRulesProperty(): ObjectProperty<String> = name
 
     fun setTimeRules(workTimeRules: List<WorkTimeRule>) {
         this.workTimeRules.set(workTimeRules)
@@ -63,16 +54,18 @@ class WorkTimeRuleSet : Cloneable {
         return id == workTime.id
     }
 
-    override fun hashCode(): Int {
-        return Objects.hashCode(id)
-    }
+    override fun hashCode(): Int = Objects.hashCode(id)
 
     public override fun clone(): WorkTimeRuleSet {
         val clone = WorkTimeRuleSet()
         clone.id = this.id
         clone.name.set(this.name.get())
-        clone.workTimeRules.set(this.workTimeRules.get().map { it.clone() }.toList())
+        clone.workTimeRules.set(
+            this.workTimeRules
+                .get()
+                .map { it.clone() }
+                .toList(),
+        )
         return clone
     }
-
 }

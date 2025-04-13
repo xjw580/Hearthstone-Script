@@ -50,7 +50,6 @@ import javax.swing.AbstractAction
  * @date 2023/7/6 9:46
  */
 class MainApplication : Application() {
-
     private var stageShowingListener: ChangeListener<Boolean?>? = null
 
     fun testJava() {
@@ -70,7 +69,6 @@ class MainApplication : Application() {
             val getWarMethod = testUtilClass.getMethod("getWar")
             val result = getWarMethod.invoke(testUtil)
             println("调用getWar方法结果： $result")
-
         } catch (e: Exception) {
             println("发生错误: ${e.message}")
             e.printStackTrace()
@@ -95,15 +93,18 @@ class MainApplication : Application() {
         }
     }
 
-
-    fun compileAndRunExternalKtFiles(filePaths: List<String>, classpath: String) {
-        val ktFiles = filePaths.map { File(it) }.filter {
-            val res = it.exists()
-            res.isFalse {
-                println(it.absolutePath + "不存在")
+    fun compileAndRunExternalKtFiles(
+        filePaths: List<String>,
+        classpath: String,
+    ) {
+        val ktFiles =
+            filePaths.map { File(it) }.filter {
+                val res = it.exists()
+                res.isFalse {
+                    println(it.absolutePath + "不存在")
+                }
+                res
             }
-            res
-        }
         if (ktFiles.isEmpty()) return
 
         val tempDir = File(System.getProperty("java.io.tmpdir"), "kotlin-temp")
@@ -120,8 +121,8 @@ class MainApplication : Application() {
                 "-d",
                 classDir.absolutePath,
                 "-classpath",
-                classpath
-            )
+                classpath,
+            ),
         )
 
         val exitCode = compiler.exec(System.out, *args.toTypedArray())
@@ -167,7 +168,8 @@ class MainApplication : Application() {
         Platform.setImplicitExit(false)
         launchService()
         CardUtil.reloadCardWeight()
-        Runtime.getRuntime()
+        Runtime
+            .getRuntime()
             .addShutdownHook(
                 LThread(
                     {
@@ -175,12 +177,10 @@ class MainApplication : Application() {
                         CSystemDll.INSTANCE.uninstall()
                         log.info { "软件已关闭" }
                     },
-                    "ShutdownHook Thread"
-                )
+                    "ShutdownHook Thread",
+                ),
             )
-
     }
-
 
     private fun showMainPage() {
         if (PROGRAM_ARGS.stream().anyMatch {
@@ -192,7 +192,10 @@ class MainApplication : Application() {
                     }
                 }
                 return@anyMatch false
-            }) return
+            }
+        ) {
+            return
+        }
         val stage = buildStage(WindowEnum.MAIN)
         stageShowingListener =
             ChangeListener { _, aBoolean: Boolean?, t1: Boolean? ->
@@ -209,11 +212,13 @@ class MainApplication : Application() {
     @Deprecated("")
     private fun setSystemTray() {
         val isPauseItem = MenuItem("开始")
-        isPauseItem.addActionListener(object : AbstractAction() {
-            override fun actionPerformed(e: ActionEvent?) {
-                PauseStatus.asyncSetPause(!PauseStatus.isPause)
-            }
-        })
+        isPauseItem.addActionListener(
+            object : AbstractAction() {
+                override fun actionPerformed(e: ActionEvent?) {
+                    PauseStatus.asyncSetPause(!PauseStatus.isPause)
+                }
+            },
+        )
         PauseStatus.addChangeListener { observableValue: ObservableValue<out Boolean?>?, aBoolean: Boolean?, isPause: Boolean ->
             if (isPause) {
                 isPauseItem.label = "开始"
@@ -223,29 +228,39 @@ class MainApplication : Application() {
         }
 
         val settingsItem = MenuItem("设置")
-        settingsItem.addActionListener(object : AbstractAction() {
-            override fun actionPerformed(e: ActionEvent?) {
-                showStage(WindowEnum.SETTINGS, getStage(WindowEnum.MAIN))
-            }
-        })
+        settingsItem.addActionListener(
+            object : AbstractAction() {
+                override fun actionPerformed(e: ActionEvent?) {
+                    showStage(WindowEnum.SETTINGS, getStage(WindowEnum.MAIN))
+                }
+            },
+        )
 
         val quitItem = MenuItem("退出")
-        quitItem.addActionListener(object : AbstractAction() {
-            override fun actionPerformed(e: ActionEvent?) {
-                shutdownSoft()
-            }
-        })
-
-        addTray(Consumer { e: MouseEvent? ->
-//            左键点击
-            if (e?.button == 1) {
-                (getStage(WindowEnum.MAIN)?.isShowing ?: false).isTrue {
-                    WindowUtil.hideAllStage(true)
-                }.isFalse {
-                    showStage(WindowEnum.MAIN)
+        quitItem.addActionListener(
+            object : AbstractAction() {
+                override fun actionPerformed(e: ActionEvent?) {
+                    shutdownSoft()
                 }
-            }
-        }, isPauseItem, settingsItem, quitItem)
+            },
+        )
+
+        addTray(
+            Consumer { e: MouseEvent? ->
+//            左键点击
+                if (e?.button == 1) {
+                    (getStage(WindowEnum.MAIN)?.isShowing ?: false)
+                        .isTrue {
+                            WindowUtil.hideAllStage(true)
+                        }.isFalse {
+                            showStage(WindowEnum.MAIN)
+                        }
+                }
+            },
+            isPauseItem,
+            settingsItem,
+            quitItem,
+        )
     }
 
     private var trayItemArr: CSystemDll.TrayItem.Reference? = null
@@ -254,20 +269,22 @@ class MainApplication : Application() {
         val textMemorySize = 50L
         val iconPathMemorySize = 255L
         CSystemDll.TrayMenu.Reference().apply {
-            text = Memory(textMemorySize).apply {
-                setWideString(0, SCRIPT_NAME)
-            }
+            text =
+                Memory(textMemorySize).apply {
+                    setWideString(0, SCRIPT_NAME)
+                }
             iconPath = WString(SystemUtil.getTrayIconFile().absolutePath)
-            clickCallback = object : CSystemDll.TrayCallback {
-                override fun invoke() {
-                    val mainStage = getStage(WindowEnum.MAIN)
-                    if (mainStage == null || !mainStage.isShowing || mainStage.isIconified) {
-                        showStage(WindowEnum.MAIN)
-                    } else {
-                        WindowUtil.hideAllStage()
+            clickCallback =
+                object : CSystemDll.TrayCallback {
+                    override fun invoke() {
+                        val mainStage = getStage(WindowEnum.MAIN)
+                        if (mainStage == null || !mainStage.isShowing || mainStage.isIconified) {
+                            showStage(WindowEnum.MAIN)
+                        } else {
+                            WindowUtil.hideAllStage()
+                        }
                     }
                 }
-            }
             itemCount = 5
             trayItem = CSystemDll.TrayItem.Reference()
             trayItemArr = trayItem
@@ -275,47 +292,56 @@ class MainApplication : Application() {
             trayItemArr[0].apply {
                 id = 1000
                 type = CSystemDll.MF_STRING
-                text = Memory(textMemorySize).apply {
-                    setWideString(0, "开始")
-                }
-                iconPath = Memory(iconPathMemorySize).apply {
-                    setWideString(0, SystemUtil.getResouceImgFile(TRAY_START_IMG_NAME).absolutePath)
-                }
-                callback = object : CSystemDll.TrayCallback {
-                    override fun invoke() {
-                        PauseStatus.asyncSetPause(!PauseStatus.isPause)
+                text =
+                    Memory(textMemorySize).apply {
+                        setWideString(0, "开始")
                     }
-                }
+                iconPath =
+                    Memory(iconPathMemorySize).apply {
+                        setWideString(0, SystemUtil.getResouceImgFile(TRAY_START_IMG_NAME).absolutePath)
+                    }
+                callback =
+                    object : CSystemDll.TrayCallback {
+                        override fun invoke() {
+                            PauseStatus.asyncSetPause(!PauseStatus.isPause)
+                        }
+                    }
             }
             trayItemArr[1].apply {
                 id = 1001
                 type = CSystemDll.MF_STRING
-                text = Memory(textMemorySize).apply {
-                    setWideString(0, "设置")
-                }
-                iconPath = Memory(iconPathMemorySize).apply {
-                    setWideString(0, SystemUtil.getResouceImgFile(TRAY_SETTINGS_IMG_NAME).absolutePath)
-                }
-                callback = object : CSystemDll.TrayCallback {
-                    override fun invoke() {
-                        showStage(WindowEnum.SETTINGS, getStage(WindowEnum.MAIN))
+                text =
+                    Memory(textMemorySize).apply {
+                        setWideString(0, "设置")
                     }
-                }
+                iconPath =
+                    Memory(iconPathMemorySize).apply {
+                        setWideString(0, SystemUtil.getResouceImgFile(TRAY_SETTINGS_IMG_NAME).absolutePath)
+                    }
+                callback =
+                    object : CSystemDll.TrayCallback {
+                        override fun invoke() {
+                            showStage(WindowEnum.SETTINGS, getStage(WindowEnum.MAIN))
+                        }
+                    }
             }
             trayItemArr[2].apply {
                 id = 1002
                 type = CSystemDll.MF_STRING
-                text = Memory(textMemorySize).apply {
-                    setWideString(0, "统计")
-                }
-                iconPath = Memory(iconPathMemorySize).apply {
-                    setWideString(0, SystemUtil.getResouceImgFile(TRAY_STATISTICS_IMG_NAME).absolutePath)
-                }
-                callback = object : CSystemDll.TrayCallback {
-                    override fun invoke() {
-                        showStage(WindowEnum.STATISTICS, getStage(WindowEnum.MAIN))
+                text =
+                    Memory(textMemorySize).apply {
+                        setWideString(0, "统计")
                     }
-                }
+                iconPath =
+                    Memory(iconPathMemorySize).apply {
+                        setWideString(0, SystemUtil.getResouceImgFile(TRAY_STATISTICS_IMG_NAME).absolutePath)
+                    }
+                callback =
+                    object : CSystemDll.TrayCallback {
+                        override fun invoke() {
+                            showStage(WindowEnum.STATISTICS, getStage(WindowEnum.MAIN))
+                        }
+                    }
             }
             trayItemArr[3].apply {
                 id = 1003
@@ -324,30 +350,33 @@ class MainApplication : Application() {
             trayItemArr[4].apply {
                 id = 1004
                 type = CSystemDll.MF_STRING
-                text = Memory(textMemorySize).apply {
-                    setWideString(0, "退出")
-                }
-                iconPath = Memory(iconPathMemorySize).apply {
-                    setWideString(0, SystemUtil.getResouceImgFile(TRAY_EXIT_IMG_NAME).absolutePath)
-                }
-                callback = object : CSystemDll.TrayCallback {
-                    override fun invoke() {
-                        shutdownSoft()
+                text =
+                    Memory(textMemorySize).apply {
+                        setWideString(0, "退出")
                     }
-                }
+                iconPath =
+                    Memory(iconPathMemorySize).apply {
+                        setWideString(0, SystemUtil.getResouceImgFile(TRAY_EXIT_IMG_NAME).absolutePath)
+                    }
+                callback =
+                    object : CSystemDll.TrayCallback {
+                        override fun invoke() {
+                            shutdownSoft()
+                        }
+                    }
             }
             PauseStatus.addChangeListener { _, _, isPause: Boolean ->
                 if (isPause) {
                     trayItemArr[0].text?.setWideString(0, "开始")
                     trayItemArr[0].iconPath?.setWideString(
                         0,
-                        SystemUtil.getResouceImgFile(TRAY_START_IMG_NAME).absolutePath
+                        SystemUtil.getResouceImgFile(TRAY_START_IMG_NAME).absolutePath,
                     )
                 } else {
                     trayItemArr[0].text?.setWideString(0, "暂停")
                     trayItemArr[0].iconPath?.setWideString(
                         0,
-                        SystemUtil.getResouceImgFile(TRAY_PAUSE_IMG_NAME).absolutePath
+                        SystemUtil.getResouceImgFile(TRAY_PAUSE_IMG_NAME).absolutePath,
                     )
                 }
             }
@@ -414,5 +443,4 @@ class MainApplication : Application() {
             checkArg()
         }
     }
-
 }
