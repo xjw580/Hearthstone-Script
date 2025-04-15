@@ -514,7 +514,10 @@ enum class TagEnum(
         }),
     DORMANT(
         "休眠",
-        null,
+        TagChangeHandler { card: Card?, tagChangeEntity: TagChangeEntity, war: War, player: Player?, area: Area? ->
+            card?.isDormant = isTrue(tagChangeEntity.value)
+            log(player, card, "法强", tagChangeEntity.value)
+        },
         ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
             extraEntity.extraCard.card.isDormant = isTrue(value)
         }),
@@ -565,13 +568,19 @@ enum class TagEnum(
         }),
     COIN_CARD(
         "硬币",
-        null,
+        TagChangeHandler { card: Card?, tagChangeEntity: TagChangeEntity, war: War, player: Player?, area: Area? ->
+            card?.isCoinCard = isTrue(tagChangeEntity.value)
+            log(player, card, "硬币", tagChangeEntity.value)
+        },
         ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
             extraEntity.extraCard.card.isCoinCard = isTrue(value)
         }),
     UNTOUCHABLE(
         "不可触摸",
-        null,
+        TagChangeHandler { card: Card?, tagChangeEntity: TagChangeEntity, war: War, player: Player?, area: Area? ->
+            card?.isUntouchable = isTrue(tagChangeEntity.value)
+            log(player, card, "不可触摸", tagChangeEntity.value)
+        },
         ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
             extraEntity.extraCard.card.isUntouchable = isTrue(value)
         }),
@@ -676,13 +685,19 @@ enum class TagEnum(
         }),
     IS_NIGHTMARE_BONUS(
         "黑暗之赐",
-        null,
+        TagChangeHandler { card: Card?, tagChangeEntity: TagChangeEntity, war: War, player: Player?, area: Area? ->
+            card?.isNightmareBonus = isTrue(tagChangeEntity.value)
+            log(player, card, "黑暗之赐", tagChangeEntity.value)
+        },
         ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
             extraEntity.extraCard.card.isNightmareBonus = isTrue(value)
         }),
     TRADEABLE(
         "可交易",
-        null,
+        TagChangeHandler { card: Card?, tagChangeEntity: TagChangeEntity, war: War, player: Player?, area: Area? ->
+            card?.isTradeable = isTrue(tagChangeEntity.value)
+            log(player, card, "可交易", tagChangeEntity.value)
+        },
         ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
             extraEntity.extraCard.card.isTradeable = isTrue(value)
         }),
