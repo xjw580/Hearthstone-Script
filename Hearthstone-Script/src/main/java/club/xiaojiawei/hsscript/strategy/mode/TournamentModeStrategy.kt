@@ -147,23 +147,19 @@ object TournamentModeStrategy : AbstractModeStrategy<Any?>() {
     }
 
     fun selectDeck(deckStrategy: DeckStrategy) {
-        val decks: List<Deck> = DECKS
-        for (i in decks.indices.reversed()) {
-            val d = decks[i]
-            if (d.code == deckStrategy.deckCode() || d.name == deckStrategy.name()) {
-                log.debug { "找到套牌:" + deckStrategy.name() }
-                break
-            }
-        }
+//        val decks: List<Deck> = DECKS
+//        for (i in decks.indices.reversed()) {
+//            val d = decks[i]
+//            if (d.code == deckStrategy.deckCode() || d.name == deckStrategy.name()) {
+//                log.debug { "找到套牌:" + deckStrategy.name() }
+//                break
+//            }
+//        }
         log.info { "选择套牌" }
 
         PREV_DECK_PAGE.lClick()
         SystemUtil.delayTiny()
-        GameUtil.lClickDeckPos()
-        SystemUtil.delayTiny()
-        GameUtil.lClickDeckPos()
-        SystemUtil.delayTiny()
-        GameUtil.lClickDeckPos()
+        GameUtil.lClickDeckPos(3)
     }
 
     private fun changeModeToClassic() {

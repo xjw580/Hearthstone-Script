@@ -63,7 +63,7 @@ enum class ConfigEnum(
     /**
      * 选择卡组位
      */
-    CHOOSE_DECK_POS(group = INIT_CONFIG_GROUP, defaultValue = "1"),
+    CHOOSE_DECK_POS(group = INIT_CONFIG_GROUP, defaultValue = "[1]"),
 
     /**
      * 工作时间规则

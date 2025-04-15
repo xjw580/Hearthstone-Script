@@ -14,6 +14,7 @@ import club.xiaojiawei.hsscript.status.PauseStatus
 import club.xiaojiawei.hsscript.status.ScriptStatus
 import club.xiaojiawei.hsscript.utils.SystemUtil.delay
 import club.xiaojiawei.util.isFalse
+import club.xiaojiawei.util.randomSelect
 import com.sun.jna.WString
 import com.sun.jna.platform.win32.Kernel32
 import com.sun.jna.platform.win32.User32
@@ -281,9 +282,14 @@ object GameUtil {
         return FOUR_DISCOVER_RECTS[index]
     }
 
-    fun lClickDeckPos() {
-        val deckPos = ConfigUtil.getInt(ConfigEnum.CHOOSE_DECK_POS)
-        DECK_POS_RECTS[deckPos - 1].lClick()
+    fun lClickDeckPos(count: Int = 1) {
+        val chooseDeckPos = ConfigExUtil.getChooseDeckPos()
+        if (chooseDeckPos.isEmpty()) return
+        val deckPos = chooseDeckPos.randomSelect()
+        for (i in 0 until count) {
+            DECK_POS_RECTS[deckPos - 1].lClick()
+            SystemUtil.delayTiny()
+        }
     }
 
     fun getMyHandCardRect(
@@ -498,10 +504,10 @@ object GameUtil {
     fun findGameHWND(): WinDef.HWND? {
         val hwnd =
             (
-                SystemUtil.findHWND("UnityWndClass", GAME_CN_NAME)
-                    ?: SystemUtil.findHWND("UnityWndClass", GAME_US_NAME)
-                    ?: CSystemDll.INSTANCE.findWindowsByProcessName(GAME_PROGRAM_NAME)
-            )
+                    SystemUtil.findHWND("UnityWndClass", GAME_CN_NAME)
+                        ?: SystemUtil.findHWND("UnityWndClass", GAME_US_NAME)
+                        ?: CSystemDll.INSTANCE.findWindowsByProcessName(GAME_PROGRAM_NAME)
+                    )
                 ?: SystemUtil.findHWND(null, GAME_CN_NAME)
                 ?: SystemUtil.findHWND(null, GAME_US_NAME)
                 ?: SystemUtil.findHWND("UnityWndClass", null)

@@ -10,18 +10,18 @@ import club.xiaojiawei.hsscript.status.ScriptStatus
 import club.xiaojiawei.hsscript.utils.ConfigExUtil
 import club.xiaojiawei.hsscript.utils.ConfigUtil
 import club.xiaojiawei.hsscript.utils.WindowUtil
-import javafx.beans.value.ObservableValue
 import javafx.fxml.FXML
 import javafx.fxml.Initializable
 import javafx.scene.control.Button
-import javafx.scene.control.ComboBox
+import javafx.scene.control.CheckBox
+import javafx.scene.layout.HBox
 import javafx.scene.layout.StackPane
 import javafx.scene.text.Text
 import javafx.stage.DirectoryChooser
 import javafx.stage.FileChooser
 import javafx.stage.Stage
 import java.net.URL
-import java.util.ResourceBundle
+import java.util.*
 
 /**
  * @author 肖嘉威
@@ -30,7 +30,7 @@ import java.util.ResourceBundle
 class InitSettingsController : Initializable {
 
     @FXML
-    protected lateinit var deckPosComboBox: ComboBox<String>
+    protected lateinit var chooseDeckPosPane: HBox
 
     @FXML
     protected lateinit var notificationManager: NotificationManager<Any>
@@ -112,18 +112,29 @@ class InitSettingsController : Initializable {
     }
 
     private fun addListener() {
-        deckPosComboBox.valueProperty()
-            .addListener { observable: ObservableValue<out String>?, oldValue: String?, newValue: String? ->
-                if (newValue.isNullOrBlank()) return@addListener
-                ConfigUtil.putInt(ConfigEnum.CHOOSE_DECK_POS, newValue.toInt(), true)
-                notificationManager.showSuccess("修改成功", 2)
-            }
     }
+
 
     private fun initValue() {
         gamePath.text = ConfigUtil.getString(ConfigEnum.GAME_PATH)
         platformPath.text = ConfigUtil.getString(ConfigEnum.PLATFORM_PATH)
         password.text = ConfigUtil.getString(ConfigEnum.PLATFORM_PASSWORD)
-        deckPosComboBox.value = ConfigUtil.getInt(ConfigEnum.CHOOSE_DECK_POS).toString()
+        val deckPosCheckBoxList = mutableListOf<CheckBox>()
+        val posList = ConfigExUtil.getChooseDeckPos()
+        for (i in 1 until 10) {
+            val checkBox = CheckBox(i.toString()).apply {
+                styleClass.addAll("check-box-ui", "check-box-ui-main")
+                isSelected = posList.contains(i) == true
+                selectedProperty().addListener { observable, oldValue, newValue ->
+                    ConfigExUtil.storeChooseDeckPos(
+                        deckPosCheckBoxList.withIndex()
+                            .filter { it.value.isSelected }
+                            .map { it.index + 1 }
+                    )
+                }
+            }
+            chooseDeckPosPane.children.add(checkBox)
+            deckPosCheckBoxList.add(checkBox)
+        }
     }
 }

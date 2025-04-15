@@ -113,7 +113,8 @@ object ConfigExUtil {
         return true
     }
 
-    fun getMouseControlMode(): MouseControlModeEnum = MouseControlModeEnum.fromString(ConfigUtil.getString(ConfigEnum.MOUSE_CONTROL_MODE))
+    fun getMouseControlMode(): MouseControlModeEnum =
+        MouseControlModeEnum.fromString(ConfigUtil.getString(ConfigEnum.MOUSE_CONTROL_MODE))
 
     fun storeTopGameWindow(enabled: Boolean) {
         ConfigUtil.putBoolean(ConfigEnum.TOP_GAME_WINDOW, enabled)
@@ -187,4 +188,16 @@ object ConfigExUtil {
     fun storeWorkTimeSetting(workTimeSetting: List<String>) {
         ConfigUtil.putString(ConfigEnum.WORK_TIME_SETTING, JSON.toJSONString(workTimeSetting))
     }
+
+    fun getChooseDeckPos(): MutableList<Int> {
+        return ConfigUtil.getArray(
+            ConfigEnum.CHOOSE_DECK_POS,
+            Int::class.java,
+        ) ?: mutableListOf<Int>()
+    }
+
+    fun storeChooseDeckPos(chooseDeckPos: List<Int>) {
+        ConfigUtil.putArray(ConfigEnum.CHOOSE_DECK_POS, chooseDeckPos)
+    }
+
 }
