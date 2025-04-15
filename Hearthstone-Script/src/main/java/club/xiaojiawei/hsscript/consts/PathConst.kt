@@ -49,6 +49,7 @@ val INJECT_UTIL_FILE = ResourceFile("inject-util.exe")
 val INSTALL_DRIVE_FILE = ResourceFile("install-drive.exe")
 
 val LIB_HS_FILE = ResourceFile("hs.dll")
+val LIB_BN_FILE = ResourceFile("bn.dll")
 
 val HS_CARD_UTIL_FILE = ResourceFile("card-update-util.exe")
 

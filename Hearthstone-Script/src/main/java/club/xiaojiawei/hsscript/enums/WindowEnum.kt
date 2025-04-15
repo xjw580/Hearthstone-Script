@@ -12,7 +12,9 @@ import javafx.stage.StageStyle
 
 private fun formatTitle(title: String): String = "$SCRIPT_NAME-$title"
 
+@Suppress("ktlint:standard:property-naming")
 var SCREEN_WIDTH = Screen.getPrimary().bounds.width
+@Suppress("ktlint:standard:property-naming")
 var SCREEN_HEIGHT = Screen.getPrimary().bounds.height
 
 enum class WindowEnum(

@@ -18,6 +18,7 @@ open class ConfigNumberField : NumberField() {
             isDisable = value?.isEnable != true
             isEditable = value?.isEnable == true
             value?.let {
+                promptText = it.defaultValue
                 text = ConfigUtil.getString(it)
             }
             field = value

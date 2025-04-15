@@ -504,10 +504,10 @@ object GameUtil {
     fun findGameHWND(): WinDef.HWND? {
         val hwnd =
             (
-                    SystemUtil.findHWND("UnityWndClass", GAME_CN_NAME)
-                        ?: SystemUtil.findHWND("UnityWndClass", GAME_US_NAME)
-                        ?: CSystemDll.INSTANCE.findWindowsByProcessName(GAME_PROGRAM_NAME)
-                    )
+                SystemUtil.findHWND("UnityWndClass", GAME_CN_NAME)
+                    ?: SystemUtil.findHWND("UnityWndClass", GAME_US_NAME)
+                    ?: CSystemDll.INSTANCE.findWindowsByProcessName(GAME_PROGRAM_NAME)
+            )
                 ?: SystemUtil.findHWND(null, GAME_CN_NAME)
                 ?: SystemUtil.findHWND(null, GAME_US_NAME)
                 ?: SystemUtil.findHWND("UnityWndClass", null)

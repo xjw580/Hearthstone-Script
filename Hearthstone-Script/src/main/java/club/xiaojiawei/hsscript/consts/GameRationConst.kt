@@ -6,7 +6,6 @@ package club.xiaojiawei.hsscript.consts
  * @date 2023/7/3 21:08
  */
 object GameRationConst {
-
     const val GAME_WINDOW_ASPECT_TO_HEIGHT_RATIO: Float = 1.351f
 //    const val FIRST_ROW_DECK_VERTICAL_TO_BOTTOM_RATIO: Float = 0.75f
 //    const val START_BUTTON_HORIZONTAL_TO_CENTER_RATIO: Float = 0.313f

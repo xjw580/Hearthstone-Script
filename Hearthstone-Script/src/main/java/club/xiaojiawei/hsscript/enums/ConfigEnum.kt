@@ -229,6 +229,24 @@ enum class ConfigEnum(
     ),
 
     /**
+     * 游戏窗口缩小倍数
+     */
+    GAME_WINDOW_REDUCTION_FACTOR(
+        group = BEHAVIOR_CONFIG_GROUP,
+        defaultValue = "0",
+        service = GameWindowReductionFactorService,
+    ),
+
+    /**
+     * 战网窗窗口缩小倍数
+     */
+    PLATFORM_WINDOW_REDUCTION_FACTOR(
+        group = BEHAVIOR_CONFIG_GROUP,
+        defaultValue = "0",
+        service = PlatformWindowReductionFactorService,
+    ),
+
+    /**
      * 套牌插件禁用列表
      */
     DECK_PLUGIN_DISABLED(group = PLUGIN_CONFIG_GROUP, defaultValue = JSON.toJSONString(emptyList<String>())),
