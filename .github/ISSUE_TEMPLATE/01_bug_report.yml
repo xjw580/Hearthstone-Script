@@ -4,15 +4,27 @@ title: "[Bug]: "
 labels: ["bug"]
 body:
   - type: dropdown
-    id: "version"
+    id: "soft-version"
     attributes:
-      label: "发生Bug的版本"
+      label: "发生Bug的软件版本"
       description: "请选择出现问题的软件版本"
       options:
         - "请选择..."
         - "v4.4.x-最新开发版"
         - "v4.4.0-GA"
         - "其他版本（请在下方注明）"
+    validations:
+      required: true
+  - type: dropdown
+    id: "os-version"
+    attributes:
+      label: "Windows版本"
+      description: "请选择所使用的Windows版本"
+      options:
+        - "请选择..."
+        - "Win11"
+        - "Win10"
+        - "更老"
     validations:
       required: true
   - type: input
