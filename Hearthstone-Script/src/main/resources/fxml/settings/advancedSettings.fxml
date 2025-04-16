@@ -69,7 +69,7 @@
                                     </graphic>
                                     <tooltip>
                                         <Tooltip
-                                                text="阻止游戏加载本地反作弊插件，必须用本软件启动游戏才能生效。效果未知，斟酌使用">
+                                                text="阻止游戏加载本地反作弊插件（libacsdk_x86.dll），必须用本软件启动游戏才能生效。效果未知，斟酌使用">
                                             <showDuration>
                                                 <fx:reference source="tooltipDuration"/>
                                             </showDuration>
