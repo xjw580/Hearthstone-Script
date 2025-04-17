@@ -35,7 +35,7 @@ object ConfigUtil {
     }
 
     private fun checkConfig(ini: Ini) {
-        ConfigEnum.values().forEach { entry ->
+        ConfigEnum.entries.forEach { entry ->
             if (ini.get(entry.group, entry.name) == null) {
                 ini.put(entry.group, entry.name, entry.defaultValue)
             }

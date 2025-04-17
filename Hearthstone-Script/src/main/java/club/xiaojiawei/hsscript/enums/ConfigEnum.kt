@@ -38,39 +38,44 @@ private const val WORK_TIME_RULE_PRESETS_EMPTY = ""
 
 private const val WORK_TIME_RULE_PRESETS_TWO = "presets-two"
 
-private val operations =
+private val operations by lazy {
     setOf(
         OperateEnum.CLOSE_GAME,
         OperateEnum.CLOSE_PLATFORM,
     )
+}
+
+private const val FALSE_STR = false.toString()
+
+private const val TRUE_STR = true.toString()
 
 enum class ConfigEnum(
     val group: String = "",
-    val defaultValue: String = "",
+    private var defaultValueInitializer: (() -> String)? = null,
     val service: Service<*>? = null,
     val isEnable: Boolean = true,
 ) {
     /**
      * 游戏路径
      */
-    GAME_PATH(group = INIT_CONFIG_GROUP, defaultValue = ""),
+    GAME_PATH(group = INIT_CONFIG_GROUP, defaultValueInitializer = { "" }),
 
     /**
      * 战网路径
      */
-    PLATFORM_PATH(group = INIT_CONFIG_GROUP, defaultValue = ""),
+    PLATFORM_PATH(group = INIT_CONFIG_GROUP, defaultValueInitializer = { "" }),
 
     /**
      * 选择卡组位
      */
-    CHOOSE_DECK_POS(group = INIT_CONFIG_GROUP, defaultValue = "[1]"),
+    CHOOSE_DECK_POS(group = INIT_CONFIG_GROUP, defaultValueInitializer = { "[1]" }),
 
     /**
      * 工作时间规则
      */
     WORK_TIME_RULE_SET(
         group = TIME_CONFIG_GROUP,
-        defaultValue =
+        defaultValueInitializer = {
             JSON.toJSONString(
                 listOf(
                     WorkTimeRuleSet(
@@ -126,105 +131,120 @@ enum class ConfigEnum(
                         WORK_TIME_RULE_PRESETS_EMPTY,
                     ),
                 ),
-            ),
+            )
+        },
     ),
 
     WORK_TIME_SETTING(
         group = TIME_CONFIG_GROUP,
-        defaultValue =
-            JSON.toJSONString(
-                arrayOf(
-                    WORK_TIME_RULE_PRESETS_ONE,
-                    WORK_TIME_RULE_PRESETS_ONE,
-                    WORK_TIME_RULE_PRESETS_ONE,
-                    WORK_TIME_RULE_PRESETS_ONE,
-                    WORK_TIME_RULE_PRESETS_ONE,
-                    WORK_TIME_RULE_PRESETS_ONE,
-                    WORK_TIME_RULE_PRESETS_ONE,
-                ),
-            ),
+        defaultValueInitializer =
+            {
+                JSON.toJSONString(
+                    arrayOf(
+                        WORK_TIME_RULE_PRESETS_ONE,
+                        WORK_TIME_RULE_PRESETS_ONE,
+                        WORK_TIME_RULE_PRESETS_ONE,
+                        WORK_TIME_RULE_PRESETS_ONE,
+                        WORK_TIME_RULE_PRESETS_ONE,
+                        WORK_TIME_RULE_PRESETS_ONE,
+                        WORK_TIME_RULE_PRESETS_ONE,
+                    ),
+                )
+            },
     ),
 
     /**
      * 更新源
      */
-    UPDATE_SOURCE(group = VERSION_CONFIG_GROUP, defaultValue = "Gitee"),
+    UPDATE_SOURCE(group = VERSION_CONFIG_GROUP, defaultValueInitializer = { "Gitee" }),
 
     /**
      * 更新开发版
      */
-    UPDATE_DEV(group = VERSION_CONFIG_GROUP, defaultValue = false.toString()),
+    UPDATE_DEV(group = VERSION_CONFIG_GROUP, defaultValueInitializer = { FALSE_STR }),
 
     /**
      * 自动更新
      */
-    AUTO_UPDATE(group = VERSION_CONFIG_GROUP, defaultValue = false.toString()),
+    AUTO_UPDATE(group = VERSION_CONFIG_GROUP, defaultValueInitializer = { FALSE_STR }),
 
     /**
      * 是否执行策略
      */
-    STRATEGY(group = DEV_CONFIG_GROUP, defaultValue = true.toString()),
+    STRATEGY(group = DEV_CONFIG_GROUP, defaultValueInitializer = { TRUE_STR }),
 
     /**
      * 启用鼠标
      */
-    ENABLE_MOUSE(group = DEV_CONFIG_GROUP, defaultValue = true.toString()),
+    ENABLE_MOUSE(group = DEV_CONFIG_GROUP, defaultValueInitializer = { TRUE_STR }),
 
     /**
      * 动作间隔/ms
      */
-    MOUSE_ACTION_INTERVAL(group = STRATEGY_CONFIG_GROUP, defaultValue = "3500"),
+    MOUSE_ACTION_INTERVAL(group = STRATEGY_CONFIG_GROUP, defaultValueInitializer = { "3500" }),
 
     /**
      * 适配畸变模式
      */
-    DISTORTION(group = STRATEGY_CONFIG_GROUP, defaultValue = true.toString()),
+    DISTORTION(group = STRATEGY_CONFIG_GROUP, defaultValueInitializer = { TRUE_STR }),
 
     /**
      * 鼠标移动暂停间隔，值越小越慢，最小为1
      */
-    PAUSE_STEP(group = STRATEGY_CONFIG_GROUP, defaultValue = "7"),
+    PAUSE_STEP(group = STRATEGY_CONFIG_GROUP, defaultValueInitializer = { "7" }),
 
     /**
      * 工作时最小化软件
      */
-    WORKING_MINIMIZE(group = BEHAVIOR_CONFIG_GROUP, defaultValue = false.toString(), service = WorkingMinimizeService),
+    WORKING_MINIMIZE(
+        group = BEHAVIOR_CONFIG_GROUP,
+        defaultValueInitializer = { FALSE_STR },
+        service = WorkingMinimizeService
+    ),
 
     /**
      * 鼠标控制模式
      */
-    MOUSE_CONTROL_MODE(group = BEHAVIOR_CONFIG_GROUP, defaultValue = MouseControlModeEnum.MESSAGE.name),
+    MOUSE_CONTROL_MODE(group = BEHAVIOR_CONFIG_GROUP, defaultValueInitializer = { MouseControlModeEnum.MESSAGE.name }),
 
     /**
      * 置顶游戏窗口
      */
     TOP_GAME_WINDOW(
         group = BEHAVIOR_CONFIG_GROUP,
-        defaultValue = MOUSE_CONTROL_MODE.defaultValue,
+        defaultValueInitializer = { MOUSE_CONTROL_MODE.defaultValue },
         service = TopGameWindowService,
     ),
 
     /**
      * 阻止游戏的反作弊
      */
-    PREVENT_AC(group = BEHAVIOR_CONFIG_GROUP, defaultValue = false.toString(), service = PreventACService),
+    PREVENT_AC(group = BEHAVIOR_CONFIG_GROUP, defaultValueInitializer = { FALSE_STR }, service = PreventACService),
 
     /**
      * 限制鼠标范围
      */
-    LIMIT_MOUSE_RANGE(group = BEHAVIOR_CONFIG_GROUP, defaultValue = false.toString(), service = LimitMouseRangeService),
+    LIMIT_MOUSE_RANGE(
+        group = BEHAVIOR_CONFIG_GROUP,
+        defaultValueInitializer = { FALSE_STR },
+        service = LimitMouseRangeService
+    ),
 
     /**
      * 游戏窗口不透明度(0~255)
      */
-    GAME_WINDOW_OPACITY(group = BEHAVIOR_CONFIG_GROUP, defaultValue = "255", service = GameWindowOpacityService),
+    GAME_WINDOW_OPACITY(
+        group = BEHAVIOR_CONFIG_GROUP,
+        defaultValueInitializer = { "255" },
+        service = GameWindowOpacityService
+    ),
 
     /**
      * 战网平台窗口不透明度(0~255)
      */
     PLATFORM_WINDOW_OPACITY(
         group = BEHAVIOR_CONFIG_GROUP,
-        defaultValue = "255",
+        defaultValueInitializer = { "255" },
         service = PlatformWindowOpacityService,
     ),
 
@@ -233,7 +253,7 @@ enum class ConfigEnum(
      */
     GAME_WINDOW_REDUCTION_FACTOR(
         group = BEHAVIOR_CONFIG_GROUP,
-        defaultValue = "0",
+        defaultValueInitializer = { "0" },
         service = GameWindowReductionFactorService,
     ),
 
@@ -242,81 +262,85 @@ enum class ConfigEnum(
      */
     PLATFORM_WINDOW_REDUCTION_FACTOR(
         group = BEHAVIOR_CONFIG_GROUP,
-        defaultValue = "0",
+        defaultValueInitializer = { "0" },
         service = PlatformWindowReductionFactorService,
     ),
 
     /**
      * 套牌插件禁用列表
      */
-    DECK_PLUGIN_DISABLED(group = PLUGIN_CONFIG_GROUP, defaultValue = JSON.toJSONString(emptyList<String>())),
+    DECK_PLUGIN_DISABLED(
+        group = PLUGIN_CONFIG_GROUP,
+        defaultValueInitializer = { JSON.toJSONString(emptyList<String>()) }),
 
     /**
      * 卡牌插件禁用列表
      */
-    CARD_PLUGIN_DISABLED(group = PLUGIN_CONFIG_GROUP, defaultValue = JSON.toJSONString(emptyList<String>())),
+    CARD_PLUGIN_DISABLED(
+        group = PLUGIN_CONFIG_GROUP,
+        defaultValueInitializer = { JSON.toJSONString(emptyList<String>()) }),
 
     /**
      * 默认套牌策略(deck id)
      */
-    DEFAULT_DECK_STRATEGY(group = OTHER_CONFIG_GROUP, defaultValue = ""),
+    DEFAULT_DECK_STRATEGY(group = OTHER_CONFIG_GROUP, defaultValueInitializer = { "" }),
 
     /**
      * 默认运行模式
      */
-    DEFAULT_RUN_MODE(group = OTHER_CONFIG_GROUP, defaultValue = RunModeEnum.CASUAL.name),
+    DEFAULT_RUN_MODE(group = OTHER_CONFIG_GROUP, defaultValueInitializer = { RunModeEnum.CASUAL.name }),
 
     /**
      * 战网密码
      */
-    PLATFORM_PASSWORD(group = INIT_CONFIG_GROUP, defaultValue = ""),
+    PLATFORM_PASSWORD(group = INIT_CONFIG_GROUP, defaultValueInitializer = { "" }),
 
     /**
      * 游戏日志大小限制/KB，游戏默认10240
      */
-    GAME_LOG_LIMIT(group = STRATEGY_CONFIG_GROUP, defaultValue = "51200"),
+    GAME_LOG_LIMIT(group = STRATEGY_CONFIG_GROUP, defaultValueInitializer = { "51200" }),
 
     /**
      * 最长匹配时间/s（超过重新匹配）
      */
-    MATCH_MAXIMUM_TIME(group = STRATEGY_CONFIG_GROUP, defaultValue = "90"),
+    MATCH_MAXIMUM_TIME(group = STRATEGY_CONFIG_GROUP, defaultValueInitializer = { "90" }),
 
     /**
      * 最长空闲时间/min（超过重启游戏）
      */
-    IDLE_MAXIMUM_TIME(group = STRATEGY_CONFIG_GROUP, defaultValue = "10"),
+    IDLE_MAXIMUM_TIME(group = STRATEGY_CONFIG_GROUP, defaultValueInitializer = { "10" }),
 
     /**
      * 当前版本
      */
-    CURRENT_VERSION(group = OTHER_CONFIG_GROUP, defaultValue = "0.0.0-GA"),
+    CURRENT_VERSION(group = OTHER_CONFIG_GROUP, defaultValueInitializer = { "0.0.0-GA" }),
 
     /**
      * 随机事件
      */
-    RANDOM_EVENT(group = STRATEGY_CONFIG_GROUP, defaultValue = true.toString()),
+    RANDOM_EVENT(group = STRATEGY_CONFIG_GROUP, defaultValueInitializer = { TRUE_STR }),
 
     /**
      * 随机表情
      */
-    RANDOM_EMOTION(group = STRATEGY_CONFIG_GROUP, defaultValue = true.toString()),
+    RANDOM_EMOTION(group = STRATEGY_CONFIG_GROUP, defaultValueInitializer = { TRUE_STR }),
 
     /**
      * 自动投降
      */
-    AUTO_SURRENDER(group = STRATEGY_CONFIG_GROUP, defaultValue = "-1"),
+    AUTO_SURRENDER(group = STRATEGY_CONFIG_GROUP, defaultValueInitializer = { "-1" }),
 
     /**
      * 只打人机
      */
-    ONLY_ROBOT(group = STRATEGY_CONFIG_GROUP, defaultValue = false.toString()),
+    ONLY_ROBOT(group = STRATEGY_CONFIG_GROUP, defaultValueInitializer = { FALSE_STR }),
 
     /**
      * 检查游戏响应超时(s)
      */
     GAME_TIMEOUT(
         group = SERVICE_CONFIG_GROUP,
-        defaultValue = "60",
+        defaultValueInitializer = { "60" },
         service = GameTimeoutService,
     ),
 
@@ -325,7 +349,7 @@ enum class ConfigEnum(
      */
     WAR_TIMEOUT(
         group = SERVICE_CONFIG_GROUP,
-        defaultValue = "-1",
+        defaultValueInitializer = { "-1" },
         service = WarTimeoutService,
     ),
 
@@ -334,50 +358,61 @@ enum class ConfigEnum(
      */
     UPDATE_GAME_WINDOW(
         group = SERVICE_CONFIG_GROUP,
-        defaultValue = true.toString(),
+        defaultValueInitializer = { TRUE_STR },
         service = UpdateGameWindowService,
     ),
 
     /**
      * 允许发送windows通知
      */
-    SEND_NOTICE(group = SYSTEM_CONFIG_GROUP, defaultValue = true.toString()),
+    SEND_NOTICE(group = SYSTEM_CONFIG_GROUP, defaultValueInitializer = { TRUE_STR }),
 
     /**
      * 使用系统代理
      */
-    USE_PROXY(group = SYSTEM_CONFIG_GROUP, defaultValue = true.toString()),
+    USE_PROXY(group = SYSTEM_CONFIG_GROUP, defaultValueInitializer = { TRUE_STR }),
 
     /**
      * 退出程序热键
      */
-    EXIT_HOT_KEY(group = SYSTEM_CONFIG_GROUP, defaultValue = JSON.toJSONString(HotKey(JIntellitype.MOD_ALT, 'P'.code))),
+    EXIT_HOT_KEY(
+        group = SYSTEM_CONFIG_GROUP,
+        defaultValueInitializer = { JSON.toJSONString(HotKey(JIntellitype.MOD_ALT, 'P'.code)) }
+    ),
 
     /**
      * 暂停程序热键
      */
     PAUSE_HOT_KEY(
         group = SYSTEM_CONFIG_GROUP,
-        defaultValue = JSON.toJSONString(HotKey(JIntellitype.MOD_CONTROL, 'P'.code)),
+        defaultValueInitializer = { JSON.toJSONString(HotKey(JIntellitype.MOD_CONTROL, 'P'.code)) },
     ),
 
     /**
      * 文件日志级别
      */
-    FILE_LOG_LEVEL(group = DEV_CONFIG_GROUP, defaultValue = Level.INFO.levelStr),
+    FILE_LOG_LEVEL(group = DEV_CONFIG_GROUP, defaultValueInitializer = { Level.INFO.levelStr }),
 
     /**
      * 自动打开游戏数据分析页
      */
-    AUTO_OPEN_GAME_ANALYSIS(group = DEV_CONFIG_GROUP, defaultValue = false.toString()),
+    AUTO_OPEN_GAME_ANALYSIS(group = DEV_CONFIG_GROUP, defaultValueInitializer = { FALSE_STR }),
 
     /**
      * 显示游戏控件位置
      */
     DISPLAY_GAME_RECT_POS(
         group = DEV_CONFIG_GROUP,
-        defaultValue = false.toString(),
+        defaultValueInitializer = { FALSE_STR },
         service = DisplayGameRectPosService,
         isEnable = false,
     ),
+
+    ;
+
+    val defaultValue: String by lazy {
+        val res = defaultValueInitializer?.invoke() ?: ""
+        defaultValueInitializer = null
+        res
+    }
 }
