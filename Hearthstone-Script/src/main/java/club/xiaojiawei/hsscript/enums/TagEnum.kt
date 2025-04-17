@@ -649,19 +649,28 @@ enum class TagEnum(
     ),
     STARSHIP_PIECE(
         "星舰组件",
-        null,
+        TagChangeHandler { card: Card?, tagChangeEntity: TagChangeEntity, war: War, player: Player?, area: Area? ->
+            card?.isStarshipPiece = isTrue(tagChangeEntity.value)
+            log(player, card, "星舰组件", tagChangeEntity.value)
+        },
         ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
             extraEntity.extraCard.card.isStarshipPiece = isTrue(value)
         }),
     STARSHIP(
         "星舰",
-        null,
+        TagChangeHandler { card: Card?, tagChangeEntity: TagChangeEntity, war: War, player: Player?, area: Area? ->
+            card?.isStarship = isTrue(tagChangeEntity.value)
+            log(player, card, "星舰", tagChangeEntity.value)
+        },
         ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
             extraEntity.extraCard.card.isStarship = isTrue(value)
         }),
     LAUNCHPAD(
         "发射台",
-        null,
+        TagChangeHandler { card: Card?, tagChangeEntity: TagChangeEntity, war: War, player: Player?, area: Area? ->
+            card?.isLaunchpad = isTrue(tagChangeEntity.value)
+            log(player, card, "发射台", tagChangeEntity.value)
+        },
         ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
             extraEntity.extraCard.card.isLaunchpad = isTrue(value)
         }),

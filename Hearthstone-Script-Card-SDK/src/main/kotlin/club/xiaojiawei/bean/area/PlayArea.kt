@@ -121,17 +121,4 @@ class PlayArea(
         }
         return card
     }
-
-    override fun removeCard(index: Int): Card? {
-        val removeCard = super.removeCard(index)
-        removeCard?.let {removedCard->
-            if (removedCard.isStarshipPiece && removedCard.isDead()) {
-                player.starship?.let { starshipPieceCumulativeCard ->
-                    starshipPieceCumulativeCard.atc += removedCard.atc
-                    starshipPieceCumulativeCard.health += removedCard.health
-                }
-            }
-        }
-        return removeCard
-    }
 }

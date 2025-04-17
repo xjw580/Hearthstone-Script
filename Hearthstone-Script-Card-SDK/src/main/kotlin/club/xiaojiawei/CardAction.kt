@@ -70,11 +70,6 @@ abstract class CardAction(
                             card.isLaunchpad = false
                             card.isHideStats = false
                             CardUtil.handleCardExhaustedWhenIntoPlayArea(card)
-                            card.area.player.starship?.let {
-                                card.atc = it.atc
-                                card.health = it.health
-                            }
-                            card.area.player.starship = null
                         }
                     }),
                 )
@@ -469,14 +464,12 @@ abstract class CardAction(
 
     /**
      * 发射星舰
+     * 执行前判断[BaseCard.isLaunchpad]
      * @return 为null表示执行失败
      */
     fun launch(isPause: Boolean = false): CardAction? {
         if (isStop()) return null
         if (execLaunch()) {
-            belongCard?.let {
-                it.area.player.starship = null
-            }
             if (isPause) {
                 this.delay()
             } else {
@@ -489,6 +482,8 @@ abstract class CardAction(
 
     /**
      * 交易
+     * 执行前判断[BaseCard.isTradeable]
+     * @return 为null表示执行失败
      */
     fun trade(isPause: Boolean = false): CardAction? {
         if (isStop()) return null

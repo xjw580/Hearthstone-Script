@@ -32,11 +32,6 @@ class Player(
 
     val war: War by lazy { war ?: War.UNKNOWN_WAR }
 
-    /**
-     * 星舰
-     */
-    var starship: Card? = null
-
     @Volatile
     var gameId: String = ""
         set(value) {

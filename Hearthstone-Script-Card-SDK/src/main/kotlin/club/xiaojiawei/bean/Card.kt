@@ -255,18 +255,6 @@ class Card(
         return 5
     }
 
-    /**
-     * 获取发射星舰卡牌
-     */
-    fun getLaunchCard(): Card? {
-        for (card in child) {
-            if (card.cardSame(LAUNCH_CARD_ID)) {
-                return card
-            }
-        }
-        return null
-    }
-
     @Override
     public override fun clone(): Card {
         try {
