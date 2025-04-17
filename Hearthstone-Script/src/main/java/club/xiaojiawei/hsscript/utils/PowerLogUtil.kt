@@ -418,27 +418,27 @@ object PowerLogUtil {
             val cardIdUIndex = line.indexOf(CARD_ID_U, endIndex)
 
             // 解析 entityName
-            commonEntity.entityName = iso88591ToUtf8(line.substring(entityNameIndex + ENTITY_NAME.length, idIndex - 1))
+            commonEntity.entityName = iso88591ToUtf8(line.substring(entityNameIndex + ENTITY_NAME.length, idIndex - 1).trim())
 
             // 解析 id
-            commonEntity.entityId = line.substring(idIndex + ID.length, zoneIndex - 1)
+            commonEntity.entityId = line.substring(idIndex + ID.length, zoneIndex - 1).trim()
 
             // 解析 zone
-            commonEntity.zone = ZoneEnum.valueOf(line.substring(zoneIndex + ZONE.length, zonePosIndex - 1))
+            commonEntity.zone = ZoneEnum.valueOf(line.substring(zoneIndex + ZONE.length, zonePosIndex - 1).trim())
 
             // 解析 zonePos
-            commonEntity.zonePos = line.substring(zonePosIndex + ZONE_POS.length, cardIdIndex - 1).toInt()
+            commonEntity.zonePos = line.substring(zonePosIndex + ZONE_POS.length, cardIdIndex - 1).trim().toInt()
 
             // 解析 cardId
             if (cardIdUIndex != -1) {
-                commonEntity.cardId = line.substring(cardIdUIndex + CARD_ID_U.length)
+                commonEntity.cardId = line.substring(cardIdUIndex + CARD_ID_U.length).trim()
             }
             if (commonEntity.cardId.isEmpty()) {
-                commonEntity.cardId = line.substring(cardIdIndex + CARD_ID.length, playerIndex - 1)
+                commonEntity.cardId = line.substring(cardIdIndex + CARD_ID.length, playerIndex - 1).trim()
             }
 
             // 解析 player
-            commonEntity.playerId = line.substring(playerIndex + PLAYER.length, endIndex)
+            commonEntity.playerId = line.substring(playerIndex + PLAYER.length, endIndex).trim()
         }
     }
 
