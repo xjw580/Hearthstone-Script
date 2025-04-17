@@ -49,7 +49,7 @@ class PlayArea(
      */
     fun getSpellPower(): Int =
         cards.sumOf { card -> card.spellPower } +
-            (hero?.spellPower ?: 0) + (power?.spellPower ?: 0) + (weapon?.spellPower ?: 0)
+                (hero?.spellPower ?: 0) + (power?.spellPower ?: 0) + (weapon?.spellPower ?: 0)
 
     override fun add(
         card: Card?,
@@ -124,10 +124,12 @@ class PlayArea(
 
     override fun removeCard(index: Int): Card? {
         val removeCard = super.removeCard(index)
-        removeCard?.let {
-            if (it.isStarshipPiece && it.isDead()) {
-                player.starshipAtc += it.atc
-                player.starshipHealth += it.health
+        removeCard?.let {removedCard->
+            if (removedCard.isStarshipPiece && removedCard.isDead()) {
+                player.starshipPieceCumulativeCard?.let { starshipPieceCumulativeCard ->
+                    starshipPieceCumulativeCard.atc += removedCard.atc
+                    starshipPieceCumulativeCard.health += removedCard.health
+                }
             }
         }
         return removeCard

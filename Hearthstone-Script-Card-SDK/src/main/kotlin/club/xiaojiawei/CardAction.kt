@@ -70,10 +70,11 @@ abstract class CardAction(
                             card.isLaunchpad = false
                             card.isHideStats = false
                             CardUtil.handleCardExhaustedWhenIntoPlayArea(card)
-                            card.atc = card.area.player.starshipAtc
-                            card.health = card.area.player.starshipHealth
-                            card.area.player.starshipAtc = 0
-                            card.area.player.starshipHealth = 0
+                            card.area.player.starshipPieceCumulativeCard?.let {
+                                card.atc = it.atc
+                                card.health = it.health
+                            }
+                            card.area.player.starshipPieceCumulativeCard = null
                         }
                     }),
                 )
@@ -474,8 +475,7 @@ abstract class CardAction(
         if (isStop()) return null
         if (execLaunch()) {
             belongCard?.let {
-                it.area.player.starshipAtc = 0
-                it.area.player.starshipHealth = 0
+                it.area.player.starshipPieceCumulativeCard = null
             }
             if (isPause) {
                 this.delay()

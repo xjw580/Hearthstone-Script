@@ -33,14 +33,9 @@ class Player(
     val war: War by lazy { war ?: War.UNKNOWN_WAR }
 
     /**
-     * 累计的星舰攻击力
+     * 累计的星舰组件
      */
-    var starshipAtc: Int = 0
-
-    /**
-     * 累计的星舰生命值
-     */
-    var starshipHealth: Int = 0
+    var starshipPieceCumulativeCard: Card? = null
 
     @Volatile
     var gameId: String = ""
