@@ -20,9 +20,14 @@ import javafx.beans.property.ReadOnlyObjectWrapper
  */
 object ScriptStatus {
     /**
-     * 是否设置了炉石和战网的路径
+     * 炉石安装路径是否有效
      */
-    var isValidProgramPath = true
+    var isValidGameInstallPath = true
+
+    /**
+     * 战网程序路径是否有效
+     */
+    var isValidPlatformProgramPath = true
 
     private val gameHWNDInner = ReadOnlyObjectWrapper<HWND?>(null)
 

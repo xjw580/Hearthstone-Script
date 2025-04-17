@@ -29,7 +29,7 @@ import club.xiaojiawei.hsscript.utils.CardUtil.setCardAction
 import club.xiaojiawei.hsscript.utils.CardUtil.updateCardByExtraEntity
 import club.xiaojiawei.status.WAR
 import club.xiaojiawei.util.isTrue
-import java.io.RandomAccessFile
+import java.io.*
 import java.nio.charset.StandardCharsets
 import java.util.concurrent.Future
 import java.util.concurrent.TimeUnit
@@ -302,7 +302,9 @@ object PowerLogUtil {
         tagChangeEntity.value = value
         if (index < 100) {
             tagChangeEntity.entity =
-                iso88591ToUtf8(line.substring(line.indexOf(club.xiaojiawei.hsscript.consts.ENTITY) + 7, tagIndex).trim())
+                iso88591ToUtf8(
+                    line.substring(line.indexOf(club.xiaojiawei.hsscript.consts.ENTITY) + 7, tagIndex).trim()
+                )
         } else {
             parseCommonEntity(tagChangeEntity, line)
         }
@@ -446,7 +448,7 @@ object PowerLogUtil {
     fun isRelevance(l: String): Boolean {
         var flag = false
         if (l.contains("Truncating log")) {
-            val text = "power.log达到" + (ScriptStatus.maxLogSizeKB) + "KB，游戏停止输出日志，准备重启游戏"
+            val text = "${GAME_WAR_LOG_NAME}达到" + (ScriptStatus.maxLogSizeKB) + "KB，游戏停止输出日志，准备重启游戏"
             log.info { text }
             SystemUtil.notice(text)
             restart()
@@ -455,5 +457,35 @@ object PowerLogUtil {
         }
         Core.lastActiveTime = System.currentTimeMillis()
         return flag
+    }
+
+    fun formatLogFile(logDir: String, renew: Boolean): File? {
+        val sourceFile = File("$logDir\\${GAME_WAR_LOG_NAME}")
+        var res: File? = null
+        if (sourceFile.exists()) {
+            val newFile = File("$logDir\\renew_${GAME_WAR_LOG_NAME}")
+            runCatching {
+                BufferedReader(FileReader(sourceFile)).use { reader ->
+                    BufferedWriter(FileWriter(newFile)).use { writer ->
+                        reader.lineSequence()
+                            .filter { it.contains("PowerTaskList") }
+                            .map { it.replace("PowerTaskList.Debug", "") + "\n" }
+                            .forEach { writer.write(it) }
+                    }
+                }
+            }.onFailure {
+                log.error { it }
+            }.onSuccess {
+                if (renew) {
+                    res = newFile
+                } else {
+                    newFile.renameTo(sourceFile)
+                    res = sourceFile
+                }
+            }
+        } else {
+            log.error { "${sourceFile}不存在" }
+        }
+        return res
     }
 }

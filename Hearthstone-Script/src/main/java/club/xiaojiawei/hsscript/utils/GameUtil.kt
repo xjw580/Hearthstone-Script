@@ -504,10 +504,10 @@ object GameUtil {
     fun findGameHWND(): WinDef.HWND? {
         val hwnd =
             (
-                SystemUtil.findHWND("UnityWndClass", GAME_CN_NAME)
-                    ?: SystemUtil.findHWND("UnityWndClass", GAME_US_NAME)
-                    ?: CSystemDll.INSTANCE.findWindowsByProcessName(GAME_PROGRAM_NAME)
-            )
+                    SystemUtil.findHWND("UnityWndClass", GAME_CN_NAME)
+                        ?: SystemUtil.findHWND("UnityWndClass", GAME_US_NAME)
+                        ?: CSystemDll.INSTANCE.findWindowsByProcessName(GAME_PROGRAM_NAME)
+                    )
                 ?: SystemUtil.findHWND(null, GAME_CN_NAME)
                 ?: SystemUtil.findHWND(null, GAME_US_NAME)
                 ?: SystemUtil.findHWND("UnityWndClass", null)
@@ -599,15 +599,21 @@ object GameUtil {
         }
     }
 
+    /**
+     * 获取游戏最新日志目录
+     */
     fun getLatestLogDir(): File? {
-        val gameLogDir = Path.of(ConfigUtil.getString(ConfigEnum.GAME_PATH), GAME_LOG_DIR).toFile()
-
-        val files: Array<File>?
-        if (gameLogDir.exists() && gameLogDir.isDirectory) {
-            files = gameLogDir.listFiles() ?: return null
-            Arrays.sort(files, Comparator.comparing { obj: File -> obj.name })
-            if (files.isNotEmpty()) return files[files.size - 1]
-        }
-        return null
+        val files: Array<File> = getAllLogDir()
+        Arrays.sort(files, Comparator.comparing { obj: File -> obj.name })
+        return files.lastOrNull()
     }
+
+    /**
+     * 获取游戏所有日志目录
+     */
+    fun getAllLogDir(): Array<File> {
+        val gameLogDir = Path.of(ConfigUtil.getString(ConfigEnum.GAME_PATH), GAME_LOG_DIR).toFile()
+        return if (gameLogDir.exists() && gameLogDir.isDirectory) gameLogDir.listFiles() ?: arrayOf() else arrayOf()
+    }
+
 }

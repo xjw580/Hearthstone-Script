@@ -9,6 +9,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Text?>
 <?import java.lang.*?>
+<?import club.xiaojiawei.controls.ProgressModal?>
 <StackPane xmlns="http://javafx.com/javafx"
            xmlns:fx="http://javafx.com/fxml"
            stylesheets="@../css/settings/developerSettings.css"
@@ -90,10 +91,15 @@
                 <HBox styleClass="h-box" visible="false" managed="false">
                     <Button text="编写卡牌插件" styleClass="btn-ui, btn-ui-normal, btn-ui-small" onAction="#createCardAction"/>
                 </HBox>
+                <HBox styleClass="h-box">
+                    <Button text="格式化Power.log" styleClass="btn-ui, btn-ui-normal, btn-ui-small" onAction="#formatPowerLog"/>
+                    <Button text="格式化LoadingScreen.log" styleClass="btn-ui, btn-ui-normal, btn-ui-small" onAction="#formatLoadingScreenLog"/>
+                </HBox>
             </VBox>
         </ScrollPane>
     </VBox>
 
+    <ProgressModal fx:id="progressModal"/>
     <NotificationManager fx:id="notificationManager" notificationPos="BOTTOM_CENTER">
         <NotificationFactory showingCloseBtn="false" size="SMALL"/>
     </NotificationManager>

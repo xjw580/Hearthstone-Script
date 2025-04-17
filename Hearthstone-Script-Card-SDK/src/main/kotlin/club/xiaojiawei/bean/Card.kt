@@ -14,9 +14,13 @@ import java.util.function.BiConsumer
 
 @Suppress("ktlint:standard:no-consecutive-comments")
 /**
- * 发射按钮卡牌的id
+ * 发射星舰按钮的卡牌id
  */
 private const val LAUNCH_CARD_ID = "GDB_905"
+/**
+ * 终止发射按钮的卡牌id
+ */
+private const val CANCEL_LAUNCH_CARD_ID = "GDB_906"
 
 class Card(
     var action: CardAction,

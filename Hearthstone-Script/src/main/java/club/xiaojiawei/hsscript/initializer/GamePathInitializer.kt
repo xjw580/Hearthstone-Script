@@ -20,13 +20,14 @@ import club.xiaojiawei.hsscript.utils.SystemUtil
 class GamePathInitializer : AbstractInitializer() {
 
     public override fun exec() {
-        var isValidProgramPath = ScriptStatus.isValidProgramPath
+        var isValidGameInstallPath = ScriptStatus.isValidGameInstallPath
+        var isValidPlatformProgramPath = ScriptStatus.isValidPlatformProgramPath
 
         val platformInstallLocation: String?
         if (ConfigUtil.getString(ConfigEnum.PLATFORM_PATH).isBlank()) {
             log.info {
                 String.format(
-                    "未配置%s安装路径，尝试从注册表读取",
+                    "未配置%s程序路径，尝试从注册表读取",
                     PLATFORM_CN_NAME
                 )
             }
@@ -35,24 +36,24 @@ class GamePathInitializer : AbstractInitializer() {
                 PLATFORM_US_NAME
             )
             if (!platformInstallLocation.isNullOrBlank()) {
-                log.info { String.format("从注册表读取到%s安装路径", PLATFORM_CN_NAME) }
+                log.info { String.format("从注册表读取到%s程序路径", PLATFORM_CN_NAME) }
                 if (!ConfigExUtil.storePlatformPath(platformInstallLocation)) {
                     log.warn {
                         String.format(
-                            "从注册表读取的%s安装路径无效",
+                            "从注册表读取的%s程序路径无效",
                             PLATFORM_CN_NAME
                         )
                     }
-                    isValidProgramPath = false
+                    isValidPlatformProgramPath = false
                 }
             } else {
                 log.warn {
                     String.format(
-                        "%s安装路径读取失败，脚本无法正常运行",
+                        "%s程序路径读取失败，脚本无法正常运行",
                         PLATFORM_CN_NAME
                     )
                 }
-                isValidProgramPath = false
+                isValidPlatformProgramPath = false
             }
         }
 
@@ -74,7 +75,7 @@ class GamePathInitializer : AbstractInitializer() {
                             GAME_CN_NAME
                         )
                     }
-                    isValidProgramPath = false
+                    isValidGameInstallPath = false
                 }
             } else {
                 log.warn {
@@ -83,10 +84,11 @@ class GamePathInitializer : AbstractInitializer() {
                         GAME_CN_NAME
                     )
                 }
-                isValidProgramPath = false
+                isValidGameInstallPath = false
             }
         }
-        ScriptStatus.isValidProgramPath = isValidProgramPath
+        ScriptStatus.isValidGameInstallPath = isValidGameInstallPath
+        ScriptStatus.isValidPlatformProgramPath = isValidPlatformProgramPath
     }
 
 }

@@ -4,6 +4,7 @@ import club.xiaojiawei.config.log
 import club.xiaojiawei.enums.StepEnum
 import club.xiaojiawei.enums.WarPhaseEnum
 import club.xiaojiawei.hsscript.bean.single.WarEx
+import club.xiaojiawei.hsscript.consts.GAME_WAR_LOG_NAME
 import club.xiaojiawei.hsscript.core.Core
 import club.xiaojiawei.hsscript.initializer.BaseInitializer
 import club.xiaojiawei.hsscript.listener.WorkTimeListener
@@ -21,7 +22,7 @@ import java.util.concurrent.TimeUnit
  * @date 2023/7/5 20:40
  */
 object PowerLogListener :
-    AbstractLogListener("Power.log", 0, 50L, TimeUnit.MILLISECONDS) {
+    AbstractLogListener(GAME_WAR_LOG_NAME, 0, 50L, TimeUnit.MILLISECONDS) {
 
     private val war = WAR
 
@@ -69,7 +70,7 @@ object PowerLogListener :
         logFile ?: return false
 
         if (logFile.length() + RESERVE_SIZE_B >= ScriptStatus.maxLogSizeB) {
-            log.info { "power.log即将达到" + (ScriptStatus.maxLogSizeKB) + "KB，准备重启游戏" }
+            log.info { "${GAME_WAR_LOG_NAME}即将达到" + (ScriptStatus.maxLogSizeKB) + "KB，准备重启游戏" }
             Core.restart()
             return false
         }
@@ -79,7 +80,7 @@ object PowerLogListener :
     @JvmStatic
     fun main(args: Array<String>) {
 //        innerLogFile = RandomAccessFile("S:\\Hearthstone\\Logs\\Hearthstone_2024_12_04_19_06_41\\Power - 副本.log", "r")
-        innerLogFile = RandomAccessFile("S:\\Hearthstone\\Logs\\Hearthstone_2024_11_27_17_38_36\\Power.log", "r")
+        innerLogFile = RandomAccessFile("S:\\Hearthstone\\Logs\\Hearthstone_2024_11_27_17_38_36\\${GAME_WAR_LOG_NAME}", "r")
         PauseStatus.isPause = false
         WorkTimeListener.working = true
         BaseInitializer().init()

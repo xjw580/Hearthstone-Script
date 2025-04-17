@@ -33,9 +33,9 @@ class Player(
     val war: War by lazy { war ?: War.UNKNOWN_WAR }
 
     /**
-     * 累计的星舰组件
+     * 星舰
      */
-    var starshipPieceCumulativeCard: Card? = null
+    var starship: Card? = null
 
     @Volatile
     var gameId: String = ""

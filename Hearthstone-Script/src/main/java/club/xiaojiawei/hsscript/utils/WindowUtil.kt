@@ -2,6 +2,7 @@ package club.xiaojiawei.hsscript.utils
 
 import club.xiaojiawei.JavaFXUI
 import club.xiaojiawei.config.log
+import club.xiaojiawei.hsscript.consts.COMMON_CSS_PATH
 import club.xiaojiawei.hsscript.consts.FXML_DIR
 import club.xiaojiawei.hsscript.consts.SCRIPT_NAME
 import club.xiaojiawei.hsscript.dll.CSystemDll
@@ -290,7 +291,7 @@ object WindowUtil {
                 }
             }
         }
-        stage.scene.stylesheets.add("/fxml/css/common.css")
+        stage.scene.stylesheets.add(COMMON_CSS_PATH)
         return stage
     }
 

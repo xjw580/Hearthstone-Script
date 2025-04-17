@@ -70,11 +70,11 @@ abstract class CardAction(
                             card.isLaunchpad = false
                             card.isHideStats = false
                             CardUtil.handleCardExhaustedWhenIntoPlayArea(card)
-                            card.area.player.starshipPieceCumulativeCard?.let {
+                            card.area.player.starship?.let {
                                 card.atc = it.atc
                                 card.health = it.health
                             }
-                            card.area.player.starshipPieceCumulativeCard = null
+                            card.area.player.starship = null
                         }
                     }),
                 )
@@ -475,7 +475,7 @@ abstract class CardAction(
         if (isStop()) return null
         if (execLaunch()) {
             belongCard?.let {
-                it.area.player.starshipPieceCumulativeCard = null
+                it.area.player.starship = null
             }
             if (isPause) {
                 this.delay()

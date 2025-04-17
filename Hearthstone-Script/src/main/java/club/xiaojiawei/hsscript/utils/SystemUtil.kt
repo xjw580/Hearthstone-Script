@@ -443,6 +443,10 @@ object SystemUtil {
         Runtime.getRuntime().exec(String.format("explorer %s", path))
     }
 
+    fun openFile(file: File) {
+        openFile(file.absolutePath)
+    }
+
     /**
      * 关闭显示器
      */

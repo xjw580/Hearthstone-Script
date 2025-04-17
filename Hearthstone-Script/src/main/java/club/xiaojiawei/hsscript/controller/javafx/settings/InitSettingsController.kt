@@ -91,19 +91,23 @@ class InitSettingsController : Initializable {
     }
 
     private fun checkConfiguration(): Boolean {
+        var res = true
         ConfigUtil.putString(ConfigEnum.PLATFORM_PASSWORD, password.text, true)
-        if (!ConfigExUtil.storePlatformPath(platformPath.text)) {
-            notificationManager.showError(PLATFORM_CN_NAME + "安装路径不正确,请重新选择", 3)
+        if (ConfigExUtil.storePlatformPath(platformPath.text)) {
+            ScriptStatus.isValidPlatformProgramPath = true
+        } else {
+            notificationManager.showError(PLATFORM_CN_NAME + "程序路径不正确,请重新选择", 3)
             initValue()
-            return false
+            res = false
         }
-        if (!ConfigExUtil.storeGamePath(gamePath.text)) {
+        if (ConfigExUtil.storeGamePath(gamePath.text)) {
+            ScriptStatus.isValidGameInstallPath = true
+        } else {
             notificationManager.showError(GAME_CN_NAME + "安装路径不正确,请重新选择", 3)
             initValue()
-            return false
+            res = false
         }
-        ScriptStatus.isValidProgramPath = true
-        return true
+        return res
     }
 
     override fun initialize(url: URL?, resourceBundle: ResourceBundle?) {

@@ -2,6 +2,7 @@ package club.xiaojiawei.hsscript.listener.log
 
 import club.xiaojiawei.config.log
 import club.xiaojiawei.enums.ModeEnum
+import club.xiaojiawei.hsscript.consts.GAME_MODE_LOG_NAME
 import club.xiaojiawei.hsscript.core.Core
 import club.xiaojiawei.hsscript.listener.WorkTimeListener
 import club.xiaojiawei.hsscript.status.Mode
@@ -19,7 +20,7 @@ import java.util.concurrent.TimeUnit
  * @date 2023/7/5 14:55
  */
 object ScreenLogListener :
-    AbstractLogListener("LoadingScreen.log", 0, 50L, TimeUnit.MILLISECONDS) {
+    AbstractLogListener(GAME_MODE_LOG_NAME, 0, 50L, TimeUnit.MILLISECONDS) {
 
     private const val CURR_MODE_STR = "currMode="
 
@@ -83,7 +84,7 @@ object ScreenLogListener :
                 val logDiffTime =
                     Duration.between(logTime, nowTime).toMillis()
                 if (logDiffTime > 1000) {
-                    log.warn { "LoadingScreen.log日志实际打印时间与输出时间相差过大，diff:${logDiffTime}，log:${line}，logTime:${logTime}，nowTime:${nowTime}" }
+                    log.warn { "${GAME_MODE_LOG_NAME}日志实际打印时间与输出时间相差过大，diff:${logDiffTime}，log:${line}，logTime:${logTime}，nowTime:${nowTime}" }
                 }
                 Mode.currMode = ModeEnum.fromString(l.substring(index + CURR_MODE_STR_LEN))
             } else if ((l.indexOf(NEXT_MODE_STR).also { index = it }) != -1) {

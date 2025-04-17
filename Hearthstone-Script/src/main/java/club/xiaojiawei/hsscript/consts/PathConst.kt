@@ -53,6 +53,12 @@ val LIB_BN_FILE = ResourceFile("bn.dll")
 
 val HS_CARD_UTIL_FILE = ResourceFile("card-update-util.exe")
 
+const val GAME_WAR_LOG_NAME = "Power.log"
+
+const val GAME_MODE_LOG_NAME = "LoadingScreen.log"
+
+const val COMMON_CSS_PATH = "/fxml/css/common.css"
+
 /**
  * 图片路径
  */

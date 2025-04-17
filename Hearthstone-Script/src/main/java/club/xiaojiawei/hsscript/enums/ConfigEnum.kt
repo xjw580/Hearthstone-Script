@@ -56,12 +56,12 @@ enum class ConfigEnum(
     val isEnable: Boolean = true,
 ) {
     /**
-     * 游戏路径
+     * 游戏安装路径
      */
     GAME_PATH(group = INIT_CONFIG_GROUP, defaultValueInitializer = { "" }),
 
     /**
-     * 战网路径
+     * 战网程序路径
      */
     PLATFORM_PATH(group = INIT_CONFIG_GROUP, defaultValueInitializer = { "" }),
 

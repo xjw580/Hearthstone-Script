@@ -91,7 +91,8 @@ object Core {
         CORE_THREAD_POOL.execute {
             try {
                 if ((!force && WorkTimeListener.working) || !lock.tryLock()) return@execute
-                if (ScriptStatus.isValidProgramPath) {
+
+                if (ScriptStatus.isValidGameInstallPath && ScriptStatus.isValidPlatformProgramPath) {
                     WorkTimeListener.working = true
                     StarterConfig.starter.start()
                 } else if (!PauseStatus.isPause) {
