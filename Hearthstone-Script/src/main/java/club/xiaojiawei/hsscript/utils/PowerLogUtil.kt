@@ -198,12 +198,14 @@ object PowerLogUtil {
     fun dealTagChange(line: String): TagChangeEntity {
         val tagChangeEntity: TagChangeEntity = parseTagChange(line)
         tagChangeEntity.logType = TAG_CHANGE
-
+        println(line)
+        println(tagChangeEntity.tag)
+        println("==============")
         if (tagChangeEntity.tag !== TagEnum.UNKNOWN) {
 //        处理复杂，例：TAG_CHANGE Entity=[entityName=UNKNOWN ENTITY [cardType=INVALID] id=89 zone=HAND zonePos=4 cardId= player=2] tag=ZONE_POSITION value=0
             if (tagChangeEntity.entity.isBlank()) {
                 val card = war.cardMap[tagChangeEntity.entityId] ?: let {
-                    log.debug { "不应找不到card,【entityId:${tagChangeEntity.entityId}】" }
+                    log.info { "不应找不到card,【entityId:${tagChangeEntity.entityId}】" }
                     return tagChangeEntity
                 }
 

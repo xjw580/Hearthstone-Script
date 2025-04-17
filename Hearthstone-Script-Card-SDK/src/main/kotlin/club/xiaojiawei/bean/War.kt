@@ -28,7 +28,7 @@ class War(
      * 存储当前war中所有的[Card]
      * k:[club.xiaojiawei.bean.Entity.entityId]
      */
-    val cardMap: MutableMap<String?, Card?> = HashMap()
+    val cardMap: MutableMap<String, Card> = HashMap()
 
     override var currentPlayer: Player
         get():Player {
