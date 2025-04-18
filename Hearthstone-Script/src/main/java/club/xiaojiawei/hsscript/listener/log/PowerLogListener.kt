@@ -81,7 +81,6 @@ object PowerLogListener :
     fun main(args: Array<String>) {
 //        innerLogFile = RandomAccessFile("S:\\Hearthstone\\Logs\\Hearthstone_2024_12_04_19_06_41\\Power - 副本.log", "r")
         innerLogFile = RandomAccessFile("S:\\Hearthstone\\Logs\\Hearthstone_2024_11_27_17_38_36\\${GAME_WAR_LOG_NAME}", "r")
-        PauseStatus.isPause = false
         WorkTimeListener.working = true
         BaseInitializer().init()
         WarEx.reset()

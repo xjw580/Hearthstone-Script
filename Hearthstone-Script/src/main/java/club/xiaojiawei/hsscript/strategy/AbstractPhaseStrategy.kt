@@ -8,8 +8,8 @@ import club.xiaojiawei.hsscript.bean.log.ExtraEntity
 import club.xiaojiawei.hsscript.bean.log.TagChangeEntity
 import club.xiaojiawei.hsscript.consts.*
 import club.xiaojiawei.hsscript.interfaces.closer.ThreadCloser
+import club.xiaojiawei.hsscript.listener.WorkTimeListener
 import club.xiaojiawei.hsscript.listener.log.PowerLogListener
-import club.xiaojiawei.hsscript.status.PauseStatus
 import club.xiaojiawei.hsscript.status.TaskManager
 import club.xiaojiawei.hsscript.utils.PowerLogUtil
 import club.xiaojiawei.hsscript.utils.PowerLogUtil.dealChangeEntity
@@ -47,7 +47,7 @@ abstract class AbstractPhaseStrategy : PhaseStrategy {
         val accessFile = PowerLogListener.logFile
         accessFile ?: return
         var l: String? = line
-        while (!PauseStatus.isPause) {
+        while (WorkTimeListener.working) {
             try {
                 if (l == null) {
                     SystemUtil.delay(100)

@@ -27,7 +27,9 @@ import javafx.scene.control.*
 import javafx.scene.layout.HBox
 import javafx.scene.layout.Priority
 import javafx.scene.layout.StackPane
+import javafx.scene.layout.VBox
 import javafx.scene.text.Text
+import javafx.stage.DirectoryChooser
 import java.io.File
 import java.net.URL
 import java.nio.file.Path
@@ -217,11 +219,39 @@ class DeveloperSettingsController : Initializable {
                 }
                 selectionModel.selectionMode = SelectionMode.MULTIPLE
             }
+            val otherLogField = TextField().apply {
+                this.styleClass.addAll("text-field-ui", "text-field-ui-small")
+            }
+            val pane = HBox(
+                otherLogField,
+                HBox().apply { HBox.setHgrow(this, Priority.ALWAYS) },
+                Button("选择其他日志目录").apply {
+                    this.styleClass.addAll("btn-ui", "btn-ui-small")
+                    setOnAction {
+                        val chooser = DirectoryChooser()
+                        chooser.title = "选择${GAME_CN_NAME}日志目录"
+                        chooser.showDialog(rootPane.scene.window)?.let {
+                            otherLogField.text = it.name
+                            otherLogField.userData = it
+                        }
+                    }
+                },
+            ).apply {
+                alignment = Pos.CENTER_LEFT
+            }
             val modal = Modal(
                 rootPane, "选择要格式化的日志目录",
-                StackPane(listView),
+                VBox(listView, pane).apply {
+                    alignment = Pos.TOP_CENTER
+                    spacing = 10.0
+                },
                 {
-                    val files = listView.selectionModel.selectedItems.map { it.userData as File }
+                    val files =
+                        listView.selectionModel.selectedItems.map { it.userData as File }.toMutableList()
+                    val otherFile = otherLogField.userData
+                    if (otherFile is File) {
+                        files.add(otherFile)
+                    }
                     if (files.isNotEmpty()) {
                         val progress = progressModal.showByZero("格式化${name}]中")
                         go {
