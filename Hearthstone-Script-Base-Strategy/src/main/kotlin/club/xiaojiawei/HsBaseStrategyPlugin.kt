@@ -20,5 +20,5 @@ class HsBaseStrategyPlugin : StrategyPlugin {
 
     override fun homeUrl(): String = "https://github.com/xjw580/Hearthstone-Script"
 
-    override fun sdkVersion(): String = "4.4.6-DEV"
+    override fun sdkVersion(): String = "4.5.0-GA"
 }

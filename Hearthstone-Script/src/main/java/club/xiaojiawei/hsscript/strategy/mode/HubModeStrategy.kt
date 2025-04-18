@@ -39,7 +39,8 @@ object HubModeStrategy : AbstractModeStrategy<Any?>() {
     /**
      * 未领取的奖励弹窗关闭按钮
      */
-    val UNCLAIMED_REWARDS_RECT = GameRect(-0.0433, 0.0449, 0.1855, 0.2378)
+    val UNCLAIMED_REWARDS_RECT = GameRect(-0.0449, 0.0406, 0.1834, 0.2342)
+
 
 
     override fun wantEnter() {
