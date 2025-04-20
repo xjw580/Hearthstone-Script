@@ -27,6 +27,8 @@
 
         <kotlin.code.style>official</kotlin.code.style>
         <kotlin.compiler.jvmTarget>1.8</kotlin.compiler.jvmTarget>
+
+        <project.build.outputTimestamp>2025-01-01T00:00:00Z</project.build.outputTimestamp>
     </properties>
 
     <dependencies>
@@ -177,6 +179,8 @@
                     </excludes>
                     <archive>
                         <manifest>
+                            <addDefaultImplementationEntries>false</addDefaultImplementationEntries>
+                            <addDefaultSpecificationEntries>false</addDefaultSpecificationEntries>
                             <!-- 入口Main Class -->
                             <mainClass>club.xiaojiawei.hsscript.MainKt</mainClass>
                             <!-- 依赖的lib -->
@@ -185,6 +189,7 @@
                         </manifest>
                         <manifestEntries>
                             <Class-Path>resources/</Class-Path>
+                            <Created-By>Maven</Created-By>
                         </manifestEntries>
                     </archive>
                 </configuration>
