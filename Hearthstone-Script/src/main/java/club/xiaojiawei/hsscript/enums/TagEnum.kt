@@ -710,6 +710,15 @@ enum class TagEnum(
         ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
             extraEntity.extraCard.card.isTradeable = isTrue(value)
         }),
+    CHOOSE_ONE(
+        "抉择",
+        TagChangeHandler { card: Card?, tagChangeEntity: TagChangeEntity, war: War, player: Player?, area: Area? ->
+            card?.isChooseOne = isTrue(tagChangeEntity.value)
+            log(player, card, "抉择", tagChangeEntity.value)
+        },
+        ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
+            extraEntity.extraCard.card.isChooseOne = isTrue(value)
+        }),
 
     /*+++++++++++++++++++++++++++++++++++++++++++++++*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
     UNKNOWN(

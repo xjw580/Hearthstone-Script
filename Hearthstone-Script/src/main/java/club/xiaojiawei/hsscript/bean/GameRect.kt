@@ -41,6 +41,8 @@ data class GameRect(
 
     fun isValid(): Boolean = this != INVALID
 
+    fun isInvalid(): Boolean = this == INVALID
+
     private fun showControlPos(gameRect: GameRect = this) {
         WindowUtil.getStage(WindowEnum.GAME_WINDOW_CONTROL_MODAL)?.let {
             if (it.isShowing) {

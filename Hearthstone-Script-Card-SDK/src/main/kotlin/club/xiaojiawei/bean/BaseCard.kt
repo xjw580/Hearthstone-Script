@@ -345,6 +345,12 @@ open class BaseCard : Entity() {
     @Volatile
     var isTradeable = false
 
+    /**
+     * 抉择
+     */
+    @Volatile
+    var isChooseOne = false
+
 //    override fun toString(): String {
 //        return generateToString(this, true)
 //    }

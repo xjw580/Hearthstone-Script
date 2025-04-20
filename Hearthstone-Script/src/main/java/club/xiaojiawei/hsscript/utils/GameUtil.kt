@@ -12,6 +12,7 @@ import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.status.Mode
 import club.xiaojiawei.hsscript.status.PauseStatus
 import club.xiaojiawei.hsscript.status.ScriptStatus
+import club.xiaojiawei.hsscript.utils.GameUtil.CHOOSE_ONE_RECTS
 import club.xiaojiawei.hsscript.utils.SystemUtil.delay
 import club.xiaojiawei.util.isFalse
 import club.xiaojiawei.util.randomSelect
@@ -52,6 +53,11 @@ object GameUtil {
 
     val SURRENDER_RECT: GameRect = GameRect(-0.0629, 0.0607, -0.1677, -0.1279)
 
+    /**
+     * 游戏进度已保存，请重启游戏的按钮
+     */
+    private val RESTART_GAME_RECT = GameRect(-0.0365, 0.0302, 0.0878, 0.1272)
+
     //    表情
     val THANK_RECT: GameRect = GameRect(-0.1604, -0.0404, 0.1153, 0.1502)
     val PRAISE_RECT: GameRect = GameRect(-0.1930, -0.0730, 0.1971, 0.2320)
@@ -80,6 +86,15 @@ object GameUtil {
      * 交易
      */
     val TRADE_RECT = GameRect(0.4253, 0.4736, 0.0171, 0.1634)
+
+    /**
+     * 抉择
+     */
+    private val CHOOSE_ONE_RECTS = arrayOf(
+        GameRect(-0.1433, 0.0305, -0.1806, 0.1580),
+        GameRect(0.1876, 0.3605, -0.1783, 0.1603)
+    )
+
 
     private val FOUR_DISCOVER_RECTS =
         arrayOf(
@@ -268,27 +283,34 @@ object GameUtil {
         SystemUtil.delayShortMedium()
     }
 
+    /**
+     * 抉择
+     * @param index 范围：0-[CHOOSE_ONE_RECTS.size]
+     */
+    fun chooseOneCard(index: Int): GameRect {
+        return CHOOSE_ONE_RECTS.getOrElse(index) { GameRect.INVALID }
+    }
+
     fun getThreeDiscoverCardRect(index: Int): GameRect {
-        if (index < 0 || index > THREE_DISCOVER_RECTS.size - 1) {
-            return GameRect.INVALID
-        }
-        return THREE_DISCOVER_RECTS[index]
+        return THREE_DISCOVER_RECTS.getOrElse(index) { GameRect.INVALID }
     }
 
     fun getFourDiscoverCardRect(index: Int): GameRect {
-        if (index < 0 || index > FOUR_DISCOVER_RECTS.size - 1) {
-            return GameRect.INVALID
-        }
-        return FOUR_DISCOVER_RECTS[index]
+        return FOUR_DISCOVER_RECTS.getOrElse(index) { GameRect.INVALID }
     }
 
+    /**
+     * 左击套牌位置
+     */
     fun lClickDeckPos(count: Int = 1) {
         val chooseDeckPos = ConfigExUtil.getChooseDeckPos()
         if (chooseDeckPos.isEmpty()) return
         val deckPos = chooseDeckPos.randomSelect()
-        for (i in 0 until count) {
-            DECK_POS_RECTS[deckPos - 1].lClick()
-            SystemUtil.delayTiny()
+        DECK_POS_RECTS.getOrNull(deckPos - 1)?.let {
+            for (i in 0 until count) {
+                it.lClick()
+                SystemUtil.delayTiny()
+            }
         }
     }
 
@@ -318,8 +340,7 @@ object GameUtil {
         gameRects: Array<Array<GameRect>>,
     ): GameRect {
         var i = index
-        var s = size
-        s = max(s, 0)
+        val s = max(size, 0)
         val rects: Array<GameRect> = gameRects[s and 1]
         val offset: Int = (rects.size - s) shr 1
         i = max((offset + i), 0)
@@ -380,11 +401,6 @@ object GameUtil {
             log.error(e) { "启动${PLATFORM_CN_NAME}异常" }
         }
     }
-
-    /**
-     * 游戏进度已保存，请重启游戏的按钮
-     */
-    private val RESTART_GAME_RECT = GameRect(-0.0365, 0.0302, 0.0878, 0.1272)
 
     /**
      * 游戏里投降
@@ -483,7 +499,7 @@ object GameUtil {
                 ),
             )
         } else {
-            (0 until 3).forEach {
+            (0 until 3).forEach { _ ->
                 END_TURN_RECT.lClick()
                 SystemUtil.delayShort()
             }
