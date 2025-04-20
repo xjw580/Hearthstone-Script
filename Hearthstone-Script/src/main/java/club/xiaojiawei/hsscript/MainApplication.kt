@@ -42,6 +42,7 @@ import java.io.File
 import java.net.URLClassLoader
 import java.util.function.Consumer
 import java.util.function.Supplier
+import java.util.prefs.Preferences
 import javax.swing.AbstractAction
 
 /**
@@ -414,8 +415,16 @@ class MainApplication : Application() {
             val version = ConfigUtil.getString(ConfigEnum.CURRENT_VERSION)
             if (Release.compareVersion(VersionUtil.VERSION, version) > 0) {
                 runUI {
+                    showStage(WindowEnum.ABOUT)
                     showStage(WindowEnum.VERSION_MSG, getStage(WindowEnum.MAIN))
                     ConfigUtil.putString(ConfigEnum.CURRENT_VERSION, VersionUtil.VERSION)
+                }
+            }else{
+                val preferences = Preferences.userNodeForPackage(this::class.java)
+                val key = "used"
+                if (preferences.get(key, "").isNullOrBlank()){
+                    showStage(WindowEnum.ABOUT)
+                    preferences.put(key, "true")
                 }
             }
         }

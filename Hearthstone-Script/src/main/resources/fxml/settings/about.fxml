@@ -31,7 +31,7 @@
                                         </fx:define>
                                         <ImageView fx:id="projectIco" fitHeight="${icoSize}" fitWidth="${icoSize}"/>
                                         <Label text="Hearthstone-Script"
-                                               style="-fx-font-weight: bold;-fx-font-size: 14"/>
+                                               style="-fx-font-weight: bold;-fx-font-size: 18"/>
                                     </HBox>
                                     <Label text="本项目遵循GPL3.0开源协议及禁止商用附加协议"/>
                                     <HBox alignment="CENTER_LEFT" spacing="10">
@@ -52,6 +52,22 @@
                                             </UrlLabel>
                                         </HBox>
                                     </HBox>
+                                    <Label text="本软件面向个人免费使用，所有需要收费的都是骗子！" style="-fx-font-size: 13;-fx-font-weight: bold"/>
+                                    <HBox alignment="CENTER_LEFT" spacing="10">
+                                        <Label text="软件下载"/>
+                                        <HBox spacing="5" alignment="CENTER_LEFT">
+                                            <UrlLabel url="https://gitee.com/zergqueen/Hearthstone-Script/releases/latest">
+                                                <graphic>
+                                                    <GiteeIco scaleX="${icoScale}" scaleY="${icoScale}"/>
+                                                </graphic>
+                                            </UrlLabel>
+                                            <UrlLabel url="https://github.com/xjw580/Hearthstone-Script/releases/latest">
+                                                <graphic>
+                                                    <GithubIco scaleX="${icoScale}" scaleY="${icoScale}"/>
+                                                </graphic>
+                                            </UrlLabel>
+                                        </HBox>
+                                    </HBox>
                                     <HBox>
                                         <UrlLabel text="捐赠" url="https://gitee.com/zergqueen/Hearthstone-Script/blob/master/payment-code.jpg"/>
                                     </HBox>
@@ -61,7 +77,7 @@
                     </TitledPane>
                 </Group>
                 <Group>
-                    <TitledPane text="开源许可"
+                    <TitledPane text="开源许可" expanded="false"
                                 styleClass="titled-pane-ui, titled-pane-ui-big, titled-pane-ui-pure, item-titled-pane">
                         <VBox styleClass="item-v-box">
                             <HBox styleClass="h-box">

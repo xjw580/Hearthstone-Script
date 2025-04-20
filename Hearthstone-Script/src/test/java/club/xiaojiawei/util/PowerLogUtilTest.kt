@@ -31,8 +31,8 @@ class PowerLogUtilTest {
                 cardId = "GIFT_02"
                 playerId = "1"
             },
-            "BLOCK_START BlockType=TRIGGER Entity=异灵犬#5148 EffectCardId=System.Collections.Generic.List`1[System.String] EffectIndex=-1 Target=0 SubOption=-1 TriggerKeyword=TAG_NOT_SET" to CommonEntity().apply {
-                entity = "异灵犬#5148"
+            "BLOCK_START BlockType=TRIGGER Entity=异灵术#1234 EffectCardId=System.Collections.Generic.List`1[System.String] EffectIndex=-1 Target=0 SubOption=-1 TriggerKeyword=TAG_NOT_SET" to CommonEntity().apply {
+                entity = "异灵术#1234"
             },
             "D 18:37:29.3413958 PrintPower() -     TAG_CHANGE Entity=[entityName=寒冰箭 id=78 zone=SETASIDE zonePos=0 cardId=CS2_024 player=1] tag=LAST_AFFECTED_BY value=13 " to CommonEntity().apply {
                 entityName = String("寒冰箭".toByteArray(Charsets.ISO_8859_1), Charsets.ISO_8859_1)
