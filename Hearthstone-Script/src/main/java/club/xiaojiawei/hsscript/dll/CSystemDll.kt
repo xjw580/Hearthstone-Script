@@ -121,6 +121,8 @@ interface CSystemDll : Library {
 
     fun isProcessRunning(processName: String): Boolean
 
+    fun isDebug(): Boolean
+
     // ===================================message===================================
 
     fun limitWindowResize(
