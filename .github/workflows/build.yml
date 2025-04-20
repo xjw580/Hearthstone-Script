@@ -47,6 +47,12 @@ jobs:
       - name: List target directory
         run: ls -l Hearthstone-Script/target/
 
+      - name: Calculate SHA256
+        run: |
+          cd Hearthstone-Script/target/
+          sha256sum hs-script_${{ github.ref_name }}.jar > hs-script_${{ github.ref_name }}.jar.sha256
+          cat hs-script_${{ github.ref_name }}.jar.sha256
+
       - name: Upload Release Assets
         uses: softprops/action-gh-release@v1
         with:
@@ -56,5 +62,6 @@ jobs:
           files: |
             Hearthstone-Script/target/hs-script_${{ github.ref_name }}.zip
             Hearthstone-Script/target/hs-script_${{ github.ref_name }}.jar
+            Hearthstone-Script/target/hs-script_${{ github.ref_name }}.jar.sha256
         env:
           GITHUB_TOKEN: ${{ github.token }}

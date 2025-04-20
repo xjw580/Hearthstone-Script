@@ -412,6 +412,8 @@ class MainApplication : Application() {
             Thread.sleep(1000)
             PauseStatus.isPause = false
         } else {
+            val preferences = Preferences.userNodeForPackage(this::class.java)
+            val key = "used"
             val version = ConfigUtil.getString(ConfigEnum.CURRENT_VERSION)
             if (Release.compareVersion(VersionUtil.VERSION, version) > 0) {
                 runUI {
@@ -420,13 +422,11 @@ class MainApplication : Application() {
                     ConfigUtil.putString(ConfigEnum.CURRENT_VERSION, VersionUtil.VERSION)
                 }
             }else{
-                val preferences = Preferences.userNodeForPackage(this::class.java)
-                val key = "used"
                 if (preferences.get(key, "").isNullOrBlank()){
                     showStage(WindowEnum.ABOUT)
-                    preferences.put(key, "true")
                 }
             }
+            preferences.put(key, "true")
         }
     }
 
