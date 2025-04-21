@@ -132,7 +132,7 @@ interface CSystemDll : Library {
 
     fun uninstall()
 
-    fun mouserHook(enable: Boolean)
+    fun mouseHook(enable: Boolean)
 
     fun acHook(enable: Boolean)
 

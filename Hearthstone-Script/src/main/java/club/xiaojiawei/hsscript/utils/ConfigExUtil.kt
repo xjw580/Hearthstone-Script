@@ -87,6 +87,7 @@ object ConfigExUtil {
 
     fun storeMouseControlMode(mouseControlModeEnum: MouseControlModeEnum): Boolean {
         val oldMouseControlMode = getMouseControlMode()
+        ConfigUtil.putString(ConfigEnum.MOUSE_CONTROL_MODE, mouseControlModeEnum.name)
         when (mouseControlModeEnum) {
             MouseControlModeEnum.MESSAGE -> {
                 if (oldMouseControlMode === MouseControlModeEnum.DRIVE) {
@@ -101,15 +102,14 @@ object ConfigExUtil {
                 if (oldMouseControlMode === MouseControlModeEnum.DRIVE) {
                     DriverInitializer().uninstall()
                 }
-                CSystemDll.INSTANCE.mouserHook(false)
+                CSystemDll.INSTANCE.mouseHook(false)
             }
 
             MouseControlModeEnum.DRIVE -> {
                 DriverInitializer().install()
-                CSystemDll.INSTANCE.mouserHook(false)
+                CSystemDll.INSTANCE.mouseHook(false)
             }
         }
-        ConfigUtil.putString(ConfigEnum.MOUSE_CONTROL_MODE, mouseControlModeEnum.name)
         return true
     }
 

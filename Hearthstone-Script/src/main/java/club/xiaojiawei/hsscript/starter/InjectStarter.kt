@@ -40,7 +40,7 @@ class InjectStarter : AbstractStarter() {
                     Thread.sleep(delay)
                 }
                 if (mouseHook) {
-                    CSystemDll.INSTANCE.mouserHook(true)
+                    CSystemDll.INSTANCE.mouseHook(true)
                 }
                 if (limitMouseRange) {
                     CSystemDll.INSTANCE.limitMouseRange(true)
