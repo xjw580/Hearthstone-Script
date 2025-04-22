@@ -526,7 +526,6 @@ object GameUtil {
                     )
                 ?: SystemUtil.findHWND(null, GAME_CN_NAME)
                 ?: SystemUtil.findHWND(null, GAME_US_NAME)
-                ?: SystemUtil.findHWND("UnityWndClass", null)
         return hwnd
     }
 
