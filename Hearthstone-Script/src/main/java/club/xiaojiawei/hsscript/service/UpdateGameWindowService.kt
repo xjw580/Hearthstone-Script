@@ -24,14 +24,18 @@ object UpdateGameWindowService : Service<Boolean>() {
 
     private var thread: Thread? = null
 
-    private val changeListener: ChangeListener<Boolean> by lazy {
+    private val workingChangeListener: ChangeListener<Boolean> by lazy {
         ChangeListener { _, _, working ->
-            CSystemDll.INSTANCE.limitWindowResize(ScriptStatus.gameHWND, working)
+            CSystemDll.INSTANCE.limitWindowResize(
+                ScriptStatus.gameHWND,
+                working && !ConfigUtil.getBoolean(ConfigEnum.UPDATE_GAME_WINDOW)
+            )
         }
     }
 
     override fun execStart(): Boolean {
-        WorkTimeListener.addChangeListener(changeListener)
+        WorkTimeListener.addChangeListener(workingChangeListener)
+        CSystemDll.INSTANCE.limitWindowResize(ScriptStatus.gameHWND, false)
         thread =
             Thread({
                 while (thread?.isInterrupted == false) {
@@ -56,8 +60,8 @@ object UpdateGameWindowService : Service<Boolean>() {
     }
 
     override fun execStop(): Boolean {
-        WorkTimeListener.removeChangeListener(changeListener)
-        CSystemDll.INSTANCE.limitWindowResize(ScriptStatus.gameHWND, false)
+        WorkTimeListener.removeChangeListener(workingChangeListener)
+        CSystemDll.INSTANCE.limitWindowResize(ScriptStatus.gameHWND, WorkTimeListener.working)
         thread?.let {
             it.isAlive.isTrue {
                 it.interrupt()
@@ -67,5 +71,6 @@ object UpdateGameWindowService : Service<Boolean>() {
         return true
     }
 
-    override fun execIntelligentStartStop(value: Boolean?): Boolean = ConfigUtil.getBoolean(ConfigEnum.UPDATE_GAME_WINDOW)
+    override fun execIntelligentStartStop(value: Boolean?): Boolean =
+        ConfigUtil.getBoolean(ConfigEnum.UPDATE_GAME_WINDOW)
 }
