@@ -2,6 +2,7 @@ package club.xiaojiawei.bean.area
 
 import club.xiaojiawei.bean.Card
 import club.xiaojiawei.bean.Player
+import club.xiaojiawei.status.WAR
 
 /**
  * 除外区（各种效果在此生成）,发现时，最新的三张就是需要选择的牌

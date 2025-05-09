@@ -4,6 +4,7 @@ import club.xiaojiawei.bean.Card
 import club.xiaojiawei.bean.MutableCardList
 import club.xiaojiawei.bean.Player
 import club.xiaojiawei.bean.area.Area.Companion.UNKNOWN_AREA
+import club.xiaojiawei.config.ENABLE_AREA_LOG
 import club.xiaojiawei.config.log
 import club.xiaojiawei.enums.ZoneEnum
 import club.xiaojiawei.util.isTrue
@@ -41,11 +42,15 @@ abstract class Area(
         }
     }
 
+    protected fun zeroCardSize(): Int {
+        return zeroCards.size
+    }
+
     @Volatile
     var maxSize = maxSize
         set(value) {
             val zoneComment = getChineseName()
-            allowLog.isTrue {
+            (allowLog && ENABLE_AREA_LOG).isTrue {
                 log.info { "玩家${player.playerId}【${player.gameId}】的【${zoneComment}】的【maxSize】更改为【${value}】" }
             }
             field = value
@@ -69,7 +74,7 @@ abstract class Area(
         if (card.entityId.isNotEmpty()) {
             zeroCards[card.entityId] = card
             addZone(card)
-            if (log.isDebugEnabled() && allowLog) {
+            if (log.isDebugEnabled() && allowLog && ENABLE_AREA_LOG) {
                 log.debug { getLogText(card, "zeroArea") }
             }
         }
@@ -83,7 +88,7 @@ abstract class Area(
             cards.add(pos, card)
         }
         addZone(card)
-        allowLog.isTrue {
+        (allowLog && ENABLE_AREA_LOG).isTrue {
             log.info { getLogText(card, "") }
         }
     }
@@ -178,7 +183,7 @@ abstract class Area(
         return result
     }
 
-    fun cardSize(): Int {
+    open fun cardSize(): Int {
         return cards.size
     }
 
@@ -210,6 +215,27 @@ abstract class Area(
         if (card == null) {
             for (c in cards) {
                 if (entityId == c.entityId) {
+                    card = c
+                    break
+                }
+            }
+        }
+        return card
+    }
+
+    open fun findBygCardId(cardId: String): Card? {
+        if (cardId.isEmpty()) return null
+
+        var card: Card? = null
+        for (entry in zeroCards) {
+            if (entry.value.cardId == cardId) {
+                card = entry.value
+                break
+            }
+        }
+        if (card == null) {
+            for (c in cards) {
+                if (cardId == c.cardId) {
                     card = c
                     break
                 }

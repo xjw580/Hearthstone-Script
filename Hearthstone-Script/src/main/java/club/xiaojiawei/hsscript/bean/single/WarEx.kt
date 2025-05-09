@@ -113,6 +113,9 @@ object WarEx {
             won = lost
             endTime = 0
             startTime = endTime
+            maxEntityId = null
+            myHeroIncreaseInjury = 0
+            rivalHeroIncreaseInjury = 0
         }
         isWin = false
         inWar = false

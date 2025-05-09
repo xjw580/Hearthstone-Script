@@ -4,6 +4,7 @@ import club.xiaojiawei.bean.Card
 import club.xiaojiawei.bean.isValid
 import club.xiaojiawei.bean.safeRun
 import club.xiaojiawei.config.log
+import club.xiaojiawei.data.COIN_CARD_ID
 import club.xiaojiawei.enums.ModeEnum
 import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.listener.log.ScreenLogListener
@@ -107,6 +108,10 @@ object DeckStrategyActuator {
         val me = war.me
         try {
             val copyHandCards = HashSet(me.handArea.cards)
+            copyHandCards.removeIf { it.cardId == COIN_CARD_ID }
+            for ((index, card) in copyHandCards.withIndex()) {
+                println("hand:" + card.action.cardMsg())
+            }
             DeckStrategyManager.currentDeckStrategy?.executeChangeCard(copyHandCards)
             for (i in me.handArea.cards.indices) {
                 val card = me.handArea.cards[i]

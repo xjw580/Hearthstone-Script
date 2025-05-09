@@ -47,11 +47,20 @@ sealed interface Plugin {
      */
     fun updateUrl(): String = ""
 
-    fun getInfoString(): String = "name: ${name()}, version: ${version()}, author: ${author()}, id: ${id()}, description: ${description()}"
+    /**
+     * 获取插件信息
+     */
+    fun getInfoString(): String =
+        "name: ${name()}, version: ${version()}, author: ${author()}, id: ${id()}, description: ${description()}"
 
     /**
      * 使用的sdk版本
      */
     fun sdkVersion(): String
+
+    /**
+     * 初始化插件，装载插件前调用
+     */
+    fun init() {}
 
 }

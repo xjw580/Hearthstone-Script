@@ -1,3 +1,7 @@
+#其他
+club.xiaojiawei.bean.Coin
+
+#技能
 club.xiaojiawei.bean.power.DeathKnightPower
 club.xiaojiawei.bean.power.DemonHunterPower
 club.xiaojiawei.bean.power.DruidPower
@@ -8,7 +12,8 @@ club.xiaojiawei.bean.power.PriestPower
 club.xiaojiawei.bean.power.ShamanPower
 club.xiaojiawei.bean.power.WarlockPower
 club.xiaojiawei.bean.power.WarriorPower
-club.xiaojiawei.bean.Coin
+
+#沙包战
 club.xiaojiawei.bean.warrior.AcolyteOfPain
 club.xiaojiawei.bean.warrior.Bash
 club.xiaojiawei.bean.warrior.Bladestorm

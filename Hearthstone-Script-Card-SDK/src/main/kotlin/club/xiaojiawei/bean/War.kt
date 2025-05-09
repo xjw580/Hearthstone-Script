@@ -2,6 +2,7 @@ package club.xiaojiawei.bean
 
 import club.xiaojiawei.bean.War.Companion.UNKNOWN_WAR
 import club.xiaojiawei.bean.area.Area
+import club.xiaojiawei.config.ENABLE_WAR_LOG
 import club.xiaojiawei.config.log
 import club.xiaojiawei.enums.StepEnum
 import club.xiaojiawei.mapper.WarMapper
@@ -37,7 +38,7 @@ class War(
         @Synchronized set(value) {
             super.currentPlayer = value
             value.safeRun {
-                allowLog.isTrue {
+                (allowLog && ENABLE_WAR_LOG).isTrue {
                     log.info { "${value.gameId} 的回合" }
                 }
             }
@@ -49,7 +50,7 @@ class War(
         }
         @Synchronized set(value) {
             super.firstPlayerGameId = value
-            (value.isNotEmpty() && allowLog).isTrue {
+            (value.isNotEmpty() && allowLog && ENABLE_WAR_LOG).isTrue {
                 log.info { "先手玩家：$value" }
             }
         }
@@ -60,7 +61,7 @@ class War(
         }
         @Synchronized set(value) {
             super.currentTurnStep = value?.also {
-                allowLog.isTrue {
+                (allowLog && ENABLE_WAR_LOG).isTrue {
                     log.info { it.comment }
                 }
             }

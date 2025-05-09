@@ -1,6 +1,7 @@
 package club.xiaojiawei
 
 import club.xiaojiawei.bean.*
+import club.xiaojiawei.bean.Entity.Companion.UNKNOWN_ENTITY_NAME
 import club.xiaojiawei.bean.area.HandArea
 import club.xiaojiawei.bean.area.isValid
 import club.xiaojiawei.config.log
@@ -9,6 +10,7 @@ import club.xiaojiawei.util.CardUtil
 import club.xiaojiawei.util.isTrue
 import java.util.concurrent.atomic.AtomicLong
 import java.util.function.Supplier
+import kotlin.math.max
 
 /**
  * @author 肖嘉威
@@ -23,6 +25,10 @@ abstract class CardAction(
     createDefaultAction: Boolean = true,
 ) {
     protected var depth = 0
+        set(value) {
+            field = value
+            commonAction?.depth = value
+        }
 
     /**
      * 是否尝试打出过
@@ -45,6 +51,10 @@ abstract class CardAction(
             this.commonAction = commonActionFactory?.get()
             this.commonAction?.belongCard = belongCard
         }
+    }
+
+    open fun name(): String? {
+        return null
     }
 
     /**
@@ -78,6 +88,42 @@ abstract class CardAction(
             }
         } ?: emptyList()
 
+    fun cardName(): String? {
+        var name = belongCard?.entityName ?: name()
+        if (name?.startsWith(UNKNOWN_ENTITY_NAME) == true) {
+            name = name() ?: UNKNOWN_ENTITY_NAME
+        }
+        return name
+    }
+
+    fun cardMsg(card: Card? = belongCard): String =
+        card?.let { "${card.entityId} | ${card.cardId} | ${card.action.cardName()}" } ?: ""
+
+    protected fun logPlay() {
+        log.info { "打出【${cardMsg(belongCard)}】" }
+    }
+
+    protected fun logPower() {
+        log.info { "使用【${cardMsg(belongCard)}】" }
+    }
+
+    protected fun logAttack(attackedCard: Card) {
+        log.info { "【${cardMsg(belongCard)}】攻击【${cardMsg(attackedCard)}】" }
+    }
+
+    protected fun logAttack(attackCard: Card, attackedCard: Card) {
+        log.info { "【${cardMsg(attackCard)}】攻击【${cardMsg(attackedCard)}】" }
+    }
+
+
+    protected fun logPowerPoint(pointCard: Card) {
+        log.info { "使用【${cardMsg(belongCard)}】指向【${cardMsg(pointCard)}】" }
+    }
+
+    protected fun logTrade() {
+        log.info { "交易【${cardMsg(belongCard)}】" }
+    }
+
     /**
      * [belongCard]从手牌中打出的所有可能动作（包含战吼效果）
      * 例如：[belongCard]为老红龙：血变成15，那么此时可以返回两个[Action]，一个[Action]作用于敌方英雄，一个[Action]作用于己方英雄
@@ -98,8 +144,10 @@ abstract class CardAction(
             if (card.cardType === CardTypeEnum.SPELL) {
                 return emptyList()
             }
-            listOf(
+
+            val res = mutableListOf(
                 PlayAction({ newWar ->
+                    logPlay()
                     for ((index, c) in newWar.rival.playArea.cards
                         .withIndex()) {
                         findSelf(newWar)?.action?.power(false)?.let {
@@ -136,6 +184,18 @@ abstract class CardAction(
                     }
                 }),
             )
+            if (card.isTradeable) {
+                res.add(PlayAction({ newWar ->
+                    findSelf(newWar)?.action?.trade()
+                    logTrade()
+                }, { newWar ->
+                    newWar.me.usedResources++
+                    removeSelf(newWar)
+                    newWar.me.deckArea.add(this.belongCard)
+                    newWar.me.handArea.drawCard()
+                }))
+            }
+            res
         } ?: emptyList()
     }
 
@@ -164,6 +224,7 @@ abstract class CardAction(
                         AttackAction({ newWar ->
                             findSelf(newWar)?.let { myCard ->
                                 rivalPlayCard.action.findSelf(newWar)?.let { rivalCard ->
+                                    logAttack(myCard, rivalCard)
                                     myCard.action.attack(rivalCard)
                                 }
                             }
@@ -183,7 +244,12 @@ abstract class CardAction(
                     rivalHero.canBeAttacked().isTrue {
                         result.add(
                             AttackAction({ newWar ->
-                                findSelf(newWar)?.action?.attack(newWar.rival.playArea.hero)
+                                findSelf(newWar)?.let { myCard ->
+                                    newWar.rival.playArea.hero?.let { hero ->
+                                        logAttack(myCard, hero)
+                                        myCard.action.attack(hero)
+                                    }
+                                }
                             }, { newWar ->
                                 newWar.rival.playArea.hero?.let { rivalHero ->
                                     findSelf(newWar)?.let { myCard ->
@@ -200,11 +266,39 @@ abstract class CardAction(
     }
 
     /**
+     * 触发本卡牌添加至战场
+     */
+    open fun triggerAddedToPlayArea(war: War) {}
+
+    /**
+     * 触发本卡牌从战场移除
+     */
+    open fun triggerRemovedToPlayArea(war: War) {}
+
+    /**
+     * 触发战吼
+     */
+    open fun triggerBattlecry(war: War) {}
+
+    /**
      * 触发受到伤害
      * @param war 此卡牌所处的战局
      * @param player 此卡牌所处的玩家
+     * @param damage 受到的伤害
      */
-    open fun triggerDamage(war: War) {}
+    open fun triggerDamage(war: War, damage: Int) {}
+
+    /**
+     * 触发战场上的卡牌收到伤害。我方、敌方战场和手牌里的卡牌收到通知
+     */
+    open fun triggerPlayCardInjured(war: War, card: Card, damage: Int) {}
+
+    /**
+     * 触发我方战场添加卡牌。我方战场和手牌里的卡牌收到通知
+     * @param war 此卡牌所处的战局
+     * @param card 要添加的卡牌
+     */
+    open fun triggerAddCardToMyPlayArea(war: War, card: Card) {}
 
     /**
      * 触发亡语
@@ -530,7 +624,7 @@ abstract class CardAction(
         val entityId = belongCard?.entityId ?: return null
         return war.cardMap[entityId] ?: let {
             if (errorLogCount.incrementAndGet() <= MAX_ERROR_LOG_COUNT) {
-                log.warn { "查找卡牌失败,entityId:$entityId,className:${this::class.qualifiedName},action:${this::class.qualifiedName}" }
+                log.warn { "查找卡牌失败,entityId:$entityId,cardId:${belongCard?.cardId},className:${this::class.qualifiedName},action:${this::class.qualifiedName}" }
             }
             null
         }
@@ -542,7 +636,7 @@ abstract class CardAction(
     fun spendSelfCost(war: War): Card? {
         val entityId = belongCard?.entityId ?: return null
         return war.cardMap[entityId]?.let { card ->
-            card.area.player.usedResources += card.cost
+            card.area.player.usedResources += max(card.cost, 0)
             card
         } ?: let {
             if (errorLogCount.incrementAndGet() <= MAX_ERROR_LOG_COUNT) {

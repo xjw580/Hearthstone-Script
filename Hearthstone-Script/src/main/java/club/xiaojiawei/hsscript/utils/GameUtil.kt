@@ -356,9 +356,9 @@ object GameUtil {
         discoverCardSize: Int,
     ) {
         if (discoverCardSize >= 4) {
-            getFourDiscoverCardRect(Math.clamp(index.toLong(), 0, 4)).lClick()
+            getFourDiscoverCardRect(Math.clamp(index.toLong(), 0, 3)).lClick()
         } else {
-            getThreeDiscoverCardRect(Math.clamp(index.toLong(), 0, 3)).lClick()
+            getThreeDiscoverCardRect(Math.clamp(index.toLong(), 0, 2)).lClick()
         }
     }
 

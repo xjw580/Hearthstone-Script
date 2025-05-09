@@ -126,14 +126,14 @@ class CommonCardAction : CardAction(false) {
         return belongCard?.let { belongCard ->
             if (belongCard.area.isInValid()) return false
             val me = WAR.me
-            val rival = WAR.rival
+//            val rival = WAR.rival
             val startRect = if (belongCard === me.playArea.hero) {
                 GameUtil.MY_HERO_RECT
             } else {
                 GameUtil.getMyPlayCardRect(me.playArea.indexOfCard(belongCard), belongCard.area.cardSize())
             }
             if (startRect.isValid()) {
-                if (card.area === rival.playArea) {
+                if (card.area is PlayArea) {
                     val endRect = getCardRect(card)
                     if (endRect.isValid()) {
                         startRect.lClickMoveLClick(endRect)
@@ -184,8 +184,8 @@ class CommonCardAction : CardAction(false) {
                     var cardRect = belongCard.area.let { area ->
                         if (area === WAR.me.handArea && belongCard.cardType === CardTypeEnum.MINION) {
                             var index = -1
-                            if ((area.indexOfCard(card).also { i -> index = i }) >= 0) {
-                                GameUtil.getMyHandCardRect(index, area.cardSize() + if (depth > 0) 1 else 0)
+                            if ((card.area.indexOfCard(card).also { i -> index = i }) >= 0) {
+                                GameUtil.getMyPlayCardRect(index, card.area.cardSize() + if (depth > 0) 1 else 0)
                             }
                         }
                         GameRect.INVALID

@@ -39,7 +39,7 @@ abstract class Entity {
     }
 
     companion object {
-        private const val UNKNOWN_ENTITY_NAME: String = "UNKNOWN ENTITY"
+        const val UNKNOWN_ENTITY_NAME: String = "UNKNOWN ENTITY"
 
         fun isUnknownEntityName(name: String): Boolean {
             return name.startsWith(UNKNOWN_ENTITY_NAME)

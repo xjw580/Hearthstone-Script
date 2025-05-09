@@ -2,6 +2,7 @@ package club.xiaojiawei.bean
 
 import club.xiaojiawei.bean.Player.Companion.UNKNOWN_PLAYER
 import club.xiaojiawei.bean.area.*
+import club.xiaojiawei.config.ENABLE_PLAYER_LOG
 import club.xiaojiawei.config.log
 import club.xiaojiawei.enums.ZoneEnum
 import club.xiaojiawei.mapper.AreaMapper
@@ -36,7 +37,7 @@ class Player(
     var gameId: String = ""
         set(value) {
             field = value
-            (allowLog && this.isValid()).isTrue {
+            (allowLog && this.isValid() && ENABLE_PLAYER_LOG).isTrue {
                 log.info { "playerId:$playerId,gameId:$gameId" }
             }
         }
@@ -77,7 +78,7 @@ class Player(
     @Volatile
     var usedResources = 0
         set(value) {
-            (allowLog && value > 0).isTrue {
+            (allowLog && value > 0 && ENABLE_PLAYER_LOG).isTrue {
                 log.info { "玩家${playerId}【${gameId}】已使用${value}法力水晶" }
             }
             field = value
@@ -106,12 +107,12 @@ class Player(
         set(value) {
             if (overloadLocked > 0) {
                 if (usedResources == 0) {
-                    allowLog.isTrue {
+                    (allowLog && ENABLE_PLAYER_LOG).isTrue {
                         log.warn { "游戏过载日志打印不规范" }
                     }
                     resources -= value
                 }
-                allowLog.isTrue {
+                (allowLog && ENABLE_PLAYER_LOG).isTrue {
                     log.info { "玩家${playerId}【${gameId}】回合开始过载${value}法力水晶" }
                 }
             }
@@ -223,7 +224,7 @@ class Player(
             if (!isAlive) {
                 card.damageChangeListener = null
             }
-            action.triggerDamage(newWar)
+            action.triggerDamage(newWar, newDamage)
             if (!isAlive) {
                 action.triggerDeath(newWar)
             }

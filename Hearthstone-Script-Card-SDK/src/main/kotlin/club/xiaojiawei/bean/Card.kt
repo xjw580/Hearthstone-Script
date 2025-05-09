@@ -5,6 +5,7 @@ import club.xiaojiawei.bean.area.Area
 import club.xiaojiawei.enums.CardTypeEnum
 import club.xiaojiawei.enums.TargetEnum
 import club.xiaojiawei.mapper.BaseCardMapper
+import club.xiaojiawei.status.WAR
 import java.util.function.BiConsumer
 
 /**
@@ -17,6 +18,7 @@ import java.util.function.BiConsumer
  * 发射星舰按钮的卡牌id
  */
 private const val LAUNCH_CARD_ID = "GDB_905"
+
 /**
  * 终止发射按钮的卡牌id
  */
@@ -38,9 +40,19 @@ class Card(
      */
     var area: Area = Area.UNKNOWN_AREA
 
+    var isUncertain: Boolean = false
+
     fun resetExhausted() {
         isExhausted = false
         attackCount = 0
+    }
+
+    fun plusAtc(atc: Int) {
+        this.atc += atc
+    }
+
+    fun plusHealth(health: Int) {
+        this.health += health
     }
 
     fun minusHealth(health: Int) {
@@ -63,7 +75,25 @@ class Card(
             val oldDamage = super.damage
             if (oldDamage != value) {
                 super.damage = value
-                damageChangeListener?.accept(oldDamage, value)
+                if (area.player.war !== WAR) {
+                    damageChangeListener?.accept(oldDamage, value)
+                    val copyMyPlayCards = area.player.war.me.playArea.cards.toTypedArray()
+                    for (card in copyMyPlayCards) {
+                        card.action.triggerPlayCardInjured(area.player.war, this, value)
+                    }
+                    val copyRivalPlayCards = area.player.war.rival.playArea.cards.toTypedArray()
+                    for (card in copyRivalPlayCards) {
+                        card.action.triggerPlayCardInjured(area.player.war, this, value)
+                    }
+                    val copyMyHandCards = area.player.war.me.handArea.cards.toTypedArray()
+                    for (card in copyMyHandCards) {
+                        card.action.triggerPlayCardInjured(area.player.war, this, value)
+                    }
+                    val copyRivalHandCards = area.player.war.rival.handArea.cards.toTypedArray()
+                    for (card in copyRivalHandCards) {
+                        card.action.triggerPlayCardInjured(area.player.war, this, value)
+                    }
+                }
             } else {
                 super.damage = value
             }
@@ -90,7 +120,15 @@ class Card(
             isDivineShield = false
             return
         }
-        this.damage += damage
+        var increaseInjury = 0
+        if (cardType === CardTypeEnum.HERO) {
+            increaseInjury = if (area.player === WAR.me) {
+                WAR.myHeroIncreaseInjury
+            } else {
+                WAR.rivalHeroIncreaseInjury
+            }
+        }
+        this.damage += damage + increaseInjury
     }
 
     /**
@@ -98,7 +136,7 @@ class Card(
      */
     fun canHurt(): Boolean =
         (cardType === CardTypeEnum.MINION || cardType === CardTypeEnum.HERO) &&
-            !(isDead() || isImmune || isDormantAwakenConditionEnchant)
+                !(isDead() || isImmune || isDormantAwakenConditionEnchant)
 
     /**
      * 判断卡牌是否类似，同一张牌所属扩展包不同，[cardId]也不相同
@@ -150,13 +188,14 @@ class Card(
      */
     fun canBeTargetedByMe(): Boolean =
         (cardType === CardTypeEnum.MINION || cardType === CardTypeEnum.HERO) &&
-            !(isImmune || isDormantAwakenConditionEnchant || isUntouchable)
+                !(isImmune || isDormantAwakenConditionEnchant || isUntouchable)
 
     /**
      * 能被攻击
      * 适用的卡牌类型：[club.xiaojiawei.enums.CardTypeEnum.MINION], [club.xiaojiawei.enums.CardTypeEnum.HERO]
      */
-    fun canBeAttacked(): Boolean = (cardType === CardTypeEnum.MINION || cardType === CardTypeEnum.HERO) && canBeTargetedByRival()
+    fun canBeAttacked(): Boolean =
+        (cardType === CardTypeEnum.MINION || cardType === CardTypeEnum.HERO) && canBeTargetedByRival()
 
     /**
      * 能攻击
@@ -209,8 +248,8 @@ class Card(
      */
     fun canPower(): Boolean =
         (cardType === CardTypeEnum.LOCATION && !isLocationActionCooldown && !isExhausted && isAlive()) ||
-            (cardType === CardTypeEnum.HERO_POWER && !isExhausted) ||
-            (cardType === CardTypeEnum.MINION && isLaunchpad)
+                (cardType === CardTypeEnum.HERO_POWER && !isExhausted) ||
+                (cardType === CardTypeEnum.MINION && isLaunchpad)
 
     /**
      * 是否受伤

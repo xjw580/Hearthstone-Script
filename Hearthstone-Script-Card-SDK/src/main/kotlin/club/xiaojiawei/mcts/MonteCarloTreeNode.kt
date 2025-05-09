@@ -58,7 +58,7 @@ class MonteCarloTreeNode(
             val playArea = me.playArea
             result.add(TurnOverAction)
             for (card in handArea.cards) {
-                if (me.usableResource >= card.cost && (!playArea.isFull || card.cardType === CardTypeEnum.HERO || card.cardType === CardTypeEnum.SPELL || card.cardType === CardTypeEnum.WEAPON)) {
+                if (!card.isUncertain && me.usableResource >= card.cost && (!playArea.isFull || card.cardType === CardTypeEnum.HERO || card.cardType === CardTypeEnum.SPELL || card.cardType === CardTypeEnum.WEAPON)) {
                     result.addAll(card.action.generatePlayActions(war, me))
                 }
             }

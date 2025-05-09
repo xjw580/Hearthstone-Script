@@ -351,6 +351,12 @@ open class BaseCard : Entity() {
     @Volatile
     var isChooseOne = false
 
+    /**
+     * 附着于[entityId]
+     */
+    @Volatile
+    var attached = ""
+
 //    override fun toString(): String {
 //        return generateToString(this, true)
 //    }

@@ -15,7 +15,10 @@ object CardUtil {
      * 处理卡牌的疲劳
      */
     fun handleCardExhaustedWhenIntoPlayArea(card: Card) {
-        if (card.isCharge) {
+        if (card.cardType === CardTypeEnum.LOCATION) {
+            card.isExhausted = false
+            card.isLocationActionCooldown = false
+        } else if (card.isCharge) {
             card.isExhausted = false
         } else if (card.isRush) {
             card.isAttackableByRush = true

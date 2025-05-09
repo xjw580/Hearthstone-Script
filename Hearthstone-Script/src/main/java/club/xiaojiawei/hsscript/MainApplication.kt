@@ -10,6 +10,7 @@ import club.xiaojiawei.hsscript.config.InitializerConfig
 import club.xiaojiawei.hsscript.consts.*
 import club.xiaojiawei.hsscript.core.Core
 import club.xiaojiawei.hsscript.dll.CSystemDll
+import club.xiaojiawei.dll.PluginDll
 import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.enums.WindowEnum
 import club.xiaojiawei.hsscript.listener.GlobalHotkeyListener
@@ -421,8 +422,8 @@ class MainApplication : Application() {
                     showStage(WindowEnum.VERSION_MSG, getStage(WindowEnum.MAIN))
                     ConfigUtil.putString(ConfigEnum.CURRENT_VERSION, VersionUtil.VERSION)
                 }
-            }else{
-                if (preferences.get(key, "").isNullOrBlank()){
+            } else {
+                if (preferences.get(key, "").isNullOrBlank()) {
                     showStage(WindowEnum.ABOUT)
                 }
             }

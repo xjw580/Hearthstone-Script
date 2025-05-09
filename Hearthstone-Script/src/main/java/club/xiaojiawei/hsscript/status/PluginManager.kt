@@ -76,12 +76,12 @@ object PluginManager {
         val deckClassLoaders = ClassLoaderUtil.getClassLoader(PLUGIN_ROOT_PATH.toFile())
 
         var pluginWrapper: PluginWrapper<T>
-        val disableSet:MutableSet<String> =
-        if (pluginClass == CardPlugin::class.java) {
-            ConfigExUtil.getCardPluginDisabled()
-        }else{
-            ConfigExUtil.getDeckPluginDisabled()
-        }.toMutableSet()
+        val disableSet: MutableSet<String> =
+            if (pluginClass == CardPlugin::class.java) {
+                ConfigExUtil.getCardPluginDisabled()
+            } else {
+                ConfigExUtil.getDeckPluginDisabled()
+            }.toMutableSet()
         disableSet.removeAll { it.trim().isEmpty() }
 
         //        加载内部spi
@@ -95,14 +95,17 @@ object PluginManager {
         if (basePlugin.isEmpty()) {
             baseInstance = null
         } else {
+            val isEnabled = !disableSet.contains(basePlugin.last().id())
+            if (isEnabled) {
+                basePlugin.last().init()
+            }
             baseInstance = StreamSupport.stream(
                 ServiceLoader.load(aClass, PluginManager::class.java.classLoader).spliterator(),
                 false
             ).toList()
             pluginWrapper = PluginWrapper(basePlugin.first(), baseInstance)
-            if (disableSet.contains(pluginWrapper.plugin.id())){
-                pluginWrapper.setEnabled(false)
-            }
+            pluginWrapper.setEnabled(isEnabled)
+
             val plugin = pluginWrapper.plugin
             val pluginId = plugin.id()
             if (plugin is CardPlugin) {
@@ -129,6 +132,11 @@ object PluginManager {
                     ).toList()
                 )
                 if (plugins.isNotEmpty()) {
+                    val isEnabled = !disableSet.contains(plugins.last().id())
+                    if (isEnabled) {
+                        plugins.last().init()
+                    }
+
                     var stream = StreamSupport.stream(ServiceLoader.load(aClass, deckClassLoader).spliterator(), false)
                     baseInstance?.let {
                         stream = stream.filter { i: T ->
@@ -140,10 +148,11 @@ object PluginManager {
                             true
                         }
                     }
-                    pluginWrapper = PluginWrapper(plugins.last(), stream.toList())
-                    if (disableSet.contains(pluginWrapper.plugin.id())){
-                        pluginWrapper.setEnabled(false)
-                    }
+                    val spiList = stream.toList()
+                    if (spiList.isEmpty()) continue
+                    pluginWrapper = PluginWrapper(plugins.last(), spiList)
+                    pluginWrapper.setEnabled(isEnabled)
+
                     val pluginId = pluginWrapper.plugin.id()
                     addPluginWrapper(pluginWrapper, pluginWrapperMap, pluginId, pluginClass.simpleName)
                 }

@@ -1,0 +1,1 @@
+`CardAction`类的`fun triggerDamage(war: War)`改为`fun triggerDamage(war: War, damage: Int)`

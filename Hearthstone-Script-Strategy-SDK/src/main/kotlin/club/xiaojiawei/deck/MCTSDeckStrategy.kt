@@ -37,7 +37,7 @@ abstract class MCTSDeckStrategy : DeckStrategy() {
                 action.applyAction.exec.accept(war)
             }
             if (index < mctsArgList.size - 1) {
-                Thread.sleep(1000)
+                Thread.sleep(2000)
             }
             System.gc()
         }

@@ -1,5 +1,6 @@
 package club.xiaojiawei
 
+import club.xiaojiawei.dll.PluginDll
 import club.xiaojiawei.util.SystemUtil
 import javafx.event.EventHandler
 import javafx.scene.Cursor
@@ -52,4 +53,5 @@ class HsBaseCardPlugin : CardPlugin {
     override fun homeUrl(): String = "https://github.com/xjw580/Hearthstone-Script"
 
     override fun sdkVersion(): String = "4.5.0-GA"
+
 }

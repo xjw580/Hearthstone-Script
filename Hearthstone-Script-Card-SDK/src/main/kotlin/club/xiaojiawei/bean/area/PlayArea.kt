@@ -2,6 +2,7 @@ package club.xiaojiawei.bean.area
 
 import club.xiaojiawei.bean.Card
 import club.xiaojiawei.bean.Player
+import club.xiaojiawei.config.ENABLE_AREA_LOG
 import club.xiaojiawei.config.log
 import club.xiaojiawei.enums.CardTypeEnum
 import club.xiaojiawei.util.isTrue
@@ -39,7 +40,7 @@ class PlayArea(
     ) {
         addZone(card)
 
-        allowLog.isTrue {
+        (allowLog && ENABLE_AREA_LOG).isTrue {
             log.info { getLogText(card, name) }
         }
     }
@@ -51,10 +52,30 @@ class PlayArea(
         cards.sumOf { card -> card.spellPower } +
                 (hero?.spellPower ?: 0) + (power?.spellPower ?: 0) + (weapon?.spellPower ?: 0)
 
+    override fun removeCard(index: Int): Card? {
+        val removedCard = super.removeCard(index)
+        removedCard?.action?.triggerRemovedToPlayArea(player.war)
+        return removedCard
+    }
+
     override fun add(
         card: Card?,
         pos: Int,
     ): Boolean {
+        card?.let {
+            if (pos > 0) {
+                val copyPlayCards = player.playArea.cards.toTypedArray()
+                for (card in copyPlayCards) {
+                    card.action.triggerAddCardToMyPlayArea(player.war, it)
+                }
+                val copyHandCards = player.handArea.cards.toTypedArray()
+                for (card in copyHandCards) {
+                    card.action.triggerAddCardToMyPlayArea(player.war, it)
+                }
+                card.action.triggerBattlecry(player.war)
+                card.action.triggerAddedToPlayArea(player.war)
+            }
+        }
         var result = true
         if (card == null) {
             result = false

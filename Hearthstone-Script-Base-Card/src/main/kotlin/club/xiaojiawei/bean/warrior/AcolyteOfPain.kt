@@ -13,11 +13,10 @@ private val cardIds = arrayOf<String>(
     "%EX1_007",
 )
 
-
 class AcolyteOfPain : CardAction.DefaultCardAction() {
 
-    override fun triggerDamage(war: War) {
-        super.triggerDamage(war)
+    override fun triggerDamage(war: War, damage: Int) {
+        super.triggerDamage(war, damage)
         findSelf(war)?.let { card: Card ->
             card.area.player.handArea.drawCard()
         }

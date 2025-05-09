@@ -82,4 +82,16 @@ open class BaseWar {
     @Volatile
     var maxEntityId: String? = null
 
+    /**
+     * 我方英雄增益受伤
+     */
+    @Volatile
+    var myHeroIncreaseInjury = 0
+
+    /**
+     * 敌方英雄增益受伤
+     */
+    @Volatile
+    var rivalHeroIncreaseInjury = 0
+
 }

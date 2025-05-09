@@ -66,7 +66,7 @@ class MainController : MainView() {
 
     private val workTimeChangeId = "main-ui"
 
-    private val initDate = LocalDate.now()
+    private var initDate = LocalDate.now()
 
     override fun initialize(
         url: URL?,
@@ -80,6 +80,7 @@ class MainController : MainView() {
             while (true) {
                 Thread.sleep(30_000)
                 if (LocalDate.now() > initDate) {
+                    initDate = LocalDate.now()
                     log.info { "新的一天，应用新的工作时间规则" }
                     reloadWorkTime()
                 }
@@ -95,7 +96,8 @@ class MainController : MainView() {
             object : StringConverter<RunModeEnum?>() {
                 override fun toString(runModeEnum: RunModeEnum?): String? = runModeEnum?.comment ?: ""
 
-                override fun fromString(s: String?): RunModeEnum? = if (s == null || s.isBlank()) null else RunModeEnum.valueOf(s)
+                override fun fromString(s: String?): RunModeEnum? =
+                    if (s == null || s.isBlank()) null else RunModeEnum.valueOf(s)
             }
         deckStrategyBox.converter =
             object : StringConverter<DeckStrategy?>() {
@@ -149,13 +151,13 @@ class MainController : MainView() {
                 .stream()
                 .filter { deckStrategy: DeckStrategy ->
                     defaultDeckId == deckStrategy.id() &&
-                        deckStrategy.runModes.size > 0 &&
-                        (
-                            defaultRunModeEnum == null ||
-                                Arrays
-                                    .stream(deckStrategy.runModes)
-                                    .anyMatch { runModeEnum: RunModeEnum -> runModeEnum == defaultRunModeEnum }
-                        )
+                            deckStrategy.runModes.size > 0 &&
+                            (
+                                    defaultRunModeEnum == null ||
+                                            Arrays
+                                                .stream(deckStrategy.runModes)
+                                                .anyMatch { runModeEnum: RunModeEnum -> runModeEnum == defaultRunModeEnum }
+                                    )
                 }.findFirst()
         if (defaultDeck.isPresent) {
             val deckStrategy = defaultDeck.get()
@@ -167,15 +169,15 @@ class MainController : MainView() {
             deckStrategyBox.value = deckStrategy
             val deckCode = deckStrategy.deckCode()
             if (!deckCode.isEmpty()) {
-                log.info("当前卡组代码↓")
-                log.info("\${}", deckCode)
+                log.info { "当前卡组代码↓" }
+                log.info { "$${deckCode}" }
             }
         }
 
         DeckStrategyManager.currentDeckStrategyProperty.addListener {
-            observableValue: ObservableValue<out DeckStrategy?>?,
-            deck: DeckStrategy?,
-            t1: DeckStrategy?,
+                observableValue: ObservableValue<out DeckStrategy?>?,
+                deck: DeckStrategy?,
+                t1: DeckStrategy?,
             ->
             if (t1 != null) {
                 t1.runModes
@@ -288,11 +290,11 @@ class MainController : MainView() {
         WarEx.warCountProperty.addListener { _, number: Number?, t1: Number ->
             gameCount.text = WarEx.warCount.toString()
             winningPercentage.text = (
-                String.format(
-                    "%.1f",
-                    WarEx.winCount.toDouble() / WarEx.warCount * 100.0,
-                ) + "%"
-            )
+                    String.format(
+                        "%.1f",
+                        WarEx.winCount.toDouble() / WarEx.warCount * 100.0,
+                    ) + "%"
+                    )
             gameTime.text = formatTime(WarEx.hangingTime)
             exp.text = WarEx.hangingEXP.toString()
         }
@@ -378,13 +380,15 @@ class MainController : MainView() {
 
     fun reloadWorkTime(changeId: String? = null) {
         if (changeId == workTimeChangeId) return
-        workTimePane.children.clear()
-        workTimeRuleSetId.text = ""
-        val workTimeRuleSet = WorkTimeStatus.nowWorkTimeRuleSet() ?: return
-        val timeRules = workTimeRuleSet.getTimeRules()
-        workTimeRuleSetId.text = workTimeRuleSet.getName()
-        for (rule in timeRules) {
-            workTimePane.children.add(WorkTimeItem(rule, workTimeChangeId))
+        runUI {
+            workTimePane.children.clear()
+            workTimeRuleSetId.text = ""
+            val workTimeRuleSet = WorkTimeStatus.nowWorkTimeRuleSet() ?: return@runUI
+            val timeRules = workTimeRuleSet.getTimeRules()
+            workTimeRuleSetId.text = workTimeRuleSet.getName()
+            for (rule in timeRules) {
+                workTimePane.children.add(WorkTimeItem(rule, workTimeChangeId))
+            }
         }
     }
 

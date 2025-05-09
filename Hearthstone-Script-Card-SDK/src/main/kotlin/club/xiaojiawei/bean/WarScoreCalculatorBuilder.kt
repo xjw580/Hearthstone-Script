@@ -37,7 +37,7 @@ open class WarScoreCalculatorBuilder {
             calcPlayerScore(war.me, true) - calcPlayerScore(war.rival, false)
         }
 
-    protected open fun calcPlayerScore(
+    open fun calcPlayerScore(
         player: Player,
         isMe: Boolean,
     ): Double =
@@ -48,17 +48,17 @@ open class WarScoreCalculatorBuilder {
                 isMe,
             )
 
-    protected open fun calcResourcesScore(
+    open fun calcResourcesScore(
         player: Player,
         isMe: Boolean,
     ): Double = (player.tempResources + player.resources) * RESOURCES_VALUE + player.usedResources * USED_RESOURCES_VALUE
 
-    protected open fun calcSecretScore(
+    open fun calcSecretScore(
         area: SecretArea,
         isMe: Boolean,
     ): Double = area.cards.sumOf { card -> card.cost }.toDouble()
 
-    protected open fun calcDeckScore(
+    open fun calcDeckScore(
         area: DeckArea,
         isMe: Boolean,
     ): Double {
@@ -66,7 +66,7 @@ open class WarScoreCalculatorBuilder {
         return log(area.cardSize() + 1.0, 2.0) * 10.0
     }
 
-    protected open fun calcHandScore(
+    open fun calcHandScore(
         area: HandArea,
         isMe: Boolean,
     ): Double =
@@ -78,7 +78,7 @@ open class WarScoreCalculatorBuilder {
             }
         }
 
-    protected open fun calcPlayScore(
+    open fun calcPlayScore(
         area: PlayArea,
         isMe: Boolean,
     ): Double {
@@ -93,7 +93,7 @@ open class WarScoreCalculatorBuilder {
         return score
     }
 
-    protected open fun calcPlayCardScore(
+    open fun calcPlayCardScore(
         card: Card,
         isMe: Boolean,
     ): Double {
