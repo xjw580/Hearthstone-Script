@@ -159,8 +159,8 @@ object WorkTimeListener {
             for (rule in timeRules) {
                 if (!rule.isEnable()) continue
                 val workTime = rule.getWorkTime()
-                val startTime = workTime.parseStartTime() ?: continue
-                val endTime = workTime.parseEndTime() ?: continue
+                val startTime = workTime.parseStartTime()?.withSecond(0) ?: continue
+                val endTime = workTime.parseEndTime()?.withSecond(59) ?: continue
                 if (nowTime in startTime..endTime) {
                     canWork = true
                     break
