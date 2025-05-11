@@ -109,12 +109,11 @@ object DeckStrategyActuator {
         try {
             val copyHandCards = HashSet(me.handArea.cards)
             copyHandCards.removeIf { it.cardId == COIN_CARD_ID }
-            for ((index, card) in copyHandCards.withIndex()) {
-                println("hand:" + card.action.cardMsg())
-            }
+
             DeckStrategyManager.currentDeckStrategy?.executeChangeCard(copyHandCards)
             for (i in me.handArea.cards.indices) {
                 val card = me.handArea.cards[i]
+                if (card.cardId == COIN_CARD_ID) continue
                 if (!copyHandCards.contains(card)) {
                     log.info { "换掉起始卡牌：【entityId:" + card.entityId + "，entityName:" + card.entityName + "，cardId:" + card.cardId + "】" }
                     GameUtil.chooseDiscoverCard(i, me.handArea.cardSize())
