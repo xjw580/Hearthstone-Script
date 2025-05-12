@@ -1,6 +1,5 @@
 package club.xiaojiawei.bean
 
-import club.xiaojiawei.bean.War
 import java.util.function.Consumer
 
 /**
@@ -8,6 +7,7 @@ import java.util.function.Consumer
  * @date 2025/1/10 15:28
  */
 abstract class Action(
+
     /**
      * 真正执行
      */
@@ -15,7 +15,11 @@ abstract class Action(
     /**
      * 模拟执行
      */
-    val simulate: Consumer<War>
+    val simulate: Consumer<War>,
+
+    val creator: Card?,
+
+    val recalculate: Boolean,
 )
 
 /**
@@ -23,31 +27,37 @@ abstract class Action(
  */
 open class AttackAction(
     exec: Consumer<War>,
-    simulate: Consumer<War>
-) : Action(exec, simulate)
+    simulate: Consumer<War>,
+    creator: Card? = null,
+    recalculate: Boolean = false,
+) : Action(exec, simulate, creator, recalculate)
 
 /**
  * 打出动作
  */
 open class PlayAction(
     exec: Consumer<War>,
-    simulate: Consumer<War>
-) : Action(exec, simulate)
+    simulate: Consumer<War>,
+    creator: Card? = null,
+    recalculate: Boolean = false,
+) : Action(exec, simulate, creator, recalculate)
 
 /**
  * 使用动作，如地标和技能的使用
  */
 open class PowerAction(
     exec: Consumer<War>,
-    simulate: Consumer<War>
-) : Action(exec, simulate)
+    simulate: Consumer<War>,
+    creator: Card? = null,
+    recalculate: Boolean = false,
+) : Action(exec, simulate, creator, recalculate)
 
 private val empty: Consumer<War> = Consumer {}
 
 open class EmptyAction(
     exec: Consumer<War>,
-    simulate: Consumer<War>
-) : Action(exec, simulate)
+    simulate: Consumer<War>,
+) : Action(exec, simulate, null, false)
 
 /**
  * 回合结束动作

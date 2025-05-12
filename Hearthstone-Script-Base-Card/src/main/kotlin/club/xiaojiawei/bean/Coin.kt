@@ -24,7 +24,7 @@ class Coin : CardAction.DefaultCardAction() {
                 removeSelf(newWar)?.let {
                     newWar.me.tempResources++
                 }
-            })
+            }, belongCard)
         )
     }
 

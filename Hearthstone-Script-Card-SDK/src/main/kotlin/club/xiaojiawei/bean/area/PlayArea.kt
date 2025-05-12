@@ -73,8 +73,8 @@ class PlayArea(
                     card.action.triggerAddCardToMyPlayArea(player.war, it)
                 }
                 card.action.triggerBattlecry(player.war)
-                card.action.triggerAddedToPlayArea(player.war)
             }
+            card.action.triggerAddedToPlayArea(player.war)
         }
         var result = true
         if (card == null) {

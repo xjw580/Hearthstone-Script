@@ -39,7 +39,7 @@ class WarriorPower : ClickPower() {
                         it.armor += 2
                     }
                     findSelf(newWar)?.isExhausted = true
-                },
+                }, belongCard
             ),
         )
 

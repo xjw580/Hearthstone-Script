@@ -42,7 +42,7 @@ class Whirlwind : CardAction.DefaultCardAction() {
                 for (card in rivalCards.reversed()) {
                     exec(card, newWar)
                 }
-            })
+            }, belongCard)
         )
     }
 

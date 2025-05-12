@@ -28,7 +28,7 @@ class ShieldBlock : CardAction.DefaultCardAction() {
                         newWar.me.handArea.drawCard()
                     }
                 }
-            })
+            }, belongCard)
         )
     }
 

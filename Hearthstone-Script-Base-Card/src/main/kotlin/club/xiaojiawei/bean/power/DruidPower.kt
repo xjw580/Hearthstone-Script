@@ -32,7 +32,7 @@ class DruidPower : ClickPower() {
                         it.armor++
                     }
                     findSelf(newWar)?.isExhausted = true
-                })
+                }, belongCard)
         )
     }
 

@@ -33,7 +33,7 @@ class Slam : CardAction.DefaultCardAction() {
                             }
                         }
                     }
-                }))
+                }, belongCard))
             }
         }
         return result

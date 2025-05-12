@@ -71,17 +71,21 @@ abstract class CardAction(
         belongCard?.let { card: Card ->
             if (card.isLaunchpad && player.usableResource >= card.launchCost()) {
                 listOf(
-                    PowerAction({ newWar ->
-                        findSelf(newWar)?.action?.launch()
-                    }, { newWar ->
+                    PowerAction(
+                        { newWar ->
+                            findSelf(newWar)?.action?.launch()
+                        },
+                        { newWar ->
 //                        模拟发射
-                        findSelf(newWar)?.let { card ->
-                            card.area.player.usedResources += card.launchCost()
-                            card.isLaunchpad = false
-                            card.isHideStats = false
-                            CardUtil.handleCardExhaustedWhenIntoPlayArea(card)
-                        }
-                    }),
+                            findSelf(newWar)?.let { card ->
+                                card.area.player.usedResources += card.launchCost()
+                                card.isLaunchpad = false
+                                card.isHideStats = false
+                                CardUtil.handleCardExhaustedWhenIntoPlayArea(card)
+                            }
+                        },
+                        belongCard,
+                    ),
                 )
             } else {
                 emptyList()
@@ -146,54 +150,64 @@ abstract class CardAction(
             }
 
             val res = mutableListOf(
-                PlayAction({ newWar ->
-                    logPlay()
-                    for ((index, c) in newWar.rival.playArea.cards
-                        .withIndex()) {
-                        findSelf(newWar)?.action?.power(false)?.let {
-                            it.pointTo(index, true) ?: delay()
+                PlayAction(
+                    { newWar ->
+                        logPlay()
+                        for ((index, c) in newWar.rival.playArea.cards
+                            .withIndex()) {
+                            findSelf(newWar)?.action?.power(false)?.let {
+                                it.pointTo(index, true) ?: delay()
+                            }
+                            return@PlayAction
                         }
-                        return@PlayAction
-                    }
-                    for ((index, c) in newWar.me.playArea.cards
-                        .withIndex()) {
-                        findSelf(newWar)?.action?.power(false)?.let {
-                            it.pointTo(index, true) ?: delay()
+                        for ((index, c) in newWar.me.playArea.cards
+                            .withIndex()) {
+                            findSelf(newWar)?.action?.power(false)?.let {
+                                it.pointTo(index, true) ?: delay()
+                            }
+                            return@PlayAction
                         }
-                        return@PlayAction
-                    }
-                    newWar.rival.playArea.hero?.let { hero ->
-                        findSelf(newWar)?.action?.power(false)?.let {
-                            it.pointTo(hero, true) ?: delay()
+                        newWar.rival.playArea.hero?.let { hero ->
+                            findSelf(newWar)?.action?.power(false)?.let {
+                                it.pointTo(hero, true) ?: delay()
+                            }
+                            return@PlayAction
                         }
-                        return@PlayAction
-                    }
-                    newWar.me.playArea.hero?.let { hero ->
-                        findSelf(newWar)?.action?.power(false)?.let {
-                            it.pointTo(hero, true) ?: delay()
+                        newWar.me.playArea.hero?.let { hero ->
+                            findSelf(newWar)?.action?.power(false)?.let {
+                                it.pointTo(hero, true) ?: delay()
+                            }
+                            return@PlayAction
                         }
-                        return@PlayAction
-                    }
-                    findSelf(newWar)?.action?.power()
-                }, { newWar ->
-                    spendSelfCost(newWar)
-                    val me = newWar.me
-                    removeSelf(newWar)?.let { card ->
-                        CardUtil.handleCardExhaustedWhenIntoPlayArea(card)
-                        me.playArea.safeAdd(card)
-                    }
-                }),
+                        findSelf(newWar)?.action?.power()
+                    },
+                    { newWar ->
+                        spendSelfCost(newWar)
+                        val me = newWar.me
+                        removeSelf(newWar)?.let { card ->
+                            CardUtil.handleCardExhaustedWhenIntoPlayArea(card)
+                            me.playArea.safeAdd(card)
+                        }
+                    },
+                    belongCard,
+                ),
             )
             if (card.isTradeable) {
-                res.add(PlayAction({ newWar ->
-                    findSelf(newWar)?.action?.trade()
-                    logTrade()
-                }, { newWar ->
-                    newWar.me.usedResources++
-                    removeSelf(newWar)
-                    newWar.me.deckArea.add(this.belongCard)
-                    newWar.me.handArea.drawCard()
-                }))
+                res.add(
+                    PlayAction(
+                        { newWar ->
+                            findSelf(newWar)?.action?.trade()
+                            logTrade()
+                        },
+                        { newWar ->
+                            newWar.me.usedResources++
+                            removeSelf(newWar)
+                            newWar.me.deckArea.add(this.belongCard)
+                            newWar.me.handArea.drawCard()
+                        },
+                        belongCard, true
+                    )
+                )
             }
             res
         } ?: emptyList()
@@ -221,20 +235,24 @@ abstract class CardAction(
             for (rivalPlayCard in rivalPlayCards) {
                 if (rivalPlayCard.canBeAttacked()) {
                     result.add(
-                        AttackAction({ newWar ->
-                            findSelf(newWar)?.let { myCard ->
-                                rivalPlayCard.action.findSelf(newWar)?.let { rivalCard ->
-                                    logAttack(myCard, rivalCard)
-                                    myCard.action.attack(rivalCard)
+                        AttackAction(
+                            { newWar ->
+                                findSelf(newWar)?.let { myCard ->
+                                    rivalPlayCard.action.findSelf(newWar)?.let { rivalCard ->
+                                        logAttack(myCard, rivalCard)
+                                        myCard.action.attack(rivalCard)
+                                    }
                                 }
-                            }
-                        }, { newWar ->
-                            findSelf(newWar)?.let { myCard ->
-                                rivalPlayCard.action.findSelf(newWar)?.let { rivalCard ->
-                                    CardUtil.simulateAttack(newWar, myCard, rivalCard)
+                            },
+                            { newWar ->
+                                findSelf(newWar)?.let { myCard ->
+                                    rivalPlayCard.action.findSelf(newWar)?.let { rivalCard ->
+                                        CardUtil.simulateAttack(newWar, myCard, rivalCard)
+                                    }
                                 }
-                            }
-                        }),
+                            },
+                            belongCard,
+                        ),
                     )
                 }
             }
@@ -243,20 +261,24 @@ abstract class CardAction(
                 war.rival.playArea.hero?.let { rivalHero ->
                     rivalHero.canBeAttacked().isTrue {
                         result.add(
-                            AttackAction({ newWar ->
-                                findSelf(newWar)?.let { myCard ->
-                                    newWar.rival.playArea.hero?.let { hero ->
-                                        logAttack(myCard, hero)
-                                        myCard.action.attack(hero)
-                                    }
-                                }
-                            }, { newWar ->
-                                newWar.rival.playArea.hero?.let { rivalHero ->
+                            AttackAction(
+                                { newWar ->
                                     findSelf(newWar)?.let { myCard ->
-                                        CardUtil.simulateAttack(newWar, myCard, rivalHero)
+                                        newWar.rival.playArea.hero?.let { hero ->
+                                            logAttack(myCard, hero)
+                                            myCard.action.attack(hero)
+                                        }
                                     }
-                                }
-                            }),
+                                },
+                                { newWar ->
+                                    newWar.rival.playArea.hero?.let { rivalHero ->
+                                        findSelf(newWar)?.let { myCard ->
+                                            CardUtil.simulateAttack(newWar, myCard, rivalHero)
+                                        }
+                                    }
+                                },
+                                belongCard,
+                            ),
                         )
                     }
                 }

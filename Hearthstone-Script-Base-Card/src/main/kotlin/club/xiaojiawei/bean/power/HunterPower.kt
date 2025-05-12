@@ -29,7 +29,7 @@ class HunterPower : ClickPower() {
                     spendSelfCost(newWar)
                     newWar.rival.playArea.hero?.injured(2)
                     findSelf(newWar)?.isExhausted = true
-                })
+                }, belongCard)
         )
     }
 

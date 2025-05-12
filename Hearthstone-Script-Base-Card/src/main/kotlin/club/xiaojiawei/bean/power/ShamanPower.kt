@@ -74,7 +74,7 @@ class ShamanPower : ClickPower() {
                     }
                     newWar.addCard(card, newWar.me.playArea)
                     findSelf(newWar)?.isExhausted = true
-                })
+                }, belongCard)
         )
     }
 

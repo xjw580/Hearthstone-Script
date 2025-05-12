@@ -49,7 +49,7 @@ class PriestPower : PointPower() {
                             it.damage = max(it.damage - 2, 0)
                         }
                         findSelf(newWar)?.isExhausted = true
-                    })
+                    }, belongCard)
                 )
             }
         }
@@ -65,7 +65,7 @@ class PriestPower : PointPower() {
                         it.damage = max(it.damage - 2, 0)
                     }
                     findSelf(newWar)?.isExhausted = true
-                }))
+                }, belongCard))
             }
         }
         return result

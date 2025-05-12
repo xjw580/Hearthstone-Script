@@ -1,5 +1,6 @@
 package club.xiaojiawei
 
+import club.xiaojiawei.config.PluginScope
 import club.xiaojiawei.dll.PluginDll
 import club.xiaojiawei.util.SystemUtil
 import javafx.event.EventHandler
@@ -54,4 +55,7 @@ class HsBaseCardPlugin : CardPlugin {
 
     override fun sdkVersion(): String = "4.5.0-GA"
 
+    override fun pluginScope(): Array<String> {
+        return PluginScope.PUBLIC
+    }
 }

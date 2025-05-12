@@ -30,7 +30,7 @@ class WarlockPower : ClickPower() {
                     newWar.me.handArea.drawCard()
                     newWar.me.usedResources += 2
                     findSelf(newWar)?.isExhausted = true
-                })
+                }, belongCard)
         )
     }
 

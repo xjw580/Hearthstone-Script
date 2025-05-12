@@ -52,7 +52,7 @@ class Brawl : CardAction.DefaultCardAction() {
                         card.damage = card.bloodLimit()
                     }
                 }
-            })
+            }, belongCard)
         )
     }
 

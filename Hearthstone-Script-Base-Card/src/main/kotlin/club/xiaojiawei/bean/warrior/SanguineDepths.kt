@@ -33,7 +33,7 @@ class SanguineDepths : CardAction.DefaultCardAction() {
                             newCard.damage += 1
                         }
                     }
-                })
+                }, belongCard)
             )
         }
         val rivalCards = war.rival.playArea.cards

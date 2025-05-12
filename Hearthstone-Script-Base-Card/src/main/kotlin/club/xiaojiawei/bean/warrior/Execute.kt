@@ -31,7 +31,7 @@ class Execute : CardAction.DefaultCardAction() {
                             rivalCard.damage = rivalCard.bloodLimit()
                         }
                     }
-                }))
+                }, belongCard))
             }
         }
         return result

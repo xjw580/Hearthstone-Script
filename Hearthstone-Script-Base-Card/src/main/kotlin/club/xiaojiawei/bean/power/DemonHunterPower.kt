@@ -31,7 +31,7 @@ class DemonHunterPower : ClickPower() {
                         it.atc++
                     }
                     findSelf(newWar)?.isExhausted = true
-                })
+                }, belongCard)
         )
     }
 

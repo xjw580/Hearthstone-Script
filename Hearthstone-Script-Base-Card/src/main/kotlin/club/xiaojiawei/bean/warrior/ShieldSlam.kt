@@ -34,7 +34,7 @@ class ShieldSlam : CardAction.DefaultCardAction() {
                                 }
                             }
                         }
-                    })
+                    }, belongCard)
                 )
             }
         }

@@ -25,7 +25,7 @@ class FieryWarAxe : CardAction.DefaultCardAction() {
                 removeSelf(newWar)?.let { card ->
                     newWar.me.playArea.add(card)
                 }
-            })
+            }, belongCard)
         )
     }
 

@@ -46,7 +46,7 @@ class MagePower : PointPower() {
                     spendSelfCost(newWar)
                     card.action.findSelf(newWar)?.injured(1)
                     findSelf(newWar)?.isExhausted = true
-                }))
+                }, belongCard))
             }
         }
         for (card in rivalTarget) {
@@ -59,7 +59,7 @@ class MagePower : PointPower() {
                     spendSelfCost(newWar)
                     card.action.findSelf(newWar)?.injured(1)
                     findSelf(newWar)?.isExhausted = true
-                }))
+                }, belongCard))
             }
         }
         return result

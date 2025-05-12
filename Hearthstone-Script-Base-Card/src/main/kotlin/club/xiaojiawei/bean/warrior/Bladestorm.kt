@@ -42,7 +42,7 @@ class Bladestorm : CardAction.DefaultCardAction() {
                     }
                     if (!isWork) break
                 }
-            })
+            }, belongCard)
         )
     }
 

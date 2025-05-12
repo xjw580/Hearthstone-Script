@@ -35,7 +35,7 @@ class Bash : CardAction.DefaultCardAction() {
                             newRivalCard.injured(3 + newWar.me.getSpellPower())
                         }
                     }
-                })
+                }, belongCard)
             )
         }
         war.rival.playArea.cards.forEach { rivalCard ->

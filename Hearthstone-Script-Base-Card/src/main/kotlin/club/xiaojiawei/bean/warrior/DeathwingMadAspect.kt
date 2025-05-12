@@ -51,7 +51,7 @@ class DeathwingMadAspect : CardAction.DefaultCardAction() {
                         }
                     }
                 }
-            })
+            }, belongCard)
         )
     }
 

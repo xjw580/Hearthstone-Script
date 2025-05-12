@@ -27,7 +27,7 @@ class HeavyPlate : CardAction.DefaultCardAction() {
                         hero.armor += 8
                     }
                 }
-            })
+            }, belongCard)
         )
     }
 
