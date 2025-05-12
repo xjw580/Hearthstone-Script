@@ -2,24 +2,27 @@ package club.xiaojiawei.hsscript.controller.javafx.settings
 
 import club.xiaojiawei.controls.NotificationManager
 import club.xiaojiawei.controls.TableFilterManagerGroup
+import club.xiaojiawei.data.BaseData
 import club.xiaojiawei.hsscript.bean.WeightCard
 import club.xiaojiawei.hsscript.bean.tableview.NoEditTextFieldTableCell
 import club.xiaojiawei.hsscript.component.CardTableView
 import club.xiaojiawei.hsscript.consts.CONFIG_PATH
+import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.utils.CardUtil
 import club.xiaojiawei.hsscript.utils.CardUtil.getCardWeightCache
 import club.xiaojiawei.hsscript.utils.CardUtil.reloadCardWeight
 import club.xiaojiawei.hsscript.utils.CardUtil.saveWeightConfig
+import club.xiaojiawei.hsscript.utils.ConfigUtil
 import club.xiaojiawei.tablecell.NumberFieldTableCellUI
 import club.xiaojiawei.tablecell.TextFieldTableCellUI
 import javafx.beans.property.SimpleIntegerProperty
 import javafx.event.ActionEvent
 import javafx.fxml.FXML
 import javafx.fxml.Initializable
+import javafx.scene.control.CheckBox
 import javafx.scene.control.SelectionMode
 import javafx.scene.control.TableColumn
 import javafx.scene.control.TableView
-import javafx.scene.control.TextField
 import javafx.scene.control.cell.PropertyValueFactory
 import javafx.scene.layout.StackPane
 import javafx.stage.FileChooser
@@ -65,6 +68,12 @@ class WeightSettingsController : Initializable {
     protected lateinit var powerWeightCol: TableColumn<WeightCard, Number?>
 
     @FXML
+    protected lateinit var changeWeightCol: TableColumn<WeightCard, Number?>
+
+    @FXML
+    protected lateinit var changeCheckBox: CheckBox
+
+    @FXML
     protected lateinit var notificationManager: NotificationManager<String>
 
     override fun initialize(url: URL?, resourceBundle: ResourceBundle?) {
@@ -77,6 +86,13 @@ class WeightSettingsController : Initializable {
                     weightTable.items.add(card)
                 }
             }
+        }
+        changeCheckBox.isSelected = ConfigUtil.getBoolean(ConfigEnum.ENABLE_CHANGE_WEIGHT)
+        changeWeightCol.isVisible = changeCheckBox.isSelected
+        changeCheckBox.selectedProperty().addListener { observable, oldValue, newValue ->
+            ConfigUtil.putBoolean(ConfigEnum.ENABLE_CHANGE_WEIGHT, newValue)
+            BaseData.enableChangeWeight = newValue
+            changeWeightCol.isVisible = newValue
         }
     }
 
@@ -152,6 +168,16 @@ class WeightSettingsController : Initializable {
                 }
             }
         }
+        changeWeightCol.setCellValueFactory { o: TableColumn.CellDataFeatures<WeightCard, Number?> -> o.value.changeWeightProperty }
+        changeWeightCol.setCellFactory { weightCardNumberTableColumn: TableColumn<WeightCard, Number?>? ->
+            object : NumberFieldTableCellUI<WeightCard?, Number>(numberConverter) {
+                override fun commitEdit(number: Number) {
+                    super.commitEdit(number)
+                    saveWeightConfig()
+                    notificationManager.showSuccess("修改权重成功", 2)
+                }
+            }
+        }
     }
 
     private fun readWeightConfig(weigthPath: Path = WEIGHT_CONFIG_PATH) {
@@ -215,7 +241,7 @@ class WeightSettingsController : Initializable {
         val weightSet = HashSet(weightTable.items)
         var hasUpdate = false
         for ((cardId, name) in list) {
-            val weightCard = WeightCard(cardId, name, 1.0, 1.0)
+            val weightCard = WeightCard(cardId, name, 1.0, 1.0, 0.0)
             if (weightSet.contains(weightCard)) {
                 hasUpdate = true
             } else {

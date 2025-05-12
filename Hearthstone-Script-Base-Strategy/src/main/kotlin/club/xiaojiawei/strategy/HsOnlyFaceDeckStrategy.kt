@@ -26,7 +26,7 @@ class HsOnlyFaceDeckStrategy : MCTSDeckStrategy() {
     override fun description(): String = "我的眼里只有脸"
 
     override fun executeChangeCard(cards: HashSet<Card>) {
-        cards.removeIf { card -> card.cost > 2 }
+        HsCommonDeckStrategy().executeChangeCard(cards)
     }
 
     override fun executeMCTSOutCard(war: War): List<MCTSArg> {

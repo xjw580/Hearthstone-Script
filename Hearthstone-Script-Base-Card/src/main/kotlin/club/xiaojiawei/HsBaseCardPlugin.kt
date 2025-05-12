@@ -53,7 +53,7 @@ class HsBaseCardPlugin : CardPlugin {
 
     override fun homeUrl(): String = "https://github.com/xjw580/Hearthstone-Script"
 
-    override fun sdkVersion(): String = "4.5.0-GA"
+    override fun sdkVersion(): String = "4.6.0-GA"
 
     override fun pluginScope(): Array<String> {
         return PluginScope.PUBLIC

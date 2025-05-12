@@ -90,7 +90,7 @@ object CardUtil {
         val list = weightCard ?: readWeightConfig()
         CARD_WEIGHT_TRIE.clear()
         list.forEach {
-            CARD_WEIGHT_TRIE[it.cardId] = CardWeight(it.weight, it.powerWeight)
+            CARD_WEIGHT_TRIE[it.cardId] = CardWeight(it.weight, it.powerWeight, it.changeWeight)
         }
         cardWeightRawData = list.toList()
     }

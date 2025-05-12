@@ -37,7 +37,7 @@ class LikeTrie<V>() {
         currentNode.value = value
     }
 
-    fun clear(){
+    fun clear() {
         root.children.clear()
         root.value = null
         root.regPattern.clear()
@@ -45,6 +45,10 @@ class LikeTrie<V>() {
 
     fun getOrDefault(key: String, defaultValue: V): V {
         return getHelper(root, key.lowercase(), 0) ?: defaultValue
+    }
+
+    fun getOrDefault(key: String, defaultValueExp: () -> V): V {
+        return getHelper(root, key.lowercase(), 0) ?: defaultValueExp()
     }
 
     /**

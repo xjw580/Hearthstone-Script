@@ -112,13 +112,16 @@ object PluginManager {
                 val pluginScope = plugin.pluginScope()
                 if (pluginScope === PluginScope.PUBLIC) {
                     addPluginWrapper(pluginWrapper, pluginWrapperMap, "", pluginClass.simpleName)
-                } else if (pluginScope !== PluginScope.PROTECTED) {
+                } else if (pluginScope === PluginScope.PROTECTED) {
+                    addPluginWrapper(pluginWrapper, pluginWrapperMap, pluginId, pluginClass.simpleName)
+                } else {
                     for (id in pluginScope) {
                         addPluginWrapper(pluginWrapper, pluginWrapperMap, id, pluginClass.simpleName)
                     }
                 }
+            } else if (plugin is StrategyPlugin) {
+                addPluginWrapper(pluginWrapper, pluginWrapperMap, pluginId, pluginClass.simpleName)
             }
-            addPluginWrapper(pluginWrapper, pluginWrapperMap, pluginId, pluginClass.simpleName)
         }
 
         //        加载外部spi

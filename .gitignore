@@ -49,3 +49,4 @@ config.json
 /data
 
 *.log
+plugin.dll

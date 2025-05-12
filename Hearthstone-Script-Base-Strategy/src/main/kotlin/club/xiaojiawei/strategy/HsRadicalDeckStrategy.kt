@@ -35,6 +35,8 @@ class HsRadicalDeckStrategy : DeckStrategy() {
 
     override fun referPowerWeight(): Boolean = true
 
+    override fun referChangeWeight(): Boolean = true
+
     override fun executeChangeCard(cards: HashSet<Card>) {
         commonDeckStrategy.executeChangeCard(cards)
     }

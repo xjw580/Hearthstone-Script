@@ -2,6 +2,7 @@ package club.xiaojiawei.strategy
 
 import club.xiaojiawei.DeckStrategy
 import club.xiaojiawei.bean.Card
+import club.xiaojiawei.data.BaseData
 import club.xiaojiawei.enums.RunModeEnum
 import club.xiaojiawei.status.WAR
 import club.xiaojiawei.util.DeckStrategyUtil
@@ -26,8 +27,20 @@ class HsCommonDeckStrategy : DeckStrategy() {
 
     override fun referPowerWeight(): Boolean = true
 
+    override fun referChangeWeight(): Boolean = true
+
     override fun executeChangeCard(cards: HashSet<Card>) {
-        cards.removeIf { card -> card.cost > 2 }
+        if (BaseData.enableChangeWeight) {
+            val weightCards = DeckStrategyUtil.convertToSimulateCard(cards.toList())
+            weightCards.sortByDescending { it.changeWeight }
+            for (card in weightCards) {
+                if (card.changeWeight < 0.0) {
+                    cards.remove(card.card)
+                }
+            }
+        } else {
+            cards.removeIf { card -> card.cost > 2 }
+        }
     }
 
     override fun executeOutCard() {

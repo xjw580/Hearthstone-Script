@@ -32,6 +32,8 @@ const val VERSION_CONFIG_GROUP = "version"
 
 const val DEV_CONFIG_GROUP = "version"
 
+const val WEIGHT_CONFIG_GROUP = "weight"
+
 private const val WORK_TIME_RULE_PRESETS_ONE = "presets-one"
 
 private const val WORK_TIME_RULE_PRESETS_EMPTY = ""
@@ -406,6 +408,15 @@ enum class ConfigEnum(
         defaultValueInitializer = { FALSE_STR },
         service = DisplayGameRectPosService,
         isEnable = false,
+    ),
+
+    /**
+     * 启用换牌权重
+     */
+    ENABLE_CHANGE_WEIGHT(
+        group = WEIGHT_CONFIG_GROUP,
+        defaultValueInitializer = { FALSE_STR },
+        service = null,
     ),
 
     ;

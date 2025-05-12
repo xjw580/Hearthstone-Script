@@ -51,6 +51,9 @@ class PluginDeckStrategyItem : HBox() {
                     if (it.referPowerWeight()) {
                         weightPane.children.add(buildWidthNode("参考使用权重"))
                     }
+                    if (it.referChangeWeight()) {
+                        weightPane.children.add(buildWidthNode("参考换牌权重"))
+                    }
                     if (it.deckCode().isNotBlank()) {
                         copyLabel.children.add(
                             FXUtil.buildCopyNode({

@@ -9,3 +9,7 @@ package club.xiaojiawei.data
  * 内部用硬币cardId，实际id并不是这个
  */
 const val COIN_CARD_ID: String = "COIN"
+
+object BaseData {
+    var enableChangeWeight = false
+}

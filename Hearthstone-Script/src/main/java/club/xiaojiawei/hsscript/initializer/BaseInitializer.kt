@@ -1,7 +1,10 @@
 package club.xiaojiawei.hsscript.initializer
 
+import club.xiaojiawei.data.BaseData
 import club.xiaojiawei.enums.ModeEnum
 import club.xiaojiawei.enums.WarPhaseEnum
+import club.xiaojiawei.hsscript.enums.ConfigEnum
+import club.xiaojiawei.hsscript.utils.ConfigUtil
 import club.xiaojiawei.interfaces.ModeStrategy
 import club.xiaojiawei.interfaces.PhaseStrategy
 
@@ -17,11 +20,12 @@ class BaseInitializer : AbstractInitializer() {
     }
 
     override fun exec() {
-        ModeEnum.values().forEach {
+        BaseData.enableChangeWeight = ConfigUtil.getBoolean(ConfigEnum.ENABLE_CHANGE_WEIGHT)
+        ModeEnum.entries.forEach {
             it.modeStrategy =
                 Class.forName("club.xiaojiawei.hsscript.strategy.mode." + toCamelCase(it.name) + "ModeStrategy").kotlin.objectInstance as ModeStrategy<*>?
         }
-        WarPhaseEnum.values().forEach {
+        WarPhaseEnum.entries.forEach {
             it.phaseStrategy =
                 Class.forName("club.xiaojiawei.hsscript.strategy.phase." + toCamelCase(it.name) + "PhaseStrategy").kotlin.objectInstance as PhaseStrategy?
         }

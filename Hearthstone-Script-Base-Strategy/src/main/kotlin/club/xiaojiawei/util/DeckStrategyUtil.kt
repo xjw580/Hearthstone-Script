@@ -356,7 +356,7 @@ object DeckStrategyUtil {
         if (!realDisableInversion) {
             realDisableInversion =
                 rivalCards.sumOf { it.inversionAttackCount } + myCards.sumOf { it.attackCount } > MAX_INVERSION_CALC_COUNT ||
-                rivalCards.sumOf { it.attackCount } + myCards.sumOf { it.inversionAttackCount } > MAX_INVERSION_CALC_COUNT
+                        rivalCards.sumOf { it.attackCount } + myCards.sumOf { it.inversionAttackCount } > MAX_INVERSION_CALC_COUNT
         }
         text =
             if (realDisableInversion) {
@@ -454,9 +454,9 @@ object DeckStrategyUtil {
 //                敌方随从能被攻击，突袭无法攻击英雄
                 if (rivalCard.canBeAttacked(inversion) &&
                     !(
-                        rivalCard.card.cardType === CardTypeEnum.HERO &&
-                            (myCard.card.isAttackableByRush || (myCard.card.isRush && myCard.card.numTurnsInPlay == 0))
-                    )
+                            rivalCard.card.cardType === CardTypeEnum.HERO &&
+                                    (myCard.card.isAttackableByRush || (myCard.card.isRush && myCard.card.numTurnsInPlay == 0))
+                            )
                 ) {
                     attack(
                         myCards,
@@ -961,4 +961,13 @@ object DeckStrategyUtil {
                         player
                     }
             }.clone()
+
+    fun convertToSimulateCard(cards: List<Card>): MutableList<SimulateWeightCard> {
+        val res = mutableListOf<SimulateWeightCard>()
+        for (card in cards) {
+            val cardWeight = CARD_WEIGHT_TRIE.getOrDefault(card.cardId) { CardWeight(1.0, 1.0, 0.0) }
+            res.add(SimulateWeightCard(card, cardWeight.weight, cardWeight.powerWeight, cardWeight.changeWeight))
+        }
+        return res
+    }
 }
