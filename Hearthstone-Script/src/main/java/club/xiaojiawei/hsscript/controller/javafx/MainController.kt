@@ -387,6 +387,7 @@ class MainController : MainView() {
             val timeRules = workTimeRuleSet.getTimeRules()
             workTimeRuleSetId.text = workTimeRuleSet.getName()
             for (rule in timeRules) {
+                println("add rule ${rule.hashCode()}")
                 workTimePane.children.add(WorkTimeItem(rule, workTimeChangeId))
             }
         }

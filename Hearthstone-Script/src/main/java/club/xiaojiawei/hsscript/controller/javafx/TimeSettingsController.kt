@@ -142,10 +142,10 @@ class TimeSettingsController :
         workTimeRuleSetTable.rowFactory = TableDragCallback<WorkTimeRuleSet, WorkTimeRuleSet>()
         selectedWorkTimeRuleTable.rowFactory =
             object : TableDragCallback<WorkTimeRule, WorkTimeRule>() {
-                override fun dragged() {
-                    super.dragged()
+                override fun dragged(srcIndex: Int, destIndex: Int) {
                     val workTimeRuleSet = workTimeRuleSetTable.selectionModel.selectedItem ?: return
                     workTimeRuleSet.setTimeRules(selectedWorkTimeRuleTable.items)
+                    workTimeRuleSet.getTimeRules()
                 }
             }
         isInit = true
@@ -274,7 +274,7 @@ class TimeSettingsController :
     }
 
     private fun loadWorkTimeRuleSet() {
-        val workTimeRuleSet = ConfigExUtil.getWorkTimeRuleSet()
+        val workTimeRuleSet = WorkTimeStatus.readOnlyWorkTimeRuleSet().get()
         val selectedItem = workTimeRuleSetTable.selectionModel.selectedItem
         this.workTimeRuleSet.setAll(workTimeRuleSet)
         workTimeRuleSetTable.selectionModel.select(selectedItem)

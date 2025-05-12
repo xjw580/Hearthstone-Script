@@ -55,7 +55,7 @@ enum class WindowEnum(
         "settings/developerSettings.fxml",
     ),
     ABOUT(
-        "settings/about.fxml",formatTitle("项目介绍"), alwaysOnTop = true
+        "settings/about.fxml", formatTitle("项目介绍"), alwaysOnTop = true
     ),
     MAIN(
         "main.fxml",
@@ -66,7 +66,7 @@ enum class WindowEnum(
         (SCREEN_HEIGHT - 590.0) / 2,
         alwaysOnTop = true,
     ),
-    TIME_SETTINGS("timeSettings.fxml", formatTitle("工作时间设置")),
+    TIME_SETTINGS("timeSettings.fxml", formatTitle("工作时间设置"), cache = false),
     CARD_ACTION_EDITOR("cardActionEditor.fxml"),
     STARTUP(
         "startup.fxml",

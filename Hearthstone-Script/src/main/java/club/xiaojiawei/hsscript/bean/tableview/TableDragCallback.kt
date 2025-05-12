@@ -57,7 +57,7 @@ open class TableDragCallback<P, R> : Callback<TableView<P?>, TableRow<R?>?> {
 
         tableRow.onDragDropped =
             EventHandler { event: DragEvent? ->
-                val dragBoard = event!!.getDragboard()
+                val dragBoard = event!!.dragboard
                 val sourceIndex = dragBoard.string.toInt()
                 var targetIndex = tableRow.index
                 targetIndex = min(targetIndex.toDouble(), (pTableView.getItems().size - 1).toDouble()).toInt()
@@ -69,11 +69,11 @@ open class TableDragCallback<P, R> : Callback<TableView<P?>, TableRow<R?>?> {
                     pTableView.getSelectionModel().clearAndSelect(targetIndex)
                 }
                 event.setDropCompleted(true)
-                dragged()
+                dragged(sourceIndex, targetIndex)
             }
         return tableRow
     }
 
-    open fun dragged() {
+    open fun dragged(srcIndex: Int, destIndex: Int) {
     }
 }
