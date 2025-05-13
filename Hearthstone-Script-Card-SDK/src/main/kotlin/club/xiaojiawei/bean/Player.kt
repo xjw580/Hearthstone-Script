@@ -224,7 +224,10 @@ class Player(
             if (!isAlive) {
                 card.damageChangeListener = null
             }
-            action.triggerDamage(newWar, newDamage)
+            val diffDamage = newDamage - oldDamage
+            if (diffDamage > 0) {
+                action.triggerDamage(newWar, diffDamage)
+            }
             if (!isAlive) {
                 action.triggerDeath(newWar)
             }

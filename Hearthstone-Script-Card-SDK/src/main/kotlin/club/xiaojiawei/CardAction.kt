@@ -312,6 +312,7 @@ abstract class CardAction(
 
     /**
      * 触发战场上的卡牌收到伤害。我方、敌方战场和手牌里的卡牌收到通知
+     * @param damage 此次受到的伤害
      */
     open fun triggerPlayCardInjured(war: War, card: Card, damage: Int) {}
 

@@ -10,6 +10,7 @@ import club.xiaojiawei.hsscript.bean.log.ExtraEntity
 import club.xiaojiawei.hsscript.bean.log.TagChangeEntity
 import club.xiaojiawei.hsscript.enums.TagEnum
 import club.xiaojiawei.hsscript.strategy.AbstractPhaseStrategy
+import club.xiaojiawei.hsscript.utils.CardUtil
 
 /**
  * 抽起始牌阶段
@@ -82,7 +83,7 @@ object DrawnInitCardPhaseStrategy : AbstractPhaseStrategy() {
         }
         war.run {
 
-            if (Entity.isUnknownEntityName(card.entityName)  || card.entityName == "幸运币") {
+            if (Entity.isUnknownEntityName(card.entityName) || card.entityName == "幸运币") {
                 card.entityName = "幸运币"
                 if (card.cardId.isNotBlank()) {
                     rival.gameId = firstPlayerGameId
@@ -92,12 +93,13 @@ object DrawnInitCardPhaseStrategy : AbstractPhaseStrategy() {
                     log.info { "我方游戏id：$firstPlayerGameId" }
                 }
                 card.cardId = COIN_CARD_ID
-                if (me.gameId == firstPlayerGameId
+                CardUtil.setCardAction(card)
+                currentPlayer = if (me.gameId == firstPlayerGameId
                     || (rival.gameId.isNotBlank() && rival.gameId != firstPlayerGameId)
                 ) {
-                    currentPlayer = me
+                    me
                 } else {
-                    currentPlayer = rival
+                    rival
                 }
             }
         }

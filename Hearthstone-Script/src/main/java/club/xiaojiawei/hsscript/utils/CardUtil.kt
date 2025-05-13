@@ -6,6 +6,7 @@ import club.xiaojiawei.bean.CardWeight
 import club.xiaojiawei.bean.War
 import club.xiaojiawei.config.log
 import club.xiaojiawei.data.CARD_WEIGHT_TRIE
+import club.xiaojiawei.data.COIN_CARD_ID
 import club.xiaojiawei.enums.ZoneEnum
 import club.xiaojiawei.hsscript.bean.CommonCardAction
 import club.xiaojiawei.hsscript.bean.CommonCardAction.Companion.DEFAULT
@@ -65,6 +66,10 @@ object CardUtil {
         card ?: return
         val deckStrategy = DeckStrategyManager.currentDeckStrategy
         deckStrategy ?: return
+
+        if (card.isCoinCard) {
+            card.cardId = COIN_CARD_ID
+        }
 
         val supplier: Supplier<CardAction>? = (CARD_ACTION_MAP[deckStrategy.pluginId] ?: let {
             CARD_ACTION_MAP[""]

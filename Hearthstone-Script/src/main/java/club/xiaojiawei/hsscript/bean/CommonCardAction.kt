@@ -182,13 +182,14 @@ class CommonCardAction : CardAction(false) {
             startRect.let {
                 if (it.isValid()) {
                     var cardRect = belongCard.area.let { area ->
-                        if (area === WAR.me.handArea && belongCard.cardType === CardTypeEnum.MINION) {
+                        var res: GameRect? = null
+                        if (area === area.player.war.me.handArea && (belongCard.cardType === CardTypeEnum.MINION || belongCard.cardType === CardTypeEnum.LOCATION)) {
                             var index = -1
                             if ((card.area.indexOfCard(card).also { i -> index = i }) >= 0) {
-                                GameUtil.getMyPlayCardRect(index, card.area.cardSize() + if (depth > 0) 1 else 0)
+                                res = GameUtil.getMyPlayCardRect(index, card.area.cardSize() + if (depth > 0) 1 else 0)
                             }
                         }
-                        GameRect.INVALID
+                        res
                     } ?: GameRect.INVALID
                     if (!cardRect.isValid()) {
                         cardRect = getCardRect(card)
@@ -223,10 +224,11 @@ class CommonCardAction : CardAction(false) {
             startRect.let {
                 if (it.isValid()) {
                     val cardRect = belongCard.area.let { area ->
-                        if (area === WAR.me.handArea && (belongCard.cardType === CardTypeEnum.MINION || belongCard.cardType === CardTypeEnum.LOCATION)) {
-                            GameUtil.getMyHandCardRect(index, area.cardSize() + if (depth > 0) 1 else 0)
+                        var res: GameRect? = null
+                        if (area === area.player.war.me.handArea && (belongCard.cardType === CardTypeEnum.MINION || belongCard.cardType === CardTypeEnum.LOCATION)) {
+                            res = GameUtil.getMyPlayCardRect(index, area.cardSize() + if (depth > 0) 1 else 0)
                         }
-                        GameRect.INVALID
+                        res
                     } ?: GameRect.INVALID
                     if (cardRect.isValid()) {
                         endRect = cardRect

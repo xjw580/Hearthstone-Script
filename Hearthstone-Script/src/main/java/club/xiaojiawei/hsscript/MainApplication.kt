@@ -10,7 +10,6 @@ import club.xiaojiawei.hsscript.config.InitializerConfig
 import club.xiaojiawei.hsscript.consts.*
 import club.xiaojiawei.hsscript.core.Core
 import club.xiaojiawei.hsscript.dll.CSystemDll
-import club.xiaojiawei.dll.PluginDll
 import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.enums.WindowEnum
 import club.xiaojiawei.hsscript.listener.GlobalHotkeyListener
@@ -267,7 +266,7 @@ class MainApplication : Application() {
 
     private var trayItemArr: CSystemDll.TrayItem.Reference? = null
 
-    private val trayMenu: CSystemDll.TrayMenu.Reference by lazy {
+    private val initTrayMenu: CSystemDll.TrayMenu.Reference by lazy {
         val textMemorySize = 50L
         val iconPathMemorySize = 255L
         CSystemDll.TrayMenu.Reference().apply {
@@ -447,10 +446,27 @@ class MainApplication : Application() {
 
     private fun afterShowing() {
         submitExtra {
-            trayMenu
+            initTrayMenu
             WindowUtil.hideLaunchPage()
             checkSystem()
             checkArg()
+
+//            val hand1 = Card(CommonCardAction()).apply {
+//                action.belongCard = this
+//                cardType = CardTypeEnum.MINION
+//                entityId = "1"
+////                area = WAR.me.handArea
+//            }
+//
+//            val play1 = Card(CommonCardAction()).apply {
+//                action.belongCard = this
+//                cardType = CardTypeEnum.MINION
+//                entityId = "2"
+////                area = WAR.me.playArea
+//            }
+//            WAR.me.handArea.add(hand1)
+//            WAR.me.playArea.add(play1)
+//            hand1.action.power(false)?.pointTo(play1, true)
         }
     }
 }

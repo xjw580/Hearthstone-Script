@@ -76,22 +76,25 @@ class Card(
             if (oldDamage != value) {
                 super.damage = value
                 if (area.player.war !== WAR) {
+                    val damageDiff = value - oldDamage
                     damageChangeListener?.accept(oldDamage, value)
-                    val copyMyPlayCards = area.player.war.me.playArea.cards.toTypedArray()
-                    for (card in copyMyPlayCards) {
-                        card.action.triggerPlayCardInjured(area.player.war, this, value)
-                    }
-                    val copyRivalPlayCards = area.player.war.rival.playArea.cards.toTypedArray()
-                    for (card in copyRivalPlayCards) {
-                        card.action.triggerPlayCardInjured(area.player.war, this, value)
-                    }
-                    val copyMyHandCards = area.player.war.me.handArea.cards.toTypedArray()
-                    for (card in copyMyHandCards) {
-                        card.action.triggerPlayCardInjured(area.player.war, this, value)
-                    }
-                    val copyRivalHandCards = area.player.war.rival.handArea.cards.toTypedArray()
-                    for (card in copyRivalHandCards) {
-                        card.action.triggerPlayCardInjured(area.player.war, this, value)
+                    if (damageDiff > 0) {
+                        val copyMyPlayCards = area.player.war.me.playArea.cards.toTypedArray()
+                        for (card in copyMyPlayCards) {
+                            card.action.triggerPlayCardInjured(area.player.war, this, damageDiff)
+                        }
+                        val copyRivalPlayCards = area.player.war.rival.playArea.cards.toTypedArray()
+                        for (card in copyRivalPlayCards) {
+                            card.action.triggerPlayCardInjured(area.player.war, this, damageDiff)
+                        }
+                        val copyMyHandCards = area.player.war.me.handArea.cards.toTypedArray()
+                        for (card in copyMyHandCards) {
+                            card.action.triggerPlayCardInjured(area.player.war, this, damageDiff)
+                        }
+                        val copyRivalHandCards = area.player.war.rival.handArea.cards.toTypedArray()
+                        for (card in copyRivalHandCards) {
+                            card.action.triggerPlayCardInjured(area.player.war, this, damageDiff)
+                        }
                     }
                 }
             } else {
