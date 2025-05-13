@@ -88,6 +88,7 @@ class MonteCarloTreeSearch(val maxDepth: Int = MCTS_DEFAULT_DEPTH) {
 
         var maxNode: MonteCarloTreeNode? = rootNode
         var maxScore = Int.MIN_VALUE.toDouble()
+        var maxVisit = Int.MIN_VALUE
         var children = rootNode.children.toList()
         while (children.isNotEmpty()) {
             val list = mutableListOf<MonteCarloTreeNode>()

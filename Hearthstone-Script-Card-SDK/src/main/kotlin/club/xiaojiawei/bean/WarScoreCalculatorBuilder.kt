@@ -41,17 +41,21 @@ open class WarScoreCalculatorBuilder {
         player: Player,
         isMe: Boolean,
     ): Double =
-        calcHandScore(player.handArea, isMe) + calcPlayScore(player.playArea, isMe) +
-            calcDeckScore(player.deckArea, isMe) + calcSecretScore(player.secretArea, isMe) +
-            calcResourcesScore(
-                player,
-                isMe,
-            )
+        if (player.playArea.hero?.isDead() == true) Int.MIN_VALUE.toDouble() else {
+            calcHandScore(player.handArea, isMe) + calcPlayScore(player.playArea, isMe) +
+                    calcDeckScore(player.deckArea, isMe) + calcSecretScore(player.secretArea, isMe) +
+                    calcResourcesScore(
+                        player,
+                        isMe,
+                    )
+        }
+
 
     open fun calcResourcesScore(
         player: Player,
         isMe: Boolean,
-    ): Double = (player.tempResources + player.resources) * RESOURCES_VALUE + player.usedResources * USED_RESOURCES_VALUE
+    ): Double =
+        (player.tempResources + player.resources) * RESOURCES_VALUE + player.usedResources * USED_RESOURCES_VALUE
 
     open fun calcSecretScore(
         area: SecretArea,
@@ -113,16 +117,15 @@ open class WarScoreCalculatorBuilder {
                 }
             val basicScore =
                 atc * ration + blood * (
-                    if (card.cardType === CardTypeEnum.HERO) {
-                        0.5
-                    } else if (card.cardType === CardTypeEnum.LOCATION) {
-                        card.cost / card.bloodLimit().toDouble()
-                    } else {
-                        1.0
-                    }
-                )
-            val heroScore = if (card.cardType === CardTypeEnum.HERO) Int.MAX_VALUE.toDouble() else 0.0
-            var totalScore: Double = basicScore + heroScore
+                        if (card.cardType === CardTypeEnum.HERO) {
+                            0.5
+                        } else if (card.cardType === CardTypeEnum.LOCATION) {
+                            card.cost / card.bloodLimit().toDouble()
+                        } else {
+                            1.0
+                        }
+                        )
+            var totalScore: Double = basicScore
             if (card.isDeathRattle) {
                 totalScore += DEATH_RATTLE_VALUE
             }

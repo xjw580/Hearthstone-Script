@@ -71,11 +71,8 @@ object CardUtil {
             card.cardId = COIN_CARD_ID
         }
 
-        val supplier: Supplier<CardAction>? = (CARD_ACTION_MAP[deckStrategy.pluginId] ?: let {
-            CARD_ACTION_MAP[""]
-        })?.let {
-            val supplier = it[card.cardId]
-            supplier
+        val supplier: Supplier<CardAction>? = (CARD_ACTION_MAP[deckStrategy.pluginId]?.get(card.cardId)) ?: let {
+            CARD_ACTION_MAP[""]?.get(card.cardId)
         }
 
         val cardAction = supplier?.get() ?: if (card.action === DEFAULT) CommonCardAction() else card.action

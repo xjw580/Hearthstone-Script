@@ -153,32 +153,32 @@ abstract class CardAction(
                 PlayAction(
                     { newWar ->
                         logPlay()
-                        for ((index, c) in newWar.rival.playArea.cards
-                            .withIndex()) {
-                            findSelf(newWar)?.action?.power(false)?.let {
-                                it.pointTo(index, true) ?: delay()
-                            }
-                            return@PlayAction
-                        }
-                        for ((index, c) in newWar.me.playArea.cards
-                            .withIndex()) {
-                            findSelf(newWar)?.action?.power(false)?.let {
-                                it.pointTo(index, true) ?: delay()
-                            }
-                            return@PlayAction
-                        }
-                        newWar.rival.playArea.hero?.let { hero ->
-                            findSelf(newWar)?.action?.power(false)?.let {
-                                it.pointTo(hero, true) ?: delay()
-                            }
-                            return@PlayAction
-                        }
-                        newWar.me.playArea.hero?.let { hero ->
-                            findSelf(newWar)?.action?.power(false)?.let {
-                                it.pointTo(hero, true) ?: delay()
-                            }
-                            return@PlayAction
-                        }
+//                        for ((index, c) in newWar.rival.playArea.cards
+//                            .withIndex()) {
+//                            findSelf(newWar)?.action?.power(false)?.let {
+//                                it.pointTo(index, true) ?: delay()
+//                            }
+//                            return@PlayAction
+//                        }
+//                        for ((index, c) in newWar.me.playArea.cards
+//                            .withIndex()) {
+//                            findSelf(newWar)?.action?.power(false)?.let {
+//                                it.pointTo(index, true) ?: delay()
+//                            }
+//                            return@PlayAction
+//                        }
+//                        newWar.rival.playArea.hero?.let { hero ->
+//                            findSelf(newWar)?.action?.power(false)?.let {
+//                                it.pointTo(hero, true) ?: delay()
+//                            }
+//                            return@PlayAction
+//                        }
+//                        newWar.me.playArea.hero?.let { hero ->
+//                            findSelf(newWar)?.action?.power(false)?.let {
+//                                it.pointTo(hero, true) ?: delay()
+//                            }
+//                            return@PlayAction
+//                        }
                         findSelf(newWar)?.action?.power()
                     },
                     { newWar ->
@@ -232,8 +232,11 @@ abstract class CardAction(
             val result = mutableListOf<AttackAction>()
             val rivalTauntCards = CardUtil.getTauntCards(war.rival.playArea.cards, true)
             val rivalPlayCards = if (rivalTauntCards.isEmpty()) war.rival.playArea.cards else rivalTauntCards
+            val size = rivalPlayCards.size
             for (rivalPlayCard in rivalPlayCards) {
-                if (rivalPlayCard.canBeAttacked()) {
+                if (rivalPlayCard.canBeAttacked()
+                    && (rivalPlayCard.isTaunt || size < 3 || rivalPlayCard.isAura || rivalPlayCard.isWindFury || rivalPlayCard.isAdjacentBuff) || rivalPlayCard.isLifesteal || rivalPlayCard.isTriggerVisual
+                ) {
                     result.add(
                         AttackAction(
                             { newWar ->
