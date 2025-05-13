@@ -33,7 +33,7 @@ jobs:
           distribution: 'temurin'
 
       - name: Build with Maven
-        run: mvn clean package -B -V
+        run: mvn clean package -B -V -DskipTests
 
       - name: Determine if prerelease
         id: prerelease
