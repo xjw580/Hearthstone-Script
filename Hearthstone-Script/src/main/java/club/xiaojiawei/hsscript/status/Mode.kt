@@ -32,6 +32,7 @@ object Mode {
         go {
             while (true) {
                 val (currMode1, newMode) = modeQueue.take()
+                AbstractModeStrategy.cancelAllTask()
                 go {
                     currMode1?.modeStrategy?.afterLeave()
                     AbstractModeStrategy.cancelAllTask()
