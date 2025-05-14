@@ -48,5 +48,6 @@ config.json
 .pid
 /data
 
+cf
 *.log
 plugin.dll
