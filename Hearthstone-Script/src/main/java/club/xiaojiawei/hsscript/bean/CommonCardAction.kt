@@ -272,8 +272,10 @@ class CommonCardAction : CardAction(false) {
         val cardRect = getCardRect(belongCard)
         if (cardRect.isValid()) {
             cardRect.lClick()
-            SystemUtil.delayShortMedium()
+            SystemUtil.delayShort()
             cardRect.move(GameUtil.TRADE_RECT)
+            SystemUtil.delayTiny()
+            GameUtil.TRADE_RECT.lClick()
             return true
         }
         return false

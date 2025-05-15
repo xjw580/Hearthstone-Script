@@ -17,7 +17,7 @@ import kotlin.math.max
 private const val BASIC_RATIO = 1.2
 private const val RESOURCES_VALUE = 3.0 * BASIC_RATIO
 private const val USED_RESOURCES_VALUE = 0.9
-private const val DEATH_RATTLE_VALUE = -0.3 * BASIC_RATIO
+private const val DEATH_RATTLE_VALUE = -0.2 * BASIC_RATIO
 private const val TAUNT_VALUE = 1 * BASIC_RATIO
 private const val ADJACENTBUFF_VALUE = 2 * BASIC_RATIO
 private const val AURA_VALUE = 2 * BASIC_RATIO

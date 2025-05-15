@@ -125,10 +125,10 @@ class Card(
         }
         var increaseInjury = 0
         if (cardType === CardTypeEnum.HERO) {
-            increaseInjury = if (area.player === WAR.me) {
-                WAR.myHeroIncreaseInjury
+            increaseInjury = if (area.player === area.player.war.me) {
+                area.player.war.myHeroIncreaseInjury
             } else {
-                WAR.rivalHeroIncreaseInjury
+                area.player.war.rivalHeroIncreaseInjury
             }
         }
         this.damage += damage + increaseInjury

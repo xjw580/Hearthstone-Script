@@ -57,41 +57,6 @@ abstract class CardAction(
         return null
     }
 
-    /**
-     * [belongCard]被使用的所有可能动作
-     * 例如：[belongCard]为萨满基础技能时，那么此时至多可以返回一个[Action]，即在战场未满的情况下生成图腾至战场这个[Action]
-     * 对于战场上的技能，地标使用都是调用此方法生成动作
-     * @param war 此卡牌所处的战局，注意：生成的[Action]中应使用[Action]内部传递的war，而不是此处的war
-     * @param player 此卡牌所处的玩家
-     */
-    open fun generatePowerActions(
-        war: War,
-        player: Player,
-    ): List<PowerAction> =
-        belongCard?.let { card: Card ->
-            if (card.isLaunchpad && player.usableResource >= card.launchCost()) {
-                listOf(
-                    PowerAction(
-                        { newWar ->
-                            findSelf(newWar)?.action?.launch()
-                        },
-                        { newWar ->
-//                        模拟发射
-                            findSelf(newWar)?.let { card ->
-                                card.area.player.usedResources += card.launchCost()
-                                card.isLaunchpad = false
-                                card.isHideStats = false
-                                CardUtil.handleCardExhaustedWhenIntoPlayArea(card)
-                            }
-                        },
-                        belongCard,
-                    ),
-                )
-            } else {
-                emptyList()
-            }
-        } ?: emptyList()
-
     fun cardName(): String? {
         var name = belongCard?.entityName ?: name()
         if (name?.startsWith(UNKNOWN_ENTITY_NAME) == true) {
@@ -129,88 +94,105 @@ abstract class CardAction(
     }
 
     /**
+     * [belongCard]被使用的所有可能动作
+     * 例如：[belongCard]为萨满基础技能时，那么此时至多可以返回一个[Action]，即在战场未满的情况下生成图腾至战场这个[Action]
+     * 对于战场上的技能，地标使用都是调用此方法生成动作
+     * @param war 此卡牌所处的战局，注意：生成的[Action]中应使用[Action]内部传递的war，而不是此处的war
+     * @param player 此卡牌所处的玩家
+     */
+    open fun generatePowerActions(
+        war: War,
+        player: Player,
+    ): List<PowerAction> =
+        belongCard?.let { card: Card ->
+            if (card.isLaunchpad && player.usableResource >= card.launchCost()) {
+                listOf(
+                    PowerAction(
+                        { newWar ->
+                            findSelf(newWar)?.action?.launch()
+                        },
+                        { newWar ->
+//                        模拟发射
+                            findSelf(newWar)?.let { card ->
+                                card.area.player.usedResources += card.launchCost()
+                                card.isLaunchpad = false
+                                card.isHideStats = false
+                                CardUtil.handleCardExhaustedWhenIntoPlayArea(card)
+                            }
+                        },
+                        belongCard,
+                    ),
+                )
+            } else {
+                emptyList()
+            }
+        } ?: emptyList()
+
+    /**
      * [belongCard]从手牌中打出的所有可能动作（包含战吼效果）
      * 例如：[belongCard]为老红龙：血变成15，那么此时可以返回两个[Action]，一个[Action]作用于敌方英雄，一个[Action]作用于己方英雄
      * @param war 此卡牌所处的战局，注意：生成的[Action]中应使用[Action]内部传递的war，而不是此处的war
      * @param player 此卡牌所处的玩家
      */
-    open fun generatePlayActions(
-        war: War,
-        player: Player,
-    ): List<PlayAction> {
-        return belongCard?.let { card ->
-            val entityId = card.entityId
-            if (entityId.isBlank()) {
-                log.warn { "entityId为空，belongCard：$belongCard" }
-                return emptyList()
-            }
-//            由于不知道法术的效果，所以不生成action
-            if (card.cardType === CardTypeEnum.SPELL) {
-                return emptyList()
-            }
+    open fun generatePlayActions(war: War, player: Player): List<PlayAction> {
+        val card = belongCard ?: return emptyList()
+        val entityId = card.entityId
 
-            val res = mutableListOf(
-                PlayAction(
-                    { newWar ->
-                        logPlay()
-//                        for ((index, c) in newWar.rival.playArea.cards
-//                            .withIndex()) {
-//                            findSelf(newWar)?.action?.power(false)?.let {
-//                                it.pointTo(index, true) ?: delay()
-//                            }
-//                            return@PlayAction
-//                        }
-//                        for ((index, c) in newWar.me.playArea.cards
-//                            .withIndex()) {
-//                            findSelf(newWar)?.action?.power(false)?.let {
-//                                it.pointTo(index, true) ?: delay()
-//                            }
-//                            return@PlayAction
-//                        }
-//                        newWar.rival.playArea.hero?.let { hero ->
-//                            findSelf(newWar)?.action?.power(false)?.let {
-//                                it.pointTo(hero, true) ?: delay()
-//                            }
-//                            return@PlayAction
-//                        }
-//                        newWar.me.playArea.hero?.let { hero ->
-//                            findSelf(newWar)?.action?.power(false)?.let {
-//                                it.pointTo(hero, true) ?: delay()
-//                            }
-//                            return@PlayAction
-//                        }
-                        findSelf(newWar)?.action?.power()
-                    },
-                    { newWar ->
-                        spendSelfCost(newWar)
-                        val me = newWar.me
-                        removeSelf(newWar)?.let { card ->
-                            CardUtil.handleCardExhaustedWhenIntoPlayArea(card)
-                            me.playArea.safeAdd(card)
-                        }
-                    },
-                    belongCard,
-                ),
+        if (entityId.isBlank()) {
+            log.warn { "entityId为空，belongCard：$belongCard" }
+            return emptyList()
+        }
+
+        if (card.cardType === CardTypeEnum.SPELL) {
+            return if (card.isTradeable) {
+                if (war.me.usableResource > 0) listOf(createTradeAction()) else emptyList()
+            } else emptyList()
+        }
+
+        return if (card.isTradeable) {
+            if (war.me.usableResource > 0) listOf(createPlayAction(card), createTradeAction()) else listOf(
+                createTradeAction()
             )
-            if (card.isTradeable) {
-                res.add(
-                    PlayAction(
-                        { newWar ->
-                            findSelf(newWar)?.action?.trade()
-                            logTrade()
-                        },
-                        { newWar ->
-                            newWar.me.usedResources++
-                            removeSelf(newWar)
-                            newWar.me.deckArea.add(this.belongCard)
-                            newWar.me.handArea.drawCard()
-                        },
-                        belongCard, true
-                    )
-                )
-            }
-            res
-        } ?: emptyList()
+        } else listOf(
+            createPlayAction(
+                card
+            )
+        )
+    }
+
+    private fun createPlayAction(card: Card): PlayAction {
+        return PlayAction(
+            { newWar ->
+                logPlay()
+                findSelf(newWar)?.action?.power()
+            },
+            { newWar ->
+                spendSelfCost(newWar)
+                val me = newWar.me
+                removeSelf(newWar)?.let { exhaustedCard ->
+                    CardUtil.handleCardExhaustedWhenIntoPlayArea(exhaustedCard)
+                    me.playArea.safeAdd(exhaustedCard)
+                }
+            },
+            card
+        )
+    }
+
+    private fun createTradeAction(): PlayAction {
+        return PlayAction(
+            { newWar ->
+                findSelf(newWar)?.action?.trade()
+                logTrade()
+            },
+            { newWar ->
+                newWar.me.usedResources++
+                removeSelf(newWar)
+                newWar.me.deckArea.add(this.belongCard)
+                newWar.me.handArea.drawCard()
+            },
+            belongCard!!,
+            true
+        )
     }
 
     /**
@@ -233,9 +215,10 @@ abstract class CardAction(
             val rivalTauntCards = CardUtil.getTauntCards(war.rival.playArea.cards, true)
             val rivalPlayCards = if (rivalTauntCards.isEmpty()) war.rival.playArea.cards else rivalTauntCards
             val size = rivalPlayCards.size
+            val littleCard = size < 3 || war.rival.playArea.hero?.canBeAttacked() == false
             for (rivalPlayCard in rivalPlayCards) {
-                if (rivalPlayCard.canBeAttacked()
-                    && (rivalPlayCard.isTaunt || size < 3 || rivalPlayCard.isAura || rivalPlayCard.isWindFury || rivalPlayCard.isAdjacentBuff) || rivalPlayCard.isLifesteal || rivalPlayCard.isTriggerVisual
+                if ((littleCard || rivalPlayCard.isTaunt || rivalPlayCard.isAura || rivalPlayCard.isWindFury || rivalPlayCard.isAdjacentBuff || rivalPlayCard.isLifesteal || rivalPlayCard.isTriggerVisual)
+                    && rivalPlayCard.canBeAttacked()
                 ) {
                     result.add(
                         AttackAction(
