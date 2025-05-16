@@ -55,16 +55,16 @@ object CardUtil {
                 myCard.isDivineShield = false
             }
         } else if (rivalCard.isPoisonous && myCard.cardType === CardTypeEnum.MINION) {
-            myCard.damage = myCard.bloodLimit()
+            myCard.injured(myCard.bloodLimit())
         } else {
-            myCard.damage += rivalCard.atc
+            myCard.injured(rivalCard.atc)
         }
 
 //        处理我方武器情况
         if (myCard.cardType === CardTypeEnum.HERO) {
             myPlayArea.weapon?.let {
                 if (!it.isImmune) {
-                    it.damage++
+                    it.injured(1)
                 }
             }
         }
@@ -75,9 +75,9 @@ object CardUtil {
                 rivalCard.isDivineShield = false
             }
         } else if (myCard.isPoisonous && rivalCard.cardType === CardTypeEnum.MINION) {
-            rivalCard.damage = rivalCard.bloodLimit()
+            rivalCard.injured(rivalCard.bloodLimit())
         } else {
-            rivalCard.damage += myCard.atc
+            rivalCard.injured(myCard.atc)
         }
 
 //        处理我方可攻击次数

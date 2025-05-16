@@ -204,7 +204,7 @@ class MonteCarloTreeNode(
                 inverseWar.me.apply {
                     playArea.hero?.atc = 0
 //                triggerTurnEnd内部可能修改cards，使用副本遍历
-                    val cardCopy = playArea.cards.toTypedArray()
+                    val cardCopy = playArea.cards.toList()
                     for (card in cardCopy) {
                         if (card.isAlive()) {
                             card.action.triggerTurnEnd(war)
@@ -226,7 +226,7 @@ class MonteCarloTreeNode(
                     playArea.power?.resetExhausted()
                     playArea.weapon?.resetExhausted()
 //                triggerTurnStart内部可能修改cards，使用副本遍历
-                    val cardCopy = playArea.cards.toTypedArray()
+                    val cardCopy = playArea.cards.toList()
                     for (card in cardCopy) {
                         if (card.isAlive()) {
                             card.action.triggerTurnStart(war)

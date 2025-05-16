@@ -186,7 +186,7 @@ class GameDataAnalysisController : Initializable, StageHook {
 
     private fun handleInputCard(): Card? {
         val text = inputField.text.trim { it <= ' ' }
-        val split = text.split("[.]".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+        val split = text.split("[.]".toRegex()).dropLastWhile { it.isEmpty() }.toList()
         val entityId: String
         val length = split.size
         entityId = if (length == 0) {
@@ -276,7 +276,7 @@ class GameDataAnalysisController : Initializable, StageHook {
                             banTip = true
                             inputField.text =
                                 inputField.text.split("\\.".toRegex()).dropLastWhile { it.isEmpty() }
-                                    .toTypedArray()[0] + "." + methodName
+                                    .toList()[0] + "." + methodName
                             calcOutput(method)
                             hideTipPopup()
                             banTip = false

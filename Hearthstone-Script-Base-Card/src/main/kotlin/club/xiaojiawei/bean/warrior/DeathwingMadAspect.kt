@@ -34,7 +34,7 @@ class DeathwingMadAspect : CardAction.DefaultCardAction() {
                 removeSelf(newWar)?.let { card ->
                     CardUtil.handleCardExhaustedWhenIntoPlayArea(card)
                     if (me.playArea.safeAdd(card)) {
-                        val cards = (war.me.playArea.cards + war.rival.playArea.cards).toTypedArray()
+                        val cards = (war.me.playArea.cards + war.rival.playArea.cards).toList()
                         var running = true
                         while (running && !Thread.interrupted()) {
                             running = false

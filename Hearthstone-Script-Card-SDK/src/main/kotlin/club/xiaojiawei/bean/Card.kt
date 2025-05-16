@@ -7,6 +7,8 @@ import club.xiaojiawei.enums.TargetEnum
 import club.xiaojiawei.mapper.BaseCardMapper
 import club.xiaojiawei.status.WAR
 import java.util.function.BiConsumer
+import kotlin.system.measureNanoTime
+import kotlin.system.measureTimeMillis
 
 /**
  * @author 肖嘉威
@@ -75,25 +77,38 @@ class Card(
             val oldDamage = super.damage
             if (oldDamage != value) {
                 super.damage = value
-                if (area.player.war !== WAR) {
+                val war = area.player.war
+                if (war !== WAR) {
                     val damageDiff = value - oldDamage
                     damageChangeListener?.accept(oldDamage, value)
                     if (damageDiff > 0) {
-                        val copyMyPlayCards = area.player.war.me.playArea.cards.toTypedArray()
-                        for (card in copyMyPlayCards) {
-                            card.action.triggerPlayCardInjured(area.player.war, this, damageDiff)
+                        val myPlayCard = war.me.playArea.cards
+                        if (myPlayCard.isNotEmpty()) {
+                            val copyMyPlayCards = myPlayCard.toList()
+                            for (card in copyMyPlayCards) {
+                                card.action.triggerPlayCardInjured(war, this, damageDiff)
+                            }
                         }
-                        val copyRivalPlayCards = area.player.war.rival.playArea.cards.toTypedArray()
-                        for (card in copyRivalPlayCards) {
-                            card.action.triggerPlayCardInjured(area.player.war, this, damageDiff)
+                        val rivalPlayCards = war.rival.playArea.cards
+                        if (rivalPlayCards.isNotEmpty()) {
+                            val copyRivalPlayCards = rivalPlayCards.toList()
+                            for (card in copyRivalPlayCards) {
+                                card.action.triggerPlayCardInjured(war, this, damageDiff)
+                            }
                         }
-                        val copyMyHandCards = area.player.war.me.handArea.cards.toTypedArray()
-                        for (card in copyMyHandCards) {
-                            card.action.triggerPlayCardInjured(area.player.war, this, damageDiff)
+                        val myHandCards = war.me.handArea.cards
+                        if (myHandCards.isNotEmpty()) {
+                            val copyMyHandCards = myHandCards.toList()
+                            for (card in copyMyHandCards) {
+                                card.action.triggerPlayCardInjured(war, this, damageDiff)
+                            }
                         }
-                        val copyRivalHandCards = area.player.war.rival.handArea.cards.toTypedArray()
-                        for (card in copyRivalHandCards) {
-                            card.action.triggerPlayCardInjured(area.player.war, this, damageDiff)
+                        val rivalHandCards = war.rival.handArea.cards
+                        if (rivalHandCards.isNotEmpty()) {
+                            val copyRivalHandCards = rivalHandCards.toList()
+                            for (card in copyRivalHandCards) {
+                                card.action.triggerPlayCardInjured(war, this, damageDiff)
+                            }
                         }
                     }
                 }
@@ -118,7 +133,7 @@ class Card(
      * 受到伤害
      */
     fun injured(damage: Int) {
-        if (!canHurt()) return
+        if (!canHurt() || damage == 0) return
         if (isDivineShield) {
             isDivineShield = false
             return

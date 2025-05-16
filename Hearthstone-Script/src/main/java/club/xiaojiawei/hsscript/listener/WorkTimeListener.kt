@@ -149,8 +149,8 @@ object WorkTimeListener {
         val dayIndex = LocalDate.now().dayOfWeek.value - 1
         if (dayIndex >= readOnlyWorkTimeSetting.size) return
         val id = readOnlyWorkTimeSetting[dayIndex]
-        WorkTimeStatus.readOnlyWorkTimeRuleSet().toTypedArray().find { it.id == id }?.let {
-            val timeRules = it.getTimeRules().toTypedArray()
+        WorkTimeStatus.readOnlyWorkTimeRuleSet().toList().find { it.id == id }?.let {
+            val timeRules = it.getTimeRules().toList()
             val nowTime = LocalTime.now()
             val nowSecondOfDay = nowTime.toSecondOfDay()
 
@@ -216,8 +216,8 @@ object WorkTimeListener {
         workTimeRuleSetId: String,
         offsetSec: Long,
     ): Long {
-        WorkTimeStatus.readOnlyWorkTimeRuleSet().toTypedArray().find { it.id == workTimeRuleSetId }?.let {
-            val timeRules = it.getTimeRules().toTypedArray()
+        WorkTimeStatus.readOnlyWorkTimeRuleSet().toList().find { it.id == workTimeRuleSetId }?.let {
+            val timeRules = it.getTimeRules().toList()
             val nowTime = LocalTime.now()
             val nowSecondOfDay = nowTime.toSecondOfDay() - offsetSec
 

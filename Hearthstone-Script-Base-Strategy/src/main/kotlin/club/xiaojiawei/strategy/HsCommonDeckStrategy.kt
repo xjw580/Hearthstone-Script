@@ -61,7 +61,7 @@ class HsCommonDeckStrategy : DeckStrategy() {
         }
         DeckStrategyUtil.cleanPlay()
 
-        me.playArea.cards.toTypedArray().forEach { card: Card ->
+        me.playArea.cards.toList().forEach { card: Card ->
             if (card.isLaunchpad && me.usableResource >= card.launchCost()) {
                 card.action.launch()
             }

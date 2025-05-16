@@ -62,13 +62,13 @@ class Release : Comparable<Release> {
                     .group()
                     .split("\\.".toRegex())
                     .dropLastWhile { it.isEmpty() }
-                    .toTypedArray()
+                    .toList()
             val v2 =
                 matcher2
                     .group()
                     .split("\\.".toRegex())
                     .dropLastWhile { it.isEmpty() }
-                    .toTypedArray()
+                    .toList()
             val minLength = min(v1.size.toDouble(), v2.size.toDouble()).toInt()
             var result = 0
             for (i in 0 until minLength) {
@@ -80,8 +80,8 @@ class Release : Comparable<Release> {
                 }
             }
             if (v1.size == v2.size) {
-                val split1 = version1.split("-".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-                val split2 = version2.split("-".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+                val split1 = version1.split("-".toRegex()).dropLastWhile { it.isEmpty() }.toList()
+                val split2 = version2.split("-".toRegex()).dropLastWhile { it.isEmpty() }.toList()
                 return if (split1.size > 1 && split2.size > 1) {
                     VersionTypeEnum.getEnum(split1[1]).order - VersionTypeEnum.getEnum(split2[1]).order
                 } else {

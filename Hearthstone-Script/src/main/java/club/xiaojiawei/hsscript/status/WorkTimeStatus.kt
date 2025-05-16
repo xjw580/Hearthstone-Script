@@ -55,7 +55,7 @@ object WorkTimeStatus {
         if (workTimeSettingList !== workTimeSetting) {
             workTimeSetting.setAll(workTimeSettingList)
         }
-        workTimeSettingListeners.toTypedArray().forEach { listener ->
+        workTimeSettingListeners.toList().forEach { listener ->
             listener.invoke(workTimeSetting, changeId)
         }
         WorkTimeListener.checkWork()
@@ -70,7 +70,7 @@ object WorkTimeStatus {
         if (workTimeRuleSetList !== workTimeRuleSet) {
             workTimeRuleSet.setAll(workTimeRuleSetList)
         }
-        workTimeRuleSetListeners.toTypedArray().forEach { listener ->
+        workTimeRuleSetListeners.toList().forEach { listener ->
             listener.invoke(workTimeRuleSet, changeId)
         }
         WorkTimeListener.checkWork()

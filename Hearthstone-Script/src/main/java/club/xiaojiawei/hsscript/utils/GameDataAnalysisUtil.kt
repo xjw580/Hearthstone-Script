@@ -116,7 +116,7 @@ object GameDataAnalysisUtil {
             val h =
                 (RIVAL_PLAY_AREA_VERTICAL_RATION[1] - RIVAL_PLAY_AREA_VERTICAL_RATION[0] - PADDING_RATION) * height
             strokeArea(this, y, width, h, "对方战场区")
-            val cards = war.rival.playArea.cards.toTypedArray()
+            val cards = war.rival.playArea.cards.toList()
             if (cards.isEmpty()) return
             val padding = ((1.0 - CARD_WIDTH_RATION * cards.size) / (cards.size + 1)) * width
             var startX = padding
@@ -137,7 +137,7 @@ object GameDataAnalysisUtil {
             val h =
                 (RIVAL_HAND_AREA_VERTICAL_RATION[1] - RIVAL_HAND_AREA_VERTICAL_RATION[0] - PADDING_RATION) * height
             strokeArea(this, y, width, h, "对方手牌区")
-            val cards = war.rival.handArea.cards.toTypedArray()
+            val cards = war.rival.handArea.cards.toList()
             if (cards.isEmpty()) return
             val padding = ((1.0 - CARD_WIDTH_RATION * cards.size) / (cards.size + 1)) * width
             var startX = padding
@@ -191,7 +191,7 @@ object GameDataAnalysisUtil {
             val y = (MY_PLAY_AREA_VERTICAL_RATION[0] + PADDING_RATION) * height
             val h = (MY_PLAY_AREA_VERTICAL_RATION[1] - MY_PLAY_AREA_VERTICAL_RATION[0] - PADDING_RATION) * height
             strokeArea(this, y, width, h, "我方战场区")
-            val cards = war.me.playArea.cards.toTypedArray()
+            val cards = war.me.playArea.cards.toList()
             if (cards.isEmpty()) return
             val padding = ((1.0 - CARD_WIDTH_RATION * cards.size) / (cards.size + 1)) * width
             var startX = padding
@@ -211,7 +211,7 @@ object GameDataAnalysisUtil {
             val y = (MY_HAND_AREA_VERTICAL_RATION[0] + PADDING_RATION) * height
             val h = (MY_HAND_AREA_VERTICAL_RATION[1] - MY_HAND_AREA_VERTICAL_RATION[0] - PADDING_RATION) * height
             strokeArea(this, y, width, h, "我方手牌区")
-            val cards = war.me.handArea.cards.toTypedArray()
+            val cards = war.me.handArea.cards.toList()
             if (cards.isEmpty()) return
             val padding = ((1.0 - CARD_WIDTH_RATION * cards.size) / (cards.size + 1)) * width
             var startX = padding

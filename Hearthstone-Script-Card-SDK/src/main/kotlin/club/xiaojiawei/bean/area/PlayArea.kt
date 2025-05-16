@@ -64,11 +64,11 @@ class PlayArea(
     ): Boolean {
         card?.let {
             if (pos > 0) {
-                val copyPlayCards = player.playArea.cards.toTypedArray()
+                val copyPlayCards = player.playArea.cards.toList()
                 for (card in copyPlayCards) {
                     card.action.triggerAddCardToMyPlayArea(player.war, it)
                 }
-                val copyHandCards = player.handArea.cards.toTypedArray()
+                val copyHandCards = player.handArea.cards.toList()
                 for (card in copyHandCards) {
                     card.action.triggerAddCardToMyPlayArea(player.war, it)
                 }
