@@ -135,9 +135,10 @@ object PluginManager {
                     ).toList()
                 )
                 if (plugins.isNotEmpty()) {
-                    val isEnabled = !disableSet.contains(plugins.last().id())
+                    val plugin = plugins.last()
+                    val isEnabled = !disableSet.contains(plugin.id())
                     if (isEnabled) {
-                        plugins.last().init()
+                        plugin.init()
                     }
 
                     var stream = StreamSupport.stream(ServiceLoader.load(aClass, deckClassLoader).spliterator(), false)
@@ -153,11 +154,24 @@ object PluginManager {
                     }
                     val spiList = stream.toList()
                     if (spiList.isEmpty()) continue
-                    pluginWrapper = PluginWrapper(plugins.last(), spiList)
+                    pluginWrapper = PluginWrapper(plugin, spiList)
                     pluginWrapper.setEnabled(isEnabled)
 
-                    val pluginId = pluginWrapper.plugin.id()
-                    addPluginWrapper(pluginWrapper, pluginWrapperMap, pluginId, pluginClass.simpleName)
+                    val pluginId = plugin.id()
+                    if (plugin is CardPlugin) {
+                        val pluginScope = plugin.pluginScope()
+                        if (pluginScope === PluginScope.PUBLIC) {
+                            addPluginWrapper(pluginWrapper, pluginWrapperMap, "", pluginClass.simpleName)
+                        } else if (pluginScope === PluginScope.PROTECTED) {
+                            addPluginWrapper(pluginWrapper, pluginWrapperMap, pluginId, pluginClass.simpleName)
+                        } else {
+                            for (id in pluginScope) {
+                                addPluginWrapper(pluginWrapper, pluginWrapperMap, id, pluginClass.simpleName)
+                            }
+                        }
+                    } else if (plugin is StrategyPlugin) {
+                        addPluginWrapper(pluginWrapper, pluginWrapperMap, pluginId, pluginClass.simpleName)
+                    }
                 }
             } catch (e: ServiceConfigurationError) {
                 log.warn(e) { "加载SPI错误" }
