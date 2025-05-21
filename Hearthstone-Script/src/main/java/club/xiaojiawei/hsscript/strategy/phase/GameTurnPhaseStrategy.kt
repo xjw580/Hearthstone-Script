@@ -18,6 +18,9 @@ import club.xiaojiawei.hsscript.utils.ConfigUtil
 import club.xiaojiawei.hsscript.utils.GameUtil
 import club.xiaojiawei.hsscript.utils.SystemUtil
 import club.xiaojiawei.util.isTrue
+import club.xiaojiawei.bean.War
+import club.xiaojiawei.bean.Player
+import club.xiaojiawei.bean.Card
 
 /**
  * 游戏回合阶段
@@ -49,6 +52,8 @@ object GameTurnPhaseStrategy : AbstractPhaseStrategy() {
             if (tagChangeEntity.value == StepEnum.MAIN_ACTION.name) {
                 if (war.me === war.currentPlayer && war.me.isValid()) {
                     log.info { "我方回合" }
+                    val fieldInfo = formatFieldInformation(war)
+                    log.info { fieldInfo }
                     cancelAllTask()
                     war.isMyTurn = true
                     if (ConfigUtil.getBoolean(ConfigEnum.ONLY_ROBOT)) {
@@ -115,5 +120,63 @@ object GameTurnPhaseStrategy : AbstractPhaseStrategy() {
             }
         }
         return false
+    }
+
+    private fun formatFieldInformation(war: War): String {
+        val sb = StringBuilder()
+
+        fun formatPlayerField(player: Player, title: String) {
+            sb.appendLine(title)
+
+            // Hero
+            player.playArea.hero?.let { hero ->
+                sb.appendLine("Hero: ${hero.entityName} (Atk: ${hero.atc}, Health: ${hero.blood()})")
+            } ?: sb.appendLine("Hero: (None)")
+
+            // Mana
+            sb.appendLine("Mana: ${player.usableResource}/${player.resources}")
+
+            // Minions
+            sb.appendLine("Minions:")
+            if (player.playArea.cards.isEmpty()) {
+                sb.appendLine("- (No minions)")
+            } else {
+                player.playArea.cards.forEach { minion ->
+                    val keywords = mutableListOf<String>()
+                    if (minion.isTaunt) keywords.add("Taunt")
+                    if (minion.isDivineShield) keywords.add("Divine Shield")
+                    if (minion.isStealth) keywords.add("Stealth")
+                    if (minion.isPoisonous) keywords.add("Poisonous")
+                    if (minion.isRush) keywords.add("Rush")
+                    if (minion.isWindfury) keywords.add("Windfury")
+                    if (minion.isLifesteal) keywords.add("Lifesteal")
+                    if (minion.isReborn) keywords.add("Reborn")
+                    if (minion.isElusive) keywords.add("Elusive")
+                    if (minion.spellPower > 0) keywords.add("SpellPower:${minion.spellPower}")
+
+                    val keywordsString = if (keywords.isNotEmpty()) ", Keywords: [${keywords.joinToString(", ")}]" else ""
+                    sb.appendLine("- ${minion.entityName} (Atk: ${minion.atc}, Health: ${minion.blood()}$keywordsString)")
+                }
+            }
+
+            // Weapon
+            player.playArea.weapon?.let { weapon ->
+                sb.appendLine("Weapon: ${weapon.entityName} (Atk: ${weapon.atc}, Dur: ${weapon.blood()})")
+            } ?: sb.appendLine("Weapon: (None)")
+
+            // Secrets
+            sb.appendLine("Secrets: ${player.secretArea.cards.size}")
+
+            // Hand Size
+            sb.appendLine("Hand Size: ${player.handArea.cards.size}")
+
+            // Deck Size
+            sb.appendLine("Deck Size: ${player.deckArea.cards.size}")
+        }
+
+        formatPlayerField(war.me, "--- My Field ---")
+        formatPlayerField(war.rival, "--- Rival's Field ---")
+
+        return sb.toString()
     }
 }
