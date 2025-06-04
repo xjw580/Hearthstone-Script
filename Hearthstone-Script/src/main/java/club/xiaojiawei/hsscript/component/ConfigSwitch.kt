@@ -7,6 +7,8 @@ import club.xiaojiawei.hsscript.service.Service
 import club.xiaojiawei.hsscript.utils.ConfigUtil
 import club.xiaojiawei.hsscript.utils.runUI
 import club.xiaojiawei.util.isFalse
+import javafx.beans.property.ObjectProperty
+import javafx.beans.property.SimpleObjectProperty
 
 /**
  * @author 肖嘉威
@@ -22,7 +24,17 @@ open class ConfigSwitch : Switch() {
             field = value
         }
 
-    var notificationManager: NotificationManager<Any>? = null
+    private var notificationManagerProperty: ObjectProperty<NotificationManager<Any>> = SimpleObjectProperty()
+
+    var notificationManager: NotificationManager<Any>?
+        get() = notificationManagerProperty.get()
+        set(value) {
+            notificationManagerProperty.set(value)
+        }
+
+    fun notificationManagerProperty(): ObjectProperty<NotificationManager<Any>>? {
+        return notificationManagerProperty
+    }
 
     private var interceptChange = false
 
@@ -51,7 +63,7 @@ open class ConfigSwitch : Switch() {
         if (res) {
             notificationManager?.let { nm ->
                 runUI {
-                    nm.showInfo("设置成功", 2)
+                    nm.showSuccess("设置成功", 1)
                 }
             }
         } else {
@@ -63,7 +75,7 @@ open class ConfigSwitch : Switch() {
             }
             notificationManager?.let { nm ->
                 runUI {
-                    nm.showInfo("设置失败", 2)
+                    nm.showError("设置失败", 3)
                 }
             }
         }

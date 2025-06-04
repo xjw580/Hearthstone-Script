@@ -28,7 +28,7 @@ object InjectUtil {
                 return false
             }
             val result = CMDUtil.exec(arrayOf(injectUtilPath, targetProcessName, dllPath))
-            if (result.contains("completed")) {
+            if (result.output.contains("completed")) {
                 log.info { "注入${dllFile.name}成功" }
                 return true
             } else {

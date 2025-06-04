@@ -57,7 +57,7 @@ open class ConfigNumberField : NumberField() {
         if (res) {
             notificationManager?.let { nm ->
                 runUI {
-                    nm.showInfo("设置成功", 2)
+                    nm.showSuccess("设置成功", 1)
                 }
             }
         } else {
@@ -69,7 +69,7 @@ open class ConfigNumberField : NumberField() {
             }
             notificationManager?.let { nm ->
                 runUI {
-                    nm.showInfo("设置失败", 2)
+                    nm.showError("设置失败", 3)
                 }
             }
         }

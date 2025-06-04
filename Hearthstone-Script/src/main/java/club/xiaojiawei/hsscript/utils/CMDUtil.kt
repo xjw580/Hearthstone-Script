@@ -10,16 +10,27 @@ import java.lang.StringBuilder
  */
 object CMDUtil {
 
-    fun exec(command: Array<String>): String {
+    data class CommandResult(
+        val output: String,
+        val exitCode: Int
+    )
+
+    fun exec(command: Array<String>): CommandResult {
         val sb = StringBuilder()
         val process = Runtime.getRuntime().exec(command)
-        return BufferedReader(InputStreamReader(process.inputStream)).use {
+
+        // 读取标准输出
+        BufferedReader(InputStreamReader(process.inputStream)).use {
             var line: String?
             while ((it.readLine().also { line = it }) != null) {
                 sb.append(line).append("\n")
             }
-            sb.toString()
         }
+
+        // 等待进程结束并获取退出码
+        val exitCode = process.waitFor()
+
+        return CommandResult(sb.toString(), exitCode)
     }
 
 }

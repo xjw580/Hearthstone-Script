@@ -19,9 +19,6 @@
     <fx:define>
         <Duration fx:id="tooltipDuration" fx:value="60s"/>
         <Double fx:id="fieldWidth" fx:value="150"/>
-        <NotificationManager fx:id="notificationManager" notificationPos="BOTTOM_CENTER">
-            <NotificationFactory showingCloseBtn="false" size="SMALL"/>
-        </NotificationManager>
     </fx:define>
     <StackPane>
         <ScrollPane fx:id="scrollPane" VBox.vgrow="ALWAYS" styleClass="scroll-pane-item">
@@ -338,5 +335,7 @@
                           toggleGroup="$navigationBarToggle" onAction="#scrollVersion"/>
         </VBox>
     </StackPane>
-
+    <NotificationManager fx:id="notificationManager" notificationPos="BOTTOM_CENTER">
+        <NotificationFactory showingCloseBtn="false" size="SMALL"/>
+    </NotificationManager>
 </StackPane>
