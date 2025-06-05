@@ -139,7 +139,7 @@ class WeightSettingsController : Initializable {
                 }
             }
         }
-        weightNameCol.setCellValueFactory(PropertyValueFactory("name"))
+        weightNameCol.cellValueFactory = PropertyValueFactory("name")
         weightNameCol.setCellFactory { weightCardNumberTableColumn: TableColumn<WeightCard, String>? ->
             object : NoEditTextFieldTableCell<WeightCard?, String?>(stringConverter) {
                 override fun commitEdit(s: String?) {
@@ -180,8 +180,8 @@ class WeightSettingsController : Initializable {
         }
     }
 
-    private fun readWeightConfig(weigthPath: Path = WEIGHT_CONFIG_PATH) {
-        val cards = CardUtil.readWeightConfig(weigthPath)
+    private fun readWeightConfig(weightPath: Path = WEIGHT_CONFIG_PATH) {
+        val cards = CardUtil.readWeightConfig(weightPath)
         val weightCards = HashSet(weightTable.items)
         for (card in cards) {
             if (!weightCards.contains(card)) {
@@ -190,9 +190,25 @@ class WeightSettingsController : Initializable {
         }
     }
 
-    private fun saveWeightConfig(weigthPath: Path = WEIGHT_CONFIG_PATH) {
-        saveWeightConfig(weightTable.items, weigthPath)
+    private fun saveWeightConfig(weightPath: Path = WEIGHT_CONFIG_PATH) {
+        saveWeightConfig(weightTable.items, weightPath)
         reloadCardWeight(weightTable.items)
+    }
+
+    @FXML
+    protected fun exportConfig(actionEvent: ActionEvent?) {
+        val chooser = FileChooser()
+        chooser.title = "导出至"
+        val extFilter = FileChooser.ExtensionFilter("权重文件 (*.weight)", "*.weight")
+        chooser.extensionFilters.add(extFilter)
+
+        val file = chooser.showSaveDialog(rootPane.scene.window)
+        if (file == null) {
+            notificationManager.showInfo("未选择导出路径，导出取消", 2)
+            return
+        }
+        saveWeightConfig(file.toPath())
+        notificationManager.showSuccess("导出成功", 2)
     }
 
     @FXML
@@ -215,19 +231,19 @@ class WeightSettingsController : Initializable {
     }
 
     @FXML
-    protected fun exportConfig(actionEvent: ActionEvent?) {
-        val chooser = FileChooser()
-        chooser.title = "导出至"
-        val extFilter = FileChooser.ExtensionFilter("权重文件 (*.weight)", "*.weight")
-        chooser.extensionFilters.add(extFilter)
-
-        val file = chooser.showSaveDialog(rootPane.scene.window)
-        if (file == null) {
-            notificationManager.showInfo("未选择导出路径，导出取消", 2)
+    protected fun copyRow(actionEvent: ActionEvent?) {
+        val selectedItems = weightTable.selectionModel.selectedItems
+        if (selectedItems.isEmpty()) {
+            notificationManager.showInfo("请先选择要复制的行", 2)
             return
         }
-        saveWeightConfig(file.toPath())
-        notificationManager.showSuccess("导出成功", 2)
+        val selectedItemsCopy = selectedItems.toList()
+        weightTable.selectionModel.clearSelection()
+        for (weightCard in selectedItemsCopy) {
+            weightTable.items.add(weightCard.clone())
+        }
+        saveWeightConfig()
+        notificationManager.showSuccess("复制成功", 2)
     }
 
     @FXML

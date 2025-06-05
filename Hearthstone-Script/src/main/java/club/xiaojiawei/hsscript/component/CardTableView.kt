@@ -85,6 +85,8 @@ class CardTableView : TableView<DBCard>() {
                 IntStream.range(0, items.size).filter { i: Int -> items[i] === param.value }.findFirst().orElse(-2)
             SimpleIntegerProperty(index + 1 + currentOffset)
         }
+        noCol.text = "#"
+        noCol.maxWidth = 30.0
         cardIdCol.setCellValueFactory(PropertyValueFactory("cardId"))
         cardIdCol.setCellFactory { weightCardNumberTableColumn: TableColumn<DBCard, String>? ->
             object : NoEditTextFieldTableCell<DBCard?, String?>(stringConverter) {

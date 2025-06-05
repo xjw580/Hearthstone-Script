@@ -7,7 +7,7 @@ import javafx.beans.property.SimpleDoubleProperty
  * @author 肖嘉威
  * @date 2024/11/13 15:14
  */
-class WeightCard() {
+class WeightCard() : Cloneable {
 
     constructor(cardId: String, name: String, weight: Double, powerWeight: Double, changeWeight: Double) : this() {
         this.cardId = cardId
@@ -59,5 +59,9 @@ class WeightCard() {
 
     override fun hashCode(): Int {
         return cardId.hashCode()
+    }
+
+    public override fun clone(): WeightCard {
+        return WeightCard(cardId, name, weight, powerWeight, changeWeight)
     }
 }

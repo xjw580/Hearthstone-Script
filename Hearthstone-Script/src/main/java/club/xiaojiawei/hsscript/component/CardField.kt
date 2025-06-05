@@ -41,12 +41,16 @@ class CardField : HBox() {
     private fun addListener() {
         searchCardField.onFilterAction = FilterAction { text: String? ->
             search()
+            searchCardField.requestFocus()
+            searchCardField.selectAll()
         }
         limit.addEventFilter(
             KeyEvent.KEY_RELEASED
         ) { event: KeyEvent ->
             if (event.code == KeyCode.ENTER) {
                 search()
+                limit.requestFocus()
+                limit.selectAll()
             }
         }
         offset.addEventFilter(
@@ -54,6 +58,8 @@ class CardField : HBox() {
         ) { event: KeyEvent ->
             if (event.code == KeyCode.ENTER) {
                 search()
+                offset.requestFocus()
+                offset.selectAll()
             }
         }
     }
