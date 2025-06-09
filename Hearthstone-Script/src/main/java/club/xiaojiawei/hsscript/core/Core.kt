@@ -55,7 +55,7 @@ object Core {
                                     WindowUtil.getStage(WindowEnum.MAIN),
                                 )
                             go {
-                                Thread.sleep(10_000)
+                                Thread.sleep(5_000)
                                 runUI {
                                     alert.hide()
                                 }

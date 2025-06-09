@@ -21,5 +21,8 @@ class CardWeight() {
      */
     var powerWeight: Double = 0.0
 
+    /**
+     * 换牌权重
+     */
     var changeWeight: Double = 0.0
 }

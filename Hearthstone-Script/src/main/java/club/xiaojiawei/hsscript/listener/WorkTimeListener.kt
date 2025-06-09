@@ -86,6 +86,7 @@ object WorkTimeListener {
             }
         val operationName = operates.map { it.value }
         val text = "${countdownTime}秒后执行$operationName"
+        println("text:"+text)
         log.info { text }
         runUI {
             alert.set(
@@ -163,6 +164,8 @@ object WorkTimeListener {
                 val endTime = workTime.parseEndTime()?.withSecond(59) ?: continue
                 if (nowTime in startTime..endTime) {
                     canWork = true
+                    closestWorkTimeRule = rule
+                    println("closestWorkTimeRule1：" + rule.operateProperty().get())
                     break
                 } else {
                     val diffSec = nowSecondOfDay - endTime.toSecondOfDay()
@@ -172,6 +175,7 @@ object WorkTimeListener {
                     }
                 }
             }
+            println("closestWorkTimeRule2：" + closestWorkTimeRule?.operateProperty()?.get())
             prevClosestWorkTimeRule = closestWorkTimeRule
         }
         isDuringWorkDate = canWork
