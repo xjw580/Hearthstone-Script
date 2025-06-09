@@ -165,7 +165,6 @@ object WorkTimeListener {
                 if (nowTime in startTime..endTime) {
                     canWork = true
                     closestWorkTimeRule = rule
-                    println("closestWorkTimeRule1：" + rule.operateProperty().get())
                     break
                 } else {
                     val diffSec = nowSecondOfDay - endTime.toSecondOfDay()
@@ -175,7 +174,6 @@ object WorkTimeListener {
                     }
                 }
             }
-            println("closestWorkTimeRule2：" + closestWorkTimeRule?.operateProperty()?.get())
             prevClosestWorkTimeRule = closestWorkTimeRule
         }
         isDuringWorkDate = canWork

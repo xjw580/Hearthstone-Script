@@ -33,7 +33,7 @@ enum class WindowEnum(
     SETTINGS(
         "settings/settings.fxml",
         formatTitle("设置"),
-        width = 650.0,
+        width = 690.0,
         height = 450.0,
     ),
     INIT_SETTINGS(
@@ -50,6 +50,9 @@ enum class WindowEnum(
     ),
     WEIGHT_SETTINGS(
         "settings/weightSettings.fxml",
+    ),
+    CARD_SETTINGS(
+        "settings/cardSettings.fxml",
     ),
     DEVELOPER_SETTINGS(
         "settings/developerSettings.fxml",

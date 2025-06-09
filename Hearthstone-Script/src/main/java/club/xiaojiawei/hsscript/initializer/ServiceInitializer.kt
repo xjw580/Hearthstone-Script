@@ -1,6 +1,7 @@
 package club.xiaojiawei.hsscript.initializer
 
 import club.xiaojiawei.hsscript.enums.ConfigEnum
+import club.xiaojiawei.hsscript.utils.goByLock
 
 /**
  * @author 肖嘉威
@@ -8,17 +9,22 @@ import club.xiaojiawei.hsscript.enums.ConfigEnum
  */
 class ServiceInitializer : AbstractInitializer() {
     override fun exec() {
-        for (configEnum in ConfigEnum.values()) {
-            if (configEnum.isEnable) {
-                configEnum.service?.intelligentStartStop()
+        goByLock(ServiceInitializer::class.java) {
+            for (configEnum in ConfigEnum.entries) {
+                if (configEnum.isEnable) {
+                    configEnum.service?.intelligentStartStop()
+                }
             }
         }
+
     }
 
     fun stop() {
-        for (configEnum in ConfigEnum.values()) {
-            if (configEnum.isEnable) {
-                configEnum.service?.stop()
+        goByLock(ServiceInitializer::class.java) {
+            for (configEnum in ConfigEnum.entries) {
+                if (configEnum.isEnable) {
+                    configEnum.service?.stop()
+                }
             }
         }
     }

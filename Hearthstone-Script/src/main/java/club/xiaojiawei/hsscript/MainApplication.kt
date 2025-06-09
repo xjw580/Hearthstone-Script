@@ -169,6 +169,7 @@ class MainApplication : Application() {
         Platform.setImplicitExit(false)
         launchService()
         CardUtil.reloadCardWeight()
+        CardUtil.reloadCardInfo()
         Runtime
             .getRuntime()
             .addShutdownHook(
@@ -390,7 +391,7 @@ class MainApplication : Application() {
     private fun launchService() {
         TaskManager.launch
         Core.launch
-        GlobalHotkeyListener.launch
+        go { GlobalHotkeyListener.launch }
         VersionListener.launch
         WorkTimeListener.launch
         StatisticsListener.launch

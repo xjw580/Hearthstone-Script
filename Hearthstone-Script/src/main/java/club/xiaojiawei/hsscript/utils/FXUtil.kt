@@ -31,6 +31,14 @@ inline fun go(crossinline block: () -> Unit): Future<*> {
     })
 }
 
+inline fun goByLock(lock: Any, crossinline block: () -> Unit): Future<*> {
+    return VIRTUAL_THREAD_POOL.submit(LRunnable {
+        synchronized(lock) {
+            block()
+        }
+    })
+}
+
 /**
  * 虚拟线程中执行
  */

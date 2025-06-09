@@ -6,6 +6,7 @@ import club.xiaojiawei.data.BaseData
 import club.xiaojiawei.hsscript.bean.WeightCard
 import club.xiaojiawei.hsscript.bean.tableview.NoEditTextFieldTableCell
 import club.xiaojiawei.hsscript.component.CardTableView
+import club.xiaojiawei.hsscript.consts.CARD_WEIGHT_CONFIG_PATH
 import club.xiaojiawei.hsscript.consts.CONFIG_PATH
 import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.utils.CardUtil
@@ -180,7 +181,7 @@ class WeightSettingsController : Initializable {
         }
     }
 
-    private fun readWeightConfig(weightPath: Path = WEIGHT_CONFIG_PATH) {
+    private fun readWeightConfig(weightPath: Path = CARD_WEIGHT_CONFIG_PATH) {
         val cards = CardUtil.readWeightConfig(weightPath)
         val weightCards = HashSet(weightTable.items)
         for (card in cards) {
@@ -190,7 +191,7 @@ class WeightSettingsController : Initializable {
         }
     }
 
-    private fun saveWeightConfig(weightPath: Path = WEIGHT_CONFIG_PATH) {
+    private fun saveWeightConfig(weightPath: Path = CARD_WEIGHT_CONFIG_PATH) {
         saveWeightConfig(weightTable.items, weightPath)
         reloadCardWeight(weightTable.items)
     }
@@ -282,7 +283,4 @@ class WeightSettingsController : Initializable {
         notificationManager.showSuccess("移除成功", 2)
     }
 
-    companion object {
-        private val WEIGHT_CONFIG_PATH: Path = Path.of(CONFIG_PATH, "card.weight")
-    }
 }

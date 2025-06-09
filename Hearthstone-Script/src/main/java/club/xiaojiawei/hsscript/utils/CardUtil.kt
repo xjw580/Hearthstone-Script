@@ -8,13 +8,17 @@ import club.xiaojiawei.config.log
 import club.xiaojiawei.data.CARD_WEIGHT_TRIE
 import club.xiaojiawei.data.COIN_CARD_ID
 import club.xiaojiawei.enums.ZoneEnum
+import club.xiaojiawei.hsscript.bean.CardInfo
 import club.xiaojiawei.hsscript.bean.CommonCardAction
 import club.xiaojiawei.hsscript.bean.CommonCardAction.Companion.DEFAULT
+import club.xiaojiawei.hsscript.bean.InfoCard
 import club.xiaojiawei.hsscript.bean.WeightCard
 import club.xiaojiawei.hsscript.bean.log.ExtraEntity
 import club.xiaojiawei.hsscript.bean.log.TagChangeEntity
 import club.xiaojiawei.hsscript.bean.single.WarEx
-import club.xiaojiawei.hsscript.consts.WEIGHT_CONFIG_PATH
+import club.xiaojiawei.hsscript.config.CARD_INFO_TRIE
+import club.xiaojiawei.hsscript.consts.CARD_INFO_CONFIG_PATH
+import club.xiaojiawei.hsscript.consts.CARD_WEIGHT_CONFIG_PATH
 import club.xiaojiawei.hsscript.status.CardActionManager.CARD_ACTION_MAP
 import club.xiaojiawei.hsscript.status.DeckStrategyManager
 import club.xiaojiawei.mapper.BaseCardMapper
@@ -80,7 +84,7 @@ object CardUtil {
         card.action = cardAction
     }
 
-    private val objectMapper = ObjectMapper();
+    private val objectMapper = ObjectMapper()
 
     private var cardWeightRawData: List<WeightCard>? = null
 
@@ -97,19 +101,19 @@ object CardUtil {
         cardWeightRawData = list.toList()
     }
 
-    fun readWeightConfig(weightPath: Path = WEIGHT_CONFIG_PATH): List<WeightCard> {
+    fun readWeightConfig(weightPath: Path = CARD_WEIGHT_CONFIG_PATH): List<WeightCard> {
         val file = weightPath.toFile()
         if (!file.exists()) return emptyList()
         try {
             return objectMapper.readValue(file, object : TypeReference<List<WeightCard>>() {
             })
         } catch (e: IOException) {
-            log.error(e) { "反序列化权重文件异常" }
+            log.error(e) { "反序列化卡牌权重文件异常" }
         }
         return emptyList()
     }
 
-    fun saveWeightConfig(weightCard: List<WeightCard>, weightPath: Path = WEIGHT_CONFIG_PATH) {
+    fun saveWeightConfig(weightCard: List<WeightCard>, weightPath: Path = CARD_WEIGHT_CONFIG_PATH) {
         val file = weightPath.toFile()
         if (!file.exists() || file.isDirectory) {
             try {
@@ -117,7 +121,7 @@ object CardUtil {
                 file.getParentFile().mkdirs()
                 file.createNewFile()
             } catch (e: IOException) {
-                log.error(e) { "权重文件创建异常,$file" }
+                log.error(e) { "卡牌权重文件创建异常,$file" }
                 return
             }
         }
@@ -132,7 +136,61 @@ object CardUtil {
                 fileChannel.write(buffer)
             }
         } catch (e: IOException) {
-            log.error(e) { "权重文件保存异常,$file" }
+            log.error(e) { "卡牌权重文件保存异常,$file" }
+        }
+    }
+
+    private var infoCardRawData: List<InfoCard>? = null
+
+    fun getCardInfoCache(): List<InfoCard>? {
+        return infoCardRawData
+    }
+
+    fun reloadCardInfo(infoCard: List<InfoCard>? = null) {
+        val list = infoCard ?: readCardInfoConfig()
+        CARD_INFO_TRIE.clear()
+        list.forEach {
+            CARD_INFO_TRIE[it.cardId] = CardInfo(it.effectType, it.actions)
+        }
+        infoCardRawData = list.toList()
+    }
+
+    fun readCardInfoConfig(cardInfoPath: Path = CARD_INFO_CONFIG_PATH): List<InfoCard> {
+        val file = cardInfoPath.toFile()
+        if (!file.exists()) return emptyList()
+        try {
+            return objectMapper.readValue(file, object : TypeReference<List<InfoCard>>() {
+            })
+        } catch (e: IOException) {
+            log.error(e) { "反序列化卡牌信息文件异常" }
+        }
+        return emptyList()
+    }
+
+    fun saveInfoConfig(infoCards: List<InfoCard>, cardInfoPath: Path = CARD_INFO_CONFIG_PATH) {
+        val file = cardInfoPath.toFile()
+        if (!file.exists() || file.isDirectory) {
+            try {
+                FileUtil.deleteFile(file)
+                file.getParentFile().mkdirs()
+                file.createNewFile()
+            } catch (e: IOException) {
+                log.error(e) { "卡牌信息文件创建异常,$file" }
+                return
+            }
+        }
+        try {
+            FileChannel.open(
+                cardInfoPath,
+                StandardOpenOption.CREATE,
+                StandardOpenOption.WRITE,
+                StandardOpenOption.TRUNCATE_EXISTING
+            ).use { fileChannel ->
+                val buffer = ByteBuffer.wrap(objectMapper.writeValueAsBytes(infoCards))
+                fileChannel.write(buffer)
+            }
+        } catch (e: IOException) {
+            log.error(e) { "卡牌信息文件保存异常,$file" }
         }
     }
 

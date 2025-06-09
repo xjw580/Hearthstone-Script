@@ -25,7 +25,9 @@ val CONFIG_PATH: String = Path.of(ROOT_PATH, "config").toString()
 
 val PLUGIN_PATH: String = Path.of(ROOT_PATH, "plugin").toString()
 
-val WEIGHT_CONFIG_PATH: Path = Path.of(CONFIG_PATH, "card.weight");
+val CARD_WEIGHT_CONFIG_PATH: Path = Path.of(CONFIG_PATH, "card.weight");
+
+val CARD_INFO_CONFIG_PATH: Path = Path.of(CONFIG_PATH, "card.info");
 
 const val FXML_DIR: String = "/fxml/"
 
