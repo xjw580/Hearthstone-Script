@@ -117,7 +117,7 @@
                                     </graphic>
                                     <tooltip>
                                         <Tooltip showDuration="10s" showDelay="500ms"
-                                                 text="衡量起手换牌权重，值大于等于0表示留下，值小于0表示需要换掉，默认为0"/>
+                                                 text="衡量起手换牌权重，值大于等于0表示留下，值小于0表示需要换掉，默认为-1"/>
                                     </tooltip>
                                 </Label>
                             </graphic>

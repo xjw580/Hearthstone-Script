@@ -253,7 +253,7 @@ class WeightSettingsController : Initializable {
         val weightSet = HashSet(weightTable.items)
         var hasUpdate = false
         for ((cardId, name) in list) {
-            val weightCard = WeightCard(cardId, name, 1.0, 1.0, 0.0)
+            val weightCard = WeightCard(cardId, name, 1.0, 1.0, -1.0)
             if (weightSet.contains(weightCard)) {
                 hasUpdate = true
             } else {
