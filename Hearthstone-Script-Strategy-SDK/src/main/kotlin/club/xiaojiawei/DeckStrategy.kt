@@ -70,6 +70,11 @@ abstract class DeckStrategy {
     open fun referChangeWeight(): Boolean = false
 
     /**
+     * 参考卡牌信息
+     */
+    open fun referCardInfo(): Boolean = false
+
+    /**
      * 执行换牌策略
      * @param cards 需要换掉的牌直接从集合中删除
      */

@@ -1,7 +1,7 @@
 package club.xiaojiawei.hsscript.bean
 
-import club.xiaojiawei.hsscript.enums.CardActionEnum
-import club.xiaojiawei.hsscript.enums.CardEffectTypeEnum
+import club.xiaojiawei.enums.CardActionEnum
+import club.xiaojiawei.enums.CardEffectTypeEnum
 import com.fasterxml.jackson.annotation.JsonIgnore
 import javafx.beans.property.SimpleObjectProperty
 import javafx.beans.property.SimpleStringProperty
@@ -53,12 +53,11 @@ class InfoCard : Cloneable {
      */
     var actions: List<CardActionEnum> = emptyList()
 
-
     constructor(
         cardId: String,
         name: String,
         effectType: CardEffectTypeEnum = CardEffectTypeEnum.UNKNOWN,
-        actions: List<CardActionEnum> = emptyList()
+        actions: List<CardActionEnum> = listOf(CardActionEnum.NO_POINT)
     ) {
         this.cardId = cardId
         this.name = name

@@ -285,12 +285,12 @@ enum class ConfigEnum(
     /**
      * 默认套牌策略(deck id)
      */
-    DEFAULT_DECK_STRATEGY(group = OTHER_CONFIG_GROUP, defaultValueInitializer = { "" }),
+    DEFAULT_DECK_STRATEGY(group = OTHER_CONFIG_GROUP, defaultValueInitializer = { "e71234fa-1-radical-deck-97e9-1f4e126cd33b" }),
 
     /**
      * 默认运行模式
      */
-    DEFAULT_RUN_MODE(group = OTHER_CONFIG_GROUP, defaultValueInitializer = { RunModeEnum.CASUAL.name }),
+    DEFAULT_RUN_MODE(group = OTHER_CONFIG_GROUP, defaultValueInitializer = { RunModeEnum.STANDARD.name }),
 
     /**
      * 战网密码

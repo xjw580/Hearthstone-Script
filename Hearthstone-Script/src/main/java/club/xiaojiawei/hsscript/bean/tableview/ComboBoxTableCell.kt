@@ -37,7 +37,7 @@ open class ComboBoxTableCell<S, T> : ComboBoxTableCell<S?, T?> {
                     newValue.setMinWidth(w)
                     newValue.setMaxWidth(w)
                 }
-                newValue.getStyleClass().addAll(this.comboBoxStyleClass)
+                newValue.getStyleClass().addAll(comboBoxStyleClass())
                 graphicProperty().removeListener(graphicListener)
                 graphicListener = null
             }
@@ -45,11 +45,11 @@ open class ComboBoxTableCell<S, T> : ComboBoxTableCell<S?, T?> {
         graphicProperty().addListener(graphicListener)
     }
 
-    protected open val comboBoxStyleClass: MutableList<String?>
-        get() {
-            val styleClass = ArrayList<String?>()
-            styleClass.add("combo-box-ui")
-            styleClass.add("combo-box-ui-normal")
-            return styleClass
-        }
+    protected open fun comboBoxStyleClass(): MutableList<String?> {
+        val styleClass = ArrayList<String?>()
+        styleClass.add("combo-box-ui")
+        styleClass.add("combo-box-ui-normal")
+        return styleClass
+
+    }
 }

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import club.xiaojiawei.controls.ico.AddIco?>
+<?import club.xiaojiawei.controls.WindowBar?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.*?>
+<fx:root type="StackPane" xmlns="http://javafx.com/javafx"
+         xmlns:fx="http://javafx.com/fxml"
+         stylesheets="@css/editActionPane.css"
+         style="-fx-effect: default-effect;-fx-background-radius: 5;-fx-background-color: background-color"
+         prefHeight="400.0" prefWidth="270">
+    <VBox alignment="TOP_CENTER">
+        <WindowBar fx:id="windowBar" initTopStatus="true"/>
+        <VBox VBox.vgrow="ALWAYS" alignment="TOP_CENTER">
+            <ScrollPane style="-fx-background: background-color"
+                        styleClass="scroll-pane-item">
+                <VBox fx:id="actionPane" spacing="15" alignment="TOP_CENTER" style="-fx-padding: 15"/>
+            </ScrollPane>
+            <HBox alignment="CENTER" style="-fx-padding: 10">
+                <Button text="增加行为" styleClass="btn-ui, btn-ui-small" onAction="#addAction">
+                    <graphic>
+                        <AddIco/>
+                    </graphic>
+                </Button>
+            </HBox>
+        </VBox>
+        <HBox alignment="CENTER_RIGHT" style="-fx-padding: 10;-fx-spacing: 15">
+            <Button text="应用" styleClass="btn-ui, btn-ui-small, btn-ui-normal" onAction="#apply"/>
+            <Button text="保存" styleClass="btn-ui, btn-ui-small, btn-ui-success" onAction="#save"/>
+        </HBox>
+    </VBox>
+</fx:root>

@@ -29,6 +29,8 @@ class HsCommonDeckStrategy : DeckStrategy() {
 
     override fun referChangeWeight(): Boolean = true
 
+    override fun referCardInfo(): Boolean = true
+
     override fun executeChangeCard(cards: HashSet<Card>) {
         if (BaseData.enableChangeWeight) {
             val weightCards = DeckStrategyUtil.convertToSimulateCard(cards.toList())

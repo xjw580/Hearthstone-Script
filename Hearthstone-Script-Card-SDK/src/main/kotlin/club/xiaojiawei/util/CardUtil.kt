@@ -1,8 +1,10 @@
 package club.xiaojiawei.util
 
 import club.xiaojiawei.bean.Card
+import club.xiaojiawei.bean.CardInfo
 import club.xiaojiawei.bean.War
 import club.xiaojiawei.bean.area.PlayArea
+import club.xiaojiawei.enums.CardActionEnum
 import club.xiaojiawei.enums.CardTypeEnum
 
 /**

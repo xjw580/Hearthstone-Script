@@ -5,6 +5,8 @@ import club.xiaojiawei.bean.Entity.Companion.UNKNOWN_ENTITY_NAME
 import club.xiaojiawei.bean.area.HandArea
 import club.xiaojiawei.bean.area.isValid
 import club.xiaojiawei.config.log
+import club.xiaojiawei.enums.CardActionEnum
+import club.xiaojiawei.enums.CardEffectTypeEnum
 import club.xiaojiawei.enums.CardTypeEnum
 import club.xiaojiawei.util.CardUtil
 import club.xiaojiawei.util.isTrue
@@ -103,30 +105,29 @@ abstract class CardAction(
     open fun generatePowerActions(
         war: War,
         player: Player,
-    ): List<PowerAction> =
-        belongCard?.let { card: Card ->
-            if (card.isLaunchpad && player.usableResource >= card.launchCost()) {
-                listOf(
-                    PowerAction(
-                        { newWar ->
-                            findSelf(newWar)?.action?.launch()
-                        },
-                        { newWar ->
+    ): List<PowerAction> = belongCard?.let { card: Card ->
+        if (card.isLaunchpad && player.usableResource >= card.launchCost()) {
+            listOf(
+                PowerAction(
+                    { newWar ->
+                        findSelf(newWar)?.action?.launch()
+                    },
+                    { newWar ->
 //                        模拟发射
-                            findSelf(newWar)?.let { card ->
-                                card.area.player.usedResources += card.launchCost()
-                                card.isLaunchpad = false
-                                card.isHideStats = false
-                                CardUtil.handleCardExhaustedWhenIntoPlayArea(card)
-                            }
-                        },
-                        belongCard,
-                    ),
-                )
-            } else {
-                emptyList()
-            }
-        } ?: emptyList()
+                        findSelf(newWar)?.let { card ->
+                            card.area.player.usedResources += card.launchCost()
+                            card.isLaunchpad = false
+                            card.isHideStats = false
+                            CardUtil.handleCardExhaustedWhenIntoPlayArea(card)
+                        }
+                    },
+                    belongCard,
+                ),
+            )
+        } else {
+            emptyList()
+        }
+    } ?: emptyList()
 
     /**
      * [belongCard]从手牌中打出的所有可能动作（包含战吼效果）
@@ -165,16 +166,14 @@ abstract class CardAction(
             { newWar ->
                 logPlay()
                 findSelf(newWar)?.action?.power()
-            },
-            { newWar ->
+            }, { newWar ->
                 spendSelfCost(newWar)
                 val me = newWar.me
                 removeSelf(newWar)?.let { exhaustedCard ->
                     CardUtil.handleCardExhaustedWhenIntoPlayArea(exhaustedCard)
                     me.playArea.safeAdd(exhaustedCard)
                 }
-            },
-            card
+            }, card
         )
     }
 
@@ -183,15 +182,12 @@ abstract class CardAction(
             { newWar ->
                 findSelf(newWar)?.action?.trade()
                 logTrade()
-            },
-            { newWar ->
+            }, { newWar ->
                 newWar.me.usedResources++
                 removeSelf(newWar)
                 newWar.me.deckArea.add(this.belongCard)
                 newWar.me.handArea.drawCard()
-            },
-            belongCard!!,
-            true
+            }, belongCard!!, true
         )
     }
 
@@ -217,9 +213,7 @@ abstract class CardAction(
             val size = rivalPlayCards.size
             val littleCard = size < 3 || war.rival.playArea.hero?.canBeAttacked() == false
             for (rivalPlayCard in rivalPlayCards) {
-                if ((littleCard || rivalPlayCard.isTaunt || rivalPlayCard.isAura || rivalPlayCard.isWindFury || rivalPlayCard.isAdjacentBuff || rivalPlayCard.isLifesteal || rivalPlayCard.isTriggerVisual)
-                    && rivalPlayCard.canBeAttacked()
-                ) {
+                if ((littleCard || rivalPlayCard.isTaunt || rivalPlayCard.isAura || rivalPlayCard.isWindFury || rivalPlayCard.isAdjacentBuff || rivalPlayCard.isLifesteal || rivalPlayCard.isTriggerVisual) && rivalPlayCard.canBeAttacked()) {
                     result.add(
                         AttackAction(
                             { newWar ->
@@ -354,13 +348,12 @@ abstract class CardAction(
             val area = card.area
             if (area.isValid()) {
                 val index = area.indexOfCard(card)
-                val newCard =
-                    card.clone().apply {
-                        damage = health - 1
-                        armor = 0
-                        isExhausted = true
-                        isReborn = false
-                    }
+                val newCard = card.clone().apply {
+                    damage = health - 1
+                    armor = 0
+                    isExhausted = true
+                    isReborn = false
+                }
                 if (index < 0) {
                     if (area.isFull) return
                     war.addCard(newCard, card.area.player.playArea)
@@ -369,6 +362,49 @@ abstract class CardAction(
 //                添加至原卡牌位置的右侧
                     war.addCard(newCard, card.area.player.playArea, index + 2)
                 }
+            }
+        }
+    }
+
+    /**
+     * 根据卡牌信息自动使用卡牌
+     */
+    fun autoPower(cardInfo: CardInfo? = null) {
+        cardInfo ?: let {
+            power()
+            return
+        }
+        val card = belongCard ?: return
+        val actionEnums = cardInfo.actions.filter { it !== CardActionEnum.NO_POINT }
+        if (actionEnums.isEmpty()) {
+            power()
+        } else {
+            var res = false
+            for (cardActionEnum in actionEnums) {
+                if (cardActionEnum === CardActionEnum.POINT_WHATEVER) {
+                    res = if (cardInfo.effectType === CardEffectTypeEnum.BUFF) {
+                        CardActionEnum.POINT_MY.exec(card, card.area.player.war)
+                    } else {
+                        CardActionEnum.POINT_RIVAL.exec(card, card.area.player.war)
+                    } xor res
+                } else if (cardActionEnum === CardActionEnum.POINT_MINION) {
+                    res = if (cardInfo.effectType === CardEffectTypeEnum.BUFF) {
+                        CardActionEnum.POINT_MY_MINION.exec(card, card.area.player.war)
+                    } else {
+                        CardActionEnum.POINT_RIVAL_MINION.exec(card, card.area.player.war)
+                    } xor res
+                } else if (cardActionEnum === CardActionEnum.POINT_HERO) {
+                    res = if (cardInfo.effectType === CardEffectTypeEnum.BUFF) {
+                        CardActionEnum.POINT_MY_HERO.exec(card, card.area.player.war)
+                    } else {
+                        CardActionEnum.POINT_RIVAL_HERO.exec(card, card.area.player.war)
+                    } xor res
+                } else {
+                    res = cardActionEnum.exec(card, card.area.player.war) xor res
+                }
+            }
+            if (!res) {
+                power()
             }
         }
     }

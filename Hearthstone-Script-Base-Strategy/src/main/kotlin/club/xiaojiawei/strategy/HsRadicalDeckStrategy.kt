@@ -4,14 +4,12 @@ import club.xiaojiawei.DeckStrategy
 import club.xiaojiawei.bean.Card
 import club.xiaojiawei.bean.isValid
 import club.xiaojiawei.config.log
+import club.xiaojiawei.data.CARD_INFO_TRIE
 import club.xiaojiawei.enums.CardTypeEnum
 import club.xiaojiawei.enums.RunModeEnum
 import club.xiaojiawei.status.WAR
 import club.xiaojiawei.util.DeckStrategyUtil
 import club.xiaojiawei.util.DeckStrategyUtil.activeLocation
-import club.xiaojiawei.util.DeckStrategyUtil.isDamageText
-import club.xiaojiawei.util.isFalse
-import club.xiaojiawei.util.isTrue
 
 /**
  * @author 肖嘉威
@@ -37,6 +35,8 @@ class HsRadicalDeckStrategy : DeckStrategy() {
 
     override fun referChangeWeight(): Boolean = true
 
+    override fun referCardInfo(): Boolean = true
+
     override fun executeChangeCard(cards: HashSet<Card>) {
         commonDeckStrategy.executeChangeCard(cards)
     }
@@ -57,39 +57,41 @@ class HsRadicalDeckStrategy : DeckStrategy() {
                     val card = simulateWeightCard.card
                     val cardText = simulateWeightCard.text
                     if (me.usableResource >= card.cost) {
-                        if (card.cardType === CardTypeEnum.SPELL) {
-                            if (isDamageText(cardText)) {
-                                log.info { "[${card.cardId}]判断为伤害法术" }
-                                rival.playArea.cards.find { c -> c.canBeTargetedByMe() }?.let {
-                                    card.action.power(it)
-                                } ?: let {
-                                    if (rival.playArea.hero?.canBeTargetedByMe() == true) {
-                                        card.action.power(rival.playArea.hero)
-                                    }
-                                }
-                            } else {
-                                me.playArea.cards.find { c -> c.canBeTargetedByMe() }?.let {
-                                    card.action.power(it)
-                                } ?: let {
-                                    card.action.power()
-                                }
-                            }
+                        if (card.cardType === CardTypeEnum.SPELL || card.cardType === CardTypeEnum.HERO) {
+                            card.action.autoPower(CARD_INFO_TRIE[card.cardId])
+//                            if (isDamageText(cardText)) {
+//                                log.info { "[${card.cardId}]判断为伤害法术" }
+//                                rival.playArea.cards.find { c -> c.canBeTargetedByMe() }?.let {
+//                                    card.action.power(it)
+//                                } ?: let {
+//                                    if (rival.playArea.hero?.canBeTargetedByMe() == true) {
+//                                        card.action.power(rival.playArea.hero)
+//                                    }
+//                                }
+//                            } else {
+//                                me.playArea.cards.find { c -> c.canBeTargetedByMe() }?.let {
+//                                    card.action.power(it)
+//                                } ?: let {
+//                                    card.action.power()
+//                                }
+//                            }
                         } else {
                             if (me.playArea.isFull) break
-                            card.isBattlecry
-                                .isTrue {
-                                    me.playArea.cards.find { card -> card.cardType === CardTypeEnum.MINION }?.let {
-                                        if (card.action.executedPower) {
-                                            card.action.power(it, false)?.pointTo(it)
-                                        } else {
-                                            card.action.power(it)
-                                        }
-                                    } ?: let {
-                                        card.action.power()
-                                    }
-                                }.isFalse {
-                                    card.action.power()
-                                }
+                            card.action.autoPower(CARD_INFO_TRIE[card.cardId])
+//                            card.isBattlecry
+//                                .isTrue {
+//                                    me.playArea.cards.find { card -> card.cardType === CardTypeEnum.MINION }?.let {
+//                                        if (card.action.executedPower) {
+//                                            card.action.power(it, false)?.pointTo(it)
+//                                        } else {
+//                                            card.action.power(it)
+//                                        }
+//                                    } ?: let {
+//                                        card.action.power()
+//                                    }
+//                                }.isFalse {
+//                                    card.action.power()
+//                                }
                         }
                     }
                 }
@@ -100,5 +102,6 @@ class HsRadicalDeckStrategy : DeckStrategy() {
         }
     }
 
-    override fun executeDiscoverChooseCard(vararg cards: Card): Int = commonDeckStrategy.executeDiscoverChooseCard(*cards)
+    override fun executeDiscoverChooseCard(vararg cards: Card): Int =
+        commonDeckStrategy.executeDiscoverChooseCard(*cards)
 }

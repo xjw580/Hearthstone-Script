@@ -8,7 +8,7 @@ import club.xiaojiawei.config.log
 import club.xiaojiawei.data.CARD_WEIGHT_TRIE
 import club.xiaojiawei.data.COIN_CARD_ID
 import club.xiaojiawei.enums.ZoneEnum
-import club.xiaojiawei.hsscript.bean.CardInfo
+import club.xiaojiawei.bean.CardInfo
 import club.xiaojiawei.hsscript.bean.CommonCardAction
 import club.xiaojiawei.hsscript.bean.CommonCardAction.Companion.DEFAULT
 import club.xiaojiawei.hsscript.bean.InfoCard
@@ -16,7 +16,7 @@ import club.xiaojiawei.hsscript.bean.WeightCard
 import club.xiaojiawei.hsscript.bean.log.ExtraEntity
 import club.xiaojiawei.hsscript.bean.log.TagChangeEntity
 import club.xiaojiawei.hsscript.bean.single.WarEx
-import club.xiaojiawei.hsscript.config.CARD_INFO_TRIE
+import club.xiaojiawei.data.CARD_INFO_TRIE
 import club.xiaojiawei.hsscript.consts.CARD_INFO_CONFIG_PATH
 import club.xiaojiawei.hsscript.consts.CARD_WEIGHT_CONFIG_PATH
 import club.xiaojiawei.hsscript.status.CardActionManager.CARD_ACTION_MAP

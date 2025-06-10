@@ -4,10 +4,8 @@ import club.xiaojiawei.controls.NotificationManager
 import club.xiaojiawei.controls.TableFilterManagerGroup
 import club.xiaojiawei.data.BaseData
 import club.xiaojiawei.hsscript.bean.WeightCard
-import club.xiaojiawei.hsscript.bean.tableview.NoEditTextFieldTableCell
 import club.xiaojiawei.hsscript.component.CardTableView
 import club.xiaojiawei.hsscript.consts.CARD_WEIGHT_CONFIG_PATH
-import club.xiaojiawei.hsscript.consts.CONFIG_PATH
 import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.utils.CardUtil
 import club.xiaojiawei.hsscript.utils.CardUtil.getCardWeightCache
@@ -24,7 +22,6 @@ import javafx.scene.control.CheckBox
 import javafx.scene.control.SelectionMode
 import javafx.scene.control.TableColumn
 import javafx.scene.control.TableView
-import javafx.scene.control.cell.PropertyValueFactory
 import javafx.scene.layout.StackPane
 import javafx.stage.FileChooser
 import javafx.util.StringConverter
@@ -127,30 +124,28 @@ class WeightSettingsController : Initializable {
                 IntStream.range(0, items.size).filter { i: Int -> items[i] === param.value }.findFirst().orElse(-2)
             SimpleIntegerProperty(index + 1)
         }
-        weightCardIdCol.setCellValueFactory(PropertyValueFactory("cardId"))
-        weightCardIdCol.setCellFactory { weightCardNumberTableColumn: TableColumn<WeightCard, String>? ->
+        weightCardIdCol.setCellValueFactory { it.value.cardIdProperty }
+        weightCardIdCol.setCellFactory {
             object : TextFieldTableCellUI<WeightCard?, String?>(stringConverter) {
                 override fun commitEdit(s: String?) {
                     super.commitEdit(s)
-                    s?.let {
-                        weightTable.items[index].cardId = it
-                    }
                     saveWeightConfig()
                     notificationManager.showSuccess("修改ID成功", 2)
                 }
             }
         }
-        weightNameCol.cellValueFactory = PropertyValueFactory("name")
-        weightNameCol.setCellFactory { weightCardNumberTableColumn: TableColumn<WeightCard, String>? ->
-            object : NoEditTextFieldTableCell<WeightCard?, String?>(stringConverter) {
+        weightNameCol.setCellValueFactory { it.value.nameProperty }
+        weightNameCol.setCellFactory {
+            object : TextFieldTableCellUI<WeightCard?, String?>(stringConverter) {
                 override fun commitEdit(s: String?) {
                     super.commitEdit(s)
-                    notificationManager.showInfo("不允许修改", 1)
+                    saveWeightConfig()
+                    notificationManager.showSuccess("修改名字成功", 2)
                 }
             }
         }
-        weightCol.setCellValueFactory { o: TableColumn.CellDataFeatures<WeightCard, Number?> -> o.value.weightProperty }
-        weightCol.setCellFactory { weightCardNumberTableColumn: TableColumn<WeightCard, Number?>? ->
+        weightCol.setCellValueFactory { it.value.weightProperty }
+        weightCol.setCellFactory {
             object : NumberFieldTableCellUI<WeightCard?, Number>(numberConverter) {
                 override fun commitEdit(number: Number) {
                     super.commitEdit(number)
@@ -159,8 +154,8 @@ class WeightSettingsController : Initializable {
                 }
             }
         }
-        powerWeightCol.setCellValueFactory { o: TableColumn.CellDataFeatures<WeightCard, Number?> -> o.value.powerWeightProperty }
-        powerWeightCol.setCellFactory { weightCardNumberTableColumn: TableColumn<WeightCard, Number?>? ->
+        powerWeightCol.setCellValueFactory { it.value.powerWeightProperty }
+        powerWeightCol.setCellFactory {
             object : NumberFieldTableCellUI<WeightCard?, Number>(numberConverter) {
                 override fun commitEdit(number: Number) {
                     super.commitEdit(number)
@@ -169,8 +164,8 @@ class WeightSettingsController : Initializable {
                 }
             }
         }
-        changeWeightCol.setCellValueFactory { o: TableColumn.CellDataFeatures<WeightCard, Number?> -> o.value.changeWeightProperty }
-        changeWeightCol.setCellFactory { weightCardNumberTableColumn: TableColumn<WeightCard, Number?>? ->
+        changeWeightCol.setCellValueFactory { it.value.changeWeightProperty }
+        changeWeightCol.setCellFactory {
             object : NumberFieldTableCellUI<WeightCard?, Number>(numberConverter) {
                 override fun commitEdit(number: Number) {
                     super.commitEdit(number)

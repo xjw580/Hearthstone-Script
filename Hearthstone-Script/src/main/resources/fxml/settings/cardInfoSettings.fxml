@@ -15,7 +15,7 @@
            xmlns:fx="http://javafx.com/fxml"
            stylesheets="@../css/settings/weightSettings.css"
            fx:id="rootPane"
-           fx:controller="club.xiaojiawei.hsscript.controller.javafx.settings.CardSettingsController">
+           fx:controller="club.xiaojiawei.hsscript.controller.javafx.settings.CardInfoSettingsController">
     <fx:define>
         <Double fx:id="colMinWeight" fx:value="25"/>
         <Double fx:id="icoScale" fx:value="0.8"/>
@@ -25,7 +25,7 @@
             <CardTableView fx:id="cardTable" VBox.vgrow="ALWAYS">
                 <placeholder>
                     <StackPane>
-                        <Label text="1.选中此表的行，点击向右按钮添加至右侧表"/>
+                        <Label text="1.选中此表的行，点击向右按钮添加至右侧表" wrapText="true"/>
                     </StackPane>
                 </placeholder>
             </CardTableView>
@@ -68,7 +68,8 @@
                                                  autoRegisterColFilter="false"/>
                     </fx:define>
                     <columns>
-                        <TableColumn minWidth="${colMinWeight}" prefWidth="${colMinWeight}" fx:id="infoCardNoCol" text="#"
+                        <TableColumn minWidth="${colMinWeight}" prefWidth="${colMinWeight}" fx:id="infoCardNoCol"
+                                     text="#"
                                      maxWidth="30"/>
                         <TableColumn minWidth="${colMinWeight}" prefWidth="${colMinWeight}" fx:id="cardInfoIdColCard"
                                      text="ID">
@@ -84,18 +85,20 @@
                                                          tableFilterManagerGroup="$actionTableProxy"/>
                             </graphic>
                         </TableColumn>
-                        <TableColumn text="效果类型" minWidth="${colMinWeight}" prefWidth="50" fx:id="infoCardEffectTypeCol"/>
+                        <TableColumn text="效果类型" minWidth="${colMinWeight}" prefWidth="50"
+                                     fx:id="infoCardEffectTypeCol"/>
                     </columns>
                     <placeholder>
                         <StackPane>
-                            <Label text="2.选中行后右键设置行为"/>
+                            <Label text="2.选中行后右键编辑行为。例：寒冰箭，[效果类型]选择[DAMAGE],[行为]添加一项[指向敌方]"
+                                   wrapText="true"/>
                         </StackPane>
                     </placeholder>
                     <columnResizePolicy>
                         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
                     </columnResizePolicy>
                 </TableView>
-                <HBox spacing="10" style="-fx-padding: 10 10 10 0">
+                <HBox spacing="10" style="-fx-padding: 10 10 10 0" alignment="CENTER_LEFT">
                     <Button styleClass="btn-ui, btn-ui-small" onAction="#exportConfig">
                         <graphic>
                             <ExportIco color="main-color"/>

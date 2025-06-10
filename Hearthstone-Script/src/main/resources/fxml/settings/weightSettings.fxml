@@ -25,7 +25,7 @@
             <CardTableView fx:id="cardTable" VBox.vgrow="ALWAYS">
                 <placeholder>
                     <StackPane>
-                        <Label text="1.选中此表的行，点击向右按钮添加至右侧表"/>
+                        <Label text="1.选中此表的行，点击向右按钮添加至右侧表" wrapText="true"/>
                     </StackPane>
                 </placeholder>
             </CardTableView>
@@ -125,14 +125,14 @@
                     </columns>
                     <placeholder>
                         <StackPane>
-                            <Label text="2.双击权重单元格以编辑"/>
+                            <Label text="2.双击权重单元格以编辑" wrapText="true"/>
                         </StackPane>
                     </placeholder>
                     <columnResizePolicy>
                         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
                     </columnResizePolicy>
                 </TableView>
-                <HBox spacing="10" style="-fx-padding: 10 10 10 0">
+                <HBox spacing="10" style="-fx-padding: 10 10 10 0" alignment="CENTER_LEFT">
                     <Button styleClass="btn-ui, btn-ui-small" onAction="#exportConfig">
                         <graphic>
                             <ExportIco color="main-color"/>

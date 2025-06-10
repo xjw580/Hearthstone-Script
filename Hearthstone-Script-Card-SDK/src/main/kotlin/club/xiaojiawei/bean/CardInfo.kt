@@ -1,7 +1,7 @@
-package club.xiaojiawei.hsscript.bean
+package club.xiaojiawei.bean
 
-import club.xiaojiawei.hsscript.enums.CardActionEnum
-import club.xiaojiawei.hsscript.enums.CardEffectTypeEnum
+import club.xiaojiawei.enums.CardActionEnum
+import club.xiaojiawei.enums.CardEffectTypeEnum
 
 /**
  * @author 肖嘉威

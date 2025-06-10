@@ -2,6 +2,7 @@ package club.xiaojiawei.hsscript.bean
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 import javafx.beans.property.SimpleDoubleProperty
+import javafx.beans.property.SimpleStringProperty
 
 /**
  * @author 肖嘉威
@@ -17,9 +18,11 @@ class WeightCard() : Cloneable {
         this.changeWeight = changeWeight
     }
 
-    var cardId: String = ""
+    @JsonIgnore
+    val cardIdProperty = SimpleStringProperty("")
 
-    var name: String = ""
+    @JsonIgnore
+    val nameProperty = SimpleStringProperty("")
 
     @JsonIgnore
     val weightProperty = SimpleDoubleProperty(0.0)
@@ -29,6 +32,24 @@ class WeightCard() : Cloneable {
 
     @JsonIgnore
     val changeWeightProperty = SimpleDoubleProperty(0.0)
+
+    /**
+     * 卡牌id
+     */
+    var cardId: String
+        get() = cardIdProperty.value
+        set(value) {
+            cardIdProperty.set(value)
+        }
+
+    /**
+     * 名称
+     */
+    var name: String
+        get() = nameProperty.value
+        set(value) {
+            nameProperty.set(value)
+        }
 
     var weight: Double
         get() = weightProperty.get()

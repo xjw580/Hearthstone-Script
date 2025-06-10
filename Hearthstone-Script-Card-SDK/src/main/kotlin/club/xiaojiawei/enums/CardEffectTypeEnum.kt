@@ -1,4 +1,4 @@
-package club.xiaojiawei.hsscript.enums
+package club.xiaojiawei.enums
 
 /**
  * @author 肖嘉威
@@ -7,5 +7,9 @@ package club.xiaojiawei.hsscript.enums
 enum class CardEffectTypeEnum {
 
     UNKNOWN,
+
+    BUFF,
+
+    DAMAGE
 
 }

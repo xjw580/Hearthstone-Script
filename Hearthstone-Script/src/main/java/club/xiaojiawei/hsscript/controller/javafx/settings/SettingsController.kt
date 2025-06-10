@@ -32,7 +32,7 @@ class SettingsController : Initializable {
     protected lateinit var weightTab: Tab
 
     @FXML
-    protected lateinit var cardTab: Tab
+    protected lateinit var cardInfoTab: Tab
 
     @FXML
     protected lateinit var developerTab: Tab
@@ -50,7 +50,7 @@ class SettingsController : Initializable {
             buildWindowPair(WindowEnum.PLUGIN_SETTINGS, pluginTab),
             buildWindowPair(WindowEnum.STRATEGY_SETTINGS, strategyTab),
             buildWindowPair(WindowEnum.WEIGHT_SETTINGS, weightTab),
-            buildWindowPair(WindowEnum.CARD_SETTINGS, cardTab),
+            buildWindowPair(WindowEnum.CARD_INFO_SETTINGS, cardInfoTab),
             buildWindowPair(WindowEnum.DEVELOPER_SETTINGS, developerTab),
             buildWindowPair(WindowEnum.ABOUT, aboutTab),
         )

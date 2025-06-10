@@ -5,6 +5,7 @@ import club.xiaojiawei.bean.SimulateCard.Companion.TAUNT_EXTRA_WEIGHT
 import club.xiaojiawei.bean.area.PlayArea
 import club.xiaojiawei.config.CALC_THREAD_POOL
 import club.xiaojiawei.config.log
+import club.xiaojiawei.data.CARD_INFO_TRIE
 import club.xiaojiawei.data.CARD_WEIGHT_TRIE
 import club.xiaojiawei.enums.CardTypeEnum
 import club.xiaojiawei.status.WAR
@@ -789,24 +790,33 @@ object DeckStrategyUtil {
             val sortCard = sortCardByPowerWeight(cards)
             updateTextForCard(sortCard)
             log.info { "待出牌：$sortCard" }
+            val me = me!!
             for (simulateWeightCard in sortCard) {
                 val card = simulateWeightCard.card
                 val cardType = card.cardType
-                if (cardType === CardTypeEnum.MINION || cardType === CardTypeEnum.LOCATION) {
-                    if (WAR.me.playArea.isFull) continue
-                    card.action.power()
-                } else if (cardType === CardTypeEnum.SPELL) {
-                    if (rival?.playArea?.hero?.canBeTargetedByRivalSpells() == true && isDamageText(simulateWeightCard.text)) {
-                        card.action
-                            .lClick(false)
-                            ?.pointTo(rival?.playArea?.hero, false)
-                            ?.lClick()
+                if (me.usableResource >= card.cost) {
+                    if (cardType === CardTypeEnum.SPELL || cardType === CardTypeEnum.HERO) {
+                        card.action.autoPower(CARD_INFO_TRIE[card.cardId])
                     } else {
-                        card.action.power()
+                        if (me.playArea.isFull) break
+                        card.action.autoPower(CARD_INFO_TRIE[card.cardId])
                     }
-                } else {
-                    card.action.power()
                 }
+//                if (cardType === CardTypeEnum.MINION || cardType === CardTypeEnum.LOCATION) {
+//                    if (WAR.me.playArea.isFull) continue
+//                    card.action.power()
+//                } else if (cardType === CardTypeEnum.SPELL) {
+//                    if (rival?.playArea?.hero?.canBeTargetedByRivalSpells() == true && isDamageText(simulateWeightCard.text)) {
+//                        card.action
+//                            .lClick(false)
+//                            ?.pointTo(rival?.playArea?.hero, false)
+//                            ?.lClick()
+//                    } else {
+//                        card.action.power()
+//                    }
+//                } else {
+//                    card.action.power()
+//                }
             }
         }
     }

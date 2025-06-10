@@ -33,7 +33,7 @@ enum class WindowEnum(
     SETTINGS(
         "settings/settings.fxml",
         formatTitle("设置"),
-        width = 690.0,
+        width = 695.0,
         height = 450.0,
     ),
     INIT_SETTINGS(
@@ -51,8 +51,8 @@ enum class WindowEnum(
     WEIGHT_SETTINGS(
         "settings/weightSettings.fxml",
     ),
-    CARD_SETTINGS(
-        "settings/cardSettings.fxml",
+    CARD_INFO_SETTINGS(
+        "settings/cardInfoSettings.fxml",
     ),
     DEVELOPER_SETTINGS(
         "settings/developerSettings.fxml",
@@ -69,9 +69,12 @@ enum class WindowEnum(
         (SCREEN_HEIGHT - 590.0) / 2,
         alwaysOnTop = true,
     ),
-    TIME_SETTINGS("timeSettings.fxml", formatTitle("工作时间设置"), cache = false),
-    CARD_ACTION_EDITOR("cardActionEditor.fxml"),
-    STARTUP(
+    TIME_SETTINGS(
+        "timeSettings.fxml",
+        formatTitle("工作时间设置"),
+        cache = false
+    ),
+    CARD_ACTION_EDITOR("cardActionEditor.fxml"), STARTUP(
         "startup.fxml",
         formatTitle("启动页"),
         558.0,
@@ -113,8 +116,7 @@ enum class WindowEnum(
         cache = false,
         alwaysOnTop = true,
         initStyle = StageStyle.TRANSPARENT,
-    ),
-    ;
+    ), ;
 
     companion object {
         fun fromString(str: String?): WindowEnum? {

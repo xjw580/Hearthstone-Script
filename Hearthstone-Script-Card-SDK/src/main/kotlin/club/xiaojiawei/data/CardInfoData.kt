@@ -1,7 +1,7 @@
-package club.xiaojiawei.hsscript.config
+package club.xiaojiawei.data
 
+import club.xiaojiawei.bean.CardInfo
 import club.xiaojiawei.bean.LikeTrie
-import club.xiaojiawei.hsscript.bean.CardInfo
 
 /**
  * @author 肖嘉威
