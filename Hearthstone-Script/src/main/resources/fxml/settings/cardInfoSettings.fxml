@@ -63,28 +63,14 @@
                 <TableView fx:id="infoCardTable"
                            styleClass="table-view-idea, table-view-idea-tiny, table-view-idea-upright"
                            VBox.vgrow="ALWAYS">
-                    <fx:define>
-                        <TableFilterManagerGroup fx:id="actionTableProxy" tableView="$infoCardTable"
-                                                 autoRegisterColFilter="false"/>
-                    </fx:define>
                     <columns>
                         <TableColumn minWidth="${colMinWeight}" prefWidth="${colMinWeight}" fx:id="infoCardNoCol"
                                      text="#"
-                                     maxWidth="30"/>
+                                     maxWidth="30" userData="disable"/>
                         <TableColumn minWidth="${colMinWeight}" prefWidth="${colMinWeight}" fx:id="cardInfoIdColCard"
-                                     text="ID">
-                            <graphic>
-                                <TableValueFilterManager tableColumn="$cardInfoIdColCard"
-                                                         tableFilterManagerGroup="$actionTableProxy"/>
-                            </graphic>
-                        </TableColumn>
+                                     text="ID"/>
                         <TableColumn text="名字" minWidth="${colMinWeight}" prefWidth="${colMinWeight}"
-                                     fx:id="actionCardNameCol">
-                            <graphic>
-                                <TableValueFilterManager tableColumn="$actionCardNameCol"
-                                                         tableFilterManagerGroup="$actionTableProxy"/>
-                            </graphic>
-                        </TableColumn>
+                                     fx:id="actionCardNameCol"/>
                         <TableColumn text="效果类型" minWidth="${colMinWeight}" prefWidth="50"
                                      fx:id="infoCardEffectTypeCol"/>
                         <TableColumn text="行为" minWidth="${colMinWeight}" prefWidth="50"
@@ -99,6 +85,10 @@
                     <columnResizePolicy>
                         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
                     </columnResizePolicy>
+                    <fx:define>
+                        <TableFilterManagerGroup fx:id="actionTableProxy" tableView="$infoCardTable"
+                                                 autoRegisterColFilter="true"/>
+                    </fx:define>
                 </TableView>
                 <HBox spacing="10" style="-fx-padding: 10 10 10 0" alignment="CENTER_LEFT">
                     <Button styleClass="btn-ui, btn-ui-small" onAction="#exportConfig">

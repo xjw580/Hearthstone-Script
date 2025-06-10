@@ -135,6 +135,9 @@ enum class CardActionEnum(val comment: String, val exec: (Card, CardEffectTypeEn
     }),
     NO_POINT("无指向", { card, cardEffectTypeEnum, war ->
         card.action.power() != null
-    }),
+    }), ;
 
+    override fun toString(): String {
+        return comment
+    }
 }
