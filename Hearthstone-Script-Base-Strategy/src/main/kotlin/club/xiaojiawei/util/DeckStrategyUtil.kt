@@ -19,11 +19,12 @@ import kotlin.math.min
  * @author 肖嘉威 xjw580@qq.com
  * @date 2024/9/13 17:39
  */
-private const val EXEC_ACTION: Boolean = true
 
 private val MAX_INVERSION_CALC_COUNT = min(12, Runtime.getRuntime().availableProcessors())
 
 object DeckStrategyUtil {
+    var execAction: Boolean = true
+
     private var me: Player? = null
     private lateinit var myPlayArea: PlayArea
     private lateinit var myHandCards: List<Card>
@@ -67,7 +68,7 @@ object DeckStrategyUtil {
         fun execAction(): Int {
             val text = "权重: $allWeight, 步骤↓"
             log.info { text }
-            if (!EXEC_ACTION) {
+            if (!execAction) {
                 println(text)
             }
             var deathCount = 0
@@ -151,6 +152,9 @@ object DeckStrategyUtil {
                 if (it.isTriggerVisual) {
                     value += 0.1
                 }
+                if (it.isPoisonous) {
+                    value += 0.1
+                }
                 value += it.spellPower * 0.1
                 if (it.cardType === CardTypeEnum.HERO) {
                     value += 0.01
@@ -225,7 +229,7 @@ object DeckStrategyUtil {
                 )
             text = "开始思考清理嘲讽"
             log.info { text }
-            if (!EXEC_ACTION) {
+            if (!execAction) {
                 println(text)
             }
             val result = calcClean(myCards, rivalCards, true)
@@ -233,7 +237,7 @@ object DeckStrategyUtil {
             if (deathCount < findTauntCardCount) {
                 return
             }
-            if (EXEC_ACTION) {
+            if (execAction) {
                 Thread.sleep(3500)
                 if (findTauntCardCount(this.rivalPlayCards) > 0) {
                     return
@@ -277,7 +281,7 @@ object DeckStrategyUtil {
             )
         text = "开始思考清理万物"
         log.info { text }
-        if (!EXEC_ACTION) {
+        if (!execAction) {
             println(text)
         }
         if (firstMyCards == null) {
@@ -366,7 +370,7 @@ object DeckStrategyUtil {
                 "启用反演"
             }
         log.info { text }
-        if (!EXEC_ACTION) {
+        if (!execAction) {
             println(text)
         }
         for (index in myCards.indices) {
@@ -412,7 +416,7 @@ object DeckStrategyUtil {
         CompletableFuture.allOf(*task.toTypedArray()).get()
         text = "思考耗时：" + (System.currentTimeMillis() - start) + "ms"
         log.info { text }
-        if (!EXEC_ACTION) {
+        if (!execAction) {
             println(text)
         }
         return finalResult
@@ -517,15 +521,18 @@ object DeckStrategyUtil {
             if (rivalCard.card.atc > 0) {
                 myCard.isDivineShield = false
             }
-        } else if (rivalCard.card.isPoisonous) {
+        } else if (rivalCard.card.isPoisonous && myCard.card.cardType === CardTypeEnum.MINION) {
             myCard.blood = -myCard.blood
         } else {
             myCard.blood -= rivalCard.card.atc
         }
 
-        if (rivalDivineShield) {
-            rivalCard.isDivineShield = false
-        } else if (myCard.card.isPoisonous) {
+        if (rivalCard.card.isImmuneWhileAttacking || rivalCard.card.isImmune) {
+        } else if (rivalDivineShield) {
+            if (myCard.card.atc > 0) {
+                rivalCard.isDivineShield = false
+            }
+        } else if (myCard.card.isPoisonous && rivalCard.card.cardType === CardTypeEnum.MINION) {
             rivalCard.blood = -rivalCard.blood
         } else {
             rivalCard.blood -= myCard.card.atc
@@ -539,7 +546,7 @@ object DeckStrategyUtil {
                 val text =
                     "【${myC.entityName}: ${myC.atc}-$myCardBlood】攻击【${rivalC.entityName}: ${rivalC.atc}-$rivalCardBlood】"
                 log.info { text }
-                if (EXEC_ACTION) {
+                if (execAction) {
                     myCard.card.action.attack(rivalCard.card)
                 } else {
                     println("$text -> 死亡: ${deathCard?.entityName}")
@@ -567,15 +574,16 @@ object DeckStrategyUtil {
         if (myCard.card.isImmuneWhileAttacking || myCard.card.isImmune) {
         } else if (myDivineShield) {
             myCard.isDivineShield = true
-        } else if (rivalCard.card.isPoisonous) {
+        } else if (rivalCard.card.isPoisonous && myCard.card.cardType === CardTypeEnum.MINION) {
             myCard.blood = -myCard.blood
         } else {
             myCard.blood += rivalCard.card.atc
         }
 
-        if (rivalDivineShield) {
+        if (rivalCard.card.isImmuneWhileAttacking || rivalCard.card.isImmune) {
+        } else if (rivalDivineShield) {
             rivalCard.isDivineShield = true
-        } else if (myCard.card.isPoisonous) {
+        } else if (myCard.card.isPoisonous && rivalCard.card.cardType === CardTypeEnum.MINION) {
             rivalCard.blood = -rivalCard.blood
         } else {
             rivalCard.blood += myCard.card.atc
