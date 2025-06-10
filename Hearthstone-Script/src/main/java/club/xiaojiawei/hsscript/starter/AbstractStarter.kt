@@ -1,5 +1,6 @@
 package club.xiaojiawei.hsscript.starter
 
+import club.xiaojiawei.config.EXTRA_THREAD_POOL
 import club.xiaojiawei.config.log
 import club.xiaojiawei.hsscript.interfaces.closer.ScheduledCloser
 import club.xiaojiawei.hsscript.status.PauseStatus
@@ -53,8 +54,10 @@ abstract class AbstractStarter : ScheduledCloser, Closeable {
     protected abstract fun execStart()
 
     protected fun startNextStarter() {
+        EXTRA_THREAD_POOL.execute {
+            nextStarter?.start()
+        }
         stopTask()
-        nextStarter?.start()
     }
 
     protected fun pause() {
