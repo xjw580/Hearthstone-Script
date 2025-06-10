@@ -85,7 +85,7 @@ object GameUtil {
     /**
      * 交易
      */
-    val TRADE_RECT = GameRect(0.4253, 0.4736, 0.0171, 0.1634)
+    val TRADE_RECT = GameRect(0.4376, 0.4688, 0.0346, 0.1645)
 
     /**
      * 抉择

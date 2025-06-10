@@ -87,10 +87,12 @@
                         </TableColumn>
                         <TableColumn text="效果类型" minWidth="${colMinWeight}" prefWidth="50"
                                      fx:id="infoCardEffectTypeCol"/>
+                        <TableColumn text="行为" minWidth="${colMinWeight}" prefWidth="50"
+                                     fx:id="infoCardActionCol"/>
                     </columns>
                     <placeholder>
                         <StackPane>
-                            <Label text="2.选中行后右键编辑行为。例：寒冰箭，[效果类型]选择[DAMAGE],[行为]添加一项[指向敌方]"
+                            <Label text="2.选中行后右键编辑行为。例：寒冰箭，[效果类型]选择[DAMAGE],[行为]添加一项[都可指向]"
                                    wrapText="true"/>
                         </StackPane>
                     </placeholder>

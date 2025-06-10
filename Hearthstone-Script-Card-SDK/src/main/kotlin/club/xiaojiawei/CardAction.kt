@@ -380,27 +380,28 @@ abstract class CardAction(
             power()
         } else {
             var res = false
+            val effectType = cardInfo.effectType
             for (cardActionEnum in actionEnums) {
                 if (cardActionEnum === CardActionEnum.POINT_WHATEVER) {
                     res = if (cardInfo.effectType === CardEffectTypeEnum.BUFF) {
-                        CardActionEnum.POINT_MY.exec(card, card.area.player.war)
+                        CardActionEnum.POINT_MY.exec(card, effectType, card.area.player.war)
                     } else {
-                        CardActionEnum.POINT_RIVAL.exec(card, card.area.player.war)
+                        CardActionEnum.POINT_RIVAL.exec(card, effectType, card.area.player.war)
                     } xor res
                 } else if (cardActionEnum === CardActionEnum.POINT_MINION) {
                     res = if (cardInfo.effectType === CardEffectTypeEnum.BUFF) {
-                        CardActionEnum.POINT_MY_MINION.exec(card, card.area.player.war)
+                        CardActionEnum.POINT_MY_MINION.exec(card, effectType, card.area.player.war)
                     } else {
-                        CardActionEnum.POINT_RIVAL_MINION.exec(card, card.area.player.war)
+                        CardActionEnum.POINT_RIVAL_MINION.exec(card, effectType, card.area.player.war)
                     } xor res
                 } else if (cardActionEnum === CardActionEnum.POINT_HERO) {
                     res = if (cardInfo.effectType === CardEffectTypeEnum.BUFF) {
-                        CardActionEnum.POINT_MY_HERO.exec(card, card.area.player.war)
+                        CardActionEnum.POINT_MY_HERO.exec(card, effectType, card.area.player.war)
                     } else {
-                        CardActionEnum.POINT_RIVAL_HERO.exec(card, card.area.player.war)
+                        CardActionEnum.POINT_RIVAL_HERO.exec(card, effectType, card.area.player.war)
                     } xor res
                 } else {
-                    res = cardActionEnum.exec(card, card.area.player.war) xor res
+                    res = cardActionEnum.exec(card, effectType, card.area.player.war) xor res
                 }
             }
             if (!res) {

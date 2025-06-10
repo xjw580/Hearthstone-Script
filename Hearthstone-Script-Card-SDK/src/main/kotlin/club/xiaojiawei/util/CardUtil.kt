@@ -6,12 +6,54 @@ import club.xiaojiawei.bean.War
 import club.xiaojiawei.bean.area.PlayArea
 import club.xiaojiawei.enums.CardActionEnum
 import club.xiaojiawei.enums.CardTypeEnum
+import jdk.internal.joptsimple.util.RegexMatcher.regex
 
 /**
  * @author 肖嘉威
  * @date 2025/1/15 10:47
  */
 object CardUtil {
+
+    val damageRegex = Regex(".*造成(\\d+)点?伤害.*")
+
+    /**
+     * 检查是否为伤害型法术并提取伤害值
+     * @param cardText 卡牌文本
+     * @return 如果匹配成功返回伤害数值(Int)，否则返回null
+     */
+    fun getDamageValue(cardText: String): Int? {
+        return damageRegex.find(cardText)?.groups?.get(1)?.value?.toInt()
+    }
+
+    /**
+     * 是否为伤害型法术
+     */
+    fun isDamageText(cardText: String): Boolean = getDamageValue(cardText) != null
+
+    /**
+     * 获取卡牌描述
+     */
+    fun getCardText(cardId: String): String? {
+        CardDBUtil.queryCardById(cardId).let {
+            if (it.isNotEmpty()) {
+                return it.first().text
+            }
+        }
+        return null
+    }
+
+    /**
+     * 获取卡牌描述
+     */
+    fun getCardTexts(cardId: String): List<String> {
+        CardDBUtil.queryCardById(cardId).let { list ->
+            if (list.isNotEmpty()) {
+                return list.map { it.text }
+            }
+        }
+        return emptyList()
+    }
+
 
     /**
      * 处理卡牌的疲劳

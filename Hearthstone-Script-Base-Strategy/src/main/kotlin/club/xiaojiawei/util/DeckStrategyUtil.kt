@@ -746,10 +746,8 @@ object DeckStrategyUtil {
      */
     fun updateTextForCard(card: List<SimulateWeightCard>) {
         for (weightCard in card) {
-            CardDBUtil.queryCardById(weightCard.card.cardId).let {
-                if (it.isNotEmpty()) {
-                    weightCard.text = it.first().text
-                }
+            CardUtil.getCardText(weightCard.card.cardId)?.let {
+                weightCard.text = it
             }
         }
     }
@@ -844,13 +842,6 @@ object DeckStrategyUtil {
             }
         }
     }
-
-    val regex = Regex(".*造成.*伤害.*")
-
-    /**
-     * 是否为伤害型法术
-     */
-    fun isDamageText(cardText: String): Boolean = regex.find(cardText) != null
 
     fun createMCTSWar(): War =
         War()

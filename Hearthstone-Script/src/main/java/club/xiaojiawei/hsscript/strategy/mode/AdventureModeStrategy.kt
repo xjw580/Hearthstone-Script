@@ -26,7 +26,7 @@ object AdventureModeStrategy : AbstractModeStrategy<Any?>() {
     val CHOOSE_RECT: GameRect = GameRect(0.2467, 0.3441, 0.2778, 0.3772)
     val PRACTICE_RECT: GameRect = GameRect(0.1655, 0.4198, -0.4079, -0.3187)
     val START_RECT: GameRect = GameRect(0.2564, 0.3452, 0.2690, 0.3728)
-    val FIRST_HERO_RECT: GameRect = GameRect(0.1769, 0.4162, -0.4103, -0.3551)
+    val FIRST_HERO_RECT = GameRect(0.1765, 0.4151, -0.4037, -0.3615)
     val PREV_DECK_PAGE: GameRect = GameRect(-0.4743, -0.4498, -0.0414, 0.0033)
 
     override fun wantEnter() {

@@ -21,6 +21,9 @@ class InfoCard : Cloneable {
     @JsonIgnore
     val effectTypeProperty = SimpleObjectProperty(CardEffectTypeEnum.UNKNOWN)
 
+    @JsonIgnore
+    val actionsProperty = SimpleObjectProperty(emptyList<CardActionEnum>())
+
     /**
      * 卡牌id
      */
@@ -51,7 +54,11 @@ class InfoCard : Cloneable {
     /**
      * 行为
      */
-    var actions: List<CardActionEnum> = emptyList()
+    var actions: List<CardActionEnum>
+        get() = actionsProperty.value
+        set(value) {
+            actionsProperty.set(value)
+        }
 
     constructor(
         cardId: String,

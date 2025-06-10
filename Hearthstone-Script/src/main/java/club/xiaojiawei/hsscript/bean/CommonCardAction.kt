@@ -183,7 +183,7 @@ class CommonCardAction : CardAction(false) {
                 if (it.isValid()) {
                     var cardRect = belongCard.area.let { area ->
                         var res: GameRect? = null
-                        if (area === area.player.war.me.handArea && (belongCard.cardType === CardTypeEnum.MINION || belongCard.cardType === CardTypeEnum.LOCATION)) {
+                        if (card.area === card.area.player.war.me.playArea && area === area.player.war.me.handArea && (belongCard.cardType === CardTypeEnum.MINION || belongCard.cardType === CardTypeEnum.LOCATION)) {
                             var index = -1
                             if ((card.area.indexOfCard(card).also { i -> index = i }) >= 0) {
                                 res = GameUtil.getMyPlayCardRect(index, card.area.cardSize() + if (depth > 0) 1 else 0)
@@ -274,7 +274,7 @@ class CommonCardAction : CardAction(false) {
             cardRect.lClick()
             SystemUtil.delayShort()
             cardRect.move(GameUtil.TRADE_RECT)
-            SystemUtil.delayTiny()
+            SystemUtil.delayShort()
             GameUtil.TRADE_RECT.lClick()
             return true
         }

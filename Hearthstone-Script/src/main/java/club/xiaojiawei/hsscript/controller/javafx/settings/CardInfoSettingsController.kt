@@ -9,6 +9,8 @@ import club.xiaojiawei.hsscript.component.EditActionPane
 import club.xiaojiawei.hsscript.consts.CARD_INFO_CONFIG_PATH
 import club.xiaojiawei.enums.CardActionEnum
 import club.xiaojiawei.enums.CardEffectTypeEnum
+import club.xiaojiawei.hsscript.bean.tableview.NoEditTextFieldTableCell
+import club.xiaojiawei.hsscript.interfaces.StageHook
 import club.xiaojiawei.hsscript.utils.CardUtil
 import club.xiaojiawei.hsscript.utils.MenuItemUtil
 import club.xiaojiawei.tablecell.TextFieldTableCellUI
@@ -30,13 +32,16 @@ import java.util.stream.IntStream
  * @author 肖嘉威
  * @date 2025/6/9 12:24
  */
-class CardInfoSettingsController : Initializable {
+class CardInfoSettingsController : Initializable, StageHook {
 
     @FXML
     protected lateinit var notificationManager: NotificationManager<String>
 
     @FXML
     protected lateinit var infoCardEffectTypeCol: TableColumn<InfoCard, CardEffectTypeEnum>
+
+    @FXML
+    protected lateinit var infoCardActionCol: TableColumn<InfoCard, List<CardActionEnum>>
 
     @FXML
     protected lateinit var actionCardNameCol: TableColumn<InfoCard, String>
@@ -131,6 +136,28 @@ class CardInfoSettingsController : Initializable {
                     comboBoxStyleClass.add("combo-box-ui-small")
                     return comboBoxStyleClass
                 }
+
+                override fun commitEdit(p0: CardEffectTypeEnum?) {
+                    super.commitEdit(p0)
+                    saveConfig()
+                }
+            }
+        }
+        infoCardActionCol.setCellValueFactory { it.value.actionsProperty }
+        infoCardActionCol.setCellFactory {
+            object : NoEditTextFieldTableCell<InfoCard?, List<CardActionEnum>?>(object :
+                StringConverter<List<CardActionEnum>?>() {
+                override fun toString(`object`: List<CardActionEnum>?): String? {
+                    return `object`?.joinToString(",") { it.comment }
+                }
+
+                override fun fromString(string: String?): List<CardActionEnum>? {
+                    return null
+                }
+            }) {
+                override fun startEdit() {
+                    editAction(infoCardTable.items[index])
+                }
             }
         }
         infoCardTable.selectionModel.selectedItemProperty().addListener { _, _, newValue ->
@@ -158,6 +185,10 @@ class CardInfoSettingsController : Initializable {
             val popup = Popup()
             val editActionPane = EditActionPane(infoCard) {
                 saveConfig()
+                val nextSelectedIndex = infoCardTable.selectionModel.selectedIndex + 1
+                if (nextSelectedIndex < infoCardTable.items.size - 1) {
+                    infoCardTable.selectionModel.clearAndSelect(nextSelectedIndex)
+                }
             }
             editActionPane.setTitle("修改[${infoCard.name}]的行为")
             this.editActionPane = editActionPane
@@ -193,6 +224,8 @@ class CardInfoSettingsController : Initializable {
         }
         saveConfig()
         notificationManager.showSuccess(if (hasUpdate) "更新成功" else "添加成功", 2)
+        infoCardTable.scrollTo(infoCardTable.items.size - 1)
+        infoCardTable.selectionModel.clearAndSelect(infoCardTable.items.size - 1)
     }
 
     @FXML
@@ -270,4 +303,7 @@ class CardInfoSettingsController : Initializable {
         notificationManager.showSuccess("复制成功", 2)
     }
 
+    override fun onHidden() {
+        editActionPopup?.hide()
+    }
 }
