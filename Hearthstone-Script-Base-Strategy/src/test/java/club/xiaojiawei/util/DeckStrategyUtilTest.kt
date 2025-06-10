@@ -3,6 +3,7 @@ package club.xiaojiawei.util
 import club.xiaojiawei.bean.Card
 import club.xiaojiawei.bean.TEST_CARD_ACTION
 import club.xiaojiawei.enums.CardTypeEnum
+import org.junit.jupiter.api.Disabled
 import kotlin.test.Test
 
 /**
@@ -12,6 +13,7 @@ import kotlin.test.Test
 class DeckStrategyUtilTest {
 
     @Test
+    @Disabled("这个测试无法验证结果")
     fun testCleanPlay() {
         DeckStrategyUtil.execAction = false
         val myCards = mutableListOf<Card>(
