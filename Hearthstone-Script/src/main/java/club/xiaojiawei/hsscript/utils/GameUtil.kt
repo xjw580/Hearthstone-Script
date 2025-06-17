@@ -387,7 +387,12 @@ object GameUtil {
     @Suppress("DEPRECATION")
     fun launchPlatformAndGame() {
         try {
-            Runtime.getRuntime().exec("\"${ConfigUtil.getString(ConfigEnum.PLATFORM_PATH)}\" --exec=\"launch WTCG\"")
+            CMDUtil.exec(
+                arrayOf(
+                    "\"${ConfigUtil.getString(ConfigEnum.PLATFORM_PATH)}\"",
+                    "--exec=\"launch WTCG\""
+                )
+            )
         } catch (e: IOException) {
             log.error(e) { "启动${PLATFORM_CN_NAME}及${GAME_CN_NAME}异常" }
         }

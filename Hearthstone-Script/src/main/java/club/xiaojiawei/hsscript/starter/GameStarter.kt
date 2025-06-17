@@ -43,7 +43,7 @@ class GameStarter : AbstractStarter() {
             LAUNCH_PROGRAM_THREAD_POOL.scheduleWithFixedDelay(
                 LRunnable {
                     val diffTime = System.currentTimeMillis() - startTime
-                    if (diffTime > 20_000) {
+                    if (diffTime > 25_000) {
                         log.warn { "启动${GAME_CN_NAME}失败次数过多，重新执行启动器链" }
                         stopTask()
                         startTime = System.currentTimeMillis()
@@ -66,7 +66,7 @@ class GameStarter : AbstractStarter() {
                         GameUtil.findGameHWND()?.let {
                             next(it)
                         } ?: let {
-                            if (diffTime > 5_000) {
+                            if (diffTime > 10_000) {
                                 log.info { "${GAME_CN_NAME}已在运行，但未找到对应窗口句柄" }
                                 return@LRunnable
                             }
