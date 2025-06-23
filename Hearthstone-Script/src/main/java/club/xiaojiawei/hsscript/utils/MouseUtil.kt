@@ -8,6 +8,7 @@ import club.xiaojiawei.hsscript.dll.CSystemDll
 import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.listener.WorkTimeListener
 import club.xiaojiawei.hsscript.status.Mode
+import club.xiaojiawei.hsscript.status.ScriptStatus
 import com.sun.jna.platform.win32.WinDef.HWND
 import java.awt.Point
 
@@ -58,7 +59,7 @@ object MouseUtil {
         if (validatePoint(pos)) {
             DRIVER_LOCK.lock()
             try {
-                if (!WorkTimeListener.working) return
+                if (!WorkTimeListener.working && !ScriptStatus.testMode) return
 
                 if (prevPoint != pos) {
                     CSystemDll.INSTANCE.simulateHumanMoveMouse(
@@ -94,7 +95,7 @@ object MouseUtil {
         if (validatePoint(pos)) {
             DRIVER_LOCK.lock()
             try {
-                if (!WorkTimeListener.working || Mode.currMode !== ModeEnum.GAMEPLAY) return
+                if ((!WorkTimeListener.working || Mode.currMode !== ModeEnum.GAMEPLAY) && !ScriptStatus.testMode) return
 
                 if (prevPoint != pos) {
                     CSystemDll.INSTANCE.simulateHumanMoveMouse(
@@ -124,6 +125,7 @@ object MouseUtil {
     }
 
     private fun validateEnv(hwnd: HWND?): Boolean {
+        if (ScriptStatus.testMode) return true
 //        选择卡牌时间只让特定线程执行
         if (WarEx.war.isChooseCardTime && !isDiscoverCardThread()) return false
         hwnd ?: return false
@@ -143,7 +145,7 @@ object MouseUtil {
 
         DRIVER_LOCK.lock()
         try {
-            if (!WorkTimeListener.working) return
+            if (!WorkTimeListener.working && !ScriptStatus.testMode) return
 
             val prevPoint = prevPoint
             if (validatePoint(startPos)) {

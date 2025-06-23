@@ -19,6 +19,12 @@ import javafx.beans.property.ReadOnlyObjectWrapper
  * @date 2025/4/3 14:25
  */
 object ScriptStatus {
+
+    /**
+     * 仅供测试使用
+     */
+    var testMode = false
+
     /**
      * 炉石安装路径是否有效
      */

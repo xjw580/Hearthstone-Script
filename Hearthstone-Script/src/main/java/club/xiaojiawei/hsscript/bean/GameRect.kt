@@ -3,6 +3,7 @@ package club.xiaojiawei.hsscript.bean
 import club.xiaojiawei.hsscript.consts.GameRationConst
 import club.xiaojiawei.hsscript.controller.javafx.GameWindowModalController
 import club.xiaojiawei.hsscript.enums.WindowEnum
+import club.xiaojiawei.hsscript.status.ScriptStatus
 import club.xiaojiawei.hsscript.status.ScriptStatus.GAME_RECT
 import club.xiaojiawei.hsscript.utils.GameUtil
 import club.xiaojiawei.hsscript.utils.SystemUtil
@@ -44,6 +45,7 @@ data class GameRect(
     fun isInvalid(): Boolean = this == INVALID
 
     private fun showControlPos(gameRect: GameRect = this) {
+        if (ScriptStatus.testMode) return
         WindowUtil.getStage(WindowEnum.GAME_WINDOW_CONTROL_MODAL)?.let {
             if (it.isShowing) {
                 val controller = WindowUtil.getController(WindowEnum.GAME_WINDOW_CONTROL_MODAL)

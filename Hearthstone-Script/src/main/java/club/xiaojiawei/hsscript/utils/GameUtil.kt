@@ -91,10 +91,9 @@ object GameUtil {
      * 抉择
      */
     private val CHOOSE_ONE_RECTS = arrayOf(
-        GameRect(-0.1433, 0.0305, -0.1806, 0.1580),
-        GameRect(0.1876, 0.3605, -0.1783, 0.1603)
+        GameRect(-0.2030, -0.0364, -0.1775, 0.1677),
+        GameRect(0.0412, 0.2030, -0.1732, 0.1656)
     )
-
 
     private val FOUR_DISCOVER_RECTS =
         arrayOf(
@@ -284,10 +283,10 @@ object GameUtil {
     }
 
     /**
-     * 抉择
+     * 获取抉择位置
      * @param index 范围：0-[CHOOSE_ONE_RECTS.size]
      */
-    fun chooseOneCard(index: Int): GameRect {
+    fun getChooseOneCardRect(index: Int): GameRect {
         return CHOOSE_ONE_RECTS.getOrElse(index) { GameRect.INVALID }
     }
 
