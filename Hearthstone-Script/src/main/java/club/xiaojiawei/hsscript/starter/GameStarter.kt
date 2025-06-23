@@ -1,6 +1,5 @@
 package club.xiaojiawei.hsscript.starter
 
-import club.xiaojiawei.bean.LRunnable
 import club.xiaojiawei.config.EXTRA_THREAD_POOL
 import club.xiaojiawei.config.LAUNCH_PROGRAM_THREAD_POOL
 import club.xiaojiawei.config.log
@@ -41,43 +40,47 @@ class GameStarter : AbstractStarter() {
         var firstLogSecondaryLaunch = true
         addTask(
             LAUNCH_PROGRAM_THREAD_POOL.scheduleWithFixedDelay(
-                LRunnable {
-                    val diffTime = System.currentTimeMillis() - startTime
-                    if (diffTime > 25_000) {
-                        log.warn { "启动${GAME_CN_NAME}失败次数过多，重新执行启动器链" }
-                        stopTask()
-                        startTime = System.currentTimeMillis()
-                        EXTRA_THREAD_POOL.schedule({
-                            GameUtil.killGame(true)
-                            GameUtil.killLoginPlatform()
-                            GameUtil.killPlatform()
-                            StarterConfig.starter.start()
-                        }, 1, TimeUnit.SECONDS)
-                        return@LRunnable
-                    } else if (diffTime > 5_000) {
-                        if (firstLogSecondaryLaunch) {
-                            firstLogSecondaryLaunch = false
-                            log.info { "更改${GAME_CN_NAME}启动方式" }
+                {
+                    do {
+                        val diffTime = System.currentTimeMillis() - startTime
+                        if (diffTime > 25_000) {
+                            log.warn { "启动${GAME_CN_NAME}失败次数过多，重新执行启动器链" }
+                            stopTask()
+                            startTime = System.currentTimeMillis()
+                            EXTRA_THREAD_POOL.schedule({
+                                GameUtil.killGame(true)
+                                GameUtil.killLoginPlatform()
+                                GameUtil.killPlatform()
+                                StarterConfig.starter.start()
+                            }, 1, TimeUnit.SECONDS)
+                            break
                         }
-                        GameUtil.launchPlatformAndGame()
-                    }
-                    if (GameUtil.isAliveOfGame()) {
+                        if (GameUtil.isAliveOfGame()) {
 //                    游戏刚启动时可能找不到窗口句柄
-                        GameUtil.findGameHWND()?.let {
-                            next(it)
-                        } ?: let {
-                            if (diffTime > 10_000) {
-                                log.info { "${GAME_CN_NAME}已在运行，但未找到对应窗口句柄" }
-                                return@LRunnable
+                            GameUtil.findGameHWND()?.let {
+                                next(it)
+                            } ?: let {
+                                if (diffTime > 10_000) {
+                                    log.info { "${GAME_CN_NAME}已在运行，但未找到对应窗口句柄" }
+                                }
                             }
+                        } else {
+                            if (diffTime > 5_000) {
+                                if (firstLogSecondaryLaunch) {
+                                    firstLogSecondaryLaunch = false
+                                    log.info { "更改${GAME_CN_NAME}启动方式" }
+                                }
+                                GameUtil.launchPlatformAndGame()
+                            } else {
+                                if (firstLogLaunch) {
+                                    firstLogLaunch = false
+                                    log.info { "正在启动$GAME_CN_NAME" }
+                                }
+                                launchGameBySendMessage()
+                            }
+                            Thread.sleep(500)
                         }
-                    } else {
-                        if (firstLogLaunch) {
-                            firstLogLaunch = false
-                            log.info { "正在启动$GAME_CN_NAME" }
-                        }
-                        launchGameBySendMessage()
-                    }
+                    } while (false)
                 },
                 100,
                 500,
@@ -92,6 +95,12 @@ class GameStarter : AbstractStarter() {
         SystemUtil.updateRECT(platformHWND, rect)
         MouseUtil.leftButtonClick(
             Point(145, rect.bottom - rect.top - 150),
+            platformHWND,
+            MouseControlModeEnum.MESSAGE.code,
+        )
+        SystemUtil.delayShort()
+        MouseUtil.leftButtonClick(
+            Point(145, rect.bottom - rect.top - 130),
             platformHWND,
             MouseControlModeEnum.MESSAGE.code,
         )

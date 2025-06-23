@@ -15,7 +15,6 @@ import java.util.concurrent.TimeUnit
 class PlatformStarter : AbstractStarter() {
 
     public override fun execStart() {
-
         if (GameUtil.isAliveOfGame()) {
             startNextStarter()
             return
@@ -28,8 +27,16 @@ class PlatformStarter : AbstractStarter() {
             GameUtil.launchPlatformAndGame()
         }
 
+        var startTime = System.currentTimeMillis()
         addTask(
             LAUNCH_PROGRAM_THREAD_POOL.scheduleWithFixedDelay(LRunnable {
+                if (System.currentTimeMillis() - startTime >= 10 * 1000 && !GameUtil.isAliveOfPlatform()) {
+                    startTime = System.currentTimeMillis()
+                    GameUtil.killPlatform()
+                    GameUtil.killLoginPlatform()
+                    log.info { "${PLATFORM_CN_NAME}可能被关闭，启动中" }
+                    GameUtil.launchPlatformAndGame()
+                }
                 if (GameUtil.findPlatformHWND() != null || GameUtil.findLoginPlatformHWND() != null) {
                     startNextStarter()
                 }
