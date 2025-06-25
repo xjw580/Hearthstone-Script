@@ -357,6 +357,12 @@ open class BaseCard : Entity() {
     @Volatile
     var attached = ""
 
+    /**
+     * 锻造
+     */
+    @Volatile
+    var isForge = false
+
 //    override fun toString(): String {
 //        return generateToString(this, true)
 //    }

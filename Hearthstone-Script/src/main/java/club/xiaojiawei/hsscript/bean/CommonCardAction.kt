@@ -273,9 +273,22 @@ class CommonCardAction : CardAction(false) {
         if (cardRect.isValid()) {
             cardRect.lClick()
             SystemUtil.delayShort()
-            cardRect.move(GameUtil.TRADE_RECT)
+            cardRect.move(GameUtil.DECK_RECT)
             SystemUtil.delayShort()
-            GameUtil.TRADE_RECT.lClick()
+            GameUtil.DECK_RECT.lClick()
+            return true
+        }
+        return false
+    }
+
+    override fun execForge(): Boolean {
+        val cardRect = getCardRect(belongCard)
+        if (cardRect.isValid()) {
+            cardRect.lClick()
+            SystemUtil.delayShort()
+            cardRect.move(GameUtil.DECK_RECT)
+            SystemUtil.delayShort()
+            GameUtil.DECK_RECT.lClick()
             return true
         }
         return false

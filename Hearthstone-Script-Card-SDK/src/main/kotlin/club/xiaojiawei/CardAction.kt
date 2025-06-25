@@ -638,6 +638,24 @@ abstract class CardAction(
         return null
     }
 
+    /**
+     * 锻造
+     * 执行前判断[BaseCard.isForge]
+     * @return 为null表示执行失败
+     */
+    fun forge(isPause: Boolean = false): CardAction? {
+        if (isStop()) return null
+        if (execForge()) {
+            if (isPause) {
+                this.delay()
+            } else {
+                delay(SHORT_PAUSE_TIME)
+            }
+            return this
+        }
+        return null
+    }
+
     private fun delay(time: Int = mouseActionInterval) {
         if (isStop() || time <= 0) return
         if (time == mouseActionInterval) {
@@ -734,6 +752,11 @@ abstract class CardAction(
      */
     protected abstract fun execTrade(): Boolean
 
+    /**
+     * 执行锻造
+     */
+    protected abstract fun execForge(): Boolean
+
     abstract fun createNewInstance(): CardAction
 
     /**
@@ -775,5 +798,7 @@ abstract class CardAction(
         override fun execLaunch(): Boolean = commonAction?.execLClick() == true
 
         override fun execTrade(): Boolean = commonAction?.execTrade() == true
+
+        override fun execForge(): Boolean = commonAction?.execForge() == true
     }
 }

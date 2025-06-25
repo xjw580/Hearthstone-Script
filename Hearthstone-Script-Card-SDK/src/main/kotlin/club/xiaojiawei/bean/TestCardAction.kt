@@ -58,4 +58,8 @@ class TestCardAction : CardAction() {
     override fun execTrade(): Boolean {
         return true
     }
+
+    override fun execForge(): Boolean {
+        return true
+    }
 }
