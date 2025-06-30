@@ -544,12 +544,12 @@ object DeckStrategyUtil {
                 val myC = myCard.card
                 val rivalC = rivalCard.card
                 val text =
-                    "【${myC.entityName}: ${myC.atc}-$myCardBlood】攻击【${rivalC.entityName}: ${rivalC.atc}-$rivalCardBlood】"
+                    "【${myC.entityId}-${myC.entityName}: ${myC.atc}-$myCardBlood】攻击【${rivalC.entityId}-${rivalC.entityName}: ${rivalC.atc}-$rivalCardBlood】"
                 log.info { text }
                 if (execAction) {
                     myCard.card.action.attack(rivalCard.card)
-                } else {
-                    println("$text -> 死亡: ${deathCard?.entityName}")
+                } else if (deathCard != null) {
+                    println("$text -> 死亡:${deathCard.entityId}-${deathCard.entityName}")
                 }
             },
         )

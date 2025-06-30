@@ -1,5 +1,6 @@
 package club.xiaojiawei.strategy
 
+import club.xiaojiawei.CardAction
 import club.xiaojiawei.DeckStrategy
 import club.xiaojiawei.bean.Card
 import club.xiaojiawei.bean.isValid

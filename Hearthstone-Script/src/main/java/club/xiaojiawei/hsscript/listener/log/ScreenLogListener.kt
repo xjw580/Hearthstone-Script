@@ -83,7 +83,7 @@ object ScreenLogListener :
                 val nowTime = LocalTime.now()
                 val logDiffTime =
                     Duration.between(logTime, nowTime).toMillis()
-                if (logDiffTime > 1000) {
+                if (logDiffTime > 1500) {
                     log.warn { "${GAME_MODE_LOG_NAME}日志实际打印时间与输出时间相差过大，diff:${logDiffTime}，log:${line}，logTime:${logTime}，nowTime:${nowTime}" }
                 }
                 Mode.currMode = ModeEnum.fromString(l.substring(index + CURR_MODE_STR_LEN))
