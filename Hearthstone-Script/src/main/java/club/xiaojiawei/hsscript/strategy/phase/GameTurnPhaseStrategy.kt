@@ -17,6 +17,7 @@ import club.xiaojiawei.hsscript.strategy.DeckStrategyActuator
 import club.xiaojiawei.hsscript.utils.ConfigUtil
 import club.xiaojiawei.hsscript.utils.GameUtil
 import club.xiaojiawei.hsscript.utils.SystemUtil
+import club.xiaojiawei.status.WAR
 import club.xiaojiawei.util.isTrue
 
 /**
@@ -63,6 +64,9 @@ object GameTurnPhaseStrategy : AbstractPhaseStrategy() {
                         }
                         val start = System.currentTimeMillis()
                         DeckStrategyActuator.outCard()
+                        if (ConfigUtil.getBoolean(ConfigEnum.KILLED_SURRENDER)) {
+                            GameUtil.triggerCalcMyDeadLine()
+                        }
                         if (ConfigUtil.getBoolean(ConfigEnum.RANDOM_EMOTION) && System.currentTimeMillis() - start > 60_000) {
                             GameUtil.sendErrorEmoji()
                         }

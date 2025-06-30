@@ -285,7 +285,9 @@ enum class ConfigEnum(
     /**
      * 默认套牌策略(deck id)
      */
-    DEFAULT_DECK_STRATEGY(group = OTHER_CONFIG_GROUP, defaultValueInitializer = { "e71234fa-1-radical-deck-97e9-1f4e126cd33b" }),
+    DEFAULT_DECK_STRATEGY(
+        group = OTHER_CONFIG_GROUP,
+        defaultValueInitializer = { "e71234fa-1-radical-deck-97e9-1f4e126cd33b" }),
 
     /**
      * 默认运行模式
@@ -331,6 +333,11 @@ enum class ConfigEnum(
      * 自动投降
      */
     AUTO_SURRENDER(group = STRATEGY_CONFIG_GROUP, defaultValueInitializer = { "-1" }),
+
+    /**
+     * 被斩杀投降
+     */
+    KILLED_SURRENDER(group = STRATEGY_CONFIG_GROUP, defaultValueInitializer = { FALSE_STR }),
 
     /**
      * 只打人机

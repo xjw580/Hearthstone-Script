@@ -6,11 +6,17 @@ import club.xiaojiawei.enums.WarPhaseEnum
 import club.xiaojiawei.hsscript.bean.log.Block
 import club.xiaojiawei.hsscript.bean.log.ExtraEntity
 import club.xiaojiawei.hsscript.bean.log.TagChangeEntity
+import club.xiaojiawei.hsscript.bean.single.WarEx
 import club.xiaojiawei.hsscript.consts.*
+import club.xiaojiawei.hsscript.enums.BlockTypeEnum
+import club.xiaojiawei.hsscript.enums.ConfigEnum
 import club.xiaojiawei.hsscript.interfaces.closer.ThreadCloser
 import club.xiaojiawei.hsscript.listener.WorkTimeListener
+import club.xiaojiawei.hsscript.listener.log.DeckLogListener.dealing
 import club.xiaojiawei.hsscript.listener.log.PowerLogListener
 import club.xiaojiawei.hsscript.status.TaskManager
+import club.xiaojiawei.hsscript.utils.ConfigUtil
+import club.xiaojiawei.hsscript.utils.GameUtil
 import club.xiaojiawei.hsscript.utils.PowerLogUtil
 import club.xiaojiawei.hsscript.utils.PowerLogUtil.dealChangeEntity
 import club.xiaojiawei.hsscript.utils.PowerLogUtil.dealFullEntity
@@ -55,8 +61,7 @@ abstract class AbstractPhaseStrategy : PhaseStrategy {
                     log.debug { l }
                     if (l.contains(TAG_CHANGE)) {
                         if (dealTagChangeThenIsOver(
-                                l,
-                                dealTagChange(l)
+                                l, dealTagChange(l)
                             ) || war.currentTurnStep == StepEnum.FINAL_GAMEOVER
                         ) {
                             break
@@ -127,6 +132,11 @@ abstract class AbstractPhaseStrategy : PhaseStrategy {
     }
 
     protected open fun dealBlockEndIsOver(line: String, block: Block?): Boolean {
+        if (ConfigUtil.getBoolean(ConfigEnum.KILLED_SURRENDER) && !WAR.isMyTurn && block != null) {
+            if (block.blockType === BlockTypeEnum.ATTACK || block.blockType === BlockTypeEnum.POWER) {
+                GameUtil.triggerCalcMyDeadLine()
+            }
+        }
         return false
     }
 

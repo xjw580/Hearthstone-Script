@@ -239,19 +239,7 @@ object PowerLogUtil {
         val entity = block.entity ?: return null
         val player = WarEx.getPlayer(entity.playerId)
         player.isValid().isTrue {
-            val typeText: String = when (block.blockType) {
-                BlockTypeEnum.PLAY -> {
-                    "使用卡牌"
-                }
-
-                BlockTypeEnum.POWER -> {
-                    "触发卡牌效果"
-                }
-
-                else -> {
-                    return null
-                }
-            }
+            val typeText = block.blockType.comment
             return String.format(
                 "玩家%s%s【%s】，entityId:%s，entityName:%s，cardId:%s",
                 player.playerId,
@@ -415,7 +403,8 @@ object PowerLogUtil {
             val cardIdUIndex = line.indexOf(CARD_ID_U, endIndex)
 
             // 解析 entityName
-            commonEntity.entityName = iso88591ToUtf8(line.substring(entityNameIndex + ENTITY_NAME.length, idIndex - 1).trim())
+            commonEntity.entityName =
+                iso88591ToUtf8(line.substring(entityNameIndex + ENTITY_NAME.length, idIndex - 1).trim())
 
             // 解析 id
             commonEntity.entityId = line.substring(idIndex + ID.length, zoneIndex - 1).trim()

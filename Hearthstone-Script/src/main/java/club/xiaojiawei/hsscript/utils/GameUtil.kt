@@ -14,6 +14,7 @@ import club.xiaojiawei.hsscript.status.PauseStatus
 import club.xiaojiawei.hsscript.status.ScriptStatus
 import club.xiaojiawei.hsscript.utils.GameUtil.CHOOSE_ONE_RECTS
 import club.xiaojiawei.hsscript.utils.SystemUtil.delay
+import club.xiaojiawei.status.WAR
 import club.xiaojiawei.util.isFalse
 import club.xiaojiawei.util.randomSelect
 import com.sun.jna.WString
@@ -404,6 +405,26 @@ object GameUtil {
             Runtime.getRuntime().exec("\"${ConfigUtil.getString(ConfigEnum.PLATFORM_PATH)}\"")
         } catch (e: IOException) {
             log.error(e) { "启动${PLATFORM_CN_NAME}异常" }
+        }
+    }
+
+    fun triggerCalcMyDeadLine() {
+        WAR.me.playArea.hero?.let { myHero ->
+            val rivalAllDamage = (WAR.rival.playArea.cards.sumOf {
+                if (it.canAttack()) {
+                    it.atc * (if (it.isMegaWindfury) 4 else if (it.isWindFury) 2 else 1)
+                } else 0
+            }) + (WAR.rival.playArea.hero?.let { rivalHero ->
+                if (rivalHero.canAttack()) {
+                    rivalHero.atc * (if (rivalHero.isMegaWindfury) 4 else if (rivalHero.isWindFury) 2 else 1)
+                } else 0
+            } ?: 0)
+            val myTauntBlood = WAR.me.playArea.cards.sumOf { card -> if (card.isTaunt) card.blood() else 0 }
+            val myHeroBlood = myHero.blood()
+            if (rivalAllDamage - myHeroBlood - myTauntBlood >= 0) {
+                log.info { "敌方已能斩杀我方，敌方伤害:${rivalAllDamage}，我方血量:${myHeroBlood}，我方嘲讽随从血量:${myTauntBlood}" }
+                GameUtil.surrender()
+            }
         }
     }
 

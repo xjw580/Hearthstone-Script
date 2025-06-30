@@ -4,58 +4,58 @@ package club.xiaojiawei.hsscript.enums
  * @author 肖嘉威
  * @date 2022/11/30 17:56
  */
-enum class BlockTypeEnum {
+enum class BlockTypeEnum(val comment: String = "") {
     /**
      * 触发
      */
-    TRIGGER,
+    TRIGGER("触发"),
 
     /**
      * 打出
      */
-    PLAY,
+    PLAY("打出"),
 
     /**
      * 卡牌效果结算
      */
-    POWER,
+    POWER("卡牌效果结算"),
 
     /**
      * 攻击
      */
-    ATTACK,
+    ATTACK("攻击"),
 
     /**
      * 死亡
      */
-    DEATHS,
+    DEATHS("死亡"),
 
     /**
      * 疲劳
      */
-    FATIGUE,
+    FATIGUE("疲劳"),
 
     /**
      * 行动
      */
-    ACTION,
+    ACTION("行动"),
 
     /**
-     * 连续
+     * 继续
      */
-    CONTINUOUS,
+    CONTINUOUS("继续"),
 
     /**
      * 游戏复位
      */
-    GAME_RESET,
+    GAME_RESET("游戏复位"),
 
     /**
      * 无效
      */
-    INVALID,
+    INVALID("无效"),
 
-    UNKNOWN
+    UNKNOWN("未知")
     ;
 
     companion object {

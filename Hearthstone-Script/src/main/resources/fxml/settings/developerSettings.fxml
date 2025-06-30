@@ -10,6 +10,7 @@
 <?import javafx.scene.text.Text?>
 <?import java.lang.*?>
 <?import club.xiaojiawei.controls.ProgressModal?>
+<?import club.xiaojiawei.hsscript.component.TipNode?>
 <StackPane xmlns="http://javafx.com/javafx"
            xmlns:fx="http://javafx.com/fxml"
            stylesheets="@../css/settings/developerSettings.css"
@@ -25,14 +26,7 @@
                 </HBox>
                 <HBox styleClass="h-box">
                     <Text text="执行策略"/>
-                    <Label>
-                        <graphic>
-                            <HelpIco/>
-                        </graphic>
-                        <tooltip>
-                            <Tooltip text="是否执行卡组策略"/>
-                        </tooltip>
-                    </Label>
+                    <TipNode text="是否执行卡组策略"/>
                     <HBox HBox.hgrow="ALWAYS"/>
                     <ConfigSwitch notificationManager="${notificationManager}" config="STRATEGY"/>
                 </HBox>
@@ -77,14 +71,7 @@
                     <Button text="更新卡牌数据库" styleClass="btn-ui, btn-ui-normal, btn-ui-small"
                             onAction="#updateCardDB" contentDisplay="RIGHT">
                         <graphic>
-                            <Label>
-                                <graphic>
-                                    <HelpIco/>
-                                </graphic>
-                                <tooltip>
-                                    <Tooltip text="更新hs_cards.db，需要魔法"/>
-                                </tooltip>
-                            </Label>
+                            <TipNode text="更新hs_cards.db，需要魔法"/>
                         </graphic>
                     </Button>
                 </HBox>

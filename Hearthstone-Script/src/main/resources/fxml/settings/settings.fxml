@@ -2,6 +2,7 @@
 
 <?import club.xiaojiawei.controls.ico.HelpIco?>
 <?import javafx.scene.control.*?>
+<?import club.xiaojiawei.hsscript.component.TipNode?>
 <TabPane xmlns="http://javafx.com/javafx"
          xmlns:fx="http://javafx.com/fxml"
          tabClosingPolicy="UNAVAILABLE"
@@ -15,26 +16,12 @@
     <Tab fx:id="strategyTab" text="策略设置"/>
     <Tab fx:id="weightTab" text="卡牌权重设置">
         <graphic>
-            <Label>
-                <graphic>
-                    <HelpIco/>
-                </graphic>
-                <tooltip>
-                    <Tooltip text="自定义调整卡牌权重供卡组策略参考"/>
-                </tooltip>
-            </Label>
+            <TipNode text="自定义调整卡牌权重供卡组策略参考"/>
         </graphic>
     </Tab>
     <Tab fx:id="cardInfoTab" text="卡牌信息设置">
         <graphic>
-            <Label>
-                <graphic>
-                    <HelpIco/>
-                </graphic>
-                <tooltip>
-                    <Tooltip text="自定义调整卡牌使用行为"/>
-                </tooltip>
-            </Label>
+            <TipNode text="自定义调整卡牌使用行为"/>
         </graphic>
     </Tab>
     <Tab fx:id="developerTab" text="开发者选项"/>
