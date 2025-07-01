@@ -974,7 +974,8 @@ object DeckStrategyUtil {
     fun convertToSimulateCard(cards: List<Card>): MutableList<SimulateWeightCard> {
         val res = mutableListOf<SimulateWeightCard>()
         for (card in cards) {
-            val cardWeight = CARD_WEIGHT_TRIE.getOrDefault(card.cardId) { CardWeight(1.0, 1.0, -1.0) }
+            val cardWeight =
+                CARD_WEIGHT_TRIE.getOrDefault(card.cardId) { CardWeight(1.0, 1.0, if (card.cost > 2) -1.0 else 0.0) }
             res.add(SimulateWeightCard(card, cardWeight.weight, cardWeight.powerWeight, cardWeight.changeWeight))
         }
         return res

@@ -68,7 +68,8 @@
                                                  autoRegisterColFilter="false"/>
                     </fx:define>
                     <columns>
-                        <TableColumn minWidth="${colMinWeight}" prefWidth="${colMinWeight}" fx:id="weightNoCol" text="#" maxWidth="30"/>
+                        <TableColumn minWidth="${colMinWeight}" prefWidth="${colMinWeight}" fx:id="weightNoCol" text="#"
+                                     maxWidth="30"/>
                         <TableColumn minWidth="${colMinWeight}" prefWidth="${colMinWeight}" fx:id="weightCardIdCol"
                                      text="ID">
                             <graphic>
@@ -117,7 +118,7 @@
                                     </graphic>
                                     <tooltip>
                                         <Tooltip showDuration="10s" showDelay="500ms"
-                                                 text="衡量起手换牌权重，值大于等于0表示留下，值小于0表示需要换掉，默认为-1"/>
+                                                 text="衡量起手换牌权重，值大于等于0表示留下，值小于0表示需要换掉，默认大于2费的为-1，小于等于2费的为0"/>
                                     </tooltip>
                                 </Label>
                             </graphic>

@@ -34,9 +34,8 @@ class HsCommonDeckStrategy : DeckStrategy() {
     override fun executeChangeCard(cards: HashSet<Card>) {
         if (BaseData.enableChangeWeight) {
             val weightCards = DeckStrategyUtil.convertToSimulateCard(cards.toList())
-            weightCards.sortByDescending { it.changeWeight }
             for (card in weightCards) {
-                if (card.changeWeight < 0.0) {
+                if (card.changeWeight < 0) {
                     cards.remove(card.card)
                 }
             }

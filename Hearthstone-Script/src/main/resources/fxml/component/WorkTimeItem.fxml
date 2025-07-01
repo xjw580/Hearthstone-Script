@@ -2,7 +2,6 @@
 
 <?import club.xiaojiawei.controls.Time?>
 <?import javafx.scene.control.CheckBox?>
-<?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.text.Text?>
 <fx:root type="HBox" xmlns="http://javafx.com/javafx"
