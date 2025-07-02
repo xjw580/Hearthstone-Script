@@ -36,7 +36,6 @@ import java.util.stream.IntStream
  * @date 2023/9/10 15:07
  */
 class WeightSettingsController : Initializable {
-    //    private static final Logger log = LoggerFactory.getLogger(WeightSettingsController.class);
 
     @FXML
     protected lateinit var rootPane: StackPane
@@ -130,7 +129,7 @@ class WeightSettingsController : Initializable {
                 override fun commitEdit(s: String?) {
                     super.commitEdit(s)
                     saveWeightConfig()
-                    notificationManager.showSuccess("修改ID成功", 2)
+                    notificationManager.showSuccess("修改ID成功", 1)
                 }
             }
         }
@@ -140,7 +139,7 @@ class WeightSettingsController : Initializable {
                 override fun commitEdit(s: String?) {
                     super.commitEdit(s)
                     saveWeightConfig()
-                    notificationManager.showSuccess("修改名字成功", 2)
+                    notificationManager.showSuccess("修改名字成功", 1)
                 }
             }
         }
@@ -150,7 +149,7 @@ class WeightSettingsController : Initializable {
                 override fun commitEdit(number: Number) {
                     super.commitEdit(number)
                     saveWeightConfig()
-                    notificationManager.showSuccess("修改权重成功", 2)
+                    notificationManager.showSuccess("修改权重成功", 1)
                 }
             }
         }
@@ -160,7 +159,7 @@ class WeightSettingsController : Initializable {
                 override fun commitEdit(number: Number) {
                     super.commitEdit(number)
                     saveWeightConfig()
-                    notificationManager.showSuccess("修改权重成功", 2)
+                    notificationManager.showSuccess("修改权重成功", 1)
                 }
             }
         }
@@ -170,7 +169,7 @@ class WeightSettingsController : Initializable {
                 override fun commitEdit(number: Number) {
                     super.commitEdit(number)
                     saveWeightConfig()
-                    notificationManager.showSuccess("修改权重成功", 2)
+                    notificationManager.showSuccess("修改权重成功", 1)
                 }
             }
         }
@@ -200,11 +199,11 @@ class WeightSettingsController : Initializable {
 
         val file = chooser.showSaveDialog(rootPane.scene.window)
         if (file == null) {
-            notificationManager.showInfo("未选择导出路径，导出取消", 2)
+            notificationManager.showInfo("未选择导出路径，导出取消", 1)
             return
         }
         saveWeightConfig(file.toPath())
-        notificationManager.showSuccess("导出成功", 2)
+        notificationManager.showSuccess("导出成功", 1)
     }
 
     @FXML
@@ -216,21 +215,21 @@ class WeightSettingsController : Initializable {
 
         val files = chooser.showOpenMultipleDialog(rootPane.scene.window)
         if (files == null || files.isEmpty()) {
-            notificationManager.showInfo("未选择导入路径，导入取消", 2)
+            notificationManager.showInfo("未选择导入路径，导入取消", 1)
             return
         }
         for (file in files) {
             readWeightConfig(file.toPath())
         }
         saveWeightConfig()
-        notificationManager.showSuccess("导入成功", 2)
+        notificationManager.showSuccess("导入成功", 1)
     }
 
     @FXML
     protected fun copyRow(actionEvent: ActionEvent?) {
         val selectedItems = weightTable.selectionModel.selectedItems
         if (selectedItems.isEmpty()) {
-            notificationManager.showInfo("请先选择要复制的行", 2)
+            notificationManager.showInfo("请先选择要复制的行", 1)
             return
         }
         val selectedItemsCopy = selectedItems.toList()
@@ -239,14 +238,14 @@ class WeightSettingsController : Initializable {
             weightTable.items.add(weightCard.clone())
         }
         saveWeightConfig()
-        notificationManager.showSuccess("复制成功", 2)
+        notificationManager.showSuccess("复制成功", 1)
     }
 
     @FXML
     protected fun addWeight(actionEvent: ActionEvent?) {
         val selectedItems = cardTable.selectionModel.selectedItems
         if (selectedItems.isEmpty()) {
-            notificationManager.showInfo("左边数据表没有选中行", 2)
+            notificationManager.showInfo("左边数据表没有选中行", 1)
             return
         }
         val list = ArrayList(selectedItems)
@@ -264,21 +263,21 @@ class WeightSettingsController : Initializable {
             }
         }
         saveWeightConfig()
-        notificationManager.showSuccess(if (hasUpdate) "更新成功" else "添加成功", 2)
+        notificationManager.showSuccess(if (hasUpdate) "更新成功" else "添加成功", 1)
     }
 
     @FXML
     protected fun removeWeight(actionEvent: ActionEvent?) {
         val selectedItems = weightTable.selectionModel.selectedItems
         if (selectedItems.isEmpty()) {
-            notificationManager.showInfo("右边权重表没有选中行", 2)
+            notificationManager.showInfo("右边权重表没有选中行", 1)
             return
         }
         val weightCards = ArrayList(selectedItems)
         weightTable.selectionModel.clearSelection()
         weightTable.items.removeAll(weightCards)
         saveWeightConfig()
-        notificationManager.showSuccess("移除成功", 2)
+        notificationManager.showSuccess("移除成功", 1)
     }
 
 }

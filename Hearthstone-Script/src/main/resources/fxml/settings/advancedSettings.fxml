@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import club.xiaojiawei.controls.ico.*?>
+<?import club.xiaojiawei.controls.ico.GiteeIco?>
+<?import club.xiaojiawei.controls.ico.GithubIco?>
 <?import club.xiaojiawei.controls.NotificationManager?>
 <?import club.xiaojiawei.factory.NotificationFactory?>
 <?import club.xiaojiawei.hsscript.component.*?>
@@ -27,12 +28,6 @@
                                 styleClass="titled-pane-ui, titled-pane-ui-big, titled-pane-ui-pure, item-titled-pane">
                         <VBox styleClass="item-v-box">
                             <HBox styleClass="h-box">
-                                <Text text="工作时最小化"/>
-                                <TipNode text="工作时将关闭软件所有窗口仅保留托盘，此时只能检测到Java进程"/>
-                                <HBox HBox.hgrow="ALWAYS"/>
-                                <ConfigSwitch notificationManager="${notificationManager}" config="WORKING_MINIMIZE"/>
-                            </HBox>
-                            <HBox styleClass="h-box">
                                 <Text text="鼠标控制模式"/>
                                 <HBox HBox.hgrow="ALWAYS"/>
                                 <ComboBox fx:id="mouseControlModeComboBox"
@@ -41,23 +36,36 @@
                                         styleClass="btn-ui, btn-ui-small" visible="false" managed="false"/>
                             </HBox>
                             <HBox styleClass="h-box">
-                                <Text text="置顶游戏窗口"/>
+                                <Text text="限制鼠标范围"/>
+                                <TipNode text="鼠标活动范围将限制在游戏窗口内"/>
                                 <HBox HBox.hgrow="ALWAYS"/>
-                                <ConfigSwitch fx:id="topGameWindow" notificationManager="${notificationManager}"
-                                              config="TOP_GAME_WINDOW"/>
+                                <ConfigSwitch notificationManager="${notificationManager}" config="LIMIT_MOUSE_RANGE"/>
                             </HBox>
                             <HBox styleClass="h-box">
-                                <Text text="阻止游戏反作弊（Beta）"/>
+                                <Label text="阻止游戏反作弊" contentDisplay="RIGHT">
+                                    <graphic>
+                                        <BetaTag/>
+                                    </graphic>
+                                </Label>
                                 <TipNode
                                         text="阻止游戏加载本地反作弊插件，必须用本软件启动游戏才能生效。效果未知，斟酌使用"/>
                                 <HBox HBox.hgrow="ALWAYS"/>
                                 <ConfigSwitch notificationManager="${notificationManager}" config="PREVENT_AC"/>
                             </HBox>
                             <HBox styleClass="h-box">
-                                <Text text="限制鼠标范围"/>
-                                <TipNode text="鼠标活动范围将限制在游戏窗口内"/>
+                                <Text text="工作时最小化"/>
+                                <TipNode text="工作时将关闭软件所有窗口仅保留托盘，此时只能检测到Java进程"/>
                                 <HBox HBox.hgrow="ALWAYS"/>
-                                <ConfigSwitch notificationManager="${notificationManager}" config="LIMIT_MOUSE_RANGE"/>
+                                <ConfigSwitch notificationManager="${notificationManager}" config="WORKING_MINIMIZE"/>
+                            </HBox>
+                            <HBox styleClass="h-box">
+                                <Text text="检查游戏响应超时"/>
+                                <TipNode text="游戏超过指定时间(秒)无响应将重启游戏"/>
+                                <HBox HBox.hgrow="ALWAYS"/>
+                                <ConfigNumberField notificationManager="${notificationManager}" config="GAME_TIMEOUT"
+                                                   promptText="秒"
+                                                   prefWidth="${fieldWidth}"
+                                                   styleClass="text-field-ui, text-field-ui-small"/>
                             </HBox>
                             <HBox styleClass="h-box">
                                 <Text text="游戏窗口不透明度"/>
@@ -91,6 +99,42 @@
                                                    styleClass="text-field-ui, text-field-ui-small"
                                                    minValue="0" maxValue="255" prefWidth="${fieldWidth}"/>
                             </HBox>
+                            <HBox styleClass="h-box">
+                                <Text text="置顶游戏窗口"/>
+                                <HBox HBox.hgrow="ALWAYS"/>
+                                <ConfigSwitch fx:id="topGameWindow" notificationManager="${notificationManager}"
+                                              config="TOP_GAME_WINDOW"/>
+                            </HBox>
+                            <HBox styleClass="h-box">
+                                <Text text="实时更新游戏窗口信息"/>
+                                <TipNode text="打开此项后软件可以感知到游戏窗口的变化"/>
+                                <HBox HBox.hgrow="ALWAYS"/>
+                                <ConfigSwitch notificationManager="${notificationManager}" config="UPDATE_GAME_WINDOW"/>
+                            </HBox>
+                            <HBox styleClass="h-box">
+                                <Text text="单次匹配最长时间/s"/>
+                                <TipNode text="超过此值将重新匹配"/>
+                                <HBox HBox.hgrow="ALWAYS"/>
+                                <ConfigNumberField config="MATCH_MAXIMUM_TIME"
+                                                   styleClass="text-field-ui, text-field-ui-small"
+                                                   prefWidth="${fieldWidth}"/>
+                            </HBox>
+                            <HBox styleClass="h-box">
+                                <Text text="最长空闲时间/min"/>
+                                <TipNode text="软件工作时闲置时间超过此值将重启游戏"/>
+                                <HBox HBox.hgrow="ALWAYS"/>
+                                <ConfigNumberField config="IDLE_MAXIMUM_TIME"
+                                                   styleClass="text-field-ui, text-field-ui-small"
+                                                   prefWidth="${fieldWidth}"/>
+                            </HBox>
+                            <HBox styleClass="h-box">
+                                <Text text="游戏日志大小限制/KB"/>
+                                <TipNode text="当游戏日志文件超过此值将重启游戏"/>
+                                <HBox HBox.hgrow="ALWAYS"/>
+                                <ConfigNumberField config="GAME_LOG_LIMIT"
+                                                   styleClass="text-field-ui, text-field-ui-small"
+                                                   prefWidth="${fieldWidth}"/>
+                            </HBox>
                         </VBox>
                     </TitledPane>
                 </Group>
@@ -121,37 +165,6 @@
                                 <TextField fx:id="exitHotKey" styleClass="text-field-ui, text-field-ui-small"
                                            prefWidth="${fieldWidth}"
                                            editable="false"/>
-                            </HBox>
-                        </VBox>
-                    </TitledPane>
-                </Group>
-                <Group fx:id="servicePane">
-                    <TitledPane fx:id="serviceTitled" text="服务"
-                                styleClass="titled-pane-ui, titled-pane-ui-big, titled-pane-ui-pure, item-titled-pane">
-                        <VBox styleClass="item-v-box">
-                            <HBox styleClass="h-box">
-                                <Text text="检查游戏响应超时"/>
-                                <TipNode text="游戏超过指定时间(秒)无响应将重启游戏"/>
-                                <HBox HBox.hgrow="ALWAYS"/>
-                                <ConfigNumberField notificationManager="${notificationManager}" config="GAME_TIMEOUT"
-                                                   promptText="秒"
-                                                   prefWidth="${fieldWidth}"
-                                                   styleClass="text-field-ui, text-field-ui-small"/>
-                            </HBox>
-                            <HBox styleClass="h-box">
-                                <Text text="检查游戏对局超时"/>
-                                <TipNode text="游戏对局超过指定时间(秒)将直接投降"/>
-                                <HBox HBox.hgrow="ALWAYS"/>
-                                <ConfigNumberField notificationManager="${notificationManager}" config="WAR_TIMEOUT"
-                                                   promptText="秒"
-                                                   prefWidth="${fieldWidth}"
-                                                   styleClass="text-field-ui, text-field-ui-small"/>
-                            </HBox>
-                            <HBox styleClass="h-box">
-                                <Text text="实时更新游戏窗口信息"/>
-                                <TipNode text="打开此项后软件可以感知到游戏窗口的变化"/>
-                                <HBox HBox.hgrow="ALWAYS"/>
-                                <ConfigSwitch notificationManager="${notificationManager}" config="UPDATE_GAME_WINDOW"/>
                             </HBox>
                         </VBox>
                     </TitledPane>
@@ -218,8 +231,6 @@
                           toggleGroup="$navigationBarToggle" onAction="#scrollBehavior"/>
             <ToggleButton fx:id="systemNavigation" text="系统" styleClass="navigationBar"
                           toggleGroup="$navigationBarToggle" onAction="#scrollSystem"/>
-            <ToggleButton fx:id="serviceNavigation" text="服务" styleClass="navigationBar"
-                          toggleGroup="$navigationBarToggle" onAction="#scrollService"/>
             <ToggleButton fx:id="versionNavigation" text="版本" styleClass="navigationBar"
                           toggleGroup="$navigationBarToggle" onAction="#scrollVersion"/>
         </VBox>

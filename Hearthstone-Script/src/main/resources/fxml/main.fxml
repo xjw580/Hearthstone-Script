@@ -189,6 +189,6 @@
         </panes>
     </Accordion>
     <NotificationManager fx:id="notificationManger" notificationPos="BOTTOM_CENTER">
-        <NotificationFactory size="SMALL" showingCloseBtn="false"/>
+        <NotificationFactory showingCloseBtn="false" size="SMALL"/>
     </NotificationManager>
 </StackPane>

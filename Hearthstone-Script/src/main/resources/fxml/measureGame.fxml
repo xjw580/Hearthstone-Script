@@ -26,6 +26,6 @@
         </HBox>
     </VBox>
     <NotificationManager fx:id="notificationManager" notificationPos="TOP_CENTER">
-        <NotificationFactory size="SMALL"/>
+        <NotificationFactory showingCloseBtn="false" size="SMALL"/>
     </NotificationManager>
 </StackPane>

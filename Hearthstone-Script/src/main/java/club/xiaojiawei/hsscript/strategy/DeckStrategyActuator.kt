@@ -140,7 +140,7 @@ object DeckStrategyActuator {
             }
         }
 
-        val surrenderNumber = ConfigUtil.getInt(ConfigEnum.AUTO_SURRENDER)
+        val surrenderNumber = ConfigUtil.getInt(ConfigEnum.OVER_TURN_SURRENDER)
 
         if (surrenderNumber >= 0 && war.me.turn >= surrenderNumber) {
             log.info { "到达投降回合" }

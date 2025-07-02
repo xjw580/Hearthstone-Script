@@ -120,6 +120,6 @@
         </HBox>
     </SplitPane>
     <NotificationManager fx:id="notificationManager" notificationPos="BOTTOM_CENTER">
-        <NotificationFactory showingCloseBtn="true" size="SMALL"/>
+        <NotificationFactory showingCloseBtn="false" size="SMALL"/>
     </NotificationManager>
 </StackPane>

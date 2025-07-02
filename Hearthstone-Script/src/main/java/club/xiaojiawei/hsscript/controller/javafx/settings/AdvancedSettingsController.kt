@@ -66,7 +66,7 @@ class AdvancedSettingsController : AdvancedSettingsView(), Initializable {
                 }
             }
         }
-        mouseControlModeComboBox.items.addAll(MouseControlModeEnum.values())
+        mouseControlModeComboBox.items.addAll(MouseControlModeEnum.entries.toTypedArray())
         mouseControlModeComboBox.value = ConfigExUtil.getMouseControlMode()
         val isDrive = mouseControlModeComboBox.value === MouseControlModeEnum.DRIVE
         refreshDriver.isVisible = isDrive
@@ -91,7 +91,7 @@ class AdvancedSettingsController : AdvancedSettingsView(), Initializable {
                     Duration.millis(0.0), KeyValue(scrollPane.vvalueProperty(), sourceV)
                 ),
                 KeyFrame(
-                    Duration.millis(150.0),
+                    Duration.millis(200.0),
                     KeyValue(
                         scrollPane.vvalueProperty(),
                         targetV
@@ -112,8 +112,6 @@ class AdvancedSettingsController : AdvancedSettingsView(), Initializable {
     private var versionMinY = 0.0
     private var behaviorMaxY = 0.0
     private var behaviorMinY = 0.0
-    private var serviceMaxY = 0.0
-    private var serviceMinY = 0.0
     private var systemMaxY = 0.0
     private var systemMinY = 0.0
 
@@ -124,8 +122,6 @@ class AdvancedSettingsController : AdvancedSettingsView(), Initializable {
         versionMinY = versionPane.boundsInParent.minY / diffH
         behaviorMaxY = behaviorPane.boundsInParent.maxY / diffH
         behaviorMinY = behaviorPane.boundsInParent.minY / diffH
-        serviceMaxY = servicePane.boundsInParent.maxY / diffH
-        serviceMinY = servicePane.boundsInParent.minY / diffH
         systemMaxY = systemPane.boundsInParent.maxY / diffH
         systemMinY = systemPane.boundsInParent.minY / diffH
     }
@@ -142,10 +138,8 @@ class AdvancedSettingsController : AdvancedSettingsView(), Initializable {
             val newV = newValue.toDouble()
             val oldV = oldValue.toDouble()
             if (newV - oldV > 0) {
-                if (newV > serviceMaxY) {
+                if (newV > systemMaxY) {
                     navigationBarToggle.selectToggle(versionNavigation)
-                } else if (newV > systemMaxY) {
-                    navigationBarToggle.selectToggle(serviceNavigation)
                 } else if (newV > behaviorMaxY) {
                     navigationBarToggle.selectToggle(systemNavigation)
                 }
@@ -154,8 +148,6 @@ class AdvancedSettingsController : AdvancedSettingsView(), Initializable {
                     navigationBarToggle.selectToggle(behaviorNavigation)
                 } else if (newV <= systemMinY) {
                     navigationBarToggle.selectToggle(systemNavigation)
-                } else if (newV <= serviceMinY) {
-                    navigationBarToggle.selectToggle(serviceNavigation)
                 }
             }
         }
@@ -163,7 +155,7 @@ class AdvancedSettingsController : AdvancedSettingsView(), Initializable {
         updateSourceToggle.selectedToggleProperty().addListener { _, _, newValue ->
             putString(ConfigEnum.UPDATE_SOURCE, (newValue as ToggleButton).text)
         }
-        //        监听鼠标模式开关
+//        监听鼠标模式开关
         mouseControlModeComboBox.valueProperty()
             .addListener { observable, oldValue, newValue ->
                 storeMouseControlMode(newValue)
@@ -277,11 +269,6 @@ class AdvancedSettingsController : AdvancedSettingsView(), Initializable {
     @FXML
     protected fun scrollBehavior(actionEvent: ActionEvent) {
         scrollTo(behaviorPane)
-    }
-
-    @FXML
-    protected fun scrollService(actionEvent: ActionEvent) {
-        scrollTo(servicePane)
     }
 
     @FXML

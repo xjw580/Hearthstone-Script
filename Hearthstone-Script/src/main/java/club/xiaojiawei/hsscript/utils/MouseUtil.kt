@@ -18,10 +18,8 @@ import java.awt.Point
  * @date 2022/11/24 11:18
  */
 object MouseUtil {
-    private val mouseMovePauseStep: Int
-        get() {
-            return ConfigUtil.getInt(ConfigEnum.PAUSE_STEP)
-        }
+
+    var mouseMovePauseStep: Int = ConfigUtil.getInt(ConfigEnum.PAUSE_STEP)
 
     private val prevPoint = Point(0, 0)
 

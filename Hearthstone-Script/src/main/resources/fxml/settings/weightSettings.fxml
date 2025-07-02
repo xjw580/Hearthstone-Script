@@ -5,9 +5,7 @@
 <?import club.xiaojiawei.controls.TableFilterManagerGroup?>
 <?import club.xiaojiawei.controls.TableValueFilterManager?>
 <?import club.xiaojiawei.factory.NotificationFactory?>
-<?import club.xiaojiawei.hsscript.component.CardField?>
-<?import club.xiaojiawei.hsscript.component.CardSearcher?>
-<?import club.xiaojiawei.hsscript.component.CardTableView?>
+<?import club.xiaojiawei.hsscript.component.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import java.lang.Double?>
@@ -88,12 +86,9 @@
                             <graphic>
                                 <Label text="权重" contentDisplay="RIGHT">
                                     <graphic>
-                                        <HelpIco scaleX="${icoScale}" scaleY="${icoScale}"/>
-                                    </graphic>
-                                    <tooltip>
-                                        <Tooltip showDuration="10s" showDelay="500ms"
+                                        <TipNode scaleX="${icoScale}" scaleY="${icoScale}"
                                                  text="衡量卡牌的价值，影响本回合要出哪些牌及优先解哪个怪，默认为1"/>
-                                    </tooltip>
+                                    </graphic>
                                 </Label>
                             </graphic>
                         </TableColumn>
@@ -101,12 +96,9 @@
                             <graphic>
                                 <Label text="使用权重" contentDisplay="RIGHT">
                                     <graphic>
-                                        <HelpIco scaleX="${icoScale}" scaleY="${icoScale}"/>
-                                    </graphic>
-                                    <tooltip>
-                                        <Tooltip showDuration="10s" showDelay="500ms"
+                                        <TipNode scaleX="${icoScale}" scaleY="${icoScale}"
                                                  text="衡量卡牌出牌顺序，比如本回合确定要出船载火炮和南海船工，如果船载火炮的使用权重大，将会先出船载火炮再出南海船工，默认为1"/>
-                                    </tooltip>
+                                    </graphic>
                                 </Label>
                             </graphic>
                         </TableColumn>
@@ -114,12 +106,9 @@
                             <graphic>
                                 <Label text="换牌权重" contentDisplay="RIGHT">
                                     <graphic>
-                                        <HelpIco scaleX="${icoScale}" scaleY="${icoScale}"/>
-                                    </graphic>
-                                    <tooltip>
-                                        <Tooltip showDuration="10s" showDelay="500ms"
+                                        <TipNode scaleX="${icoScale}" scaleY="${icoScale}"
                                                  text="衡量起手换牌权重，值大于等于0表示留下，值小于0表示需要换掉，默认大于2费的为-1，小于等于2费的为0"/>
-                                    </tooltip>
+                                    </graphic>
                                 </Label>
                             </graphic>
                         </TableColumn>
@@ -165,6 +154,6 @@
         </HBox>
     </SplitPane>
     <NotificationManager fx:id="notificationManager" notificationPos="BOTTOM_CENTER">
-        <NotificationFactory showingCloseBtn="true" size="SMALL"/>
+        <NotificationFactory showingCloseBtn="false" size="SMALL"/>
     </NotificationManager>
 </StackPane>

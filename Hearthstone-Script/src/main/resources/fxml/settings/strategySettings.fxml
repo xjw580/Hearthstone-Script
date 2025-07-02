@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import club.xiaojiawei.controls.*?>
+<?import club.xiaojiawei.controls.NotificationManager?>
 <?import club.xiaojiawei.factory.NotificationFactory?>
 <?import club.xiaojiawei.hsscript.component.*?>
-<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 <?import java.lang.Double?>
+<?import javafx.scene.control.Tooltip?>
 <StackPane xmlns="http://javafx.com/javafx"
            xmlns:fx="http://javafx.com/fxml"
            stylesheets="@../css/settings/strategySettings.css"
@@ -23,35 +24,16 @@
                     <Text text="操作间隔/ms"/>
                     <TipNode text="对战时的攻击，出牌等视为一个操作，此值过小会因卡牌动画导致数据不同步问题"/>
                     <HBox HBox.hgrow="ALWAYS"/>
-                    <NumberField fx:id="actionIntervalField" styleClass="text-field-ui, text-field-ui-small"
-                                 hideIcon="true" prefWidth="${fieldWidth}"/>
+                    <ConfigNumberField config="MOUSE_ACTION_INTERVAL"
+                                       styleClass="text-field-ui, text-field-ui-small"
+                                       hideIcon="true" prefWidth="${fieldWidth}"/>
                 </HBox>
                 <HBox styleClass="h-box">
                     <Text text="鼠标整体移动速度"/>
                     <HBox HBox.hgrow="ALWAYS"/>
-                    <NumberField fx:id="moveSpeedField" styleClass="text-field-ui, text-field-ui-small" hideIcon="true"
-                                 prefWidth="${fieldWidth}"/>
-                </HBox>
-                <HBox styleClass="h-box">
-                    <Text text="单次匹配最长时间/s"/>
-                    <TipNode text="超过此值将重新匹配"/>
-                    <HBox HBox.hgrow="ALWAYS"/>
-                    <NumberField fx:id="matchMaximumTimeField" styleClass="text-field-ui, text-field-ui-small"
-                                 hideIcon="true" prefWidth="${fieldWidth}"/>
-                </HBox>
-                <HBox styleClass="h-box">
-                    <Text text="最长空闲时间/min"/>
-                    <TipNode text="软件工作时闲置时间超过此值将重启游戏"/>
-                    <HBox HBox.hgrow="ALWAYS"/>
-                    <NumberField fx:id="idleMaximumTimeField" styleClass="text-field-ui, text-field-ui-small"
-                                 hideIcon="true" prefWidth="${fieldWidth}"/>
-                </HBox>
-                <HBox styleClass="h-box">
-                    <Text text="游戏日志大小限制/KB"/>
-                    <TipNode text="当游戏日志文件超过此值将重启游戏"/>
-                    <HBox HBox.hgrow="ALWAYS"/>
-                    <NumberField fx:id="logLimitField" styleClass="text-field-ui, text-field-ui-small" hideIcon="true"
-                                 prefWidth="${fieldWidth}"/>
+                    <ConfigNumberField config="PAUSE_STEP"
+                                       styleClass="text-field-ui, text-field-ui-small"
+                                       hideIcon="true" prefWidth="${fieldWidth}"/>
                 </HBox>
                 <HBox styleClass="h-box">
                     <Text text="随机事件"/>
@@ -66,17 +48,22 @@
                     <ConfigSwitch notificationManager="${notificationManager}" config="RANDOM_EMOTION"/>
                 </HBox>
                 <HBox styleClass="h-box">
-                    <Text text="只打人机（Beta）"/>
+                    <Label text="只打人机" contentDisplay="RIGHT">
+                        <graphic>
+                            <BetaTag/>
+                        </graphic>
+                    </Label>
                     <TipNode text="若对方行为不像人机则考虑投降"/>
                     <HBox HBox.hgrow="ALWAYS"/>
                     <ConfigSwitch notificationManager="${notificationManager}" config="ONLY_ROBOT"/>
                 </HBox>
                 <HBox styleClass="h-box">
-                    <Text text="自动投降"/>
+                    <Text text="超回合投降"/>
                     <TipNode text="指定我方回合数后自动投降"/>
                     <HBox HBox.hgrow="ALWAYS"/>
-                    <NumberField fx:id="autoSurrenderField" styleClass="text-field-ui, text-field-ui-small"
-                                 hideIcon="true" prefWidth="${fieldWidth}"/>
+                    <ConfigNumberField notificationManager="${notificationManager}" config="OVER_TURN_SURRENDER"
+                                       prefWidth="${fieldWidth}" hideIcon="true" minValue="-1" maxValue="99999"
+                                       styleClass="text-field-ui, text-field-ui-small"/>
                 </HBox>
                 <HBox styleClass="h-box">
                     <Text text="被斩杀投降"/>
@@ -84,12 +71,16 @@
                     <HBox HBox.hgrow="ALWAYS"/>
                     <ConfigSwitch notificationManager="${notificationManager}" config="KILLED_SURRENDER"/>
                 </HBox>
+                <HBox styleClass="h-box">
+                    <Text text="对局超时投降"/>
+                    <TipNode text="游戏对局超过指定时间(秒)将直接投降"/>
+                    <HBox HBox.hgrow="ALWAYS"/>
+                    <ConfigNumberField notificationManager="${notificationManager}" config="WAR_TIMEOUT_SURRENDER"
+                                       prefWidth="${fieldWidth}" hideIcon="true" minValue="-1" maxValue="99999"
+                                       styleClass="text-field-ui, text-field-ui-small"/>
+                </HBox>
             </VBox>
         </ScrollPane>
-        <HBox styleClass="confirm-btn-group">
-            <Button text="应用" styleClass="btn-ui, btn-ui-normal" onAction="#apply"/>
-            <Button text="保存" styleClass="btn-ui, btn-ui-success" onAction="#save"/>
-        </HBox>
     </VBox>
     <NotificationManager fx:id="notificationManager" notificationPos="BOTTOM_CENTER">
         <NotificationFactory showingCloseBtn="false" size="SMALL"/>

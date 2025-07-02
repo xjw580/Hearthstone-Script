@@ -92,7 +92,7 @@ class CardInfoSettingsController : Initializable, StageHook {
                 setOnAction {
                     val selectedItem = infoCardTable.selectionModel.selectedItem
                     if (selectedItem == null) {
-                        notificationManager.showInfo("请先选择要编辑的行", 2)
+                        notificationManager.showInfo("请先选择要编辑的行", 1)
                         return@setOnAction
                     }
                     editAction(selectedItem)
@@ -114,7 +114,7 @@ class CardInfoSettingsController : Initializable, StageHook {
                 override fun commitEdit(s: String?) {
                     super.commitEdit(s)
                     saveConfig()
-                    notificationManager.showSuccess("修改ID成功", 2)
+                    notificationManager.showSuccess("修改ID成功", 1)
                 }
             }
         }
@@ -124,7 +124,7 @@ class CardInfoSettingsController : Initializable, StageHook {
                 override fun commitEdit(s: String?) {
                     super.commitEdit(s)
                     saveConfig()
-                    notificationManager.showSuccess("修改名字成功", 2)
+                    notificationManager.showSuccess("修改名字成功", 1)
                 }
             }
         }
@@ -208,7 +208,7 @@ class CardInfoSettingsController : Initializable, StageHook {
     protected fun addItem() {
         val selectedItems = cardTable.selectionModel.selectedItems
         if (selectedItems.isEmpty()) {
-            notificationManager.showInfo("左边数据表没有选中行", 2)
+            notificationManager.showInfo("左边数据表没有选中行", 1)
             return
         }
         val list = ArrayList(selectedItems)
@@ -223,7 +223,7 @@ class CardInfoSettingsController : Initializable, StageHook {
             }
         }
         saveConfig()
-        notificationManager.showSuccess(if (hasUpdate) "更新成功" else "添加成功", 2)
+        notificationManager.showSuccess(if (hasUpdate) "更新成功" else "添加成功", 1)
         infoCardTable.scrollTo(infoCardTable.items.size - 1)
         infoCardTable.selectionModel.clearAndSelect(infoCardTable.items.size - 1)
     }
@@ -232,14 +232,14 @@ class CardInfoSettingsController : Initializable, StageHook {
     protected fun removeItem() {
         val selectedItems = infoCardTable.selectionModel.selectedItems
         if (selectedItems.isEmpty()) {
-            notificationManager.showInfo("右边表没有选中行", 2)
+            notificationManager.showInfo("右边表没有选中行", 1)
             return
         }
         val weightCards = ArrayList(selectedItems)
         infoCardTable.selectionModel.clearSelection()
         infoCardTable.items.removeAll(weightCards)
         saveConfig()
-        notificationManager.showSuccess("移除成功", 2)
+        notificationManager.showSuccess("移除成功", 1)
     }
 
     @FXML
@@ -251,11 +251,11 @@ class CardInfoSettingsController : Initializable, StageHook {
 
         val file = chooser.showSaveDialog(rootPane.scene.window)
         if (file == null) {
-            notificationManager.showInfo("未选择导出路径，导出取消", 2)
+            notificationManager.showInfo("未选择导出路径，导出取消", 1)
             return
         }
         saveConfig(file.toPath())
-        notificationManager.showSuccess("导出成功", 2)
+        notificationManager.showSuccess("导出成功", 1)
     }
 
     @FXML
@@ -267,14 +267,14 @@ class CardInfoSettingsController : Initializable, StageHook {
 
         val files = chooser.showOpenMultipleDialog(rootPane.scene.window)
         if (files == null || files.isEmpty()) {
-            notificationManager.showInfo("未选择导入路径，导入取消", 2)
+            notificationManager.showInfo("未选择导入路径，导入取消", 1)
             return
         }
         for (file in files) {
             readCardInfoConfig(file.toPath())
         }
         saveConfig()
-        notificationManager.showSuccess("导入成功", 2)
+        notificationManager.showSuccess("导入成功", 1)
     }
 
     private fun readCardInfoConfig(weightPath: Path = CARD_INFO_CONFIG_PATH) {
@@ -291,7 +291,7 @@ class CardInfoSettingsController : Initializable, StageHook {
     protected fun copyRow() {
         val selectedItems = infoCardTable.selectionModel.selectedItems
         if (selectedItems.isEmpty()) {
-            notificationManager.showInfo("请先选择要复制的行", 2)
+            notificationManager.showInfo("请先选择要复制的行", 1)
             return
         }
         val selectedItemsCopy = selectedItems.toList()
@@ -300,7 +300,7 @@ class CardInfoSettingsController : Initializable, StageHook {
             infoCardTable.items.add(infoCard.clone())
         }
         saveConfig()
-        notificationManager.showSuccess("复制成功", 2)
+        notificationManager.showSuccess("复制成功", 1)
     }
 
     override fun onHidden() {

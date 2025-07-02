@@ -12,7 +12,7 @@ import club.xiaojiawei.util.isTrue
  * @author 肖嘉威
  * @date 2025/3/24 17:21
  */
-object WarTimeoutService : Service<Int>() {
+object WarTimeoutSurrenderService : Service<Int>() {
     override val isRunning: Boolean
         get() {
             return thread?.isAlive == true
@@ -27,7 +27,7 @@ object WarTimeoutService : Service<Int>() {
                     while (thread?.isInterrupted == false) {
                         Thread.sleep(1000)
                         if (WarEx.inWar && WorkTimeListener.working && WarEx.war.startTime != 0L) {
-                            val timeoutSec = ConfigUtil.getInt(ConfigEnum.WAR_TIMEOUT)
+                            val timeoutSec = ConfigUtil.getInt(ConfigEnum.WAR_TIMEOUT_SURRENDER)
                             if (System.currentTimeMillis() - WarEx.war.startTime > timeoutSec * 1000 && DeckStrategyManager.currentDeckStrategy?.needSurrender == false) {
                                 DeckStrategyManager.currentDeckStrategy?.needSurrender = true
                                 log.info { "触发游戏对局超时，超过${timeoutSec}秒，准备投降" }
@@ -57,5 +57,5 @@ object WarTimeoutService : Service<Int>() {
     }
 
     override fun execIntelligentStartStop(value: Int?): Boolean =
-        (value ?: ConfigUtil.getInt(ConfigEnum.WAR_TIMEOUT)) > 0
+        (value ?: ConfigUtil.getInt(ConfigEnum.WAR_TIMEOUT_SURRENDER)) > 0
 }

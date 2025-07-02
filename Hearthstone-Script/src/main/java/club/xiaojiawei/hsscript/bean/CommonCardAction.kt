@@ -296,13 +296,5 @@ class CommonCardAction : CardAction(false) {
 
     companion object {
         val DEFAULT: CardAction = CommonCardAction()
-
-        fun reload() {
-            mouseActionInterval = ConfigUtil.getInt(ConfigEnum.MOUSE_ACTION_INTERVAL)
-        }
-
-        init {
-            reload()
-        }
     }
 }

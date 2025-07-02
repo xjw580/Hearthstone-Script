@@ -94,8 +94,8 @@ object ScriptStatus {
 
     var maxLogSizeB: Int = maxLogSizeKB * 1024
 
-    fun reloadLogSize() {
-        maxLogSizeKB = ConfigUtil.getInt(ConfigEnum.GAME_LOG_LIMIT)
+    fun reloadLogSize(newMaxLogSizeKB: Int = ConfigUtil.getInt(ConfigEnum.GAME_LOG_LIMIT)) {
+        maxLogSizeKB = newMaxLogSizeKB
         maxLogSizeB = maxLogSizeKB * 1024
     }
 }

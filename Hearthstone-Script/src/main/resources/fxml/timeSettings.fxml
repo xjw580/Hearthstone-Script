@@ -156,6 +156,6 @@
     </VBox>
     <ProgressModal fx:id="progressModal" tip="加载中..."/>
     <NotificationManager fx:id="notificationManager" notificationPos="BOTTOM_CENTER">
-        <NotificationFactory size="SMALL"/>
+        <NotificationFactory showingCloseBtn="false" size="SMALL"/>
     </NotificationManager>
 </StackPane>

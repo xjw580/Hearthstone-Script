@@ -32,9 +32,6 @@ open class AdvancedSettingsView {
     protected lateinit var versionTitled: TitledPane
 
     @FXML
-    protected lateinit var serviceTitled: TitledPane
-
-    @FXML
     protected lateinit var titledRootPane: VBox
 
     @FXML
@@ -50,16 +47,10 @@ open class AdvancedSettingsView {
     protected lateinit var systemPane: Group
 
     @FXML
-    protected lateinit var servicePane: Group
-
-    @FXML
     protected lateinit var systemNavigation: ToggleButton
 
     @FXML
     protected lateinit var behaviorNavigation: ToggleButton
-
-    @FXML
-    protected lateinit var serviceNavigation: ToggleButton
 
     @FXML
     protected lateinit var versionNavigation: ToggleButton

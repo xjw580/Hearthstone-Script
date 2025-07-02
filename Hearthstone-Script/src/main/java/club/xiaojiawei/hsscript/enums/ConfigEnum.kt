@@ -26,11 +26,9 @@ const val STRATEGY_CONFIG_GROUP = "strategy"
 
 const val BEHAVIOR_CONFIG_GROUP = "behavior"
 const val SYSTEM_CONFIG_GROUP = "system"
-
-const val SERVICE_CONFIG_GROUP = "service"
 const val VERSION_CONFIG_GROUP = "version"
 
-const val DEV_CONFIG_GROUP = "version"
+const val DEV_CONFIG_GROUP = "dev"
 
 const val WEIGHT_CONFIG_GROUP = "weight"
 
@@ -181,21 +179,6 @@ enum class ConfigEnum(
     ENABLE_MOUSE(group = DEV_CONFIG_GROUP, defaultValueInitializer = { TRUE_STR }),
 
     /**
-     * 动作间隔/ms
-     */
-    MOUSE_ACTION_INTERVAL(group = STRATEGY_CONFIG_GROUP, defaultValueInitializer = { "3500" }),
-
-    /**
-     * 适配畸变模式
-     */
-    DISTORTION(group = STRATEGY_CONFIG_GROUP, defaultValueInitializer = { TRUE_STR }),
-
-    /**
-     * 鼠标移动暂停间隔，值越小越慢，最小为1
-     */
-    PAUSE_STEP(group = STRATEGY_CONFIG_GROUP, defaultValueInitializer = { "7" }),
-
-    /**
      * 工作时最小化软件
      */
     WORKING_MINIMIZE(
@@ -231,6 +214,11 @@ enum class ConfigEnum(
         defaultValueInitializer = { FALSE_STR },
         service = LimitMouseRangeService
     ),
+
+    /**
+     * 游戏日志大小限制/KB，游戏默认10240
+     */
+    GAME_LOG_LIMIT(group = BEHAVIOR_CONFIG_GROUP, defaultValueInitializer = { "51200" }, service = GameLogLimitService),
 
     /**
      * 游戏窗口不透明度(0~255)
@@ -269,6 +257,34 @@ enum class ConfigEnum(
     ),
 
     /**
+     * 更新游戏窗口信息
+     */
+    UPDATE_GAME_WINDOW(
+        group = BEHAVIOR_CONFIG_GROUP,
+        defaultValueInitializer = { TRUE_STR },
+        service = UpdateGameWindowService,
+    ),
+
+    /**
+     * 检查游戏响应超时(s)
+     */
+    GAME_TIMEOUT(
+        group = BEHAVIOR_CONFIG_GROUP,
+        defaultValueInitializer = { "60" },
+        service = GameTimeoutService,
+    ),
+
+    /**
+     * 最长匹配时间/s（超过重新匹配）
+     */
+    MATCH_MAXIMUM_TIME(group = BEHAVIOR_CONFIG_GROUP, defaultValueInitializer = { "90" }),
+
+    /**
+     * 最长空闲时间/min（超过重启游戏）
+     */
+    IDLE_MAXIMUM_TIME(group = BEHAVIOR_CONFIG_GROUP, defaultValueInitializer = { "10" }),
+
+    /**
      * 套牌插件禁用列表
      */
     DECK_PLUGIN_DISABLED(
@@ -300,39 +316,38 @@ enum class ConfigEnum(
     PLATFORM_PASSWORD(group = INIT_CONFIG_GROUP, defaultValueInitializer = { "" }),
 
     /**
-     * 游戏日志大小限制/KB，游戏默认10240
+     * 操作间隔/ms
      */
-    GAME_LOG_LIMIT(group = STRATEGY_CONFIG_GROUP, defaultValueInitializer = { "51200" }),
+    MOUSE_ACTION_INTERVAL(
+        group = STRATEGY_CONFIG_GROUP,
+        defaultValueInitializer = { "3500" },
+        service = MouseActionIntervalService
+    ),
 
     /**
-     * 最长匹配时间/s（超过重新匹配）
+     * 适配畸变模式
      */
-    MATCH_MAXIMUM_TIME(group = STRATEGY_CONFIG_GROUP, defaultValueInitializer = { "90" }),
+    DISTORTION(group = STRATEGY_CONFIG_GROUP, defaultValueInitializer = { TRUE_STR }),
 
     /**
-     * 最长空闲时间/min（超过重启游戏）
+     * 鼠标移动暂停间隔，值越小越慢，最小为1
      */
-    IDLE_MAXIMUM_TIME(group = STRATEGY_CONFIG_GROUP, defaultValueInitializer = { "10" }),
-
-    /**
-     * 当前版本
-     */
-    CURRENT_VERSION(group = OTHER_CONFIG_GROUP, defaultValueInitializer = { "0.0.0-GA" }),
+    PAUSE_STEP(group = STRATEGY_CONFIG_GROUP, defaultValueInitializer = { "7" }, service = PauseStepService),
 
     /**
      * 随机事件
      */
-    RANDOM_EVENT(group = STRATEGY_CONFIG_GROUP, defaultValueInitializer = { TRUE_STR }),
+    RANDOM_EVENT(group = STRATEGY_CONFIG_GROUP, defaultValueInitializer = { FALSE_STR }),
 
     /**
      * 随机表情
      */
-    RANDOM_EMOTION(group = STRATEGY_CONFIG_GROUP, defaultValueInitializer = { TRUE_STR }),
+    RANDOM_EMOTION(group = STRATEGY_CONFIG_GROUP, defaultValueInitializer = { FALSE_STR }),
 
     /**
-     * 自动投降
+     * 超过指定回合投降
      */
-    AUTO_SURRENDER(group = STRATEGY_CONFIG_GROUP, defaultValueInitializer = { "-1" }),
+    OVER_TURN_SURRENDER(group = STRATEGY_CONFIG_GROUP, defaultValueInitializer = { "-1" }),
 
     /**
      * 被斩杀投降
@@ -345,30 +360,12 @@ enum class ConfigEnum(
     ONLY_ROBOT(group = STRATEGY_CONFIG_GROUP, defaultValueInitializer = { FALSE_STR }),
 
     /**
-     * 检查游戏响应超时(s)
+     * 游戏对局超时投降(s)
      */
-    GAME_TIMEOUT(
-        group = SERVICE_CONFIG_GROUP,
-        defaultValueInitializer = { "60" },
-        service = GameTimeoutService,
-    ),
-
-    /**
-     * 检查游戏对局超时(s)
-     */
-    WAR_TIMEOUT(
-        group = SERVICE_CONFIG_GROUP,
+    WAR_TIMEOUT_SURRENDER(
+        group = STRATEGY_CONFIG_GROUP,
         defaultValueInitializer = { "-1" },
-        service = WarTimeoutService,
-    ),
-
-    /**
-     * 更新游戏窗口信息
-     */
-    UPDATE_GAME_WINDOW(
-        group = SERVICE_CONFIG_GROUP,
-        defaultValueInitializer = { TRUE_STR },
-        service = UpdateGameWindowService,
+        service = WarTimeoutSurrenderService,
     ),
 
     /**
@@ -425,6 +422,11 @@ enum class ConfigEnum(
         defaultValueInitializer = { FALSE_STR },
         service = null,
     ),
+
+    /**
+     * 当前版本
+     */
+    CURRENT_VERSION(group = OTHER_CONFIG_GROUP, defaultValueInitializer = { "0.0.0-GA" }),
 
     ;
 

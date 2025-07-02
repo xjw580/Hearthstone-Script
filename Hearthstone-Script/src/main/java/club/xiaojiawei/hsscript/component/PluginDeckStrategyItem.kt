@@ -29,13 +29,6 @@ class PluginDeckStrategyItem : HBox() {
     @FXML
     protected lateinit var weightPane: HBox
 
-    private fun buildWidthNode(text: String): Node {
-        return Label(text).apply {
-            styleClass.addAll("label-ui", "label-ui-warn", "radius-ui")
-            style = "-fx-padding: 0 2 0 2;-fx-font-size:10"
-        }
-    }
-
     var deckStrategy: DeckStrategy? = null
         set(value) {
             field = value
@@ -46,16 +39,16 @@ class PluginDeckStrategyItem : HBox() {
                     name.text = it.name()
                     description.text = it.description()
                     if (it.referWeight()) {
-                        weightPane.children.add(buildWidthNode("参考权重"))
+                        weightPane.children.add(TagNode("参考权重"))
                     }
                     if (it.referPowerWeight()) {
-                        weightPane.children.add(buildWidthNode("参考使用权重"))
+                        weightPane.children.add(TagNode("参考使用权重"))
                     }
                     if (it.referChangeWeight()) {
-                        weightPane.children.add(buildWidthNode("参考换牌权重"))
+                        weightPane.children.add(TagNode("参考换牌权重"))
                     }
                     if (it.referCardInfo()) {
-                        weightPane.children.add(buildWidthNode("参考卡牌信息"))
+                        weightPane.children.add(TagNode("参考卡牌信息"))
                     }
                     if (it.deckCode().isNotBlank()) {
                         copyLabel.children.add(
