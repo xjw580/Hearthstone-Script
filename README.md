@@ -126,4 +126,6 @@
 
 
 
-![1](star-history-2025610.png)
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=xjw580/Hearthstone-Script&type=Date)](https://www.star-history.com/#xjw580/Hearthstone-Script&Date)
