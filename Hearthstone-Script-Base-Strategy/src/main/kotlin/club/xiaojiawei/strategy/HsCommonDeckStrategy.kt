@@ -3,9 +3,12 @@ package club.xiaojiawei.strategy
 import club.xiaojiawei.DeckStrategy
 import club.xiaojiawei.bean.Card
 import club.xiaojiawei.data.BaseData
+import club.xiaojiawei.data.CARD_INFO_TRIE
+import club.xiaojiawei.enums.CardActionEnum
 import club.xiaojiawei.enums.RunModeEnum
 import club.xiaojiawei.status.WAR
 import club.xiaojiawei.util.DeckStrategyUtil
+import club.xiaojiawei.util.randomSelectOrNull
 
 /**
  * @author 肖嘉威
@@ -55,9 +58,13 @@ class HsCommonDeckStrategy : DeckStrategy() {
         DeckStrategyUtil.powerCard(me, rival)
 
 //        使用技能
-        me.playArea.power?.let {
-            if (me.usableResource >= it.cost || it.cost == 0) {
-                it.action.power()
+        me.playArea.power?.let { powerCard ->
+            if (me.usableResource >= powerCard.cost || powerCard.cost == 0) {
+                CARD_INFO_TRIE[powerCard.cardId]?.let { cardInfo ->
+                    cardInfo.powerActions.firstOrNull()?.powerExec(powerCard, cardInfo.effectType, WAR)
+                } ?: let {
+                    powerCard.action.power()
+                }
             }
         }
         DeckStrategyUtil.cleanPlay()

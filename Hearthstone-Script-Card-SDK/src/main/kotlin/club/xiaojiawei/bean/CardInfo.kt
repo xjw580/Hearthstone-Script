@@ -15,16 +15,23 @@ class CardInfo {
     var effectType: CardEffectTypeEnum
 
     /**
-     * 行为
+     * 打出行为
      */
-    var actions: List<CardActionEnum>
+    var playActions: List<CardActionEnum>
+
+    /**
+     * 使用行为
+     */
+    var powerActions: List<CardActionEnum>
 
     constructor(
         effectType: CardEffectTypeEnum = CardEffectTypeEnum.UNKNOWN,
-        actions: List<CardActionEnum> = emptyList()
+        playActions: List<CardActionEnum>,
+        powerActions: List<CardActionEnum>,
     ) {
         this.effectType = effectType
-        this.actions = actions
+        this.playActions = playActions
+        this.powerActions = powerActions
     }
 
 }

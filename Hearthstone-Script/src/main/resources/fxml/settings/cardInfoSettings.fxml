@@ -10,6 +10,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import java.lang.Double?>
+<?import club.xiaojiawei.hsscript.component.BetaTag?>
 <StackPane xmlns="http://javafx.com/javafx"
            xmlns:fx="http://javafx.com/fxml"
            stylesheets="@../css/settings/weightSettings.css"
@@ -72,12 +73,14 @@
                                      fx:id="actionCardNameCol"/>
                         <TableColumn text="效果类型" minWidth="${colMinWeight}" prefWidth="50"
                                      fx:id="infoCardEffectTypeCol"/>
-                        <TableColumn text="行为" minWidth="${colMinWeight}" prefWidth="50"
-                                     fx:id="infoCardActionCol"/>
+                        <TableColumn text="打出行为" minWidth="${colMinWeight}" prefWidth="50"
+                                     fx:id="playActionCol"/>
+                        <TableColumn text="使用行为" minWidth="${colMinWeight}" prefWidth="50"
+                                     fx:id="powerActionCol"/>
                     </columns>
                     <placeholder>
                         <StackPane>
-                            <Label text="2.选中行后右键编辑行为。例：寒冰箭，[效果类型]选择[DAMAGE],[行为]添加一项[都可指向]；绝大部分卡牌都只需要添加一个行为，只有指向一次后需要继续指向的牌才需要添加第二个行为"
+                            <Label text="2.选中行后右键编辑行为。例：寒冰箭，[效果类型]选择[DAMAGE],[打出行为]添加一项[都可指向]；绝大部分卡牌都只需要添加一个行为，只有指向一次后需要继续指向的牌才需要添加第二个行为；如果想修改卡牌的攻击对象仅为敌方英雄，可以修改[使用行为]增加[指向敌方英雄]行为，对于英雄技能也可以通过改变[使用行为]来让软件正确使用"
                                    wrapText="true"/>
                         </StackPane>
                     </placeholder>

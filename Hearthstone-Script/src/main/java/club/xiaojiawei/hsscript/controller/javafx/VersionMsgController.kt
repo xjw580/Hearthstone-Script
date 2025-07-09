@@ -35,6 +35,7 @@ class VersionMsgController : Initializable {
             🚀 新功能
             1. 增加被斩杀投降的功能
             2. 增加对锻造词条的识别
+            3. 卡牌信息设置页增加使用行为（为兼容旧配置需要打开软件根目录config/card.info文件将actions替换成playActions）
             
             🐛 Bug修复
             1. 修复注入被中断的问题

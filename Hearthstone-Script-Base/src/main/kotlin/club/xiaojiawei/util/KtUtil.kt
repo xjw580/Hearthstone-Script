@@ -1,6 +1,5 @@
 package club.xiaojiawei.util
 
-import com.sun.tools.javac.jvm.ByteCodes.ret
 import kotlin.random.Random
 
 /**
@@ -20,6 +19,11 @@ inline fun Boolean.isFalse(block: () -> Unit): Boolean {
         block()
     }
     return this
+}
+
+fun <T> List<T>.randomSelectOrNull(): T? {
+    if (this.isEmpty()) return null
+    return this[Random.nextInt(this.size)]
 }
 
 fun <T> List<T>.randomSelect(): T {

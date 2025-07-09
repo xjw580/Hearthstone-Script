@@ -2,14 +2,16 @@ package club.xiaojiawei.hsscript.controller.javafx.settings
 
 import club.xiaojiawei.controls.NotificationManager
 import club.xiaojiawei.controls.ico.EditIco
+import club.xiaojiawei.enums.CardActionEnum
+import club.xiaojiawei.enums.CardEffectTypeEnum
+import club.xiaojiawei.enums.CardTypeEnum
 import club.xiaojiawei.hsscript.bean.InfoCard
 import club.xiaojiawei.hsscript.bean.tableview.ComboBoxTableCell
+import club.xiaojiawei.hsscript.bean.tableview.NoEditTextFieldTableCell
 import club.xiaojiawei.hsscript.component.CardTableView
 import club.xiaojiawei.hsscript.component.EditActionPane
 import club.xiaojiawei.hsscript.consts.CARD_INFO_CONFIG_PATH
-import club.xiaojiawei.enums.CardActionEnum
-import club.xiaojiawei.enums.CardEffectTypeEnum
-import club.xiaojiawei.hsscript.bean.tableview.NoEditTextFieldTableCell
+import club.xiaojiawei.hsscript.enums.CardInfoActionTypeEnum
 import club.xiaojiawei.hsscript.interfaces.StageHook
 import club.xiaojiawei.hsscript.utils.CardUtil
 import club.xiaojiawei.hsscript.utils.MenuItemUtil
@@ -41,7 +43,10 @@ class CardInfoSettingsController : Initializable, StageHook {
     protected lateinit var infoCardEffectTypeCol: TableColumn<InfoCard, CardEffectTypeEnum>
 
     @FXML
-    protected lateinit var infoCardActionCol: TableColumn<InfoCard, List<CardActionEnum>>
+    protected lateinit var playActionCol: TableColumn<InfoCard, List<CardActionEnum>>
+
+    @FXML
+    protected lateinit var powerActionCol: TableColumn<InfoCard, List<CardActionEnum>>
 
     @FXML
     protected lateinit var actionCardNameCol: TableColumn<InfoCard, String>
@@ -87,19 +92,28 @@ class CardInfoSettingsController : Initializable, StageHook {
             }
         }
 
-        infoCardTable.contextMenu = ContextMenu(
-            MenuItemUtil.format(MenuItem(), "编辑行为", EditIco()).apply {
+        infoCardTable.contextMenu =
+            ContextMenu(MenuItemUtil.format(MenuItem(), "编辑${CardInfoActionTypeEnum.PLAY.comment}", EditIco()).apply {
                 setOnAction {
                     val selectedItem = infoCardTable.selectionModel.selectedItem
                     if (selectedItem == null) {
                         notificationManager.showInfo("请先选择要编辑的行", 1)
                         return@setOnAction
                     }
-                    editAction(selectedItem)
+                    editAction(selectedItem, CardInfoActionTypeEnum.PLAY)
+                }
+            }, MenuItemUtil.format(MenuItem(), "编辑${CardInfoActionTypeEnum.POWER.comment}", EditIco()).apply {
+                setOnAction {
+                    val selectedItem = infoCardTable.selectionModel.selectedItem
+                    if (selectedItem == null) {
+                        notificationManager.showInfo("请先选择要编辑的行", 1)
+                        return@setOnAction
+                    }
+                    editAction(selectedItem, CardInfoActionTypeEnum.POWER)
                 }
             }).apply {
-            styleClass.add("context-menu-ui")
-        }
+                styleClass.add("context-menu-ui")
+            }
         infoCardTable.selectionModel.selectionMode = SelectionMode.MULTIPLE
         infoCardTable.isEditable = true
         infoCardNoCol.setCellValueFactory { param: TableColumn.CellDataFeatures<InfoCard, Number?> ->
@@ -143,26 +157,34 @@ class CardInfoSettingsController : Initializable, StageHook {
                 }
             }
         }
-        infoCardActionCol.setCellValueFactory { it.value.actionsProperty }
-        infoCardActionCol.setCellFactory {
-            object : NoEditTextFieldTableCell<InfoCard?, List<CardActionEnum>?>(object :
-                StringConverter<List<CardActionEnum>?>() {
-                override fun toString(`object`: List<CardActionEnum>?): String? {
-                    return `object`?.joinToString(",") { it.comment }
-                }
+        val actionConverter = object : StringConverter<List<CardActionEnum>?>() {
+            override fun toString(`object`: List<CardActionEnum>?): String? {
+                return `object`?.joinToString(",") { it.comment }
+            }
 
-                override fun fromString(string: String?): List<CardActionEnum>? {
-                    return null
-                }
-            }) {
+            override fun fromString(string: String?): List<CardActionEnum>? {
+                return null
+            }
+        }
+        playActionCol.setCellValueFactory { it.value.playActionsProperty }
+        playActionCol.setCellFactory {
+            object : NoEditTextFieldTableCell<InfoCard?, List<CardActionEnum>?>(actionConverter) {
                 override fun startEdit() {
-                    editAction(infoCardTable.items[index])
+                    editAction(infoCardTable.items[index], CardInfoActionTypeEnum.PLAY)
+                }
+            }
+        }
+        powerActionCol.setCellValueFactory { it.value.powerActionsProperty }
+        powerActionCol.setCellFactory {
+            object : NoEditTextFieldTableCell<InfoCard?, List<CardActionEnum>?>(actionConverter) {
+                override fun startEdit() {
+                    editAction(infoCardTable.items[index], CardInfoActionTypeEnum.POWER)
                 }
             }
         }
         infoCardTable.selectionModel.selectedItemProperty().addListener { _, _, newValue ->
             newValue ?: return@addListener
-            updatePopup(newValue)
+            updatePopup(newValue, CardInfoActionTypeEnum.PLAY)
         }
     }
 
@@ -170,27 +192,29 @@ class CardInfoSettingsController : Initializable, StageHook {
 
     private var editActionPane: EditActionPane? = null
 
-    private fun updatePopup(infoCard: InfoCard) {
+    private fun updatePopup(infoCard: InfoCard, type: CardInfoActionTypeEnum) {
         editActionPane?.let { editActionPane ->
+            editActionPane.setTitle("修改[${infoCard.name}]的${type.comment}")
             editActionPane.infoCard = infoCard
-            editActionPane.setTitle("修改[${infoCard.name}]的行为")
+            editActionPane.actionTypeEnum = type
+            editActionPane.update()
         }
     }
 
-    private fun editAction(infoCard: InfoCard) {
+    private fun editAction(infoCard: InfoCard, type: CardInfoActionTypeEnum) {
         val popup = editActionPopup?.let { it ->
-            updatePopup(infoCard)
+            updatePopup(infoCard, type)
             it
         } ?: let {
             val popup = Popup()
-            val editActionPane = EditActionPane(infoCard) {
+            val editActionPane = EditActionPane(infoCard, type) {
                 saveConfig()
                 val nextSelectedIndex = infoCardTable.selectionModel.selectedIndex + 1
                 if (nextSelectedIndex < infoCardTable.items.size - 1) {
                     infoCardTable.selectionModel.clearAndSelect(nextSelectedIndex)
                 }
             }
-            editActionPane.setTitle("修改[${infoCard.name}]的行为")
+            editActionPane.setTitle("修改[${infoCard.name}]的${type.comment}")
             this.editActionPane = editActionPane
             popup.content.add(editActionPane)
             popup
@@ -212,20 +236,27 @@ class CardInfoSettingsController : Initializable, StageHook {
             return
         }
         val list = ArrayList(selectedItems)
-        val cardInfoSet = HashSet(infoCardTable.items)
-        var hasUpdate = false
-        for ((cardId, name) in list) {
-            val infoCard = InfoCard(cardId, name, actions = listOf(CardActionEnum.NO_POINT))
-            if (cardInfoSet.contains(infoCard)) {
-                hasUpdate = true
-            } else {
+        for (dbCard in list) {
+            dbCard.run {
+                val infoCard = InfoCard(
+                    cardId,
+                    name,
+                    playActions = listOf(CardActionEnum.NO_POINT),
+                    powerActions = listOf(CardActionEnum.NO_POINT)
+                )
+                if (type == CardTypeEnum.MINION.name || type == CardTypeEnum.HERO.name || type == CardTypeEnum.WEAPON.name) {
+                    infoCard.powerActions = listOf(CardActionEnum.POINT_RIVAL)
+                } else if (type == CardTypeEnum.SPELL.name) {
+                    infoCard.powerActions = emptyList()
+                }
                 infoCardTable.items.add(infoCard)
             }
         }
         saveConfig()
-        notificationManager.showSuccess(if (hasUpdate) "更新成功" else "添加成功", 1)
+        notificationManager.showSuccess("添加成功", 1)
         infoCardTable.scrollTo(infoCardTable.items.size - 1)
-        infoCardTable.selectionModel.clearAndSelect(infoCardTable.items.size - 1)
+        infoCardTable.selectionModel.clearSelection()
+        infoCardTable.selectionModel.selectLast()
     }
 
     @FXML
@@ -236,7 +267,6 @@ class CardInfoSettingsController : Initializable, StageHook {
             return
         }
         val weightCards = ArrayList(selectedItems)
-        infoCardTable.selectionModel.clearSelection()
         infoCardTable.items.removeAll(weightCards)
         saveConfig()
         notificationManager.showSuccess("移除成功", 1)

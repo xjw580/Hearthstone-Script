@@ -7,6 +7,7 @@ import club.xiaojiawei.config.CALC_THREAD_POOL
 import club.xiaojiawei.config.log
 import club.xiaojiawei.data.CARD_INFO_TRIE
 import club.xiaojiawei.data.CARD_WEIGHT_TRIE
+import club.xiaojiawei.enums.CardActionEnum
 import club.xiaojiawei.enums.CardTypeEnum
 import club.xiaojiawei.status.WAR
 import java.util.concurrent.CompletableFuture
@@ -310,6 +311,7 @@ object DeckStrategyUtil {
                 val simulateCard =
                     SimulateCard(
                         card = myPlayCard,
+                        CARD_INFO_TRIE[myPlayCard.cardId],
                         attackCount = myAttackCountCalc.apply(myPlayCard),
                         inversionAttackCount = myInversionAttackCountCalc.apply(myPlayCard),
                         atcWeight = myAtcWeightCalc.apply(myPlayCard),
@@ -334,6 +336,7 @@ object DeckStrategyUtil {
             val simulateCard =
                 SimulateCard(
                     card = rivalCard,
+                    CARD_INFO_TRIE[rivalCard.cardId],
                     attackCount = rivalAttackCountCalc.apply(rivalCard),
                     inversionAttackCount = rivalInversionAttackCountCalc.apply(rivalCard),
                     atcWeight = rivalAtcWeightCalc.apply(rivalCard),
@@ -463,17 +466,23 @@ object DeckStrategyUtil {
                                     (myCard.card.isAttackableByRush || (myCard.card.isRush && myCard.card.numTurnsInPlay == 0))
                             )
                 ) {
-                    attack(
-                        myCards,
-                        rivalCards,
-                        myIndex,
-                        actions,
-                        result,
-                        myCard,
-                        rivalCard,
-                        inversion,
-                        disableInversion,
-                    )
+                    val actionEnum = myCard.cardInfo?.powerActions?.firstOrNull()
+                    if (actionEnum == null || actionEnum === CardActionEnum.POINT_RIVAL || actionEnum === CardActionEnum.POINT_WHATEVER ||
+                        (rivalCard.card.cardType !== CardTypeEnum.HERO && (actionEnum === CardActionEnum.POINT_RIVAL_MINION || actionEnum === CardActionEnum.POINT_MINION)) ||
+                        (rivalCard.card.cardType === CardTypeEnum.HERO && (actionEnum === CardActionEnum.POINT_RIVAL_HERO || actionEnum === CardActionEnum.POINT_HERO))
+                    ) {
+                        attack(
+                            myCards,
+                            rivalCards,
+                            myIndex,
+                            actions,
+                            result,
+                            myCard,
+                            rivalCard,
+                            inversion,
+                            disableInversion,
+                        )
+                    }
                 }
             }
         }
@@ -765,7 +774,7 @@ object DeckStrategyUtil {
         val myHandCardsCopy = myHandCards.toMutableList()
         myHandCardsCopy.removeAll { card -> card.cardType != CardTypeEnum.MINION || card.isBattlecry }
 
-        val (num, resultCards) =
+        val (score, resultCards) =
             calcPowerOrderConvert(
                 myHandCardsCopy,
                 me.usableResource,
@@ -773,15 +782,15 @@ object DeckStrategyUtil {
 
         val coinCard = findCoin(myHandCards)
         if (coinCard != null) {
-            val (num1, resultCards1) =
+            val (coinScore, coinResultCards) =
                 calcPowerOrderConvert(
                     myHandCardsCopy,
                     me.usableResource + 1,
                 )
-            if (num1 > num) {
+            if (coinScore > score) {
                 coinCard.action.power()
                 Thread.sleep(1000)
-                outCard(resultCards1)
+                outCard(coinResultCards)
                 return
             }
         }
@@ -808,21 +817,6 @@ object DeckStrategyUtil {
                         card.action.autoPower(CARD_INFO_TRIE[card.cardId])
                     }
                 }
-//                if (cardType === CardTypeEnum.MINION || cardType === CardTypeEnum.LOCATION) {
-//                    if (WAR.me.playArea.isFull) continue
-//                    card.action.power()
-//                } else if (cardType === CardTypeEnum.SPELL) {
-//                    if (rival?.playArea?.hero?.canBeTargetedByRivalSpells() == true && isDamageText(simulateWeightCard.text)) {
-//                        card.action
-//                            .lClick(false)
-//                            ?.pointTo(rival?.playArea?.hero, false)
-//                            ?.lClick()
-//                    } else {
-//                        card.action.power()
-//                    }
-//                } else {
-//                    card.action.power()
-//                }
             }
         }
     }
@@ -838,7 +832,11 @@ object DeckStrategyUtil {
     fun activeLocation(cards: List<Card>) {
         cards.forEach { card ->
             if (card.cardType === CardTypeEnum.LOCATION && !card.isLocationActionCooldown) {
-                card.action.lClick()
+                CARD_INFO_TRIE[card.cardId]?.let {
+                    it.powerActions.firstOrNull()?.powerExec(card, it.effectType, WAR)
+                } ?: let {
+                    card.action.lClick()
+                }
             }
         }
     }
@@ -980,4 +978,5 @@ object DeckStrategyUtil {
         }
         return res
     }
+
 }

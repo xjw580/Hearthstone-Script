@@ -6,7 +6,6 @@ import club.xiaojiawei.bean.area.HandArea
 import club.xiaojiawei.bean.area.isValid
 import club.xiaojiawei.config.log
 import club.xiaojiawei.enums.CardActionEnum
-import club.xiaojiawei.enums.CardEffectTypeEnum
 import club.xiaojiawei.enums.CardTypeEnum
 import club.xiaojiawei.util.CardUtil
 import club.xiaojiawei.util.isTrue
@@ -375,34 +374,14 @@ abstract class CardAction(
             return
         }
         val card = belongCard ?: return
-        val actionEnums = cardInfo.actions.filter { it !== CardActionEnum.NO_POINT }
+        val actionEnums = cardInfo.playActions.filter { it !== CardActionEnum.NO_POINT }
         if (actionEnums.isEmpty()) {
             power()
         } else {
             var res = false
             val effectType = cardInfo.effectType
             for (cardActionEnum in actionEnums) {
-                if (cardActionEnum === CardActionEnum.POINT_WHATEVER) {
-                    res = if (cardInfo.effectType === CardEffectTypeEnum.BUFF) {
-                        CardActionEnum.POINT_MY.exec(card, effectType, card.area.player.war)
-                    } else {
-                        CardActionEnum.POINT_RIVAL.exec(card, effectType, card.area.player.war)
-                    } xor res
-                } else if (cardActionEnum === CardActionEnum.POINT_MINION) {
-                    res = if (cardInfo.effectType === CardEffectTypeEnum.BUFF) {
-                        CardActionEnum.POINT_MY_MINION.exec(card, effectType, card.area.player.war)
-                    } else {
-                        CardActionEnum.POINT_RIVAL_MINION.exec(card, effectType, card.area.player.war)
-                    } xor res
-                } else if (cardActionEnum === CardActionEnum.POINT_HERO) {
-                    res = if (cardInfo.effectType === CardEffectTypeEnum.BUFF) {
-                        CardActionEnum.POINT_MY_HERO.exec(card, effectType, card.area.player.war)
-                    } else {
-                        CardActionEnum.POINT_RIVAL_HERO.exec(card, effectType, card.area.player.war)
-                    } xor res
-                } else {
-                    res = cardActionEnum.exec(card, effectType, card.area.player.war) xor res
-                }
+                res = cardActionEnum.playExec(card, effectType, card.area.player.war) xor res
             }
             if (!res) {
                 power()
@@ -540,7 +519,7 @@ abstract class CardAction(
     /**
      * 将鼠标移向指定card
      * @return 为null表示执行失败
-     * @param click 是否左击
+     * @param click 移动到指定card处后是否左击
      */
     fun pointTo(
         card: Card?,
@@ -564,7 +543,7 @@ abstract class CardAction(
 
     /**
      * 将鼠标移向我方战场指定下标（优先使用此方法代替pointTo(card: Card?, isPause: Boolean = true)）
-     * @param click 是否左击
+     * @param click 动到指定下标处后是否左击
      * @return 为null表示执行失败
      */
     fun pointTo(

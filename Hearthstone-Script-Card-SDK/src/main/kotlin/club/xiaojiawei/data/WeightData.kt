@@ -8,5 +8,8 @@ import club.xiaojiawei.bean.LikeTrie
  * @date 2024/11/14 9:02
  */
 
-// 存储卡牌的权重，key为cardId
+/**
+ * 存储卡牌的权重
+ * key: [club.xiaojiawei.bean.Card.cardId],value: [CardWeight]
+ */
 val CARD_WEIGHT_TRIE = LikeTrie<CardWeight>(CardWeight(1.0, 1.0, 0.0))

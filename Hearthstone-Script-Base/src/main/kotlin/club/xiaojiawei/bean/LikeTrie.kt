@@ -9,7 +9,7 @@ import club.xiaojiawei.util.withNotNull
  */
 class LikeTrie<V>() {
 
-    constructor(defaultValue: V) : this() {
+    constructor(defaultValue: V? = null) : this() {
         this.defaultValue = defaultValue
     }
 

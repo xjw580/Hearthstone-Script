@@ -2,9 +2,10 @@ package club.xiaojiawei.hsscript.component
 
 import club.xiaojiawei.controls.WindowBar
 import club.xiaojiawei.controls.ico.ClearIco
+import club.xiaojiawei.enums.CardActionEnum
 import club.xiaojiawei.hsscript.MainApplication
 import club.xiaojiawei.hsscript.bean.InfoCard
-import club.xiaojiawei.enums.CardActionEnum
+import club.xiaojiawei.hsscript.enums.CardInfoActionTypeEnum
 import javafx.beans.property.ObjectProperty
 import javafx.event.EventHandler
 import javafx.fxml.FXML
@@ -22,7 +23,9 @@ import java.io.IOException
  * @author 肖嘉威
  * @date 2025/6/10 9:50
  */
-class EditActionPane(infoCard: InfoCard, val saveCallback: (() -> Unit)? = null) : StackPane() {
+class EditActionPane(
+    var infoCard: InfoCard, var actionTypeEnum: CardInfoActionTypeEnum, val saveCallback: (() -> Unit)? = null
+) : StackPane() {
 
     @FXML
     protected lateinit var actionPane: VBox
@@ -33,12 +36,6 @@ class EditActionPane(infoCard: InfoCard, val saveCallback: (() -> Unit)? = null)
     fun setTitle(title: String) {
         windowBar.title = title
     }
-
-    var infoCard: InfoCard = infoCard
-        set(value) {
-            field = value
-            update()
-        }
 
     init {
         try {
@@ -53,10 +50,8 @@ class EditActionPane(infoCard: InfoCard, val saveCallback: (() -> Unit)? = null)
     }
 
     private class ActionItem(
-        cardActionEnum: CardActionEnum,
-        deleteCallback: ((ActionItem) -> Unit)? = null
-    ) :
-        HBox() {
+        cardActionEnum: CardActionEnum, deleteCallback: ((ActionItem) -> Unit)? = null
+    ) : HBox() {
         val cardActionProperty: ObjectProperty<CardActionEnum>
 
         init {
@@ -75,9 +70,7 @@ class EditActionPane(infoCard: InfoCard, val saveCallback: (() -> Unit)? = null)
                         }
                     }
                     styleClass.addAll(
-                        "combo-box-ui",
-                        "combo-box-ui-small",
-                        "combo-box-ui-normal"
+                        "combo-box-ui", "combo-box-ui-small", "combo-box-ui-normal"
                     )
                     items.addAll(CardActionEnum.entries)
                     value = cardActionEnum
@@ -100,7 +93,16 @@ class EditActionPane(infoCard: InfoCard, val saveCallback: (() -> Unit)? = null)
 
     fun update() {
         actionPane.children.clear()
-        for (enum in infoCard.actions) {
+        val actions: List<CardActionEnum> = when (actionTypeEnum) {
+            CardInfoActionTypeEnum.PLAY -> {
+                infoCard.playActions
+            }
+
+            CardInfoActionTypeEnum.POWER -> {
+                infoCard.powerActions
+            }
+        }
+        for (enum in actions) {
             actionPane.children.add(ActionItem(enum, actionPane.children::remove))
         }
     }
@@ -121,7 +123,12 @@ class EditActionPane(infoCard: InfoCard, val saveCallback: (() -> Unit)? = null)
                 cardActionEnums.add(node.cardActionProperty.get())
             }
         }
-        infoCard.actions = cardActionEnums
+        if (actionTypeEnum === CardInfoActionTypeEnum.PLAY) {
+            infoCard.playActions = cardActionEnums
+        } else if (actionTypeEnum === CardInfoActionTypeEnum.POWER) {
+            infoCard.powerActions = cardActionEnums
+        }
+
         saveCallback?.invoke()
     }
 

@@ -2,13 +2,14 @@ package club.xiaojiawei.hsscript.utils
 
 import club.xiaojiawei.CardAction
 import club.xiaojiawei.bean.Card
+import club.xiaojiawei.bean.CardInfo
 import club.xiaojiawei.bean.CardWeight
 import club.xiaojiawei.bean.War
 import club.xiaojiawei.config.log
+import club.xiaojiawei.data.CARD_INFO_TRIE
 import club.xiaojiawei.data.CARD_WEIGHT_TRIE
 import club.xiaojiawei.data.COIN_CARD_ID
 import club.xiaojiawei.enums.ZoneEnum
-import club.xiaojiawei.bean.CardInfo
 import club.xiaojiawei.hsscript.bean.CommonCardAction
 import club.xiaojiawei.hsscript.bean.CommonCardAction.Companion.DEFAULT
 import club.xiaojiawei.hsscript.bean.InfoCard
@@ -16,7 +17,6 @@ import club.xiaojiawei.hsscript.bean.WeightCard
 import club.xiaojiawei.hsscript.bean.log.ExtraEntity
 import club.xiaojiawei.hsscript.bean.log.TagChangeEntity
 import club.xiaojiawei.hsscript.bean.single.WarEx
-import club.xiaojiawei.data.CARD_INFO_TRIE
 import club.xiaojiawei.hsscript.consts.CARD_INFO_CONFIG_PATH
 import club.xiaojiawei.hsscript.consts.CARD_WEIGHT_CONFIG_PATH
 import club.xiaojiawei.hsscript.status.CardActionManager.CARD_ACTION_MAP
@@ -24,6 +24,7 @@ import club.xiaojiawei.hsscript.status.DeckStrategyManager
 import club.xiaojiawei.mapper.BaseCardMapper
 import club.xiaojiawei.mapper.EntityMapper
 import com.fasterxml.jackson.core.type.TypeReference
+import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import java.io.IOException
 import java.nio.ByteBuffer
@@ -84,7 +85,11 @@ object CardUtil {
         card.action = cardAction
     }
 
-    private val objectMapper = ObjectMapper()
+    private val objectMapper = let {
+        val it = ObjectMapper()
+        it.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        it
+    }
 
     private var cardWeightRawData: List<WeightCard>? = null
 
@@ -150,7 +155,7 @@ object CardUtil {
         val list = infoCard ?: readCardInfoConfig()
         CARD_INFO_TRIE.clear()
         list.forEach {
-            CARD_INFO_TRIE[it.cardId] = CardInfo(it.effectType, it.actions)
+            CARD_INFO_TRIE[it.cardId] = CardInfo(it.effectType, it.playActions, it.powerActions)
         }
         infoCardRawData = list.toList()
     }

@@ -94,15 +94,6 @@ class WeightSettingsController : Initializable {
     }
 
     private fun initTable() {
-        val stringConverter: StringConverter<String?> = object : StringConverter<String?>() {
-            override fun toString(`object`: String?): String? {
-                return `object`
-            }
-
-            override fun fromString(string: String?): String? {
-                return string
-            }
-        }
         val numberConverter: StringConverter<Number> = object : StringConverter<Number>() {
             override fun toString(number: Number): String {
                 return number.toString()
@@ -110,6 +101,15 @@ class WeightSettingsController : Initializable {
 
             override fun fromString(s: String?): Number {
                 return if (s.isNullOrBlank()) 0.0 else s.toDouble()
+            }
+        }
+        val stringConverter: StringConverter<String?> = object : StringConverter<String?>() {
+            override fun toString(`object`: String?): String? {
+                return `object`
+            }
+
+            override fun fromString(string: String?): String? {
+                return string
             }
         }
 
@@ -249,21 +249,19 @@ class WeightSettingsController : Initializable {
             return
         }
         val list = ArrayList(selectedItems)
-        val weightSet = HashSet(weightTable.items)
-        var hasUpdate = false
         for ((cardId, name, attack, health, cost) in list) {
             val weightCard = WeightCard(
                 cardId, name, 1.0, 1.0,
                 if (cost == null || cost > 2) -1.0 else 0.0
             )
-            if (weightSet.contains(weightCard)) {
-                hasUpdate = true
-            } else {
-                weightTable.items.add(weightCard)
-            }
+            weightTable.items.add(weightCard)
         }
         saveWeightConfig()
-        notificationManager.showSuccess(if (hasUpdate) "更新成功" else "添加成功", 1)
+        notificationManager.showSuccess("添加成功", 1)
+
+        weightTable.scrollTo(weightTable.items.size - 1)
+        weightTable.selectionModel.clearSelection()
+        weightTable.selectionModel.selectLast()
     }
 
     @FXML
@@ -274,7 +272,6 @@ class WeightSettingsController : Initializable {
             return
         }
         val weightCards = ArrayList(selectedItems)
-        weightTable.selectionModel.clearSelection()
         weightTable.items.removeAll(weightCards)
         saveWeightConfig()
         notificationManager.showSuccess("移除成功", 1)

@@ -22,7 +22,10 @@ class InfoCard : Cloneable {
     val effectTypeProperty = SimpleObjectProperty(CardEffectTypeEnum.UNKNOWN)
 
     @JsonIgnore
-    val actionsProperty = SimpleObjectProperty(emptyList<CardActionEnum>())
+    val playActionsProperty = SimpleObjectProperty(emptyList<CardActionEnum>())
+
+    @JsonIgnore
+    val powerActionsProperty = SimpleObjectProperty(emptyList<CardActionEnum>())
 
     /**
      * 卡牌id
@@ -52,24 +55,35 @@ class InfoCard : Cloneable {
         }
 
     /**
-     * 行为
+     * 打出行为
      */
-    var actions: List<CardActionEnum>
-        get() = actionsProperty.value
+    var playActions: List<CardActionEnum>
+        get() = playActionsProperty.value
         set(value) {
-            actionsProperty.set(value)
+            playActionsProperty.set(value)
+        }
+
+    /**
+     * 使用行为
+     */
+    var powerActions: List<CardActionEnum>
+        get() = powerActionsProperty.value
+        set(value) {
+            powerActionsProperty.set(value)
         }
 
     constructor(
         cardId: String,
         name: String,
         effectType: CardEffectTypeEnum = CardEffectTypeEnum.UNKNOWN,
-        actions: List<CardActionEnum> = listOf(CardActionEnum.NO_POINT)
+        playActions: List<CardActionEnum>,
+        powerActions: List<CardActionEnum>,
     ) {
         this.cardId = cardId
         this.name = name
         this.effectType = effectType
-        this.actions = actions
+        this.playActions = playActions
+        this.powerActions = powerActions
     }
 
     constructor()
@@ -88,7 +102,7 @@ class InfoCard : Cloneable {
     }
 
     public override fun clone(): InfoCard {
-        return InfoCard(cardId, name, effectType, actions)
+        return InfoCard(cardId, name, effectType, playActions, powerActions)
     }
 
 }
