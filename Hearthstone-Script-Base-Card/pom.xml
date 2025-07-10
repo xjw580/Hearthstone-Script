@@ -33,9 +33,5 @@
             <groupId>club.xiaojiawei</groupId>
             <artifactId>hs-script-strategy-sdk</artifactId>
         </dependency>
-        <dependency>
-            <groupId>club.xiaojiawei</groupId>
-            <artifactId>hs-script-base</artifactId>
-        </dependency>
     </dependencies>
 </project>
