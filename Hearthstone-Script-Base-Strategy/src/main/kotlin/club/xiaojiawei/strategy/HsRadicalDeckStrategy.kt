@@ -47,10 +47,28 @@ class HsRadicalDeckStrategy : DeckStrategy() {
             var plays = me.playArea.cards.toList()
             DeckStrategyUtil.activeLocation(plays)
             val hands = me.handArea.cards.toList()
-            val (_, resultCards) = DeckStrategyUtil.calcPowerOrderConvert(hands, me.usableResource)
-            if (resultCards.isNotEmpty()) {
-                DeckStrategyUtil.updateTextForCard(resultCards)
-                val sortCard = DeckStrategyUtil.sortCardByPowerWeight(resultCards)
+            // 计算本回合资源情况下的最优出牌
+            val (score, resultCards) = DeckStrategyUtil.calcPowerOrderConvert(hands, me.usableResource)
+             // 判断是否存在硬币
+            val coinCard = DeckStrategyUtil.findCoin(hands)
+            var finalCards = resultCards
+            if (coinCard != null) {
+                // 使用硬币后资源+1，再计算一次最优出牌
+                val (coinScore, coinResultCards) = DeckStrategyUtil.calcPowerOrderConvert(hands, me.usableResource + 1)
+                if (coinScore > score) {
+                    // 若使用硬币后得分更高，则先打出硬币
+                    coinCard.action.power()
+                    Thread.sleep(1000)
+                    finalCards = coinResultCards
+                }
+            }
+
+            // 防止硬币被再次使用
+            finalCards = finalCards.filter { !it.card.isCoinCard }
+
+            if (finalCards.isNotEmpty()) {
+                DeckStrategyUtil.updateTextForCard(finalCards)
+                val sortCard = DeckStrategyUtil.sortCardByPowerWeight(finalCards)
                 log.info { "待出牌：$sortCard" }
                 for (simulateWeightCard in sortCard) {
                     val card = simulateWeightCard.card
