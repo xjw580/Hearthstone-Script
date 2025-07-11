@@ -199,7 +199,7 @@ enum class TagEnum(
     MAX_SLOTS_PER_PLAYER_OVERRIDE(
         "最大槽位",
         TagChangeHandler { card: Card?, tagChangeEntity: TagChangeEntity, war: War, player: Player?, area: Area? ->
-            var playArea = if (tagChangeEntity.entity == war.me.gameId) {
+            val playArea = if (tagChangeEntity.entity == war.me.gameId) {
                 war.me.playArea
             } else {
                 war.rival.playArea
@@ -218,7 +218,7 @@ enum class TagEnum(
 
     /**
      * 卡牌属性标签-复杂TAG_CHANGE
-     * [BaseCard]里添加
+     * [club.xiaojiawei.bean.BaseCard]里添加
      */
     HEALTH(
         "生命值",
@@ -499,7 +499,10 @@ enum class TagEnum(
         }),
     TITAN(
         "泰坦",
-        null,
+        TagChangeHandler { card: Card?, tagChangeEntity: TagChangeEntity, war: War, player: Player?, area: Area? ->
+            card?.isTaunt = isTrue(tagChangeEntity.value)
+            log(player, card, TITAN.comment, tagChangeEntity.value)
+        },
         ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
             extraEntity.extraCard.card.isTitan = isTrue(value)
         }),
@@ -588,19 +591,27 @@ enum class TagEnum(
         "地标冷却期",
         TagChangeHandler { card: Card?, tagChangeEntity: TagChangeEntity, war: War, player: Player?, area: Area? ->
             card?.isLocationActionCooldown = isTrue(tagChangeEntity.value)
-            log(player, card, "地标冷却期", tagChangeEntity.value)
+            log(player, card, LOCATION_ACTION_COOLDOWN.comment, tagChangeEntity.value)
         },
-        null
+        ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
+            extraEntity.extraCard.card.isLocationActionCooldown = isTrue(value)
+        },
     ),
     RUSH(
         "突袭",
-        null,
+        TagChangeHandler { card: Card?, tagChangeEntity: TagChangeEntity, war: War, player: Player?, area: Area? ->
+            card?.isRush = isTrue(tagChangeEntity.value)
+            log(player, card, RUSH.comment, tagChangeEntity.value)
+        },
         ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
             extraEntity.extraCard.card.isRush = isTrue(value)
         }),
     CHARGE(
         "冲锋",
-        null,
+        TagChangeHandler { card: Card?, tagChangeEntity: TagChangeEntity, war: War, player: Player?, area: Area? ->
+            card?.isCharge = isTrue(tagChangeEntity.value)
+            log(player, card, CHARGE.comment, tagChangeEntity.value)
+        },
         ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
             extraEntity.extraCard.card.isCharge = isTrue(value)
         }),
@@ -610,7 +621,9 @@ enum class TagEnum(
             card?.isCantAttack = isTrue(tagChangeEntity.value)
             log(player, card, "无法攻击", tagChangeEntity.value)
         },
-        null
+        ExtraEntityHandler { extraEntity: ExtraEntity, value: String ->
+            extraEntity.extraCard.card.isCantAttack = isTrue(value)
+        }
     ),
     OVERLOAD(
         "过载",
