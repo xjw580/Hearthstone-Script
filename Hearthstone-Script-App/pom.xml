@@ -10,7 +10,7 @@
 
     <artifactId>hs-script-app</artifactId>
     <version>v4.8.0-GA</version><!--todo 修改版本号记得同步修改版本描述-->
-    <name>Hearthstone-Script</name>
+    <name>Hearthstone-Script-App</name>
     <description>炉石传说脚本</description>
 
     <repositories>
@@ -150,7 +150,8 @@
 
     <build>
         <!--        <sourceDirectory>src/main/kotlin</sourceDirectory>-->
-        <finalName>${project.artifactId}_${project.version}</finalName>
+<!--        <finalName>${project.artifactId}_${project.version}</finalName>-->
+        <finalName>hs-script_${project.version}</finalName>
         <resources>
             <resource>
                 <directory>src/main/resources-filtered</directory>
