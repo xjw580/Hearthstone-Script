@@ -4,7 +4,7 @@
 
     <groupId>club.xiaojiawei</groupId>
     <artifactId>hs-script</artifactId>
-    <version>1.0.0</version>
+    <version>v4.8.0.1</version>
     <packaging>pom</packaging>
 
     <name>Hearthstone-Script</name>
@@ -47,7 +47,7 @@
         <!--other-->
         <lombok-version>1.18.30</lombok-version>
         <slf4j-version>2.0.9</slf4j-version>
-        <logback-version>1.5.6</logback-version>
+        <logback-version>1.5.13</logback-version>
         <sqlite-version>3.47.0.0</sqlite-version>
         <spring-jdbc-version>6.1.14</spring-jdbc-version>
 
@@ -74,7 +74,9 @@
         <!--plugin-->
         <maven-assembly-plugin-version>3.6.0</maven-assembly-plugin-version>
         <maven-jar-plugin-version>3.3.0</maven-jar-plugin-version>
-        <maven-compiler-plugin-version>3.12.1</maven-compiler-plugin-version>
+        <maven-compiler-plugin-version>3.11.0</maven-compiler-plugin-version>
+        <maven-resources-plugin-version>3.3.1</maven-resources-plugin-version>
+        <build-helper-maven-plugin-version>3.4.0</build-helper-maven-plugin-version>
     </properties>
 
     <dependencies>
@@ -333,6 +335,12 @@
                     <artifactId>maven-jar-plugin</artifactId>
                     <version>${maven-jar-plugin-version}</version>
                 </plugin>
+
+                <!-- 将模板写入生成源码目录 -->
+                <plugin>
+                    <artifactId>maven-resources-plugin</artifactId>
+                    <version>${maven-resources-plugin-version}</version>
+                </plugin>
             </plugins>
         </pluginManagement>
 
@@ -405,6 +413,7 @@
                 <configuration>
                     <source>${java.version}</source>
                     <target>${java.version}</target>
+                    <generatedSourcesDirectory>${project.build.directory}/generated-sources/version</generatedSourcesDirectory>
                     <annotationProcessorPaths>
                         <path>
                             <groupId>org.mapstruct</groupId>
@@ -413,6 +422,25 @@
                         </path>
                     </annotationProcessorPaths>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>${build-helper-maven-plugin-version}</version>
+                <executions>
+                    <execution>
+                        <id>add-generated-sources</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>${project.build.directory}/generated-sources/version</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

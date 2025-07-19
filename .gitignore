@@ -40,7 +40,7 @@ build/
 embedded_*
 config.json
 /easy-release_static/
-/plugin
+/plugin1
 /log
 /resource
 **/config
