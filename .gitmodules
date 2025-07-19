@@ -10,3 +10,6 @@
 [submodule "Hearthstone-Script-Plugin-SDK"]
 	path = Hearthstone-Script-Plugin-SDK
 	url = https://github.com/xjw580/Hearthstone-Script-Plugin-SDK.git
+[submodule "Hearthstone-Script-Strategy-SDK"]
+	path = Hearthstone-Script-Strategy-SDK
+	url = https://github.com/xjw580/Hearthstone-Script-Strategy-SDK.git
