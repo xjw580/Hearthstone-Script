@@ -3,15 +3,15 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>club.xiaojiawei</groupId>
-    <artifactId>hs-script-parent</artifactId>
+    <artifactId>hs-script</artifactId>
     <version>1.0.0</version>
     <packaging>pom</packaging>
 
-    <name>Hearthstone-Script-Parent</name>
+    <name>Hearthstone-Script</name>
     <url>http://maven.apache.org</url>
 
     <modules>
-        <module>Hearthstone-Script</module>
+        <module>Hearthstone-Script-App</module>
         <module>Hearthstone-Script-Base</module>
         <module>Hearthstone-Script-Plugin-SDK</module>
         <module>Hearthstone-Script-Card-SDK</module>

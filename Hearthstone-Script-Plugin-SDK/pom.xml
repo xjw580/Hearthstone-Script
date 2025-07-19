@@ -4,7 +4,7 @@
 
     <parent>
         <groupId>club.xiaojiawei</groupId>
-        <artifactId>hs-script-parent</artifactId>
+        <artifactId>hs-script</artifactId>
         <version>1.0.0</version>
     </parent>
 
