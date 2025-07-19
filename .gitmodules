@@ -1,0 +1,9 @@
+[submodule "Hearthstone-Script-Base-Strategy"]
+	path = Hearthstone-Script-Base-Strategy
+	url = https://github.com/xjw580/Hearthstone-Script-Base-Strategy.git
+[submodule "Hearthstone-Script-Base-Card"]
+	path = Hearthstone-Script-Base-Card
+	url = https://github.com/xjw580/Hearthstone-Script-Base-Card.git
+[submodule "Hearthstone-Script-Card-SDK"]
+	path = Hearthstone-Script-Card-SDK
+	url = https://github.com/xjw580/Hearthstone-Script-Card-SDK.git
