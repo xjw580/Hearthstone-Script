@@ -7,3 +7,6 @@
 [submodule "Hearthstone-Script-Card-SDK"]
 	path = Hearthstone-Script-Card-SDK
 	url = https://github.com/xjw580/Hearthstone-Script-Card-SDK.git
+[submodule "Hearthstone-Script-Plugin-SDK"]
+	path = Hearthstone-Script-Plugin-SDK
+	url = https://github.com/xjw580/Hearthstone-Script-Plugin-SDK.git
