@@ -1,7 +1,7 @@
 ![GitHub release](https://img.shields.io/github/release/xjw580/Hearthstone-Script.svg)  ![GitHub](https://img.shields.io/github/license/xjw580/Hearthstone-Script?style=flat-square)
 
 # 炉石传说脚本
-<img src="Hearthstone-Script/src/main/resources/resources/img/favicon.png" alt="Image description" width="100" height="100">
+<img src="Hearthstone-Script-App/src/main/resources/resources/img/favicon.png" alt="Image description" width="100" height="100">
 
 
 
