@@ -13,3 +13,9 @@
 [submodule "Hearthstone-Script-Strategy-SDK"]
 	path = Hearthstone-Script-Strategy-SDK
 	url = https://github.com/xjw580/Hearthstone-Script-Strategy-SDK.git
+[submodule "Hearthstone-Script-Base"]
+	path = Hearthstone-Script-Base
+	url = https://github.com/xjw580/Hearthstone-Script-Base.git
+[submodule "Hearthstone-Script-App"]
+	path = Hearthstone-Script-App
+	url = https://github.com/xjw580/Hearthstone-Script-App.git
