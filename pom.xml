@@ -43,6 +43,8 @@
         <java.version>21</java.version>
         <javafx-version>21.0.1</javafx-version>
         <javafx-ui-version>v2.35.0</javafx-ui-version>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
 
         <!--other-->
         <lombok-version>1.18.30</lombok-version>
