@@ -8,7 +8,6 @@
         <version>v4.8.0.1</version>
     </parent>
 
-    <groupId>com.github.xjw580</groupId>
     <artifactId>hs-script-app</artifactId>
     <name>Hearthstone-Script-App</name>
     <description>炉石传说脚本</description>
@@ -48,12 +47,12 @@
         </dependency>
         <!--卡组插件-->
         <dependency>
-            <groupId>com.github.xjw580</groupId>
+            <groupId>club.xiaojiawei</groupId>
             <artifactId>hs-script-base-strategy</artifactId>
         </dependency>
         <!--卡牌插件-->
         <dependency>
-            <groupId>com.github.xjw580</groupId>
+            <groupId>club.xiaojiawei</groupId>
             <artifactId>hs-script-base-card</artifactId>
         </dependency>
         <!--javafx-->
@@ -100,16 +99,16 @@
         </dependency>
         <!--base-->
         <dependency>
-            <groupId>com.github.xjw580</groupId>
+            <groupId>club.xiaojiawei</groupId>
             <artifactId>hs-script-base</artifactId>
         </dependency>
         <!--sdk-->
         <dependency>
-            <groupId>com.github.xjw580</groupId>
+            <groupId>club.xiaojiawei</groupId>
             <artifactId>hs-script-strategy-sdk</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.github.xjw580</groupId>
+            <groupId>club.xiaojiawei</groupId>
             <artifactId>hs-script-card-sdk</artifactId>
         </dependency>
         <!-- 监听全局键鼠包 -->
@@ -150,7 +149,7 @@
 
     <build>
         <!--        <sourceDirectory>src/main/kotlin</sourceDirectory>-->
-        <!--        <finalName>${project.artifactId}_${project.version}</finalName>-->
+<!--        <finalName>${project.artifactId}_${project.version}</finalName>-->
         <finalName>hs-script_${project.version}</finalName>
         <resources>
             <resource>

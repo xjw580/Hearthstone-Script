@@ -9,7 +9,6 @@
         <version>v4.8.0.1</version>
     </parent>
 
-    <groupId>com.github.xjw580</groupId>
     <artifactId>hs-script-base-strategy</artifactId>
     <version>1.0.0</version>
 
@@ -65,7 +64,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.github.xjw580</groupId>
+            <groupId>club.xiaojiawei</groupId>
             <artifactId>hs-script-strategy-sdk</artifactId>
         </dependency>
     </dependencies>

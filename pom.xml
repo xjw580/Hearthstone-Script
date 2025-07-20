@@ -11,13 +11,13 @@
     <url>http://maven.apache.org</url>
 
     <modules>
-        <module>Hearthstone-Script-App</module>
-        <module>Hearthstone-Script-Base</module>
-        <module>Hearthstone-Script-Plugin-SDK</module>
-        <module>Hearthstone-Script-Card-SDK</module>
-        <module>Hearthstone-Script-Strategy-SDK</module>
-        <module>Hearthstone-Script-Base-Card</module>
-        <module>Hearthstone-Script-Base-Strategy</module>
+        <module>hs-script-app</module>
+        <module>hs-script-base</module>
+        <module>hs-script-plugin-sdk</module>
+        <module>hs-script-card-sdk</module>
+        <module>hs-script-strategy-sdk</module>
+        <module>hs-script-base-card</module>
+        <module>hs-script-base-strategy</module>
     </modules>
 
     <repositories>
@@ -173,35 +173,35 @@
                 <version>${kotlin.version}</version>
             </dependency>
             <dependency>
-                <groupId>club.xiaojiawei</groupId>
+                <groupId>com.github.xjw580</groupId>
                 <artifactId>hs-script-base-card</artifactId>
                 <version>${hs-script-base-card-version}</version>
                 <!--                <scope>provided</scope>-->
             </dependency>
             <dependency>
-                <groupId>club.xiaojiawei</groupId>
+                <groupId>com.github.xjw580</groupId>
                 <artifactId>hs-script-base-strategy</artifactId>
                 <version>${hs-script-base-strategy-version}</version>
                 <!--                <scope>provided</scope>-->
             </dependency>
             <dependency>
-                <groupId>club.xiaojiawei</groupId>
+                <groupId>com.github.xjw580</groupId>
                 <artifactId>hs-script-base</artifactId>
                 <version>${hs-script-base-version}</version>
             </dependency>
             <!--sdk-->
             <dependency>
-                <groupId>club.xiaojiawei</groupId>
+                <groupId>com.github.xjw580</groupId>
                 <artifactId>hs-script-plugin-sdk</artifactId>
                 <version>${hs-script-plugin-sdk-version}</version>
             </dependency>
             <dependency>
-                <groupId>club.xiaojiawei</groupId>
+                <groupId>com.github.xjw580</groupId>
                 <artifactId>hs-script-card-sdk</artifactId>
                 <version>${hs-script-card-sdk-version}</version>
             </dependency>
             <dependency>
-                <groupId>club.xiaojiawei</groupId>
+                <groupId>com.github.xjw580</groupId>
                 <artifactId>hs-script-strategy-sdk</artifactId>
                 <version>${hs-script-deck-sdk-version}</version>
             </dependency>

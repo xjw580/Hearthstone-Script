@@ -8,7 +8,6 @@
         <version>v4.8.0.1</version>
     </parent>
 
-    <groupId>com.github.xjw580</groupId>
     <artifactId>hs-script-strategy-sdk</artifactId>
     <version>1.0.0</version>
     <packaging>jar</packaging>
@@ -37,11 +36,11 @@
             <classifier>win</classifier>
         </dependency>
         <dependency>
-            <groupId>com.github.xjw580</groupId>
+            <groupId>club.xiaojiawei</groupId>
             <artifactId>hs-script-base</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.github.xjw580</groupId>
+            <groupId>club.xiaojiawei</groupId>
             <artifactId>hs-script-card-sdk</artifactId>
         </dependency>
     </dependencies>
