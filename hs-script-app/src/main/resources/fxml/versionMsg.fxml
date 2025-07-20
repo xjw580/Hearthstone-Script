@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.*?>
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            stylesheets="@css/versionMsg.css"
+            fx:id="rootPane"
+            fx:controller="club.xiaojiawei.hsscript.controller.javafx.VersionMsgController">
+    <StackPane prefWidth="${rootPane.width}" style="-fx-padding: 15">
+        <VBox style="-fx-spacing: 20;-fx-alignment: center">
+            <HBox>
+                <Label fx:id="version" style="-fx-font-size: 18;-fx-font-weight: bold"/>
+            </HBox>
+            <TextArea promptText="不知道说什么..." fx:id="versionDescription" editable="false" focusTraversable="false"/>
+            <VBox VBox.vgrow="ALWAYS" alignment="CENTER">
+                <HBox VBox.vgrow="ALWAYS" style="-fx-padding: 0 0 25 0" alignment="CENTER_LEFT">
+                </HBox>
+                <Button text="了然" styleClass="btn-ui, btn-ui-error-3d" onAction="#closeWindow"/>
+            </VBox>
+        </VBox>
+    </StackPane>
+</AnchorPane>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.AnchorPane?>
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:id="rootPane"
+            fx:controller="club.xiaojiawei.hsscript.controller.javafx.GameWindowModalController"
+            style="-fx-background-color: rgba(0,0,0,0);-fx-border-color: white">
+</AnchorPane>

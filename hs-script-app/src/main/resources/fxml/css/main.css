@@ -1,0 +1,40 @@
+.copyLog{
+    -fx-fill: #1982fd;
+    -fx-text-fill: #1982fd;
+}
+.warnLog{
+    -fx-fill: #ff8000;
+    -fx-text-fill: #ff8000;
+}
+.errorLog{
+    -fx-fill: #ff0000;
+    -fx-text-fill: #ff0000;
+}
+.accordion{
+    -fx-background-color: white;
+}
+.workTimeVBox{
+    -fx-effect: innershadow(one-pass-box, rgba(128, 128, 128, 0.67), 5, 0, 1, 1);
+    -fx-background-color: #E8E8FF;
+    -fx-background-radius: 10;
+}
+
+#logScrollPane{
+    -fx-background: white;
+}
+#logVBox{
+    -fx-padding: 5;
+}
+.btnPressed{
+    -fx-text-fill: gray !important;
+}
+.hoverChildrenNode{
+    visibility: false;
+}
+.hoverRootNode:hover .hoverChildrenNode{
+    visibility: true;
+}
+.resetDataIcon:hover *{
+    -fx-cursor: hand;
+    -fx-fill: red;
+}

@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import club.xiaojiawei.controls.ico.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import java.lang.Double?>
+<?import club.xiaojiawei.controls.NotificationManager?>
+<?import club.xiaojiawei.factory.NotificationFactory?>
+<?import club.xiaojiawei.controls.ProgressModal?>
+<StackPane xmlns="http://javafx.com/javafx"
+           xmlns:fx="http://javafx.com/fxml"
+           style="-fx-background-color: white"
+           fx:controller="club.xiaojiawei.hsscript.controller.javafx.TimeSettingsController"
+           fx:id="rootPane"
+           stylesheets="@css/tableview.css, @css/timeSettings.css"
+           prefHeight="600.0" prefWidth="950.0">
+    <VBox>
+        <ScrollPane fitToHeight="true" fitToWidth="true" VBox.vgrow="ALWAYS" styleClass="scroll-pane-item"
+                    style="-fx-background: white;">
+            <Accordion fx:id="accordion" styleClass="accordion-ui, accordion-ui-big, accordion-ui-pure" minHeight="400"
+                       expandedPane="$setRulePane">
+                <panes>
+                    <TitledPane fx:id="setRulePane" text="定义规则">
+                        <fx:define>
+                            <Double fx:id="icoScale" fx:value="1"/>
+                        </fx:define>
+                        <SplitPane dividerPositions="0.25" styleClass="split-pane-line" VBox.vgrow="ALWAYS">
+                            <VBox spacing="5" alignment="CENTER" style="-fx-padding: 15;" minWidth="0">
+                                <TableView fx:id="workTimeRuleSetTable" VBox.vgrow="ALWAYS"
+                                           styleClass="table-view-idea, table-view-idea-tiny, table-view-idea-upright">
+                                    <columnResizePolicy>
+                                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+                                    </columnResizePolicy>
+                                    <columns>
+                                        <TableColumn fx:id="noSetCol" text="#" minWidth="20" maxWidth="20"/>
+                                        <TableColumn fx:id="nameSetCol" text="规则名" minWidth="100"
+                                                     sortable="false"/>
+                                    </columns>
+                                </TableView>
+                                <HBox style="-fx-padding: 5;-fx-spacing: 15" alignment="CENTER_LEFT">
+                                    <Button styleClass="btn-ui, btn-ui-normal, btn-ui-small" onAction="#addRulerSet">
+                                        <graphic>
+                                            <AddIco scaleX="$icoScale" scaleY="$icoScale"/>
+                                        </graphic>
+                                    </Button>
+                                    <Button styleClass="btn-ui, btn-ui-error, btn-ui-small" onAction="#delRulerSet">
+                                        <graphic>
+                                            <ClearIco scaleX="$icoScale" scaleY="$icoScale" color="black"/>
+                                        </graphic>
+                                    </Button>
+                                    <Button styleClass="btn-ui, btn-ui-small" onAction="#copyRulerSet">
+                                        <graphic>
+                                            <CopyIco scaleX="$icoScale" scaleY="$icoScale" color="black"/>
+                                        </graphic>
+                                    </Button>
+                                </HBox>
+                            </VBox>
+                            <VBox spacing="5" alignment="CENTER" style="-fx-padding: 15;" minWidth="200">
+                                <TableView fx:id="selectedWorkTimeRuleTable" VBox.vgrow="ALWAYS"
+                                           styleClass="table-view-idea, table-view-idea-tiny, table-view-idea-upright">
+                                    <columnResizePolicy>
+                                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+                                    </columnResizePolicy>
+                                    <columns>
+                                        <TableColumn fx:id="selectedTimeCol" text="时间" minWidth="170" maxWidth="170"
+                                                     sortable="false"/>
+                                        <TableColumn fx:id="selectedAfterOperationCol" text="完成后执行"
+                                                     sortable="false"/>
+                                        <TableColumn fx:id="selectedEnableCol" text="启用" maxWidth="40" minWidth="40"/>
+                                    </columns>
+                                </TableView>
+                                <HBox style="-fx-padding: 5;-fx-spacing: 15" alignment="CENTER_LEFT">
+                                    <Button styleClass="btn-ui, btn-ui-normal, btn-ui-small" onAction="#addRuler">
+                                        <graphic>
+                                            <AddIco scaleX="$icoScale" scaleY="$icoScale"/>
+                                        </graphic>
+                                    </Button>
+                                    <Button styleClass="btn-ui, btn-ui-error, btn-ui-small" onAction="#delRuler">
+                                        <graphic>
+                                            <ClearIco scaleX="$icoScale" scaleY="$icoScale" color="black"/>
+                                        </graphic>
+                                    </Button>
+                                    <Button styleClass="btn-ui, btn-ui-small" onAction="#copyRuler">
+                                        <graphic>
+                                            <CopyIco scaleX="$icoScale" scaleY="$icoScale" color="black"/>
+                                        </graphic>
+                                    </Button>
+                                </HBox>
+                            </VBox>
+                        </SplitPane>
+                    </TitledPane>
+                    <TitledPane fx:id="applyRulePane" text="应用规则">
+                        <GridPane alignment="TOP_CENTER">
+                            <columnConstraints>
+                                <fx:define>
+                                    <Double fx:id="colWidth" fx:value="180"/>
+                                </fx:define>
+                                <ColumnConstraints halignment="CENTER" hgrow="NEVER" prefWidth="$colWidth"/>
+                                <ColumnConstraints halignment="CENTER" hgrow="NEVER" prefWidth="10"/>
+                                <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" prefWidth="$colWidth"/>
+                            </columnConstraints>
+                            <rowConstraints>
+                                <fx:define>
+                                    <RowConstraints fx:id="rowConst" prefHeight="40" vgrow="NEVER" valignment="CENTER"/>
+                                </fx:define>
+                                <fx:reference source="rowConst"/>
+                                <fx:reference source="rowConst"/>
+                                <fx:reference source="rowConst"/>
+                                <fx:reference source="rowConst"/>
+                                <fx:reference source="rowConst"/>
+                                <fx:reference source="rowConst"/>
+                                <fx:reference source="rowConst"/>
+                                <fx:reference source="rowConst"/>
+                            </rowConstraints>
+
+                            <Label GridPane.rowIndex="0" text="每天" styleClass="dateLabel"/>
+                            <Label GridPane.rowIndex="1" text="周一" styleClass="dateLabel"/>
+                            <Label GridPane.rowIndex="2" text="周二" styleClass="dateLabel"/>
+                            <Label GridPane.rowIndex="3" text="周三" styleClass="dateLabel"/>
+                            <Label GridPane.rowIndex="4" text="周四" styleClass="dateLabel"/>
+                            <Label GridPane.rowIndex="5" text="周五" styleClass="dateLabel"/>
+                            <Label GridPane.rowIndex="6" text="周六" styleClass="dateLabel"/>
+                            <Label GridPane.rowIndex="7" text="周日" styleClass="dateLabel"/>
+
+                            <fx:define>
+                                <Double fx:id="dateComboBoxWidth" fx:value="150"/>
+                            </fx:define>
+                            <ComboBox fx:id="everyDayComboBox" GridPane.rowIndex="0" GridPane.columnIndex="2"
+                                      styleClass="combo-box-ui, combo-box-ui-normal" minWidth="$dateComboBoxWidth"/>
+                            <ComboBox fx:id="monComboBox" GridPane.rowIndex="1" GridPane.columnIndex="2"
+                                      styleClass="combo-box-ui, combo-box-ui-normal" minWidth="$dateComboBoxWidth"/>
+                            <ComboBox fx:id="tueComboBox" GridPane.rowIndex="2" GridPane.columnIndex="2"
+                                      styleClass="combo-box-ui, combo-box-ui-normal" minWidth="$dateComboBoxWidth"/>
+                            <ComboBox fx:id="wedComboBox" GridPane.rowIndex="3" GridPane.columnIndex="2"
+                                      styleClass="combo-box-ui, combo-box-ui-normal" minWidth="$dateComboBoxWidth"/>
+                            <ComboBox fx:id="thuComboBox" GridPane.rowIndex="4" GridPane.columnIndex="2"
+                                      styleClass="combo-box-ui, combo-box-ui-normal" minWidth="$dateComboBoxWidth"/>
+                            <ComboBox fx:id="friComboBox" GridPane.rowIndex="5" GridPane.columnIndex="2"
+                                      styleClass="combo-box-ui, combo-box-ui-normal" minWidth="$dateComboBoxWidth"/>
+                            <ComboBox fx:id="satComboBox" GridPane.rowIndex="6" GridPane.columnIndex="2"
+                                      styleClass="combo-box-ui, combo-box-ui-normal" minWidth="$dateComboBoxWidth"/>
+                            <ComboBox fx:id="sunComboBox" GridPane.rowIndex="7" GridPane.columnIndex="2"
+                                      styleClass="combo-box-ui, combo-box-ui-normal" minWidth="$dateComboBoxWidth"/>
+                        </GridPane>
+                    </TitledPane>
+                </panes>
+            </Accordion>
+        </ScrollPane>
+        <HBox style="-fx-padding: 15;-fx-background-color: white" alignment="CENTER_RIGHT">
+            <Button text="保存" styleClass="btn-ui, btn-ui-success" onAction="#save">
+                <graphic>
+                    <SaveIco/>
+                </graphic>
+            </Button>
+        </HBox>
+    </VBox>
+    <ProgressModal fx:id="progressModal" tip="加载中..."/>
+    <NotificationManager fx:id="notificationManager" notificationPos="BOTTOM_CENTER">
+        <NotificationFactory showingCloseBtn="false" size="SMALL"/>
+    </NotificationManager>
+</StackPane>

@@ -1,21 +1,21 @@
-[submodule "Hearthstone-Script-Base-Strategy"]
-	path = Hearthstone-Script-Base-Strategy
-	url = https://github.com/xjw580/Hearthstone-Script-Base-Strategy.git
-[submodule "Hearthstone-Script-Base-Card"]
-	path = Hearthstone-Script-Base-Card
-	url = https://github.com/xjw580/Hearthstone-Script-Base-Card.git
-[submodule "Hearthstone-Script-Card-SDK"]
-	path = Hearthstone-Script-Card-SDK
-	url = https://github.com/xjw580/Hearthstone-Script-Card-SDK.git
-[submodule "Hearthstone-Script-Plugin-SDK"]
-	path = Hearthstone-Script-Plugin-SDK
-	url = https://github.com/xjw580/Hearthstone-Script-Plugin-SDK.git
-[submodule "Hearthstone-Script-Strategy-SDK"]
-	path = Hearthstone-Script-Strategy-SDK
-	url = https://github.com/xjw580/Hearthstone-Script-Strategy-SDK.git
-[submodule "Hearthstone-Script-Base"]
-	path = Hearthstone-Script-Base
-	url = https://github.com/xjw580/Hearthstone-Script-Base.git
-[submodule "Hearthstone-Script-App"]
-	path = Hearthstone-Script-App
-	url = https://github.com/xjw580/Hearthstone-Script-App.git
+[submodule "hs-script-base-strategy"]
+	path = hs-script-base-strategy
+	url = https://github.com/xjw580/hs-script-base-strategy.git
+[submodule "hs-script-base-card"]
+	path = hs-script-base-card
+	url = https://github.com/xjw580/hs-script-base-card.git
+[submodule "hs-script-card-sdk"]
+	path = hs-script-card-sdk
+	url = https://github.com/xjw580/hs-script-card-sdk.git
+[submodule "hs-script-plugin-sdk"]
+	path = hs-script-plugin-sdk
+	url = https://github.com/xjw580/hs-script-plugin-sdk.git
+[submodule "hs-script-strategy-sdk"]
+	path = hs-script-strategy-sdk
+	url = https://github.com/xjw580/hs-script-strategy-sdk.git
+[submodule "hs-script-base"]
+	path = hs-script-base
+	url = https://github.com/xjw580/hs-script-base.git
+[submodule "hs-script-app"]
+	path = hs-script-app
+	url = https://github.com/xjw580/hs-script-app.git

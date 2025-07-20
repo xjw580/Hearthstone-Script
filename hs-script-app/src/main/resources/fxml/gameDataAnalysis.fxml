@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import club.xiaojiawei.controls.Switch?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<StackPane xmlns="http://javafx.com/javafx"
+           xmlns:fx="http://javafx.com/fxml"
+           prefWidth="700" prefHeight="1000"
+           fx:id="rootPane"
+           style="-fx-background-color: background-color"
+           fx:controller="club.xiaojiawei.hsscript.controller.javafx.GameDataAnalysisController">
+    <padding>
+        <Insets top="5" left="5" right="5" bottom="5"/>
+    </padding>
+    <VBox fx:id="outerPane">
+        <VBox fx:id="topPane" spacing="5">
+            <Label text="分析" contentDisplay="RIGHT">
+                <graphic>
+                    <Switch fx:id="analysisSwitch" status="true"/>
+                </graphic>
+            </Label>
+            <StackPane>
+                <Canvas fx:id="warCanvas"/>
+            </StackPane>
+            <HBox spacing="5">
+                <TextField fx:id="inputField" styleClass="text-field-ui, text-field-ui-small" promptText="输入表达式 entityId."/>
+                <Button text="执行" styleClass="btn-ui, btn-ui-normal, btn-ui-small" onAction="#outputCardMsg" focusTraversable="false"/>
+                <TextField fx:id="outputField" styleClass="text-field-ui, text-field-ui-small" editable="false" promptText="结果" HBox.hgrow="ALWAYS" focusTraversable="false"/>
+            </HBox>
+            <HBox>
+                <TextField fx:id="filterField" styleClass="text-field-ui, text-field-ui-small" promptText="过滤" HBox.hgrow="ALWAYS"/>
+            </HBox>
+        </VBox>
+        <StackPane>
+            <Canvas fx:id="cardCanvas"/>
+        </StackPane>
+    </VBox>
+</StackPane>

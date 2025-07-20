@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import club.xiaojiawei.controls.Date?>
+<?import club.xiaojiawei.controls.ico.OfflineIco?>
+<?import club.xiaojiawei.controls.ico.OnlineIco?>
+<?import club.xiaojiawei.controls.ProgressModal?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.*?>
+<?import java.lang.Double?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.text.Text?>
+<StackPane xmlns="http://javafx.com/javafx"
+           xmlns:fx="http://javafx.com/fxml"
+           prefHeight="770"
+           prefWidth="1300"
+           fx:id="rootPane"
+           fx:controller="club.xiaojiawei.hsscript.controller.javafx.StatisticsController">
+    <ScrollPane styleClass="scroll-pane-item">
+        <fx:define>
+            <Double fx:id="chartHeight" fx:value="300"/>
+        </fx:define>
+        <VBox alignment="TOP_CENTER" spacing="10" style="-fx-padding: 10">
+            <HBox spacing="25" alignment="CENTER">
+                <GridPane>
+                    <columnConstraints>
+                        <ColumnConstraints halignment="LEFT" hgrow="ALWAYS"/>
+                        <ColumnConstraints prefWidth="30" halignment="CENTER" hgrow="ALWAYS"/>
+                        <ColumnConstraints halignment="LEFT" hgrow="ALWAYS"/>
+                    </columnConstraints>
+                    <rowConstraints>
+                        <RowConstraints vgrow="ALWAYS" valignment="CENTER"/>
+                        <RowConstraints vgrow="ALWAYS" valignment="CENTER"/>
+                    </rowConstraints>
+                    <Label text="起始时间"/>
+                    <Label GridPane.columnIndex="2" text="截至时间"/>
+
+                    <Date GridPane.rowIndex="1" fx:id="startDate"/>
+                    <StackPane GridPane.rowIndex="1" GridPane.columnIndex="1">
+                        <OnlineIco fx:id="bindIco" style="-fx-cursor: hand" onMouseClicked="#changeStatus"/>
+                        <OfflineIco fx:id="unBindIco" style="-fx-cursor: hand" visible="false"
+                                    onMouseClicked="#changeStatus"/>
+                    </StackPane>
+                    <Date GridPane.rowIndex="1" GridPane.columnIndex="2" fx:id="endDate"/>
+                </GridPane>
+            </HBox>
+            <GridPane>
+                <columnConstraints>
+                    <ColumnConstraints halignment="CENTER" hgrow="ALWAYS"/>
+                    <ColumnConstraints halignment="CENTER" hgrow="ALWAYS"/>
+                </columnConstraints>
+                <rowConstraints>
+                    <RowConstraints vgrow="NEVER" valignment="CENTER"/>
+                    <RowConstraints prefHeight="${chartHeight}" vgrow="ALWAYS" valignment="CENTER"/>
+                    <RowConstraints vgrow="NEVER" valignment="CENTER"/>
+                    <RowConstraints prefHeight="${chartHeight}" vgrow="ALWAYS" valignment="CENTER"/>
+                    <RowConstraints vgrow="NEVER" valignment="CENTER"/>
+                    <RowConstraints prefHeight="${chartHeight}" vgrow="ALWAYS" valignment="CENTER"/>
+                </rowConstraints>
+
+                <VBox GridPane.columnSpan="2" alignment="CENTER" spacing="10" style="-fx-padding: 10">
+                    <Separator/>
+                </VBox>
+
+                <VBox GridPane.rowIndex="1" alignment="CENTER" spacing="20" style="-fx-font-size: 20;-fx-padding: 0 0 0 50">
+                    <fx:define>
+                        <Double fx:id="itemSpace" fx:value="20"/>
+                    </fx:define>
+                    <HBox spacing="${itemSpace}">
+                        <Text text="总计局数"/>
+                        <Text fx:id="totalCount"/>
+                    </HBox>
+                    <HBox spacing="${itemSpace}">
+                        <Text text="平均胜率"/>
+                        <Text fx:id="avgWR"/>
+                    </HBox>
+                    <HBox spacing="${itemSpace}">
+                        <Text text="总计经验"/>
+                        <Text fx:id="totalEXP"/>
+                    </HBox>
+                    <HBox spacing="${itemSpace}">
+                        <Text text="总计时长"/>
+                        <Text fx:id="totalDuration"/>
+                    </HBox>
+                </VBox>
+                <StackPane GridPane.rowIndex="1" GridPane.columnIndex="1" fx:id="wrPane"/>
+
+                <VBox GridPane.rowIndex="2" GridPane.columnSpan="2" alignment="CENTER" spacing="10" style="-fx-padding: 10">
+                    <Separator/>
+                    <HBox alignment="CENTER" spacing="10">
+                        <Label text="策略"/>
+                        <ComboBox fx:id="strategyComboBox" styleClass="combo-box-ui, combo-box-ui-normal, combo-box-ui-small" prefWidth="100"/>
+                    </HBox>
+                </VBox>
+
+                <StackPane GridPane.rowIndex="3" fx:id="timePane"/>
+                <StackPane GridPane.rowIndex="3" GridPane.columnIndex="1" fx:id="durationPane"/>
+
+                <VBox GridPane.rowIndex="4" GridPane.columnSpan="2" alignment="CENTER" spacing="10" style="-fx-padding: 10">
+                    <Separator/>
+                </VBox>
+
+                <StackPane GridPane.rowIndex="5" fx:id="strategyPane"/>
+                <StackPane GridPane.rowIndex="5" GridPane.columnIndex="1" fx:id="runModePane"/>
+
+            </GridPane>
+        </VBox>
+    </ScrollPane>
+    <ProgressModal fx:id="mainProgressModal" tip="计算中"/>
+</StackPane>

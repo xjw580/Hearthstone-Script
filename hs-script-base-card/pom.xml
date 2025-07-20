@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.github.xjw580.Hearthstone-Script</groupId>
+        <artifactId>hs-script</artifactId>
+        <version>v4.8.0.1</version>
+    </parent>
+
+    <groupId>com.github.xjw580</groupId>
+    <artifactId>hs-script-base-card</artifactId>
+    <version>1.0.0</version>
+
+    <name>Hearthstone-Script-Base-Card</name>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <kotlin.code.style>official</kotlin.code.style>
+        <kotlin.compiler.jvmTarget>1.8</kotlin.compiler.jvmTarget>
+    </properties>
+
+    <build>
+        <sourceDirectory>src/main/kotlin</sourceDirectory>
+        <resources>
+            <resource>
+                <directory>src/main/resources-filtered</directory>
+                <filtering>true</filtering>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+        </resources>
+        <plugins>
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>${maven-resources-plugin-version}</version>
+                <executions>
+                    <execution>
+                        <id>generate-version-class</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/generated-sources/version</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>src/main/resources-filtered/club/xiaojiawei/hsscriptbasecard</directory>
+                                    <includes>
+                                        <include>VersionInfo.java</include>
+                                    </includes>
+                                    <filtering>true</filtering>
+                                </resource>
+                            </resources>
+                            <overwrite>true</overwrite>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.github.xjw580</groupId>
+            <artifactId>hs-script-card-sdk</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.github.xjw580</groupId>
+            <artifactId>hs-script-strategy-sdk</artifactId>
+        </dependency>
+    </dependencies>
+</project>

@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import club.xiaojiawei.controls.ico.GiteeIco?>
+<?import club.xiaojiawei.controls.ico.GithubIco?>
+<?import club.xiaojiawei.controls.NotificationManager?>
+<?import club.xiaojiawei.factory.NotificationFactory?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.Group?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+<?import java.lang.Double?>
+<?import club.xiaojiawei.hsscript.component.UrlLabel?>
+<?import javafx.scene.text.Text?>
+<StackPane xmlns="http://javafx.com/javafx"
+           xmlns:fx="http://javafx.com/fxml"
+           stylesheets="@../css/settings/about.css"
+           fx:id="rootPane"
+           fx:controller="club.xiaojiawei.hsscript.controller.javafx.settings.AboutController">
+    <VBox>
+        <ScrollPane VBox.vgrow="ALWAYS" styleClass="scroll-pane-item">
+            <VBox alignment="CENTER">
+                <Group>
+                    <TitledPane text="本软件"
+                                styleClass="titled-pane-ui, titled-pane-ui-big, titled-pane-ui-pure, item-titled-pane">
+                        <VBox styleClass="item-v-box">
+                            <HBox styleClass="h-box" spacing="10">
+                                <VBox spacing="25">
+                                    <HBox alignment="CENTER_LEFT" spacing="10">
+                                        <fx:define>
+                                            <Double fx:id="icoSize" fx:value="40"/>
+                                        </fx:define>
+                                        <ImageView fx:id="projectIco" fitHeight="${icoSize}" fitWidth="${icoSize}"/>
+                                        <Label text="Hearthstone-Script"
+                                               style="-fx-font-weight: bold;-fx-font-size: 18"/>
+                                    </HBox>
+                                    <Label text="本项目遵循GPL3.0开源协议及禁止商用附加协议"/>
+                                    <HBox alignment="CENTER_LEFT" spacing="10">
+                                        <Label text="项目主页"/>
+                                        <HBox spacing="5" alignment="CENTER_LEFT">
+                                            <fx:define>
+                                                <Double fx:id="icoScale" fx:value="1.1"/>
+                                            </fx:define>
+                                            <UrlLabel url="https://gitee.com/zergqueen/Hearthstone-Script">
+                                                <graphic>
+                                                    <GiteeIco scaleX="${icoScale}" scaleY="${icoScale}"/>
+                                                </graphic>
+                                            </UrlLabel>
+                                            <UrlLabel url="https://github.com/xjw580/Hearthstone-Script">
+                                                <graphic>
+                                                    <GithubIco scaleX="${icoScale}" scaleY="${icoScale}"/>
+                                                </graphic>
+                                            </UrlLabel>
+                                        </HBox>
+                                    </HBox>
+                                    <Label text="本软件面向个人免费使用，所有需要收费的都是骗子！" style="-fx-font-size: 13;-fx-font-weight: bold"/>
+                                    <HBox alignment="CENTER_LEFT" spacing="10">
+                                        <Label text="软件下载"/>
+                                        <HBox spacing="5" alignment="CENTER_LEFT">
+                                            <UrlLabel url="https://gitee.com/zergqueen/Hearthstone-Script/releases/latest">
+                                                <graphic>
+                                                    <GiteeIco scaleX="${icoScale}" scaleY="${icoScale}"/>
+                                                </graphic>
+                                            </UrlLabel>
+                                            <UrlLabel url="https://github.com/xjw580/Hearthstone-Script/releases/latest">
+                                                <graphic>
+                                                    <GithubIco scaleX="${icoScale}" scaleY="${icoScale}"/>
+                                                </graphic>
+                                            </UrlLabel>
+                                        </HBox>
+                                    </HBox>
+                                    <HBox>
+                                        <UrlLabel text="捐赠" url="https://gitee.com/zergqueen/Hearthstone-Script/blob/master/payment-code.jpg"/>
+                                    </HBox>
+                                </VBox>
+                            </HBox>
+                        </VBox>
+                    </TitledPane>
+                </Group>
+                <Group>
+                    <TitledPane text="开源许可" expanded="false"
+                                styleClass="titled-pane-ui, titled-pane-ui-big, titled-pane-ui-pure, item-titled-pane">
+                        <VBox styleClass="item-v-box">
+                            <HBox styleClass="h-box">
+                                <UrlLabel text="kotlin" url="https://kotlinlang.org/"/>
+                                <HBox HBox.hgrow="ALWAYS"/>
+                                <Label text="Apache 2.0"/>
+                            </HBox>
+                            <HBox styleClass="h-box">
+                                <UrlLabel text="mapstruct" url="https://github.com/mapstruct/mapstruct"/>
+                                <HBox HBox.hgrow="ALWAYS"/>
+                                <Label text="Apache 2.0"/>
+                            </HBox>
+                            <HBox styleClass="h-box">
+                                <UrlLabel text="slf4j" url="https://github.com/qos-ch/slf4j"/>
+                                <HBox HBox.hgrow="ALWAYS"/>
+                                <Label text="MIT"/>
+                            </HBox>
+                            <HBox styleClass="h-box">
+                                <UrlLabel text="logback" url="https://github.com/qos-ch/logback"/>
+                                <HBox HBox.hgrow="ALWAYS"/>
+                                <Label text="LGPL 2.1"/>
+                            </HBox>
+                            <HBox styleClass="h-box">
+                                <UrlLabel text="kotlin-logging" url="https://github.com/oshai/kotlin-logging"/>
+                                <HBox HBox.hgrow="ALWAYS"/>
+                                <Label text="Apache 2.0"/>
+                            </HBox>
+                            <HBox styleClass="h-box">
+                                <UrlLabel text="lombok" url="https://github.com/projectlombok/lombok"/>
+                                <HBox HBox.hgrow="ALWAYS"/>
+                                <Label text="MIT"/>
+                            </HBox>
+                            <HBox styleClass="h-box">
+                                <UrlLabel text="spring-framework" url="https://github.com/spring-projects/spring-framework"/>
+                                <HBox HBox.hgrow="ALWAYS"/>
+                                <Label text="Apache 2.0"/>
+                            </HBox>
+                            <HBox styleClass="h-box">
+                                <UrlLabel text="sqlite-jdbc" url="https://github.com/xerial/sqlite-jdbc"/>
+                                <HBox HBox.hgrow="ALWAYS"/>
+                                <Label text="Apache 2.0"/>
+                            </HBox>
+                            <HBox styleClass="h-box">
+                                <UrlLabel text="jackson-databind" url="https://github.com/FasterXML/jackson-databind"/>
+                                <HBox HBox.hgrow="ALWAYS"/>
+                                <Label text="Apache 2.0"/>
+                            </HBox>
+                            <HBox styleClass="h-box">
+                                <UrlLabel text="jfx" url="https://github.com/openjdk/jfx"/>
+                                <HBox HBox.hgrow="ALWAYS"/>
+                                <Label text="GPL 2.0"/>
+                            </HBox>
+                            <HBox styleClass="h-box">
+                                <UrlLabel text="javafx-ui" url="https://github.com/xjw580/javafx-ui"/>
+                                <HBox HBox.hgrow="ALWAYS"/>
+                                <Label text="MPL 2.0"/>
+                            </HBox>
+                            <HBox styleClass="h-box">
+                                <UrlLabel text="jintellitype" url="https://github.com/melloware/jintellitype"/>
+                                <HBox HBox.hgrow="ALWAYS"/>
+                                <Label text="Apache 2.0"/>
+                            </HBox>
+                            <HBox styleClass="h-box">
+                                <UrlLabel text="fastjson2" url="https://github.com/alibaba/fastjson2"/>
+                                <HBox HBox.hgrow="ALWAYS"/>
+                                <Label text="Apache 2.0"/>
+                            </HBox>
+                            <HBox styleClass="h-box">
+                                <UrlLabel text="jna" url="https://github.com/java-native-access/jna"/>
+                                <HBox HBox.hgrow="ALWAYS"/>
+                                <Label text="Apache 2.0 OR LGPL 2.1"/>
+                            </HBox>
+                            <HBox styleClass="h-box">
+                                <UrlLabel text="ini4j" url="http://www.ini4j.org/"/>
+                                <HBox HBox.hgrow="ALWAYS"/>
+                                <Label text="Apache 2.0"/>
+                            </HBox>
+                            <HBox styleClass="h-box">
+                                <UrlLabel text="Interception" url="https://github.com/oblitum/Interception"/>
+                                <HBox HBox.hgrow="ALWAYS"/>
+                                <Label text="LGPL 3.0"/>
+                            </HBox>
+                            <HBox styleClass="h-box">
+                                <UrlLabel text="tilesfx" url="https://github.com/HanSolo/tilesfx"/>
+                                <HBox HBox.hgrow="ALWAYS"/>
+                                <Label text="Apache 2.0"/>
+                            </HBox>
+                        </VBox>
+                    </TitledPane>
+                </Group>
+            </VBox>
+        </ScrollPane>
+    </VBox>
+    <NotificationManager fx:id="notificationManager" notificationPos="BOTTOM_CENTER">
+        <NotificationFactory showingCloseBtn="false" size="SMALL"/>
+    </NotificationManager>
+</StackPane>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+<AnchorPane xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="club.xiaojiawei.hsscript.controller.javafx.StartupController" stylesheets="@css/startup.css" fx:id="root">
+    <ImageView fitHeight="20" fitWidth="20" AnchorPane.bottomAnchor="10" AnchorPane.leftAnchor="5">
+        <Image url="@../resources/img/favicon.png"/>
+    </ImageView>
+    <ProgressBar fx:id="progressBar" prefWidth="${root.width}" progress="0" styleClass="progress-bar-ui" AnchorPane.bottomAnchor="0" />
+    <Text fx:id="tip" AnchorPane.bottomAnchor="8" AnchorPane.leftAnchor="30"/>
+</AnchorPane>

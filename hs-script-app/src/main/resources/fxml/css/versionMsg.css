@@ -1,0 +1,16 @@
+#versionDescription {
+    -fx-font-size: 13;
+    -fx-border-color: #d1d1d1;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-background-color: background-color;
+}
+#versionDescription .content {
+    -fx-background-color:white;
+}
+#rootPane{
+    -fx-background-color: background-color;
+}
+.hyperlink{
+    -fx-border-width: 0;
+}

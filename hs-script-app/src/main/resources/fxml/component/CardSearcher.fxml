@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+<?import club.xiaojiawei.controls.FilterField?>
+<?import javafx.scene.control.Label?>
+<?import club.xiaojiawei.controls.NumberField?>
+<?import javafx.scene.layout.StackPane?>
+<?import club.xiaojiawei.hsscript.component.CardTableView?>
+<fx:root type="VBox" xmlns="http://javafx.com/javafx"
+         xmlns:fx="http://javafx.com/fxml">
+
+</fx:root>

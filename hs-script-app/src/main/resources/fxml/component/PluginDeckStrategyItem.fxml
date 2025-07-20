@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Text?>
+<fx:root type="HBox" xmlns="http://javafx.com/javafx"
+         stylesheets="@css/pluginItem.css"
+         spacing="10" alignment="CENTER_LEFT"
+         xmlns:fx="http://javafx.com/fxml">
+    <VBox HBox.hgrow="ALWAYS">
+        <HBox spacing="10">
+            <Text fx:id="name" styleClass="main-info" style="-fx-font-size: 13"/>
+            <HBox fx:id="weightPane" spacing="5" alignment="CENTER_LEFT"/>
+            <HBox HBox.hgrow="ALWAYS"/>
+            <StackPane fx:id="copyLabel"/>
+        </HBox>
+        <Text fx:id="description"/>
+    </VBox>
+</fx:root>

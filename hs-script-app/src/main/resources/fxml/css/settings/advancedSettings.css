@@ -1,0 +1,14 @@
+@import "settings.css";
+
+.navigationBar {
+    -fx-font-size: 14;
+    -fx-text-fill: gray;
+    -fx-background-color: transparent;
+    -fx-border-width: 0;
+}
+
+.navigationBar:selected {
+    -fx-text-fill: black;
+    -fx-font-size: 15;
+    -fx-font-weight: bold;
+}

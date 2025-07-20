@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import club.xiaojiawei.controls.NotificationManager?>
+<?import club.xiaojiawei.factory.NotificationFactory?>
+<?import club.xiaojiawei.hsscript.component.*?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import java.lang.Double?>
+<?import javafx.scene.control.Tooltip?>
+<StackPane xmlns="http://javafx.com/javafx"
+           xmlns:fx="http://javafx.com/fxml"
+           stylesheets="@../css/settings/strategySettings.css"
+           fx:id="rootPane"
+           fx:controller="club.xiaojiawei.hsscript.controller.javafx.settings.StrategySettingsController">
+    <fx:define>
+        <Double fx:id="fieldWidth" fx:value="60"/>
+    </fx:define>
+    <VBox>
+        <ScrollPane VBox.vgrow="ALWAYS" styleClass="scroll-pane-item">
+            <VBox fx:id="mainVBox" styleClass="item-v-box">
+                <HBox styleClass="h-box">
+                    <Text text="操作间隔/ms"/>
+                    <TipNode text="对战时的攻击，出牌等视为一个操作，此值过小会因卡牌动画导致数据不同步问题"/>
+                    <HBox HBox.hgrow="ALWAYS"/>
+                    <ConfigNumberField config="MOUSE_ACTION_INTERVAL"
+                                       styleClass="text-field-ui, text-field-ui-small"
+                                       hideIcon="true" prefWidth="${fieldWidth}"/>
+                </HBox>
+                <HBox styleClass="h-box">
+                    <Text text="鼠标整体移动速度"/>
+                    <HBox HBox.hgrow="ALWAYS"/>
+                    <ConfigNumberField config="PAUSE_STEP"
+                                       styleClass="text-field-ui, text-field-ui-small"
+                                       hideIcon="true" prefWidth="${fieldWidth}"/>
+                </HBox>
+                <HBox styleClass="h-box">
+                    <Text text="随机事件"/>
+                    <TipNode text="我方回合结束后，可能触发点击卡牌等事件"/>
+                    <HBox HBox.hgrow="ALWAYS"/>
+                    <ConfigSwitch notificationManager="${notificationManager}" config="RANDOM_EVENT"/>
+                </HBox>
+                <HBox styleClass="h-box">
+                    <Text text="随机表情"/>
+                    <TipNode text="我方回合结束后，可能发问候等表情"/>
+                    <HBox HBox.hgrow="ALWAYS"/>
+                    <ConfigSwitch notificationManager="${notificationManager}" config="RANDOM_EMOTION"/>
+                </HBox>
+                <HBox styleClass="h-box">
+                    <Label text="只打人机" contentDisplay="RIGHT">
+                        <graphic>
+                            <BetaTag/>
+                        </graphic>
+                    </Label>
+                    <TipNode text="若对方行为不像人机则考虑投降"/>
+                    <HBox HBox.hgrow="ALWAYS"/>
+                    <ConfigSwitch notificationManager="${notificationManager}" config="ONLY_ROBOT"/>
+                </HBox>
+                <HBox styleClass="h-box">
+                    <Text text="超回合投降"/>
+                    <TipNode text="指定我方回合数后自动投降"/>
+                    <HBox HBox.hgrow="ALWAYS"/>
+                    <ConfigNumberField notificationManager="${notificationManager}" config="OVER_TURN_SURRENDER"
+                                       prefWidth="${fieldWidth}" hideIcon="true" minValue="-1" maxValue="99999"
+                                       styleClass="text-field-ui, text-field-ui-small"/>
+                </HBox>
+                <HBox styleClass="h-box">
+                    <Text text="被斩杀投降"/>
+                    <TipNode text="要被斩了投降，只做粗略计算"/>
+                    <HBox HBox.hgrow="ALWAYS"/>
+                    <ConfigSwitch notificationManager="${notificationManager}" config="KILLED_SURRENDER"/>
+                </HBox>
+                <HBox styleClass="h-box">
+                    <Text text="对局超时投降"/>
+                    <TipNode text="游戏对局超过指定时间(秒)将直接投降"/>
+                    <HBox HBox.hgrow="ALWAYS"/>
+                    <ConfigNumberField notificationManager="${notificationManager}" config="WAR_TIMEOUT_SURRENDER"
+                                       prefWidth="${fieldWidth}" hideIcon="true" minValue="-1" maxValue="99999"
+                                       styleClass="text-field-ui, text-field-ui-small"/>
+                </HBox>
+            </VBox>
+        </ScrollPane>
+    </VBox>
+    <NotificationManager fx:id="notificationManager" notificationPos="BOTTOM_CENTER">
+        <NotificationFactory showingCloseBtn="false" size="SMALL"/>
+    </NotificationManager>
+</StackPane>

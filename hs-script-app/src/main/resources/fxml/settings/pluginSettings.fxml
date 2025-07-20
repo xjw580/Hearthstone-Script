@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import club.xiaojiawei.controls.*?>
+<?import club.xiaojiawei.factory.NotificationFactory?>
+<?import club.xiaojiawei.hsscript.component.CardTableView?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<StackPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            stylesheets="@../css/settings/pluginSettings.css"
+            fx:id="rootPane"
+            fx:controller="club.xiaojiawei.hsscript.controller.javafx.settings.PluginSettingsController">
+    <SplitPane dividerPositions="0.36" styleClass="split-pane-line"
+               prefHeight="${rootPane.height}" prefWidth="${rootPane.width}">
+        <ListView fx:id="pluginListView" minWidth="200" maxWidth="330" styleClass="list-view-ui-hs"/>
+        <VBox fx:id="pluginInfo" style="-fx-background-color: white;" visible="false">
+            <VBox spacing="3" style="-fx-padding: 5">
+                <CopyLabel fx:id="pluginName" notificationManager="${notificationManager}"
+                           style="-fx-font-size: 18;-fx-font-weight: bold"/>
+                <HBox spacing="15" alignment="CENTER_LEFT">
+                    <CopyLabel fx:id="pluginAuthor" notificationManager="${notificationManager}"/>
+                    <Hyperlink text="插件首页" onAction="#jumpToHome"/>
+                    <CopyLabel fx:id="pluginId" notificationManager="${notificationManager}"/>
+                </HBox>
+                <CopyLabel fx:id="pluginVersion" notificationManager="${notificationManager}"/>
+            </VBox>
+            <fx:define>
+                <Tab text="适配的卡牌" fx:id="cardTab">
+                    <StackPane style="-fx-padding: 5;">
+                        <CardTableView fx:id="cardTable" notificationManager="${notificationManager}">
+                            <placeholder>
+                                <StackPane>
+                                    <Label text="未适配任何卡牌"/>
+                                </StackPane>
+                            </placeholder>
+                        </CardTableView>
+                        <fx:define>
+                            <TableFilterManagerGroup fx:id="cardTableProxy" tableView="$cardTable" autoRegisterColFilter="true"/>
+                        </fx:define>
+                        <ProgressModal fx:id="cardRootProgressModal" title="加载中..."/>
+                    </StackPane>
+                </Tab>
+                <Tab text="包含的策略" fx:id="deckTab">
+                    <StackPane style="-fx-padding: 5;">
+                        <ListView fx:id="deckStrategyListView" styleClass="list-view-ui-hs"/>
+                        <ProgressModal fx:id="deckStrategyRootProgressModal" title="加载中..."/>
+                    </StackPane>
+                </Tab>
+            </fx:define>
+            <TabPane fx:id="pluginTabPane" styleClass="tab-pane-ui, tab-pane-ui-small" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
+                <Tab text="描述" fx:id="desRoot">
+                    <VBox fx:id="desRootPane" style="-fx-padding: 5;-fx-spacing: 5">
+                        <CopyLabel fx:id="pluginDescription" notificationManager="${notificationManager}"
+                                   wrapText="true"/>
+                        <Separator/>
+                        <AnchorPane fx:id="pluginGraphicDescription"/>
+                    </VBox>
+                </Tab>
+            </TabPane>
+        </VBox>
+    </SplitPane>
+    <ProgressModal fx:id="rootProgressModal" title="加载插件中..."/>
+    <NotificationManager fx:id="notificationManager" notificationPos="BOTTOM_CENTER">
+        <NotificationFactory showingCloseBtn="false" size="SMALL"/>
+    </NotificationManager>
+</StackPane>

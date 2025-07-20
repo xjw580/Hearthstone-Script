@@ -1,0 +1,38 @@
+.h-box {
+    -fx-spacing: 10;
+    -fx-alignment: CENTER_LEFT;
+    -fx-background-color: white;
+    -fx-background-radius: 5;
+    -fx-padding: 12;
+    -fx-effect: default-effect;
+    -fx-max-width: 500;
+    -fx-min-width: 400;
+}
+
+#rootPane {
+    -fx-background-color: rgb(242, 242, 242);
+}
+
+.item-v-box {
+    -fx-alignment: CENTER;
+    -fx-padding: 8 24 8 24!important;
+    -fx-spacing: 8;
+    /*-fx-padding: 10;*/
+    /*-fx-font-size: 12;*/
+    /*-fx-alignment: CENTER_LEFT;*/
+}
+.item-titled-pane{
+    -fx-alignment: center_left;
+}
+.item-titled-pane > .content{
+    -fx-background-color: none!important;
+}
+.item-titled-pane > .title {
+    -fx-background-color: none!important;
+    -fx-border-color: none!important;
+    -fx-font-weight: bold;
+}
+
+.control-btn {
+    -fx-background-color: rgba(128, 128, 128, 0.5)
+}

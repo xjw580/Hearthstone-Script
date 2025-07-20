@@ -1,0 +1,39 @@
+.confirm-btn-group {
+    -fx-spacing: 25;
+    -fx-padding: 10 15 10 10;
+    -fx-background-color: transparent;
+    -fx-border-width: 0;
+    -fx-alignment: CENTER_RIGHT;
+}
+
+.scroll-pane-item {
+    -fx-fit-to-width: true;
+    -fx-hbar-policy: NEVER;
+    -fx-background-insets: 0
+}
+
+.split-pane-line *.split-pane-divider {
+    -fx-background-color: white;
+    -fx-border-color: #d3d3d3;
+    -fx-border-width: 0 0 0 1;
+}
+
+.split-pane-line {
+    -fx-background: white
+}
+
+.list-view-ui-hs {
+    -fx-background-color: white;
+    -fx-border-width: 0;
+}
+
+/* listcell的样式 */
+.list-view-ui-hs .list-cell {
+    -fx-background-color: white;
+}
+
+/* listcell选中的样式，与未选中一样 */
+.list-view-ui-hs .list-cell:selected {
+    -fx-background-color: hover-color;
+    -fx-text-fill: black;
+}

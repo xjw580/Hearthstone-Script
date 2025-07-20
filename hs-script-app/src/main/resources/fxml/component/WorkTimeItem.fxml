@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import club.xiaojiawei.controls.Time?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.text.Text?>
+<fx:root type="HBox" xmlns="http://javafx.com/javafx"
+         stylesheets="@css/workTimeItem.css"
+         styleClass="timeHBox"
+         xmlns:fx="http://javafx.com/fxml">
+    <HBox>
+        <Time fx:id="startTime" size="SMALL"/>
+        <Text text="-" translateY="3" style="-fx-font-weight: BOLD"/>
+        <Time fx:id="endTime" size="SMALL"/>
+    </HBox>
+    <CheckBox fx:id="enableCheckBox" styleClass="check-box-ui, check-box-ui-main"/>
+</fx:root>

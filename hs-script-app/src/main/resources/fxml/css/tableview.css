@@ -1,0 +1,136 @@
+.root {
+    table-view-idea-bg-color: #efefef;
+}
+
+.table-view-idea {
+    -fx-padding: 0;
+    /*-fx-table-cell-border-color: transparent;*/
+}
+
+/*空闲列列头*/
+.table-view-idea .filler {
+    -fx-background-color: table-view-idea-bg-color;
+    -fx-background-radius: 0 10 0 0;
+}
+
+.table-view-idea, .table-view-idea .column-header-background, .table-view-idea:constrained-resize .filler {
+    -fx-background-color: transparent;
+}
+
+.table-view-idea .nested-column-header {
+    -fx-background-radius: 10 0 0 0;
+    -fx-background-color: table-view-idea-bg-color;
+}
+
+.table-view-idea:constrained-resize .nested-column-header {
+    -fx-background-radius: 10 10 0 0;
+}
+
+/*每一列的头头，也就是顶栏*/
+.table-view-idea .column-header {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+
+/*顶栏内的label*/
+.table-view-idea .column-header-background .label {
+    -fx-text-fill: black;
+    -fx-font-weight: normal;
+    -fx-pref-height: 40;
+    -fx-font-size: 11;
+}
+
+/*单元格*/
+.table-view-idea .table-row-cell .table-cell {
+    -fx-pref-height: 40;
+    -fx-alignment: CENTER;
+    -fx-border-width: 0.5 0 0 0.5;
+    -fx-border-color: #bebebe;
+}
+
+/*单元格文本颜色*/
+.table-view-idea .table-row-cell .table-cell,
+.table-view-idea .table-row-cell .table-cell * {
+    -fx-text-fill: black !important;
+}
+
+/*选中和悬浮效果*/
+.table-view-idea .table-row-cell:selected .table-cell,
+.table-view-idea .table-row-cell:hover .table-cell {
+    /*-fx-border-color: table-view-selected-color;*/
+    /*-fx-border-width: 1;*/
+}
+
+/*列头里的箭头*/
+.table-view-idea .arrow {
+    /*-fx-background-color: black;*/
+}
+
+/*所有行*/
+.table-view-idea .table-row-cell {
+    -fx-background-color: #ffffff;
+    -fx-padding: 0;
+    -fx-border-width: 0;
+}
+
+/*奇数行*/
+.table-view-idea .table-row-cell:odd {
+    /*-fx-background-color: #f1d88d;*/
+}
+
+/*选中*/
+.table-view-idea .table-row-cell:selected, .table-view-idea:focused .table-row-cell:selected {
+    -fx-background-color: #a7d2ff !important;
+}
+
+/*悬浮*/
+.table-view-idea .table-row-cell:hover {
+    -fx-background-color: #f5f8fe;
+}
+
+/*Size*/
+/*big*/
+.table-view-idea-big .column-header-background .label {
+    -fx-pref-height: 55 !important;
+}
+
+.table-view-idea-big .table-cell {
+    -fx-pref-height: 55 !important;
+}
+
+/*small*/
+.table-view-idea-small .column-header-background .label {
+    -fx-pref-height: 30 !important;
+}
+
+.table-view-idea-small .table-cell {
+    -fx-pref-height: 30 !important;
+}
+
+.table-view-idea-tiny .column-header-background .label {
+    -fx-pref-height: 25 !important;
+}
+
+.table-view-idea-tiny .table-cell {
+    -fx-pref-height: 25 !important;
+}
+
+/*Style*/
+.table-view-idea-upright .filler {
+    -fx-background-color: table-view-idea-bg-color;
+    -fx-background-radius: 0 !important;
+}
+
+/*；；ColumnResizePolicy为CONSTRAINED_RESIZE_POLICY时*/
+.table-view-idea-upright, .table-view-idea-upright .column-header-background, .table-view-idea-upright:constrained-resize .filler {
+    -fx-background-color: transparent;
+}
+
+.table-view-idea-upright .nested-column-header {
+    -fx-background-radius: 0 !important;
+    -fx-background-color: table-view-idea-bg-color;
+}
+
+.table-view-idea-upright:constrained-resize .nested-column-header {
+    -fx-background-radius: 0 !important;
+}

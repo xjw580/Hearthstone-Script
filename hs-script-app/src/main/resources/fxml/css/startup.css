@@ -1,0 +1,7 @@
+#tip{
+    -fx-fill: white;
+}
+#root{
+    -fx-background-image: url("../../resources/img/startup.jpg");
+    -fx-background-size: stretch;
+}

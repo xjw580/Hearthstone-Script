@@ -1,0 +1,15 @@
+.actionItem {
+    -fx-spacing: 15;
+    -fx-alignment: CENTER;
+}
+
+.clear-ico {
+    -fx-cursor: hand;
+    -fx-scale-y: 1.1;
+    -fx-scale-x: 1.1;
+}
+
+.clear-ico:hover * {
+    -fx-text-fill: red;
+    -fx-fill: red;
+}

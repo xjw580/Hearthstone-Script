@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.collections.FXCollections?>
+<?import java.lang.String?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.Label?>
+<StackPane xmlns="http://javafx.com/javafx"
+           xmlns:fx="http://javafx.com/fxml"
+           fx:controller="club.xiaojiawei.hsscript.controller.javafx.CardActionEditorController"
+           fx:id="rootPane"
+           prefHeight="400.0" prefWidth="600.0">
+    <VBox spacing="20">
+        <HBox>
+            <Label text="卡牌id:"/>
+            <TextField />
+        </HBox>
+    </VBox>
+</StackPane>

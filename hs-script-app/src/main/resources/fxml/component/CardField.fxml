@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import club.xiaojiawei.controls.FilterField?>
+<?import club.xiaojiawei.controls.NumberField?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.HBox?>
+<fx:root type="HBox" xmlns="http://javafx.com/javafx"
+         style="-fx-padding: 10;-fx-spacing: 10"
+         xmlns:fx="http://javafx.com/fxml">
+    <FilterField fx:id="searchCardField" HBox.hgrow="ALWAYS" styleClass="text-field-ui, text-field-ui-small"
+                 promptText="输入卡牌名，支持通配符%和_"/>
+    <Label text="条数:" contentDisplay="RIGHT">
+        <graphic>
+            <NumberField fx:id="limit" text="100" promptText="limit" hideIcon="true" maxWidth="45"
+                         styleClass="text-field-ui, text-field-ui-small"/>
+        </graphic>
+    </Label>
+    <Label text="偏移:" contentDisplay="RIGHT">
+        <graphic>
+            <NumberField fx:id="offset" text="0" promptText="offset" hideIcon="true" maxWidth="45"
+                         styleClass="text-field-ui, text-field-ui-small"/>
+        </graphic>
+    </Label>
+</fx:root>

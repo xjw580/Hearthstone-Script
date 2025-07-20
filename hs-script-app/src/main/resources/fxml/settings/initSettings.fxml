@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import club.xiaojiawei.controls.ico.FileIco?>
+<?import club.xiaojiawei.controls.ico.HelpIco?>
+<?import club.xiaojiawei.controls.NotificationManager?>
+<?import club.xiaojiawei.controls.PasswordTextField?>
+<?import club.xiaojiawei.factory.NotificationFactory?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import club.xiaojiawei.hsscript.component.TipNode?>
+<StackPane xmlns="http://javafx.com/javafx"
+           xmlns:fx="http://javafx.com/fxml"
+           stylesheets="@../css/settings/initSettings.css"
+           fx:id="rootPane"
+           fx:controller="club.xiaojiawei.hsscript.controller.javafx.settings.InitSettingsController">
+    <VBox>
+        <ScrollPane VBox.vgrow="ALWAYS" styleClass="scroll-pane-item">
+            <VBox styleClass="item-v-box">
+                <HBox styleClass="h-box">
+                    <Text text="炉石传说安装路径"/>
+                    <Text fx:id="gamePath" underline="true"/>
+                    <HBox HBox.hgrow="ALWAYS"/>
+                    <Button styleClass="btn-ui, btn-ui-small" onAction="#gameClicked" text="选择">
+                        <graphic>
+                            <FileIco/>
+                        </graphic>
+                    </Button>
+                </HBox>
+                <HBox styleClass="h-box">
+                    <Text text="战网程序路径"/>
+                    <Text fx:id="platformPath" underline="true"/>
+                    <HBox HBox.hgrow="ALWAYS"/>
+                    <Button styleClass="btn-ui, btn-ui-small" onAction="#platformClicked" text="选择">
+                        <graphic>
+                            <FileIco/>
+                        </graphic>
+                    </Button>
+                </HBox>
+                <HBox styleClass="h-box">
+                    <Label text="战网账号密码" contentDisplay="RIGHT">
+                        <graphic>
+                            <TipNode text="用于自动登录战网"/>
+                        </graphic>
+                    </Label>
+                    <PasswordTextField styleClass="text-field-ui, text-field-ui-small" fx:id="password"
+                                       promptText="" hideForever="true"/>
+                </HBox>
+                <HBox styleClass="h-box">
+                    <Text text="选择卡组位"/>
+                    <TipNode text="每次选择的卡组在当前页的第几号位，多选则随机选择"/>
+                    <HBox HBox.hgrow="ALWAYS"/>
+                    <HBox fx:id="chooseDeckPosPane" spacing="10" alignment="CENTER_RIGHT"/>
+                </HBox>
+            </VBox>
+        </ScrollPane>
+        <HBox styleClass="confirm-btn-group">
+            <Button text="应用" styleClass="btn-ui, btn-ui-normal" onAction="#apply"/>
+            <Button text="保存" styleClass="btn-ui, btn-ui-success" onAction="#save"/>
+        </HBox>
+    </VBox>
+
+    <NotificationManager fx:id="notificationManager" notificationPos="BOTTOM_CENTER">
+        <NotificationFactory showingCloseBtn="false" size="SMALL"/>
+    </NotificationManager>
+</StackPane>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import club.xiaojiawei.controls.NotificationManager?>
+<?import club.xiaojiawei.controls.Switch?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import club.xiaojiawei.factory.NotificationFactory?>
+<StackPane xmlns="http://javafx.com/javafx"
+           xmlns:fx="http://javafx.com/fxml"
+           fx:controller="club.xiaojiawei.hsscript.controller.javafx.MeasureGameController"
+           fx:id="rootPane"
+           prefHeight="250.0" prefWidth="400.0">
+    <VBox spacing="15" alignment="TOP_CENTER" style="-fx-padding: 10">
+        <TextArea fx:id="resultArea" styleClass="text-area-ui" VBox.vgrow="ALWAYS"/>
+        <HBox spacing="15" alignment="CENTER_LEFT">
+            <Label text="kotlin风格">
+                <graphic>
+                    <Switch fx:id="ktStyleSwitch"/>
+                </graphic>
+            </Label>
+            <ToggleButton text="显示" styleClass="btn-ui, btn-ui-success" onAction="#showGameModal"/>
+            <Button text="打印结果" styleClass="btn-ui, btn-ui-normal" onAction="#printResult"/>
+            <Button text="清空打印" styleClass="btn-ui, btn-ui-error" onAction="#clearResult"/>
+        </HBox>
+    </VBox>
+    <NotificationManager fx:id="notificationManager" notificationPos="TOP_CENTER">
+        <NotificationFactory showingCloseBtn="false" size="SMALL"/>
+    </NotificationManager>
+</StackPane>

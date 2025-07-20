@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import club.xiaojiawei.hsscript.component.TipNode?>
+<?import javafx.scene.control.*?>
+<TabPane xmlns="http://javafx.com/javafx"
+         xmlns:fx="http://javafx.com/fxml"
+         tabClosingPolicy="UNAVAILABLE"
+         stylesheets="@../css/tableview.css"
+         fx:controller="club.xiaojiawei.hsscript.controller.javafx.settings.SettingsController"
+         fx:id="rootPane"
+         styleClass="tab-pane-ui">
+    <Tab fx:id="initTab" text="初始设置"/>
+    <Tab fx:id="advancedTab" text="高级设置"/>
+    <Tab fx:id="strategyTab" text="策略设置"/>
+    <Tab fx:id="pluginTab" text="插件设置"/>
+    <Tab fx:id="weightTab" text="卡牌权重设置">
+        <graphic>
+            <TipNode text="自定义调整卡牌权重供卡组策略参考"/>
+        </graphic>
+    </Tab>
+    <Tab fx:id="cardInfoTab" text="卡牌信息设置">
+        <graphic>
+            <TipNode text="自定义调整卡牌使用行为"/>
+        </graphic>
+    </Tab>
+    <Tab fx:id="developerTab" text="开发者选项"/>
+    <Tab fx:id="aboutTab" text="关于"/>
+</TabPane>

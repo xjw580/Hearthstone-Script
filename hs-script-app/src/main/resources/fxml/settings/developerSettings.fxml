@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import club.xiaojiawei.controls.ico.HelpIco?>
+<?import club.xiaojiawei.controls.NotificationManager?>
+<?import club.xiaojiawei.factory.NotificationFactory?>
+<?import club.xiaojiawei.hsscript.component.ConfigSwitch?>
+<?import javafx.collections.FXCollections?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Text?>
+<?import java.lang.*?>
+<?import club.xiaojiawei.controls.ProgressModal?>
+<?import club.xiaojiawei.hsscript.component.TipNode?>
+<StackPane xmlns="http://javafx.com/javafx"
+           xmlns:fx="http://javafx.com/fxml"
+           stylesheets="@../css/settings/developerSettings.css"
+           fx:id="rootPane"
+           fx:controller="club.xiaojiawei.hsscript.controller.javafx.settings.DeveloperSettingsController">
+    <VBox>
+        <ScrollPane VBox.vgrow="ALWAYS" styleClass="scroll-pane-item">
+            <VBox styleClass="item-v-box">
+                <HBox styleClass="h-box">
+                    <Text text="启用鼠标"/>
+                    <HBox HBox.hgrow="ALWAYS"/>
+                    <ConfigSwitch notificationManager="${notificationManager}" config="ENABLE_MOUSE"/>
+                </HBox>
+                <HBox styleClass="h-box">
+                    <Text text="执行策略"/>
+                    <TipNode text="是否执行卡组策略"/>
+                    <HBox HBox.hgrow="ALWAYS"/>
+                    <ConfigSwitch notificationManager="${notificationManager}" config="STRATEGY"/>
+                </HBox>
+                <HBox styleClass="h-box">
+                    <Text text="显示游戏控件位置"/>
+                    <HBox HBox.hgrow="ALWAYS"/>
+                    <ConfigSwitch notificationManager="${notificationManager}" config="DISPLAY_GAME_RECT_POS"/>
+                </HBox>
+                <HBox styleClass="h-box">
+                    <HBox alignment="CENTER_LEFT">
+                        <Hyperlink text="日志" onAction="#openLogFile"/>
+                        <Label text="级别"/>
+                    </HBox>
+                    <HBox HBox.hgrow="ALWAYS"/>
+                    <ComboBox fx:id="fileLogLevelComboBox"
+                              styleClass="combo-box-ui, combo-box-ui-small, combo-box-ui-normal">
+                        <items>
+                            <FXCollections fx:factory="observableArrayList">
+                                <String fx:value="OFF"/>
+                                <String fx:value="ERROR"/>
+                                <String fx:value="WARN"/>
+                                <String fx:value="INFO"/>
+                                <String fx:value="DEBUG"/>
+                            </FXCollections>
+                        </items>
+                    </ComboBox>
+                </HBox>
+                <HBox styleClass="h-box">
+                    <Button text="测量游戏控件" styleClass="btn-ui, btn-ui-normal, btn-ui-small"
+                            onAction="#openMeasureUtil"/>
+                </HBox>
+                <HBox styleClass="h-box">
+                    <Button text="分析游戏数据" styleClass="btn-ui, btn-ui-normal, btn-ui-small" onAction="#openGameDataAnalysis"/>
+                    <HBox HBox.hgrow="ALWAYS"/>
+                    <Label text="对局开始自动打开" contentDisplay="RIGHT">
+                        <graphic>
+                            <ConfigSwitch notificationManager="${notificationManager}" config="AUTO_OPEN_GAME_ANALYSIS"/>
+                        </graphic>
+                    </Label>
+                </HBox>
+                <HBox styleClass="h-box">
+                    <Button text="更新卡牌数据库" styleClass="btn-ui, btn-ui-normal, btn-ui-small"
+                            onAction="#updateCardDB" contentDisplay="RIGHT">
+                        <graphic>
+                            <TipNode text="更新hs_cards.db，需要魔法"/>
+                        </graphic>
+                    </Button>
+                </HBox>
+                <HBox styleClass="h-box" visible="false" managed="false">
+                    <Button text="编写卡牌插件" styleClass="btn-ui, btn-ui-normal, btn-ui-small" onAction="#createCardAction"/>
+                </HBox>
+                <HBox styleClass="h-box">
+                    <Button text="格式化Power.log" styleClass="btn-ui, btn-ui-normal, btn-ui-small" onAction="#formatPowerLog"/>
+                    <Button text="格式化LoadingScreen.log" styleClass="btn-ui, btn-ui-normal, btn-ui-small" onAction="#formatLoadingScreenLog"/>
+                </HBox>
+            </VBox>
+        </ScrollPane>
+    </VBox>
+
+    <ProgressModal fx:id="progressModal"/>
+    <NotificationManager fx:id="notificationManager" notificationPos="BOTTOM_CENTER">
+        <NotificationFactory showingCloseBtn="false" size="SMALL"/>
+    </NotificationManager>
+</StackPane>

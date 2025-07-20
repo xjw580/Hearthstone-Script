@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import club.xiaojiawei.controls.ico.*?>
+<?import club.xiaojiawei.controls.NotificationManager?>
+<?import club.xiaojiawei.factory.NotificationFactory?>
+<?import club.xiaojiawei.hsscript.component.svg.StatisticsIco?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.Group?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.util.Duration?>
+<?import java.lang.Double?>
+<StackPane xmlns:fx="http://javafx.com/fxml"
+           stylesheets="@css/main.css"
+           fx:id="rootPane"
+           fx:controller="club.xiaojiawei.hsscript.controller.javafx.MainController">
+    <fx:define>
+        <ToggleGroup fx:id="pauseToggleGroup"/>
+    </fx:define>
+    <Accordion fx:id="accordion" styleClass="accordion-ui, accordion-ui-big, accordion-ui-pure"
+               expandedPane="$titledPaneControl">
+        <panes>
+            <TitledPane text="控制" fx:id="titledPaneControl">
+                <VBox alignment="TOP_CENTER" spacing="20" style="-fx-padding: 5 5 10 5">
+                    <HBox alignment="CENTER" spacing="40">
+                        <ToggleButton fx:id="startButton" toggleGroup="$pauseToggleGroup" text="开始" onAction="#start"
+                                      styleClass="btn-ui, btn-ui-small, btn-ui-success-3d">
+                            <tooltip>
+                                <Tooltip text="开始工作">
+                                    <showDelay>
+                                        <Duration millis="400"/>
+                                    </showDelay>
+                                </Tooltip>
+                            </tooltip>
+                            <graphic>
+                                <StartIco fx:id="startIco"/>
+                            </graphic>
+                        </ToggleButton>
+                        <ToggleButton fx:id="pauseButton" toggleGroup="$pauseToggleGroup" selected="true" text="暂停"
+                                      onAction="#pause"
+                                      styleClass="btn-ui, btn-ui-small, btn-ui-error-3d, btnPressed">
+                            <tooltip>
+                                <Tooltip text="暂停工作">
+                                    <showDelay>
+                                        <Duration millis="400"/>
+                                    </showDelay>
+                                </Tooltip>
+                            </tooltip>
+                            <graphic>
+                                <PauseIco fx:id="pauseIco" color="gray"/>
+                            </graphic>
+                        </ToggleButton>
+                    </HBox>
+
+                    <Label text="模式："
+                           contentDisplay="RIGHT">
+                        <graphic>
+                            <ComboBox prefWidth="110" styleClass="combo-box-ui, combo-box-ui-small, combo-box-ui-normal"
+                                      fx:id="runModeBox"/>
+                        </graphic>
+                    </Label>
+
+                    <Label text="策略："
+                           contentDisplay="RIGHT">
+                        <graphic>
+                            <ComboBox prefWidth="110" styleClass="combo-box-ui, combo-box-ui-small, combo-box-ui-normal"
+                                      fx:id="deckStrategyBox"/>
+                        </graphic>
+                    </Label>
+
+                    <GridPane>
+                        <fx:define>
+                            <Double fx:id="dataRowHeight" fx:value="25"/>
+                        </fx:define>
+                        <columnConstraints>
+                            <ColumnConstraints halignment="CENTER" hgrow="ALWAYS"/>
+                            <ColumnConstraints halignment="CENTER" hgrow="ALWAYS"/>
+                            <ColumnConstraints halignment="CENTER" hgrow="NEVER"/>
+                        </columnConstraints>
+                        <rowConstraints>
+                            <RowConstraints prefHeight="${dataRowHeight}" vgrow="NEVER" valignment="CENTER"/>
+                            <RowConstraints prefHeight="${dataRowHeight}" vgrow="NEVER" valignment="CENTER"/>
+                        </rowConstraints>
+
+                        <Label GridPane.rowIndex="0" GridPane.columnIndex="0"
+                               text="游戏局数："
+                               contentDisplay="RIGHT">
+                            <graphic>
+                                <Text text="0" fx:id="gameCount"/>
+                            </graphic>
+                        </Label>
+
+                        <Label GridPane.rowIndex="0" GridPane.columnIndex="1"
+                               text="胜率："
+                               contentDisplay="RIGHT">
+                            <graphic>
+                                <Text text="?" fx:id="winningPercentage"/>
+                            </graphic>
+                        </Label>
+
+                        <Label GridPane.rowIndex="1" GridPane.columnIndex="0"
+                               text="游戏时长："
+                               contentDisplay="RIGHT">
+                            <graphic>
+                                <Text text="0" fx:id="gameTime"/>
+                            </graphic>
+                        </Label>
+
+                        <Label GridPane.rowIndex="1" GridPane.columnIndex="1"
+                               text="经验："
+                               contentDisplay="RIGHT">
+                            <tooltip>
+                                <Tooltip text="预估值"/>
+                            </tooltip>
+                            <graphic>
+                                <Text text="0" fx:id="exp"/>
+                            </graphic>
+                        </Label>
+
+                        <Group GridPane.rowIndex="0" GridPane.rowSpan="2" GridPane.columnIndex="2">
+                            <ClearIco styleClass="resetDataIcon" onMouseClicked="#resetStatistics"/>
+                        </Group>
+                    </GridPane>
+
+                    <VBox styleClass="workTimeVBox" VBox.vgrow="ALWAYS" alignment="CENTER">
+                        <HBox alignment="CENTER" style="-fx-padding: 5 0 5 0">
+                            <Label fx:id="workTimeRuleSetId"/>
+                        </HBox>
+                        <ScrollPane styleClass="scroll-pane-item" style="-fx-background: #E8E8FF" VBox.vgrow="ALWAYS" fitToHeight="true">
+                            <VBox fx:id="workTimePane" spacing="5" alignment="CENTER"/>
+                        </ScrollPane>
+                        <HBox alignment="CENTER" style="-fx-padding: 5">
+                            <Button styleClass="btn-ui, btn-ui-small, btn-ui-normal" onAction="#editWorkTime">
+                                <graphic>
+                                    <EditIco/>
+                                </graphic>
+                            </Button>
+                        </HBox>
+                    </VBox>
+
+                    <VBox alignment="CENTER" spacing="5">
+                        <HBox spacing="5" alignment="CENTER">
+                            <Text fx:id="versionText" style="-fx-cursor: hand" onMouseClicked="#openVersionMsg"/>
+                            <Button onAction="#updateVersion" fx:id="updateBtn"
+                                    styleClass="btn-ui, btn-ui-small, btn-ui-normal" visible="false" managed="false">
+                                <tooltip>
+                                    <Tooltip text="下载更新"/>
+                                </tooltip>
+                                <graphic>
+                                    <UpdateIco/>
+                                </graphic>
+                            </Button>
+                            <Button onAction="#flushVersion" fx:id="flushBtn"
+                                    styleClass="btn-ui, btn-ui-small, btn-ui-normal">
+                                <tooltip>
+                                    <Tooltip text="检查更新"/>
+                                </tooltip>
+                                <graphic>
+                                    <FlushIco fx:id="flushIco"/>
+                                </graphic>
+                            </Button>
+                        </HBox>
+                        <ProgressBar fx:id="downloadProgress" styleClass="progress-bar-ui" prefHeight="4"
+                                     prefWidth="${titledPaneControl.width}" visible="false" managed="false"/>
+                    </VBox>
+
+                    <HBox alignment="CENTER">
+                        <Button onAction="#openSettings" text="设置" styleClass="btn-ui, btn-ui-small">
+                            <graphic>
+                                <SettingsIco/>
+                            </graphic>
+                        </Button>
+                        <HBox HBox.hgrow="ALWAYS" maxWidth="30"/>
+                        <Button onAction="#openStatistics" text="统计" styleClass="btn-ui, btn-ui-small">
+                            <graphic>
+                                <StatisticsIco/>
+                            </graphic>
+                        </Button>
+                    </HBox>
+                </VBox>
+            </TitledPane>
+            <TitledPane text="日志" fx:id="titledPaneLog">
+                <ScrollPane fx:id="logScrollPane" hbarPolicy="NEVER"
+                            onMouseEntered="#mouseEnteredLog" onMouseExited="#mouseExitedLog"
+                            onMouseClicked="#mouseClickedLog">
+                    <VBox maxWidth="${accordion.width}" spacing="5" fx:id="logVBox"/>
+                </ScrollPane>
+            </TitledPane>
+        </panes>
+    </Accordion>
+    <NotificationManager fx:id="notificationManger" notificationPos="BOTTOM_CENTER">
+        <NotificationFactory showingCloseBtn="false" size="SMALL"/>
+    </NotificationManager>
+</StackPane>

@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import club.xiaojiawei.controls.ico.GiteeIco?>
+<?import club.xiaojiawei.controls.ico.GithubIco?>
+<?import club.xiaojiawei.controls.NotificationManager?>
+<?import club.xiaojiawei.factory.NotificationFactory?>
+<?import club.xiaojiawei.hsscript.component.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.Group?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.util.Duration?>
+<?import java.lang.Double?>
+<StackPane xmlns="http://javafx.com/javafx"
+           xmlns:fx="http://javafx.com/fxml"
+           stylesheets="@../css/settings/advancedSettings.css"
+           fx:id="rootPane"
+           fx:controller="club.xiaojiawei.hsscript.controller.javafx.settings.AdvancedSettingsController">
+    <fx:define>
+        <Duration fx:id="tooltipDuration" fx:value="60s"/>
+        <Double fx:id="fieldWidth" fx:value="150"/>
+    </fx:define>
+    <StackPane>
+        <ScrollPane fx:id="scrollPane" VBox.vgrow="ALWAYS" styleClass="scroll-pane-item">
+            <VBox fx:id="titledRootPane" alignment="CENTER">
+                <Group fx:id="behaviorPane">
+                    <TitledPane fx:id="behaviorTitled" text="行为"
+                                styleClass="titled-pane-ui, titled-pane-ui-big, titled-pane-ui-pure, item-titled-pane">
+                        <VBox styleClass="item-v-box">
+                            <HBox styleClass="h-box">
+                                <Text text="鼠标控制模式"/>
+                                <HBox HBox.hgrow="ALWAYS"/>
+                                <ComboBox fx:id="mouseControlModeComboBox"
+                                          styleClass="combo-box-ui, combo-box-ui-small, combo-box-ui-normal"/>
+                                <Button fx:id="refreshDriver" text="刷新驱动" onAction="#refreshDriver"
+                                        styleClass="btn-ui, btn-ui-small" visible="false" managed="false"/>
+                            </HBox>
+                            <HBox styleClass="h-box">
+                                <Text text="限制鼠标范围"/>
+                                <TipNode text="鼠标活动范围将限制在游戏窗口内"/>
+                                <HBox HBox.hgrow="ALWAYS"/>
+                                <ConfigSwitch notificationManager="${notificationManager}" config="LIMIT_MOUSE_RANGE"/>
+                            </HBox>
+                            <HBox styleClass="h-box">
+                                <Label text="阻止游戏反作弊" contentDisplay="RIGHT">
+                                    <graphic>
+                                        <BetaTag/>
+                                    </graphic>
+                                </Label>
+                                <TipNode
+                                        text="阻止游戏加载本地反作弊插件，必须用本软件启动游戏才能生效。效果未知，斟酌使用"/>
+                                <HBox HBox.hgrow="ALWAYS"/>
+                                <ConfigSwitch notificationManager="${notificationManager}" config="PREVENT_AC"/>
+                            </HBox>
+                            <HBox styleClass="h-box">
+                                <Text text="工作时最小化"/>
+                                <TipNode text="工作时将关闭软件所有窗口仅保留托盘，此时只能检测到Java进程"/>
+                                <HBox HBox.hgrow="ALWAYS"/>
+                                <ConfigSwitch notificationManager="${notificationManager}" config="WORKING_MINIMIZE"/>
+                            </HBox>
+                            <HBox styleClass="h-box">
+                                <Text text="检查游戏响应超时"/>
+                                <TipNode text="游戏超过指定时间(秒)无响应将重启游戏"/>
+                                <HBox HBox.hgrow="ALWAYS"/>
+                                <ConfigNumberField notificationManager="${notificationManager}" config="GAME_TIMEOUT"
+                                                   promptText="秒"
+                                                   prefWidth="${fieldWidth}"
+                                                   styleClass="text-field-ui, text-field-ui-small"/>
+                            </HBox>
+                            <HBox styleClass="h-box">
+                                <Text text="游戏窗口不透明度"/>
+                                <TipNode text="不透明度为0时，鼠标将穿透游戏窗口"/>
+                                <HBox HBox.hgrow="ALWAYS"/>
+                                <ConfigNumberField config="GAME_WINDOW_OPACITY"
+                                                   styleClass="text-field-ui, text-field-ui-small"
+                                                   minValue="0" maxValue="255" prefWidth="${fieldWidth}"/>
+                            </HBox>
+                            <HBox styleClass="h-box">
+                                <Text text="战网窗口不透明度"/>
+                                <TipNode text="不透明度为0时，鼠标将穿透游戏窗口"/>
+                                <HBox HBox.hgrow="ALWAYS"/>
+                                <ConfigNumberField config="PLATFORM_WINDOW_OPACITY"
+                                                   styleClass="text-field-ui, text-field-ui-small"
+                                                   minValue="0" maxValue="255" prefWidth="${fieldWidth}"/>
+                            </HBox>
+                            <HBox styleClass="h-box">
+                                <Text text="游戏窗口缩小倍数"/>
+                                <TipNode text="主显示器与游戏窗口高度之比"/>
+                                <HBox HBox.hgrow="ALWAYS"/>
+                                <ConfigNumberField config="GAME_WINDOW_REDUCTION_FACTOR"
+                                                   styleClass="text-field-ui, text-field-ui-small"
+                                                   minValue="0" maxValue="255" prefWidth="${fieldWidth}"/>
+                            </HBox>
+                            <HBox styleClass="h-box">
+                                <Text text="战网窗窗口缩小倍数"/>
+                                <TipNode text="主显示器与战网窗口高度之比"/>
+                                <HBox HBox.hgrow="ALWAYS"/>
+                                <ConfigNumberField config="PLATFORM_WINDOW_REDUCTION_FACTOR"
+                                                   styleClass="text-field-ui, text-field-ui-small"
+                                                   minValue="0" maxValue="255" prefWidth="${fieldWidth}"/>
+                            </HBox>
+                            <HBox styleClass="h-box">
+                                <Text text="置顶游戏窗口"/>
+                                <HBox HBox.hgrow="ALWAYS"/>
+                                <ConfigSwitch fx:id="topGameWindow" notificationManager="${notificationManager}"
+                                              config="TOP_GAME_WINDOW"/>
+                            </HBox>
+                            <HBox styleClass="h-box">
+                                <Text text="实时更新游戏窗口信息"/>
+                                <TipNode text="打开此项后软件可以感知到游戏窗口的变化"/>
+                                <HBox HBox.hgrow="ALWAYS"/>
+                                <ConfigSwitch notificationManager="${notificationManager}" config="UPDATE_GAME_WINDOW"/>
+                            </HBox>
+                            <HBox styleClass="h-box">
+                                <Text text="单次匹配最长时间/s"/>
+                                <TipNode text="超过此值将重新匹配"/>
+                                <HBox HBox.hgrow="ALWAYS"/>
+                                <ConfigNumberField config="MATCH_MAXIMUM_TIME"
+                                                   styleClass="text-field-ui, text-field-ui-small"
+                                                   prefWidth="${fieldWidth}"/>
+                            </HBox>
+                            <HBox styleClass="h-box">
+                                <Text text="最长空闲时间/min"/>
+                                <TipNode text="软件工作时闲置时间超过此值将重启游戏"/>
+                                <HBox HBox.hgrow="ALWAYS"/>
+                                <ConfigNumberField config="IDLE_MAXIMUM_TIME"
+                                                   styleClass="text-field-ui, text-field-ui-small"
+                                                   prefWidth="${fieldWidth}"/>
+                            </HBox>
+                            <HBox styleClass="h-box">
+                                <Text text="游戏日志大小限制/KB"/>
+                                <TipNode text="当游戏日志文件超过此值将重启游戏"/>
+                                <HBox HBox.hgrow="ALWAYS"/>
+                                <ConfigNumberField config="GAME_LOG_LIMIT"
+                                                   styleClass="text-field-ui, text-field-ui-small"
+                                                   prefWidth="${fieldWidth}"/>
+                            </HBox>
+                        </VBox>
+                    </TitledPane>
+                </Group>
+                <Group fx:id="systemPane">
+                    <TitledPane fx:id="systemTitled" text="系统"
+                                styleClass="titled-pane-ui, titled-pane-ui-big, titled-pane-ui-pure, item-titled-pane">
+                        <VBox styleClass="item-v-box">
+                            <HBox styleClass="h-box">
+                                <Text text="发送Windows通知"/>
+                                <HBox HBox.hgrow="ALWAYS"/>
+                                <ConfigSwitch notificationManager="${notificationManager}" config="SEND_NOTICE"/>
+                            </HBox>
+                            <HBox styleClass="h-box">
+                                <Text text="使用系统代理"/>
+                                <HBox HBox.hgrow="ALWAYS"/>
+                                <ConfigSwitch notificationManager="${notificationManager}" config="USE_PROXY"/>
+                            </HBox>
+                            <HBox styleClass="h-box">
+                                <Text text="开始/暂停快捷键"/>
+                                <HBox HBox.hgrow="ALWAYS"/>
+                                <TextField fx:id="pauseHotKey" styleClass="text-field-ui, text-field-ui-small"
+                                           prefWidth="${fieldWidth}"
+                                           editable="false"/>
+                            </HBox>
+                            <HBox styleClass="h-box">
+                                <Text text="退出快捷键"/>
+                                <HBox HBox.hgrow="ALWAYS"/>
+                                <TextField fx:id="exitHotKey" styleClass="text-field-ui, text-field-ui-small"
+                                           prefWidth="${fieldWidth}"
+                                           editable="false"/>
+                            </HBox>
+                        </VBox>
+                    </TitledPane>
+                </Group>
+                <Group fx:id="versionPane">
+                    <TitledPane fx:id="versionTitled" text="版本"
+                                styleClass="titled-pane-ui, titled-pane-ui-big, titled-pane-ui-pure, item-titled-pane">
+                        <VBox styleClass="item-v-box">
+                            <HBox styleClass="h-box" spacing="30">
+                                <fx:define>
+                                    <Double fx:id="icoScale" fx:value="1.1"/>
+                                    <ToggleGroup fx:id="updateSourceToggle"/>
+                                </fx:define>
+                                <Text text="更新源"/>
+                                <HBox HBox.hgrow="ALWAYS"/>
+                                <RadioButton fx:id="giteeUpdateSource" text="Gitee" toggleGroup="$updateSourceToggle"
+                                             styleClass="radio-button-ui, radio-button-ui-main">
+                                    <graphic>
+                                        <GiteeIco scaleX="${icoScale}" scaleY="${icoScale}"/>
+                                    </graphic>
+                                    <tooltip>
+                                        <Tooltip text="没有魔法推荐选此，此更新源只有稳定版">
+                                            <showDuration>
+                                                <fx:reference source="tooltipDuration"/>
+                                            </showDuration>
+                                        </Tooltip>
+                                    </tooltip>
+                                </RadioButton>
+                                <RadioButton fx:id="githubUpdateSource" text="Github" toggleGroup="$updateSourceToggle"
+                                             styleClass="radio-button-ui, radio-button-ui-main">
+                                    <graphic>
+                                        <GithubIco scaleX="${icoScale}" scaleY="${icoScale}"/>
+                                    </graphic>
+                                    <tooltip>
+                                        <Tooltip text="有魔法推荐选此，此更新源拥有所有版本">
+                                            <showDuration>
+                                                <fx:reference source="tooltipDuration"/>
+                                            </showDuration>
+                                        </Tooltip>
+                                    </tooltip>
+                                </RadioButton>
+                            </HBox>
+                            <HBox styleClass="h-box">
+                                <Text text="更新开发版"/>
+                                <HBox HBox.hgrow="ALWAYS"/>
+                                <ConfigSwitch notificationManager="${notificationManager}" config="UPDATE_DEV"/>
+                            </HBox>
+                            <HBox styleClass="h-box">
+                                <Text text="自动更新"/>
+                                <HBox HBox.hgrow="ALWAYS"/>
+                                <ConfigSwitch notificationManager="${notificationManager}" config="AUTO_UPDATE"/>
+                            </HBox>
+                        </VBox>
+                    </TitledPane>
+                </Group>
+            </VBox>
+        </ScrollPane>
+        <VBox pickOnBounds="false" alignment="TOP_LEFT" style="-fx-padding: 40 0 0 20;-fx-spacing: 15"
+              translateY="-10">
+            <fx:define>
+                <ToggleGroup fx:id="navigationBarToggle"/>
+            </fx:define>
+            <ToggleButton fx:id="behaviorNavigation" text="行为" selected="true" styleClass="navigationBar"
+                          toggleGroup="$navigationBarToggle" onAction="#scrollBehavior"/>
+            <ToggleButton fx:id="systemNavigation" text="系统" styleClass="navigationBar"
+                          toggleGroup="$navigationBarToggle" onAction="#scrollSystem"/>
+            <ToggleButton fx:id="versionNavigation" text="版本" styleClass="navigationBar"
+                          toggleGroup="$navigationBarToggle" onAction="#scrollVersion"/>
+        </VBox>
+    </StackPane>
+    <NotificationManager fx:id="notificationManager" notificationPos="BOTTOM_CENTER">
+        <NotificationFactory showingCloseBtn="false" size="SMALL"/>
+    </NotificationManager>
+</StackPane>

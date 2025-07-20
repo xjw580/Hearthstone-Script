@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import club.xiaojiawei.controls.ico.*?>
+<?import club.xiaojiawei.controls.NotificationManager?>
+<?import club.xiaojiawei.controls.TableFilterManagerGroup?>
+<?import club.xiaojiawei.factory.NotificationFactory?>
+<?import club.xiaojiawei.hsscript.component.CardField?>
+<?import club.xiaojiawei.hsscript.component.CardSearcher?>
+<?import club.xiaojiawei.hsscript.component.CardTableView?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import java.lang.Double?>
+<?import club.xiaojiawei.hsscript.component.BetaTag?>
+<StackPane xmlns="http://javafx.com/javafx"
+           xmlns:fx="http://javafx.com/fxml"
+           stylesheets="@../css/settings/weightSettings.css"
+           fx:id="rootPane"
+           fx:controller="club.xiaojiawei.hsscript.controller.javafx.settings.CardInfoSettingsController">
+    <fx:define>
+        <Double fx:id="colMinWeight" fx:value="25"/>
+        <Double fx:id="icoScale" fx:value="0.8"/>
+    </fx:define>
+    <SplitPane dividerPositions="0.6" styleClass="split-pane-line">
+        <fx:define>
+            <CardTableView fx:id="cardTable" VBox.vgrow="ALWAYS">
+                <placeholder>
+                    <StackPane>
+                        <Label text="1.选中此表的行，点击向右按钮添加至右侧表" wrapText="true"/>
+                    </StackPane>
+                </placeholder>
+            </CardTableView>
+            <CardField fx:id="cardField"/>
+        </fx:define>
+        <CardSearcher minWidth="0" cardField="$cardField" cardTableView="$cardTable"/>
+        <HBox minWidth="0">
+            <VBox alignment="CENTER" spacing="10" style="-fx-padding: 5">
+                <Button styleClass="btn-ui, btn-ui-small, control-btn" onAction="#addItem">
+                    <graphic>
+                        <Label>
+                            <graphic>
+                                <NextIco color="#ecebeb"/>
+                            </graphic>
+                            <tooltip>
+                                <Tooltip text="添加卡牌"/>
+                            </tooltip>
+                        </Label>
+                    </graphic>
+                </Button>
+                <Button styleClass="btn-ui, btn-ui-small, control-btn" onAction="#removeItem">
+                    <graphic>
+                        <Label>
+                            <graphic>
+                                <NextIco color="#ecebeb" rotate="180"/>
+                            </graphic>
+                            <tooltip>
+                                <Tooltip text="移除卡牌"/>
+                            </tooltip>
+                        </Label>
+                    </graphic>
+                </Button>
+            </VBox>
+            <VBox HBox.hgrow="ALWAYS">
+                <TableView fx:id="infoCardTable"
+                           styleClass="table-view-idea, table-view-idea-tiny, table-view-idea-upright"
+                           VBox.vgrow="ALWAYS">
+                    <columns>
+                        <TableColumn minWidth="${colMinWeight}" prefWidth="${colMinWeight}" fx:id="infoCardNoCol"
+                                     text="#"
+                                     maxWidth="30" userData="disable"/>
+                        <TableColumn minWidth="${colMinWeight}" prefWidth="${colMinWeight}" fx:id="cardInfoIdColCard"
+                                     text="ID"/>
+                        <TableColumn text="名字" minWidth="${colMinWeight}" prefWidth="${colMinWeight}"
+                                     fx:id="actionCardNameCol"/>
+                        <TableColumn text="效果类型" minWidth="${colMinWeight}" prefWidth="50"
+                                     fx:id="infoCardEffectTypeCol"/>
+                        <TableColumn text="打出行为" minWidth="${colMinWeight}" prefWidth="50"
+                                     fx:id="playActionCol"/>
+                        <TableColumn text="使用行为" minWidth="${colMinWeight}" prefWidth="50"
+                                     fx:id="powerActionCol"/>
+                    </columns>
+                    <placeholder>
+                        <StackPane>
+                            <Label text="2.选中行后右键编辑行为。例：寒冰箭，[效果类型]选择[DAMAGE],[打出行为]添加一项[都可指向]；绝大部分卡牌都只需要添加一个行为，只有指向一次后需要继续指向的牌才需要添加第二个行为；如果想修改卡牌的攻击对象仅为敌方英雄，可以修改[使用行为]增加[指向敌方英雄]行为，对于英雄技能也可以通过改变[使用行为]来让软件正确使用"
+                                   wrapText="true"/>
+                        </StackPane>
+                    </placeholder>
+                    <columnResizePolicy>
+                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+                    </columnResizePolicy>
+                    <fx:define>
+                        <TableFilterManagerGroup fx:id="actionTableProxy" tableView="$infoCardTable"
+                                                 autoRegisterColFilter="true"/>
+                    </fx:define>
+                </TableView>
+                <HBox spacing="10" style="-fx-padding: 10 10 10 0" alignment="CENTER_LEFT">
+                    <Button styleClass="btn-ui, btn-ui-small" onAction="#exportConfig">
+                        <graphic>
+                            <ExportIco color="main-color"/>
+                        </graphic>
+                        <tooltip>
+                            <Tooltip text="导出行为文件"/>
+                        </tooltip>
+                    </Button>
+                    <Button styleClass="btn-ui, btn-ui-small" onAction="#importConfig">
+                        <graphic>
+                            <ImportIco color="#29b829"/>
+                        </graphic>
+                        <tooltip>
+                            <Tooltip text="导入行为文件"/>
+                        </tooltip>
+                    </Button>
+                    <Button styleClass="btn-ui, btn-ui-small" onAction="#copyRow">
+                        <graphic>
+                            <CopyIco color="main-color"/>
+                        </graphic>
+                        <tooltip>
+                            <Tooltip text="复制行"/>
+                        </tooltip>
+                    </Button>
+                    <HBox HBox.hgrow="ALWAYS"/>
+                </HBox>
+            </VBox>
+        </HBox>
+    </SplitPane>
+    <NotificationManager fx:id="notificationManager" notificationPos="BOTTOM_CENTER">
+        <NotificationFactory showingCloseBtn="false" size="SMALL"/>
+    </NotificationManager>
+</StackPane>
