@@ -1,0 +1,21 @@
+[submodule "hs-script-base-strategy"]
+	path = hs-script-base-strategy
+	url = https://github.com/xjw580/hs-script-base-strategy.git
+[submodule "hs-script-base-card"]
+	path = hs-script-base-card
+	url = https://github.com/xjw580/hs-script-base-card.git
+[submodule "hs-script-card-sdk"]
+	path = hs-script-card-sdk
+	url = https://github.com/xjw580/hs-script-card-sdk.git
+[submodule "hs-script-plugin-sdk"]
+	path = hs-script-plugin-sdk
+	url = https://github.com/xjw580/hs-script-plugin-sdk.git
+[submodule "hs-script-strategy-sdk"]
+	path = hs-script-strategy-sdk
+	url = https://github.com/xjw580/hs-script-strategy-sdk.git
+[submodule "hs-script-base"]
+	path = hs-script-base
+	url = https://github.com/xjw580/hs-script-base.git
+[submodule "hs-script-app"]
+	path = hs-script-app
+	url = https://github.com/xjw580/hs-script-app.git
