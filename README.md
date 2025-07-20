@@ -1,7 +1,7 @@
 ![GitHub release](https://img.shields.io/github/release/xjw580/Hearthstone-Script.svg)  ![GitHub](https://img.shields.io/github/license/xjw580/Hearthstone-Script?style=flat-square)
 
 # 炉石传说脚本
-<img src="favicon.png" alt="Image description" width="100" height="100">
+<img src="static/favicon.png" alt="Image description" width="100" height="100">
 
 
 
@@ -21,7 +21,7 @@
 
 > 您的捐赠不仅是对代码的认可，更是对自由软件理念的支持。  
 
-<img src="payment-code.jpg" alt="Image description" height="250">  
+<img src="static/payment-code.jpg" alt="Image description" height="250">  
 
 
 
@@ -69,7 +69,7 @@
 
 #### 🛠 **初次使用**  
 
-✅ 阅读 [常见问题](常见问题.md)  
+✅ 阅读 [常见问题](doc/常见问题.md)  
 ✅ **配置卡组**：游戏内将要使用的卡组移动到**一号卡组位**  
 ✅ **选择策略**：软件内选择要使用的卡组策略（先选择模式）  
 
@@ -119,10 +119,10 @@
 
 ## 📚 相关文档  
 
-📖 **[常见问题](常见问题.md)**  
-📖 **[插件开发文档](插件开发文档.md)**  
+📖 **[常见问题](doc/常见问题.md)**  
+📖 **[插件开发文档](doc/插件开发文档.md)**  
 📖 **[项目文档](https://hearthstone-script-documentation.vercel.app/)**  
-📖 **[更新记录](更新记录.md)**  
+📖 **[更新记录](doc/更新记录.md)**  
 
 
 
