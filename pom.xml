@@ -16,8 +16,8 @@
         <module>hs-script-plugin-sdk</module>
         <module>hs-script-card-sdk</module>
         <module>hs-script-strategy-sdk</module>
-        <module>hs-script-base-card</module>
-        <module>hs-script-base-strategy</module>
+        <module>hs-script-base-card-plugin</module>
+        <module>hs-script-base-strategy-plugin</module>
     </modules>
 
     <repositories>
@@ -64,8 +64,8 @@
         <ini-version>0.5.4</ini-version>
         <tilesfx-version>21.0.9</tilesfx-version>
 
-        <hs-script-base-strategy-version>1.0.0</hs-script-base-strategy-version>
-        <hs-script-base-card-version>1.0.0</hs-script-base-card-version>
+        <hs-script-base-strategy-plugin-version>1.0.0</hs-script-base-strategy-plugin-version>
+        <hs-script-base-card-plugin-version>1.0.0</hs-script-base-card-plugin-version>
 
         <!--sdk-->
         <hs-script-base-version>1.0.0</hs-script-base-version>
@@ -174,14 +174,14 @@
             </dependency>
             <dependency>
                 <groupId>com.github.xjw580</groupId>
-                <artifactId>hs-script-base-card</artifactId>
-                <version>${hs-script-base-card-version}</version>
+                <artifactId>hs-script-base-card-plugin</artifactId>
+                <version>${hs-script-base-card-plugin-version}</version>
                 <!--                <scope>provided</scope>-->
             </dependency>
             <dependency>
                 <groupId>com.github.xjw580</groupId>
-                <artifactId>hs-script-base-strategy</artifactId>
-                <version>${hs-script-base-strategy-version}</version>
+                <artifactId>hs-script-base-strategy-plugin</artifactId>
+                <version>${hs-script-base-strategy-plugin-version}</version>
                 <!--                <scope>provided</scope>-->
             </dependency>
             <dependency>
