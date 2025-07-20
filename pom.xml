@@ -71,7 +71,7 @@
         <hs-script-base-version>1.0.0</hs-script-base-version>
         <hs-script-plugin-sdk-version>1.0.0</hs-script-plugin-sdk-version>
         <hs-script-card-sdk-version>1.0.0</hs-script-card-sdk-version>
-        <hs-script-deck-sdk-version>1.0.0</hs-script-deck-sdk-version>
+        <hs-script-strategy-sdk-version>1.0.0</hs-script-strategy-sdk-version>
 
         <!--plugin-->
         <maven-assembly-plugin-version>3.6.0</maven-assembly-plugin-version>
@@ -203,7 +203,7 @@
             <dependency>
                 <groupId>com.github.xjw580</groupId>
                 <artifactId>hs-script-strategy-sdk</artifactId>
-                <version>${hs-script-deck-sdk-version}</version>
+                <version>${hs-script-strategy-sdk-version}</version>
             </dependency>
             <!--javafx-->
             <dependency>
