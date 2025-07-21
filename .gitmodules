@@ -1,27 +1,36 @@
 [submodule "hs-script-card-sdk"]
 	path = hs-script-card-sdk
 	url = https://github.com/xjw580/hs-script-card-sdk.git
+	branch = master
 [submodule "hs-script-plugin-sdk"]
 	path = hs-script-plugin-sdk
 	url = https://github.com/xjw580/hs-script-plugin-sdk.git
+	branch = master
 [submodule "hs-script-strategy-sdk"]
 	path = hs-script-strategy-sdk
 	url = https://github.com/xjw580/hs-script-strategy-sdk.git
+	branch = master
 [submodule "hs-script-base"]
 	path = hs-script-base
 	url = https://github.com/xjw580/hs-script-base.git
+	branch = master
 [submodule "hs-script-app"]
 	path = hs-script-app
 	url = https://github.com/xjw580/hs-script-app.git
+	branch = master
 [submodule "hs-script-base-strategy-plugin"]
 	path = hs-script-base-strategy-plugin
 	url = https://github.com/xjw580/hs-script-base-strategy-plugin.git
+	branch = master
 [submodule "hs-script-base-card-plugin"]
 	path = hs-script-base-card-plugin
 	url = https://github.com/xjw580/hs-script-base-card-plugin.git
+	branch = master
 [submodule "hs-strategy-plugin-template"]
 	path = hs-strategy-plugin-template
 	url = https://github.com/xjw580/hs-strategy-plugin-template.git
+	branch = master
 [submodule "hs-card-plugin-template"]
 	path = hs-card-plugin-template
 	url = https://github.com/xjw580/hs-card-plugin-template.git
+	branch = master
