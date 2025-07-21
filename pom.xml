@@ -18,6 +18,8 @@
         <module>hs-script-strategy-sdk</module>
         <module>hs-script-base-card-plugin</module>
         <module>hs-script-base-strategy-plugin</module>
+        <module>hs-card-plugin-template</module>
+        <module>hs-strategy-plugin-template</module>
     </modules>
 
     <repositories>
@@ -66,6 +68,8 @@
 
         <hs-script-base-strategy-plugin-version>1.0.0</hs-script-base-strategy-plugin-version>
         <hs-script-base-card-plugin-version>1.0.0</hs-script-base-card-plugin-version>
+        <hs-strategy-plugin-template-version>1.0.0</hs-strategy-plugin-template-version>
+        <hs-card-plugin-template-version>1.0.0</hs-card-plugin-template-version>
 
         <!--sdk-->
         <hs-script-base-version>1.0.0</hs-script-base-version>
@@ -176,13 +180,21 @@
                 <groupId>com.github.xjw580</groupId>
                 <artifactId>hs-script-base-card-plugin</artifactId>
                 <version>${hs-script-base-card-plugin-version}</version>
-                <!--                <scope>provided</scope>-->
             </dependency>
             <dependency>
                 <groupId>com.github.xjw580</groupId>
                 <artifactId>hs-script-base-strategy-plugin</artifactId>
                 <version>${hs-script-base-strategy-plugin-version}</version>
-                <!--                <scope>provided</scope>-->
+            </dependency>
+            <dependency>
+                <groupId>com.github.xjw580</groupId>
+                <artifactId>hs-card-plugin-template</artifactId>
+                <version>${hs-card-plugin-template-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.xjw580</groupId>
+                <artifactId>hs-strategy-plugin-template</artifactId>
+                <version>${hs-strategy-plugin-template-version}</version>
             </dependency>
             <dependency>
                 <groupId>com.github.xjw580</groupId>
@@ -415,7 +427,8 @@
                 <configuration>
                     <source>${java.version}</source>
                     <target>${java.version}</target>
-                    <generatedSourcesDirectory>${project.build.directory}/generated-sources/version</generatedSourcesDirectory>
+                    <generatedSourcesDirectory>${project.build.directory}/generated-sources/version
+                    </generatedSourcesDirectory>
                     <annotationProcessorPaths>
                         <path>
                             <groupId>org.mapstruct</groupId>

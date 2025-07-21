@@ -19,3 +19,9 @@
 [submodule "hs-script-base-card-plugin"]
 	path = hs-script-base-card-plugin
 	url = https://github.com/xjw580/hs-script-base-card-plugin.git
+[submodule "hs-strategy-plugin-template"]
+	path = hs-strategy-plugin-template
+	url = https://github.com/xjw580/hs-strategy-plugin-template.git
+[submodule "hs-card-plugin-template"]
+	path = hs-card-plugin-template
+	url = https://github.com/xjw580/hs-card-plugin-template.git
