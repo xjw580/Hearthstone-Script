@@ -76,7 +76,7 @@ body:
     id: "issues"
     attributes:
       label: "我确认已查询历史issues及参阅常见问题"
-      description: "否则请查询及参阅[常见问题](https://github.com/xjw580/Hearthstone-Script/blob/master/常见问题.md)后提出"
+      description: "否则请查询及参阅[常见问题](https://github.com/xjw580/Hearthstone-Script/blob/master/doc/%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98.md)后提出"
       options:
         - label: 是
           required: true
