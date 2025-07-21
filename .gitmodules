@@ -37,3 +37,4 @@
 [submodule "tools/hs-script-update"]
 	path = tools/hs-script-update
 	url = https://github.com/xjw580/hs-script-update.git
+	branch = master
