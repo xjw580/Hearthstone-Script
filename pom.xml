@@ -49,7 +49,6 @@
         <maven.compiler.target>21</maven.compiler.target>
 
         <!--other-->
-        <lombok-version>1.18.30</lombok-version>
         <slf4j-version>2.0.9</slf4j-version>
         <logback-version>1.5.13</logback-version>
         <sqlite-version>3.47.0.0</sqlite-version>
@@ -111,13 +110,6 @@
             <groupId>io.github.oshai</groupId>
             <artifactId>kotlin-logging-jvm</artifactId>
             <version>${kotlin-logging-jvm-version}</version>
-        </dependency>
-        <!--set get-->
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>${lombok-version}</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
