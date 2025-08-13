@@ -4,7 +4,7 @@
 
     <groupId>com.github.xjw580.Hearthstone-Script</groupId>
     <artifactId>hs-script</artifactId>
-    <version>v4.8.0.1</version>
+    <version>v4.9.0-GA</version>
     <packaging>pom</packaging>
 
     <name>Hearthstone-Script</name>
@@ -44,7 +44,7 @@
         <!--java/fx-->
         <java.version>21</java.version>
         <javafx-version>21.0.1</javafx-version>
-        <javafx-ui-version>v2.39.2</javafx-ui-version>
+        <javafx-ui-version>v2.39.3</javafx-ui-version>
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
 
@@ -65,16 +65,16 @@
         <ini-version>0.5.4</ini-version>
         <tilesfx-version>21.0.9</tilesfx-version>
 
-        <hs-script-base-strategy-plugin-version>1.0.0</hs-script-base-strategy-plugin-version>
-        <hs-script-base-card-plugin-version>1.0.0</hs-script-base-card-plugin-version>
-        <hs-strategy-plugin-template-version>1.0.0</hs-strategy-plugin-template-version>
-        <hs-card-plugin-template-version>1.0.0</hs-card-plugin-template-version>
+        <hs-script-base-strategy-plugin-version>1.0.1</hs-script-base-strategy-plugin-version>
+        <hs-script-base-card-plugin-version>1.0.1</hs-script-base-card-plugin-version>
+        <hs-strategy-plugin-template-version>1.0.1</hs-strategy-plugin-template-version>
+        <hs-card-plugin-template-version>1.0.1</hs-card-plugin-template-version>
 
         <!--sdk-->
-        <hs-script-base-version>1.0.0</hs-script-base-version>
-        <hs-script-plugin-sdk-version>1.0.0</hs-script-plugin-sdk-version>
-        <hs-script-card-sdk-version>1.0.0</hs-script-card-sdk-version>
-        <hs-script-strategy-sdk-version>1.0.0</hs-script-strategy-sdk-version>
+        <hs-script-base-version>1.0.1</hs-script-base-version>
+        <hs-script-plugin-sdk-version>1.0.1</hs-script-plugin-sdk-version>
+        <hs-script-card-sdk-version>1.0.1</hs-script-card-sdk-version>
+        <hs-script-strategy-sdk-version>1.0.1</hs-script-strategy-sdk-version>
 
         <!--plugin-->
         <maven-assembly-plugin-version>3.6.0</maven-assembly-plugin-version>
