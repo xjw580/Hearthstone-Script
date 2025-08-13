@@ -1,4 +1,4 @@
-name: Build and Release
+name: Create Release
 
 on:
   push:
@@ -9,31 +9,14 @@ permissions:
   contents: write
 
 jobs:
-  build:
+  release:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
-
-      - name: Cache local Maven repository
-        uses: actions/cache@v3
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
-
-      - name: Set up JDK
-        uses: actions/setup-java@v2
-        with:
-          java-version: '21'
-          distribution: 'temurin'
-
-      - name: Build with Maven
-        run: mvn clean package -B -V -DskipTests
 
       - name: Determine if prerelease
         id: prerelease
@@ -44,24 +27,16 @@ jobs:
             echo "prerelease=false" >> $GITHUB_ENV
           fi
 
-      - name: List target directory
-        run: ls -l Hearthstone-Script/target/
-
-      - name: Calculate SHA256
+      - name: Get latest commit message
+        id: get_commit
         run: |
-          cd Hearthstone-Script/target/
-          sha256sum hs-script_${{ github.ref_name }}.jar > hs-script_${{ github.ref_name }}.jar.sha256
-          cat hs-script_${{ github.ref_name }}.jar.sha256
+          echo "message=$(git log -1 --pretty=%B)" >> $GITHUB_OUTPUT
 
-      - name: Upload Release Assets
+      - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
           name: hs-script_${{ github.ref_name }}
           body: ${{ steps.get_commit.outputs.message }}
           prerelease: ${{ env.prerelease }}
-          files: |
-            Hearthstone-Script/target/hs-script_${{ github.ref_name }}.zip
-            Hearthstone-Script/target/hs-script_${{ github.ref_name }}.jar
-            Hearthstone-Script/target/hs-script_${{ github.ref_name }}.jar.sha256
         env:
           GITHUB_TOKEN: ${{ github.token }}
