@@ -38,3 +38,7 @@
 	path = tools/hs-script-update
 	url = https://github.com/xjw580/hs-script-update.git
 	branch = master
+[submodule "user-strategy-plugins/WeightHandlerStrategy"]
+	path = user-strategy-plugins/WeightHandlerStrategy
+	url = https://github.com/to52360/WeightHandlerStrategy.git
+	branch = master
