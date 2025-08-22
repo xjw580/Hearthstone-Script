@@ -64,6 +64,7 @@
         <kotlin-logging-jvm-version>7.0.7</kotlin-logging-jvm-version>
         <ini-version>0.5.4</ini-version>
         <tilesfx-version>21.0.9</tilesfx-version>
+        <tess4j-version>tess4j-5.16.0</tess4j-version>
 
         <hs-script-base-strategy-plugin-version>1.0.1</hs-script-base-strategy-plugin-version>
         <hs-script-base-card-plugin-version>1.0.1</hs-script-base-card-plugin-version>
@@ -127,6 +128,13 @@
 
     <dependencyManagement>
         <dependencies>
+            <!--ocr库-->
+            <dependency>
+                <groupId>com.github.nguyenq</groupId>
+                <artifactId>tess4j</artifactId>
+                <version>${tess4j-version}</version>
+            </dependency>
+
             <!--图表库-->
             <dependency>
                 <groupId>eu.hansolo</groupId>
