@@ -37,7 +37,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <!--kotlin-->
-        <kotlin.version>2.0.20</kotlin.version>
+        <kotlin.version>2.2.0</kotlin.version>
         <kotlin.code.style>official</kotlin.code.style>
         <kotlin.compiler.jvmTarget>21</kotlin.compiler.jvmTarget>
 
@@ -45,6 +45,7 @@
         <java.version>21</java.version>
         <javafx-version>21.0.1</javafx-version>
         <javafx-ui-version>v2.39.4</javafx-ui-version>
+        <javafx-kt-version>0.0.8</javafx-kt-version>
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
 
@@ -278,6 +279,17 @@
                 <groupId>com.github.xjw580</groupId>
                 <artifactId>javafx-ui</artifactId>
                 <version>${javafx-ui-version}</version>
+            </dependency>
+            <!--JavaFX kt增强库-->
+<!--            <dependency>-->
+<!--                <groupId>com.github.xjw580</groupId>-->
+<!--                <artifactId>javafx-kt</artifactId>-->
+<!--                <version>${javafx-kt-version}</version>-->
+<!--            </dependency>-->
+            <dependency>
+                <groupId>club.xiaojiawei</groupId>
+                <artifactId>javafx-kt</artifactId>
+                <version>${javafx-kt-version}</version>
             </dependency>
             <!-- 监听全局键鼠包 -->
             <dependency>
