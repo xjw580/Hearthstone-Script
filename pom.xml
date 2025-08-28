@@ -4,7 +4,7 @@
 
     <groupId>com.github.xjw580.Hearthstone-Script</groupId>
     <artifactId>hs-script</artifactId>
-    <version>v4.9.0-GA</version>
+    <version>v4.9.0.1-DEV</version>
     <packaging>pom</packaging>
 
     <name>Hearthstone-Script</name>
