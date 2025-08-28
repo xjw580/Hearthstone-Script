@@ -75,7 +75,7 @@
         <!--sdk-->
         <hs-script-base-version>1.0.1</hs-script-base-version>
         <hs-script-plugin-sdk-version>1.0.1</hs-script-plugin-sdk-version>
-        <hs-script-card-sdk-version>1.0.1</hs-script-card-sdk-version>
+        <hs-script-card-sdk-version>1.1.0</hs-script-card-sdk-version>
         <hs-script-strategy-sdk-version>1.0.1</hs-script-strategy-sdk-version>
 
         <!--plugin-->
