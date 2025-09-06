@@ -45,7 +45,7 @@
         <java.version>21</java.version>
         <javafx-version>21.0.1</javafx-version>
         <javafx-ui-version>v2.39.4</javafx-ui-version>
-        <javafx-kt-version>0.0.8</javafx-kt-version>
+        <javafx-kt-version>0.0.7</javafx-kt-version>
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
 
@@ -281,16 +281,16 @@
                 <version>${javafx-ui-version}</version>
             </dependency>
             <!--JavaFX kt增强库-->
-<!--            <dependency>-->
-<!--                <groupId>com.github.xjw580</groupId>-->
-<!--                <artifactId>javafx-kt</artifactId>-->
-<!--                <version>${javafx-kt-version}</version>-->
-<!--            </dependency>-->
             <dependency>
-                <groupId>club.xiaojiawei</groupId>
+                <groupId>com.github.xjw580</groupId>
                 <artifactId>javafx-kt</artifactId>
                 <version>${javafx-kt-version}</version>
             </dependency>
+<!--            <dependency>-->
+<!--                <groupId>club.xiaojiawei</groupId>-->
+<!--                <artifactId>javafx-kt</artifactId>-->
+<!--                <version>${javafx-kt-version}</version>-->
+<!--            </dependency>-->
             <!-- 监听全局键鼠包 -->
             <dependency>
                 <groupId>com.melloware</groupId>
