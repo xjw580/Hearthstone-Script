@@ -177,6 +177,7 @@
                 <artifactId>kotlin-reflect</artifactId>
                 <version>${kotlin.version}</version>
             </dependency>
+            <!--插件-->
             <dependency>
                 <groupId>com.github.xjw580</groupId>
                 <artifactId>hs-script-base-card-plugin</artifactId>
