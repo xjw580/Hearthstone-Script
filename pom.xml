@@ -39,15 +39,15 @@
         <!--kotlin-->
         <kotlin.version>2.2.0</kotlin.version>
         <kotlin.code.style>official</kotlin.code.style>
-        <kotlin.compiler.jvmTarget>21</kotlin.compiler.jvmTarget>
+        <kotlin.compiler.jvmTarget>25</kotlin.compiler.jvmTarget>
 
         <!--java/fx-->
-        <java.version>21</java.version>
-        <javafx-version>21.0.1</javafx-version>
+        <java.version>25</java.version>
+        <javafx-version>25</javafx-version>
         <javafx-ui-version>v2.40.0</javafx-ui-version>
         <javafx-kt-version>0.0.8</javafx-kt-version>
-        <maven.compiler.source>21</maven.compiler.source>
-        <maven.compiler.target>21</maven.compiler.target>
+        <maven.compiler.source>25</maven.compiler.source>
+        <maven.compiler.target>25</maven.compiler.target>
 
         <!--other-->
         <slf4j-version>2.0.9</slf4j-version>
