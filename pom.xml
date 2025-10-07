@@ -4,7 +4,7 @@
 
     <groupId>com.github.xjw580.Hearthstone-Script</groupId>
     <artifactId>hs-script</artifactId>
-    <version>v4.10.0-GA</version>
+    <version>v4.11.0-GA</version>
     <packaging>pom</packaging>
 
     <name>Hearthstone-Script</name>
@@ -36,18 +36,18 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
+        <!--java/fx-->
+        <java.version>25</java.version>
+        <javafx-version>22</javafx-version>
+        <javafx-ui-version>v2.40.0</javafx-ui-version>
+        <javafx-kt-version>0.0.8</javafx-kt-version>
+        <maven.compiler.source>${java.version}</maven.compiler.source>
+        <maven.compiler.target>${java.version}</maven.compiler.target>
+
         <!--kotlin-->
         <kotlin.version>2.2.0</kotlin.version>
         <kotlin.code.style>official</kotlin.code.style>
-        <kotlin.compiler.jvmTarget>25</kotlin.compiler.jvmTarget>
-
-        <!--java/fx-->
-        <java.version>25</java.version>
-        <javafx-version>25</javafx-version>
-        <javafx-ui-version>v2.40.0</javafx-ui-version>
-        <javafx-kt-version>0.0.8</javafx-kt-version>
-        <maven.compiler.source>25</maven.compiler.source>
-        <maven.compiler.target>25</maven.compiler.target>
+        <kotlin.compiler.jvmTarget>${java.version}</kotlin.compiler.jvmTarget>
 
         <!--other-->
         <slf4j-version>2.0.9</slf4j-version>
@@ -67,16 +67,16 @@
         <tilesfx-version>21.0.9</tilesfx-version>
         <tess4j-version>tess4j-5.16.0</tess4j-version>
 
-        <hs-script-base-strategy-plugin-version>1.0.2</hs-script-base-strategy-plugin-version>
-        <hs-script-base-card-plugin-version>1.0.2</hs-script-base-card-plugin-version>
-        <hs-strategy-plugin-template-version>1.0.2</hs-strategy-plugin-template-version>
-        <hs-card-plugin-template-version>1.0.2</hs-card-plugin-template-version>
+        <hs-script-base-strategy-plugin-version>1.1.0</hs-script-base-strategy-plugin-version>
+        <hs-script-base-card-plugin-version>1.1.0</hs-script-base-card-plugin-version>
+        <hs-strategy-plugin-template-version>1.1.0</hs-strategy-plugin-template-version>
+        <hs-card-plugin-template-version>1.1.0</hs-card-plugin-template-version>
 
         <!--sdk-->
-        <hs-script-base-version>1.0.2</hs-script-base-version>
-        <hs-script-plugin-sdk-version>1.0.2</hs-script-plugin-sdk-version>
-        <hs-script-card-sdk-version>1.1.1</hs-script-card-sdk-version>
-        <hs-script-strategy-sdk-version>1.0.2</hs-script-strategy-sdk-version>
+        <hs-script-base-version>1.1.0</hs-script-base-version>
+        <hs-script-plugin-sdk-version>1.1.0</hs-script-plugin-sdk-version>
+        <hs-script-card-sdk-version>1.2.0</hs-script-card-sdk-version>
+        <hs-script-strategy-sdk-version>1.1.0</hs-script-strategy-sdk-version>
 
         <!--plugin-->
         <maven-assembly-plugin-version>3.6.0</maven-assembly-plugin-version>
@@ -287,11 +287,11 @@
                 <artifactId>javafx-kt</artifactId>
                 <version>${javafx-kt-version}</version>
             </dependency>
-<!--            <dependency>-->
-<!--                <groupId>club.xiaojiawei</groupId>-->
-<!--                <artifactId>javafx-kt</artifactId>-->
-<!--                <version>${javafx-kt-version}</version>-->
-<!--            </dependency>-->
+            <!--            <dependency>-->
+            <!--                <groupId>club.xiaojiawei</groupId>-->
+            <!--                <artifactId>javafx-kt</artifactId>-->
+            <!--                <version>${javafx-kt-version}</version>-->
+            <!--            </dependency>-->
             <!-- 监听全局键鼠包 -->
             <dependency>
                 <groupId>com.melloware</groupId>
