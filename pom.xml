@@ -4,7 +4,7 @@
 
     <groupId>com.github.xjw580.Hearthstone-Script</groupId>
     <artifactId>hs-script</artifactId>
-    <version>v4.11.0-GA</version>
+    <version>v4.12.0-GA</version>
     <packaging>pom</packaging>
 
     <name>Hearthstone-Script</name>
@@ -67,16 +67,17 @@
         <tilesfx-version>21.0.9</tilesfx-version>
         <tess4j-version>tess4j-5.16.0</tess4j-version>
 
-        <hs-script-base-strategy-plugin-version>1.1.0</hs-script-base-strategy-plugin-version>
-        <hs-script-base-card-plugin-version>1.1.0</hs-script-base-card-plugin-version>
-        <hs-strategy-plugin-template-version>1.1.0</hs-strategy-plugin-template-version>
-        <hs-card-plugin-template-version>1.1.0</hs-card-plugin-template-version>
+        <!--soft plugin-->
+        <hs-script-base-strategy-plugin-version>1.1.1</hs-script-base-strategy-plugin-version>
+        <hs-script-base-card-plugin-version>1.1.1</hs-script-base-card-plugin-version>
+        <hs-strategy-plugin-template-version>1.1.1</hs-strategy-plugin-template-version>
+        <hs-card-plugin-template-version>1.1.1</hs-card-plugin-template-version>
 
         <!--sdk-->
-        <hs-script-base-version>1.1.0</hs-script-base-version>
-        <hs-script-plugin-sdk-version>1.1.0</hs-script-plugin-sdk-version>
-        <hs-script-card-sdk-version>1.2.0</hs-script-card-sdk-version>
-        <hs-script-strategy-sdk-version>1.1.0</hs-script-strategy-sdk-version>
+        <hs-script-base-version>1.1.1</hs-script-base-version>
+        <hs-script-plugin-sdk-version>1.1.1</hs-script-plugin-sdk-version>
+        <hs-script-card-sdk-version>1.2.1</hs-script-card-sdk-version>
+        <hs-script-strategy-sdk-version>1.1.1</hs-script-strategy-sdk-version>
 
         <!--plugin-->
         <maven-assembly-plugin-version>3.6.0</maven-assembly-plugin-version>
