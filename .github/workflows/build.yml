@@ -30,7 +30,8 @@ jobs:
       - name: Get latest commit message
         id: get_commit
         run: |
-          echo "message=$(git log -1 --pretty=%B)" >> $GITHUB_OUTPUT
+          msg=$(git log -1 --pretty=%B | tr '\n' ' ')
+          echo "message=$msg" >> $GITHUB_OUTPUT
 
       - name: Create Release
         uses: softprops/action-gh-release@v1
