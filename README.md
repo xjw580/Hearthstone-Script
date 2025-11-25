@@ -122,6 +122,7 @@
 📖 **[项目文档](https://hearthstone-script-documentation.vercel.app/)**  
 📖 **[更新记录](doc/更新记录.md)**  
 📖 **[开发者选项使用](doc/开发者选项使用.md)**  
+📖 **[Wiki](https://github.com/xjw580/Hearthstone-Script/wiki)**  
 
 
 
