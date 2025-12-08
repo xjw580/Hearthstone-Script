@@ -45,7 +45,7 @@
 ## 💻 使用环境  
 
 - 🖥 **Windows11**  
-- ☕ **JDK 21**（若未安装，首次启动脚本时会自动下载并安装）  
+- ☕ **JDK 25**（若未安装，首次启动脚本时会自动下载并安装）  
 
 
 
@@ -63,7 +63,14 @@
 #### 📥 **下载软件**  
 
 📌 在 [Gitee release](https://gitee.com/zergqueen/Hearthstone-Script/releases) 或 [Github release](https://github.com/xjw580/Hearthstone-Script/releases) 下载（Gitee 源仅发布稳定版）  
-📌 **下载 `hs-script.zip`（包含完整依赖）**  
+📌 软件分为`jvm`版和`native`版（带native后缀）
+
+> | 版本类型  | 是否需要 JRE/JDK | 启动速度 | 峰值性能 | 内存占用 | 插件支持 |
+> | --------- | ---------------- | -------- | -------- | -------- | -------- |
+> | JVM 版    | ✅ 需要           | ❌ 较慢   | ✅ 较强   | ❌ 较高   | ✅ 支持   |
+> | Native 版 | ❌ 不需要         | ✅ 很快   | ❌ 较弱   | ✅ 较低   | ❌ 不支持 |
+
+
 
 #### 🛠 **初次使用**  
 
