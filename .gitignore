@@ -51,3 +51,4 @@ config.json
 cf
 *.log
 plugin.dll
+/*.zip
