@@ -43,7 +43,7 @@ config.json
 /plugin
 /log
 /resource
-**/config
+/config
 *.db-journal
 .pid
 /data
@@ -52,3 +52,6 @@ cf
 *.log
 plugin.dll
 /*.zip
+/.claude
+/nul
+/hs-script-native

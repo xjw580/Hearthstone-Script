@@ -40,7 +40,7 @@
         <java.version>25</java.version>
         <javafx-version>22</javafx-version>
         <javafx-ui-version>v2.40.0</javafx-ui-version>
-        <javafx-kt-version>0.0.8</javafx-kt-version>
+        <javafx-kt-version>0.0.14</javafx-kt-version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
 

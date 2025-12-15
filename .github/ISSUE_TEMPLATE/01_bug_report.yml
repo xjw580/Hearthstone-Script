@@ -22,8 +22,8 @@ body:
       options:
         - "请选择..."
         - "Win11"
-        - "Win10"
-        - "更老"
+        - "Win10(不提供支持)"
+        - "更老(不提供支持)"
     validations:
       required: true
   - type: input
