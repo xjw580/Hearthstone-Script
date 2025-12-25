@@ -10,6 +10,7 @@ body:
       description: "请选择出现问题的软件版本"
       options:
         - "请选择..."
+        - "v4.13.1-BETA"
         - "v4.13.0-GA"
         - "其他版本（请在下方注明）"
     validations:
