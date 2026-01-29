@@ -18,6 +18,10 @@
 
 <img src="static/payment-code.jpg" alt="Image description" height="250">  
 
+## 📢加入频道
+
+<img src="static/channel.jpg" alt="Image description" width="250">
+
 ## 🛠 [提Bug](https://github.com/xjw580/Hearthstone-Script/issues/new?template=01_bug_report.yml) · [提点子](https://github.com/xjw580/Hearthstone-Script/issues/new?template=02_feature_request.yml)
 
 ## 🎯 开发计划
