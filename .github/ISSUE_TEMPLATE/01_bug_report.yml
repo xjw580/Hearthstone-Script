@@ -11,7 +11,7 @@ body:
       options:
         - "请选择..."
         - "v4.14.0-GA"
-        - "v4.13.0-GA"
+        - "v4.14.0-GA(native)"
         - "其他版本（请在下方注明）"
     validations:
       required: true
