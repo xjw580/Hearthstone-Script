@@ -56,6 +56,7 @@
         <spring-jdbc-version>6.1.14</spring-jdbc-version>
 
         <jackson-version>2.18.0</jackson-version>
+        <ktjson-version>1.6.3</ktjson-version>
         <spring-boot-web-version>6.1.5</spring-boot-web-version>
         <cardaction-sdk-version>1.0.0</cardaction-sdk-version>
         <mapstruct-version>1.6.0.Beta1</mapstruct-version>
@@ -166,6 +167,24 @@
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-databind</artifactId>
                 <version>${jackson-version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.fasterxml.jackson.datatype</groupId>
+                <artifactId>jackson-datatype-jsr310</artifactId>
+                <version>${jackson-version}</version>
+
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.module</groupId>
+                <artifactId>jackson-module-kotlin</artifactId>
+                <version>${jackson-version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jetbrains.kotlinx</groupId>
+                <artifactId>kotlinx-serialization-json-jvm</artifactId>
+                <version>${ktjson-version}</version>
             </dependency>
 
             <dependency>
@@ -299,12 +318,6 @@
                 <artifactId>jintellitype</artifactId>
                 <version>${jintellitype-version}</version>
             </dependency>
-            <!-- fastjson2 -->
-            <dependency>
-                <groupId>com.alibaba</groupId>
-                <artifactId>fastjson</artifactId>
-                <version>${fastjson-version}</version>
-            </dependency>
             <!--访问系统本地库依赖-->
             <dependency>
                 <groupId>net.java.dev.jna</groupId>
@@ -408,6 +421,18 @@
                         </configuration>
                     </execution>
                 </executions>
+                <configuration>
+                    <compilerPlugins>
+                        <plugin>kotlinx-serialization</plugin>
+                    </compilerPlugins>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.jetbrains.kotlin</groupId>
+                        <artifactId>kotlin-maven-serialization</artifactId>
+                        <version>${kotlin.version}</version>
+                    </dependency>
+                </dependencies>
             </plugin>
 
             <plugin>
