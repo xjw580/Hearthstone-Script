@@ -4,7 +4,7 @@
 
     <groupId>com.github.xjw580.Hearthstone-Script</groupId>
     <artifactId>hs-script</artifactId>
-    <version>v4.14.0-GA</version>
+    <version>v4.14.0.1-BETA</version>
     <packaging>pom</packaging>
 
     <name>Hearthstone-Script</name>
@@ -61,23 +61,23 @@
         <cardaction-sdk-version>1.0.0</cardaction-sdk-version>
         <mapstruct-version>1.6.0.Beta1</mapstruct-version>
         <jintellitype-version>1.4.1</jintellitype-version>
-        <fastjson-version>2.0.20</fastjson-version>
         <jna-version>5.14.0</jna-version>
         <kotlin-logging-jvm-version>7.0.7</kotlin-logging-jvm-version>
         <ini-version>0.5.4</ini-version>
         <tilesfx-version>21.0.9</tilesfx-version>
         <tess4j-version>tess4j-5.16.0</tess4j-version>
+        <byte-buddy-version>1.14.12</byte-buddy-version>
 
         <!--soft plugin-->
-        <hs-script-base-strategy-plugin-version>1.1.3</hs-script-base-strategy-plugin-version>
+        <hs-script-base-strategy-plugin-version>1.1.4</hs-script-base-strategy-plugin-version>
         <hs-script-base-card-plugin-version>1.1.3</hs-script-base-card-plugin-version>
         <hs-strategy-plugin-template-version>1.1.3</hs-strategy-plugin-template-version>
         <hs-card-plugin-template-version>1.1.3</hs-card-plugin-template-version>
 
         <!--sdk-->
-        <hs-script-base-version>1.2.1</hs-script-base-version>
+        <hs-script-base-version>1.2.2</hs-script-base-version>
         <hs-script-plugin-sdk-version>1.1.3</hs-script-plugin-sdk-version>
-        <hs-script-card-sdk-version>1.2.3</hs-script-card-sdk-version>
+        <hs-script-card-sdk-version>1.2.4</hs-script-card-sdk-version>
         <hs-script-strategy-sdk-version>1.1.3</hs-script-strategy-sdk-version>
 
         <!--plugin-->
@@ -131,6 +131,13 @@
 
     <dependencyManagement>
         <dependencies>
+            <!-- ByteBuddy -->
+            <dependency>
+                <groupId>net.bytebuddy</groupId>
+                <artifactId>byte-buddy</artifactId>
+                <version>${byte-buddy-version}</version>
+            </dependency>
+
             <!--ocr库-->
             <dependency>
                 <groupId>com.github.nguyenq</groupId>
