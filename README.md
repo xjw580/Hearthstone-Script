@@ -4,6 +4,8 @@
 
 <img src="static/favicon.png" alt="Image description" width="100" height="100">
 
+
+
 > 开源不等于义务支持。
 >
 > 作者分享代码，是出于兴趣和善意；
@@ -14,6 +16,17 @@
 > - 提供清晰的问题描述
 > - 提交可复现的示例
 > - 或直接贡献代码
+>
+> 本项目由作者在业余时间维护。
+>
+> 欢迎使用、学习与改进，也欢迎合理的 Issue 和 PR。
+>
+> 在提交问题前，请先阅读文档并自行排查；
+>  非 Bug、非改进建议、或缺乏基本信息的问题，可能不会被优先处理。
+>
+> 尊重彼此的时间，是开源协作能够长期运转的前提。
+
+
 
 ## ⚠️ 免责申明
 
@@ -129,6 +142,8 @@
 ## Star History
 
 [![Star History Chart](https://api.star-history.com/svg?repos=xjw580/Hearthstone-Script&type=Date)](https://www.star-history.com/#xjw580/Hearthstone-Script&Date)
+
+
 
 > 请记住：
 >  **你正在免费使用他人付出时间和精力完成的作品。**
