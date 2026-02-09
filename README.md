@@ -4,6 +4,17 @@
 
 <img src="static/favicon.png" alt="Image description" width="100" height="100">
 
+> 开源不等于义务支持。
+>
+> 作者分享代码，是出于兴趣和善意；
+> 使用者的基本尊重，是对这份善意的最低回馈。
+>
+> 如果你希望项目变得更好，最有效的方式是：
+>
+> - 提供清晰的问题描述
+> - 提交可复现的示例
+> - 或直接贡献代码
+
 ## ⚠️ 免责申明
 
 本项目仅供学习交流 **`Java`**、**`Kotlin`** 以及 **`炉石传说`** 玩法，不得用于任何违反法律法规及游戏协议的地方！🚨😡
@@ -118,3 +129,6 @@
 ## Star History
 
 [![Star History Chart](https://api.star-history.com/svg?repos=xjw580/Hearthstone-Script&type=Date)](https://www.star-history.com/#xjw580/Hearthstone-Script&Date)
+
+> 请记住：
+>  **你正在免费使用他人付出时间和精力完成的作品。**
