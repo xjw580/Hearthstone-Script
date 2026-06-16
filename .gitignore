@@ -55,3 +55,4 @@ plugin.dll
 /.claude
 /nul
 /hs-script-native
+/.codegraph

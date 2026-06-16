@@ -10,8 +10,8 @@ body:
       description: "请选择出现问题的软件版本"
       options:
         - "请选择..."
-        - "v4.16.1-GA"
-        - "v4.16.1-GA(native)"
+        - "v4.16.2-GA"
+        - "v4.16.2-GA(native)"
         - "其他版本（请在下方注明）"
     validations:
       required: true
