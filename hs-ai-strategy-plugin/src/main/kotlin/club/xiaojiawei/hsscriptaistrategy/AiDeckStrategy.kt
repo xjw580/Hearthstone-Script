@@ -10,6 +10,7 @@ import club.xiaojiawei.hsscriptaistrategy.prompt.PromptBuilder
 import club.xiaojiawei.hsscriptbase.config.log
 import club.xiaojiawei.hsscriptbase.enums.RunModeEnum
 import club.xiaojiawei.hsscriptcardsdk.bean.Card
+import club.xiaojiawei.hsscriptcardsdk.bean.Player
 import club.xiaojiawei.hsscriptcardsdk.bean.isValid
 import club.xiaojiawei.hsscriptcardsdk.status.WAR
 import club.xiaojiawei.hsscriptstrategysdk.DeckStrategy
@@ -79,6 +80,8 @@ class AiDeckStrategy : DeckStrategy() {
                         LlmClient.chat(messages)
                     } catch (e: Exception) {
                         log.error { "调用LLM失败: ${e.message}" }
+                        log.info { "LLM调用失败，本回合切换到简易激进策略" }
+                        fallbackExecute(me, rival)
                         break
                     }
                     actionQueue = ActionParser.parseActions(response) ?: break
@@ -147,6 +150,65 @@ class AiDeckStrategy : DeckStrategy() {
         } catch (e: Exception) {
             log.error { "AI发现选牌异常: ${e.message}" }
             0
+        }
+    }
+
+    private fun fallbackExecute(me: Player, rival: Player) {
+        try {
+            val fallbackId = AiConfig.fallbackStrategyId()
+            val radicalStrategy = java.util.ServiceLoader.load(DeckStrategy::class.java)
+                .firstOrNull { it.id() == fallbackId }
+            if (radicalStrategy != null) {
+                log.info { "使用激进策略($fallbackId)兜底" }
+                radicalStrategy.reset()
+                radicalStrategy.executeOutCard()
+                log.info { "激进策略兜底完毕" }
+                return
+            }
+            log.warn { "未找到激进策略($fallbackId)，使用简易兜底" }
+            simpleFallback(me, rival)
+        } catch (e: Exception) {
+            log.error { "兜底策略异常: ${e.message}" }
+            simpleFallback(me, rival)
+        }
+    }
+
+    private fun simpleFallback(me: Player, rival: Player) {
+        try {
+            log.info { "简易兜底开始" }
+            val hand = me.handArea.cards.toList().sortedBy { it.cost }
+            for (card in hand) {
+                if (me.usableResource < card.cost) continue
+                if (card.action.power() != null) {
+                    log.info { "兜底出牌: ${card.entityName}(${card.cost}费)" }
+                    Thread.sleep(1000)
+                }
+            }
+            val myBoard = me.playArea.cards.toList()
+            val rivalBoard = rival.playArea.cards.toList()
+            val taunts = rivalBoard.filter { it.isTaunt }
+            for (attacker in myBoard) {
+                if (attacker.isExhausted || attacker.isFrozen || attacker.atc <= 0) continue
+                val target = taunts.firstOrNull() ?: rivalBoard.firstOrNull() ?: rival.playArea.hero
+                if (target != null) {
+                    if (target === rival.playArea.hero) {
+                        attacker.action.attackHero()
+                    } else {
+                        attacker.action.attack(target)
+                    }
+                    log.info { "兜底攻击: ${attacker.entityName} -> ${target?.entityName}" }
+                    Thread.sleep(1000)
+                }
+            }
+            val power = me.playArea.power
+            if (power != null && me.usableResource >= power.cost) {
+                power.action.power()
+                log.info { "兜底使用英雄技能" }
+                Thread.sleep(500)
+            }
+            log.info { "简易兜底完毕" }
+        } catch (e: Exception) {
+            log.error { "简易兜底异常: ${e.message}" }
         }
     }
 
