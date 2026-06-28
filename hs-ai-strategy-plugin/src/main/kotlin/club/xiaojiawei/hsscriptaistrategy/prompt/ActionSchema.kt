@@ -15,18 +15,19 @@ data class LlmAction(
     val attackerIndex: Int? = null,
     val targetIndex: Int? = null,
     val targetSide: String? = null,
+    val chooseOneIndex: Int? = null,
 )
 
 object ActionParser {
 
     private val mapper = jacksonObjectMapper()
 
-    fun parse(content: String): LlmAction? =
+    fun parseActions(content: String): List<LlmAction>? =
         try {
             val cleaned = cleanJson(content)
-            mapper.readValue(cleaned, LlmAction::class.java)
+            mapper.readValue(cleaned, mapper.typeFactory.constructCollectionType(List::class.java, LlmAction::class.java))
         } catch (e: Exception) {
-            log.error { "解析AI动作JSON失败: ${e.message}, 原始内容: $content" }
+            log.error { "解析AI动作序列JSON失败: ${e.message}" }
             null
         }
 
@@ -39,10 +40,15 @@ object ActionParser {
                 s = s.substring(0, lastFence).trim()
             }
         }
-        val start = s.indexOf('{')
-        val end = s.lastIndexOf('}')
+        val start = s.indexOf('[')
+        val end = s.lastIndexOf(']')
         if (start in 0 until end) {
-            s = s.substring(start, end + 1)
+            return s.substring(start, end + 1)
+        }
+        val objStart = s.indexOf('{')
+        val objEnd = s.lastIndexOf('}')
+        if (objStart in 0 until objEnd) {
+            return "[" + s.substring(objStart, objEnd + 1) + "]"
         }
         return s
     }

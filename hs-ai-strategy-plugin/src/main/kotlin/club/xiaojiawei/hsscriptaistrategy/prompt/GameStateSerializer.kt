@@ -41,6 +41,10 @@ data class HandCardInfo(
     val type: String,
     val atk: Int,
     val hp: Int,
+    val isForge: Boolean = false,
+    val needsTarget: Boolean = false,
+    val isTradeable: Boolean = false,
+    val isChooseOne: Boolean = false,
 )
 
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy::class)
@@ -119,6 +123,10 @@ object GameStateSerializer {
                 type = c.cardType.name,
                 atk = c.atc,
                 hp = c.health,
+                isForge = c.isForge,
+                needsTarget = c.isBattlecry || c.cardType == CardTypeEnum.SPELL,
+                isTradeable = c.isTradeable,
+                isChooseOne = c.isChooseOne,
             )
         }
 
@@ -146,6 +154,12 @@ object GameStateSerializer {
         if (c.isWindFury) k.add("windfury")
         if (c.isBattlecry) k.add("battlecry")
         if (c.isDiscover) k.add("discover")
+        if (c.isRush) k.add("rush")
+        if (c.isCharge) k.add("charge")
+        if (c.isReborn) k.add("reborn")
+        if (c.isTitan) k.add("titan")
+        if (c.isLifesteal) k.add("lifesteal")
+        if (c.isImmune) k.add("immune")
         if (c.cardType === CardTypeEnum.LOCATION) k.add("location")
         return k
     }

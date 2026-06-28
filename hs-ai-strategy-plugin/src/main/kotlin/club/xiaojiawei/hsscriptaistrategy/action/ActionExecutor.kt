@@ -4,6 +4,7 @@ import club.xiaojiawei.hsscriptaistrategy.prompt.LlmAction
 import club.xiaojiawei.hsscriptbase.config.log
 import club.xiaojiawei.hsscriptcardsdk.bean.Card
 import club.xiaojiawei.hsscriptcardsdk.bean.Player
+import club.xiaojiawei.hsscriptcardsdk.enums.CardTypeEnum
 
 object ActionExecutor {
 
@@ -14,6 +15,8 @@ object ActionExecutor {
                 "attack" -> executeAttack(action, me, rival)
                 "hero_power" -> executeHeroPower(action, me, rival)
                 "launch" -> executeLaunch(action, me)
+                "forge" -> executeForge(action, me)
+                "trade" -> executeTrade(action, me)
                 "end_turn" -> true
                 else -> {
                     log.warn { "未知动作类型: ${action.action}" }
@@ -45,9 +48,26 @@ object ActionExecutor {
                 log.warn { "play_card 目标为空: side=$targetSide, index=$targetIndex" }
                 return false
             }
-            return card.action.power(target) != null
+            val result = card.action.power(target)
+            if (result == null) {
+                log.warn { "play_card 指向目标后仍失败: ${card.entityName}(${card.cardId}), 可能法力不足或目标无效" }
+            }
+            return result != null
         }
-        return card.action.power() != null
+        val result = card.action.power()
+        if (result == null) {
+            val hint = if (card.isBattlecry || card.cardType == CardTypeEnum.SPELL) {
+                "该卡牌可能需要指定目标(target_index+target_side)，或法力不足"
+            } else {
+                "可能法力不足或卡牌限制"
+            }
+            log.warn { "play_card 失败: ${card.entityName}(${card.cardId}), cost=${card.cost}, $hint" }
+        }
+        if (result != null && card.isChooseOne && action.chooseOneIndex != null) {
+            card.action.chooseOne(action.chooseOneIndex)
+            log.info { "play_card 抉择选择: ${card.entityName}, option=${action.chooseOneIndex}" }
+        }
+        return result != null
     }
 
     private fun executeAttack(action: LlmAction, me: Player, rival: Player): Boolean {
@@ -88,12 +108,16 @@ object ActionExecutor {
         if (targetSide != null && targetIndex != null) {
             val target = resolveTarget(targetSide, targetIndex, me, rival)
             if (target == null) {
-                log.warn { "hero_power 目标为空: side=$targetSide, index=$targetIndex" }
+                log.warn { "hero_power 目标为空" }
                 return false
             }
             return power.action.power(target) != null
         }
-        return power.action.power() != null
+        val result = power.action.power()
+        if (result == null) {
+            log.warn { "hero_power 失败: ${power.entityName}, 可能法力不足或需要指定目标" }
+        }
+        return result != null
     }
 
     private fun executeLaunch(action: LlmAction, me: Player): Boolean {
@@ -108,6 +132,52 @@ object ActionExecutor {
             return false
         }
         return card.action.launch() != null
+    }
+
+    private fun executeForge(action: LlmAction, me: Player): Boolean {
+        val idx = action.cardIndex
+        if (idx == null || idx < 0) {
+            log.warn { "forge 缺少 card_index" }
+            return false
+        }
+        val hand = me.handArea.cards
+        if (idx >= hand.size) {
+            log.warn { "forge 手牌下标越界: $idx" }
+            return false
+        }
+        val card = hand[idx]
+        if (!card.isForge) {
+            log.warn { "forge 该卡牌不可锻造: ${card.entityName}(${card.cardId})" }
+            return false
+        }
+        val result = card.action.forge()
+        if (result == null) {
+            log.warn { "forge 失败: ${card.entityName}(${card.cardId}), 可能法力不足" }
+        }
+        return result != null
+    }
+
+    private fun executeTrade(action: LlmAction, me: Player): Boolean {
+        val idx = action.cardIndex
+        if (idx == null || idx < 0) {
+            log.warn { "trade 缺少 card_index" }
+            return false
+        }
+        val hand = me.handArea.cards
+        if (idx >= hand.size) {
+            log.warn { "trade 手牌下标越界: $idx" }
+            return false
+        }
+        val card = hand[idx]
+        if (!card.isTradeable) {
+            log.warn { "trade 该卡牌不可交易: ${card.entityName}(${card.cardId})" }
+            return false
+        }
+        val result = card.action.trade()
+        if (result == null) {
+            log.warn { "trade 失败: ${card.entityName}(${card.cardId}), 可能法力不足(需1费)" }
+        }
+        return result != null
     }
 
     private fun resolveTarget(side: String, index: Int, me: Player, rival: Player): Card? {
