@@ -6,11 +6,14 @@ import club.xiaojiawei.hsscriptstrategysdk.StrategyPlugin
 import javafx.application.Platform
 import javafx.scene.control.Button
 import javafx.scene.control.CheckBox
+import javafx.scene.control.ComboBox
 import javafx.scene.control.Label
 import javafx.scene.control.TextField
 import javafx.scene.layout.HBox
 import javafx.scene.layout.VBox
 import javafx.scene.text.Font
+import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.atomic.AtomicInteger
 
 class AiStrategyPlugin : StrategyPlugin {
 
@@ -42,9 +45,61 @@ class AiStrategyPlugin : StrategyPlugin {
             promptText = "https://dashscope.aliyuncs.com/compatible-mode/v1"
             prefWidth = 480.0
         }
-        val modelField = TextField(AiConfig.model()).apply {
-            promptText = "glm-5.2"
-            prefWidth = 480.0
+        val modelBox = ComboBox<String>().apply {
+            isEditable = true
+            value = AiConfig.model()
+            promptText = "选择或输入模型名"
+            prefWidth = 350.0
+        }
+        val fetchModelBtn = Button("拉取模型").apply {
+            style = "-fx-background-color: #FF9800; -fx-text-fill: white;"
+            setOnAction {
+                text = "拉取中..."
+                Thread {
+                    try {
+                        val models = LlmClient.fetchModels()
+                        if (models.isEmpty()) {
+                            Platform.runLater { text = "无可用模型"; }
+                            return@Thread
+                        }
+                        val statusMap = ConcurrentHashMap<String, String>()
+                        val done = AtomicInteger(0)
+                        Platform.runLater {
+                            modelBox.items.setAll(models)
+                            text = "测试权限 0/${models.size}"
+                        }
+                        models.forEach { model ->
+                            Thread {
+                                val result = try { LlmClient.testModel(model) } catch (e: Exception) { "❌超时" }
+                                statusMap[model] = result
+                                val d = done.incrementAndGet()
+                                val currentVal = modelBox.value
+                                val items = if (d >= models.size) {
+                                    val okModels = models.mapNotNull { m ->
+                                        statusMap[m]?.let { m to it }
+                                    }.filter { it.second.startsWith("✅") }
+                                        .sortedBy { it.second.filter { c -> c.isDigit() }.toIntOrNull() ?: Int.MAX_VALUE }
+                                        .map { "${it.first} ${it.second}" }
+                                    val failModels = models.mapNotNull { m ->
+                                        statusMap[m]?.let { m to it }
+                                    }.filter { it.second.startsWith("❌") }
+                                        .map { "${it.first} ${it.second}" }
+                                    okModels + failModels
+                                } else {
+                                    models.map { m -> statusMap[m]?.let { "$m $it" } ?: m }
+                                }
+                                Platform.runLater {
+                                    modelBox.items.setAll(items)
+                                    modelBox.value = currentVal
+                                    text = if (d >= models.size) "拉取模型" else "测试权限 $d/${models.size}"
+                                }
+                            }.start()
+                        }
+                    } catch (e: Exception) {
+                        Platform.runLater { text = "拉取失败: ${e.message?.take(20)}" }
+                    }
+                }.start()
+            }
         }
         val apiKeyField = TextField(AiConfig.apiKey()).apply {
             promptText = "sk-xxx"
@@ -72,13 +127,17 @@ class AiStrategyPlugin : StrategyPlugin {
             setOnAction {
                 AiConfig.setEnabled(enabledCb.isSelected)
                 AiConfig.setBaseUrl(baseUrlField.text.trim())
-                AiConfig.setModel(modelField.text.trim())
+                AiConfig.setModel((modelBox.value ?: modelBox.editor.text).trim().substringBefore(' '))
                 AiConfig.setApiKey(apiKeyField.text.trim())
                 AiConfig.setProvider(providerField.text.trim())
                 AiConfig.setTimeout(timeoutField.text.trim().toIntOrNull() ?: 30000)
                 AiConfig.setIncludeDesc(descCb.isSelected)
                 AiConfig.save()
                 text = "已保存 ✓"
+                Thread {
+                    Thread.sleep(1000)
+                    Platform.runLater { text = "保存配置" }
+                }.start()
             }
         }
         val testResultLabel = Label("")
@@ -105,7 +164,7 @@ class AiStrategyPlugin : StrategyPlugin {
         box.children.addAll(
             title, enabledCb,
             Label("API地址:"), baseUrlField,
-            Label("模型:"), modelField,
+            Label("模型:"), HBox(8.0, modelBox, fetchModelBtn),
             Label("API Key:"), apiKeyField,
             Label("Provider:"), providerField,
             Label("超时(ms, 推理模型建议60000+):"), timeoutField,

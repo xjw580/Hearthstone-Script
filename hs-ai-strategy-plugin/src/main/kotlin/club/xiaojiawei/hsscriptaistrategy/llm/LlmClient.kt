@@ -60,15 +60,69 @@ object LlmClient {
 
     fun testConnection(): String {
         return try {
+            val mockState = """
+            {"turn":"my","my_hero":{"name":"猎人","health":30,"armor":0},
+            "my_hand":[{"index":0,"name":"测试随从","card_id":"T1","cost":1,"type":"MINION","atk":2,"hp":1,"is_forge":false,"needs_target":false,"is_tradeable":false,"is_choose_one":false,"desc":""},
+            {"index":1,"name":"测试法术","card_id":"T2","cost":2,"type":"SPELL","atk":0,"hp":0,"is_forge":false,"needs_target":true,"is_tradeable":false,"is_choose_one":false,"desc":""}],
+            "my_board":[{"index":0,"name":"场随从","cost":2,"atk":3,"hp":3,"can_attack":true,"keywords":[],"desc":""}],
+            "my_weapon":null,
+            "my_hero_power":{"name":"技能","usable":true,"cost":2},
+            "my_mana":{"total":3,"available":3,"overload_locked":0},"my_deck_count":20,
+            "rival_hero":{"name":"战士","health":30,"armor":0},"rival_hand_count":4,
+            "rival_board":[{"index":0,"name":"敌随从","cost":2,"atk":2,"hp":2,"can_attack":false,"keywords":["taunt"],"desc":""}],
+            "rival_hero_power":{"name":"技能","usable":true,"cost":2},
+            "rival_mana":{"total":3,"available":3}}
+            """.trimIndent()
+            val messages = listOf(
+                ChatMessage("system", "你是炉石传说策略AI。根据场面输出JSON动作数组。"),
+                ChatMessage("user", "当前游戏状态：\n$mockState\n请规划本回合动作序列。"),
+            )
             val start = System.currentTimeMillis()
-            val response = chat(listOf(
-                ChatMessage("user", "回复OK")
-            ))
+            val response = chat(messages)
             val time = System.currentTimeMillis() - start
-            "✅ 连通成功 | 响应: ${response.take(30)} | 耗时: ${time}ms"
+            "✅ 连通成功 | 耗时: ${time}ms | 响应: ${response.take(50)}..."
         } catch (e: Exception) {
             "❌ 连通失败: ${e.message}"
         }
+    }
+
+    fun fetchModels(): List<String> {
+        val baseUrl = AiConfig.baseUrl().trimEnd('/')
+        if (baseUrl.isEmpty()) return emptyList()
+        val url = if (baseUrl.endsWith("/v1")) "$baseUrl/models" else "$baseUrl/v1/models"
+        val httpRequest = HttpRequest.newBuilder()
+            .uri(URI.create(url))
+            .timeout(Duration.ofMillis(15000))
+            .header("Authorization", "Bearer ${AiConfig.apiKey()}")
+            .GET()
+            .build()
+        val response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString())
+        if (response.statusCode() !in 200..299) return emptyList()
+        val root = mapper.readTree(response.body())
+        val models = mutableListOf<String>()
+        root["data"]?.forEach { node ->
+            node["id"]?.asText()?.let { models.add(it) }
+        }
+        return models.sorted()
+    }
+
+    fun testModel(model: String): String {
+        val baseUrl = AiConfig.baseUrl().trimEnd('/')
+        if (baseUrl.isEmpty()) return "❌ URL未配置"
+        val url = buildUrl(baseUrl)
+        val request = ChatRequest(model = model, messages = listOf(ChatMessage("user", "1")), temperature = 0.0)
+        val bodyJson = mapper.writeValueAsString(request)
+        val httpRequest = HttpRequest.newBuilder()
+            .uri(URI.create(url))
+            .timeout(Duration.ofMillis(8000))
+            .header("Content-Type", "application/json")
+            .header("Authorization", "Bearer ${AiConfig.apiKey()}")
+            .POST(HttpRequest.BodyPublishers.ofString(bodyJson))
+            .build()
+        val start = System.currentTimeMillis()
+        val response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString())
+        val time = System.currentTimeMillis() - start
+        return if (response.statusCode() in 200..299) "✅${time}ms" else "❌${response.statusCode()}"
     }
 
     private fun buildUrl(baseUrl: String): String =
