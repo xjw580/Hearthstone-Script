@@ -2,6 +2,7 @@ package club.xiaojiawei.hsscriptaistrategy
 
 import club.xiaojiawei.hsscriptaistrategy.action.ActionExecutor
 import club.xiaojiawei.hsscriptaistrategy.config.AiConfig
+import club.xiaojiawei.hsscriptaistrategy.llm.ChatMessage
 import club.xiaojiawei.hsscriptaistrategy.llm.LlmClient
 import club.xiaojiawei.hsscriptaistrategy.prompt.ActionParser
 import club.xiaojiawei.hsscriptaistrategy.prompt.GameStateSerializer
@@ -119,7 +120,7 @@ class AiDeckStrategy : DeckStrategy() {
                 }
 
                 try {
-                    Thread.sleep(800)
+                    Thread.sleep(1200)
                 } catch (_: InterruptedException) {
                     Thread.currentThread().interrupt()
                     break
@@ -144,11 +145,29 @@ class AiDeckStrategy : DeckStrategy() {
     }
 
     override fun executeDiscoverChooseCard(vararg cards: Card): Int {
-        log.info { "AI发现选牌, 候选数: ${cards.size}" }
+        if (cards.isEmpty()) return 0
+        if (!AiConfig.isEnabled()) return 0
+        if (LlmClient.lastResponseTime > 20000) {
+            log.info { "LLM响应较慢(${LlmClient.lastResponseTime}ms)，发现选牌用简易策略(选第一张)" }
+            return 0
+        }
         return try {
-            0
+            val options = cards.mapIndexed { i, c ->
+                "[$i] ${c.entityName} cost=${c.cost} type=${c.cardType.name}" +
+                    if (c.atc > 0 || c.health > 0) " atk=${c.atc} hp=${c.health}" else ""
+            }.joinToString("\n")
+            val mana = WAR.me.usableResource
+            val messages = listOf(
+                ChatMessage("system", "你是炉石传说AI。从发现选项中选最优的一张，只回复数字。"),
+                ChatMessage("user", "可用法力:$mana\n选项:\n$options\n回复下标(0-${cards.size - 1})："),
+            )
+            val response = LlmClient.chat(messages)
+            val index = response.trim().filter { it.isDigit() }.toIntOrNull() ?: 0
+            val clamped = index.coerceIn(0, cards.size - 1)
+            log.info { "AI发现选牌: 下标$clamped, ${cards[clamped].entityName}" }
+            clamped
         } catch (e: Exception) {
-            log.error { "AI发现选牌异常: ${e.message}" }
+            log.warn { "AI发现选牌失败，选第一张: ${e.message}" }
             0
         }
     }
@@ -156,13 +175,30 @@ class AiDeckStrategy : DeckStrategy() {
     private fun fallbackExecute(me: Player, rival: Player) {
         try {
             val fallbackId = AiConfig.fallbackStrategyId()
-            val radicalStrategy = java.util.ServiceLoader.load(DeckStrategy::class.java)
-                .firstOrNull { it.id() == fallbackId }
+            val cl = Thread.currentThread().contextClassLoader ?: DeckStrategy::class.java.classLoader
+            val strategies = java.util.ServiceLoader.load(DeckStrategy::class.java, cl).toList()
+            log.info { "ServiceLoader找到${strategies.size}个策略" }
+            strategies.forEach { log.info { "  策略: id=${it.id()}, name=${it.name()}" } }
+            val radicalStrategy = strategies.firstOrNull { it.id() == fallbackId }
             if (radicalStrategy != null) {
                 log.info { "使用激进策略($fallbackId)兜底" }
                 radicalStrategy.reset()
                 radicalStrategy.executeOutCard()
                 log.info { "激进策略兜底完毕" }
+                return
+            }
+            val className = "club.xiaojiawei.hsscriptbasestrategy.strategy.HsRadicalDeckStrategy"
+            val radicalStrategy2 = try {
+                Class.forName(className, true, cl)?.getDeclaredConstructor()?.newInstance() as? DeckStrategy
+            } catch (e: Exception) {
+                log.warn { "反射加载激进策略失败: ${e.message}" }
+                null
+            }
+            if (radicalStrategy2 != null) {
+                log.info { "使用激进策略(反射)兜底" }
+                radicalStrategy2.reset()
+                radicalStrategy2.executeOutCard()
+                log.info { "激进策略(反射)兜底完毕" }
                 return
             }
             log.warn { "未找到激进策略($fallbackId)，使用简易兜底" }

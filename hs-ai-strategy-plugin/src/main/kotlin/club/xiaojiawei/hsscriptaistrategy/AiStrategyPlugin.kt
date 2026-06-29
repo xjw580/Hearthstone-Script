@@ -1,7 +1,9 @@
 package club.xiaojiawei.hsscriptaistrategy
 
 import club.xiaojiawei.hsscriptaistrategy.config.AiConfig
+import club.xiaojiawei.hsscriptaistrategy.llm.LlmClient
 import club.xiaojiawei.hsscriptstrategysdk.StrategyPlugin
+import javafx.application.Platform
 import javafx.scene.control.Button
 import javafx.scene.control.CheckBox
 import javafx.scene.control.Label
@@ -56,6 +58,15 @@ class AiStrategyPlugin : StrategyPlugin {
             promptText = "30000"
             prefWidth = 100.0
         }
+        val descCb = CheckBox("发送卡牌描述").apply {
+            isSelected = AiConfig.includeDesc()
+        }
+        val descHint = Label("开启后LLM能看到所有卡牌的效果描述，决策更准确但prompt变大、响应变慢。若超时设置较短(如30s)不建议开启，容易超时。").apply {
+            font = Font.font(11.0)
+            style = "-fx-text-fill: gray;"
+            isWrapText = true
+            prefWidth = 480.0
+        }
         val saveBtn = Button("保存配置").apply {
             style = "-fx-background-color: #4CAF50; -fx-text-fill: white;"
             setOnAction {
@@ -65,8 +76,25 @@ class AiStrategyPlugin : StrategyPlugin {
                 AiConfig.setApiKey(apiKeyField.text.trim())
                 AiConfig.setProvider(providerField.text.trim())
                 AiConfig.setTimeout(timeoutField.text.trim().toIntOrNull() ?: 30000)
+                AiConfig.setIncludeDesc(descCb.isSelected)
                 AiConfig.save()
                 text = "已保存 ✓"
+            }
+        }
+        val testResultLabel = Label("")
+        val testBtn = Button("测试连通性").apply {
+            style = "-fx-background-color: #2196F3; -fx-text-fill: white;"
+            setOnAction {
+                text = "测试中..."
+                testResultLabel.text = ""
+                Thread {
+                    val result = LlmClient.testConnection()
+                    Platform.runLater {
+                        testResultLabel.text = result
+                        testResultLabel.style = if (result.startsWith("✅")) "-fx-text-fill: green;" else "-fx-text-fill: red;"
+                        text = "测试连通性"
+                    }
+                }.start()
             }
         }
         val hint = Label("保存后立即生效。配置写入 config/script.ini [ai] 分组。").apply {
@@ -81,7 +109,8 @@ class AiStrategyPlugin : StrategyPlugin {
             Label("API Key:"), apiKeyField,
             Label("Provider:"), providerField,
             Label("超时(ms, 推理模型建议60000+):"), timeoutField,
-            HBox(10.0, saveBtn), hint,
+            descCb, descHint,
+            HBox(10.0, saveBtn, testBtn), testResultLabel, hint,
         )
         return box
     }

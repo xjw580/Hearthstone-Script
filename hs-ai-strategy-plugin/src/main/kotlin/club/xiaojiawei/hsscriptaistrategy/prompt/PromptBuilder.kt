@@ -33,8 +33,8 @@ object PromptBuilder {
         用户消息提供当前场面的JSON，字段说明：
         - turn: "my"表示我的回合
         - my_hero / rival_hero: 英雄信息，含name、health(当前生命)、armor(护甲)
-        - my_hand: 我方手牌数组，每张含index、name、card_id、cost、type(MINION/SPELL/WEAPON/HERO/HERO_POWER/LOCATION)、atk、hp、is_forge(可否锻造)、needs_target(是否需要指定目标)、is_tradeable(可否交易)、is_choose_one(是否抉择)
-        - my_board / rival_board: 场上随从数组，每张含index、name、cost、atk、hp、can_attack(本回合可否攻击)、keywords(taunt/divine_shield/poisonous/deathrattle/stealth/frozen/windfury/battlecry/discover/rush/charge/reborn/titan/lifesteal/immune/location)
+        - my_hand: 我方手牌数组，每张含index、name、card_id、cost、type(MINION/SPELL/WEAPON/HERO/HERO_POWER/LOCATION)、atk、hp、is_forge(可否锻造)、needs_target(是否需要指定目标)、is_tradeable(可否交易)、is_choose_one(是否抉择)、desc(卡牌效果描述，请仔细阅读以了解战吼/亡语/触发等效果)
+        - my_board / rival_board: 场上随从数组，每张含index、name、cost、atk、hp、can_attack(本回合可否攻击)、keywords(taunt/divine_shield/poisonous/deathrattle/stealth/frozen/windfury/battlecry/discover/rush/charge/reborn/titan/lifesteal/immune/location)、desc(卡牌效果描述，含亡语/光环/触发等，帮助判断战斗后果)
         - my_weapon: 我方武器，含name、atk、durability，null则无
         - my_hero_power / rival_hero_power: 英雄技能，含name、usable(是否可用)、cost
         - my_mana / rival_mana: 法力信息，含total、available、overload_locked

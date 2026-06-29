@@ -13,6 +13,8 @@ object LlmClient {
 
     private val mapper = jacksonObjectMapper()
 
+    var lastResponseTime: Long = 0
+
     private val httpClient: HttpClient by lazy {
         HttpClient.newBuilder()
             .connectTimeout(Duration.ofMillis(AiConfig.timeout().toLong()))
@@ -41,7 +43,9 @@ object LlmClient {
             .POST(HttpRequest.BodyPublishers.ofString(bodyJson))
             .build()
 
+        val start = System.currentTimeMillis()
         val response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString())
+        lastResponseTime = System.currentTimeMillis() - start
         if (response.statusCode() !in 200..299) {
             log.error { "AI请求失败, status=${response.statusCode()}, body=${response.body()}" }
             throw RuntimeException("AI请求失败, status=${response.statusCode()}")
@@ -50,8 +54,21 @@ object LlmClient {
         val chatResponse = mapper.readValue(response.body(), ChatResponse::class.java)
         val content = chatResponse.choices.firstOrNull()?.message?.content
             ?: throw RuntimeException("AI响应无内容")
-        log.info { "AI响应内容: $content" }
+        log.info { "AI响应(${lastResponseTime}ms): $content" }
         return content
+    }
+
+    fun testConnection(): String {
+        return try {
+            val start = System.currentTimeMillis()
+            val response = chat(listOf(
+                ChatMessage("user", "回复OK")
+            ))
+            val time = System.currentTimeMillis() - start
+            "✅ 连通成功 | 响应: ${response.take(30)} | 耗时: ${time}ms"
+        } catch (e: Exception) {
+            "❌ 连通失败: ${e.message}"
+        }
     }
 
     private fun buildUrl(baseUrl: String): String =

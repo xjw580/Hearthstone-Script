@@ -53,6 +53,7 @@ object AiConfig {
     fun timeout(): Int = get("AI_TIMEOUT", "30000").toIntOrNull() ?: 30000
     fun temperature(): Double = get("AI_TEMPERATURE", "0.7").toDoubleOrNull() ?: 0.7
     fun fallbackStrategyId(): String = get("AI_FALLBACK_STRATEGY", "e71234fa-1-radical-deck-97e9-1f4e126cd33b")
+    fun includeDesc(): Boolean = get("AI_INCLUDE_DESC", "false").toBoolean()
 
     fun setEnabled(v: Boolean) { put("AI_ENABLED", v.toString()) }
     fun setBaseUrl(v: String) { put("AI_BASE_URL", v) }
@@ -60,4 +61,5 @@ object AiConfig {
     fun setModel(v: String) { put("AI_MODEL", v) }
     fun setApiKey(v: String) { put("AI_API_KEY", v) }
     fun setTimeout(v: Int) { put("AI_TIMEOUT", v.toString()) }
+    fun setIncludeDesc(v: Boolean) { put("AI_INCLUDE_DESC", v.toString()) }
 }

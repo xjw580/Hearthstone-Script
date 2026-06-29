@@ -1,9 +1,11 @@
 package club.xiaojiawei.hsscriptaistrategy.prompt
 
+import club.xiaojiawei.hsscriptaistrategy.config.AiConfig
 import club.xiaojiawei.hsscriptcardsdk.bean.Card
 import club.xiaojiawei.hsscriptcardsdk.bean.Player
 import club.xiaojiawei.hsscriptcardsdk.enums.CardTypeEnum
 import club.xiaojiawei.hsscriptcardsdk.status.WAR
+import club.xiaojiawei.hsscriptcardsdk.util.CardDBUtil
 import com.fasterxml.jackson.databind.PropertyNamingStrategies
 import com.fasterxml.jackson.databind.annotation.JsonNaming
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
@@ -45,6 +47,7 @@ data class HandCardInfo(
     val needsTarget: Boolean = false,
     val isTradeable: Boolean = false,
     val isChooseOne: Boolean = false,
+    val desc: String = "",
 )
 
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy::class)
@@ -56,6 +59,7 @@ data class BoardCardInfo(
     val hp: Int,
     val canAttack: Boolean,
     val keywords: List<String>,
+    val desc: String = "",
 )
 
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy::class)
@@ -127,8 +131,22 @@ object GameStateSerializer {
                 needsTarget = c.isBattlecry || c.cardType == CardTypeEnum.SPELL,
                 isTradeable = c.isTradeable,
                 isChooseOne = c.isChooseOne,
+                desc = if (AiConfig.includeDesc()) getCardDesc(c.cardId) else "",
             )
         }
+
+    private fun getCardDesc(cardId: String): String {
+        if (cardId.isBlank()) return ""
+        return try {
+            CardDBUtil.queryCardById(cardId).firstOrNull()?.text
+                ?.replace(Regex("<[^>]+>"), "")
+                ?.replace("\n", " ")
+                ?.trim()
+                ?: ""
+        } catch (e: Exception) {
+            ""
+        }
+    }
 
     private fun boardOf(player: Player): List<BoardCardInfo> =
         player.playArea.cards.mapIndexed { i, c ->
@@ -140,6 +158,7 @@ object GameStateSerializer {
                 hp = (c.health - c.damage).coerceAtLeast(0),
                 canAttack = !c.isExhausted && !c.isFrozen && c.atc > 0,
                 keywords = keywordsOf(c),
+                desc = if (AiConfig.includeDesc()) getCardDesc(c.cardId) else "",
             )
         }
 
