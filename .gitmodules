@@ -49,3 +49,6 @@
 [submodule "user-strategy-plugins/WeightHandlerStrategy"]
 	path = user-strategy-plugins/WeightHandlerStrategy
 	url = https://github.com/to52360/WeightHandlerStrategy.git
+[submodule "user-strategy-plugins/hs-ai-strategy-plugin"]
+	path = user-strategy-plugins/hs-ai-strategy-plugin
+	url = https://github.com/habunnywy/hs-ai-strategy-plugin.git
