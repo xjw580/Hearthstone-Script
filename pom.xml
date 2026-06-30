@@ -20,6 +20,7 @@
         <module>hs-script-base-strategy-plugin</module>
         <module>hs-card-plugin-template</module>
         <module>hs-strategy-plugin-template</module>
+        <module>user-strategy-plugins/hs-ai-strategy-plugin</module>
     </modules>
 
     <repositories>
